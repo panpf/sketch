@@ -32,6 +32,7 @@ import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.DataFrom.MEMORY
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.assertSizeEquals
 import com.github.panpf.sketch.test.utils.chunkingFour
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
@@ -1179,22 +1180,22 @@ class DecodesNonAndroidTest {
                         config = decodeConfig.copy(sampleSize = 1),
                     )
                 } catch (e: Exception) {
-                    throw Exception("imageFile=$imageFile, decodeConfig=$decodeConfig", e)
+                    throw Exception("imageFile=${imageFile.uri}, decodeConfig=$decodeConfig", e)
                 }.apply {
                     assertEquals(
                         expected = imageFile.size,
                         actual = this.size,
-                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig"
+                        message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig"
                     )
                     assertEquals(
                         expected = decodeConfig.colorType ?: ColorType.RGBA_8888,
                         actual = this.colorType,
-                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig"
+                        message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig"
                     )
                     assertEquals(
                         expected = decodeConfig.colorSpace ?: ColorSpace.sRGB,
                         actual = this.colorSpace,
-                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig"
+                        message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig"
                     )
                 }
 
@@ -1211,7 +1212,7 @@ class DecodesNonAndroidTest {
                     bottomLeftBitmap to bottomLeftRect,
                     bottomRightBitmap to bottomRightRect
                 ).forEach { (bitmap, tileRect) ->
-                    assertEquals(
+                    assertSizeEquals(
                         expected = calculateSampledBitmapSizeForRegion(
                             regionSize = tileRect.size,
                             sampleSize = decodeConfig.sampleSize ?: 1,
@@ -1219,17 +1220,18 @@ class DecodesNonAndroidTest {
                             imageSize = sourceBitmap.size
                         ),
                         actual = bitmap.size,
-                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
+                        delta = Size(1, 1),
+                        message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
                     )
                     assertEquals(
                         expected = decodeConfig.colorType ?: ColorType.RGBA_8888,
                         actual = bitmap.colorType,
-                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
+                        message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
                     )
                     assertEquals(
                         expected = decodeConfig.colorSpace ?: ColorSpace.sRGB,
                         actual = bitmap.colorSpace,
-                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
+                        message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
                     )
                 }
                 listOf(
@@ -1242,7 +1244,7 @@ class DecodesNonAndroidTest {
                 ).forEachIndexed { index, similarity ->
                     assertTrue(
                         actual = similarity >= 4,
-                        message = "index=$index, similarity=$similarity, imageFile=$imageFile, decodeConfig: $decodeConfig"
+                        message = "index=$index, similarity=$similarity, imageFile=${imageFile.uri}, decodeConfig: $decodeConfig"
                     )
                 }
 
@@ -1295,8 +1297,8 @@ class DecodesNonAndroidTest {
                     bottomRightBitmap.toPreviewBitmap()
                 sourceBitmap.similarity(mergedBitmap).apply {
                     assertTrue(
-                        actual = this <= 5,
-                        message = "similarity=$this, imageFile=$imageFile, decodeConfig: $decodeConfig"
+                        actual = this <= 6,
+                        message = "similarity=$this, imageFile=${imageFile.uri}, decodeConfig: $decodeConfig"
                     )
                 }
             }

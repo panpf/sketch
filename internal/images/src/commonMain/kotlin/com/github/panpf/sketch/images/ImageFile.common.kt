@@ -9,6 +9,7 @@ open class ImageFile constructor(
     val name: String,
     val size: Size,
     val mimeType: String,
+    val animated: Boolean = false,
     val exifOrientation: Int = ExifOrientation.UNDEFINED,
 ) {
     override fun toString(): String {
@@ -21,12 +22,14 @@ class ResourceImageFile constructor(
     name: String,
     size: Size,
     mimeType: String,
+    animated: Boolean = false,
     exifOrientation: Int = ExifOrientation.UNDEFINED
 ) : ImageFile(
     uri = resourceNameToUri(resourceName),
     name = name,
     size = size,
     mimeType = mimeType,
+    animated = animated,
     exifOrientation = exifOrientation,
 ) {
     override fun toString(): String {

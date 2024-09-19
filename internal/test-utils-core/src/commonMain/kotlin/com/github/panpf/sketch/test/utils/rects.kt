@@ -18,6 +18,13 @@ fun Rect.chunkingFour(): List<Rect> {
         right = sourceRect.left + (sourceRect.width() / 2),
         bottom = sourceRect.top + (sourceRect.height() / 2),
     ).apply {
+        // The width and height of the first block must be an odd number so that it makes more sense to test
+        if (width() % 2 == 0) {
+            right += 1
+        }
+        if (height() % 2 == 0) {
+            bottom += 1
+        }
         assertTrue(right > left)
         assertTrue(bottom > top)
         assertEquals(sourceRect.left, actual = left)

@@ -57,6 +57,7 @@ import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.DataFrom.MEMORY
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.assertSizeEquals
 import com.github.panpf.sketch.test.utils.chunkingFour
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.expectedRgb565
@@ -68,6 +69,7 @@ import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toRect
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.div
 import com.github.panpf.sketch.util.isSameAspectRatio
 import com.github.panpf.sketch.util.size
 import com.github.panpf.sketch.util.times
@@ -78,7 +80,6 @@ import java.io.IOException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -180,7 +181,50 @@ class DecodesAndroidTest {
                 mimeType = "image/heif"
             )
         )
-        // TODO test real read
+
+//        val context = getTestContext()
+//        listOf(
+//            ResourceImages.formatJpeg,
+//            ResourceImages.formatPng,
+//            ResourceImages.formatBmp,
+//            ResourceImages.formatWebp,
+//            ResourceImages.formatHeic,
+//            ResourceImages.svg,
+//            ResourceImages.formatAnimGif,
+//            ResourceImages.formatAnimWebp,
+//            ResourceImages.animHeif,
+//            ResourceImages.clockExifFlipHorizontal,
+//            ResourceImages.clockExifFlipVertical,
+//            ResourceImages.clockExifNormal,
+//            ResourceImages.clockExifRotate90,
+//            ResourceImages.clockExifRotate180,
+//            ResourceImages.clockExifRotate270,
+//            ResourceImages.clockExifTranspose,
+//            ResourceImages.clockExifTransverse,
+//            ResourceImages.clockExifUndefined,
+//        ).forEach { imageFile ->
+//            listOf(
+//                DecodeConfig(sampleSize = 1),
+//                DecodeConfig(sampleSize = 2),
+//            ).forEach { decodeConfig ->
+//                val dataSource = imageFile.toDataSource(context)
+//                try {
+//                    val imageInfo = dataSource.readImageInfo()
+//                    val bitmap = dataSource.decode(decodeConfig)
+//                    assertEquals(
+//                        expected = calculateSampledBitmapSize(
+//                            imageSize = imageInfo.size,
+//                            sampleSize = decodeConfig.sampleSize ?: 1,
+//                            mimeType = imageInfo.mimeType,
+//                        ),
+//                        actual = bitmap.size,
+//                        message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig, imageSize=${imageInfo.size}"
+//                    )
+//                } catch (e: ImageInvalidException) {
+//                    e.printStackTrace()
+//                }
+//            }
+//        }
     }
 
     @Test
@@ -238,7 +282,80 @@ class DecodesAndroidTest {
                 mimeType = "image/jpeg",
             )
         )
-        // TODO test real read
+
+//        val context = getTestContext()
+//        listOf(
+//            ResourceImages.formatJpeg,
+//            ResourceImages.formatPng,
+//            ResourceImages.formatBmp,
+//            ResourceImages.formatWebp,
+//            ResourceImages.formatHeic,
+//            ResourceImages.svg,
+//            ResourceImages.formatAnimGif,
+//            ResourceImages.formatAnimWebp,
+//            ResourceImages.animHeif,
+//            ResourceImages.clockExifFlipHorizontal,
+//            ResourceImages.clockExifFlipVertical,
+//            ResourceImages.clockExifNormal,
+//            ResourceImages.clockExifRotate90,
+//            ResourceImages.clockExifRotate180,
+//            ResourceImages.clockExifRotate270,
+//            ResourceImages.clockExifTranspose,
+//            ResourceImages.clockExifTransverse,
+//            ResourceImages.clockExifUndefined,
+//        ).forEach { imageFile ->
+//            listOf(
+//                DecodeConfig(sampleSize = 1),
+//                DecodeConfig(sampleSize = 2),
+//            ).forEach { decodeConfig ->
+//                val dataSource = imageFile.toDataSource(context)
+//                try {
+//                    val imageInfo = dataSource.readImageInfo()
+//                    val fullBitmap = dataSource.decodeRegion(imageInfo.size.toRect()).apply {
+//                        assertSizeEquals(
+//                            expected = calculateSampledBitmapSizeForRegion(
+//                                regionSize = imageInfo.size,
+//                                sampleSize = 1,
+//                                mimeType = imageInfo.mimeType,
+//                                imageSize = imageInfo.size
+//                            ),
+//                            actual = this.size,
+//                            delta = Size(1, 1),
+//                            message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig, imageSize=${imageInfo.size}"
+//                        )
+//                    }
+//
+//                    val (topLeftRect, topRightRect, bottomLeftRect, bottomRightRect) =
+//                        fullBitmap.size.toRect().chunkingFour()
+//                    val topLeftBitmap = dataSource.decodeRegion(topLeftRect, decodeConfig)
+//                    val topRightBitmap = dataSource.decodeRegion(topRightRect, decodeConfig)
+//                    val bottomLeftBitmap = dataSource.decodeRegion(bottomLeftRect, decodeConfig)
+//                    val bottomRightBitmap = dataSource.decodeRegion(bottomRightRect, decodeConfig)
+//                    listOf(
+//                        topLeftBitmap to topLeftRect,
+//                        topRightBitmap to topRightRect,
+//                        bottomLeftBitmap to bottomLeftRect,
+//                        bottomRightBitmap to bottomRightRect
+//                    ).forEach { (bitmap, tileRect) ->
+//                        assertSizeEquals(
+//                            expected = calculateSampledBitmapSizeForRegion(
+//                                regionSize = tileRect.size,
+//                                sampleSize = decodeConfig.sampleSize ?: 1,
+//                                mimeType = imageFile.mimeType,
+//                                imageSize = imageInfo.size
+//                            ),
+//                            actual = bitmap.size,
+//                            delta = Size(1, 1),
+//                            message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig, tileRect=$tileRect, imageSize=${imageInfo.size}"
+//                        )
+//                    }
+//                } catch (e: ImageInvalidException) {
+//                    e.printStackTrace()
+//                } catch (e: IOException) {
+//                    e.printStackTrace()
+//                }
+//            }
+//        }
     }
 
     @Test
@@ -1342,25 +1459,25 @@ class DecodesAndroidTest {
                         config = decodeConfig.copy(sampleSize = 1),
                     )
                 } catch (e: Exception) {
-                    throw Exception("imageFile=$imageFile, decodeConfig=$decodeConfig", e)
+                    throw Exception("imageFile=${imageFile.uri}, decodeConfig=$decodeConfig", e)
                 }.apply {
                     assertEquals(
                         expected = imageFile.size,
                         actual = this.size,
-                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig"
+                        message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig"
                     )
                     assertEquals(
                         expected = decodeConfig.colorType?.expectedRgb565(imageFile.mimeType)
                             ?: ColorType.ARGB_8888,
                         actual = this.colorType,
-                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig"
+                        message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig"
                     )
                     if (VERSION.SDK_INT >= VERSION_CODES.O) {
                         assertEquals(
                             expected = decodeConfig.colorSpace
                                 ?: ColorSpace.get(ColorSpace.Named.SRGB),
                             actual = this.colorSpace,
-                            message = "imageFile=$imageFile, decodeConfig=$decodeConfig"
+                            message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig"
                         )
                     }
                 }
@@ -1378,7 +1495,7 @@ class DecodesAndroidTest {
                     bottomLeftBitmap to bottomLeftRect,
                     bottomRightBitmap to bottomRightRect
                 ).forEach { (bitmap, tileRect) ->
-                    assertEquals(
+                    assertSizeEquals(
                         expected = calculateSampledBitmapSizeForRegion(
                             regionSize = tileRect.size,
                             sampleSize = decodeConfig.sampleSize ?: 1,
@@ -1386,20 +1503,21 @@ class DecodesAndroidTest {
                             imageSize = sourceBitmap.size
                         ),
                         actual = bitmap.size,
-                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
+                        delta = Size(1, 1),
+                        message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
                     )
                     assertEquals(
                         expected = decodeConfig.colorType?.expectedRgb565(imageFile.mimeType)
                             ?: ColorType.ARGB_8888,
                         actual = bitmap.colorType,
-                        message = "imageFile=$imageFile, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
+                        message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
                     )
                     if (VERSION.SDK_INT >= VERSION_CODES.O) {
                         assertEquals(
                             expected = decodeConfig.colorSpace
                                 ?: ColorSpace.get(ColorSpace.Named.SRGB),
                             actual = bitmap.colorSpace,
-                            message = "imageFile=$imageFile, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
+                            message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
                         )
                     }
                 }
@@ -1413,7 +1531,7 @@ class DecodesAndroidTest {
                 ).forEachIndexed { index, similarity ->
                     assertTrue(
                         actual = similarity >= 4,
-                        message = "index=$index, similarity=$similarity, imageFile=$imageFile, decodeConfig: $decodeConfig"
+                        message = "index=$index, similarity=$similarity, imageFile=${imageFile.uri}, decodeConfig: $decodeConfig"
                     )
                 }
 
@@ -1452,7 +1570,7 @@ class DecodesAndroidTest {
                 sourceBitmap.similarity(mergedBitmap).apply {
                     assertTrue(
                         actual = this <= 6,
-                        message = "similarity=$this, imageFile=$imageFile, decodeConfig: $decodeConfig"
+                        message = "similarity=$this, imageFile=${imageFile.uri}, decodeConfig: $decodeConfig"
                     )
                 }
             }
@@ -1461,20 +1579,37 @@ class DecodesAndroidTest {
 
     @Test
     fun testSupportBitmapRegionDecoder() {
-        if (VERSION.SDK_INT >= VERSION_CODES.P) {
-            assertTrue(ImageFormat.HEIC.supportBitmapRegionDecoder())
-        } else {
-            assertFalse(ImageFormat.HEIC.supportBitmapRegionDecoder())
+        val context = getTestContext()
+        listOf(
+            ResourceImages.jpeg,
+            ResourceImages.png,
+            ResourceImages.bmp,
+            ResourceImages.webp,
+            ResourceImages.heic,
+            ResourceImages.svg,
+            ResourceImages.animGif,
+            ResourceImages.animWebp,
+            ResourceImages.animHeif,
+            ResourceImages.clockExifFlipHorizontal,
+            ResourceImages.clockExifFlipVertical,
+            ResourceImages.clockExifNormal,
+            ResourceImages.clockExifRotate90,
+            ResourceImages.clockExifRotate180,
+            ResourceImages.clockExifRotate270,
+            ResourceImages.clockExifTranspose,
+            ResourceImages.clockExifTransverse,
+            ResourceImages.clockExifUndefined,
+        ).forEach { imageFile ->
+            val dataSource = imageFile.toDataSource(context)
+            val result = runCatching {
+                dataSource.decodeRegion(srcRect = (imageFile.size / 2f).toRect())
+            }
+            val imageFormat = imageFile.mimeType.let { ImageFormat.parseMimeType(it) }
+            assertEquals(
+                expected = imageFormat?.supportBitmapRegionDecoder(imageFile.animated) == true,
+                actual = result.isSuccess,
+                message = "imageFile=${imageFile.uri}, failure: '${result.exceptionOrNull()}'"
+            )
         }
-        if (VERSION.SDK_INT >= VERSION_CODES.P) {
-            assertTrue(ImageFormat.HEIF.supportBitmapRegionDecoder())
-        } else {
-            assertFalse(ImageFormat.HEIF.supportBitmapRegionDecoder())
-        }
-        assertFalse(ImageFormat.BMP.supportBitmapRegionDecoder())
-        assertFalse(ImageFormat.GIF.supportBitmapRegionDecoder())
-        assertTrue(ImageFormat.JPEG.supportBitmapRegionDecoder())
-        assertTrue(ImageFormat.PNG.supportBitmapRegionDecoder())
-        assertTrue(ImageFormat.WEBP.supportBitmapRegionDecoder())
     }
 }

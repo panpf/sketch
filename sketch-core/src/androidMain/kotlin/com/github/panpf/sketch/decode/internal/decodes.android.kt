@@ -25,11 +25,6 @@ import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
-import com.github.panpf.sketch.decode.internal.ImageFormat.HEIC
-import com.github.panpf.sketch.decode.internal.ImageFormat.HEIF
-import com.github.panpf.sketch.decode.internal.ImageFormat.JPEG
-import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
-import com.github.panpf.sketch.decode.internal.ImageFormat.WEBP
 import com.github.panpf.sketch.decode.toBitmapOptions
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Rect
@@ -60,9 +55,10 @@ actual fun calculateSampledBitmapSize(
     sampleSize: Int,
     mimeType: String?
 ): Size {
+    // TODO Fixed to ceil because it cannot be calculated accurately
     val widthValue = imageSize.width / sampleSize.toDouble()
     val heightValue = imageSize.height / sampleSize.toDouble()
-    val isPNGFormat = PNG.matched(mimeType)
+    val isPNGFormat = ImageFormat.PNG.matched(mimeType)
     val width: Int
     val height: Int
     if (isPNGFormat) {
@@ -73,6 +69,15 @@ actual fun calculateSampledBitmapSize(
         height = ceil(heightValue).toInt()
     }
     return Size(width, height)
+//    val floor = ImageFormat.PNG.matched(mimeType)
+//        || ImageFormat.BMP.matched(mimeType)
+//        || (ImageFormat.WEBP.matched(mimeType) && VERSION.SDK_INT <= VERSION_CODES.M)
+//        || ImageFormat.GIF.matched(mimeType)
+//    val widthValue = imageSize.width / sampleSize.toDouble()
+//    val heightValue = imageSize.height / sampleSize.toDouble()
+//    val width: Int = widthValue.toInt(ceilOrFloor = !floor)
+//    val height: Int = heightValue.toInt(ceilOrFloor = !floor)
+//    return Size(width = width, height = height)
 }
 
 /**
@@ -86,11 +91,13 @@ actual fun calculateSampledBitmapSizeForRegion(
     mimeType: String?,
     imageSize: Size?
 ): Size {
+    // TODO Fixed to ceil because it cannot be calculated accurately
+    //  For example, in a gif image, the rect width is 400, and 401 must be returned.
     val widthValue = regionSize.width / sampleSize.toDouble()
     val heightValue = regionSize.height / sampleSize.toDouble()
     val width: Int
     val height: Int
-    val isPNGFormat = PNG.matched(mimeType)
+    val isPNGFormat = ImageFormat.PNG.matched(mimeType)
     if (!isPNGFormat && VERSION.SDK_INT >= VERSION_CODES.N && regionSize == imageSize) {
         width = ceil(widthValue).toInt()
         height = ceil(heightValue).toInt()
@@ -99,6 +106,26 @@ actual fun calculateSampledBitmapSizeForRegion(
         height = floor(heightValue).toInt()
     }
     return Size(width, height)
+//    val widthValue = regionSize.width / sampleSize.toDouble()
+//    val heightValue = regionSize.height / sampleSize.toDouble()
+//    val width: Int
+//    val height: Int
+//    if (ImageFormat.WEBP.matched(mimeType)) {
+//        if (VERSION.SDK_INT >= VERSION_CODES.N) {
+//            width = floor(widthValue).toInt()
+//            height = ceil(heightValue).toInt()
+//        } else {
+//            width = floor(widthValue).toInt()
+//            height = floor(heightValue).toInt()
+//        }
+//    } else if (!ImageFormat.PNG.matched(mimeType) && (regionSize == imageSize && VERSION.SDK_INT >= VERSION_CODES.N)) {
+//        width = ceil(widthValue).toInt()
+//        height = ceil(heightValue).toInt()
+//    } else {
+//        width = floor(widthValue).toInt()
+//        height = floor(heightValue).toInt()
+//    }
+//    return Size(width, height)
 }
 
 /**
@@ -151,7 +178,7 @@ actual fun DataSource.readImageInfo(): ImageInfo = readImageInfo(null)
  *
  * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testDecode
  */
-@Throws(IOException::class)
+@Throws(IOException::class, ImageInvalidException::class)
 fun DataSource.decode(
     config: DecodeConfig? = null,
     exifOrientationHelper: ExifOrientationHelper? = null
@@ -170,7 +197,7 @@ fun DataSource.decode(
  *
  * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testDecodeRegion
  */
-@Throws(IOException::class)
+@Throws(IOException::class, ImageInvalidException::class)
 fun DataSource.decodeRegion(
     srcRect: Rect,
     config: DecodeConfig? = null,
@@ -182,7 +209,7 @@ fun DataSource.decodeRegion(
         BitmapRegionDecoder.newInstance(it)
     } else {
         BitmapRegionDecoder.newInstance(it, false)
-    }
+    } ?: throw IOException("BitmapRegionDecoder.newInstance return null")
     val imageInfo1 = imageInfo ?: readImageInfo(exifOrientationHelper)
     val exifOrientationHelper1 =
         exifOrientationHelper ?: ExifOrientationHelper(readExifOrientation())
@@ -190,10 +217,10 @@ fun DataSource.decodeRegion(
         exifOrientationHelper1.applyToRect(srcRect, imageInfo1.size, reverse = true)
     val bitmapOptions = config?.toBitmapOptions()
     val regionBitmap = try {
-        regionDecoder?.decodeRegion(originalRegion.toAndroidRect(), bitmapOptions)
+        regionDecoder.decodeRegion(originalRegion.toAndroidRect(), bitmapOptions)
             ?: throw ImageInvalidException("Invalid image. decode return null")
     } finally {
-        regionDecoder?.recycle()
+        regionDecoder.recycle()
     }
     val correctedRegionImage = exifOrientationHelper1.applyToBitmap(regionBitmap) ?: regionBitmap
     correctedRegionImage
@@ -205,9 +232,9 @@ fun DataSource.decodeRegion(
  * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testSupportBitmapRegionDecoder
  */
 @SuppressLint("ObsoleteSdkInt")
-fun ImageFormat.supportBitmapRegionDecoder(): Boolean =
-    this == JPEG
-            || this == PNG
-            || this == WEBP
-            || (this == HEIC && VERSION.SDK_INT >= VERSION_CODES.P)
-            || (this == HEIF && VERSION.SDK_INT >= VERSION_CODES.P)
+fun ImageFormat.supportBitmapRegionDecoder(animated: Boolean = false): Boolean =
+    this == ImageFormat.JPEG
+            || this == ImageFormat.PNG
+            || (this == ImageFormat.WEBP && (!animated || VERSION.SDK_INT >= VERSION_CODES.O))
+            || (this == ImageFormat.HEIC && VERSION.SDK_INT >= VERSION_CODES.P)
+            || (this == ImageFormat.HEIF && VERSION.SDK_INT >= VERSION_CODES.P)

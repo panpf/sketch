@@ -58,25 +58,76 @@ object ResourceImages {
     )
     val statics = arrayOf(jpeg, png, webp, bmp, svg, heic)
 
+//    val formatBmp: ResourceImageFile = ResourceImageFile(
+//        resourceName = "format.bmp",
+//        name = "BMP",
+//        size = Size(699, 1011),
+//        mimeType = "image/bmp"
+//    )
+//    val formatHeic: ResourceImageFile = ResourceImageFile(
+//        resourceName = "format.heic",
+//        name = "HEIC",
+//        size = Size(749, 931),
+//        mimeType = "image/heif"
+//    )
+//    val formatJpeg: ResourceImageFile = ResourceImageFile(
+//        resourceName = "format.jpeg",
+//        name = "JPEG",
+//        size = Size(1291, 1935),
+//        mimeType = "image/jpeg"
+//    )
+//    val formatPng: ResourceImageFile = ResourceImageFile(
+//        resourceName = "sample.png",
+//        name = "PNG",
+//        size = Size(749, 719),
+//        mimeType = "image/png"
+//    )
+//    val formatWebp: ResourceImageFile = ResourceImageFile(
+//        resourceName = "format.webp",
+//        name = "WEBP",
+//        size = Size(1079, 1343),
+//        mimeType = "image/webp"
+//    )
+//    val formats = arrayOf(formatJpeg, formatPng, formatWebp, formatBmp, svg, formatHeic)
+
     val animGif: ResourceImageFile = ResourceImageFile(
         resourceName = "sample_anim.gif",
         name = "GIF",
         size = Size(480, 480),
-        mimeType = "image/gif"
+        mimeType = "image/gif",
+        animated = true
     )
     val animHeif: ResourceImageFile = ResourceImageFile(
         resourceName = "sample_anim.heif",
         name = "HEIF_ANIM",
         size = Size(256, 144),
-        mimeType = "image/heif"
+        mimeType = "image/heif",
+        animated = true
     )
     val animWebp: ResourceImageFile = ResourceImageFile(
         resourceName = "sample_anim.webp",
         name = "WEBP_ANIM",
         size = Size(480, 270),
-        mimeType = "image/webp"
+        mimeType = "image/webp",
+        animated = true
     )
     val anims = arrayOf(animGif, animWebp, animHeif)
+
+//    val formatAnimGif: ResourceImageFile = ResourceImageFile(
+//        resourceName = "format_anim.gif",
+//        name = "GIF",
+//        size = Size(479, 467),
+//        mimeType = "image/gif",
+//        animated = true
+//    )
+//    val formatAnimWebp: ResourceImageFile = ResourceImageFile(
+//        resourceName = "format_anim.webp",
+//        name = "WEBP_ANIM",
+//        size = Size(479, 269),
+//        mimeType = "image/webp",
+//        animated = true
+//    )
+//    val formatAnims = arrayOf(formatAnimGif, formatAnimWebp)
 
     val mp4: ResourceImageFile = ResourceImageFile(
         resourceName = "sample.mp4",
