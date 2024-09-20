@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.core.nonandroid.test.decode.internal
 
+import com.github.panpf.sketch.Bitmap
 import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.SkiaImage
 import com.github.panpf.sketch.decode.DecodeConfig
@@ -16,7 +17,6 @@ import com.github.panpf.sketch.decode.internal.getMaxBitmapSizeOr
 import com.github.panpf.sketch.decode.internal.getResizeTransformed
 import com.github.panpf.sketch.decode.internal.readImageInfo
 import com.github.panpf.sketch.decode.internal.resize
-import com.github.panpf.sketch.images.ResourceImageFile
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.request.ImageRequest
@@ -42,15 +42,13 @@ import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toPreviewBitmap
 import com.github.panpf.sketch.test.utils.toRect
 import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.test.utils.toSkiaImage
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.isSameAspectRatio
 import com.github.panpf.sketch.util.size
 import com.github.panpf.sketch.util.times
-import com.github.panpf.sketch.util.toShortInfoString
 import com.github.panpf.sketch.util.toSkiaRect
 import kotlinx.coroutines.test.runTest
-import okio.buffer
-import okio.use
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.ColorSpace
 import org.jetbrains.skia.ColorType
@@ -1009,48 +1007,48 @@ class DecodesNonAndroidTest {
         }
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifFlipHorizontal.toDataSource(context).readImageInfo()
-                .toShortString()
+            actual = ResourceImages.clockExifFlipHorizontal.toDataSource(context)
+                .readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifFlipVertical.toDataSource(context).readImageInfo()
-                .toShortString()
+            actual = ResourceImages.clockExifFlipVertical.toDataSource(context)
+                .readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifNormal.toDataSource(context).readImageInfo()
-                .toShortString()
+            actual = ResourceImages.clockExifNormal.toDataSource(context)
+                .readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifRotate90.toDataSource(context).readImageInfo()
-                .toShortString()
+            actual = ResourceImages.clockExifRotate90.toDataSource(context)
+                .readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifRotate180.toDataSource(context).readImageInfo()
-                .toShortString()
+            actual = ResourceImages.clockExifRotate180.toDataSource(context)
+                .readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifRotate270.toDataSource(context).readImageInfo()
-                .toShortString()
+            actual = ResourceImages.clockExifRotate270.toDataSource(context)
+                .readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifTranspose.toDataSource(context).readImageInfo()
-                .toShortString()
+            actual = ResourceImages.clockExifTranspose.toDataSource(context)
+                .readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifTransverse.toDataSource(context).readImageInfo()
-                .toShortString()
+            actual = ResourceImages.clockExifTransverse.toDataSource(context)
+                .readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifUndefined.toDataSource(context).readImageInfo()
-                .toShortString()
+            actual = ResourceImages.clockExifUndefined.toDataSource(context)
+                .readImageInfo().toShortString()
         )
     }
 
@@ -1058,61 +1056,100 @@ class DecodesNonAndroidTest {
     fun testDecode() {
         val context = getTestContext()
 
-        data class Item(
-            val imageFile: ResourceImageFile,
-            val error: Boolean
-        )
-        listOf(
-            Item(ResourceImages.jpeg, error = false),
-            Item(ResourceImages.png, error = false),
-            Item(ResourceImages.bmp, error = false),
-            Item(ResourceImages.webp, error = false),
-            Item(ResourceImages.heic, error = true),
-            Item(ResourceImages.svg, error = true),
-            Item(ResourceImages.animGif, error = false),
-            Item(ResourceImages.animWebp, error = false),
-            Item(ResourceImages.animHeif, error = true),
-            Item(ResourceImages.clockExifFlipHorizontal, error = false),
-            Item(ResourceImages.clockExifFlipVertical, error = false),
-            Item(ResourceImages.clockExifNormal, error = false),
-            Item(ResourceImages.clockExifRotate90, error = false),
-            Item(ResourceImages.clockExifRotate180, error = false),
-            Item(ResourceImages.clockExifRotate270, error = false),
-            Item(ResourceImages.clockExifTranspose, error = false),
-            Item(ResourceImages.clockExifTransverse, error = false),
-            Item(ResourceImages.clockExifUndefined, error = false),
-        ).forEach { item ->
-            val (imageFile, error) = item
-            val bytes = imageFile.toDataSource(context).openSource().buffer()
-                .use { it.readByteArray() }
-            if (error) {
-                assertFailsWith(IllegalArgumentException::class) {
-                    SkiaImage.makeFromEncoded(bytes)
-                }
-                return@forEach
+        /*
+         * config: sampleSize
+         */
+        val imageFile = ResourceImages.jpeg
+        val skiaImage = imageFile.toDataSource(context).toSkiaImage()
+        skiaImage
+            .decode()
+            .apply {
+                assertSizeEquals(
+                    expected = imageFile.size,
+                    actual = size,
+                    delta = Size(1, 1)
+                )
+            }
+        skiaImage
+            .decode(DecodeConfig(sampleSize = 2))
+            .apply {
+                assertSizeEquals(
+                    expected = calculateSampledBitmapSize(imageFile.size, 2),
+                    actual = size,
+                    delta = Size(1, 1)
+                )
             }
 
-            val skiaImage = SkiaImage.makeFromEncoded(bytes)
-            assertEquals(
-                expected = "Bitmap(${imageFile.size},RGBA_8888,sRGB)",
-                actual = skiaImage.decode().toShortInfoString(),
-                message = "item=$item"
-            )
-
-            val config1 = DecodeConfig().apply {
-                sampleSize = 2
-                colorType = ColorType.RGB_565
-                colorSpace = ColorSpace.sRGBLinear
+        /*
+         * config: colorType
+         */
+        skiaImage
+            .decode()
+            .apply {
+                assertEquals(
+                    expected = ColorType.RGBA_8888,
+                    actual = colorType,
+                )
             }
-            val bitmapSize1 = calculateSampledBitmapSize(
-                imageSize = imageFile.size,
-                sampleSize = config1.sampleSize ?: 1
+        skiaImage
+            .decode(DecodeConfig(colorType = ColorType.RGB_565))
+            .apply {
+                assertEquals(
+                    expected = ColorType.RGB_565,
+                    actual = colorType,
+                )
+            }
+
+        /*
+         * config: colorSpace
+         */
+        skiaImage
+            .decode()
+            .apply {
+                assertEquals(
+                    expected = ColorSpace.sRGB,
+                    actual = colorSpace,
+                )
+            }
+        skiaImage
+            .decode(DecodeConfig(colorSpace = ColorSpace.displayP3))
+            .apply {
+                assertEquals(
+                    expected = ColorSpace.displayP3,
+                    actual = colorSpace,
+                )
+            }
+
+        /*
+         * exif
+         */
+        var firstBitmap: Bitmap? = null
+        ResourceImages.clockExifs.forEach { exifImageFile ->
+            val bitmap = exifImageFile.toDataSource(context).toSkiaImage().decode()
+            assertEquals(
+                expected = exifImageFile.size,
+                actual = bitmap.size,
+                message = "imageFile=${exifImageFile.uri}"
+            )
+            val firstBitmap1 = firstBitmap ?: bitmap.apply { firstBitmap = this }
+            assertEquals(
+                expected = firstBitmap1.size,
+                actual = bitmap.size,
+                message = "imageFile=${exifImageFile.uri}"
             )
             assertEquals(
-                expected = "Bitmap(${bitmapSize1},RGB_565,sRGBLinear)",
-                actual = skiaImage.decode(config1).toShortInfoString(),
-                message = "item=$item"
+                expected = 0,
+                actual = firstBitmap1.similarity(bitmap),
+                message = "imageFile=${exifImageFile.uri}"
             )
+        }
+
+        /*
+         * error
+         */
+        // IllegalArgumentException: Failed to Image::makeFromEncoded
+        assertFailsWith(IllegalArgumentException::class) {
+            ResourceImages.svg.toDataSource(context).toSkiaImage().decode()
         }
     }
 
@@ -1120,188 +1157,213 @@ class DecodesNonAndroidTest {
     fun testDecodeRegion() {
         val context = getTestContext()
 
-        data class Item(
-            val imageFile: ResourceImageFile,
-            val error: Boolean
-        )
-        listOf(
-            Item(ResourceImages.jpeg, error = false),
-            Item(ResourceImages.png, error = false),
-            Item(ResourceImages.bmp, error = false),
-            Item(ResourceImages.webp, error = false),
-            Item(ResourceImages.heic, error = true),
-            Item(ResourceImages.svg, error = true),
-            Item(ResourceImages.animGif, error = false),
-            Item(ResourceImages.animWebp, error = false),
-            Item(ResourceImages.animHeif, error = true),
-            Item(ResourceImages.clockExifFlipHorizontal, error = false),
-            Item(ResourceImages.clockExifFlipVertical, error = false),
-            Item(ResourceImages.clockExifNormal, error = false),
-            Item(ResourceImages.clockExifRotate90, error = false),
-            Item(ResourceImages.clockExifRotate180, error = false),
-            Item(ResourceImages.clockExifRotate270, error = false),
-            Item(ResourceImages.clockExifTranspose, error = false),
-            Item(ResourceImages.clockExifTransverse, error = false),
-            Item(ResourceImages.clockExifUndefined, error = false),
-        ).forEach { item ->
-            val (imageFile, error) = item
-            val bytes = imageFile.toDataSource(context).openSource().buffer()
-                .use { it.readByteArray() }
-            if (error) {
-                assertFailsWith(IllegalArgumentException::class) {
-                    SkiaImage.makeFromEncoded(bytes)
-                }
-                return@forEach
-            }
+        /*
+         * srcRect
+         */
+        val imageFile = ResourceImages.jpeg
+        val dataSource = imageFile.toDataSource(context)
+        val skiaImage = dataSource.toSkiaImage()
+        val imageInfo = dataSource.readImageInfo()
 
-            val skiaImage = SkiaImage.makeFromEncoded(bytes).apply {
-                assertEquals(
+        val sourceBitmap = skiaImage.decodeRegion(
+            srcRect = imageInfo.size.toRect(),
+        ).apply {
+            assertEquals(
+                expected = imageInfo.size,
+                actual = this.size,
+            )
+        }
+
+        // Divide into four pieces
+        val (topLeftRect, topRightRect, bottomLeftRect, bottomRightRect) =
+            imageInfo.size.toRect().chunkingFour()
+        val topLeftBitmap = skiaImage.decodeRegion(topLeftRect)
+        val topRightBitmap = skiaImage.decodeRegion(topRightRect)
+        val bottomLeftBitmap = skiaImage.decodeRegion(bottomLeftRect)
+        val bottomRightBitmap = skiaImage.decodeRegion(bottomRightRect)
+        listOf(
+            topLeftBitmap to topLeftRect,
+            topRightBitmap to topRightRect,
+            bottomLeftBitmap to bottomLeftRect,
+            bottomRightBitmap to bottomRightRect
+        ).forEach { (bitmap, tileRect) ->
+            assertSizeEquals(
+                expected = calculateSampledBitmapSizeForRegion(
+                    regionSize = tileRect.size,
+                    sampleSize = 1,
+                ),
+                actual = bitmap.size,
+                delta = Size(1, 1),
+                message = "tileRect=$tileRect"
+            )
+        }
+        listOf(
+            topLeftBitmap.similarity(topRightBitmap),
+            topLeftBitmap.similarity(bottomLeftBitmap),
+            topLeftBitmap.similarity(bottomRightBitmap),
+            topRightBitmap.similarity(bottomLeftBitmap),
+            topRightBitmap.similarity(bottomRightBitmap),
+            bottomLeftBitmap.similarity(bottomRightBitmap)
+        ).forEachIndexed { index, similarity ->
+            assertTrue(
+                actual = similarity >= 4,
+                message = "index=$index, similarity=$similarity"
+            )
+        }
+
+        // Merge four pictures
+        val mergedBitmap = SkiaBitmap(
+            width = imageInfo.width,
+            height = imageInfo.height,
+            colorType = topLeftBitmap.colorType
+        ).apply {
+            val canvas = Canvas(this)
+            canvas.drawImageRect(
+                /* bitmap = */ SkiaImage.makeFromBitmap(topLeftBitmap),
+                /* src = */ topLeftBitmap.size.toRect().toSkiaRect(),
+                /* dst = */ topLeftRect.toSkiaRect(),
+                /* paint = */ null
+            )
+            canvas.drawImageRect(
+                /* bitmap = */  SkiaImage.makeFromBitmap(topRightBitmap),
+                /* src = */ topRightBitmap.size.toRect().toSkiaRect(),
+                /* dst = */ topRightRect.toSkiaRect(),
+                /* paint = */ null
+            )
+            canvas.drawImageRect(
+                /* bitmap = */  SkiaImage.makeFromBitmap(bottomLeftBitmap),
+                /* src = */ bottomLeftBitmap.size.toRect().toSkiaRect(),
+                /* dst = */ bottomLeftRect.toSkiaRect(),
+                /* paint = */ null
+            )
+            canvas.drawImageRect(
+                /* bitmap = */  SkiaImage.makeFromBitmap(bottomRightBitmap),
+                /* src = */ bottomRightBitmap.size.toRect().toSkiaRect(),
+                /* dst = */ bottomRightRect.toSkiaRect(),
+                /* paint = */ null
+            )
+        }
+        @Suppress("UNUSED_VARIABLE") val previewSourceBitmap =   // Preview for debugging
+            sourceBitmap.toPreviewBitmap()
+        @Suppress("UNUSED_VARIABLE") val mergedSourceBitmap =   // Preview for debugging
+            mergedBitmap.toPreviewBitmap()
+        @Suppress("UNUSED_VARIABLE") val topLeftSourceBitmap =   // Preview for debugging
+            topLeftBitmap.toPreviewBitmap()
+        @Suppress("UNUSED_VARIABLE") val topRightSourceBitmap =   // Preview for debugging
+            topRightBitmap.toPreviewBitmap()
+        @Suppress("UNUSED_VARIABLE") val bottomLeftSourceBitmap =   // Preview for debugging
+            bottomLeftBitmap.toPreviewBitmap()
+        @Suppress("UNUSED_VARIABLE") val bottomRightSourceBitmap =
+            // Preview for debugging
+            bottomRightBitmap.toPreviewBitmap()
+        sourceBitmap.similarity(mergedBitmap).apply {
+            assertTrue(
+                actual = this <= 6,
+                message = "similarity=$this"
+            )
+        }
+
+        /*
+         * config: sampleSize
+         */
+        skiaImage.decodeRegion(imageInfo.size.toRect())
+            .apply {
+                assertSizeEquals(
                     expected = imageFile.size,
-                    actual = this.size,
-                    message = "imageFile=$imageFile"
+                    actual = size,
+                    delta = Size(1, 1)
                 )
             }
-            listOf(
-                DecodeConfig(),
-                DecodeConfig().apply {
-                    sampleSize = 2
-                    colorType = ColorType.ARGB_4444
-                    colorSpace = ColorSpace.sRGBLinear
-                },
-                DecodeConfig().apply {
-                    sampleSize = 4
-                    colorType = ColorType.RGB_565
-                    colorSpace = ColorSpace.displayP3
-                }
-            ).forEach { decodeConfig ->
-                val sourceBitmap = try {
-                    skiaImage.decodeRegion(
-                        srcRect = imageFile.size.toRect(),
-                        config = decodeConfig.copy(sampleSize = 1),
-                    )
-                } catch (e: Exception) {
-                    throw Exception("imageFile=${imageFile.uri}, decodeConfig=$decodeConfig", e)
-                }.apply {
-                    assertEquals(
-                        expected = imageFile.size,
-                        actual = this.size,
-                        message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig"
-                    )
-                    assertEquals(
-                        expected = decodeConfig.colorType ?: ColorType.RGBA_8888,
-                        actual = this.colorType,
-                        message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig"
-                    )
-                    assertEquals(
-                        expected = decodeConfig.colorSpace ?: ColorSpace.sRGB,
-                        actual = this.colorSpace,
-                        message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig"
-                    )
-                }
-
-                // Divide into four pieces
-                val (topLeftRect, topRightRect, bottomLeftRect, bottomRightRect) =
-                    sourceBitmap.size.toRect().chunkingFour()
-                val topLeftBitmap = skiaImage.decodeRegion(topLeftRect, decodeConfig)
-                val topRightBitmap = skiaImage.decodeRegion(topRightRect, decodeConfig)
-                val bottomLeftBitmap = skiaImage.decodeRegion(bottomLeftRect, decodeConfig)
-                val bottomRightBitmap = skiaImage.decodeRegion(bottomRightRect, decodeConfig)
-                listOf(
-                    topLeftBitmap to topLeftRect,
-                    topRightBitmap to topRightRect,
-                    bottomLeftBitmap to bottomLeftRect,
-                    bottomRightBitmap to bottomRightRect
-                ).forEach { (bitmap, tileRect) ->
-                    assertSizeEquals(
-                        expected = calculateSampledBitmapSizeForRegion(
-                            regionSize = tileRect.size,
-                            sampleSize = decodeConfig.sampleSize ?: 1,
-                            mimeType = imageFile.mimeType,
-                            imageSize = sourceBitmap.size
-                        ),
-                        actual = bitmap.size,
-                        delta = Size(1, 1),
-                        message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
-                    )
-                    assertEquals(
-                        expected = decodeConfig.colorType ?: ColorType.RGBA_8888,
-                        actual = bitmap.colorType,
-                        message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
-                    )
-                    assertEquals(
-                        expected = decodeConfig.colorSpace ?: ColorSpace.sRGB,
-                        actual = bitmap.colorSpace,
-                        message = "imageFile=${imageFile.uri}, decodeConfig=$decodeConfig, tileRect=$tileRect, sourceSize=${sourceBitmap.size}"
-                    )
-                }
-                listOf(
-                    topLeftBitmap.similarity(topRightBitmap),
-                    topLeftBitmap.similarity(bottomLeftBitmap),
-                    topLeftBitmap.similarity(bottomRightBitmap),
-                    topRightBitmap.similarity(bottomLeftBitmap),
-                    topRightBitmap.similarity(bottomRightBitmap),
-                    bottomLeftBitmap.similarity(bottomRightBitmap)
-                ).forEachIndexed { index, similarity ->
-                    assertTrue(
-                        actual = similarity >= 4,
-                        message = "index=$index, similarity=$similarity, imageFile=${imageFile.uri}, decodeConfig: $decodeConfig"
-                    )
-                }
-
-                // Merge four pictures
-                val mergedBitmap = SkiaBitmap(
-                    width = skiaImage.width,
-                    height = skiaImage.height,
-                    colorType = topLeftBitmap.colorType,
-                    alphaType = topLeftBitmap.alphaType,
-                    colorSpace = topLeftBitmap.colorSpace!!
-                ).apply {
-                    val canvas = Canvas(this)
-                    canvas.drawImageRect(
-                        /* bitmap = */ SkiaImage.makeFromBitmap(topLeftBitmap),
-                        /* src = */ topLeftBitmap.size.toRect().toSkiaRect(),
-                        /* dst = */ topLeftRect.toSkiaRect(),
-                        /* paint = */ null
-                    )
-                    canvas.drawImageRect(
-                        /* bitmap = */  SkiaImage.makeFromBitmap(topRightBitmap),
-                        /* src = */ topRightBitmap.size.toRect().toSkiaRect(),
-                        /* dst = */ topRightRect.toSkiaRect(),
-                        /* paint = */ null
-                    )
-                    canvas.drawImageRect(
-                        /* bitmap = */  SkiaImage.makeFromBitmap(bottomLeftBitmap),
-                        /* src = */ bottomLeftBitmap.size.toRect().toSkiaRect(),
-                        /* dst = */ bottomLeftRect.toSkiaRect(),
-                        /* paint = */ null
-                    )
-                    canvas.drawImageRect(
-                        /* bitmap = */  SkiaImage.makeFromBitmap(bottomRightBitmap),
-                        /* src = */ bottomRightBitmap.size.toRect().toSkiaRect(),
-                        /* dst = */ bottomRightRect.toSkiaRect(),
-                        /* paint = */ null
-                    )
-                }
-                @Suppress("UNUSED_VARIABLE") val previewSourceBitmap =   // Preview for debugging
-                    sourceBitmap.toPreviewBitmap()
-                @Suppress("UNUSED_VARIABLE") val mergedSourceBitmap =   // Preview for debugging
-                    mergedBitmap.toPreviewBitmap()
-                @Suppress("UNUSED_VARIABLE") val topLeftSourceBitmap =   // Preview for debugging
-                    topLeftBitmap.toPreviewBitmap()
-                @Suppress("UNUSED_VARIABLE") val topRightSourceBitmap =   // Preview for debugging
-                    topRightBitmap.toPreviewBitmap()
-                @Suppress("UNUSED_VARIABLE") val bottomLeftSourceBitmap =   // Preview for debugging
-                    bottomLeftBitmap.toPreviewBitmap()
-                @Suppress("UNUSED_VARIABLE") val bottomRightSourceBitmap =
-                    // Preview for debugging
-                    bottomRightBitmap.toPreviewBitmap()
-                sourceBitmap.similarity(mergedBitmap).apply {
-                    assertTrue(
-                        actual = this <= 6,
-                        message = "similarity=$this, imageFile=${imageFile.uri}, decodeConfig: $decodeConfig"
-                    )
-                }
+        skiaImage.decodeRegion(imageInfo.size.toRect(), DecodeConfig(sampleSize = 2))
+            .apply {
+                assertSizeEquals(
+                    expected = calculateSampledBitmapSize(imageFile.size, 2),
+                    actual = size,
+                    delta = Size(1, 1)
+                )
             }
+
+        /*
+         * config: colorType
+         */
+        skiaImage
+            .decodeRegion(imageInfo.size.toRect())
+            .apply {
+                assertEquals(
+                    expected = ColorType.RGBA_8888,
+                    actual = colorType,
+                )
+            }
+        skiaImage
+            .decodeRegion(imageInfo.size.toRect(), DecodeConfig(colorType = ColorType.RGB_565))
+            .apply {
+                assertEquals(
+                    expected = ColorType.RGB_565,
+                    actual = colorType,
+                )
+            }
+
+        /*
+         * config: colorSpace
+         */
+        skiaImage
+            .decodeRegion(imageInfo.size.toRect())
+            .apply {
+                assertEquals(
+                    expected = ColorSpace.sRGB,
+                    actual = colorSpace,
+                )
+            }
+        skiaImage
+            .decodeRegion(
+                srcRect = imageInfo.size.toRect(),
+                config = DecodeConfig(colorSpace = ColorSpace.displayP3)
+            )
+            .apply {
+                assertEquals(
+                    expected = ColorSpace.displayP3,
+                    actual = colorSpace,
+                )
+            }
+
+        /*
+         * exif
+         */
+        var firstBitmap: Bitmap? = null
+        ResourceImages.clockExifs.forEach { exifImageFile ->
+            val exifSkiaImage = exifImageFile.toDataSource(context).toSkiaImage()
+            val bitmap = exifSkiaImage.decodeRegion(exifImageFile.size.toRect())
+            assertEquals(
+                expected = exifImageFile.size,
+                actual = bitmap.size,
+                message = "imageFile=${exifImageFile.uri}"
+            )
+            val firstBitmap1 = firstBitmap ?: bitmap.apply { firstBitmap = this }
+            assertEquals(
+                expected = firstBitmap1.size,
+                actual = bitmap.size,
+                message = "imageFile=${exifImageFile.uri}"
+            )
+            assertEquals(
+                expected = 0,
+                actual = firstBitmap1.similarity(bitmap),
+                message = "imageFile=${exifImageFile.uri}"
+            )
+        }
+
+        /*
+         * error
+         */
+        // IllegalArgumentException: Failed to Image::makeFromEncoded
+        assertFailsWith(IllegalArgumentException::class) {
+            val svgImageFile = ResourceImages.svg
+            svgImageFile.toDataSource(context).toSkiaImage()
+                .decodeRegion(svgImageFile.size.toRect())
+        }
+        // IllegalArgumentException: srcRect is empty
+        assertFailsWith(IllegalArgumentException::class) {
+            ResourceImages.jpeg.toDataSource(context).toSkiaImage()
+                .decodeRegion(Size.Empty.toRect())
         }
     }
 }

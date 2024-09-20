@@ -117,4 +117,14 @@ class DecodeConfigTest {
             }
         }
     }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        // TODO test
+    }
+
+    @Test
+    fun testToString() {
+        // TODO test
+    }
 }
