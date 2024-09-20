@@ -137,7 +137,7 @@ class DecodesAndroidTest {
             )
         )
         assertEquals(
-            expected = Size(width = 502, height = 100),
+            expected = Size(width = 503, height = 101),
             actual = calculateSampledBitmapSize(
                 imageSize = Size(1005, 201),
                 sampleSize = 2,
@@ -145,7 +145,7 @@ class DecodesAndroidTest {
             )
         )
         assertEquals(
-            expected = Size(width = 503, height = 101),
+            expected = Size(503, 101),
             actual = calculateSampledBitmapSize(
                 imageSize = Size(1005, 201),
                 sampleSize = 2,
@@ -153,7 +153,7 @@ class DecodesAndroidTest {
             )
         )
         assertEquals(
-            expected = Size(width = 503, height = 101),
+            expected = Size(503, 101),
             actual = calculateSampledBitmapSize(
                 imageSize = Size(1005, 201),
                 sampleSize = 2,
@@ -233,7 +233,7 @@ class DecodesAndroidTest {
     @Test
     fun testCalculateSampledBitmapSizeForRegion() {
         assertEquals(
-            if (VERSION.SDK_INT >= VERSION_CODES.N) Size(503, 101) else Size(502, 100),
+            expected = Size(width = 503, height = 101),
             actual = calculateSampledBitmapSizeForRegion(
                 regionSize = Size(1005, 201),
                 sampleSize = 2,
@@ -242,7 +242,7 @@ class DecodesAndroidTest {
             )
         )
         assertEquals(
-            expected = Size(502, 100),
+            expected = Size(width = 503, height = 101),
             actual = calculateSampledBitmapSizeForRegion(
                 regionSize = Size(1005, 201),
                 sampleSize = 2,
@@ -251,7 +251,7 @@ class DecodesAndroidTest {
             )
         )
         assertEquals(
-            expected = Size(288, 100),
+            expected = Size(289, 101),
             actual = calculateSampledBitmapSizeForRegion(
                 regionSize = Size(577, 201),
                 sampleSize = 2,
@@ -260,7 +260,7 @@ class DecodesAndroidTest {
             )
         )
         assertEquals(
-            expected = Size(502, 55),
+            expected = Size(503, 56),
             actual = calculateSampledBitmapSizeForRegion(
                 regionSize = Size(1005, 111),
                 sampleSize = 2,
@@ -269,7 +269,7 @@ class DecodesAndroidTest {
             )
         )
         assertEquals(
-            expected = Size(288, 55),
+            expected = Size(289, 56),
             actual = calculateSampledBitmapSizeForRegion(
                 regionSize = Size(577, 111),
                 sampleSize = 2,
@@ -278,7 +278,7 @@ class DecodesAndroidTest {
             )
         )
         assertEquals(
-            expected = Size(288, 55),
+            expected = Size(289, 56),
             actual = calculateSampledBitmapSizeForRegion(
                 regionSize = Size(577, 111),
                 sampleSize = 2,
@@ -430,7 +430,7 @@ class DecodesAndroidTest {
             )
         )
         assertEquals(
-            expected = 2,
+            expected = 4,
             actual = calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(502, 100),
@@ -552,7 +552,7 @@ class DecodesAndroidTest {
             )
         )
         assertEquals(
-            expected = 2,
+            expected = 4,
             actual = calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(502, 100),
@@ -692,7 +692,7 @@ class DecodesAndroidTest {
             )
         )
         assertEquals(
-            expected = 2,
+            expected = 4,
             actual = calculateSampleSize(
                 imageSize = Size(1005, 201),
                 targetSize = Size(502, 100),
@@ -769,7 +769,7 @@ class DecodesAndroidTest {
             )
         )
         assertEquals(
-            expected = 2,
+            expected = 4,
             actual = calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(502, 100),
@@ -787,7 +787,7 @@ class DecodesAndroidTest {
             )
         )
         assertEquals(
-            expected = 4,
+            expected = 8,
             actual = calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(251, 50),
@@ -806,7 +806,7 @@ class DecodesAndroidTest {
         )
 
         assertEquals(
-            expected = if (VERSION.SDK_INT >= VERSION_CODES.N) 4 else 2,
+            expected = 4,
             actual = calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(502, 100),
@@ -816,7 +816,7 @@ class DecodesAndroidTest {
         )
 
         assertEquals(
-            expected = 2,
+            expected = 4,
             actual = calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(502, 100),
@@ -853,7 +853,7 @@ class DecodesAndroidTest {
             )
         )
         assertEquals(
-            expected = 2,
+            expected = 4,
             actual = calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(502, 100),
@@ -871,7 +871,7 @@ class DecodesAndroidTest {
             )
         )
         assertEquals(
-            expected = 4,
+            expected = 8,
             actual = calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(251, 50),
@@ -890,7 +890,7 @@ class DecodesAndroidTest {
         )
 
         assertEquals(
-            expected = if (VERSION.SDK_INT >= VERSION_CODES.N) 4 else 2,
+            expected = 4,
             actual = calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(502, 100),
@@ -900,7 +900,7 @@ class DecodesAndroidTest {
         )
 
         assertEquals(
-            expected = 2,
+            expected = 4,
             actual = calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(502, 100),
@@ -925,8 +925,8 @@ class DecodesAndroidTest {
             )
         )
         assertEquals(
-            32,
-            calculateSampleSizeForRegion(
+            expected = 32,
+            actual = calculateSampleSizeForRegion(
                 regionSize = Size(30000, 750),
                 targetSize = Size(1080, 1920),
                 smallerSizeMode = true
@@ -959,7 +959,7 @@ class DecodesAndroidTest {
             )
         )
         assertEquals(
-            expected = 2,
+            expected = 4,
             actual = calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(502, 100),
@@ -975,7 +975,7 @@ class DecodesAndroidTest {
             )
         )
         assertEquals(
-            expected = 4,
+            expected = 8,
             actual = calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(251, 50),
@@ -992,7 +992,7 @@ class DecodesAndroidTest {
         )
 
         assertEquals(
-            expected = if (VERSION.SDK_INT >= VERSION_CODES.N) 4 else 2,
+            expected = 4,
             actual = calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(502, 100),
@@ -1001,7 +1001,7 @@ class DecodesAndroidTest {
         )
 
         assertEquals(
-            expected = 2,
+            expected = 4,
             actual = calculateSampleSizeForRegion(
                 regionSize = Size(1005, 201),
                 targetSize = Size(502, 100),
