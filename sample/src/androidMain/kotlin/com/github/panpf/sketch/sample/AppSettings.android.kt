@@ -80,8 +80,8 @@ actual class AppSettings actual constructor(val context: PlatformContext) {
             it.takeIf { it != "Default" }
         }
 
-    val inPreferQualityOverSpeed: SettingsStateFlow<Boolean> by lazy {
-        booleanSettingsStateFlow(context, "inPreferQualityOverSpeed", false)
+    val preferQualityOverSpeed: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow(context, "preferQualityOverSpeed", false)
     }
 
 

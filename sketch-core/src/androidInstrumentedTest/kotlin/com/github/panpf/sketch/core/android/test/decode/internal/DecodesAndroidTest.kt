@@ -1411,17 +1411,17 @@ class DecodesAndroidTest {
         }
 
         /*
-         * config: inPreferQualityOverSpeed
+         * config: preferQualityOverSpeed
          */
         if (VERSION.SDK_INT <= VERSION_CODES.M) {
             val bitmap = dataSource
-                .decode(DecodeConfig(inPreferQualityOverSpeed = true))
+                .decode(DecodeConfig(preferQualityOverSpeed = true))
             var preferSpeedBitmap = bitmap
             repeat(10) {
                 val outputStream = ByteArrayOutputStream()
                 preferSpeedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                 preferSpeedBitmap = ByteArrayDataSource(outputStream.toByteArray(), LOCAL)
-                    .decode(DecodeConfig(inPreferQualityOverSpeed = false))
+                    .decode(DecodeConfig(preferQualityOverSpeed = false))
             }
 
             var preferQualityBitmap = bitmap
@@ -1429,7 +1429,7 @@ class DecodesAndroidTest {
                 val outputStream = ByteArrayOutputStream()
                 preferQualityBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
                 preferQualityBitmap = ByteArrayDataSource(outputStream.toByteArray(), LOCAL)
-                    .decode(DecodeConfig(inPreferQualityOverSpeed = true))
+                    .decode(DecodeConfig(preferQualityOverSpeed = true))
             }
 
             val preferSpeedSimilarity = bitmap.similarity(preferSpeedBitmap)
@@ -1653,13 +1653,13 @@ class DecodesAndroidTest {
         }
 
         /*
-         * config: inPreferQualityOverSpeed
+         * config: preferQualityOverSpeed
          */
         if (VERSION.SDK_INT <= VERSION_CODES.M) {
             val bitmap = dataSource
                 .decodeRegion(
                     imageInfo.size.toRect(),
-                    DecodeConfig(inPreferQualityOverSpeed = true)
+                    DecodeConfig(preferQualityOverSpeed = true)
                 )
             var preferSpeedBitmap = bitmap
             repeat(10) {
@@ -1668,7 +1668,7 @@ class DecodesAndroidTest {
                 preferSpeedBitmap = ByteArrayDataSource(outputStream.toByteArray(), LOCAL)
                     .decodeRegion(
                         imageInfo.size.toRect(),
-                        DecodeConfig(inPreferQualityOverSpeed = false)
+                        DecodeConfig(preferQualityOverSpeed = false)
                     )
             }
 
@@ -1679,7 +1679,7 @@ class DecodesAndroidTest {
                 preferQualityBitmap = ByteArrayDataSource(outputStream.toByteArray(), LOCAL)
                     .decodeRegion(
                         imageInfo.size.toRect(),
-                        DecodeConfig(inPreferQualityOverSpeed = true)
+                        DecodeConfig(preferQualityOverSpeed = true)
                     )
             }
 

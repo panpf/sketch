@@ -73,7 +73,7 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
             appSettings.scaleName.ignoreFirst(),
             appSettings.longImageScale.ignoreFirst(),
             appSettings.otherImageScale.ignoreFirst(),
-            appSettings.inPreferQualityOverSpeed.ignoreFirst(),
+            appSettings.preferQualityOverSpeed.ignoreFirst(),
             appSettings.colorTypeName.ignoreFirst(),
             if (VERSION.SDK_INT >= VERSION_CODES.O) appSettings.colorSpaceName.ignoreFirst() else null,
             appSettings.memoryCacheName.ignoreFirst(),
@@ -283,9 +283,9 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
         if (VERSION.SDK_INT <= VERSION_CODES.M) {
             add(
                 SwitchMenuFlow(
-                    title = "inPreferQualityOverSpeed",
+                    title = "preferQualityOverSpeed",
                     desc = null,
-                    data = appSettings.inPreferQualityOverSpeed
+                    data = appSettings.preferQualityOverSpeed
                 )
             )
         }

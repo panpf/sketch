@@ -183,7 +183,7 @@ fun ImageOptions.Builder.colorSpace(colorSpace: ColorSpace.Named?): ImageOptions
  * From Android N (API 24), this is ignored.  The output will always be high quality.
  *
  * In [android.os.Build.VERSION_CODES.M] and below, if
- * inPreferQualityOverSpeed is set to true, the decoder will try to
+ * preferQualityOverSpeed is set to true, the decoder will try to
  * decode the reconstructed image to a higher quality even at the
  * expense of the decoding speed. Currently the field only affects JPEG
  * decode, in the case of which a more accurate, but slightly slower,
@@ -194,9 +194,9 @@ fun ImageOptions.Builder.colorSpace(colorSpace: ColorSpace.Named?): ImageOptions
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testPreferQualityOverSpeed
  */
 @Deprecated("From Android N (API 24), this is ignored.  The output will always be high quality.")
-fun ImageOptions.Builder.preferQualityOverSpeed(inPreferQualityOverSpeed: Boolean? = true): ImageOptions.Builder =
+fun ImageOptions.Builder.preferQualityOverSpeed(preferQualityOverSpeed: Boolean? = true): ImageOptions.Builder =
     apply {
-        if (inPreferQualityOverSpeed == true) {
+        if (preferQualityOverSpeed == true) {
             setExtra(key = PREFER_QUALITY_OVER_SPEED_KEY, value = true.toString())
         } else {
             removeExtra(PREFER_QUALITY_OVER_SPEED_KEY)
@@ -207,7 +207,7 @@ fun ImageOptions.Builder.preferQualityOverSpeed(inPreferQualityOverSpeed: Boolea
  * From Android N (API 24), this is ignored.  The output will always be high quality.
  *
  * In [android.os.Build.VERSION_CODES.M] and below, if
- * inPreferQualityOverSpeed is set to true, the decoder will try to
+ * preferQualityOverSpeed is set to true, the decoder will try to
  * decode the reconstructed image to a higher quality even at the
  * expense of the decoding speed. Currently the field only affects JPEG
  * decode, in the case of which a more accurate, but slightly slower,

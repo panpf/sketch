@@ -18,8 +18,8 @@ actual inline fun composablePlatformAsyncImageSettings(appSettings: AppSettings)
             val colorSpace by appSettings.colorSpace.collectAsState()
             colorSpace(colorSpace)
         }
-        val inPreferQualityOverSpeed by appSettings.inPreferQualityOverSpeed.collectAsState()
+        val preferQualityOverSpeed by appSettings.preferQualityOverSpeed.collectAsState()
         @Suppress("DEPRECATION")
-        preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && inPreferQualityOverSpeed)
+        preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed)
     }
 }

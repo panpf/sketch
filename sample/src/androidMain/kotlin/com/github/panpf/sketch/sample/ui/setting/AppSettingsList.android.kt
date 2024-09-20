@@ -35,9 +35,9 @@ actual fun platformDecodeMenuList(appSettings: AppSettings): List<SettingItem> =
     if (VERSION.SDK_INT <= VERSION_CODES.M) {
         add(
             SwitchSettingItem(
-                title = "inPreferQualityOverSpeed",
+                title = "preferQualityOverSpeed",
                 desc = null,
-                state = appSettings.inPreferQualityOverSpeed
+                state = appSettings.preferQualityOverSpeed
             )
         )
     }

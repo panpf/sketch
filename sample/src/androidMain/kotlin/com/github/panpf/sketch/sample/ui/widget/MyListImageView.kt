@@ -131,7 +131,7 @@ class MyListImageView @JvmOverloads constructor(
                 colorSpace(appSettings.colorSpace.value)
             }
             @Suppress("DEPRECATION")
-            preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && appSettings.inPreferQualityOverSpeed.value)
+            preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && appSettings.preferQualityOverSpeed.value)
         }
 
         setClickIgnoreSaveCellularTrafficEnabled(true)
@@ -236,9 +236,9 @@ class MyListImageView @JvmOverloads constructor(
                 colorSpace(colorSpace)
             }
         }
-        listenSettings(appSettings.inPreferQualityOverSpeed) { inPreferQualityOverSpeed ->
+        listenSettings(appSettings.preferQualityOverSpeed) { preferQualityOverSpeed ->
             @Suppress("DEPRECATION")
-            preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && inPreferQualityOverSpeed)
+            preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed)
         }
     }
 

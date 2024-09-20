@@ -174,7 +174,7 @@ class DecodeConfigTest {
         }
 
         assertEquals(
-            expected = DecodeConfig(inPreferQualityOverSpeed = true),
+            expected = DecodeConfig(preferQualityOverSpeed = true),
             actual = DecodeConfig(
                 ImageRequest(context, "test.jpg") {
                     preferQualityOverSpeed(true)
@@ -191,7 +191,7 @@ class DecodeConfigTest {
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 assertEquals(null, colorSpace)
             }
-            assertEquals(null, inPreferQualityOverSpeed)
+            assertEquals(null, preferQualityOverSpeed)
         }
 
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -199,22 +199,22 @@ class DecodeConfigTest {
                 sampleSize = 2,
                 colorType = ColorType.RGB_565,
                 colorSpace = ColorSpace.get(ColorSpace.Named.DISPLAY_P3),
-                inPreferQualityOverSpeed = true
+                preferQualityOverSpeed = true
             ).apply {
                 assertEquals(2, sampleSize)
                 assertEquals(ColorType.RGB_565, colorType)
                 assertEquals(ColorSpace.get(ColorSpace.Named.DISPLAY_P3), colorSpace)
-                assertEquals(true, inPreferQualityOverSpeed)
+                assertEquals(true, preferQualityOverSpeed)
             }
         } else {
             DecodeConfig(
                 sampleSize = 2,
                 colorType = ColorType.RGB_565,
-                inPreferQualityOverSpeed = true
+                preferQualityOverSpeed = true
             ).apply {
                 assertEquals(2, sampleSize)
                 assertEquals(ColorType.RGB_565, colorType)
-                assertEquals(true, inPreferQualityOverSpeed)
+                assertEquals(true, preferQualityOverSpeed)
             }
         }
     }
@@ -225,7 +225,7 @@ class DecodeConfigTest {
             assertEquals(null, sampleSize)
             assertEquals(null, colorType)
             assertEquals(null, colorSpace)
-            assertEquals(null, inPreferQualityOverSpeed)
+            assertEquals(null, preferQualityOverSpeed)
 
             sampleSize = 2
             assertEquals(2, sampleSize)
@@ -233,7 +233,7 @@ class DecodeConfigTest {
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 assertEquals(null, colorSpace)
             }
-            assertEquals(null, inPreferQualityOverSpeed)
+            assertEquals(null, preferQualityOverSpeed)
 
             colorType = ColorType.RGB_565
             assertEquals(2, sampleSize)
@@ -241,23 +241,23 @@ class DecodeConfigTest {
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 assertEquals(null, colorSpace)
             }
-            assertEquals(null, inPreferQualityOverSpeed)
+            assertEquals(null, preferQualityOverSpeed)
 
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 colorSpace = ColorSpace.get(ColorSpace.Named.DISPLAY_P3)
                 assertEquals(2, sampleSize)
                 assertEquals(ColorType.RGB_565, colorType)
                 assertEquals(ColorSpace.get(ColorSpace.Named.DISPLAY_P3), colorSpace)
-                assertEquals(null, inPreferQualityOverSpeed)
+                assertEquals(null, preferQualityOverSpeed)
             }
 
-            inPreferQualityOverSpeed = true
+            preferQualityOverSpeed = true
             assertEquals(2, sampleSize)
             assertEquals(ColorType.RGB_565, colorType)
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 assertEquals(ColorSpace.get(ColorSpace.Named.DISPLAY_P3), colorSpace)
             }
-            assertEquals(true, inPreferQualityOverSpeed)
+            assertEquals(true, preferQualityOverSpeed)
         }
     }
 
@@ -289,13 +289,13 @@ class DecodeConfigTest {
                 sampleSize = 2,
                 colorType = ColorType.RGB_565,
                 colorSpace = ColorSpace.get(ColorSpace.Named.DISPLAY_P3),
-                inPreferQualityOverSpeed = true
+                preferQualityOverSpeed = true
             )
         } else {
             DecodeConfig(
                 sampleSize = 2,
                 colorType = ColorType.ARGB_4444,
-                inPreferQualityOverSpeed = true
+                preferQualityOverSpeed = true
             )
         }
 
@@ -332,29 +332,29 @@ class DecodeConfigTest {
     fun testToString() {
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             assertEquals(
-                expected = "DecodeConfig(sampleSize=null, colorType=null, colorSpace=null, inPreferQualityOverSpeed=null)",
+                expected = "DecodeConfig(sampleSize=null, colorType=null, colorSpace=null, preferQualityOverSpeed=null)",
                 actual = DecodeConfig().toString()
             )
             assertEquals(
-                expected = "DecodeConfig(sampleSize=2, colorType=RGB_565, colorSpace=SRGB, inPreferQualityOverSpeed=true)",
+                expected = "DecodeConfig(sampleSize=2, colorType=RGB_565, colorSpace=SRGB, preferQualityOverSpeed=true)",
                 actual = DecodeConfig(
                     sampleSize = 2,
                     colorType = ColorType.RGB_565,
                     colorSpace = ColorSpace.get(ColorSpace.Named.SRGB),
-                    inPreferQualityOverSpeed = true
+                    preferQualityOverSpeed = true
                 ).toString()
             )
         } else {
             assertEquals(
-                expected = "DecodeConfig(sampleSize=null, colorType=null, inPreferQualityOverSpeed=null)",
+                expected = "DecodeConfig(sampleSize=null, colorType=null, preferQualityOverSpeed=null)",
                 actual = DecodeConfig().toString()
             )
             assertEquals(
-                expected = "DecodeConfig(sampleSize=2, colorType=RGB_565, inPreferQualityOverSpeed=true)",
+                expected = "DecodeConfig(sampleSize=2, colorType=RGB_565, preferQualityOverSpeed=true)",
                 actual = DecodeConfig(
                     sampleSize = 2,
                     colorType = ColorType.RGB_565,
-                    inPreferQualityOverSpeed = true
+                    preferQualityOverSpeed = true
                 ).toString()
             )
         }
@@ -375,7 +375,7 @@ class DecodeConfigTest {
         DecodeConfig().apply {
             sampleSize = 4
             @Suppress("DEPRECATION")
-            inPreferQualityOverSpeed = true
+            preferQualityOverSpeed = true
             colorType = RGB_565
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
                 colorSpace = ColorSpace.get(SMPTE_C)

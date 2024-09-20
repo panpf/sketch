@@ -40,7 +40,7 @@ fun DecodeConfig(
 ): DecodeConfig =
     DecodeConfig().apply {
         if (request.preferQualityOverSpeed) {
-            inPreferQualityOverSpeed = true
+            preferQualityOverSpeed = true
         }
 
         val userColorType = request.colorType?.getColorType(mimeType, isOpaque)?.colorType
@@ -119,21 +119,20 @@ data class DecodeConfig(
 
     /**
      * In {@link android.os.Build.VERSION_CODES#M} and below, if
-     * inPreferQualityOverSpeed is set to true, the decoder will try to
+     * preferQualityOverSpeed is set to true, the decoder will try to
      * decode the reconstructed image to a higher quality even at the
      * expense of the decoding speed. Currently the field only affects JPEG
      * decode, in the case of which a more accurate, but slightly slower,
      * IDCT method will be used instead.
      */
     @Deprecated("As of android.os.Build.VERSION_CODES#N, this is ignored. The output will always be high quality.")
-    // TODO rename to preferQualityOverSpeed
-    var inPreferQualityOverSpeed: Boolean? = null,
+    var preferQualityOverSpeed: Boolean? = null,
 ) {
     override fun toString(): String {
         return if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            "DecodeConfig(sampleSize=$sampleSize, colorType=$colorType, colorSpace=${colorSpace?.simpleName}, inPreferQualityOverSpeed=$inPreferQualityOverSpeed)"
+            "DecodeConfig(sampleSize=$sampleSize, colorType=$colorType, colorSpace=${colorSpace?.simpleName}, preferQualityOverSpeed=$preferQualityOverSpeed)"
         } else {
-            "DecodeConfig(sampleSize=$sampleSize, colorType=$colorType, inPreferQualityOverSpeed=$inPreferQualityOverSpeed)"
+            "DecodeConfig(sampleSize=$sampleSize, colorType=$colorType, preferQualityOverSpeed=$preferQualityOverSpeed)"
         }
     }
 }
@@ -149,7 +148,7 @@ fun DecodeConfig.toBitmapOptions(): BitmapFactory.Options {
         options.inSampleSize = it
     }
     @Suppress("DEPRECATION")
-    if (VERSION.SDK_INT <= VERSION_CODES.M && inPreferQualityOverSpeed == true) {
+    if (VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed == true) {
         options.inPreferQualityOverSpeed = true
     }
     colorType?.let {
