@@ -16,6 +16,8 @@
 
 package com.github.panpf.sketch
 
+import com.github.panpf.sketch.util.configOrNull
+
 /**
  * Android Bitmap
  *
@@ -35,8 +37,8 @@ typealias ColorType = android.graphics.Bitmap.Config
  *
  * @see com.github.panpf.sketch.core.android.test.AndroidBitmapTest.testColorType
  */
-val Bitmap.colorType: ColorType
-    get() = config
+val Bitmap.colorType: ColorType?
+    get() = configOrNull
 
 /**
  * Create a new [AndroidBitmap] with the specified width, height, and [ColorType] and allocate memory

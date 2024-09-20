@@ -52,4 +52,8 @@ data class DecodeConfig(
      * Color Space
      */
     var colorSpace: ColorSpace? = null,
-)
+) {
+    override fun toString(): String {
+        return "DecodeConfig(sampleSize=$sampleSize, colorType=$colorType, colorSpace=${colorSpace?.name()})"
+    }
+}

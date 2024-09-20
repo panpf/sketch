@@ -150,18 +150,18 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
         }
     }
 
-    fun applyToRect(srcRect: Rect, imageSize: Size, reverse: Boolean = false): Rect {
+    fun applyToRect(srcRect: Rect, spaceSize: Size, reverse: Boolean = false): Rect {
         val isFlipHorizontally = isFlipHorizontally()
         val rotationDegrees = getRotationDegrees()
         val isRotated = abs(rotationDegrees % 360) != 0
         return if (!reverse) {
             srcRect
-                .let { if (isFlipHorizontally) it.flipped(imageSize, vertical = false) else it }
-                .let { if (isRotated) it.rotateInSpace(imageSize, rotationDegrees) else it }
+                .let { if (isFlipHorizontally) it.flipped(spaceSize, vertical = false) else it }
+                .let { if (isRotated) it.rotateInSpace(spaceSize, rotationDegrees) else it }
         } else {
-            val rotatedImageSize = imageSize.rotate(-rotationDegrees)
+            val rotatedImageSize = spaceSize.rotate(-rotationDegrees)
             srcRect
-                .let { if (isRotated) it.rotateInSpace(imageSize, -rotationDegrees) else it }
+                .let { if (isRotated) it.rotateInSpace(spaceSize, -rotationDegrees) else it }
                 .let {
                     if (isFlipHorizontally) it.flipped(
                         rotatedImageSize,

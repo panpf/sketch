@@ -63,7 +63,7 @@ class BitmapFactoryDecodeHelper(
         val bitmap = dataSource.decodeRegion(
             srcRect = region,
             config = decodeConfig,
-            imageInfo = imageInfo,
+            imageSize = imageInfo.size,
             exifOrientationHelper = exifOrientationHelper
         )
         return bitmap.asImage()

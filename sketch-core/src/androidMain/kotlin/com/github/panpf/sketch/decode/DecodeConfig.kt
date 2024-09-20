@@ -25,6 +25,7 @@ import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.preferQualityOverSpeed
+import com.github.panpf.sketch.util.simpleName
 
 
 /**
@@ -127,7 +128,15 @@ data class DecodeConfig(
      */
     @Deprecated("As of android.os.Build.VERSION_CODES#N, this is ignored. The output will always be high quality.")
     var inPreferQualityOverSpeed: Boolean? = null,
-)
+) {
+    override fun toString(): String {
+        return if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            "DecodeConfig(sampleSize=$sampleSize, colorType=$colorType, colorSpace=${colorSpace?.simpleName}, inPreferQualityOverSpeed=$inPreferQualityOverSpeed)"
+        } else {
+            "DecodeConfig(sampleSize=$sampleSize, colorType=$colorType, inPreferQualityOverSpeed=$inPreferQualityOverSpeed)"
+        }
+    }
+}
 
 /**
  * Convert [DecodeConfig] to [BitmapFactory.Options]

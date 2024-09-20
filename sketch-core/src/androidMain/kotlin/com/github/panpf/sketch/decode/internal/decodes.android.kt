@@ -201,7 +201,7 @@ fun DataSource.decode(
 fun DataSource.decodeRegion(
     srcRect: Rect,
     config: DecodeConfig? = null,
-    imageInfo: ImageInfo? = null,
+    imageSize: Size? = null,
     exifOrientationHelper: ExifOrientationHelper? = null
 ): Bitmap = openSource().buffer().inputStream().use {
     @Suppress("DEPRECATION")
@@ -210,11 +210,14 @@ fun DataSource.decodeRegion(
     } else {
         BitmapRegionDecoder.newInstance(it, false)
     } ?: throw IOException("BitmapRegionDecoder.newInstance return null")
-    val imageInfo1 = imageInfo ?: readImageInfo(exifOrientationHelper)
+    val imageSize1 = imageSize ?: readImageInfo(exifOrientationHelper).size
     val exifOrientationHelper1 =
         exifOrientationHelper ?: ExifOrientationHelper(readExifOrientation())
-    val originalRegion =
-        exifOrientationHelper1.applyToRect(srcRect, imageInfo1.size, reverse = true)
+    val originalRegion = exifOrientationHelper1.applyToRect(
+        srcRect = srcRect,
+        spaceSize = imageSize1,
+        reverse = true
+    )
     val bitmapOptions = config?.toBitmapOptions()
     val regionBitmap = try {
         regionDecoder.decodeRegion(originalRegion.toAndroidRect(), bitmapOptions)

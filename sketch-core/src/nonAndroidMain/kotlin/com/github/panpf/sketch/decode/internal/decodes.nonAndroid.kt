@@ -129,6 +129,9 @@ internal fun SkiaImage.decodeRegion(
     srcRect: SketchRect,
     config: DecodeConfig? = null
 ): SkiaBitmap {
+    if (srcRect.isEmpty) {
+        throw IllegalArgumentException("srcRect is empty. $srcRect")
+    }
     val sampleSize = config?.sampleSize ?: 1
     val bitmapSize = calculateSampledBitmapSize(
         imageSize = Size(srcRect.width(), srcRect.height()),
