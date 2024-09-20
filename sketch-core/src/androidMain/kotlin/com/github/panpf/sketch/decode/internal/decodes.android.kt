@@ -33,7 +33,6 @@ import com.github.panpf.sketch.util.toAndroidRect
 import okio.buffer
 import java.io.IOException
 import kotlin.math.ceil
-import kotlin.math.floor
 
 /**
  * Get the maximum Bitmap size allowed by the Android platform
@@ -46,7 +45,7 @@ actual fun getMaxBitmapSize(): Size? {
 }
 
 /**
- * Calculate the size of the sampled Bitmap, support for BitmapFactory or ImageDecoder
+ * Rough calculate the size of the sampled Bitmap, only suitable for calculating sampleSize, support for BitmapFactory and ImageDecoder
  *
  * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testCalculateSampledBitmapSize
  */
@@ -55,20 +54,26 @@ actual fun calculateSampledBitmapSize(
     sampleSize: Int,
     mimeType: String?
 ): Size {
-    // TODO Fixed to ceil because it cannot be calculated accurately
+    // Because it cannot be calculated accurately, ceil is always used.
+    // Different Android versions and different image formats will have different results.
     val widthValue = imageSize.width / sampleSize.toDouble()
     val heightValue = imageSize.height / sampleSize.toDouble()
-    val isPNGFormat = ImageFormat.PNG.matched(mimeType)
-    val width: Int
-    val height: Int
-    if (isPNGFormat) {
-        width = floor(widthValue).toInt()
-        height = floor(heightValue).toInt()
-    } else {
-        width = ceil(widthValue).toInt()
-        height = ceil(heightValue).toInt()
-    }
+    val width: Int = ceil(widthValue).toInt()
+    val height: Int = ceil(heightValue).toInt()
     return Size(width, height)
+//    val widthValue = imageSize.width / sampleSize.toDouble()
+//    val heightValue = imageSize.height / sampleSize.toDouble()
+//    val isPNGFormat = ImageFormat.PNG.matched(mimeType)
+//    val width: Int
+//    val height: Int
+//    if (isPNGFormat) {
+//        width = floor(widthValue).toInt()
+//        height = floor(heightValue).toInt()
+//    } else {
+//        width = ceil(widthValue).toInt()
+//        height = ceil(heightValue).toInt()
+//    }
+//    return Size(width, height)
 //    val floor = ImageFormat.PNG.matched(mimeType)
 //        || ImageFormat.BMP.matched(mimeType)
 //        || (ImageFormat.WEBP.matched(mimeType) && VERSION.SDK_INT <= VERSION_CODES.M)
@@ -81,7 +86,7 @@ actual fun calculateSampledBitmapSize(
 }
 
 /**
- * Calculate the size of the sampled Bitmap, support for BitmapRegionDecoder
+ * Rough calculate the size of the sampled Bitmap, only suitable for calculating sampleSize, support for BitmapRegionDecoder
  *
  * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testCalculateSampledBitmapSizeForRegion
  */
@@ -91,21 +96,27 @@ actual fun calculateSampledBitmapSizeForRegion(
     mimeType: String?,
     imageSize: Size?
 ): Size {
-    // TODO Fixed to ceil because it cannot be calculated accurately
-    //  For example, in a gif image, the rect width is 400, and 401 must be returned.
+    // Because it cannot be calculated accurately, ceil is always used.
+    // Different Android versions and different image formats will have different results.
+    // For example, in a gif image, the rect width is 400, the returned bitmap width is 401
     val widthValue = regionSize.width / sampleSize.toDouble()
     val heightValue = regionSize.height / sampleSize.toDouble()
-    val width: Int
-    val height: Int
-    val isPNGFormat = ImageFormat.PNG.matched(mimeType)
-    if (!isPNGFormat && VERSION.SDK_INT >= VERSION_CODES.N && regionSize == imageSize) {
-        width = ceil(widthValue).toInt()
-        height = ceil(heightValue).toInt()
-    } else {
-        width = floor(widthValue).toInt()
-        height = floor(heightValue).toInt()
-    }
+    val width: Int = ceil(widthValue).toInt()
+    val height: Int = ceil(heightValue).toInt()
     return Size(width, height)
+//    val widthValue = regionSize.width / sampleSize.toDouble()
+//    val heightValue = regionSize.height / sampleSize.toDouble()
+//    val width: Int
+//    val height: Int
+//    val isPNGFormat = ImageFormat.PNG.matched(mimeType)
+//    if (!isPNGFormat && VERSION.SDK_INT >= VERSION_CODES.N && regionSize == imageSize) {
+//        width = ceil(widthValue).toInt()
+//        height = ceil(heightValue).toInt()
+//    } else {
+//        width = floor(widthValue).toInt()
+//        height = floor(heightValue).toInt()
+//    }
+//    return Size(width, height)
 //    val widthValue = regionSize.width / sampleSize.toDouble()
 //    val heightValue = regionSize.height / sampleSize.toDouble()
 //    val width: Int
