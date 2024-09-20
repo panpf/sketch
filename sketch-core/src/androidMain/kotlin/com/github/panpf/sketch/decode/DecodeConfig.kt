@@ -39,8 +39,7 @@ fun DecodeConfig(
     isOpaque: Boolean = false
 ): DecodeConfig =
     DecodeConfig().apply {
-        @Suppress("DEPRECATION")
-        if (VERSION.SDK_INT <= VERSION_CODES.M && request.preferQualityOverSpeed) {
+        if (request.preferQualityOverSpeed) {
             inPreferQualityOverSpeed = true
         }
 
@@ -127,6 +126,7 @@ data class DecodeConfig(
      * IDCT method will be used instead.
      */
     @Deprecated("As of android.os.Build.VERSION_CODES#N, this is ignored. The output will always be high quality.")
+    // TODO rename to preferQualityOverSpeed
     var inPreferQualityOverSpeed: Boolean? = null,
 ) {
     override fun toString(): String {
