@@ -45,7 +45,7 @@ import kotlin.math.roundToInt
  *
  * @see com.github.panpf.sketch.video.test.decode.internal.VideoFrameDecodeHelperTest
  */
-class VideoFrameDecodeHelper constructor(
+class VideoFrameDecodeHelper(
     val sketch: Sketch,
     val request: ImageRequest,
     val dataSource: DataSource,
@@ -178,7 +178,7 @@ class VideoFrameDecodeHelper constructor(
     }
 
     override fun toString(): String {
-        return "VideoFrameDecodeHelper(uri='${request.uri}', dataSource=$dataSource, mimeType=$mimeType)"
+        return "VideoFrameDecodeHelper(request=$request, dataSource=$dataSource, mimeType=$mimeType)"
     }
 
     override fun close() {

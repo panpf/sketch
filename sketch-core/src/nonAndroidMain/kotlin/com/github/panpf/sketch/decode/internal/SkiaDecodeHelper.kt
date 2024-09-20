@@ -85,6 +85,6 @@ class SkiaDecodeHelper constructor(
     }
 
     override fun toString(): String {
-        return "SkiaDecodeHelper($dataSource)"
+        return "SkiaDecodeHelper(request=$request, dataSource=$dataSource)"
     }
 }

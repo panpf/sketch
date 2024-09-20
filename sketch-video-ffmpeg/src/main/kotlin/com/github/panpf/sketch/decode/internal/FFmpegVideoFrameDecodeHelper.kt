@@ -151,7 +151,7 @@ class FFmpegVideoFrameDecodeHelper(
     }
 
     override fun toString(): String {
-        return "FFmpegVideoFrameDecodeHelper(uri='${request.uri}', dataSource=$dataSource, mimeType=$mimeType)"
+        return "FFmpegVideoFrameDecodeHelper(request=$request, dataSource=$dataSource, mimeType=$mimeType)"
     }
 
     override fun close() {

@@ -74,6 +74,6 @@ class BitmapFactoryDecodeHelper(
     }
 
     override fun toString(): String {
-        return "BitmapFactoryDecodeHelper($dataSource)"
+        return "BitmapFactoryDecodeHelper(request=$request, dataSource=$dataSource)"
     }
 }
