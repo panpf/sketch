@@ -23,7 +23,6 @@ import android.graphics.ColorSpace.Named.SRGB
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.WorkerThread
-import androidx.exifinterface.media.ExifInterface
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.decode.internal.getInSampledTransformed
@@ -45,11 +44,13 @@ import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
+import com.github.panpf.sketch.test.utils.assertSizeEquals
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.shortInfoColorSpace
+import com.github.panpf.sketch.test.utils.similarity
+import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
@@ -70,7 +71,7 @@ import kotlin.test.assertTrue
 class BitmapFactoryDecoderTest {
 
     @Test
-    fun testDefault() {
+    fun testDefault() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
@@ -112,32 +113,28 @@ class BitmapFactoryDecoderTest {
         }
 
         // exif
-        ExifOrientationTestFileHelper(
-            context,
-            ResourceImages.clockHor.resourceName
-        ).files()
-            .forEach { testFile ->
-                ImageRequest(context, testFile.file.path) {
-                    size(3000, 3000)
-                    precision(LESS_PIXELS)
-                }.decode(sketch).apply {
-                    val bitmap = image.getBitmapOrThrow()
-                    assertEquals(
-                        "Bitmap(1500x750,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                        bitmap.toShortInfoString()
-                    )
-                    assertEquals(
-                        "ImageInfo(1500x750,'image/jpeg')",
-                        imageInfo.toShortString()
-                    )
-                    assertEquals(LOCAL, dataFrom)
-                    assertNull(transformeds)
-                }
+        ResourceImages.clockExifs.forEach { imageFile ->
+            ImageRequest(context, imageFile.uri) {
+                size(3000, 3000)
+                precision(LESS_PIXELS)
+            }.decode(sketch).apply {
+                val bitmap = image.getBitmapOrThrow()
+                assertEquals(
+                    "Bitmap(1500x750,ARGB_8888${shortInfoColorSpace("SRGB")})",
+                    bitmap.toShortInfoString()
+                )
+                assertEquals(
+                    "ImageInfo(1500x750,'image/jpeg')",
+                    imageInfo.toShortString()
+                )
+                assertEquals(LOCAL, dataFrom)
+                assertNull(transformeds)
             }
+        }
     }
 
     @Test
-    fun testColorType() {
+    fun testColorType() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
@@ -182,8 +179,8 @@ class BitmapFactoryDecoderTest {
     }
 
     @Test
-    fun testColorSpace() {
-        if (VERSION.SDK_INT < VERSION_CODES.O) return
+    fun testColorSpace() = runTest {
+        if (VERSION.SDK_INT < VERSION_CODES.O) return@runTest
 
         val (context, sketch) = getTestContextAndSketch()
 
@@ -271,7 +268,7 @@ class BitmapFactoryDecoderTest {
     }
 
     @Test
-    fun testResize() {
+    fun testResize() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         // precision = LESS_PIXELS
@@ -288,9 +285,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
-            assertEquals(
-                "Bitmap(646x968,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(646, 968),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
@@ -314,9 +312,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
-            assertEquals(
-                "Bitmap(323x484,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(323, 484),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
@@ -342,9 +341,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 500f.div(300).format(1)
             )
-            assertEquals(
-                "Bitmap(322x193,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(322, 193),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
@@ -368,9 +368,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 300f.div(500).format(1)
             )
-            assertEquals(
-                "Bitmap(290x484,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(290, 484),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
@@ -392,9 +393,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
                 "${bitmap.width}x${bitmap.height}"
             )
-            assertEquals(
-                "Bitmap(500x300,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(500, 300),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
@@ -414,9 +416,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
                 "${bitmap.width}x${bitmap.height}"
             )
-            assertEquals(
-                "Bitmap(300x500,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(300, 500),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
                 "ImageInfo(1291x1936,'image/jpeg')",
@@ -477,7 +480,7 @@ class BitmapFactoryDecoderTest {
     }
 
     @Test
-    fun testResizeNoRegion() {
+    fun testResizeNoRegion() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         // precision = LESS_PIXELS
@@ -494,9 +497,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
-            assertEquals(
-                "Bitmap(350x506,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(350, 506),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
                 "ImageInfo(700x1012,'image/bmp')",
@@ -519,9 +523,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
-            assertEquals(
-                "Bitmap(87x126,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(87, 126),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
                 "ImageInfo(700x1012,'image/bmp')",
@@ -546,9 +551,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 500f.div(300).format(1)
             )
-            assertEquals(
-                "Bitmap(175x105,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(175, 105),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
                 "ImageInfo(700x1012,'image/bmp')",
@@ -571,9 +577,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 300f.div(500).format(1)
             )
-            assertEquals(
-                "Bitmap(152x253,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(152, 253),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
                 "ImageInfo(700x1012,'image/bmp')",
@@ -593,9 +600,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
                 "${bitmap.width}x${bitmap.height}"
             )
-            assertEquals(
-                "Bitmap(500x300,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(500, 300),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
                 "ImageInfo(700x1012,'image/bmp')",
@@ -614,9 +622,10 @@ class BitmapFactoryDecoderTest {
                 bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
                 "${bitmap.width}x${bitmap.height}"
             )
-            assertEquals(
-                "Bitmap(300x500,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(300, 500),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
                 "ImageInfo(700x1012,'image/bmp')",
@@ -676,17 +685,13 @@ class BitmapFactoryDecoderTest {
     }
 
     @Test
-    fun testResizeExif() {
+    fun testResizeExif() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val testFile = ExifOrientationTestFileHelper(
-            context,
-            ResourceImages.jpeg.resourceName
-        ).files()
-            .find { it.exifOrientation == ExifInterface.ORIENTATION_TRANSPOSE }!!
+        val testFile = ResourceImages.clockExifTranspose
 
         // precision = LESS_PIXELS
-        ImageRequest(context, testFile.file.path) {
+        ImageRequest(context, testFile.uri) {
             size(800, 800)
             precision(LESS_PIXELS)
         }.decode(sketch).apply {
@@ -699,12 +704,13 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
-            assertEquals(
-                "Bitmap(646x968,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(750, 375),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg')",
+                "ImageInfo(1500x750,'image/jpeg')",
                 imageInfo.toShortString()
             )
             assertEquals(LOCAL, dataFrom)
@@ -712,7 +718,7 @@ class BitmapFactoryDecoderTest {
             assertNull(transformeds?.getSubsamplingTransformed())
             assertNull(transformeds?.getResizeTransformed())
         }
-        ImageRequest(context, testFile.file.path) {
+        ImageRequest(context, testFile.uri) {
             size(500, 500)
             precision(LESS_PIXELS)
         }.decode(sketch).apply {
@@ -725,12 +731,13 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
-            assertEquals(
-                "Bitmap(323x484,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(375, 188),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg')",
+                "ImageInfo(1500x750,'image/jpeg')",
                 imageInfo.toShortString()
             )
             assertEquals(LOCAL, dataFrom)
@@ -740,7 +747,7 @@ class BitmapFactoryDecoderTest {
         }
 
         // precision = SAME_ASPECT_RATIO
-        ImageRequest(context, testFile.file.path) {
+        ImageRequest(context, testFile.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
         }.decode(sketch).apply {
@@ -753,12 +760,13 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 500f.div(300).format(1)
             )
-            assertEquals(
-                "Bitmap(322x193,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(313, 188),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg')",
+                "ImageInfo(1500x750,'image/jpeg')",
                 imageInfo.toShortString()
             )
             assertEquals(LOCAL, dataFrom)
@@ -766,7 +774,7 @@ class BitmapFactoryDecoderTest {
             assertNotNull(transformeds?.getSubsamplingTransformed())
             assertNull(transformeds?.getResizeTransformed())
         }
-        ImageRequest(context, testFile.file.path) {
+        ImageRequest(context, testFile.uri) {
             size(300, 500)
             precision(SAME_ASPECT_RATIO)
         }.decode(sketch).apply {
@@ -779,12 +787,13 @@ class BitmapFactoryDecoderTest {
                 bitmap.width.toFloat().div(bitmap.height).format(1),
                 300f.div(500).format(1)
             )
-            assertEquals(
-                "Bitmap(290x484,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(225, 375),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg')",
+                "ImageInfo(1500x750,'image/jpeg')",
                 imageInfo.toShortString()
             )
             assertEquals(LOCAL, dataFrom)
@@ -794,7 +803,7 @@ class BitmapFactoryDecoderTest {
         }
 
         // precision = EXACTLY
-        ImageRequest(context, testFile.file.path) {
+        ImageRequest(context, testFile.uri) {
             size(500, 300)
             precision(EXACTLY)
         }.decode(sketch).apply {
@@ -803,12 +812,13 @@ class BitmapFactoryDecoderTest {
                 bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
                 "${bitmap.width}x${bitmap.height}"
             )
-            assertEquals(
-                "Bitmap(500x300,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(500, 300),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg')",
+                "ImageInfo(1500x750,'image/jpeg')",
                 imageInfo.toShortString()
             )
             assertEquals(LOCAL, dataFrom)
@@ -816,7 +826,7 @@ class BitmapFactoryDecoderTest {
             assertNotNull(transformeds?.getSubsamplingTransformed())
             assertNotNull(transformeds?.getResizeTransformed())
         }
-        ImageRequest(context, testFile.file.path) {
+        ImageRequest(context, testFile.uri) {
             size(300, 500)
             precision(EXACTLY)
         }.decode(sketch).apply {
@@ -825,12 +835,13 @@ class BitmapFactoryDecoderTest {
                 bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
                 "${bitmap.width}x${bitmap.height}"
             )
-            assertEquals(
-                "Bitmap(300x500,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(300, 500),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg')",
+                "ImageInfo(1500x750,'image/jpeg')",
                 imageInfo.toShortString()
             )
             assertEquals(LOCAL, dataFrom)
@@ -840,7 +851,7 @@ class BitmapFactoryDecoderTest {
         }
 
         // precision = LongImagePrecisionDecider
-        ImageRequest(context, testFile.file.path) {
+        ImageRequest(context, testFile.uri) {
             size(300, 400)
             precision(
                 LongImagePrecisionDecider(
@@ -856,37 +867,38 @@ class BitmapFactoryDecoderTest {
                 bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
                 "${bitmap.width}x${bitmap.height}"
             )
-            assertEquals(
-                "Bitmap(161x215,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+            assertSizeEquals(
+                expected = Size(375, 188),
+                actual = bitmap.size,
+                delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg')",
+                "ImageInfo(1500x750,'image/jpeg')",
                 imageInfo.toShortString()
             )
             assertEquals(LOCAL, dataFrom)
             assertNotNull(transformeds?.getInSampledTransformed())
-            assertNotNull(transformeds?.getSubsamplingTransformed())
-            assertNotNull(transformeds?.getResizeTransformed())
+            assertNull(transformeds?.getSubsamplingTransformed())
+            assertNull(transformeds?.getResizeTransformed())
         }
 
         // scale
-        val startCropBitmap = ImageRequest(context, testFile.file.path) {
+        val startCropBitmap = ImageRequest(context, testFile.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(START_CROP)
         }.decode(sketch).image.getBitmapOrThrow()
-        val centerCropBitmap = ImageRequest(context, testFile.file.path) {
+        val centerCropBitmap = ImageRequest(context, testFile.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(CENTER_CROP)
         }.decode(sketch).image.getBitmapOrThrow()
-        val endCropBitmap = ImageRequest(context, testFile.file.path) {
+        val endCropBitmap = ImageRequest(context, testFile.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(END_CROP)
         }.decode(sketch).image.getBitmapOrThrow()
-        val fillBitmap = ImageRequest(context, testFile.file.path) {
+        val fillBitmap = ImageRequest(context, testFile.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(FILL)
@@ -895,50 +907,30 @@ class BitmapFactoryDecoderTest {
         assertTrue(centerCropBitmap.width * centerCropBitmap.height <= 500 * 300 * 1.1f)
         assertTrue(endCropBitmap.width * endCropBitmap.height <= 500 * 300 * 1.1f)
         assertTrue(fillBitmap.width * fillBitmap.height <= 500 * 300 * 1.1f)
-        assertNotEquals(
-            startCropBitmap.corners().toString(),
-            centerCropBitmap.corners().toString()
+        assertEquals(
+            expected = 10,
+            actual = startCropBitmap.similarity(centerCropBitmap),
         )
-        assertNotEquals(
-            startCropBitmap.corners().toString(),
-            endCropBitmap.corners().toString()
+        assertEquals(
+            expected = 12,
+            actual = startCropBitmap.similarity(endCropBitmap)
         )
-        assertNotEquals(
-            startCropBitmap.corners().toString(),
-            fillBitmap.corners().toString()
+        assertEquals(
+            expected = 11,
+            actual = startCropBitmap.similarity(fillBitmap)
         )
-        assertNotEquals(
-            centerCropBitmap.corners().toString(),
-            endCropBitmap.corners().toString()
+        assertEquals(
+            expected = 15,
+            actual = centerCropBitmap.similarity(endCropBitmap)
         )
-        assertNotEquals(
-            centerCropBitmap.corners().toString(),
-            fillBitmap.corners().toString()
+        assertEquals(
+            expected = 8,
+            actual = centerCropBitmap.similarity(fillBitmap)
         )
-        assertNotEquals(endCropBitmap.corners().toString(), fillBitmap.corners().toString())
-    }
-
-    @Test
-    fun testFactoryEqualsAndHashCode() {
-        val element1 = BitmapFactoryDecoder.Factory()
-        val element11 = BitmapFactoryDecoder.Factory()
-        val element2 = BitmapFactoryDecoder.Factory()
-
-        assertNotSame(element1, element11)
-        assertNotSame(element1, element2)
-        assertNotSame(element2, element11)
-
-        assertEquals(element1, element1)
-        assertEquals(element1, element11)
-        assertEquals(element1, element2)
-        assertEquals(element2, element11)
-        assertNotEquals(element1, null as Any?)
-        assertNotEquals(element1, Any())
-
-        assertEquals(element1.hashCode(), element1.hashCode())
-        assertEquals(element1.hashCode(), element11.hashCode())
-        assertEquals(element1.hashCode(), element2.hashCode())
-        assertEquals(element2.hashCode(), element11.hashCode())
+        assertEquals(
+            expected = 13,
+            actual = endCropBitmap.similarity(fillBitmap)
+        )
     }
 
     @Test
@@ -970,6 +962,37 @@ class BitmapFactoryDecoderTest {
             request1.toRequestContext(sketch),
             RegionTestDataSource(dataSource1.asOrThrow(), false, enabledCount = true)
         ).decode()
+    }
+
+    @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = BitmapFactoryDecoder.Factory()
+        val element11 = BitmapFactoryDecoder.Factory()
+        val element2 = BitmapFactoryDecoder.Factory()
+
+        assertNotSame(element1, element11)
+        assertNotSame(element1, element2)
+        assertNotSame(element2, element11)
+
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
+        assertEquals(element1, element2)
+        assertEquals(element2, element11)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
+
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertEquals(element1.hashCode(), element2.hashCode())
+        assertEquals(element2.hashCode(), element11.hashCode())
+    }
+
+    @Test
+    fun testFactoryKeyAndToString() {
+        BitmapFactoryDecoder.Factory().apply {
+            assertEquals("BitmapFactoryDecoder", key)
+            assertEquals("BitmapFactoryDecoder", toString())
+        }
     }
 
     class FullTestDataSource(

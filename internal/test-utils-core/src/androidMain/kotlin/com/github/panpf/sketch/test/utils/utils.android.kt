@@ -20,12 +20,7 @@ import android.content.pm.PackageInfo
 import android.graphics.BitmapRegionDecoder
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.DrawableCompat
-import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.DecodeResult
-import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.Size
-import kotlinx.coroutines.runBlocking
 import java.io.InputStream
 
 val Drawable.intrinsicSize: Size
@@ -41,23 +36,6 @@ fun InputStream.newBitmapRegionDecoderInstanceCompat(): BitmapRegionDecoder? =
 
 val Drawable.alphaCompat: Int
     get() = DrawableCompat.getAlpha(this)
-
-fun ImageRequest.decode(sketch: Sketch): DecodeResult {
-    val request = this@decode
-    val fetchResult = runBlocking {
-        sketch.components.newFetcherOrThrow(
-            request
-                .toRequestContext(sketch, Size.Empty)
-        ).fetch()
-    }.getOrThrow()
-    val requestContext = runBlocking {
-        request.toRequestContext(sketch)
-    }
-    return BitmapFactoryDecoder(
-        requestContext = requestContext,
-        dataSource = fetchResult.dataSource.asOrThrow()
-    ).decode()
-}
 
 @Suppress("DEPRECATION")
 val PackageInfo.versionCodeCompat: Int
