@@ -16,34 +16,29 @@
 
 package com.github.panpf.sketch.core.android.test.decode.internal
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
 import com.github.panpf.sketch.decode.internal.addToResize
 import com.github.panpf.sketch.decode.internal.readExifOrientation
 import com.github.panpf.sketch.decode.internal.readExifOrientationWithMimeType
 import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.source.AssetDataSource
-import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
-import com.github.panpf.sketch.test.utils.ExifOrientationTestFileHelper
 import com.github.panpf.sketch.test.utils.cornerA
 import com.github.panpf.sketch.test.utils.cornerB
 import com.github.panpf.sketch.test.utils.cornerC
 import com.github.panpf.sketch.test.utils.cornerD
 import com.github.panpf.sketch.test.utils.corners
-import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
-import okio.Path.Companion.toOkioPath
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -68,16 +63,12 @@ class ExifOrientationHelperTest {
             AssetDataSource(context, ResourceImages.webp.resourceName).readExifOrientation()
         )
 
-        ExifOrientationTestFileHelper(
-            context,
-            ResourceImages.clockHor.resourceName
-        ).files()
-            .forEach {
-                assertEquals(
-                    it.exifOrientation,
-                    FileDataSource(it.file.toOkioPath()).readExifOrientation()
-                )
-            }
+        ResourceImages.clockExifs.forEach {
+            assertEquals(
+                it.exifOrientation,
+                it.toDataSource(context).readExifOrientation()
+            )
+        }
 
         assertEquals(
             ExifOrientationHelper.UNDEFINED,
@@ -117,20 +108,16 @@ class ExifOrientationHelperTest {
             ).readExifOrientationWithMimeType("image/webp")
         )
 
-        ExifOrientationTestFileHelper(
-            context,
-            ResourceImages.clockHor.resourceName
-        ).files()
-            .forEach {
-                assertEquals(
-                    it.exifOrientation,
-                    FileDataSource(it.file.toOkioPath()).readExifOrientationWithMimeType("image/jpeg")
-                )
-                assertEquals(
-                    ExifOrientationHelper.UNDEFINED,
-                    FileDataSource(it.file.toOkioPath()).readExifOrientationWithMimeType("image/bmp")
-                )
-            }
+        ResourceImages.clockExifs.forEach {
+            assertEquals(
+                it.exifOrientation,
+                it.toDataSource(context).readExifOrientationWithMimeType("image/jpeg")
+            )
+            assertEquals(
+                ExifOrientationHelper.UNDEFINED,
+                it.toDataSource(context).readExifOrientationWithMimeType("image/bmp")
+            )
+        }
 
         assertEquals(
             ExifOrientationHelper.UNDEFINED,
@@ -786,7 +773,7 @@ class ExifOrientationHelperTest {
 
     @Test
     fun testAddToResize() {
-        // TODO The assToScale that addToResize depends on may have bugs and need to be tested
+        // TODO The addToScale that addToResize depends on may have bugs and need to be tested
         ExifOrientationHelper(ExifOrientationHelper.ROTATE_90).apply {
             assertEquals(Resize(5, 10), addToResize(Resize(10, 5), Size(100, 50)))
             assertEquals(
@@ -1410,12 +1397,5 @@ class ExifOrientationHelperTest {
                     .toString(),
             )
         }
-    }
-
-    private fun ExifOrientationHelper.applyToBitmap(
-        bitmap: Bitmap,
-        reverse: Boolean = false
-    ): Bitmap? {
-        return applyToImage(bitmap.asImage(), reverse)?.getBitmapOrThrow()
     }
 }

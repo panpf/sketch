@@ -27,7 +27,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-class ExifOrientationTestFileHelper constructor(
+class ExifOrientationTestFileHelper(
     private val context: Context,
     private val assetFileName: String,
     private val inSampleSize: Int = 1
