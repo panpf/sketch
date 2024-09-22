@@ -35,9 +35,11 @@ import com.github.panpf.sketch.request.onAnimationStart
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.getDrawableOrThrow
 import com.github.panpf.sketch.test.utils.intrinsicSize
+import com.github.panpf.sketch.test.utils.toDecoder
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.test.runTest
@@ -172,14 +174,25 @@ class GifAnimatedDecoderTest {
         }
     }
 
-    // TODO test: decodeImageInfo
+    @Test
+    fun testImageInfo() = runTest {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return@runTest
+
+        val (context, sketch) = getTestContextAndSketch()
+        val factory = GifAnimatedDecoder.Factory()
+
+        ImageRequest(context, ResourceImages.animGif.uri)
+            .toDecoder(sketch, factory)
+            .imageInfo.apply {
+                assertEquals(ImageInfo(480, 480, "image/gif"), this)
+            }
+    }
 
     @Test
     fun testDecodeDrawable() = runTest {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return@runTest
 
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = getTestContextAndSketch()
         val factory = GifAnimatedDecoder.Factory()
 
         val request = ImageRequest(context, ResourceImages.animGif.uri) {

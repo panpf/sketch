@@ -24,6 +24,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.WorkerThread
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.decode.internal.getInSampledTransformed
 import com.github.panpf.sketch.decode.internal.getResizeTransformed
@@ -51,6 +52,7 @@ import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.shortInfoColorSpace
 import com.github.panpf.sketch.test.utils.similarity
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.test.utils.toDecoder
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
@@ -69,6 +71,25 @@ import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class BitmapFactoryDecoderTest {
+
+    @Test
+    fun testImageInfo() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val factory = BitmapFactoryDecoder.Factory()
+
+        ResourceImages.statics.forEach { imageFile ->
+            try {
+                ImageRequest(context, imageFile.uri)
+                    .toDecoder(sketch, factory)
+                    .imageInfo.apply {
+                        assertSizeEquals(imageFile.size, this.size, delta = Size(1, 1))
+                        assertEquals(imageFile.mimeType, this.mimeType)
+                    }
+            } catch (e: ImageInvalidException) {
+                e.printStackTrace()
+            }
+        }
+    }
 
     @Test
     fun testDefault() = runTest {

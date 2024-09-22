@@ -40,6 +40,7 @@ import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.fetch
 import com.github.panpf.sketch.test.utils.getDrawableOrThrow
+import com.github.panpf.sketch.test.utils.toDecoder
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity
@@ -184,7 +185,18 @@ class GifDrawableDecoderTest {
         assertEquals(element2.hashCode(), element11.hashCode())
     }
 
-    // TODO test: decodeImageInfo
+    @Test
+    fun testImageInfo() = runTest {
+        val context = InstrumentationRegistry.getInstrumentation().context
+        val sketch = context.sketch
+        val factory = GifDrawableDecoder.Factory()
+
+        ImageRequest(context, ResourceImages.animGif.uri)
+            .toDecoder(sketch, factory)
+            .imageInfo.apply {
+                assertEquals(ImageInfo(480, 480, "image/gif"), this)
+            }
+    }
 
     @Test
     fun testDecode() = runTest {

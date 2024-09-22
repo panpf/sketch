@@ -33,10 +33,12 @@ import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.source.DataFrom.LOCAL
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.singleton.sketch
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.shortInfoColorSpace
+import com.github.panpf.sketch.test.utils.toDecoder
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toShortInfoString
@@ -160,6 +162,18 @@ class FFmpegVideoFrameDecoderTest {
 
         assertEquals(element1.hashCode(), element1.hashCode())
         assertEquals(element1.hashCode(), element11.hashCode())
+    }
+
+    @Test
+    fun testImageInfo() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val factory = FFmpegVideoFrameDecoder.Factory()
+
+        ImageRequest(context, ResourceImages.mp4.uri)
+            .toDecoder(sketch, factory)
+            .imageInfo.apply {
+                assertEquals("ImageInfo(500x250,'video/mp4')", toShortString())
+            }
     }
 
     @Test

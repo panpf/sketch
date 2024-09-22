@@ -6,6 +6,7 @@ import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecodeHelper
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.decode.internal.DecodeHelper
+import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DataSource
 
@@ -13,12 +14,20 @@ actual fun createDecodeHelper(request: ImageRequest, dataSource: DataSource): De
     return BitmapFactoryDecodeHelper(request, dataSource)
 }
 
-actual suspend fun ImageRequest.decode(sketch: Sketch, factory: Decoder.Factory?): DecodeResult {
-    val request = this@decode
+actual suspend fun ImageRequest.toDecoder(
+    sketch: Sketch,
+    factory: Decoder.Factory?,
+    fetchResultMap: ((FetchResult) -> FetchResult)?
+): Decoder {
+    val request = this@toDecoder
     val requestContext = request.toRequestContext(sketch)
     val fetcher = sketch.components.newFetcherOrThrow(requestContext)
-    val fetchResult = fetcher.fetch().getOrThrow()
+    val fetchResult = fetcher.fetch().getOrThrow().let { fetchResultMap?.invoke(it) ?: it }
     val decoder = factory?.create(requestContext, fetchResult)
         ?: BitmapFactoryDecoder(requestContext, fetchResult.dataSource.asOrThrow())
-    return decoder.decode()
+    return decoder
+}
+
+actual suspend fun ImageRequest.decode(sketch: Sketch, factory: Decoder.Factory?): DecodeResult {
+    return toDecoder(sketch, factory).decode()
 }

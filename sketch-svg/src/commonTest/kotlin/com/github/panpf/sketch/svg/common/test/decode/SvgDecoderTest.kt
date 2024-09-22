@@ -32,6 +32,7 @@ import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.fetch
+import com.github.panpf.sketch.test.utils.toDecoder
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchSize
@@ -173,7 +174,17 @@ class SvgDecoderTest {
         assertNotEquals(element2.hashCode(), element11.hashCode())
     }
 
-    // TODO test: decodeImageInfo
+    @Test
+    fun testImageInfo() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val factory = SvgDecoder.Factory()
+
+        ImageRequest(context, ResourceImages.svg.uri)
+            .toDecoder(sketch, factory)
+            .imageInfo.apply {
+                assertEquals("ImageInfo(256x225,'image/svg+xml')", this.toShortString())
+            }
+    }
 
     @Test
     fun testDecode() = runTest {

@@ -23,6 +23,7 @@ import com.github.panpf.sketch.decode.internal.DrawableDecoder
 import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.drawable.ResDrawable
 import com.github.panpf.sketch.fetch.FetchResult
+import com.github.panpf.sketch.fetch.copy
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
@@ -31,6 +32,7 @@ import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.shortInfoColorSpace
+import com.github.panpf.sketch.test.utils.toDecoder
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toShortInfoString
@@ -56,6 +58,7 @@ class DrawableDecoderTest {
         val factory = DrawableDecoder.Factory()
 
         assertEquals("DrawableDecoder", factory.toString())
+        assertEquals("DrawableDecoder", factory.key)
 
         // normal
         ImageRequest(
@@ -101,7 +104,51 @@ class DrawableDecoderTest {
         assertEquals(element1.hashCode(), element11.hashCode())
     }
 
-    // TODO test: decodeImageInfo
+    @Test
+    fun testImageInfo() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val factory = DrawableDecoder.Factory()
+
+        val resourceUri = newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.test)
+        ImageRequest(context, resourceUri)
+            .toDecoder(sketch, factory)
+            .imageInfo.apply {
+                val imageWidth = 50.dp2px
+                val imageHeight = 40.dp2px
+                assertEquals(
+                    "ImageInfo(${imageWidth}x${imageHeight},'text/xml')",
+                    toShortString()
+                )
+            }
+
+        ImageRequest(context, resourceUri)
+            .toDecoder(sketch, factory) {
+                it.copy(mimeType = null)
+            }.imageInfo.apply {
+                val imageWidth = 50.dp2px
+                val imageHeight = 40.dp2px
+                assertEquals(
+                    "ImageInfo(${imageWidth}x${imageHeight},'image/png')",
+                    toShortString()
+                )
+            }
+
+        ImageRequest(context, newResourceUri(8801)).run {
+            assertFailsWith(Resources.NotFoundException::class) {
+                factory.create(
+                    requestContext = this@run.toRequestContext(sketch),
+                    fetchResult = FetchResult(
+                        dataSource = DrawableDataSource(
+                            context = context,
+                            dataFrom = LOCAL,
+                            drawableFetcher = ResDrawable(8801)
+                        ),
+                        mimeType = "image/png"
+                    )
+                )!!.imageInfo
+            }
+        }
+    }
 
     @Test
     fun testDecode() = runTest {
@@ -110,42 +157,6 @@ class DrawableDecoderTest {
         val factory = DrawableDecoder.Factory()
         val imageWidth = 50.dp2px
         val imageHeight = 40.dp2px
-
-//        ImageRequest(context, newResourceUri(R.drawable.test)).run {
-//            val fetcher = sketch.components.newFetcherOrThrow(this)
-//            val fetchResult = fetcher.fetch().getOrThrow()
-//                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
-//        }.apply {
-//            assertEquals(
-//                "Bitmap(${imageWidth}x${imageHeight},ARGB_8888${shortInfoColorSpaceName("SRGB")})",
-//                bitmap.toShortInfoString()
-//            )
-//            assertEquals(
-//                "ImageInfo(${imageWidth}x${imageHeight},'text/xml')",
-//                imageInfo.toShortString()
-//            )
-//            assertEquals(LOCAL, dataFrom)
-//            assertNull(transformeds)
-//        }
-//
-//        ImageRequest(context, newResourceUri(R.drawable.test)) {
-//            colorType(Bitmap.Config.RGB_565)
-//        }.run {
-//            val fetcher = sketch.components.newFetcherOrThrow(this)
-//            val fetchResult = fetcher.fetch().getOrThrow()
-//                factory.create(sketch, this@run.toRequestContext(sketch), fetchResult)!!.decode()
-//        }.apply {
-//            assertEquals(
-//                "Bitmap(${imageWidth}x${imageHeight},RGB_565)",
-//                bitmap.toShortInfoString()
-//            )
-//            assertEquals(
-//                "ImageInfo(${imageWidth}x${imageHeight},'text/xml')",
-//                imageInfo.toShortString()
-//            )
-//            assertEquals(LOCAL, dataFrom)
-//            assertNull(transformeds)
-//        }
 
         ImageRequest(
             context,

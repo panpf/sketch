@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.core.nonandroid.test.decode
 
 import com.github.panpf.sketch.annotation.WorkerThread
+import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.SkiaDecoder
 import com.github.panpf.sketch.decode.internal.getInSampledTransformed
 import com.github.panpf.sketch.decode.internal.getResizeTransformed
@@ -27,6 +28,7 @@ import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.similarity
 import com.github.panpf.sketch.test.utils.size
+import com.github.panpf.sketch.test.utils.toDecoder
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
@@ -45,6 +47,25 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class SkiaDecoderTest {
+
+    @Test
+    fun testImageInfo() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val factory = SkiaDecoder.Factory()
+
+        ResourceImages.statics.forEach { imageFile ->
+            try {
+                ImageRequest(context, imageFile.uri)
+                    .toDecoder(sketch, factory)
+                    .imageInfo.apply {
+                        assertSizeEquals(imageFile.size, this.size, delta = Size(1, 1))
+                        assertEquals(imageFile.mimeType, this.mimeType)
+                    }
+            } catch (e: ImageInvalidException) {
+                e.printStackTrace()
+            }
+        }
+    }
 
     @Test
     fun testDefault() = runTest {
