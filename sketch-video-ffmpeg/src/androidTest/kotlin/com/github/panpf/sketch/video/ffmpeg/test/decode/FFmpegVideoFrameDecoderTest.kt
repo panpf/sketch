@@ -166,6 +166,11 @@ class FFmpegVideoFrameDecoderTest {
 
     @Test
     fun testImageInfo() = runTest {
+        if (Build.VERSION.SDK_INT < 24 && Devicex.isEmulator()) {
+            // UnsatisfiedLinkError /data/app/com.github.panpf.sketch.video.ffmpeg.test-1/lib/arm64/libssl.so
+            return@runTest
+        }
+
         val (context, sketch) = getTestContextAndSketch()
         val factory = FFmpegVideoFrameDecoder.Factory()
 

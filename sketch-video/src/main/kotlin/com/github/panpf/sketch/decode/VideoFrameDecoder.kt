@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.decode
 
 import android.annotation.TargetApi
@@ -47,7 +49,7 @@ fun ComponentRegistry.Builder.supportVideoFrame(): ComponentRegistry.Builder = a
  * @see com.github.panpf.sketch.video.test.decode.VideoFrameDecoderTest
  */
 @TargetApi(Build.VERSION_CODES.O_MR1)
-class VideoFrameDecoder(
+class VideoFrameDecoder constructor(
     private val requestContext: RequestContext,
     private val dataSource: DataSource,
     private val mimeType: String,

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-@file:Suppress("UnnecessaryVariable")
+@file:Suppress("UnnecessaryVariable", "RedundantConstructorKeyword")
 
 package com.github.panpf.sketch.decode.internal
 
+import android.annotation.TargetApi
 import android.media.MediaMetadataRetriever
 import android.media.MediaMetadataRetriever.BitmapParams
 import android.os.Build
@@ -45,7 +46,8 @@ import kotlin.math.roundToInt
  *
  * @see com.github.panpf.sketch.video.test.decode.internal.VideoFrameDecodeHelperTest
  */
-class VideoFrameDecodeHelper(
+@TargetApi(Build.VERSION_CODES.O_MR1)
+class VideoFrameDecodeHelper constructor(
     val sketch: Sketch,
     val request: ImageRequest,
     val dataSource: DataSource,
@@ -96,9 +98,9 @@ class VideoFrameDecodeHelper(
         val bitmap = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
                 val bitmapParams = BitmapParams().apply {
-                    val inPreferredConfigFromRequest = config.colorType
-                    if (inPreferredConfigFromRequest != null) {
-                        preferredConfig = inPreferredConfigFromRequest
+                    val colorType = config.colorType
+                    if (colorType != null) {
+                        preferredConfig = colorType
                     }
                 }
                 mediaMetadataRetriever
