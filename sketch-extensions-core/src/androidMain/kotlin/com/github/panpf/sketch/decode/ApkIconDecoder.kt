@@ -49,7 +49,7 @@ class ApkIconDecoder(
     file: File
 ) : DrawableDecoder(
     requestContext = requestContext,
-    drawableDataSource = DrawableDataSource(
+    dataSource = DrawableDataSource(
         context = requestContext.sketch.context,
         dataFrom = dataFrom,
         drawableFetcher = ApkIconDrawableFetcher(file),

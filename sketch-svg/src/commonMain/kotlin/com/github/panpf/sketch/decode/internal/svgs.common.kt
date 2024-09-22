@@ -38,7 +38,7 @@ fun ByteArray.isSvg(): Boolean =
 /**
  * Decode the SVG image info
  *
- * @see com.github.panpf.sketch.svg.android.test.decode.internal.SvgsAndroidTest.testDecodeSvgImageInfo
+ * @see com.github.panpf.sketch.svg.android.test.decode.internal.SvgsAndroidTest.testReadSvgImageInfo
  * @see com.github.panpf.sketch.svg.nonandroid.test.decode.internal.SvgsNonAndroidTest.testReadSvgImageInfo
  */
 internal expect fun DataSource.readSvgImageInfo(

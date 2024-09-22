@@ -42,7 +42,7 @@ import kotlin.math.roundToInt
  */
 open class DrawableDecoder(
     private val requestContext: RequestContext,
-    private val drawableDataSource: DrawableDataSource,
+    private val dataSource: DrawableDataSource,
     private val mimeType: String?
 ) : Decoder {
 
@@ -54,7 +54,7 @@ open class DrawableDecoder(
             kotlinx.atomicfu.locks.synchronized(imageInfoLock) {
                 val imageInfo = _imageInfo
                 if (imageInfo != null) return imageInfo
-                val drawable = drawableDataSource.drawable
+                val drawable = dataSource.drawable
                 return ImageInfo(
                     width = drawable.intrinsicWidth,
                     height = drawable.intrinsicHeight,
@@ -68,7 +68,7 @@ open class DrawableDecoder(
     @WorkerThread
     override fun decode(): DecodeResult {
         val request = requestContext.request
-        val drawable = drawableDataSource.drawable
+        val drawable = dataSource.drawable
 
         val imageWidth = drawable.intrinsicWidth
         val imageHeight = drawable.intrinsicHeight
