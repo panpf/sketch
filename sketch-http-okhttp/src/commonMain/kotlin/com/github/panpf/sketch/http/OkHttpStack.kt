@@ -90,6 +90,8 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
     class Content(private val inputStream: InputStream) : HttpStack.Content {
 
         override suspend fun read(buffer: ByteArray): Int {
+            // Currently running on a limited number of IO contexts, so this warning can be ignored
+            @Suppress("BlockingMethodInNonBlockingContext")
             return inputStream.read(buffer)
         }
 
@@ -102,11 +104,10 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
         private var connectTimeoutMillis: Int = HttpStack.DEFAULT_TIMEOUT
         private var readTimeoutMillis: Int = HttpStack.DEFAULT_TIMEOUT
         private var userAgent: String? = null
-        private var extraHeaders: MutableMap<String, String>? = null
-        private var addExtraHeaders: MutableList<Pair<String, String>>? = null
+        private var headers: MutableMap<String, String>? = null
+        private var addHeaders: MutableList<Pair<String, String>>? = null
         private var interceptors: List<Interceptor>? = null
         private var networkInterceptors: List<Interceptor>? = null
-        private var enabledTlsProtocols: List<String>? = null
 
         /**
          * Set connection timeout, in milliseconds
@@ -133,7 +134,7 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
          * Set HTTP header
          */
         fun headers(headers: Map<String, String>): Builder = apply {
-            this.extraHeaders = (this.extraHeaders ?: HashMap()).apply {
+            this.headers = (this.headers ?: HashMap()).apply {
                 putAll(headers)
             }
         }
@@ -142,14 +143,16 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
          * Set HTTP header
          */
         fun headers(vararg headers: Pair<String, String>): Builder = apply {
-            headers(headers.toMap())
+            this.headers = (this.headers ?: HashMap()).apply {
+                putAll(headers)
+            }
         }
 
         /**
          * Set repeatable HTTP headers
          */
         fun addHeaders(headers: List<Pair<String, String>>): Builder = apply {
-            this.addExtraHeaders = (this.addExtraHeaders ?: ArrayList()).apply {
+            this.addHeaders = (this.addHeaders ?: ArrayList()).apply {
                 addAll(headers)
             }
         }
@@ -158,7 +161,9 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
          * Set repeatable HTTP headers
          */
         fun addHeaders(vararg headers: Pair<String, String>): Builder = apply {
-            addHeaders(headers.toList())
+            this.addHeaders = (this.addHeaders ?: ArrayList()).apply {
+                addAll(headers)
+            }
         }
 
         /**
@@ -175,27 +180,13 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
             this.networkInterceptors = networkInterceptors.toList()
         }
 
-        /**
-         * Set tls protocols
-         */
-        fun enabledTlsProtocols(vararg enabledTlsProtocols: String): Builder = apply {
-            this.enabledTlsProtocols = enabledTlsProtocols.toList()
-        }
-
-        /**
-         * Set tls protocols
-         */
-        fun enabledTlsProtocols(enabledTlsProtocols: List<String>): Builder = apply {
-            this.enabledTlsProtocols = enabledTlsProtocols.toList()
-        }
-
         fun build(): OkHttpStack {
             val okHttpClient = OkHttpClient.Builder().apply {
                 connectTimeout(connectTimeoutMillis.toLong(), MILLISECONDS)
                 readTimeout(readTimeoutMillis.toLong(), MILLISECONDS)
                 val userAgent = userAgent
-                val extraHeaders = extraHeaders?.toMap()?.takeIf { it.isNotEmpty() }
-                val addExtraHeaders = addExtraHeaders?.toList()?.takeIf { it.isNotEmpty() }
+                val extraHeaders = headers?.toMap()?.takeIf { it.isNotEmpty() }
+                val addExtraHeaders = addHeaders?.toList()?.takeIf { it.isNotEmpty() }
                 if (userAgent != null || extraHeaders != null || addExtraHeaders != null) {
                     addInterceptor(MyInterceptor(userAgent, extraHeaders, addExtraHeaders))
                 }
@@ -204,10 +195,6 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
                 }
                 networkInterceptors?.forEach { interceptor ->
                     addNetworkInterceptor(interceptor)
-                }
-                val enabledTlsProtocols = enabledTlsProtocols
-                if (enabledTlsProtocols?.isNotEmpty() == true) {
-                    setEnabledTlsProtocols(enabledTlsProtocols.toTypedArray())
                 }
             }.build()
             return OkHttpStack(okHttpClient)
@@ -220,11 +207,9 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
         val addHeaders: List<Pair<String, String>>? = null,
     ) : Interceptor {
 
-        override fun intercept(chain: Chain): okhttp3.Response =
-            chain.proceed(setupAttrs(chain.request()))
-
-        private fun setupAttrs(request: Request): Request =
-            request.newBuilder().apply {
+        override fun intercept(chain: Chain): okhttp3.Response {
+            val request = chain.request()
+            val newRequest = request.newBuilder().apply {
                 if (userAgent?.isNotEmpty() == true) {
                     header("User-Agent", userAgent)
                 }
@@ -235,5 +220,7 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
                     header(it.key, it.value)
                 }
             }.build()
+            return chain.proceed(newRequest)
+        }
     }
 }

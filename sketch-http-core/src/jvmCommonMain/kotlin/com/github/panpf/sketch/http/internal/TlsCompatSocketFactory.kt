@@ -24,6 +24,42 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocket
 import javax.net.ssl.SSLSocketFactory
 
+//fun setTlsProtocols(connection: HttpsURLConnection, enabledTlsProtocols: Array<String>) {
+//    if (enabledTlsProtocols.isNotEmpty()) {
+//        connection.sslSocketFactory = TlsCompatSocketFactory(enabledTlsProtocols)
+//    }
+//}
+//
+//fun setTlsProtocols(socket: SSLSocket, enabledTlsProtocols: Array<String>) {
+//    if (enabledTlsProtocols.isNotEmpty()) {
+//        socket.enabledProtocols = enabledTlsProtocols
+//    }
+//}
+//
+//fun setEnabledTlsProtocols(builder: OkHttpClient.Builder, enabledTlsProtocols: Array<String>) {
+//    if (enabledTlsProtocols.isNotEmpty()) {
+//        try {
+//            val sslSocketFactory = TlsCompatSocketFactory(enabledTlsProtocols)
+//            val trustManager = Platform.get().trustManager(sslSocketFactory)
+//                ?: throw IllegalStateException(
+//                    "Unable to extract the trust manager on ${Platform.get()}, " +
+//                            "sslSocketFactory is ${sslSocketFactory.javaClass}"
+//                )
+//            builder.sslSocketFactory(sslSocketFactory, trustManager)
+//
+//            val connectionSpec = ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+//                .tlsVersions(*enabledTlsProtocols.map { TlsVersion.forJavaName(it) }.toTypedArray())
+//                .build()
+//            builder.connectionSpecs(
+//                listOf(connectionSpec, ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT)
+//            )
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            println("OkHttpTLSCompat. Error while setting TLS ${enabledTlsProtocols.joinToString()}")
+//        }
+//    }
+//}
+
 /**
  * Enables TLS v1.1, v1.2, v1.3 when creating SSLSockets.
  *
@@ -32,7 +68,6 @@ import javax.net.ssl.SSLSocketFactory
  *
  * @link https://developer.android.com/reference/javax/net/ssl/SSLSocket.html
  * @see SSLSocketFactory
- * @see com.github.panpf.sketch.http.core.jvmcommon.test.internal.TlsCompatSocketFactoryTest
  */
 class TlsCompatSocketFactory(val enabledTlsProtocols: Array<String>) : SSLSocketFactory() {
 

@@ -139,7 +139,7 @@ class Extras private constructor(
 
     override fun toString() = "Extras($entries)"
 
-    data class Entry constructor(
+    data class Entry(
         val value: Any?,
         val cacheKey: String?,
         val requestKey: String?,
@@ -214,7 +214,7 @@ fun Extras.isNotEmpty(): Boolean = !isEmpty()
 /**
  * Returns the value associated with [key] or null if [key] has no mapping.
  *
- * @see com.github.panpf.sketch.http.core.common.test.request.ExtrasTest.testGet
+ * @see com.github.panpf.sketch.http.core.common.test.request.ExtrasTest.testValueAndGetAndCount
  */
 operator fun Extras.get(key: String): Any? = value(key)
 

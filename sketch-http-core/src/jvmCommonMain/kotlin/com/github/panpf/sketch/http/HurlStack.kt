@@ -16,14 +16,11 @@
 
 package com.github.panpf.sketch.http
 
-import com.github.panpf.sketch.http.HttpStack.Response
-import com.github.panpf.sketch.http.internal.TlsCompatSocketFactory
 import com.github.panpf.sketch.request.Extras
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import javax.net.ssl.HttpsURLConnection
 
 /**
  * Use [HttpURLConnection] to request HTTP
@@ -31,40 +28,7 @@ import javax.net.ssl.HttpsURLConnection
  * @see com.github.panpf.sketch.http.core.jvmcommon.test.HurlStackTest
  */
 class HurlStack private constructor(
-    /**
-     * Read timeout, in milliseconds
-     */
-    val readTimeoutMillis: Int = HttpStack.DEFAULT_TIMEOUT,
-
-    /**
-     * Connection timeout, in milliseconds
-     */
-    val connectTimeoutMillis: Int = HttpStack.DEFAULT_TIMEOUT,
-
-    /**
-     * HTTP UserAgent
-     */
-    val userAgent: String? = null,
-
-    /**
-     * HTTP header
-     */
-    val headers: Map<String, String>? = null,
-
-    /**
-     * Repeatable HTTP headers
-     */
-    val addHeaders: List<Pair<String, String>>? = null,
-
-    /**
-     * Callback before executing connection
-     */
-    val onBeforeConnect: ((url: String, connection: HttpURLConnection) -> Unit)? = null,
-
-    /**
-     * Enabled tls protocols
-     */
-    val enabledTlsProtocols: Array<String>? = null
+    val interceptors: List<Interceptor> = emptyList()
 ) : HttpStack {
 
     @Throws(IOException::class)
@@ -72,81 +36,51 @@ class HurlStack private constructor(
         url: String,
         httpHeaders: HttpHeaders?,
         extras: Extras?
-    ): Response {
+    ): HttpStack.Response {
         var newUri = url
         while (newUri.isNotEmpty()) {
-            val connection = (URL(newUri).openConnection() as HttpURLConnection).apply {
-                this@apply.connectTimeout = this@HurlStack.connectTimeoutMillis
-                this@apply.readTimeout = this@HurlStack.readTimeoutMillis
-                doInput = true
-                if (this@HurlStack.userAgent != null) {
-                    setRequestProperty("User-Agent", this@HurlStack.userAgent)
-                }
-                if (!addHeaders.isNullOrEmpty()) {
-                    for ((key, value) in addHeaders) {
-                        addRequestProperty(key, value)
-                    }
-                }
-                if (!headers.isNullOrEmpty()) {
-                    for ((key, value) in headers) {
-                        setRequestProperty(key, value)
-                    }
-                }
-                httpHeaders?.apply {
-                    addList.forEach {
-                        addRequestProperty(it.first, it.second)
-                    }
-                    setList.forEach {
-                        setRequestProperty(it.first, it.second)
-                    }
-                }
-                val enabledTlsProtocols = enabledTlsProtocols
-                if (this is HttpsURLConnection && enabledTlsProtocols?.isNotEmpty() == true) {
-                    sslSocketFactory = TlsCompatSocketFactory(enabledTlsProtocols)
-                }
-            }
-            onBeforeConnect?.invoke(url, connection)
             // Currently running on a limited number of IO contexts, so this warning can be ignored
-            connection.connect()
-            val code = connection.responseCode
+            @Suppress("BlockingMethodInNonBlockingContext")
+            val connection = (URL(newUri).openConnection() as HttpURLConnection).apply {
+                doInput = true
+            }
+
+            val fixedInterceptors = listOf(HttpHeadersInterceptor(httpHeaders), EngineInterceptor())
+            val finalInterceptors = interceptors.plus(fixedInterceptors)
+            val response = InterceptorChain(connection, finalInterceptors).proceed()
+
+            val code = response.code
             if (code == 301 || code == 302 || code == 307) {
-                newUri = connection.getHeaderField("Location")
+                val location = response.getHeaderField("Location")
+                if (location != null) {
+                    newUri = location
+                } else {
+                    throw throw IOException("Unable to get Location field")
+                }
             } else {
-                return HurlResponse(connection)
+                return response
             }
         }
         throw throw IOException("Unable to get response")
     }
 
-    override fun toString(): String =
-        "HurlStack(connectTimeout=${connectTimeoutMillis},readTimeout=${readTimeoutMillis},userAgent=${userAgent})"
+    override fun toString(): String = "HurlStack(interceptors=$interceptors)"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as HurlStack
-        if (readTimeoutMillis != other.readTimeoutMillis) return false
-        if (connectTimeoutMillis != other.connectTimeoutMillis) return false
-        if (userAgent != other.userAgent) return false
-        if (headers != other.headers) return false
-        if (addHeaders != other.addHeaders) return false
-        if (onBeforeConnect != other.onBeforeConnect) return false
+        if (interceptors != other.interceptors) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = readTimeoutMillis
-        result = 31 * result + connectTimeoutMillis
-        result = 31 * result + (userAgent?.hashCode() ?: 0)
-        result = 31 * result + (headers?.hashCode() ?: 0)
-        result = 31 * result + (addHeaders?.hashCode() ?: 0)
-        result = 31 * result + (onBeforeConnect?.hashCode() ?: 0)
-        return result
+        return interceptors.hashCode()
     }
 
-    class HurlResponse(
+    class Response(
         @Suppress("MemberVisibilityCanBePrivate") val connection: HttpURLConnection
-    ) : Response {
+    ) : HttpStack.Response {
 
         @get:Throws(IOException::class)
         override val code: Int = connection.responseCode
@@ -170,6 +104,8 @@ class HurlStack private constructor(
     class Content(private val inputStream: InputStream) : HttpStack.Content {
 
         override suspend fun read(buffer: ByteArray): Int {
+            // Currently running on a limited number of IO contexts, so this warning can be ignored
+            @Suppress("BlockingMethodInNonBlockingContext")
             return inputStream.read(buffer)
         }
 
@@ -182,10 +118,8 @@ class HurlStack private constructor(
         private var connectTimeoutMillis: Int = HttpStack.DEFAULT_TIMEOUT
         private var readTimeoutMillis: Int = HttpStack.DEFAULT_TIMEOUT
         private var userAgent: String? = null
-        private var extraHeaders: MutableMap<String, String>? = null
-        private var addExtraHeaders: MutableList<Pair<String, String>>? = null
-        private var onBeforeConnect: ((url: String, connection: HttpURLConnection) -> Unit)? = null
-        private var enabledTlsProtocols: List<String>? = null
+        private var httpHeadersBuilder: HttpHeaders.Builder? = null
+        private var interceptors: MutableList<Interceptor>? = null
 
         /**
          * Set connection timeout, in milliseconds
@@ -212,8 +146,10 @@ class HurlStack private constructor(
          * Set HTTP header
          */
         fun headers(headers: Map<String, String>): Builder = apply {
-            this.extraHeaders = (this.extraHeaders ?: HashMap()).apply {
-                putAll(headers)
+            this.httpHeadersBuilder = (httpHeadersBuilder ?: HttpHeaders.Builder()).apply {
+                headers.forEach { (t, u) ->
+                    set(t, u)
+                }
             }
         }
 
@@ -221,15 +157,21 @@ class HurlStack private constructor(
          * Set HTTP header
          */
         fun headers(vararg headers: Pair<String, String>): Builder = apply {
-            headers(headers.toMap())
+            this.httpHeadersBuilder = (httpHeadersBuilder ?: HttpHeaders.Builder()).apply {
+                headers.forEach { (t, u) ->
+                    set(t, u)
+                }
+            }
         }
 
         /**
          * Set repeatable HTTP headers
          */
         fun addHeaders(headers: List<Pair<String, String>>): Builder = apply {
-            this.addExtraHeaders = (this.addExtraHeaders ?: ArrayList()).apply {
-                addAll(headers)
+            this.httpHeadersBuilder = (httpHeadersBuilder ?: HttpHeaders.Builder()).apply {
+                headers.forEach { (t, u) ->
+                    add(t, u)
+                }
             }
         }
 
@@ -237,41 +179,126 @@ class HurlStack private constructor(
          * Set repeatable HTTP headers
          */
         fun addHeaders(vararg headers: Pair<String, String>): Builder = apply {
-            addHeaders(headers.toList())
-        }
-
-        /**
-         * Callback before executing connection
-         */
-        fun onBeforeConnect(block: (url: String, connection: HttpURLConnection) -> Unit): Builder =
-            apply {
-                this.onBeforeConnect = block
+            this.httpHeadersBuilder = (httpHeadersBuilder ?: HttpHeaders.Builder()).apply {
+                headers.forEach { (t, u) ->
+                    add(t, u)
+                }
             }
-
-        /**
-         * Set tls protocols
-         */
-        @Suppress("unused")
-        fun enabledTlsProtocols(vararg enabledTlsProtocols: String): Builder = apply {
-            this.enabledTlsProtocols = enabledTlsProtocols.toList()
         }
 
         /**
-         * Set tls protocols
+         * Add interceptor
          */
-        @Suppress("unused")
-        fun enabledTlsProtocols(enabledTlsProtocols: List<String>): Builder = apply {
-            this.enabledTlsProtocols = enabledTlsProtocols.toList()
+        fun addInterceptor(interceptor: Interceptor): Builder = apply {
+            this.interceptors = (interceptors ?: mutableListOf()).apply {
+                add(interceptor)
+            }
         }
 
-        fun build(): HurlStack = HurlStack(
-            readTimeoutMillis = readTimeoutMillis,
-            connectTimeoutMillis = connectTimeoutMillis,
-            userAgent = userAgent,
-            headers = extraHeaders?.takeIf { it.isNotEmpty() },
-            addHeaders = addExtraHeaders?.takeIf { it.isNotEmpty() },
-            onBeforeConnect = onBeforeConnect,
-            enabledTlsProtocols = enabledTlsProtocols?.toTypedArray(),
-        )
+        fun build(): HurlStack {
+            val finalInterceptors = buildList {
+                add(TimeoutInterceptor(connectTimeoutMillis, readTimeoutMillis))
+                val userAgent = this@Builder.userAgent
+                if (userAgent != null) {
+                    add(UserAgentInterceptor(userAgent))
+                }
+                val httpHeadersBuilder = this@Builder.httpHeadersBuilder
+                if (httpHeadersBuilder != null) {
+                    add(HttpHeadersInterceptor(httpHeadersBuilder.build()))
+                }
+                val interceptors = this@Builder.interceptors
+                if (interceptors != null) {
+                    addAll(interceptors)
+                }
+            }
+            return HurlStack(finalInterceptors)
+        }
+    }
+
+    interface Interceptor {
+        fun intercept(chain: Chain): Response
+    }
+
+    interface Chain {
+        val connection: HttpURLConnection
+        fun proceed(): Response
+    }
+
+    class InterceptorChain(
+        override val connection: HttpURLConnection,
+        private val interceptors: List<Interceptor>,
+        private val index: Int = 0
+    ) : Chain {
+        override fun proceed(): Response {
+            val interceptor = interceptors[index]
+            val next = InterceptorChain(connection, interceptors, index + 1)
+            return interceptor.intercept(next)
+        }
+    }
+
+    data class HttpHeadersInterceptor(
+        val httpHeaders: HttpHeaders?,
+    ) : Interceptor {
+
+        override fun intercept(chain: Chain): Response {
+            val connection = chain.connection
+            httpHeaders?.addList?.forEach { (key, value) ->
+                connection.addRequestProperty(key, value)
+            }
+            httpHeaders?.setList?.forEach { (key, value) ->
+                connection.setRequestProperty(key, value)
+            }
+            return chain.proceed()
+        }
+    }
+
+    data class TimeoutInterceptor(
+        val connectTimeoutMillis: Int? = null,
+        val readTimeoutMillis: Int? = null,
+    ) : Interceptor {
+
+        override fun intercept(chain: Chain): Response {
+            val connection = chain.connection
+            if (connectTimeoutMillis != null) {
+                connection.connectTimeout = connectTimeoutMillis
+            }
+            if (readTimeoutMillis != null) {
+                connection.readTimeout = readTimeoutMillis
+            }
+            return chain.proceed()
+        }
+    }
+
+    data class UserAgentInterceptor(
+        val userAgent: String,
+    ) : Interceptor {
+
+        override fun intercept(chain: Chain): Response {
+            chain.connection.setRequestProperty("User-Agent", userAgent)
+            return chain.proceed()
+        }
+    }
+
+    private class EngineInterceptor : Interceptor {
+
+        override fun intercept(chain: Chain): Response {
+            val connection = chain.connection
+            connection.connect()
+            return Response(connection)
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return javaClass.hashCode()
+        }
+
+        override fun toString(): String {
+            return "EngineInterceptor()"
+        }
     }
 }

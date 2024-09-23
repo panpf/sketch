@@ -16,11 +16,23 @@
 
 package com.github.panpf.sketch.util
 
+/**
+ * Key interface, used to get the key value. equals The keys of the same object must also be the same
+ */
 interface Key {
+    /**
+     * Used to identify the current object. equals The keys of the same object must also be the same
+     */
     val key: String
 }
 
+/**
+ * Nullable key interface, used to get the key value. equals The keys of the same object must also be the same
+ */
 interface NullableKey {
+    /**
+     * Used to identify the current object. equals The keys of the same object must also be the same
+     */
     val key: String?
 }
 
