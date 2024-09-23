@@ -89,7 +89,7 @@ import okio.FileSystem
 class Sketch private constructor(options: Options) {
 
     private val requestExecutor = RequestExecutor(this)
-    private val isShutdown = atomic(false)
+    private val _isShutdown = atomic(false)
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.Main.immediate + CoroutineExceptionHandler { _, throwable ->
             logger.e(throwable, "CoroutineScope. An uncaught exception")
@@ -144,6 +144,8 @@ class Sketch private constructor(options: Options) {
             ?.let { parallelism -> dispatcher.limitedParallelism(parallelism) }
             ?: dispatcher
     }
+
+    val isShutdown: Boolean get() = _isShutdown.value
 
     init {
         checkPlatformContext(context)
@@ -244,7 +246,7 @@ class Sketch private constructor(options: Options) {
      * Shutting down an image loader is optional.
      */
     fun shutdown() {
-        if (isShutdown.getAndSet(true)) return
+        if (_isShutdown.getAndSet(true)) return
         scope.cancel()
         systemCallbacks.shutdown()
         memoryCache.clear()
