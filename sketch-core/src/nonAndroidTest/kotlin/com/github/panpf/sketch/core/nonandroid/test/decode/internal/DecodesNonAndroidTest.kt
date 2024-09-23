@@ -38,7 +38,6 @@ import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.similarity
-import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toPreviewBitmap
 import com.github.panpf.sketch.test.utils.toRect
 import com.github.panpf.sketch.test.utils.toRequestContext

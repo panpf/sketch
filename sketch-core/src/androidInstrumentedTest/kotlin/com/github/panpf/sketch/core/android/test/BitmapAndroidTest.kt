@@ -5,7 +5,9 @@ import android.graphics.Bitmap.Config.RGB_565
 import com.github.panpf.sketch.AndroidBitmap
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.isImmutable
+import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.utils.decode
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.copyWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -32,6 +34,12 @@ class BitmapAndroidTest {
     fun testHeight() {
         assertEquals(expected = 200, actual = AndroidBitmap(100, 200).height)
         assertEquals(expected = 100, actual = AndroidBitmap(200, 100).height)
+    }
+
+    @Test
+    fun testSize() {
+        assertEquals(expected = Size(200, 100), actual = AndroidBitmap(100, 200).size)
+        assertEquals(expected = Size(100, 200), actual = AndroidBitmap(200, 100).size)
     }
 
     @Test

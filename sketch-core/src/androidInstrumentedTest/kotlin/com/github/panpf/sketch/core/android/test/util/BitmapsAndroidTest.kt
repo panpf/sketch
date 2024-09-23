@@ -33,6 +33,7 @@ import com.github.panpf.sketch.isImmutable
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.utils.Offset
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.cornerA
@@ -46,7 +47,6 @@ import com.github.panpf.sketch.test.utils.hammingDistance
 import com.github.panpf.sketch.test.utils.produceFingerPrint
 import com.github.panpf.sketch.test.utils.shortInfoColorSpace
 import com.github.panpf.sketch.test.utils.similarity
-import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.background

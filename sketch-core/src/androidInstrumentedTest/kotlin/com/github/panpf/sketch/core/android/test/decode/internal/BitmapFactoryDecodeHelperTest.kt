@@ -24,6 +24,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.request.preferQualityOverSpeed
+import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DataSource
@@ -32,7 +33,6 @@ import com.github.panpf.sketch.test.utils.assertSizeEquals
 import com.github.panpf.sketch.test.utils.chunkingFour
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.similarity
-import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toRect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.safeToSoftware

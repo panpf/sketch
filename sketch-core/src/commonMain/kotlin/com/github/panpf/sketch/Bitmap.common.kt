@@ -18,6 +18,8 @@
 
 package com.github.panpf.sketch
 
+import com.github.panpf.sketch.util.Size
+
 /**
  * Bitmap, which is a typealias of platform Bitmap
  *
@@ -41,6 +43,15 @@ expect val Bitmap.width: Int
  * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testHeight
  */
 expect val Bitmap.height: Int
+
+/**
+ * Get image size
+ *
+ * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testSize
+ * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testSize
+ */
+val Bitmap.size: Size
+    get() = Size(width, height)
 
 /**
  * Returns the minimum number of bytes that can be used to store this bitmap's pixels.

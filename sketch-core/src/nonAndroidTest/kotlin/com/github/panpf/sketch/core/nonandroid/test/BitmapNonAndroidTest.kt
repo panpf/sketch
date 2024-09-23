@@ -4,7 +4,9 @@ import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.byteCount
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.isMutable
+import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.utils.decode
+import com.github.panpf.sketch.util.Size
 import org.jetbrains.skia.ColorType.RGBA_8888
 import org.jetbrains.skia.ColorType.RGB_565
 import kotlin.test.Test
@@ -32,6 +34,12 @@ class BitmapNonAndroidTest {
     fun testHeight() {
         assertEquals(expected = 200, actual = SkiaBitmap(100, 200).height)
         assertEquals(expected = 100, actual = SkiaBitmap(200, 100).height)
+    }
+
+    @Test
+    fun testSize() {
+        assertEquals(expected = Size(200, 100), actual = SkiaBitmap(100, 200).size)
+        assertEquals(expected = Size(100, 200), actual = SkiaBitmap(200, 100).size)
     }
 
     @Test

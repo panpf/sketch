@@ -6,9 +6,9 @@ import android.os.Build.VERSION
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.utils.decodeImageUseImageDecoder
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.util.Size
 import org.junit.runner.RunWith
 import kotlin.test.Test

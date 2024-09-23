@@ -20,7 +20,6 @@ import com.github.panpf.sketch.test.utils.assertSizeEquals
 import com.github.panpf.sketch.test.utils.chunkingFour
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.similarity
-import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toPreviewBitmap
 import com.github.panpf.sketch.test.utils.toRect
 import com.github.panpf.sketch.util.Size

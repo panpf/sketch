@@ -17,11 +17,11 @@ import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.colorType
+import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.assertSizeEquals
-import com.github.panpf.sketch.test.utils.size
 import com.github.panpf.sketch.test.utils.toRect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.device.Devicex
