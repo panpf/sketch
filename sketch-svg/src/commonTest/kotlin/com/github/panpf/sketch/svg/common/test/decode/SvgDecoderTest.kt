@@ -177,10 +177,17 @@ class SvgDecoderTest {
     @Test
     fun testImageInfo() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val factory = SvgDecoder.Factory()
 
+        val factory = SvgDecoder.Factory()
         ImageRequest(context, ResourceImages.svg.uri)
             .toDecoder(sketch, factory)
+            .imageInfo.apply {
+                assertEquals("ImageInfo(257x226,'image/svg+xml')", this.toShortString())
+            }
+
+        val factory1 = SvgDecoder.Factory(useViewBoundsAsIntrinsicSize = false)
+        ImageRequest(context, ResourceImages.svg.uri)
+            .toDecoder(sketch, factory1)
             .imageInfo.apply {
                 assertEquals("ImageInfo(256x225,'image/svg+xml')", this.toShortString())
             }
@@ -196,7 +203,7 @@ class SvgDecoderTest {
         ImageRequest(context, ResourceImages.svg.uri)
             .decode(sketch, factory).apply {
                 assertEquals(
-                    "ImageInfo(256x225,'image/svg+xml')",
+                    "ImageInfo(257x226,'image/svg+xml')",
                     imageInfo.toShortString()
                 )
                 val size = context.screenSize()
@@ -223,20 +230,20 @@ class SvgDecoderTest {
          * resize size
          */
         listOf(
-            SketchSize(600, 600) to (2.34f to Size(600, 527)),
-            SketchSize(1500, 1500) to (5.86f to Size(1500, 1318)),
+            SketchSize(600, 600) to (2.33f to Size(600, 528)),
+            SketchSize(1500, 1500) to (5.84f to Size(1500, 1319)),
             SketchSize(600, 300) to (1.33f to Size(341, 300)),
             SketchSize(300, 600) to (1.17f to Size(300, 264)),
             SketchSize(400, 0) to (1.56f to Size(400, 352)),
-            SketchSize(0, 400) to (1.78f to Size(455, 400)),
-            SketchSize(0, 0) to (1f to Size(256, 225)),
+            SketchSize(0, 400) to (1.77f to Size(455, 400)),
+            SketchSize(0, 0) to (1f to Size(257, 226)),
         ).forEach { (targetSize, expected) ->
             val (expectedScaleFactor, expectedSize) = expected
             ImageRequest(context, ResourceImages.svg.uri) {
                 size(targetSize)
             }.decode(sketch, factory).apply {
                 assertEquals(
-                    expected = "ImageInfo(256x225,'image/svg+xml')",
+                    expected = "ImageInfo(257x226,'image/svg+xml')",
                     actual = imageInfo.toShortString(),
                     message = "targetSize=$targetSize"
                 )
@@ -262,10 +269,10 @@ class SvgDecoderTest {
          * resize precision
          */
         listOf(
-            Precision.EXACTLY to (2.34f to Size(600, 600)),
-            Precision.LESS_PIXELS to (2.34f to Size(600, 527)),
-            Precision.SAME_ASPECT_RATIO to (2.34f to Size(527, 527)),
-            Precision.SMALLER_SIZE to (2.34f to Size(600, 527)),
+            Precision.EXACTLY to (2.33f to Size(600, 600)),
+            Precision.LESS_PIXELS to (2.33f to Size(600, 528)),
+            Precision.SAME_ASPECT_RATIO to (2.33f to Size(528, 528)),
+            Precision.SMALLER_SIZE to (2.33f to Size(600, 528)),
         ).forEach { (precision, expected) ->
             val (expectedScaleFactor, expectedSize) = expected
             ImageRequest(context, ResourceImages.svg.uri) {
@@ -273,7 +280,7 @@ class SvgDecoderTest {
                 precision(precision)
             }.decode(sketch, factory).apply {
                 assertEquals(
-                    expected = "ImageInfo(256x225,'image/svg+xml')",
+                    expected = "ImageInfo(257x226,'image/svg+xml')",
                     actual = imageInfo.toShortString(),
                     message = "precision=$precision"
                 )
