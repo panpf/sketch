@@ -24,6 +24,7 @@ import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
 import org.junit.runner.RunWith
@@ -55,7 +56,12 @@ class ColorDrawableStateImageTest {
         // TODO test
     }
 
-    // TODO test: key
+    @Test
+    fun testKey() {
+        IntColorDrawableStateImage(Color.RED).apply {
+            assertEquals("ColorDrawableStateImage(${IntColor(Color.RED).key})", key)
+        }
+    }
 
     @Test
     fun testGetImage() {

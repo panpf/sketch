@@ -16,6 +16,8 @@ import java.io.IOException
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
 
 @RunWith(AndroidJUnit4::class)
 class ContentDataSourceTest {
@@ -36,7 +38,23 @@ class ContentDataSourceTest {
         }
     }
 
-    // TODO test: key
+    @Test
+    fun testKey() {
+        val (_, sketch) = getTestContextAndSketch()
+        val contentUri = AssetDataSource(
+            context = sketch.context,
+            fileName = ResourceImages.jpeg.resourceName
+        ).getFile(sketch).let { Uri.fromFile(it.toFile()) }
+        ContentDataSource(
+            context = sketch.context,
+            contentUri = contentUri,
+        ).apply {
+            assertEquals(
+                expected = contentUri.toString(),
+                actual = key
+            )
+        }
+    }
 
     @Test
     fun testNewInputStream() {
@@ -92,7 +110,44 @@ class ContentDataSourceTest {
         }
     }
 
-    // TODO equals and hashCode
+    @Test
+    fun testEqualsAndHashCode() {
+        val (_, sketch) = getTestContextAndSketch()
+        val contentUri = AssetDataSource(
+            context = sketch.context,
+            fileName = ResourceImages.jpeg.resourceName
+        ).getFile(sketch).let { Uri.fromFile(it.toFile()) }
+        val element1 = ContentDataSource(
+            context = sketch.context,
+            contentUri = contentUri,
+        )
+        val element11 = ContentDataSource(
+            context = sketch.context,
+            contentUri = contentUri,
+        )
+
+        val errorContentUri = Uri.fromFile(File("/sdcard/error.jpeg"))
+        val element2 = ContentDataSource(
+            context = sketch.context,
+            contentUri = errorContentUri,
+        )
+
+        assertNotSame(element1, element11)
+        assertNotSame(element1, element2)
+        assertNotSame(element2, element11)
+
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element2, element11)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
+
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element2.hashCode(), element11.hashCode())
+    }
 
     @Test
     fun testToString() {

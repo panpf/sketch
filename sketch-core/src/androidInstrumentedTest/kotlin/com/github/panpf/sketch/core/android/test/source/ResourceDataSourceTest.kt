@@ -2,6 +2,7 @@ package com.github.panpf.sketch.core.android.test.source
 
 import android.content.res.Resources.NotFoundException
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -13,6 +14,8 @@ import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
 
 @RunWith(AndroidJUnit4::class)
 class ResourceDataSourceTest {
@@ -33,7 +36,20 @@ class ResourceDataSourceTest {
         }
     }
 
-    // TODO test: key
+    @Test
+    fun testKey() {
+        val context = getTestContext()
+        ResourceDataSource(
+            resources = context.resources,
+            packageName = context.packageName,
+            resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
+        ).apply {
+            assertEquals(
+                newResourceUri(packageName = packageName, resId = resId),
+                key
+            )
+        }
+    }
 
     @Test
     fun testNewInputStream() {
@@ -73,7 +89,52 @@ class ResourceDataSourceTest {
         }
     }
 
-    // TODO equals and hashCode
+    @Test
+    fun testEqualsAndHashCode() {
+        val context = getTestContext()
+        val element1 = ResourceDataSource(
+            resources = context.resources,
+            packageName = context.packageName,
+            resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
+        )
+        val element11 = ResourceDataSource(
+            resources = context.resources,
+            packageName = context.packageName,
+            resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
+        )
+        val element2 = ResourceDataSource(
+            resources = context.resources,
+            packageName = context.packageName + "1",
+            resId = 42
+        )
+        val element3 = ResourceDataSource(
+            resources = context.resources,
+            packageName = context.packageName,
+            resId = 43
+        )
+
+        assertNotSame(element1, element11)
+        assertNotSame(element1, element2)
+        assertNotSame(element1, element3)
+        assertNotSame(element2, element11)
+        assertNotSame(element2, element3)
+
+        assertEquals(element1, element1)
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element2, element11)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
+
+        assertEquals(element1.hashCode(), element1.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element11.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
+    }
 
     @Test
     fun testToString() {
