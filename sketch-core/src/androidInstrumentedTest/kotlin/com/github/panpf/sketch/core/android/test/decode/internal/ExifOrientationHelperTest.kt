@@ -65,8 +65,9 @@ class ExifOrientationHelperTest {
 
         ResourceImages.clockExifs.forEach {
             assertEquals(
-                it.exifOrientation,
-                it.toDataSource(context).readExifOrientation()
+                expected = it.exifOrientation,
+                actual = it.toDataSource(context).readExifOrientation(),
+                message = "imageFile: ${it.uri}"
             )
         }
 
@@ -110,12 +111,14 @@ class ExifOrientationHelperTest {
 
         ResourceImages.clockExifs.forEach {
             assertEquals(
-                it.exifOrientation,
-                it.toDataSource(context).readExifOrientationWithMimeType("image/jpeg")
+                expected = it.exifOrientation,
+                actual = it.toDataSource(context).readExifOrientationWithMimeType("image/jpeg"),
+                message = "imageFile: ${it.uri}"
             )
             assertEquals(
-                ExifOrientationHelper.UNDEFINED,
-                it.toDataSource(context).readExifOrientationWithMimeType("image/bmp")
+                expected = ExifOrientationHelper.UNDEFINED,
+                actual = it.toDataSource(context).readExifOrientationWithMimeType("image/bmp"),
+                message = "imageFile: ${it.uri}"
             )
         }
 

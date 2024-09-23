@@ -16,6 +16,7 @@ import com.github.panpf.sketch.decode.internal.getMaxBitmapSize
 import com.github.panpf.sketch.decode.internal.getMaxBitmapSizeOr
 import com.github.panpf.sketch.decode.internal.getResizeTransformed
 import com.github.panpf.sketch.decode.internal.readImageInfo
+import com.github.panpf.sketch.decode.internal.readImageInfoWithIgnoreExifOrientation
 import com.github.panpf.sketch.decode.internal.resize
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
@@ -966,6 +967,110 @@ class DecodesNonAndroidTest {
         centerCropBitmap2.similarity(endCropBitmap2).apply {
             assertTrue(actual = this > 0f, message = "similarity=$this")
         }
+    }
+
+    @Test
+    fun testReadImageInfoWithIgnoreExifOrientation() {
+        val context = getTestContext()
+        assertEquals(
+            expected = "ImageInfo(1291x1936,'image/jpeg')",
+            actual = ResourceImages.jpeg.toDataSource(context)
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
+        )
+        assertEquals(
+            expected = "ImageInfo(750x719,'image/png')",
+            actual = ResourceImages.png.toDataSource(context)
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
+        )
+        assertEquals(
+            expected = "ImageInfo(700x1012,'image/bmp')",
+            actual = ResourceImages.bmp.toDataSource(context)
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
+        )
+        assertEquals(
+            expected = "ImageInfo(1080x1344,'image/webp')",
+            actual = ResourceImages.webp.toDataSource(context)
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
+        )
+        assertEquals(
+            expected = "ImageInfo(480x480,'image/gif')",
+            actual = ResourceImages.animGif.toDataSource(context)
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
+        )
+        assertEquals(
+            expected = "ImageInfo(480x270,'image/webp')",
+            actual = ResourceImages.animWebp.toDataSource(context)
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
+        )
+        assertFailsWith(IllegalArgumentException::class) {
+            ResourceImages.animHeif.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
+        }
+        assertFailsWith(IllegalArgumentException::class) {
+            ResourceImages.svg.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
+        }
+        assertFailsWith(IllegalArgumentException::class) {
+            ResourceImages.heic.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
+        }
+        assertEquals(
+            expected = "ImageInfo(1500x750,'image/jpeg')",
+            actual = ResourceImages.clockExifFlipHorizontal.toDataSource(context)
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
+        )
+        assertEquals(
+            expected = "ImageInfo(1500x750,'image/jpeg')",
+            actual = ResourceImages.clockExifFlipVertical.toDataSource(context)
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
+        )
+        assertEquals(
+            expected = "ImageInfo(1500x750,'image/jpeg')",
+            actual = ResourceImages.clockExifNormal.toDataSource(context)
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
+        )
+        assertEquals(
+            expected = "ImageInfo(750x1500,'image/jpeg')",
+            actual = ResourceImages.clockExifRotate90.toDataSource(context)
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
+        )
+        assertEquals(
+            expected = "ImageInfo(1500x750,'image/jpeg')",
+            actual = ResourceImages.clockExifRotate180.toDataSource(context)
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
+        )
+        assertEquals(
+            expected = "ImageInfo(750x1500,'image/jpeg')",
+            actual = ResourceImages.clockExifRotate270.toDataSource(context)
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
+        )
+        assertEquals(
+            expected = "ImageInfo(750x1500,'image/jpeg')",
+            actual = ResourceImages.clockExifTranspose.toDataSource(context)
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
+        )
+        assertEquals(
+            expected = "ImageInfo(750x1500,'image/jpeg')",
+            actual = ResourceImages.clockExifTransverse.toDataSource(context)
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
+        )
+        assertEquals(
+            expected = "ImageInfo(1500x750,'image/jpeg')",
+            actual = ResourceImages.clockExifUndefined.toDataSource(context)
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
+        )
     }
 
     @Test

@@ -37,8 +37,9 @@ class DrawableDataSource constructor(
     override val dataFrom: DataFrom,
 ) : DataSource {
 
-    val drawable: Drawable by lazy { drawableFetcher.getDrawable(context) }
     override val key: String by lazy { drawableFetcher.key }
+
+    val drawable: Drawable by lazy { drawableFetcher.getDrawable(context) }
 
     @Throws(IOException::class)
     override fun openSource(): Source = throw UnsupportedOperationException("Not supported")

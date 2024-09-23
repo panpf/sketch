@@ -36,6 +36,7 @@ import kotlinx.coroutines.internal.synchronized
 import okio.buffer
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
+import org.jetbrains.skia.impl.use
 
 /**
  * Animated image decoder based on Skia
@@ -58,28 +59,18 @@ open class SkiaAnimatedDecoder(
     override val imageInfo: ImageInfo
         get() {
             synchronized(imageInfoLock) {
-                val imageInfo = _imageInfo
-                if (imageInfo != null) return imageInfo
-                val codec = Codec.makeFromData(data)
-                val mimeType = "image/${codec.encodedImageFormat.name.lowercase()}"
-                return ImageInfo(
-                    width = codec.width,
-                    height = codec.height,
-                    mimeType = mimeType,
-                ).apply {
-                    _imageInfo = this
-                }
+                return _imageInfo
+                    ?: Codec.makeFromData(data).use { readImageInfoWithIgnoreExifOrientation(it) }
+                        .apply { _imageInfo = this }
             }
         }
 
     override fun decode(): DecodeResult {
         val codec = Codec.makeFromData(data)
-        val mimeType = "image/${codec.encodedImageFormat.name.lowercase()}"
-        val imageInfo = ImageInfo(
-            width = codec.width,
-            height = codec.height,
-            mimeType = mimeType,
-        )
+        val imageInfo = synchronized(imageInfoLock) {
+            _imageInfo ?: readImageInfoWithIgnoreExifOrientation(codec)
+                .apply { _imageInfo = this }
+        }
         // TODO Support resize
         val request = requestContext.request
         val repeatCount = request.repeatCount

@@ -20,6 +20,7 @@ import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.isSmallerSizeMode
@@ -216,6 +217,33 @@ private fun Size.checkAreaLimit(targetSize: Size): Boolean {
     return (this.width * this.height) <= (targetSize.width * targetSize.height)
 }
 
+/**
+ * Check if the image is valid
+ *
+ * @see com.github.panpf.sketch.core.common.test.decode.internal.DecodesTest.testCheckImageSize
+ */
+fun checkImageSize(imageSize: Size) {
+    if (imageSize.isEmpty) {
+        throw ImageInvalidException("Invalid image. width or height is 0. $imageSize")
+    }
+}
+
+/**
+ * Check if the image is valid
+ *
+ * @see com.github.panpf.sketch.core.common.test.decode.internal.DecodesTest.testCheckImageInfo
+ */
+fun checkImageInfo(imageInfo: ImageInfo) {
+    checkImageSize(imageInfo.size)
+}
+
+/**
+ * Decode image width, height, MIME type. Ignore the Exif orientation
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfoWithIgnoreExifOrientation
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testReadImageInfoWithIgnoreExifOrientation
+ */
+expect fun DataSource.readImageInfoWithIgnoreExifOrientation(): ImageInfo
 
 /**
  * Decode image width, height, MIME type. Should be able to parse the exif orientation

@@ -38,8 +38,8 @@ class BitmapNonAndroidTest {
 
     @Test
     fun testSize() {
-        assertEquals(expected = Size(200, 100), actual = SkiaBitmap(100, 200).size)
-        assertEquals(expected = Size(100, 200), actual = SkiaBitmap(200, 100).size)
+        assertEquals(expected = Size(100, 200), actual = SkiaBitmap(100, 200).size)
+        assertEquals(expected = Size(200, 100), actual = SkiaBitmap(200, 100).size)
     }
 
     @Test

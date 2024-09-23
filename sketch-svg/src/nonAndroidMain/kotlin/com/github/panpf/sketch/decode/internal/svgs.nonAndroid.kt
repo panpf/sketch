@@ -22,7 +22,6 @@ import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.SvgDecoder.Companion.MIME_TYPE
 import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
 import com.github.panpf.sketch.request.RequestContext
@@ -64,10 +63,8 @@ internal actual fun DataSource.readSvgImageInfo(
             ?.let { Size(it.width.value.roundToInt(), it.height.value.roundToInt()) }
             ?: Size.Empty
     }
-    if (imageSize.isEmpty) {
-        throw ImageInvalidException("Invalid image. width or height is 0. $imageSize")
-    }
     return ImageInfo(size = imageSize, mimeType = MIME_TYPE)
+        .apply { checkImageInfo(this) }
 }
 
 /**
@@ -92,9 +89,7 @@ internal actual fun DataSource.decodeSvg(
             ?.let { Size(it.width.value.roundToInt(), it.height.value.roundToInt()) }
             ?: Size.Empty
     }
-    if (imageSize.isEmpty) {
-        throw ImageInvalidException("Invalid image. width or height is 0. $imageSize")
-    }
+    checkImageSize(imageSize)
 
     // Set the SVG's view box to enable scaling if it is not set.
     if (viewBox == null && imageSize.isNotEmpty) {

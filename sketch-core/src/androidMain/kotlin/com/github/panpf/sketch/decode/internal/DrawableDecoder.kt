@@ -22,7 +22,6 @@ import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.RequestContext
@@ -52,16 +51,8 @@ open class DrawableDecoder(
     override val imageInfo: ImageInfo
         get() {
             kotlinx.atomicfu.locks.synchronized(imageInfoLock) {
-                val imageInfo = _imageInfo
-                if (imageInfo != null) return imageInfo
-                val drawable = dataSource.drawable
-                return ImageInfo(
-                    width = drawable.intrinsicWidth,
-                    height = drawable.intrinsicHeight,
-                    mimeType = mimeType ?: "image/png",
-                ).apply {
-                    _imageInfo = this
-                }
+                return _imageInfo ?: dataSource.drawable.readImageInfo(mimeType)
+                    .apply { _imageInfo = this }
             }
         }
 
@@ -70,35 +61,25 @@ open class DrawableDecoder(
         val request = requestContext.request
         val drawable = dataSource.drawable
 
-        val imageWidth = drawable.intrinsicWidth
-        val imageHeight = drawable.intrinsicHeight
-        if (imageWidth <= 0 || imageHeight <= 0) {
-            throw ImageInvalidException("Invalid drawable intrinsicSize, intrinsicSize=${imageWidth}x${imageHeight}")
-        }
-        val imageSize = Size(imageWidth, imageHeight)
+        val imageInfo = imageInfo
         val targetSize = requestContext.size
         var transformeds: List<String>? = null
         val scale: Float = computeScaleMultiplierWithOneSide(
-            sourceSize = imageSize,
+            sourceSize = imageInfo.size,
             targetSize = targetSize
         )
         if (scale != 1f) {
             transformeds = listOf(createScaledTransformed(scale))
         }
         val dstSize = Size(
-            width = (imageWidth * scale).roundToInt(),
-            height = (imageHeight * scale).roundToInt()
+            width = (imageInfo.width * scale).roundToInt(),
+            height = (imageInfo.height * scale).roundToInt()
         )
         val bitmapSize = Size(width = dstSize.width, height = dstSize.height)
         val decodeConfig = DecodeConfig(request, PNG.mimeType, isOpaque = false)
         val bitmap = drawable.toNewBitmap(
             preferredConfig = decodeConfig.colorType.safeToSoftware(),
             targetSize = bitmapSize
-        )
-        val imageInfo = ImageInfo(
-            width = imageWidth,
-            height = imageHeight,
-            mimeType = mimeType ?: "image/png",
         )
         val resize = requestContext.computeResize(imageInfo.size)
         val decodeResult = DecodeResult(

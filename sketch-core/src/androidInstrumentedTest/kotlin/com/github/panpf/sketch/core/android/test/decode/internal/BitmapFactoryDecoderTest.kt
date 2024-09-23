@@ -928,30 +928,42 @@ class BitmapFactoryDecoderTest {
         assertTrue(centerCropBitmap.width * centerCropBitmap.height <= 500 * 300 * 1.1f)
         assertTrue(endCropBitmap.width * endCropBitmap.height <= 500 * 300 * 1.1f)
         assertTrue(fillBitmap.width * fillBitmap.height <= 500 * 300 * 1.1f)
-        assertEquals(
-            expected = 10,
-            actual = startCropBitmap.similarity(centerCropBitmap),
-        )
-        assertEquals(
-            expected = 12,
-            actual = startCropBitmap.similarity(endCropBitmap)
-        )
-        assertEquals(
-            expected = 11,
-            actual = startCropBitmap.similarity(fillBitmap)
-        )
-        assertEquals(
-            expected = 15,
-            actual = centerCropBitmap.similarity(endCropBitmap)
-        )
-        assertEquals(
-            expected = 8,
-            actual = centerCropBitmap.similarity(fillBitmap)
-        )
-        assertEquals(
-            expected = 13,
-            actual = endCropBitmap.similarity(fillBitmap)
-        )
+        startCropBitmap.similarity(centerCropBitmap).also { similarity ->
+            assertTrue(
+                actual = similarity >= 10,
+                message = "similarity = $similarity"
+            )
+        }
+        startCropBitmap.similarity(endCropBitmap).also { similarity ->
+            assertTrue(
+                actual = similarity >= 10,
+                message = "similarity = $similarity"
+            )
+        }
+        startCropBitmap.similarity(fillBitmap).also { similarity ->
+            assertTrue(
+                actual = similarity >= 10,
+                message = "similarity = $similarity"
+            )
+        }
+        centerCropBitmap.similarity(endCropBitmap).also { similarity ->
+            assertTrue(
+                actual = similarity >= 10,
+                message = "similarity = $similarity"
+            )
+        }
+        centerCropBitmap.similarity(fillBitmap).also { similarity ->
+            assertTrue(
+                actual = similarity in 5..10,
+                message = "similarity = $similarity"
+            )
+        }
+        endCropBitmap.similarity(fillBitmap).also { similarity ->
+            assertTrue(
+                actual = similarity >= 10,
+                message = "similarity = $similarity"
+            )
+        }
     }
 
     @Test

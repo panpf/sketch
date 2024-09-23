@@ -27,6 +27,7 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
+import com.github.panpf.sketch.decode.internal.checkImageInfo
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.drawable.AnimatableDrawable
@@ -96,6 +97,7 @@ class GifDrawableDecoder(
                     ),
                     mimeType = ImageFormat.GIF.mimeType,
                 ).apply {
+                    checkImageInfo(this)
                     _imageInfo = this
                 }
             }

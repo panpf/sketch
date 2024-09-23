@@ -25,7 +25,6 @@ import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameOption
@@ -118,13 +117,10 @@ class FFmpegVideoFrameDecodeHelper(
         val srcHeight = mediaMetadataRetriever
             .extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toIntOrNull()
             ?: 0
-        if (srcWidth <= 1 || srcHeight <= 1) {
-            val message = "Invalid video file. size=${srcWidth}x${srcHeight}"
-            throw ImageInvalidException(message)
-        }
         val imageSize = Size(width = srcWidth, height = srcHeight)
         val correctedImageSize = exifOrientationHelper.applyToSize(imageSize)
         return ImageInfo(size = correctedImageSize, mimeType = mimeType)
+            .apply { checkImageInfo(this) }
     }
 
     private fun readExifOrientation(): Int {

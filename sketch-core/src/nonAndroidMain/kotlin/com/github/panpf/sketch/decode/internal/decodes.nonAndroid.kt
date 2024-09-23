@@ -21,7 +21,6 @@ import com.github.panpf.sketch.SkiaImage
 import com.github.panpf.sketch.SkiaImageInfo
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchRect
@@ -75,6 +74,43 @@ actual fun calculateSampledBitmapSizeForRegion(
     mimeType = mimeType
 )
 
+
+/**
+ * Decode image width, height, MIME type and other information. Ignore the Exif orientation
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testReadImageInfoWithIgnoreExifOrientation
+ */
+fun readImageInfoWithIgnoreExifOrientation(codec: Codec): ImageInfo {
+    val imageSize = Size(width = codec.width, height = codec.height)
+    val mimeType = "image/${codec.encodedImageFormat.name.lowercase()}"
+    return ImageInfo(size = imageSize, mimeType = mimeType)
+        .apply { checkImageInfo(this) }
+}
+
+/**
+ * Decode image width, height, MIME type and other information. Ignore the Exif orientation
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testReadImageInfoWithIgnoreExifOrientation
+ */
+actual fun DataSource.readImageInfoWithIgnoreExifOrientation(): ImageInfo {
+    val bytes = openSource().buffer().use { it.readByteArray() }
+    return Codec.makeFromData(Data.makeFromBytes(bytes)).use {
+        readImageInfoWithIgnoreExifOrientation(it)
+    }
+}
+
+/**
+ * Decode image width, height, MIME type and other information. Should be able to parse the exif orientation
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testReadImageInfo
+ */
+fun readImageInfo(codec: Codec, skiaImage: SkiaImage): ImageInfo {
+    val imageSize = Size(width = skiaImage.width, height = skiaImage.height)
+    val mimeType = "image/${codec.encodedImageFormat.name.lowercase()}"
+    return ImageInfo(size = imageSize, mimeType = mimeType)
+        .apply { checkImageInfo(this) }
+}
+
 /**
  * Decode image width, height, MIME type and other information. Should be able to parse the exif orientation
  *
@@ -82,17 +118,13 @@ actual fun calculateSampledBitmapSizeForRegion(
  */
 actual fun DataSource.readImageInfo(): ImageInfo {
     val bytes = openSource().buffer().use { it.readByteArray() }
-    val imageSize = SkiaImage.makeFromEncoded(bytes).use {
-        Size(it.width, it.height)
+    return Codec.makeFromData(Data.makeFromBytes(bytes)).use { codec ->
+        SkiaImage.makeFromEncoded(bytes).use { skiaImage ->
+            readImageInfo(codec, skiaImage)
+        }
     }
-    if (imageSize.isEmpty) {
-        throw ImageInvalidException("Invalid image. width or height is 0. $imageSize")
-    }
-    val mimeType = Codec.makeFromData(Data.makeFromBytes(bytes)).use {
-        "image/${it.encodedImageFormat.name.lowercase()}"
-    }
-    return ImageInfo(size = imageSize, mimeType = mimeType)
 }
+
 
 /**
  * Decode the image by sampling

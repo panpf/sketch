@@ -29,7 +29,6 @@ import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameOption
@@ -54,7 +53,7 @@ class VideoFrameDecodeHelper constructor(
     private val mimeType: String,
 ) : DecodeHelper {
 
-    override val imageInfo: ImageInfo by lazy { readInfo() }
+    override val imageInfo: ImageInfo by lazy { readImageInfo() }
     override val supportRegion: Boolean = false
 
     private val mediaMetadataRetriever by lazy {
@@ -142,18 +141,15 @@ class VideoFrameDecodeHelper constructor(
         throw UnsupportedOperationException("Unsupported region decode")
     }
 
-    private fun readInfo(): ImageInfo {
+    private fun readImageInfo(): ImageInfo {
         val srcWidth = mediaMetadataRetriever
             .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toIntOrNull() ?: 0
         val srcHeight = mediaMetadataRetriever
             .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toIntOrNull() ?: 0
-        if (srcWidth <= 1 || srcHeight <= 1) {
-            val message = "Invalid video file. size=${srcWidth}x${srcHeight}"
-            throw ImageInvalidException(message)
-        }
         val imageSize = Size(width = srcWidth, height = srcHeight)
         val correctedImageSize = exifOrientationHelper.applyToSize(imageSize)
         return ImageInfo(size = correctedImageSize, mimeType = mimeType)
+            .apply { checkImageInfo(this) }
     }
 
     private fun readExifOrientation(): Int {

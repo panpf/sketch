@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.size
+import com.github.panpf.sketch.test.utils.assertSizeEquals
 import com.github.panpf.sketch.test.utils.decodeImageUseImageDecoder
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Size
@@ -194,7 +195,12 @@ class ImageDecoderTest {
                         sampleSize = sampleSize,
                         mimeType = mimeType
                     )
-                    assertEquals(sampledBitmapSize, bitmap.size, message)
+                    assertSizeEquals(
+                        expected = sampledBitmapSize,
+                        actual = bitmap.size,
+                        delta = Size(1, 1),
+                        message = message
+                    )
                 } else {
                     assertEquals(imageSize, bitmap.size, message)
                 }

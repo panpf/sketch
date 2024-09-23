@@ -25,6 +25,8 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.internal.ImageFormat
+import com.github.panpf.sketch.decode.internal.checkImageInfo
+import com.github.panpf.sketch.decode.internal.checkImageSize
 import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.drawable.MovieDrawable
@@ -90,6 +92,7 @@ class GifMovieDecoder(
                     size = Size(width = width, height = height),
                     mimeType = ImageFormat.GIF.mimeType,
                 ).apply {
+                    checkImageInfo(this)
                     _imageInfo = this
                 }
             }
@@ -100,10 +103,14 @@ class GifMovieDecoder(
         val request = requestContext.request
         val movie: Movie? = dataSource.openSource()
             .buffer().inputStream().use { Movie.decodeStream(it) }
+        check(movie != null) { "Failed to decode GIF." }
 
-        val width = movie?.width() ?: 0
-        val height = movie?.height() ?: 0
-        check(movie != null && width > 0 && height > 0) { "Failed to decode GIF." }
+        val imageSize = Size(width = movie.width(), height = movie.height())
+        checkImageSize(imageSize)
+        val imageInfo = ImageInfo(
+            size = imageSize,
+            mimeType = ImageFormat.GIF.mimeType
+        )
 
         val decodeConfig =
             DecodeConfig(request, ImageFormat.GIF.mimeType, isOpaque = movie.isOpaque)
@@ -116,12 +123,6 @@ class GifMovieDecoder(
 
             // TODO Support resize
         }
-
-        val imageInfo = ImageInfo(
-            width = width,
-            height = height,
-            mimeType = ImageFormat.GIF.mimeType
-        )
 
         val animatableDrawable = AnimatableDrawable(movieDrawable).apply {
             // Set the start and end animation callbacks if any one is supplied through the request.

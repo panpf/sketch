@@ -1132,37 +1132,43 @@ class DecodesAndroidTest {
     }
 
     @Test
-    fun testReadImageInfoWithExifOrientation() {
+    fun testReadImageInfoWithIgnoreExifOrientation() {
         val context = getTestContext()
         assertEquals(
             expected = "ImageInfo(1291x1936,'image/jpeg')",
             actual = ResourceImages.jpeg.toDataSource(context)
-                .readImageInfoWithIgnoreExifOrientation().toShortString()
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
         )
         assertEquals(
             expected = "ImageInfo(750x719,'image/png')",
             actual = ResourceImages.png.toDataSource(context)
-                .readImageInfoWithIgnoreExifOrientation().toShortString()
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
         )
         assertEquals(
             expected = "ImageInfo(700x1012,'image/bmp')",
             actual = ResourceImages.bmp.toDataSource(context)
-                .readImageInfoWithIgnoreExifOrientation().toShortString()
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1080x1344,'image/webp')",
             actual = ResourceImages.webp.toDataSource(context)
-                .readImageInfoWithIgnoreExifOrientation().toShortString()
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
         )
         assertEquals(
             expected = "ImageInfo(480x480,'image/gif')",
             actual = ResourceImages.animGif.toDataSource(context)
-                .readImageInfoWithIgnoreExifOrientation().toShortString()
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
         )
         assertEquals(
             expected = "ImageInfo(480x270,'image/webp')",
             actual = ResourceImages.animWebp.toDataSource(context)
-                .readImageInfoWithIgnoreExifOrientation().toShortString()
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
         )
         assertFailsWith(ImageInvalidException::class) {
             ResourceImages.svg.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
@@ -1171,7 +1177,8 @@ class DecodesAndroidTest {
             assertEquals(
                 expected = "ImageInfo(750x932,'image/heif')",
                 actual = ResourceImages.heic.toDataSource(context)
-                    .readImageInfoWithIgnoreExifOrientation().toShortString()
+                    .readImageInfoWithIgnoreExifOrientation()
+                    .toShortString()
             )
             assertEquals(
                 expected = "ImageInfo(256x144,'image/heif')",
@@ -1337,6 +1344,8 @@ class DecodesAndroidTest {
             actual = ResourceImages.clockExifUndefined.toDataSource(context)
                 .readImageInfo().toShortString()
         )
+
+        // TODO Drawable.readImageInfo()
     }
 
     @Test

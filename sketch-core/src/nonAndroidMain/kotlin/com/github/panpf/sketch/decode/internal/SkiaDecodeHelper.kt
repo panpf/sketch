@@ -41,9 +41,6 @@ class SkiaDecodeHelper constructor(
     val dataSource: DataSource
 ) : DecodeHelper {
 
-    override val imageInfo: ImageInfo by lazy { readImageInfo() }
-    override val supportRegion: Boolean = true
-
     private val bytes by lazy {
         dataSource.openSource().buffer().use { it.readByteArray() }
     }
@@ -51,6 +48,13 @@ class SkiaDecodeHelper constructor(
         // SkiaImage.makeFromEncoded(bytes) will parse exif orientation and does not support closing
         SkiaImage.makeFromEncoded(bytes)
     }
+
+    override val imageInfo: ImageInfo by lazy {
+        Codec.makeFromData(Data.makeFromBytes(bytes)).use { codec ->
+            readImageInfo(codec, skiaImage)
+        }
+    }
+    override val supportRegion: Boolean = true
 
     override fun decode(sampleSize: Int): com.github.panpf.sketch.Image {
         val decodeConfig = DecodeConfig(request, imageInfo.mimeType, skiaImage.isOpaque).apply {
@@ -66,18 +70,6 @@ class SkiaDecodeHelper constructor(
         }
         val skiaBitmap = skiaImage.decodeRegion(region, decodeConfig)
         return skiaBitmap.asImage()
-    }
-
-    private fun readImageInfo(): ImageInfo {
-        val encodedImageFormat = Codec.makeFromData(Data.makeFromBytes(bytes)).use {
-            it.encodedImageFormat
-        }
-        val mimeType = "image/${encodedImageFormat.name.lowercase()}"
-        return ImageInfo(
-            width = skiaImage.width,
-            height = skiaImage.height,
-            mimeType = mimeType,
-        )
     }
 
     override fun close() {

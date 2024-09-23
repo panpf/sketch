@@ -143,7 +143,7 @@ class VideoFrameDecodeHelperTest {
         val dataSource = imageFile.toDataSource(context)
         val decodeHelper = VideoFrameDecodeHelper(sketch, request, dataSource, imageFile.mimeType)
         assertEquals(
-            expected = "VideoFrameDecodeHelper(request=$request, dataSource=$dataSource)",
+            expected = "VideoFrameDecodeHelper(request=$request, dataSource=$dataSource, mimeType=${imageFile.mimeType})",
             actual = decodeHelper.toString()
         )
     }

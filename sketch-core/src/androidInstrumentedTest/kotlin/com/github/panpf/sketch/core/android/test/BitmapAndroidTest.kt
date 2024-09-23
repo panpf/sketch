@@ -38,8 +38,8 @@ class BitmapAndroidTest {
 
     @Test
     fun testSize() {
-        assertEquals(expected = Size(200, 100), actual = AndroidBitmap(100, 200).size)
-        assertEquals(expected = Size(100, 200), actual = AndroidBitmap(200, 100).size)
+        assertEquals(expected = Size(100, 200), actual = AndroidBitmap(100, 200).size)
+        assertEquals(expected = Size(200, 100), actual = AndroidBitmap(200, 100).size)
     }
 
     @Test

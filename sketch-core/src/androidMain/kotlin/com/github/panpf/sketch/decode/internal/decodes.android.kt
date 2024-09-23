@@ -20,6 +20,7 @@ import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapRegionDecoder
+import android.graphics.drawable.Drawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.decode.DecodeConfig
@@ -142,10 +143,10 @@ actual fun calculateSampledBitmapSizeForRegion(
 /**
  * Read image information using BitmapFactory. Ignore the Exif orientation
  *
- * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfoWithExifOrientation
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfoWithIgnoreExifOrientation
  */
 @Throws(IOException::class)
-fun DataSource.readImageInfoWithIgnoreExifOrientation(): ImageInfo {
+actual fun DataSource.readImageInfoWithIgnoreExifOrientation(): ImageInfo {
     val boundOptions = BitmapFactory.Options().apply {
         inJustDecodeBounds = true
         openSource().buffer().inputStream().use {
@@ -154,10 +155,8 @@ fun DataSource.readImageInfoWithIgnoreExifOrientation(): ImageInfo {
     }
     val mimeType = boundOptions.outMimeType.orEmpty()
     val imageSize = Size(width = boundOptions.outWidth, height = boundOptions.outHeight)
-    if (imageSize.isEmpty) {
-        throw ImageInvalidException("Invalid image. width or height is 0. $imageSize")
-    }
     return ImageInfo(size = imageSize, mimeType = mimeType)
+        .apply { checkImageInfo(this) }
 }
 
 /**
@@ -183,6 +182,17 @@ fun DataSource.readImageInfo(helper: ExifOrientationHelper?): ImageInfo {
  * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfo
  */
 actual fun DataSource.readImageInfo(): ImageInfo = readImageInfo(null)
+
+/**
+ * Decode Android Drawable width, height, type information
+ *
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfo
+ */
+fun Drawable.readImageInfo(mimeType: String?): ImageInfo {
+    val imageSize = Size(intrinsicWidth, intrinsicHeight)
+    return ImageInfo(size = imageSize, mimeType = mimeType ?: "image/png")
+        .apply { checkImageInfo(this) }
+}
 
 /**
  * Decode bitmap using BitmapFactory. Parse Exif orientation

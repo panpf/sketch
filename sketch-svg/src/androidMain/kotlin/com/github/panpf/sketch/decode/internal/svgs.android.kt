@@ -28,7 +28,6 @@ import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.SvgDecoder
 import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
 import com.github.panpf.sketch.request.RequestContext
@@ -50,17 +49,14 @@ internal actual fun DataSource.readSvgImageInfo(
     useViewBoundsAsIntrinsicSize: Boolean,
 ): ImageInfo {
     val svg = openSource().buffer().inputStream().use { SVG.getFromInputStream(it) }
-
     val viewBox: RectF? = svg.documentViewBox
     val imageSize: Size = if (useViewBoundsAsIntrinsicSize && viewBox != null) {
         Size(viewBox.width().roundToInt(), viewBox.height().roundToInt())
     } else {
         Size(svg.documentWidth.roundToInt(), svg.documentHeight.roundToInt())
     }
-    if (imageSize.isEmpty) {
-        throw ImageInvalidException("Invalid image. width or height is 0. $imageSize")
-    }
     return ImageInfo(size = imageSize, mimeType = SvgDecoder.MIME_TYPE)
+        .apply { checkImageInfo(this) }
 }
 
 /**
@@ -82,9 +78,7 @@ internal actual fun DataSource.decodeSvg(
     } else {
         Size(svg.documentWidth.roundToInt(), svg.documentHeight.roundToInt())
     }
-    if (imageSize.isEmpty) {
-        throw ImageInvalidException("Invalid image. width or height is 0. $imageSize")
-    }
+    checkImageSize(imageSize)
 
     // Set the SVG's view box to enable scaling if it is not set.
     if (viewBox == null && imageSize.isNotEmpty) {

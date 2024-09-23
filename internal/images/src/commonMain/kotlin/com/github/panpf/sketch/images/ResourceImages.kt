@@ -205,7 +205,7 @@ object ResourceImages {
         name = "UNDEFINED",
         size = Size(1500, 750),
         mimeType = "image/jpeg",
-        exifOrientation = ExifOrientation.UNDEFINED
+        exifOrientation = ExifOrientation.NORMAL
     )
     val clockExifs = arrayOf(
         clockExifFlipHorizontal,

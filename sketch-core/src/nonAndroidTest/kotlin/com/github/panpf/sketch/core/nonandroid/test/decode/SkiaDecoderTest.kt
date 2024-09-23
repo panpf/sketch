@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.core.nonandroid.test.decode
 
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.SkiaDecoder
 import com.github.panpf.sketch.decode.internal.getInSampledTransformed
 import com.github.panpf.sketch.decode.internal.getResizeTransformed
@@ -61,7 +60,8 @@ class SkiaDecoderTest {
                         assertSizeEquals(imageFile.size, this.size, delta = Size(1, 1))
                         assertEquals(imageFile.mimeType, this.mimeType)
                     }
-            } catch (e: ImageInvalidException) {
+            } catch (e: IllegalArgumentException) {
+                // IllegalArgumentException: Unsupported format
                 e.printStackTrace()
             }
         }
