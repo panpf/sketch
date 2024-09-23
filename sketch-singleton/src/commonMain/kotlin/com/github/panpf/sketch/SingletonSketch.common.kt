@@ -24,7 +24,7 @@ import kotlin.jvm.JvmStatic
  * Get the factory of [Sketch] from Application, only supports Android platform
  *
  * @see com.github.panpf.sketch.singleton.android.test.SingletonSketchAndroidTest.testApplicationSketchFactory
- * @see com.github.panpf.sketch.singleton.nonandroid.test.SingletonSketchAndroidTest.testApplicationSketchFactory
+ * @see com.github.panpf.sketch.singleton.nonandroid.test.SingletonSketchNonAndroidTest.testApplicationSketchFactory
  */
 internal expect fun PlatformContext.applicationSketchFactory(): SingletonSketch.Factory?
 
@@ -32,7 +32,7 @@ internal expect fun PlatformContext.applicationSketchFactory(): SingletonSketch.
  * Get the singleton [Sketch] from PlatformContext.
  *
  * @see com.github.panpf.sketch.singleton.android.test.SingletonSketchAndroidTest.testContextSketch
- * @see com.github.panpf.sketch.singleton.nonandroid.test.SingletonSketchAndroidTest.testContextSketch
+ * @see com.github.panpf.sketch.singleton.nonandroid.test.SingletonSketchNonAndroidTest.testContextSketch
  */
 expect val PlatformContext.sketch: Sketch
 
@@ -161,8 +161,6 @@ object SingletonSketch {
 
 /**
  * Default [Sketch] Factory
- *
- * @see com.github.panpf.sketch.singleton.common.test.SingletonSketchTest.testDefaultSketchFactory
  */
 private val DefaultSketchFactory = SingletonSketch.Factory { context ->
     Sketch.Builder(context).build()

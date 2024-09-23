@@ -19,7 +19,7 @@ package com.github.panpf.sketch
 /**
  * Get the factory of [Sketch] from Application, only supports Android platform
  *
- * @see com.github.panpf.sketch.singleton.nonandroid.test.SingletonSketchAndroidTest.testApplicationSketchFactory
+ * @see com.github.panpf.sketch.singleton.nonandroid.test.SingletonSketchNonAndroidTest.testApplicationSketchFactory
  */
 internal actual fun PlatformContext.applicationSketchFactory(): SingletonSketch.Factory? {
     return null
@@ -28,7 +28,7 @@ internal actual fun PlatformContext.applicationSketchFactory(): SingletonSketch.
 /**
  * Get the singleton [Sketch] from PlatformContext.
  *
- * @see com.github.panpf.sketch.singleton.nonandroid.test.SingletonSketchAndroidTest.testContextSketch
+ * @see com.github.panpf.sketch.singleton.nonandroid.test.SingletonSketchNonAndroidTest.testContextSketch
  */
 actual val PlatformContext.sketch: Sketch
     get() = SingletonSketch.get(this)
@@ -36,6 +36,6 @@ actual val PlatformContext.sketch: Sketch
 /**
  * Get [Sketch] singleton
  *
- * @see com.github.panpf.sketch.singleton.nonandroid.test.SingletonSketchAndroidTest.testGet
+ * @see com.github.panpf.sketch.singleton.nonandroid.test.SingletonSketchNonAndroidTest.testGet
  */
 fun SingletonSketch.get(): Sketch = get(PlatformContext.INSTANCE)
