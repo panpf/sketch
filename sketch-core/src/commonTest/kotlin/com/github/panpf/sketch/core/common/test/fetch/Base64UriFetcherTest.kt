@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.core.common.test.fetch
 
+import com.github.panpf.sketch.fetch.Base64Spec
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.isBase64Uri
 import com.github.panpf.sketch.fetch.newBase64Uri
@@ -54,9 +55,11 @@ class Base64UriFetcherTest {
 
     @Test
     fun testBase64UriSpec() {
-        // TODO Base64Spec
-        // TODO BASE64_URI_SPEC_KEY
-        // TODO base64UriSpec
+        @Suppress("EnumValuesSoftDeprecate")
+        assertEquals(
+            expected = "Default, Mime, UrlSafe",
+            actual = Base64Spec.values().joinToString()
+        )
     }
 
     @Test

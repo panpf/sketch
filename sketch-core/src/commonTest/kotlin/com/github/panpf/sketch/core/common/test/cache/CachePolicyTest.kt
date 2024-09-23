@@ -20,6 +20,7 @@ import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.isReadAndWrite
 import com.github.panpf.sketch.cache.isReadOrWrite
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -55,5 +56,14 @@ class CachePolicyTest {
         assertFalse(CachePolicy.READ_ONLY.isReadAndWrite)
         assertFalse(CachePolicy.WRITE_ONLY.isReadAndWrite)
         assertFalse(CachePolicy.DISABLED.isReadAndWrite)
+    }
+
+    @Test
+    fun testValues() {
+        @Suppress("EnumValuesSoftDeprecate")
+        assertEquals(
+            expected = "ENABLED, READ_ONLY, WRITE_ONLY, DISABLED",
+            actual = CachePolicy.values().joinToString()
+        )
     }
 }

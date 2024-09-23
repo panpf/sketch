@@ -53,4 +53,13 @@ class ImageFormatTest {
         assertNull(ImageFormat.parseMimeType("image/jpeg1"))
         assertNull(ImageFormat.parseMimeType("IMAGE/JPEG1"))
     }
+
+    @Test
+    fun testValues() {
+        @Suppress("EnumValuesSoftDeprecate")
+        assertEquals(
+            expected = "JPEG, PNG, WEBP, GIF, BMP, HEIC, HEIF",
+            actual = ImageFormat.values().joinToString()
+        )
+    }
 }

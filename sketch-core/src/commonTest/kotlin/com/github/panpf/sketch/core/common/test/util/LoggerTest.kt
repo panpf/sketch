@@ -386,7 +386,11 @@ class LoggerTest {
 
     @Test
     fun testLevelEnum() {
-        // TODO test
+        @Suppress("EnumValuesSoftDeprecate")
+        assertEquals(
+            expected = "Verbose, Debug, Info, Warn, Error, Assert",
+            actual = Logger.Level.values().joinToString()
+        )
     }
 
     private class TestPipeline : Pipeline {

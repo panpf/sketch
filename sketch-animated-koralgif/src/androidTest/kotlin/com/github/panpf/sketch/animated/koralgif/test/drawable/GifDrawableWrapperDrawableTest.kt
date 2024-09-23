@@ -20,35 +20,65 @@ import org.junit.runner.RunWith
 import pl.droidsonroids.gif.GifDrawable
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotSame
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class GifDrawableWrapperDrawableTest {
 
-    // TODO test
+    @Test
+    fun test() {
+        val context = InstrumentationRegistry.getInstrumentation().context
+        val gifDrawable = GifDrawable(
+            context.assets,
+            ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
+        )
+        val drawable = GifDrawableWrapperDrawable(gifDrawable)
+
+        if (drawable.isRunning) {
+            drawable.stop()
+            assertFalse(drawable.isRunning)
+        } else {
+            drawable.start()
+            assertTrue(drawable.isRunning)
+        }
+
+        drawable.pause()
+        drawable.duration
+        drawable.currentPosition
+        drawable.seekTo(1)
+        drawable.isPlaying
+        drawable.bufferPercentage
+        drawable.canPause()
+        drawable.canSeekBackward()
+        drawable.canSeekForward()
+        drawable.audioSessionId
+        drawable.mutate()
+    }
 
     @Test
     fun testEqualsAndHashCode() {
         if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
 
         val context = InstrumentationRegistry.getInstrumentation().context
-        val movie = GifDrawable(
+        val gifDrawable = GifDrawable(
             context.assets,
             ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
         )
-        val movie2 = GifDrawable(
+        val gifDrawable2 = GifDrawable(
             context.assets,
             ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
         )
-        val movie3 = GifDrawable(
+        val gifDrawable3 = GifDrawable(
             context.assets,
             ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
         )
-        val element1 = GifDrawableWrapperDrawable(movie)
-        val element11 = GifDrawableWrapperDrawable(movie)
-        val element2 = GifDrawableWrapperDrawable(movie2)
-        val element3 = GifDrawableWrapperDrawable(movie3)
+        val element1 = GifDrawableWrapperDrawable(gifDrawable)
+        val element11 = GifDrawableWrapperDrawable(gifDrawable)
+        val element2 = GifDrawableWrapperDrawable(gifDrawable2)
+        val element3 = GifDrawableWrapperDrawable(gifDrawable3)
 
         assertNotSame(element1, element11)
         assertNotSame(element1, element2)

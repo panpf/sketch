@@ -29,7 +29,11 @@ class PixelOpacityTest {
 
     @Test
     fun testPixelOpacity() {
-        // TODO test
+        @Suppress("EnumValuesSoftDeprecate")
+        assertEquals(
+            expected = "UNCHANGED, TRANSLUCENT, OPAQUE",
+            actual = PixelOpacity.values().joinToString()
+        )
     }
 
     @Test
