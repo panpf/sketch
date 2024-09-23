@@ -54,7 +54,7 @@ class OkHttpStackTest {
 
         OkHttpStack.Builder().apply {
             addHeaders("AddHeader1" to "AddHeaderValue1")
-            addHeaders("AddHeader1" to "AddHeaderValue2")
+            addHeaders(listOf("AddHeader1" to "AddHeaderValue2"))
         }.build().apply {
             okHttpClient.interceptors
                 .find { it is MyInterceptor }
@@ -76,7 +76,7 @@ class OkHttpStackTest {
 
         OkHttpStack.Builder().apply {
             headers("Header1" to "HeaderValue1")
-            headers("Header1" to "HeaderValue2")
+            headers(mapOf("Header1" to "HeaderValue2"))
         }.build().apply {
             okHttpClient.interceptors
                 .find { it is MyInterceptor }

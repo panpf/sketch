@@ -129,14 +129,43 @@ class ExtrasTest {
         }
     }
 
-    // TODO testRequestKey
+    @Test
+    fun testRequestKey() {
+        Extras.Builder().apply {
+            set(key = "key1", value = "value1")
+            set(key = "key2", value = "value2", requestKey = null)
+            set(key = "key3", value = "value3", requestKey = "requestKey3")
+        }.build().apply {
+            assertEquals("value1", entry("key1")?.requestKey)
+            assertNull(entry("key2")?.requestKey)
+            assertEquals("requestKey3", entry("key3")?.requestKey)
+
+            assertEquals("Extras(key1:value1,key3:requestKey3)", requestKey)
+            assertEquals(
+                mapOf(
+                    "key1" to "value1",
+                    "key3" to "requestKey3",
+                ),
+                requestKeys()
+            )
+        }
+
+        Extras.Builder().build().apply {
+            assertNull(entry("key1")?.requestKey)
+            assertNull(entry("key2")?.requestKey)
+            assertNull(entry("key3")?.requestKey)
+
+            assertNull(requestKey)
+            assertEquals(mapOf(), requestKeys())
+        }
+    }
 
     @Test
     fun testCacheKey() {
         Extras.Builder().apply {
-            set("key1", "value1")
-            set("key2", "value2", null)
-            set("key3", "value3", "cacheKey3")
+            set(key = "key1", value = "value1")
+            set(key = "key2", value = "value2", cacheKey = null)
+            set(key = "key3", value = "value3", cacheKey = "cacheKey3")
         }.build().apply {
             assertEquals("value1", entry("key1")?.cacheKey)
             assertNull(entry("key2")?.cacheKey)
@@ -186,8 +215,6 @@ class ExtrasTest {
             )
             assertNull(entry("key4"))
         }
-
-        // TODO notJoinRequestKey
     }
 
     @Test
@@ -465,11 +492,6 @@ class ExtrasTest {
         }
     }
 
-    @Test
-    fun testGet() {
-        // TODO test
-    }
-
     /**
      * Returns a map of keys to non-null cache keys. Keys with a null cache key are filtered.
      */
@@ -480,6 +502,21 @@ class ExtrasTest {
             entries.mapNotNull {
                 it.value.cacheKey?.let { cacheKey ->
                     it.key to cacheKey
+                }
+            }.toMap()
+        }
+    }
+
+    /**
+     * Returns a map of keys to non-null request keys. Keys with a null cache key are filtered.
+     */
+    private fun Extras.requestKeys(): Map<String, String> {
+        return if (isEmpty()) {
+            emptyMap()
+        } else {
+            entries.mapNotNull {
+                it.value.requestKey?.let { requestKey ->
+                    it.key to requestKey
                 }
             }.toMap()
         }
