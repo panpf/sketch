@@ -12,9 +12,9 @@ class PexelsCompatibleRequestInterceptor : RequestInterceptor {
 
     override suspend fun intercept(chain: Chain): Result<ImageData> {
         val request = chain.request
-        return if (request.uri.scheme == "images.pexels.com") {
+        return if (request.uri.authority == "images.pexels.com") {
             val newRequest = request.newBuilder().apply {
-                addHttpHeader(
+                setHttpHeader(
                     "User-Agent",
                     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
                 )
