@@ -16,6 +16,9 @@
 
 package com.github.panpf.sketch
 
+import android.graphics.ColorSpace
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.util.configOrNull
 
 /**
@@ -50,3 +53,17 @@ fun AndroidBitmap(
     height: Int,
     config: ColorType = ColorType.ARGB_8888
 ): AndroidBitmap = AndroidBitmap.createBitmap(width, height, config)
+
+/**
+ * Create a new [AndroidBitmap] with the specified width, height, and [ColorType] and allocate memory
+ *
+ * @see com.github.panpf.sketch.core.android.test.AndroidBitmapTest.testAndroidBitmap
+ */
+@RequiresApi(Build.VERSION_CODES.O)
+fun AndroidBitmap(
+    width: Int,
+    height: Int,
+    config: ColorType = ColorType.ARGB_8888,
+    hasAlpha: Boolean,
+    colorSpace: ColorSpace
+): AndroidBitmap = AndroidBitmap.createBitmap(width, height, config, hasAlpha, colorSpace)

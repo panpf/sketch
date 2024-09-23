@@ -42,7 +42,7 @@ fun ByteArray.isSvg(): Boolean =
  * @see com.github.panpf.sketch.svg.nonandroid.test.decode.internal.SvgsNonAndroidTest.testReadSvgImageInfo
  */
 internal expect fun DataSource.readSvgImageInfo(
-    useViewBoundsAsIntrinsicSize: Boolean,
+    useViewBoundsAsIntrinsicSize: Boolean = true,
 ): ImageInfo
 
 /**
@@ -53,7 +53,7 @@ internal expect fun DataSource.readSvgImageInfo(
  */
 internal expect fun DataSource.decodeSvg(
     requestContext: RequestContext,
-    useViewBoundsAsIntrinsicSize: Boolean,
-    backgroundColor: Int?,
-    css: String?,
+    useViewBoundsAsIntrinsicSize: Boolean = true,
+    backgroundColor: Int? = null,
+    css: String? = null,
 ): DecodeResult

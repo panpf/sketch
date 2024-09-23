@@ -27,13 +27,15 @@ import com.github.panpf.sketch.decode.SvgDecoder.Companion.MIME_TYPE
 import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
-import com.github.panpf.sketch.util.SketchSize
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
+import com.github.panpf.sketch.util.isNotEmpty
 import com.github.panpf.sketch.util.times
 import okio.buffer
 import okio.use
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.ColorAlphaType
+import org.jetbrains.skia.ColorSpace
 import org.jetbrains.skia.ColorType
 import org.jetbrains.skia.Data
 import org.jetbrains.skia.Paint
@@ -54,21 +56,18 @@ internal actual fun DataSource.readSvgImageInfo(
     val bytes = openSource().buffer().use { it.readByteArray() }
     val svg = SVGDOM(Data.makeFromBytes(bytes))
 
-    val svgWidth: Float
-    val svgHeight: Float
     val viewBox: Rect? = svg.root?.viewBox
-    if (useViewBoundsAsIntrinsicSize && viewBox != null) {
-        svgWidth = viewBox.width
-        svgHeight = viewBox.height
+    val imageSize: Size = if (useViewBoundsAsIntrinsicSize && viewBox != null) {
+        Size(viewBox.width.roundToInt(), viewBox.height.roundToInt())
     } else {
-        svgWidth = svg.root?.width?.value ?: 0f
-        svgHeight = svg.root?.height?.value ?: 0f
+        svg.root
+            ?.let { Size(it.width.value.roundToInt(), it.height.value.roundToInt()) }
+            ?: Size.Empty
     }
-    return ImageInfo(
-        width = svgWidth.roundToInt(),
-        height = svgHeight.roundToInt(),
-        mimeType = MIME_TYPE,
-    )
+    if (imageSize.isEmpty) {
+        throw ImageInvalidException("Invalid image. width or height is 0. $imageSize")
+    }
+    return ImageInfo(size = imageSize, mimeType = MIME_TYPE)
 }
 
 /**
@@ -85,23 +84,21 @@ internal actual fun DataSource.decodeSvg(
     val bytes = openSource().buffer().use { it.readByteArray() }
     val svg = SVGDOM(Data.makeFromBytes(bytes))
 
-    val svgWidth: Float
-    val svgHeight: Float
     val viewBox: Rect? = svg.root?.viewBox
-    if (useViewBoundsAsIntrinsicSize && viewBox != null) {
-        svgWidth = viewBox.width
-        svgHeight = viewBox.height
+    val imageSize: Size = if (useViewBoundsAsIntrinsicSize && viewBox != null) {
+        Size(viewBox.width.roundToInt(), viewBox.height.roundToInt())
     } else {
-        svgWidth = svg.root?.width?.value ?: 0f
-        svgHeight = svg.root?.height?.value ?: 0f
+        svg.root
+            ?.let { Size(it.width.value.roundToInt(), it.height.value.roundToInt()) }
+            ?: Size.Empty
     }
-    if (svgWidth <= 0f || svgHeight <= 0f) {
-        throw ImageInvalidException("Invalid svg image size, size=${svgWidth}x${svgHeight}")
+    if (imageSize.isEmpty) {
+        throw ImageInvalidException("Invalid image. width or height is 0. $imageSize")
     }
 
     // Set the SVG's view box to enable scaling if it is not set.
-    if (viewBox == null && svgWidth > 0f && svgHeight > 0f) {
-        svg.root?.viewBox = Rect.makeWH(svgWidth, svgHeight)
+    if (viewBox == null && imageSize.isNotEmpty) {
+        svg.root?.viewBox = Rect.makeWH(imageSize.width.toFloat(), imageSize.height.toFloat())
     }
     svg.root?.width = SVGLength(
         value = 100f,
@@ -112,11 +109,10 @@ internal actual fun DataSource.decodeSvg(
         unit = SVGLengthUnit.PERCENTAGE,
     )
 
-    val svgSize = SketchSize(width = svgWidth.roundToInt(), height = svgHeight.roundToInt())
     val targetSize = requestContext.size
     val targetScale =
-        computeScaleMultiplierWithOneSide(sourceSize = svgSize, targetSize = targetSize)
-    val bitmapSize = svgSize.times(targetScale)
+        computeScaleMultiplierWithOneSide(sourceSize = imageSize, targetSize = targetSize)
+    val bitmapSize = imageSize.times(targetScale)
     svg.setContainerSize(bitmapSize.width.toFloat(), bitmapSize.height.toFloat())
 
     val decodeConfig = DecodeConfig(
@@ -125,7 +121,7 @@ internal actual fun DataSource.decodeSvg(
         isOpaque = false
     )
     val newColorType = decodeConfig.colorType ?: ColorType.RGBA_8888
-    val newColorSpace = decodeConfig.colorSpace
+    val newColorSpace = decodeConfig.colorSpace ?: ColorSpace.sRGB
     val bitmap = SkiaBitmap(
         SkiaImageInfo(
             width = bitmapSize.width,
@@ -144,11 +140,7 @@ internal actual fun DataSource.decodeSvg(
     // TODO SVGDOM not support css. https://github.com/JetBrains/compose-multiplatform/issues/1217
     svg.render(canvas)
 
-    val imageInfo = ImageInfo(
-        width = svgWidth.roundToInt(),
-        height = svgHeight.roundToInt(),
-        mimeType = MIME_TYPE,
-    )
+    val imageInfo = ImageInfo(size = imageSize, mimeType = MIME_TYPE)
     val transformeds: List<String>? = if (targetScale != 1f)
         listOf(createScaledTransformed(targetScale)) else null
     val resize = requestContext.computeResize(imageInfo.size)

@@ -21,6 +21,7 @@ import com.github.panpf.sketch.SkiaImage
 import com.github.panpf.sketch.SkiaImageInfo
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchRect
@@ -83,6 +84,9 @@ actual fun DataSource.readImageInfo(): ImageInfo {
     val bytes = openSource().buffer().use { it.readByteArray() }
     val imageSize = SkiaImage.makeFromEncoded(bytes).use {
         Size(it.width, it.height)
+    }
+    if (imageSize.isEmpty) {
+        throw ImageInvalidException("Invalid image. width or height is 0. $imageSize")
     }
     val mimeType = Codec.makeFromData(Data.makeFromBytes(bytes)).use {
         "image/${it.encodedImageFormat.name.lowercase()}"

@@ -16,11 +16,14 @@
 
 package com.github.panpf.sketch.decode.internal
 
-import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.ColorSpace
 import android.graphics.RectF
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
+import com.github.panpf.sketch.AndroidBitmap
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeResult
@@ -30,8 +33,9 @@ import com.github.panpf.sketch.decode.SvgDecoder
 import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
-import com.github.panpf.sketch.util.SketchSize
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
+import com.github.panpf.sketch.util.isNotEmpty
 import com.github.panpf.sketch.util.safeToSoftware
 import com.github.panpf.sketch.util.times
 import okio.buffer
@@ -47,21 +51,16 @@ internal actual fun DataSource.readSvgImageInfo(
 ): ImageInfo {
     val svg = openSource().buffer().inputStream().use { SVG.getFromInputStream(it) }
 
-    val svgWidth: Float
-    val svgHeight: Float
     val viewBox: RectF? = svg.documentViewBox
-    if (useViewBoundsAsIntrinsicSize && viewBox != null) {
-        svgWidth = viewBox.width()
-        svgHeight = viewBox.height()
+    val imageSize: Size = if (useViewBoundsAsIntrinsicSize && viewBox != null) {
+        Size(viewBox.width().roundToInt(), viewBox.height().roundToInt())
     } else {
-        svgWidth = svg.documentWidth
-        svgHeight = svg.documentHeight
+        Size(svg.documentWidth.roundToInt(), svg.documentHeight.roundToInt())
     }
-    return ImageInfo(
-        width = svgWidth.roundToInt(),
-        height = svgHeight.roundToInt(),
-        mimeType = SvgDecoder.MIME_TYPE,
-    )
+    if (imageSize.isEmpty) {
+        throw ImageInvalidException("Invalid image. width or height is 0. $imageSize")
+    }
+    return ImageInfo(size = imageSize, mimeType = SvgDecoder.MIME_TYPE)
 }
 
 /**
@@ -77,49 +76,50 @@ internal actual fun DataSource.decodeSvg(
 ): DecodeResult {
     val svg = openSource().buffer().inputStream().use { SVG.getFromInputStream(it) }
 
-    val svgWidth: Float
-    val svgHeight: Float
     val viewBox: RectF? = svg.documentViewBox
-    if (useViewBoundsAsIntrinsicSize && viewBox != null) {
-        svgWidth = viewBox.width()
-        svgHeight = viewBox.height()
+    val imageSize: Size = if (useViewBoundsAsIntrinsicSize && viewBox != null) {
+        Size(viewBox.width().roundToInt(), viewBox.height().roundToInt())
     } else {
-        svgWidth = svg.documentWidth
-        svgHeight = svg.documentHeight
+        Size(svg.documentWidth.roundToInt(), svg.documentHeight.roundToInt())
     }
-    if (svgWidth <= 0f || svgHeight <= 0f) {
-        throw ImageInvalidException("Invalid svg image size, size=${svgWidth}x${svgHeight}")
+    if (imageSize.isEmpty) {
+        throw ImageInvalidException("Invalid image. width or height is 0. $imageSize")
     }
 
     // Set the SVG's view box to enable scaling if it is not set.
-    if (viewBox == null && svgWidth > 0f && svgHeight > 0f) {
-        svg.setDocumentViewBox(0f, 0f, svgWidth, svgHeight)
+    if (viewBox == null && imageSize.isNotEmpty) {
+        svg.setDocumentViewBox(0f, 0f, imageSize.width.toFloat(), imageSize.height.toFloat())
     }
     svg.setDocumentWidth("100%")
     svg.setDocumentHeight("100%")
 
-    val svgSize = SketchSize(width = svgWidth.roundToInt(), height = svgHeight.roundToInt())
     val targetSize = requestContext.size
     val targetScale =
-        computeScaleMultiplierWithOneSide(sourceSize = svgSize, targetSize = targetSize)
-    val bitmapSize = svgSize.times(targetScale)
+        computeScaleMultiplierWithOneSide(sourceSize = imageSize, targetSize = targetSize)
+    val bitmapSize = imageSize.times(targetScale)
     val decodeConfig = DecodeConfig(requestContext.request, PNG.mimeType, isOpaque = false)
     val bitmapConfig = decodeConfig.colorType.safeToSoftware()
-    val bitmap = Bitmap.createBitmap(
-        /* width = */ bitmapSize.width,
-        /* height = */ bitmapSize.height,
-        /* config = */ bitmapConfig,
-    )
+    val bitmap = if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        AndroidBitmap(
+            width = bitmapSize.width,
+            height = bitmapSize.height,
+            config = bitmapConfig,
+            hasAlpha = true,
+            colorSpace = decodeConfig.colorSpace ?: ColorSpace.get(ColorSpace.Named.SRGB),
+        )
+    } else {
+        AndroidBitmap(
+            width = bitmapSize.width,
+            height = bitmapSize.height,
+            config = bitmapConfig,
+        )
+    }
     val canvas = Canvas(bitmap)
     backgroundColor?.let { canvas.drawColor(it) }
     val renderOptions = css?.let { RenderOptions().css(it) }
     svg.renderToCanvas(canvas, renderOptions)
 
-    val imageInfo = ImageInfo(
-        width = svgWidth.roundToInt(),
-        height = svgHeight.roundToInt(),
-        mimeType = SvgDecoder.MIME_TYPE,
-    )
+    val imageInfo = ImageInfo(size = imageSize, mimeType = SvgDecoder.MIME_TYPE)
     val transformeds: List<String>? = if (targetScale != 1f)
         listOf(createScaledTransformed(targetScale)) else null
     val resize = requestContext.computeResize(imageInfo.size)
