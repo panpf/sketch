@@ -396,8 +396,8 @@ data class ImageRequest(
         /**
          * Set the requested depth
          */
-        fun depth(depth: Depth?, depthFrom: String? = null): Builder = apply {
-            definedOptionsBuilder.depth(depth, depthFrom)
+        fun depth(depth: Depth?, from: String? = null): Builder = apply {
+            definedOptionsBuilder.depth(depth, from)
         }
 
         /**
