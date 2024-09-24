@@ -380,8 +380,14 @@ class LoggerTest {
         assertEquals(logger1, logger11)
         assertNotEquals(logger1, logger2)
         assertNotEquals(logger1, logger3)
+        assertNotEquals(logger1, null as Any?)
+        assertNotEquals(logger1, Any())
+        assertNotEquals(logger2, logger3)
+
+        assertEquals(logger1.hashCode(), logger11.hashCode())
         assertNotEquals(logger1.hashCode(), logger2.hashCode())
         assertNotEquals(logger1.hashCode(), logger3.hashCode())
+        assertNotEquals(logger2.hashCode(), logger3.hashCode())
     }
 
     @Test

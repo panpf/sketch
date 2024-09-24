@@ -5,6 +5,8 @@ import com.github.panpf.sketch.util.SketchSize
 
 class FakeImage(val size: SketchSize) : Image {
 
+    constructor(width: Int, height: Int) : this(SketchSize(width, height))
+
     override val width: Int
         get() = size.width
 

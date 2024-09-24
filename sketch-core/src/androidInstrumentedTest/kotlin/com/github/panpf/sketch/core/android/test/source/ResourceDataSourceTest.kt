@@ -2,13 +2,13 @@ package com.github.panpf.sketch.core.android.test.source
 
 import android.content.res.Resources.NotFoundException
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.util.md5
 import okio.Closeable
 import org.junit.runner.RunWith
 import kotlin.test.Test
@@ -16,6 +16,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotSame
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ResourceDataSourceTest {
@@ -52,7 +53,7 @@ class ResourceDataSourceTest {
     }
 
     @Test
-    fun testNewInputStream() {
+    fun testOpenSource() {
         val context = getTestContext()
         ResourceDataSource(
             resources = context.resources,
@@ -74,18 +75,14 @@ class ResourceDataSourceTest {
     }
 
     @Test
-    fun testFile() {
+    fun testGetFile() {
         val (context, sketch) = getTestContextAndSketch()
         ResourceDataSource(
             resources = context.resources,
             packageName = context.packageName,
             resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
-        ).apply {
-            val file = getFile(sketch)
-            assertEquals(
-                (key + "_data_source").md5() + ".0",
-                file.name
-            )
+        ).getFile(sketch).apply {
+            assertTrue(actual = toString().contains("/${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}/"))
         }
     }
 

@@ -59,7 +59,12 @@ class TestTransitionTarget : Target, TransitionTarget {
 
     override fun convertTransition(factory: Transition.Factory): Transition.Factory? {
         if (factory is CrossfadeTransition.Factory) {
-            return TestCrossfadeTransition.Factory()
+            return TestCrossfadeTransition.Factory(
+                durationMillis = factory.durationMillis,
+                fadeStart = factory.fadeStart,
+                preferExactIntrinsicSize = factory.preferExactIntrinsicSize,
+                alwaysUse = factory.alwaysUse,
+            )
         }
         return null
     }

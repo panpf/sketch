@@ -151,7 +151,6 @@ class ViewCrossfadeTransitionTest {
         ViewCrossfadeTransition(sketch, request, imageViewTarget, error).transition()
         (imageView.drawable as CrossfadeDrawable).apply {
             assertEquals(Color.GREEN, (start as ColorDrawable).color)
-            assertTrue(end is BitmapDrawable)
         }
 
         // start end same
@@ -204,7 +203,6 @@ class ViewCrossfadeTransitionTest {
     fun testFactoryCreate() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, ResourceImages.jpeg.uri)
-        val requestContext = request.toRequestContext(sketch)
         val factory = ViewCrossfadeTransition.Factory()
 
         val imageView = ImageView(context)

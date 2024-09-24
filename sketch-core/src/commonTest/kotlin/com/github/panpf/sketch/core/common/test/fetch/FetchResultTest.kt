@@ -17,7 +17,6 @@
 package com.github.panpf.sketch.core.common.test.fetch
 
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.fetch.FetchResultImpl
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DataFrom.MEMORY
@@ -26,24 +25,8 @@ import okio.Path.Companion.toPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
-import kotlin.test.assertTrue
 
 class FetchResultTest {
-
-    @Test
-    fun testCreateFunction() {
-        FetchResult(
-            FileDataSource("/sdcard/sample.jpeg".toPath()),
-            "image/jpeg"
-        ).apply {
-            assertTrue(this is FetchResultImpl)
-        }
-    }
-
-    @Test
-    fun testCopy() {
-        // TODO copy
-    }
 
     @Test
     fun testDataFrom() {
@@ -63,21 +46,51 @@ class FetchResultTest {
     }
 
     @Test
+    fun testHeaderBytes() {
+        val bytes = buildList {
+            var number = 1
+            repeat(101) {
+                add((number++).toByte())
+            }
+        }.toByteArray()
+        FetchResult(
+            ByteArrayDataSource(bytes, MEMORY),
+            "image/jpeg"
+        ).apply {
+            assertEquals(
+                bytes.take(100).toTypedArray().contentToString(),
+                this.headerBytes.contentToString()
+            )
+        }
+
+        val bytes1 = buildList {
+            var number = 1
+            repeat(99) {
+                add((number++).toByte())
+            }
+        }.toByteArray()
+        FetchResult(
+            ByteArrayDataSource(bytes1, MEMORY),
+            "image/jpeg"
+        ).apply {
+            assertEquals(
+                bytes1.toTypedArray().contentToString(),
+                this.headerBytes.contentToString()
+            )
+        }
+    }
+
+    @Test
     fun testEqualsAndHashCode() {
         val factory1 = FetchResult(
             dataSource = FileDataSource(path = "/sdcard/sample.jpeg".toPath()),
             mimeType = "image/jpeg"
         )
-        val factory11 = FetchResult(
-            dataSource = FileDataSource(path = "/sdcard/sample.jpeg".toPath()),
-            mimeType = "image/jpeg"
-        )
-        val factory2 = FetchResult(
+        val factory11 = factory1.copy()
+        val factory2 = factory1.copy(
             dataSource = FileDataSource(path = "/sdcard/sample.png".toPath()),
-            mimeType = "image/jpeg"
         )
-        val factory3 = FetchResult(
-            dataSource = FileDataSource(path = "/sdcard/sample.jpeg".toPath()),
+        val factory3 = factory1.copy(
             mimeType = "image/png"
         )
 
@@ -114,41 +127,6 @@ class FetchResultTest {
             assertEquals(
                 "FetchResult(source=ByteArrayDataSource(data=$data, from=NETWORK), mimeType='image/jpeg')",
                 this.toString()
-            )
-        }
-    }
-
-    @Test
-    fun testHeaderBytes() {
-        val bytes = buildList {
-            var number = 1
-            repeat(101) {
-                add((number++).toByte())
-            }
-        }.toByteArray()
-        FetchResult(
-            ByteArrayDataSource(bytes, MEMORY),
-            "image/jpeg"
-        ).apply {
-            assertEquals(
-                bytes.take(100).toTypedArray().contentToString(),
-                this.headerBytes.contentToString()
-            )
-        }
-
-        val bytes1 = buildList {
-            var number = 1
-            repeat(99) {
-                add((number++).toByte())
-            }
-        }.toByteArray()
-        FetchResult(
-            ByteArrayDataSource(bytes1, MEMORY),
-            "image/jpeg"
-        ).apply {
-            assertEquals(
-                bytes1.toTypedArray().contentToString(),
-                this.headerBytes.contentToString()
             )
         }
     }

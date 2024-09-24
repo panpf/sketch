@@ -34,7 +34,6 @@ import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeStateImage
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
-import com.github.panpf.sketch.test.utils.ResizeOnDrawTarget
 import com.github.panpf.sketch.test.utils.TestCountTarget
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestErrorDecoder
@@ -43,6 +42,7 @@ import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestLifecycle
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestResizeOnDrawImage
+import com.github.panpf.sketch.test.utils.TestResizeOnDrawTarget
 import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.TestTransitionTarget
 import com.github.panpf.sketch.test.utils.block
@@ -1075,7 +1075,7 @@ class ImageRequestExecuteTest {
         val imageUri = ResourceImages.jpeg.uri
         val request = ImageRequest(context, imageUri) {
             size(500, 500)
-            target(ResizeOnDrawTarget())
+            target(TestResizeOnDrawTarget())
         }
 
         request.let { sketch.execute(it) }

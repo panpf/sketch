@@ -1,10 +1,12 @@
 package com.github.panpf.sketch.core.android.test.source
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
 import okio.Closeable
@@ -15,6 +17,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotSame
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class AssetDataSourceTest {
@@ -47,7 +50,7 @@ class AssetDataSourceTest {
     }
 
     @Test
-    fun testNewInputStream() {
+    fun testOpenSource() {
         val context = getTestContext()
 
         AssetDataSource(
@@ -64,6 +67,17 @@ class AssetDataSourceTest {
             ).apply {
                 openSource()
             }
+        }
+    }
+
+    @Test
+    fun testGetFile() {
+        val (context, sketch) = getTestContextAndSketch()
+        AssetDataSource(
+            context = context,
+            fileName = ResourceImages.jpeg.resourceName
+        ).getFile(sketch).apply {
+            assertTrue(actual = toString().contains("/${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}/"))
         }
     }
 

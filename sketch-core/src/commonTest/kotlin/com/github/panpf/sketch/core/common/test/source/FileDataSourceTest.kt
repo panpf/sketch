@@ -42,7 +42,7 @@ class FileDataSourceTest {
     }
 
     @Test
-    fun testNewInputStream() {
+    fun testOpenSource() {
         val (context, sketch) = getTestContextAndSketch()
         val file = ResourceImages.jpeg.toDataSource(context).getFile(sketch)
         FileDataSource(path = file).apply {
@@ -57,12 +57,11 @@ class FileDataSourceTest {
     }
 
     @Test
-    fun testFile() {
+    fun testGetFile() {
         val (context, sketch) = getTestContextAndSketch()
         val file = ResourceImages.jpeg.toDataSource(context).getFile(sketch)
-        FileDataSource(path = file).apply {
-            val file1 = getFile(sketch)
-            assertEquals(file, file1)
+        FileDataSource(path = file).getFile(sketch).apply {
+            assertEquals(file, this)
         }
     }
 

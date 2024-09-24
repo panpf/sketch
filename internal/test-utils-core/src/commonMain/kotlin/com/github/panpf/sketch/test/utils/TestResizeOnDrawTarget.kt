@@ -25,10 +25,9 @@ import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper
 import com.github.panpf.sketch.target.Target
-import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Job
 
-class ResizeOnDrawTarget(override val currentImage: Image? = null) : Target {
+class TestResizeOnDrawTarget(override val currentImage: Image? = null) : Target {
 
     var startImage: Image? = null
     var successImage: Image? = null
@@ -63,13 +62,3 @@ class ResizeOnDrawTarget(override val currentImage: Image? = null) : Target {
         return TestResizeOnDrawHelper()
     }
 }
-
-class TestResizeOnDrawHelper : ResizeOnDrawHelper {
-    override fun resize(request: ImageRequest, size: Size, image: Image): Image {
-        return TestResizeOnDrawImage(image)
-    }
-
-    override val key: String = "TestResizeOnDrawHelper"
-}
-
-class TestResizeOnDrawImage(image: Image) : Image by image

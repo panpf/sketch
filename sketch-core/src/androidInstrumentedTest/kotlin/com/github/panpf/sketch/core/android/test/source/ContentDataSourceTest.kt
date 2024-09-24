@@ -57,7 +57,7 @@ class ContentDataSourceTest {
     }
 
     @Test
-    fun testNewInputStream() {
+    fun testOpenSource() {
         val (_, sketch) = getTestContextAndSketch()
         val contentUri = AssetDataSource(
             context = sketch.context,
@@ -78,7 +78,7 @@ class ContentDataSourceTest {
     }
 
     @Test
-    fun testFile() {
+    fun testGetFile() {
         val (_, sketch) = getTestContextAndSketch()
         val contentUri = AssetDataSource(
             context = sketch.context,

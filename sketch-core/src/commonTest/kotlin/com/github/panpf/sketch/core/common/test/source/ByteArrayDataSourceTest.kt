@@ -1,8 +1,10 @@
 package com.github.panpf.sketch.core.common.test.source
 
+import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DataFrom.MEMORY
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.asOrThrow
 import okio.ByteString.Companion.toByteString
 import okio.Closeable
@@ -10,6 +12,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotSame
+import kotlin.test.assertTrue
 
 class ByteArrayDataSourceTest {
 
@@ -38,12 +41,24 @@ class ByteArrayDataSourceTest {
     }
 
     @Test
-    fun testNewInputStream() {
+    fun testOpenSource() {
         ByteArrayDataSource(
             dataFrom = MEMORY,
             data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".encodeToByteArray()
         ).apply {
             openSource().asOrThrow<Closeable>().close()
+        }
+    }
+
+    @Test
+    fun testGetFile() {
+        val (_, sketch) = getTestContextAndSketch()
+        val data = "fd5717876ab046b8aa889c9aaac4b56c8j5f3".encodeToByteArray()
+        ByteArrayDataSource(
+            data = data,
+            dataFrom = MEMORY,
+        ).getFile(sketch).apply {
+            assertTrue(actual = toString().contains("/${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}/"))
         }
     }
 

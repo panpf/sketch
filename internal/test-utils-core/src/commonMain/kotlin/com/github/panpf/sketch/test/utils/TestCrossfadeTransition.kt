@@ -20,6 +20,8 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
+import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.transition.TransitionTarget
 
@@ -45,14 +47,26 @@ class TestCrossfadeTransition(
         }
     }
 
-    class Factory : Transition.Factory {
+    class Factory(
+        val durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
+        val fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
+        val preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
+        val alwaysUse: Boolean = CrossfadeTransition.DEFAULT_ALWAYS_USE,
+    ) : Transition.Factory {
 
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
             target: TransitionTarget,
             result: ImageResult,
-        ): Transition {
+        ): Transition? {
+            if (target !is TestTransitionTarget) {
+                return null
+            }
+            val fromMemoryCache = result.asOrNull<ImageResult.Success>()?.dataFrom == MEMORY_CACHE
+            if (!alwaysUse && fromMemoryCache) {
+                return null
+            }
             return TestCrossfadeTransition(sketch, request, target, result)
         }
 
