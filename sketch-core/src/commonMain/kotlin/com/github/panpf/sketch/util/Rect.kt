@@ -19,6 +19,20 @@ package com.github.panpf.sketch.util
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * Rect holds four integer coordinates for a rectangle. The rectangle is
+ * represented by the coordinates of its 4 edges (left, top, right bottom).
+ * These fields can be accessed directly. Use width() and height() to retrieve
+ * the rectangle's width and height. Note: most methods do not check to see that
+ * the coordinates are sorted correctly (i.e. left <= right and top <= bottom).
+ * <p>
+ * Note that the right and bottom coordinates are exclusive. This means a Rect
+ * being drawn untransformed onto a {@link android.graphics.Canvas} will draw
+ * into the column and row described by its left and top coordinates, but not
+ * those of its bottom and right.
+ *
+ * Copy from 'android.graphics.Rect'
+ */
 class Rect {
     var left = 0
     var top = 0
@@ -587,9 +601,9 @@ class Rect {
 /**
  * Flip this rect horizontally or vertically within a given container
  *
- * @see com.github.panpf.sketch.core.common.test.util.RectTest.testFlipped
+ * @see com.github.panpf.sketch.core.common.test.util.RectTest.testFlip
  */
-fun Rect.flipped(spaceSize: Size, vertical: Boolean = false): Rect {
+fun Rect.flip(spaceSize: Size, vertical: Boolean = false): Rect {
     return if (!vertical) {
         Rect(
             left = spaceSize.width - right,

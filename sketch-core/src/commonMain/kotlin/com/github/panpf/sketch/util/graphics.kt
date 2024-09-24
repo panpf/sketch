@@ -23,7 +23,8 @@ import kotlin.math.min
 /**
  * Fast Gaussian blur, pixels format is ARGB_8888
  *
- * @see com.github.panpf.sketch.core.common.test.util.GraphicsTest.testFastGaussianBlur
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testBlur
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBlur
  */
 fun fastGaussianBlur(pixels: IntArray, width: Int, height: Int, radius: Int) {
     val wm = width - 1
@@ -227,7 +228,7 @@ fun fastGaussianBlur(pixels: IntArray, width: Int, height: Int, radius: Int) {
 /**
  * Calculate the size of the rotated image
  *
- * @see com.github.panpf.sketch.core.common.test.util.GraphicsTest.testCalculateRotatedSize
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testRotate
  */
 fun calculateRotatedSize(size: Size, angle: Double): Size {
     val radians = angle * 0.017453292519943295

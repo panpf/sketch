@@ -36,7 +36,7 @@ import com.github.panpf.sketch.resize.reverse
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.flipped
+import com.github.panpf.sketch.util.flip
 import com.github.panpf.sketch.util.rotate
 import com.github.panpf.sketch.util.rotateInSpace
 import com.github.panpf.sketch.util.safeConfig
@@ -156,14 +156,14 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
         val isRotated = abs(rotationDegrees % 360) != 0
         return if (!reverse) {
             srcRect
-                .let { if (isFlipHorizontally) it.flipped(spaceSize, vertical = false) else it }
+                .let { if (isFlipHorizontally) it.flip(spaceSize, vertical = false) else it }
                 .let { if (isRotated) it.rotateInSpace(spaceSize, rotationDegrees) else it }
         } else {
             val rotatedImageSize = spaceSize.rotate(-rotationDegrees)
             srcRect
                 .let { if (isRotated) it.rotateInSpace(spaceSize, -rotationDegrees) else it }
                 .let {
-                    if (isFlipHorizontally) it.flipped(
+                    if (isFlipHorizontally) it.flip(
                         rotatedImageSize,
                         vertical = false
                     ) else it

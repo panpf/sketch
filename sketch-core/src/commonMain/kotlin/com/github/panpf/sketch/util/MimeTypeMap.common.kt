@@ -40,6 +40,9 @@ internal expect fun platformMimeTypeToExtension(mimeType: String): String?
  */
 object MimeTypeMap {
 
+    /**
+     * Get the file extension from a URL.
+     */
     fun getExtensionFromUrl(url: String): String? {
         if (url.isBlank()) return null
         return url
@@ -51,16 +54,25 @@ object MimeTypeMap {
             .takeIf { it.isNotEmpty() }
     }
 
+    /**
+     * Get the MIME type from a URL.
+     */
     fun getMimeTypeFromUrl(url: String): String? {
         val extension = getExtensionFromUrl(url) ?: return null
         return getMimeTypeFromExtension(extension)
     }
 
+    /**
+     * Get the MIME type from a file extension.
+     */
     fun getMimeTypeFromExtension(extension: String): String? {
         val lowerExtension = extension.lowercase()
         return platformExtensionToMimeType(lowerExtension) ?: mimeTypeData[lowerExtension]
     }
 
+    /**
+     * Get the file extension from a MIME type.
+     */
     fun getExtensionFromMimeType(mimeType: String): String? {
         val lowerMimeType = mimeType.lowercase()
         return platformMimeTypeToExtension(lowerMimeType)
@@ -101,6 +113,7 @@ object MimeTypeMap {
         put("ico", "image/x-icon")
         put("ief", "image/ief")
         put("jfi", "image/pjpeg")
+        put("jpeg", "image/jpeg")
         put("jfif", "image/jpeg")
 //        put("jfif", "image/pjpeg")
         put("jfif-tbnl", "image/jpeg")
@@ -109,7 +122,6 @@ object MimeTypeMap {
 //        put("jif", "image/pjpeg")
         put("jpe", "image/jpeg")
 //        put("jpe", "image/pjpeg")
-        put("jpeg", "image/jpeg")
 //        put("jpeg", "image/pjpeg")
         put("jpg", "image/jpeg")
 //        put("jpg", "image/pjpeg")

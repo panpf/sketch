@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.core.common.test.util
 
+import com.github.panpf.sketch.util.Uri
 import com.github.panpf.sketch.util.toUri
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -9,7 +10,10 @@ class UriTest {
 
     @Test
     fun testToUri() {
-        // TODO test
+        assertEquals(
+            expected = Uri("https://example.com/image.jpg?q=jpg#fragment"),
+            actual = "https://example.com/image.jpg?q=jpg#fragment".toUri()
+        )
     }
 
     @Test

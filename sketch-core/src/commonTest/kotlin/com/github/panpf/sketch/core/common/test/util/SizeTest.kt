@@ -17,8 +17,13 @@
 package com.github.panpf.sketch.core.common.test.util
 
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.coerceAtLeast
+import com.github.panpf.sketch.util.coerceAtMost
+import com.github.panpf.sketch.util.div
 import com.github.panpf.sketch.util.isNotEmpty
 import com.github.panpf.sketch.util.isSameAspectRatio
+import com.github.panpf.sketch.util.rotate
+import com.github.panpf.sketch.util.times
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -132,26 +137,108 @@ class SizeTest {
 
     @Test
     fun testTimes() {
-        // TODO test
+        assertEquals(
+            "43x23",
+            (Size(13, 7) * 3.3f).toString()
+        )
+        assertEquals(
+            "69x37",
+            (Size(13, 7) * 5.3f).toString()
+        )
     }
 
     @Test
     fun testDiv() {
-        // TODO test
+        assertEquals(
+            "13x11",
+            (Size(43, 37) / 3.3f).toString()
+        )
+        assertEquals(
+            "8x7",
+            (Size(43, 37) / 5.3f).toString()
+        )
     }
 
     @Test
     fun testRotate() {
-        // TODO test
+        listOf(0, 0 - 360, 0 + 360, 0 - 360 - 360).forEach { rotation ->
+            assertEquals(
+                expected = Size(width = 600, height = 200),
+                actual = Size(600, 200).rotate(rotation),
+                message = "rotation: $rotation",
+            )
+        }
+
+        listOf(90, 90 - 360, 90 + 360, 90 - 360 - 360).forEach { rotation ->
+            assertEquals(
+                expected = Size(width = 200, height = 600),
+                actual = Size(600, 200).rotate(rotation),
+                message = "rotation: $rotation",
+            )
+        }
+
+        listOf(180, 180 - 360, 180 + 360, 180 - 360 - 360).forEach { rotation ->
+            assertEquals(
+                expected = Size(width = 600, height = 200),
+                actual = Size(600, 200).rotate(rotation),
+                message = "rotation: $rotation",
+            )
+        }
+
+        listOf(270, 270 - 360, 270 + 360, 270 - 360 - 360).forEach { rotation ->
+            assertEquals(
+                expected = Size(200, 600),
+                actual = Size(600, 200).rotate(rotation),
+                message = "rotation: $rotation",
+            )
+        }
+
+        listOf(360, 360 - 360, 360 + 360, 360 - 360 - 360).forEach { rotation ->
+            assertEquals(
+                expected = Size(width = 600, height = 200),
+                actual = Size(600, 200).rotate(rotation),
+                message = "rotation: $rotation",
+            )
+        }
     }
 
     @Test
     fun testCoerceAtLeast() {
-        // TODO test
+        assertEquals(
+            expected = Size(10, 20),
+            actual = Size(5, 20).coerceAtLeast(Size(10, 10))
+        )
+        assertEquals(
+            expected = Size(15, 25),
+            actual = Size(15, 25).coerceAtLeast(Size(10, 10))
+        )
+        assertEquals(
+            expected = Size(10, 30),
+            actual = Size(10, 30).coerceAtLeast(Size(10, 10))
+        )
+        assertEquals(
+            expected = Size(20, 20),
+            actual = Size(20, 5).coerceAtLeast(Size(10, 20))
+        )
     }
 
     @Test
     fun testCoerceAtMost() {
-        // TODO test
+        assertEquals(
+            expected = Size(5, 10),
+            actual = Size(5, 20).coerceAtMost(Size(10, 10))
+        )
+        assertEquals(
+            expected = Size(10, 10),
+            actual = Size(15, 25).coerceAtMost(Size(10, 10))
+        )
+        assertEquals(
+            expected = Size(10, 10),
+            actual = Size(10, 30).coerceAtMost(Size(10, 10))
+        )
+        assertEquals(
+            expected = Size(10, 5),
+            actual = Size(20, 5).coerceAtMost(Size(10, 20))
+        )
     }
 }

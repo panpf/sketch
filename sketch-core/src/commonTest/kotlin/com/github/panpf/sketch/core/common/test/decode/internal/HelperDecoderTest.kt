@@ -50,7 +50,10 @@ class HelperDecoderTest {
         }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(1500, 750, "image/jpeg"), imageInfo)
             assertEquals(imageInfo.size, image.size)
-            // TODO resize
+            assertEquals(
+                "Resize(size=3000x3000, precision=LESS_PIXELS, scale=CENTER_CROP)",
+                resize.toString()
+            )
             assertEquals(DataFrom.LOCAL, dataFrom)
             assertNull(transformeds)
         }
@@ -61,6 +64,10 @@ class HelperDecoderTest {
         }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(1500, 750, "image/jpeg"), imageInfo)
             assertEquals(imageInfo.size, image.size)
+            assertEquals(
+                "Resize(size=3000x3000, precision=LESS_PIXELS, scale=CENTER_CROP)",
+                resize.toString()
+            )
             assertEquals(DataFrom.LOCAL, dataFrom)
             assertNull(transformeds)
             assertEquals(result1.image.corners(), image.corners())
@@ -72,6 +79,10 @@ class HelperDecoderTest {
         }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(1500, 750, "image/jpeg"), imageInfo)
             assertEquals(Size(100, 200), image.size)
+            assertEquals(
+                "Resize(size=100x200, precision=EXACTLY, scale=CENTER_CROP)",
+                resize.toString()
+            )
             assertEquals(DataFrom.LOCAL, dataFrom)
             assertEquals(
                 listOf(
@@ -89,6 +100,10 @@ class HelperDecoderTest {
         }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(1500, 750, "image/jpeg"), imageInfo)
             assertEquals(Size(100, 200), image.size)
+            assertEquals(
+                "Resize(size=100x200, precision=EXACTLY, scale=CENTER_CROP)",
+                resize.toString()
+            )
             assertEquals(DataFrom.LOCAL, dataFrom)
             assertEquals(
                 listOf(
@@ -107,6 +122,10 @@ class HelperDecoderTest {
         }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(1500, 750, "image/jpeg"), imageInfo)
             assertEquals(Size(94, 188), image.size)
+            assertEquals(
+                "Resize(size=100x200, precision=SAME_ASPECT_RATIO, scale=CENTER_CROP)",
+                resize.toString()
+            )
             assertEquals(DataFrom.LOCAL, dataFrom)
             assertEquals(
                 listOf(
@@ -123,6 +142,10 @@ class HelperDecoderTest {
         }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(1500, 750, "image/jpeg"), imageInfo)
             assertEquals(Size(94, 188), image.size)
+            assertEquals(
+                "Resize(size=100x200, precision=SAME_ASPECT_RATIO, scale=CENTER_CROP)",
+                resize.toString()
+            )
             assertEquals(DataFrom.LOCAL, dataFrom)
             assertEquals(
                 listOf(
@@ -140,6 +163,10 @@ class HelperDecoderTest {
         }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(1500, 750, "image/jpeg"), imageInfo)
             assertEquals(Size(188, 94), image.size)
+            assertEquals(
+                "Resize(size=100x200, precision=LESS_PIXELS, scale=CENTER_CROP)",
+                resize.toString()
+            )
             assertEquals(DataFrom.LOCAL, dataFrom)
             assertEquals(listOf(createInSampledTransformed(8)), transformeds)
         }
@@ -150,6 +177,10 @@ class HelperDecoderTest {
         }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(1500, 750, "image/jpeg"), imageInfo)
             assertEquals(Size(188, 94), image.size)
+            assertEquals(
+                "Resize(size=100x200, precision=LESS_PIXELS, scale=CENTER_CROP)",
+                resize.toString()
+            )
             assertEquals(DataFrom.LOCAL, dataFrom)
             assertEquals(listOf(createInSampledTransformed(8)), transformeds)
             assertEquals(result7.image.corners(), image.corners())
@@ -161,6 +192,10 @@ class HelperDecoderTest {
         }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(700, 1012, "image/bmp"), imageInfo)
             assertEquals(Size(100, 200), image.size)
+            assertEquals(
+                "Resize(size=100x200, precision=EXACTLY, scale=CENTER_CROP)",
+                resize.toString()
+            )
             assertEquals(DataFrom.LOCAL, dataFrom)
             assertEquals(
                 listOf(
@@ -178,6 +213,10 @@ class HelperDecoderTest {
         }.helperDecode(sketch).apply {
             assertEquals(ImageInfo(700, 1012, "image/bmp"), imageInfo)
             assertEquals(Size(100, 200), image.size)
+            assertEquals(
+                "Resize(size=100x200, precision=EXACTLY, scale=CENTER_CROP)",
+                resize.toString()
+            )
             assertEquals(DataFrom.LOCAL, dataFrom)
             assertEquals(
                 listOf(

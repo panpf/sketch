@@ -29,8 +29,21 @@ class TestLifecycle : Lifecycle() {
     private val owner = TestLifecycleOwner(this)
 
     override var currentState: State = State.INITIALIZED
+        set(value) {
+            if (field == value) return
+            val oldValue = field
+            field = value
+            val event = if (value > oldValue) {
+                Event.upTo(value)!!
+            } else {
+                Event.downTo(value)!!
+            }
+            observers.forEach {
+                it.onStateChanged(owner, event)
+            }
+        }
 
-    private val observers = mutableListOf<LifecycleEventObserver>()
+    val observers = mutableListOf<LifecycleEventObserver>()
 
     override fun addObserver(observer: LifecycleObserver) {
         require(observer is LifecycleEventObserver) {

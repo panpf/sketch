@@ -31,7 +31,7 @@ import com.github.panpf.sketch.util.requiredWorkThread
 /**
  * Create a [ComponentRegistry] based on the [configBlock]
  *
- * @see com.github.panpf.sketch.core.common.test.ComponentRegistryTest.testFun
+ * @see com.github.panpf.sketch.core.common.test.ComponentRegistryTest
  */
 fun ComponentRegistry(configBlock: (ComponentRegistry.Builder.() -> Unit)? = null): ComponentRegistry {
     return ComponentRegistry.Builder().apply {

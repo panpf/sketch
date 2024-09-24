@@ -1,12 +1,10 @@
 package com.github.panpf.sketch.core.common.test
 
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.Sketch.Builder
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
-import com.github.panpf.sketch.cache.internal.LruDiskCache
-import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
@@ -50,195 +48,276 @@ class SketchTest {
 
     @Test
     fun testBuilder() {
-        // TODO networkParallelismLimited
-        // TODO decodeParallelismLimited
-
         val context = getTestContext()
-        Builder(context).apply {
-            val fakePipeline = object : Logger.Pipeline {
-                override fun log(level: Logger.Level, tag: String, msg: String, tr: Throwable?) {
 
-                }
+        // logger
+        val fakePipeline = object : Logger.Pipeline {
+            override fun log(level: Logger.Level, tag: String, msg: String, tr: Throwable?) {
 
-                override fun flush() {
-
-                }
-
-                override fun toString(): String {
-                    return "FakePipeline"
-                }
-            }
-            build().apply {
-                assertEquals(Logger.Level.Info, logger.level)
-                assertFalse(logger.toString().contains(fakePipeline.toString()))
             }
 
+            override fun flush() {
+
+            }
+
+            override fun toString(): String {
+                return "FakePipeline"
+            }
+        }
+        Sketch.Builder(context).build().apply {
+            assertEquals(Logger.Level.Info, logger.level)
+            assertFalse(logger.toString().contains(fakePipeline.toString()))
+        }
+
+        Sketch.Builder(context).apply {
             logger()
-            build().apply {
-                assertEquals(Logger.Level.Info, logger.level)
-                assertFalse(logger.toString().contains(fakePipeline.toString()))
-            }
+        }.build().apply {
+            assertEquals(Logger.Level.Info, logger.level)
+            assertFalse(logger.toString().contains(fakePipeline.toString()))
+        }
 
+        Sketch.Builder(context).apply {
             logger(level = Logger.Level.Verbose)
-            build().apply {
-                assertEquals(Logger.Level.Verbose, logger.level)
-                assertFalse(logger.toString().contains(fakePipeline.toString()))
-            }
+        }.build().apply {
+            assertEquals(Logger.Level.Verbose, logger.level)
+            assertFalse(logger.toString().contains(fakePipeline.toString()))
+        }
 
+        Sketch.Builder(context).apply {
             logger(level = Logger.Level.Verbose, pipeline = fakePipeline)
-            build().apply {
-                assertEquals(
-                    Logger(level = Logger.Level.Verbose, pipeline = fakePipeline),
-                    logger
-                )
-                assertTrue(logger.toString().contains(fakePipeline.toString()))
-            }
-
-            val defaultMemoryCache = MemoryCache.Builder(context).build()
-            build().apply {
-                assertEquals(defaultMemoryCache, memoryCache)
-            }
-            val littleMemoryCacheBytes = defaultMemoryCache.maxSize / 2
-            memoryCache(LruMemoryCache(littleMemoryCacheBytes))
-            build().apply {
-                assertEquals(LruMemoryCache(littleMemoryCacheBytes), memoryCache)
-                assertNotEquals(defaultMemoryCache, memoryCache)
-            }
-
-            val defaultDownloadCache =
-                DiskCache.DownloadBuilder(context, defaultFileSystem()).build()
-            val defaultResultCache =
-                DiskCache.ResultBuilder(context, defaultFileSystem()).build()
-            build().apply {
-                assertEquals(defaultDownloadCache, downloadCache)
-                assertEquals(defaultResultCache, resultCache)
-            }
-            val littleDownloadDiskCache = LruDiskCache(
-                context = context,
-                fileSystem = defaultFileSystem(),
-                maxSize = 50 * 1024 * 1024,
-                directory = defaultDownloadCache.directory,
-                appVersion = 10,
-                internalVersion = 0
+        }.build().apply {
+            assertEquals(
+                Logger(level = Logger.Level.Verbose, pipeline = fakePipeline),
+                logger
             )
-            val littleResultDiskCache = LruDiskCache(
-                context = context,
-                fileSystem = defaultFileSystem(),
-                maxSize = 150 * 1024 * 1024,
-                directory = defaultResultCache.directory,
-                appVersion = 10,
-                internalVersion = 0
+            assertTrue(logger.toString().contains(fakePipeline.toString()))
+        }
+
+        // memoryCache
+        val memoryCache0 = MemoryCache.Builder(context).build()
+        Sketch.Builder(context).build().apply {
+            assertEquals(expected = memoryCache0, actual = memoryCache)
+        }
+
+        val memoryCache1 = MemoryCache.Builder(context).apply {
+            maxSizeBytes(50 * 1024 * 1024)
+        }.build()
+        Sketch.Builder(context).apply {
+            memoryCache(memoryCache1)
+        }.build().apply {
+            assertEquals(expected = memoryCache1, actual = memoryCache)
+        }
+
+        val memoryCache2 = MemoryCache.Builder(context).apply {
+            maxSizeBytes(150 * 1024 * 1024)
+        }.build()
+        Sketch.Builder(context).apply {
+            memoryCache { memoryCache2 }
+        }.build().apply {
+            assertEquals(expected = memoryCache2, actual = memoryCache)
+        }
+
+        // downloadCache
+        val downloadCache0 = DiskCache.DownloadBuilder(context, defaultFileSystem()).build()
+        Sketch.Builder(context).build().apply {
+            assertEquals(expected = downloadCache0, actual = downloadCache)
+        }
+
+        val downloadCache1 = DiskCache.DownloadBuilder(context, defaultFileSystem()).apply {
+            maxSize(50 * 1024 * 1024)
+        }.build()
+        Sketch.Builder(context).apply {
+            downloadCache(downloadCache1)
+        }.build().apply {
+            assertEquals(expected = downloadCache1, actual = downloadCache)
+        }
+
+        val downloadCache2 = DiskCache.DownloadBuilder(context, defaultFileSystem()).apply {
+            maxSize(20 * 1024 * 1024)
+        }.build()
+        Sketch.Builder(context).apply {
+            downloadCache { downloadCache2 }
+        }.build().apply {
+            assertEquals(expected = downloadCache2, actual = downloadCache)
+        }
+
+        val downloadCache3 = DiskCache.DownloadBuilder(context, defaultFileSystem()).apply {
+            maxSize(10 * 1024 * 1024)
+        }.build()
+        Sketch.Builder(context).apply {
+            downloadCacheOptions(DiskCache.Options(maxSize = downloadCache3.maxSize))
+        }.build().apply {
+            assertEquals(expected = downloadCache3, actual = downloadCache)
+        }
+
+        val downloadCache4 = DiskCache.DownloadBuilder(context, defaultFileSystem()).apply {
+            maxSize(5 * 1024 * 1024)
+        }.build()
+        Sketch.Builder(context).apply {
+            downloadCacheOptions { DiskCache.Options(maxSize = downloadCache4.maxSize) }
+        }.build().apply {
+            assertEquals(expected = downloadCache4, actual = downloadCache)
+        }
+
+        // resultCache
+        val resultCache0 = DiskCache.ResultBuilder(context, defaultFileSystem()).build()
+        Sketch.Builder(context).build().apply {
+            assertEquals(expected = resultCache0, actual = resultCache)
+        }
+
+        val resultCache1 = DiskCache.ResultBuilder(context, defaultFileSystem()).apply {
+            maxSize(50 * 1024 * 1024)
+        }.build()
+        Sketch.Builder(context).apply {
+            resultCache(resultCache1)
+        }.build().apply {
+            assertEquals(expected = resultCache1, actual = resultCache)
+        }
+
+        val resultCache2 = DiskCache.ResultBuilder(context, defaultFileSystem()).apply {
+            maxSize(20 * 1024 * 1024)
+        }.build()
+        Sketch.Builder(context).apply {
+            resultCache { resultCache2 }
+        }.build().apply {
+            assertEquals(expected = resultCache2, actual = resultCache)
+        }
+
+        val resultCache3 = DiskCache.ResultBuilder(context, defaultFileSystem()).apply {
+            maxSize(10 * 1024 * 1024)
+        }.build()
+        Sketch.Builder(context).apply {
+            resultCacheOptions(DiskCache.Options(maxSize = resultCache3.maxSize))
+        }.build().apply {
+            assertEquals(expected = resultCache3, actual = resultCache)
+        }
+
+        val resultCache4 = DiskCache.ResultBuilder(context, defaultFileSystem()).apply {
+            maxSize(5 * 1024 * 1024)
+        }.build()
+        Sketch.Builder(context).apply {
+            resultCacheOptions { DiskCache.Options(maxSize = resultCache4.maxSize) }
+        }.build().apply {
+            assertEquals(expected = resultCache4, actual = resultCache)
+        }
+
+        // httpStack
+        Sketch.Builder(context).build().apply {
+            assertEquals(defaultHttpStack(), httpStack)
+        }
+
+        Sketch.Builder(context).apply {
+            httpStack(TestHttpStack(context))
+        }.build().apply {
+            assertEquals(TestHttpStack(context), httpStack)
+        }
+
+        // components: Fetcher, Decoder
+        Sketch.Builder(context).build().apply {
+            assertEquals(
+                expected = platformComponents(context).merged(defaultComponents()),
+                actual = components.registry
             )
-            downloadCache(littleDownloadDiskCache)
-            // TODO downloadCacheOptions
-            resultCache(littleResultDiskCache)
-            // TODO resultCacheOptions
-            build().apply {
-                assertEquals(littleDownloadDiskCache, downloadCache)
-                assertEquals(littleResultDiskCache, resultCache)
-            }
+        }
 
-            build().apply {
-                assertEquals(
-                    expected = platformComponents(context).merged(defaultComponents()),
-                    actual = components.registry
-                )
-            }
-
+        Sketch.Builder(context).apply {
             components {
                 addFetcher(TestFetcher.Factory())
                 addDecoder(TestDecoder.Factory())
             }
-            build().apply {
-                assertEquals(
-                    expected = ComponentRegistry {
-                        addFetcher(TestFetcher.Factory())
-                        addDecoder(TestDecoder.Factory())
-                    }.merged(platformComponents(context).merged(defaultComponents())),
-                    actual = components.registry
-                )
-            }
+        }.build().apply {
+            assertEquals(
+                expected = ComponentRegistry {
+                    addFetcher(TestFetcher.Factory())
+                    addDecoder(TestDecoder.Factory())
+                }.merged(platformComponents(context).merged(defaultComponents())),
+                actual = components.registry
+            )
+        }
 
-            build().apply {
-                assertEquals(defaultHttpStack(), httpStack)
-            }
-            httpStack(TestHttpStack(context))
-            build().apply {
-                assertEquals(TestHttpStack(context), httpStack)
-            }
+        // components: RequestInterceptor
+        Sketch.Builder(context).build().apply {
+            assertEquals(
+                listOf(
+                    MemoryCacheRequestInterceptor(),
+                    EngineRequestInterceptor(),
+                ),
+                components.getRequestInterceptorList(ImageRequest(context, ""))
+            )
+        }
 
-            build().apply {
-                assertEquals(
-                    listOf(
-                        MemoryCacheRequestInterceptor(),
-                        EngineRequestInterceptor(),
-                    ),
-                    components.getRequestInterceptorList(ImageRequest(context, ""))
-                )
-            }
+        Sketch.Builder(context).apply {
             components {
                 addRequestInterceptor(TestRequestInterceptor())
             }
-            build().apply {
-                assertEquals(
-                    listOf(
-                        TestRequestInterceptor(),
-                        MemoryCacheRequestInterceptor(),
-                        EngineRequestInterceptor()
-                    ),
-                    components.getRequestInterceptorList(ImageRequest(context, ""))
-                )
-                assertNotEquals(
-                    listOf(
-                        MemoryCacheRequestInterceptor(),
-                        EngineRequestInterceptor()
-                    ),
-                    components.getRequestInterceptorList(ImageRequest(context, ""))
-                )
-            }
+        }.build().apply {
+            assertEquals(
+                listOf(
+                    TestRequestInterceptor(),
+                    MemoryCacheRequestInterceptor(),
+                    EngineRequestInterceptor()
+                ),
+                components.getRequestInterceptorList(ImageRequest(context, ""))
+            )
+            assertNotEquals(
+                listOf(
+                    MemoryCacheRequestInterceptor(),
+                    EngineRequestInterceptor()
+                ),
+                components.getRequestInterceptorList(ImageRequest(context, ""))
+            )
+        }
 
-            build().apply {
-                assertEquals(
-                    listOf(
-                        ResultCacheDecodeInterceptor(),
-                        TransformationDecodeInterceptor(),
-                        EngineDecodeInterceptor()
-                    ),
-                    components.getDecodeInterceptorList(ImageRequest(context, ""))
-                )
-            }
+        // components: DecodeInterceptor
+        Sketch.Builder(context).build().apply {
+            assertEquals(
+                listOf(
+                    ResultCacheDecodeInterceptor(),
+                    TransformationDecodeInterceptor(),
+                    EngineDecodeInterceptor()
+                ),
+                components.getDecodeInterceptorList(ImageRequest(context, ""))
+            )
+        }
+
+        Sketch.Builder(context).apply {
             components {
                 addDecodeInterceptor(TestDecodeInterceptor())
             }
-            build().apply {
-                assertEquals(
-                    listOf(
-                        TestDecodeInterceptor(),
-                        ResultCacheDecodeInterceptor(),
-                        TransformationDecodeInterceptor(),
-                        EngineDecodeInterceptor()
-                    ),
-                    components.getDecodeInterceptorList(ImageRequest(context, ""))
-                )
-                assertNotEquals(
-                    listOf(
-                        ResultCacheDecodeInterceptor(),
-                        TransformationDecodeInterceptor(),
-                        EngineDecodeInterceptor()
-                    ),
-                    components.getDecodeInterceptorList(ImageRequest(context, ""))
-                )
-            }
-
-            build().apply {
-                assertNull(globalImageOptions)
-            }
-            globalImageOptions(ImageOptions())
-            build().apply {
-                assertEquals(ImageOptions(), globalImageOptions)
-                assertNotNull(globalImageOptions)
-            }
+        }.build().apply {
+            assertEquals(
+                listOf(
+                    TestDecodeInterceptor(),
+                    ResultCacheDecodeInterceptor(),
+                    TransformationDecodeInterceptor(),
+                    EngineDecodeInterceptor()
+                ),
+                components.getDecodeInterceptorList(ImageRequest(context, ""))
+            )
+            assertNotEquals(
+                listOf(
+                    ResultCacheDecodeInterceptor(),
+                    TransformationDecodeInterceptor(),
+                    EngineDecodeInterceptor()
+                ),
+                components.getDecodeInterceptorList(ImageRequest(context, ""))
+            )
         }
+
+        // globalImageOptions
+        Sketch.Builder(context).build().apply {
+            assertNull(globalImageOptions)
+        }
+
+        Sketch.Builder(context).apply {
+            globalImageOptions(ImageOptions())
+        }.build().apply {
+            assertEquals(ImageOptions(), globalImageOptions)
+            assertNotNull(globalImageOptions)
+        }
+
+        // The tests for networkParallelismLimited and decodeParallelismLimited are located at
+        //  'com.github.panpf.sketch.core.desktop.test.SketchDesktopTest.testBuilder'
     }
 
     @Test
