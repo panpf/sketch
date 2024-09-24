@@ -17,7 +17,7 @@
 package com.github.panpf.sketch.source
 
 /**
- * Indicates the source of the data
+ * Where image comes from
  *
  * @see com.github.panpf.sketch.core.common.test.source.DataFromTest
  */

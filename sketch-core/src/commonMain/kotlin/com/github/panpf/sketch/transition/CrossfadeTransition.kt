@@ -29,7 +29,9 @@ import kotlin.jvm.JvmOverloads
  *
  * @see com.github.panpf.sketch.core.common.test.transition.CrossfadeTransitionTest
  */
-class CrossfadeTransition(transition: Transition) : Transition by transition {
+class CrossfadeTransition(
+    val wrappedTransition: Transition
+) : Transition by wrappedTransition {
 
     companion object {
         const val DEFAULT_DURATION_MILLIS: Int = Transition.DEFAULT_DURATION
@@ -57,10 +59,10 @@ class CrossfadeTransition(transition: Transition) : Transition by transition {
         ): Transition? {
             val fromMemoryCache = result.asOrNull<ImageResult.Success>()?.dataFrom == MEMORY_CACHE
             if (!alwaysUse && fromMemoryCache) return null
-            val targetCrossfadeTransitionFactory = target.convertTransition(this) ?: return null
-            val targetCrossfadeTransition = targetCrossfadeTransitionFactory
+            val targetTransitionFactory = target.convertTransition(this) ?: return null
+            val targetTransition = targetTransitionFactory
                 .create(sketch, request, target, result) ?: return null
-            return CrossfadeTransition(targetCrossfadeTransition)
+            return CrossfadeTransition(targetTransition)
         }
 
         override val key: String = "CrossfadeTransition.Factory(" +

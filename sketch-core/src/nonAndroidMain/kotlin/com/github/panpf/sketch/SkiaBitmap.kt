@@ -26,6 +26,7 @@ import org.jetbrains.skia.ColorType
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.SkiaBitmapTest.testSkiaBitmap
  */
+// TODO remove
 typealias SkiaBitmap = org.jetbrains.skia.Bitmap
 
 /**

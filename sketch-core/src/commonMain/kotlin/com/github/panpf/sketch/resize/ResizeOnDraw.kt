@@ -25,7 +25,7 @@ import com.github.panpf.sketch.util.isNotEmpty
 /**
  * Resize the image while drawing
  *
- * @see com.github.panpf.sketch.core.common.test.resize.ResizeOnDrawTest
+ * @see com.github.panpf.sketch.core.common.test.resize.ResizeOnDrawTest.testResizeOnDraw
  */
 fun Image.resizeOnDraw(request: ImageRequest, size: Size?): Image {
     if (size?.isNotEmpty == true && request.resizeOnDraw == true) {

@@ -45,7 +45,9 @@ interface DataSource : Key {
     fun openSource(): Source
 
     /**
-     * Get the file of the DataSource, throws an exception if an error occurs
+     * Get the file of the DataSource.
+     * If the current DataSource does not have a directly available File,
+     * it will be cached in the download cache directory and the cached file will be returned.
      */
     @Throws(IOException::class)
     fun getFile(sketch: Sketch): Path

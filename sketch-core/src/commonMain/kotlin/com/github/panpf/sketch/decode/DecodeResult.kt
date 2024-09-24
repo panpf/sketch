@@ -26,14 +26,31 @@ import com.github.panpf.sketch.source.DataFrom
  * @see com.github.panpf.sketch.core.common.test.decode.DecodeResultTest
  */
 data class DecodeResult(
+    /**
+     * The decoded Image
+     */
     val image: Image,
+
+    /**
+     * The decoded Image width, height, type, etc.
+     */
     val imageInfo: ImageInfo,
+
+    /**
+     * Where image comes from
+     */
     val dataFrom: DataFrom,
+
+    /**
+     * Use this Resize to resize the image when decoding
+     */
     val resize: Resize,
+
     /**
      * Store the transformation history of the Image
      */
     val transformeds: List<String>?,
+
     /**
      * Store some additional information for consumer use,
      * You can add information here during decoding, transformation, interceptor, etc.

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.resize
 
 import com.github.panpf.sketch.util.Key
@@ -103,6 +105,7 @@ data class Resize constructor(
             )
         }
 
+        @Suppress("CascadeIf")
         if (this.precision == Precision.LESS_PIXELS) {
             val resizePixels = resizeWidth * resizeHeight
             var scaleFactor = 1f

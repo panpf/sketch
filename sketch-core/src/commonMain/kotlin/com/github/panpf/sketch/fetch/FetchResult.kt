@@ -25,42 +25,23 @@ import okio.buffer
 import okio.use
 
 /**
- * Create a FetchResult
- *
- * @see com.github.panpf.sketch.core.common.test.fetch.FetchResultTest.testCreateFunction
- */
-fun FetchResult(dataSource: DataSource, mimeType: String?): FetchResult =
-    FetchResultImpl(dataSource, mimeType)
-
-/**
- * Copy FetchResult
- *
- * @see com.github.panpf.sketch.core.common.test.fetch.FetchResultTest.testCopy
- */
-fun FetchResult.copy(
-    dataSource: DataSource = this.dataSource,
-    mimeType: String? = this.mimeType
-): FetchResult = FetchResultImpl(dataSource, mimeType)
-
-/**
  * The result of [Fetcher.fetch]
  *
  * @see com.github.panpf.sketch.core.common.test.fetch.FetchResultTest
  */
-interface FetchResult {
-
+data class FetchResult constructor(
     /**
      * The data source of the fetched data
      */
-    val dataSource: DataSource
-
+    val dataSource: DataSource,
     /**
      * This mimeType is extracted from the uri and may not be accurate
      */
     val mimeType: String?
+) {
 
     /**
-     * Data source from where
+     * The data source of the fetched data
      */
     val dataFrom: DataFrom
         get() = dataSource.dataFrom
@@ -68,24 +49,7 @@ interface FetchResult {
     /**
      * 100 bytes of header
      */
-    val headerBytes: ByteArray
-}
-
-/**
- * Default implementation of [FetchResult]
- *
- * @see com.github.panpf.sketch.core.common.test.fetch.FetchResultTest
- */
-data class FetchResultImpl constructor(
-    override val dataSource: DataSource,
-    override val mimeType: String?
-) : FetchResult {
-
-    companion object {
-        val EMPTY = ByteArray(0)
-    }
-
-    override val headerBytes: ByteArray by lazy {
+    val headerBytes: ByteArray by lazy {
         val dataSource = dataSource
         val byteArray = ByteArray(100)
         val readLength = dataSource.openSourceOrNull()?.use {
@@ -94,9 +58,13 @@ data class FetchResultImpl constructor(
         if (readLength != -1) {
             if (readLength == byteArray.size) byteArray else byteArray.copyOf(readLength)
         } else {
-            EMPTY
+            EMPTY_BYTE_ARRAY
         }
     }
 
     override fun toString(): String = "FetchResult(source=$dataSource, mimeType='$mimeType')"
+
+    companion object {
+        private val EMPTY_BYTE_ARRAY = ByteArray(0)
+    }
 }

@@ -58,12 +58,12 @@ interface ImageResult {
         val imageInfo: ImageInfo,
 
         /**
-         * Which data source the image data comes from
+         * Where image comes from
          */
         val dataFrom: DataFrom,
 
         /**
-         * Use this Resize to resize the image
+         * Use this Resize to resize the image when decoding
          */
         val resize: Resize,
 

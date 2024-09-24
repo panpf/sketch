@@ -26,6 +26,7 @@ import com.github.panpf.sketch.util.configOrNull
  *
  * @see com.github.panpf.sketch.core.android.test.AndroidBitmapTest.testAndroidBitmap
  */
+// TODO remove
 typealias AndroidBitmap = android.graphics.Bitmap
 
 /**

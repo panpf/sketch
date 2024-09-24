@@ -25,7 +25,7 @@ import com.github.panpf.sketch.Image
  *
  * @see com.github.panpf.sketch.core.common.test.transform.TransformResultTest
  */
-class TransformResult constructor(
+data class TransformResult constructor(
     /**
      * Transformed [Image]
      */

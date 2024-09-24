@@ -19,6 +19,7 @@ package com.github.panpf.sketch.util
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
+// TODO remove
 typealias SketchSize = Size
 
 /**

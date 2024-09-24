@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.resize
 
 import com.github.panpf.sketch.util.Rect
@@ -22,7 +24,7 @@ import com.github.panpf.sketch.util.size
 /**
  * Mapping relationship between the original image and the resized image
  *
- * @see com.github.panpf.sketch.core.common.test.resize.ResizeMappingTest.testResizeMapping
+ * @see com.github.panpf.sketch.core.common.test.resize.ResizeMappingTest
  */
 data class ResizeMapping constructor(
     val srcRect: Rect,
