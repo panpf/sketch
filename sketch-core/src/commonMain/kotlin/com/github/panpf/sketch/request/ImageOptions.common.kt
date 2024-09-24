@@ -344,20 +344,20 @@ data class ImageOptions(
         }
 
         /**
+         * Set a header for any network operations performed by this request.
+         */
+        fun httpHeader(name: String, value: String): Builder = apply {
+            this.httpHeadersBuilder = (this.httpHeadersBuilder ?: HttpHeaders.Builder()).apply {
+                set(name, value)
+            }
+        }
+
+        /**
          * Add a header for any network operations performed by this request.
          */
         fun addHttpHeader(name: String, value: String): Builder = apply {
             this.httpHeadersBuilder = (this.httpHeadersBuilder ?: HttpHeaders.Builder()).apply {
                 add(name, value)
-            }
-        }
-
-        /**
-         * Set a header for any network operations performed by this request.
-         */
-        fun setHttpHeader(name: String, value: String): Builder = apply {
-            this.httpHeadersBuilder = (this.httpHeadersBuilder ?: HttpHeaders.Builder()).apply {
-                set(name, value)
             }
         }
 

@@ -22,6 +22,7 @@
 * change: 桌面和 web 平台的默认内存缓存大小现在是 256MB，ios 平台是 128MB
 * change: BitmapConfig 重构为 BitmapColorType
 * change: 合并 AndroidBitmapImage 和 SkiaBitmapImage 为 BitmapImage
+* change: ImageRequest.Builder 和 ImageOptions.Builder 的 setHttpHeader 方法重命名为 httpHeader
 * new: 非安卓平台现在也支持 ColorType 了
 * new: 非安卓平台现在也支持 ColorSpace 了
 

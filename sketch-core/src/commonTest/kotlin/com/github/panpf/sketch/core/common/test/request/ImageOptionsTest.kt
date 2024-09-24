@@ -367,13 +367,13 @@ class ImageOptionsTest {
             assertEquals(null, this.httpHeaders)
         }.merged(ImageOptions {
             addHttpHeader("addKey", "addValue")
-            setHttpHeader("setKey", "setValue")
+            httpHeader("setKey", "setValue")
         }).apply {
             assertEquals(listOf("addValue"), this.httpHeaders?.getAdd("addKey"))
             assertEquals("setValue", this.httpHeaders?.getSet("setKey"))
         }.merged(ImageOptions {
             addHttpHeader("addKey", "addValue1")
-            setHttpHeader("setKey", "setValue1")
+            httpHeader("setKey", "setValue1")
         }).apply {
             assertEquals(listOf("addValue", "addValue1"), this.httpHeaders?.getAdd("addKey"))
             assertEquals("setValue", this.httpHeaders?.getSet("setKey"))
@@ -642,7 +642,7 @@ class ImageOptionsTest {
                 setExtra("key", "value")
             },
             ScopeAction {
-                setHttpHeader("key1", "value1")
+                httpHeader("key1", "value1")
             },
             ScopeAction {
                 downloadCachePolicy(WRITE_ONLY)
@@ -844,8 +844,8 @@ class ImageOptionsTest {
             }
 
             /* setHttpHeader(), addHttpHeader(), removeHttpHeader() */
-            setHttpHeader("key1", "value1")
-            setHttpHeader("key2", "value2")
+            httpHeader("key1", "value1")
+            httpHeader("key2", "value2")
             addHttpHeader("key3", "value3")
             addHttpHeader("key3", "value3.1")
             build().apply {
@@ -857,7 +857,7 @@ class ImageOptionsTest {
                 assertEquals(listOf("value3", "value3.1"), httpHeaders?.getAdd("key3"))
             }
 
-            setHttpHeader("key2", "value2.1")
+            httpHeader("key2", "value2.1")
             build().apply {
                 assertEquals(4, httpHeaders?.size)
                 assertEquals(2, httpHeaders?.setSize)

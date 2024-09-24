@@ -91,7 +91,7 @@ class RequestKeysTest {
         verifyKey(uri + _depth + _extras + _size + _precision + _scale)
 
         request = request.newRequest {
-            setHttpHeader("from", "china")
+            httpHeader("from", "china")
         }
         val _httpHeaders = "&_httpHeaders=${request.httpHeaders!!}"
         verifyKey(uri + _depth + _extras + _httpHeaders + _size + _precision + _scale)
@@ -314,7 +314,7 @@ class RequestKeysTest {
         )
 
         request = request.newRequest {
-            setHttpHeader("from", "china")
+            httpHeader("from", "china")
         }
         verifyCacheKey(
             uri + _extras + _size + _precision + _scale

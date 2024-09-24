@@ -496,9 +496,9 @@ class ImageRequestTest {
                 assertNull(httpHeaders)
             }
 
-            /* setHttpHeader(), addHttpHeader(), removeHttpHeader() */
-            setHttpHeader("key1", "value1")
-            setHttpHeader("key2", "value2")
+            /* httpHeader(), addHttpHeader(), removeHttpHeader() */
+            httpHeader("key1", "value1")
+            httpHeader("key2", "value2")
             addHttpHeader("key3", "value3")
             addHttpHeader("key3", "value3.1")
             build().apply {
@@ -510,7 +510,7 @@ class ImageRequestTest {
                 assertEquals(listOf("value3", "value3.1"), httpHeaders?.getAdd("key3"))
             }
 
-            setHttpHeader("key2", "value2.1")
+            httpHeader("key2", "value2.1")
             build().apply {
                 assertEquals(4, httpHeaders?.size)
                 assertEquals(2, httpHeaders?.setSize)
@@ -1512,8 +1512,8 @@ class ImageRequestTest {
                 setExtra("big", "true")
             },
             ScopeAction {
-                setHttpHeader("from", "china")
-                setHttpHeader("job", "Programmer")
+                httpHeader("from", "china")
+                httpHeader("job", "Programmer")
                 addHttpHeader("Host", "www.google.com")
             },
             ScopeAction {

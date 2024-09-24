@@ -24,6 +24,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
   platforms
 * change: BitmapConfig refactored to BitmapColorType
 * change: Merge AndroidBitmapImage and SkiaBitmapImage into BitmapImage
+* change: The setHttpHeader method of ImageRequest.Builder and ImageOptions.Builder is renamed to
+  httpHeader
 * new: Non-Android platforms now also support ColorType
 * new: Non-Android platforms now also support ColorSpace
 
