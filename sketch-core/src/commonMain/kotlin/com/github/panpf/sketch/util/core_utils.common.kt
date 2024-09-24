@@ -274,18 +274,21 @@ fun computeScaleMultiplierWithFit(
  * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testComputeScaleMultiplierWithOneSide
  */
 fun computeScaleMultiplierWithOneSide(sourceSize: SketchSize, targetSize: SketchSize): Float {
-    val scaleFactor: Float = when {
-        targetSize.isNotEmpty -> {
-            val widthScaleFactor = targetSize.width.toFloat() / sourceSize.width
-            val heightScaleFactor = targetSize.height.toFloat() / sourceSize.height
-            min(widthScaleFactor, heightScaleFactor)
-        }
-
-        targetSize.width > 0 -> targetSize.width.toFloat() / sourceSize.width
-        targetSize.height > 0 -> targetSize.height.toFloat() / sourceSize.height
-        else -> 1f
+    if (targetSize.isNotEmpty) {
+        val widthScaleFactor = targetSize.width.toFloat() / sourceSize.width
+        val heightScaleFactor = targetSize.height.toFloat() / sourceSize.height
+        val scaleFactor = min(widthScaleFactor, heightScaleFactor)
+        return scaleFactor
     }
-    return scaleFactor
+    if (targetSize.width > 0) {
+        val scaleFactor = targetSize.width.toFloat() / sourceSize.width
+        return scaleFactor
+    }
+    if (targetSize.height > 0) {
+        val scaleFactor = targetSize.height.toFloat() / sourceSize.height
+        return scaleFactor
+    }
+    return 1f
 }
 
 /**
@@ -298,10 +301,16 @@ fun ImageRequest?.difference(other: ImageRequest?): String {
     if (this == null) return "This is null"
     if (other == null) return "Other is null"
     if (this === other) return "Same instance"
-    if (this::class != other::class) return "Different class"
-    if (context != other.context) return "context different: '${context}' vs '${other.context}'"
-    if (uri != other.uri) return "uri different: '${uri}' vs '${other.uri}'"
-    if (listener != other.listener) return "listener different: '${listener}' vs '${other.listener}'"
+
+    if (context != other.context) {
+        return "context different: '${context}' vs '${other.context}'"
+    }
+    if (uri != other.uri) {
+        return "uri different: '${uri}' vs '${other.uri}'"
+    }
+    if (listener != other.listener) {
+        return "listener different: '${listener}' vs '${other.listener}'"
+    }
     if (progressListener != other.progressListener) {
         return "progressListener different: '${progressListener}' vs '${other.progressListener}'"
     }
@@ -311,32 +320,74 @@ fun ImageRequest?.difference(other: ImageRequest?): String {
     if (lifecycleResolver != other.lifecycleResolver) {
         return "lifecycleResolver different: '${lifecycleResolver}' vs '${other.lifecycleResolver}'"
     }
-    if (definedOptions != other.definedOptions) {
-        return "definedOptions different: '${definedOptions.difference(other.definedOptions)}'"
+
+    if (depthHolder != other.depthHolder) {
+        return "depth different: '${depthHolder}' vs '${other.depthHolder}'"
     }
+    if (extras != other.extras) {
+        return "extras different: '${extras}' vs '${other.extras}'"
+    }
+    if (httpHeaders != other.httpHeaders) {
+        return "httpHeaders different: '${httpHeaders}' vs '${other.httpHeaders}'"
+    }
+    if (downloadCachePolicy != other.downloadCachePolicy) {
+        return "downloadCachePolicy different: '${downloadCachePolicy}' vs '${other.downloadCachePolicy}'"
+    }
+    if (colorType != other.colorType) {
+        return "colorType different: '${colorType}' vs '${other.colorType}'"
+    }
+    if (colorSpace != other.colorSpace) {
+        return "colorSpace different: '${colorSpace}' vs '${other.colorSpace}'"
+    }
+    if (sizeResolver != other.sizeResolver) {
+        return "sizeResolver different: '${sizeResolver}' vs '${other.sizeResolver}'"
+    }
+    if (sizeMultiplier != other.sizeMultiplier) {
+        return "sizeMultiplier different: '${sizeMultiplier}' vs '${other.sizeMultiplier}'"
+    }
+    if (precisionDecider != other.precisionDecider) {
+        return "precisionDecider different: '${precisionDecider}' vs '${other.precisionDecider}'"
+    }
+    if (scaleDecider != other.scaleDecider) {
+        return "scaleDecider different: '${scaleDecider}' vs '${other.scaleDecider}'"
+    }
+    if (transformations != other.transformations) {
+        return "transformations different: '${transformations}' vs '${other.transformations}'"
+    }
+    if (resultCachePolicy != other.resultCachePolicy) {
+        return "resultCachePolicy different: '${resultCachePolicy}' vs '${other.resultCachePolicy}'"
+    }
+    if (placeholder != other.placeholder) {
+        return "placeholder different: '${placeholder}' vs '${other.placeholder}'"
+    }
+    if (fallback != other.fallback) {
+        return "fallback different: '${fallback}' vs '${other.fallback}'"
+    }
+    if (error != other.error) {
+        return "error different: '${error}' vs '${other.error}'"
+    }
+    if (transitionFactory != other.transitionFactory) {
+        return "transitionFactory different: '${transitionFactory}' vs '${other.transitionFactory}'"
+    }
+    if (disallowAnimatedImage != other.disallowAnimatedImage) {
+        return "disallowAnimatedImage different: '${disallowAnimatedImage}' vs '${other.disallowAnimatedImage}'"
+    }
+    if (resizeOnDraw != other.resizeOnDraw) {
+        return "resizeOnDraw different: '${resizeOnDraw}' vs '${other.resizeOnDraw}'"
+    }
+    if (memoryCachePolicy != other.memoryCachePolicy) {
+        return "memoryCachePolicy different: '${memoryCachePolicy}' vs '${other.memoryCachePolicy}'"
+    }
+    if (componentRegistry != other.componentRegistry) {
+        return "componentRegistry different: '${componentRegistry}' vs '${other.componentRegistry}'"
+    }
+
     if (defaultOptions != other.defaultOptions) {
         return "defaultOptions different: '${defaultOptions.difference(other.defaultOptions)}'"
     }
-    if (definedRequestOptions != other.definedRequestOptions) return "definedRequestOptions different: '${definedRequestOptions}' vs '${other.definedRequestOptions}'"
-    if (depthHolder != other.depthHolder) return "depth different: '${depthHolder}' vs '${other.depthHolder}'"
-    if (extras != other.extras) return "extras different: '${extras}' vs '${other.extras}'"
-    if (httpHeaders != other.httpHeaders) return "httpHeaders different: '${httpHeaders}' vs '${other.httpHeaders}'"
-    if (downloadCachePolicy != other.downloadCachePolicy) return "downloadCachePolicy different: '${downloadCachePolicy}' vs '${other.downloadCachePolicy}'"
-    if (sizeResolver != other.sizeResolver) return "sizeResolver different: '${sizeResolver}' vs '${other.sizeResolver}'"
-    if (sizeMultiplier != other.sizeMultiplier) return "sizeMultiplier different: '${sizeMultiplier}' vs '${other.sizeMultiplier}'"
-    if (precisionDecider != other.precisionDecider) return "precisionDecider different: '${precisionDecider}' vs '${other.precisionDecider}'"
-    if (scaleDecider != other.scaleDecider) return "scaleDecider different: '${scaleDecider}' vs '${other.scaleDecider}'"
-    if (transformations != other.transformations) return "transformations different: '${transformations}' vs '${other.transformations}'"
-    if (resultCachePolicy != other.resultCachePolicy) return "resultCachePolicy different: '${resultCachePolicy}' vs '${other.resultCachePolicy}'"
-    if (placeholder != other.placeholder) return "placeholder different: '${placeholder}' vs '${other.placeholder}'"
-    if (fallback != other.fallback) return "fallback different: '${fallback}' vs '${other.fallback}'"
-    if (error != other.error) return "error different: '${error}' vs '${other.error}'"
-    if (transitionFactory != other.transitionFactory) return "transitionFactory different: '${transitionFactory}' vs '${other.transitionFactory}'"
-    if (disallowAnimatedImage != other.disallowAnimatedImage) return "disallowAnimatedImage different: '${disallowAnimatedImage}' vs '${other.disallowAnimatedImage}'"
-    if (resizeOnDraw != other.resizeOnDraw) return "resizeOnDraw different: '${resizeOnDraw}' vs '${other.resizeOnDraw}'"
-    if (memoryCachePolicy != other.memoryCachePolicy) return "memoryCachePolicy different: '${memoryCachePolicy}' vs '${other.memoryCachePolicy}'"
-    if (componentRegistry != other.componentRegistry) return "componentRegistry different: '${componentRegistry}' vs '${other.componentRegistry}'"
-
+    if (definedRequestOptions != other.definedRequestOptions) {
+        return "definedRequestOptions different: '${definedRequestOptions}' vs '${other.definedRequestOptions}'"
+    }
     return "Same content"
 }
 
@@ -350,23 +401,66 @@ fun ImageOptions?.difference(other: ImageOptions?): String {
     if (this == null) return "This is null"
     if (other == null) return "Other is null"
     if (this === other) return "Same instance"
-    if (depthHolder != other.depthHolder) return "depth different: '${depthHolder}' vs '${other.depthHolder}'"
-    if (extras != other.extras) return "extras different: '${extras}' vs '${other.extras}'"
-    if (httpHeaders != other.httpHeaders) return "httpHeaders different: '${httpHeaders}' vs '${other.httpHeaders}'"
-    if (downloadCachePolicy != other.downloadCachePolicy) return "downloadCachePolicy different: '${downloadCachePolicy}' vs '${other.downloadCachePolicy}'"
-    if (sizeResolver != other.sizeResolver) return "sizeResolver different: '${sizeResolver}' vs '${other.sizeResolver}'"
-    if (sizeMultiplier != other.sizeMultiplier) return "sizeMultiplier different: '${sizeMultiplier}' vs '${other.sizeMultiplier}'"
-    if (precisionDecider != other.precisionDecider) return "precisionDecider different: '${precisionDecider}' vs '${other.precisionDecider}'"
-    if (scaleDecider != other.scaleDecider) return "scaleDecider different: '${scaleDecider}' vs '${other.scaleDecider}'"
-    if (transformations != other.transformations) return "transformations different: '${transformations}' vs '${other.transformations}'"
-    if (resultCachePolicy != other.resultCachePolicy) return "resultCachePolicy different: '${resultCachePolicy}' vs '${other.resultCachePolicy}'"
-    if (placeholder != other.placeholder) return "placeholder different: '${placeholder}' vs '${other.placeholder}'"
-    if (fallback != other.fallback) return "fallback different: '${fallback}' vs '${other.fallback}'"
-    if (error != other.error) return "error different: '${error}' vs '${other.error}'"
-    if (transitionFactory != other.transitionFactory) return "transitionFactory different: '${transitionFactory}' vs '${other.transitionFactory}'"
-    if (disallowAnimatedImage != other.disallowAnimatedImage) return "disallowAnimatedImage different: '${disallowAnimatedImage}' vs '${other.disallowAnimatedImage}'"
-    if (resizeOnDraw != other.resizeOnDraw) return "resizeOnDraw different: '${resizeOnDraw}' vs '${other.resizeOnDraw}'"
-    if (memoryCachePolicy != other.memoryCachePolicy) return "memoryCachePolicy different: '${memoryCachePolicy}' vs '${other.memoryCachePolicy}'"
-    if (componentRegistry != other.componentRegistry) return "componentRegistry different: '${componentRegistry}' vs '${other.componentRegistry}'"
+
+    if (depthHolder != other.depthHolder) {
+        return "depth different: '${depthHolder}' vs '${other.depthHolder}'"
+    }
+    if (extras != other.extras) {
+        return "extras different: '${extras}' vs '${other.extras}'"
+    }
+    if (httpHeaders != other.httpHeaders) {
+        return "httpHeaders different: '${httpHeaders}' vs '${other.httpHeaders}'"
+    }
+    if (downloadCachePolicy != other.downloadCachePolicy) {
+        return "downloadCachePolicy different: '${downloadCachePolicy}' vs '${other.downloadCachePolicy}'"
+    }
+    if (colorType != other.colorType) {
+        return "colorType different: '${colorType}' vs '${other.colorType}'"
+    }
+    if (colorSpace != other.colorSpace) {
+        return "colorSpace different: '${colorSpace}' vs '${other.colorSpace}'"
+    }
+    if (sizeResolver != other.sizeResolver) {
+        return "sizeResolver different: '${sizeResolver}' vs '${other.sizeResolver}'"
+    }
+    if (sizeMultiplier != other.sizeMultiplier) {
+        return "sizeMultiplier different: '${sizeMultiplier}' vs '${other.sizeMultiplier}'"
+    }
+    if (precisionDecider != other.precisionDecider) {
+        return "precisionDecider different: '${precisionDecider}' vs '${other.precisionDecider}'"
+    }
+    if (scaleDecider != other.scaleDecider) {
+        return "scaleDecider different: '${scaleDecider}' vs '${other.scaleDecider}'"
+    }
+    if (transformations != other.transformations) {
+        return "transformations different: '${transformations}' vs '${other.transformations}'"
+    }
+    if (resultCachePolicy != other.resultCachePolicy) {
+        return "resultCachePolicy different: '${resultCachePolicy}' vs '${other.resultCachePolicy}'"
+    }
+    if (placeholder != other.placeholder) {
+        return "placeholder different: '${placeholder}' vs '${other.placeholder}'"
+    }
+    if (fallback != other.fallback) {
+        return "fallback different: '${fallback}' vs '${other.fallback}'"
+    }
+    if (error != other.error) {
+        return "error different: '${error}' vs '${other.error}'"
+    }
+    if (transitionFactory != other.transitionFactory) {
+        return "transitionFactory different: '${transitionFactory}' vs '${other.transitionFactory}'"
+    }
+    if (disallowAnimatedImage != other.disallowAnimatedImage) {
+        return "disallowAnimatedImage different: '${disallowAnimatedImage}' vs '${other.disallowAnimatedImage}'"
+    }
+    if (resizeOnDraw != other.resizeOnDraw) {
+        return "resizeOnDraw different: '${resizeOnDraw}' vs '${other.resizeOnDraw}'"
+    }
+    if (memoryCachePolicy != other.memoryCachePolicy) {
+        return "memoryCachePolicy different: '${memoryCachePolicy}' vs '${other.memoryCachePolicy}'"
+    }
+    if (componentRegistry != other.componentRegistry) {
+        return "componentRegistry different: '${componentRegistry}' vs '${other.componentRegistry}'"
+    }
     return "Same content"
 }
