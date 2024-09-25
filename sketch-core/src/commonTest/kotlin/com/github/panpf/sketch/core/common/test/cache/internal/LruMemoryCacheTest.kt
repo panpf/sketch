@@ -23,12 +23,24 @@ import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.test.utils.createCacheValue
 import com.github.panpf.sketch.util.formatFileSize
+import com.github.panpf.sketch.util.ioCoroutineDispatcher
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.internal.SynchronizedObject
+import kotlinx.coroutines.internal.synchronized
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runTest
 import kotlin.math.roundToLong
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
@@ -225,9 +237,66 @@ class LruMemoryCacheTest {
         }
     }
 
+    @OptIn(InternalCoroutinesApi::class)
     @Test
     fun testWithLock() {
-        // TODO testWithLock
+        runTest {
+            var value: String? = null
+            var initialCount = 0
+            val initialCountLock = SynchronizedObject()
+            val jobs = mutableListOf<Deferred<*>>()
+            repeat(10) {
+                val job = async(ioCoroutineDispatcher()) {
+                    if (value == null) {
+                        println("init start: $it")
+                        value = "value"
+                        block(10)
+                        synchronized(initialCountLock) {
+                            initialCount++
+                        }
+                        println("init end: $it. initialCount=$initialCount")
+                    }
+                }
+                jobs.add(job)
+            }
+            jobs.awaitAll()
+            assertEquals(expected = 10, actual = initialCount)
+        }
+
+        val cache = LruMemoryCache(100L * 1024 * 1024)
+        runTest {
+            launch(ioCoroutineDispatcher()) {
+                assertFailsWith(IllegalStateException::class) {
+                    cache.withLock("key") {
+
+                    }
+                }
+            }.join()
+        }
+        runTest {
+            var value: String? = null
+            var initialCount = 0
+            val initialCountLock = SynchronizedObject()
+            val jobs = mutableListOf<Deferred<*>>()
+            repeat(10) {
+                val job = async(Dispatchers.Main) {
+                    cache.withLock("key") {
+                        if (value == null) {
+                            println("init start: $it")
+                            value = "value"
+                            block(10)
+                            synchronized(initialCountLock) {
+                                initialCount++
+                            }
+                            println("init end: $it. initialCount=$initialCount")
+                        }
+                    }
+                }
+                jobs.add(job)
+            }
+            jobs.awaitAll()
+            assertEquals(expected = 1, actual = initialCount)
+        }
     }
 
     @Test

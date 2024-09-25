@@ -154,10 +154,10 @@ interface DiskCache : Closeable {
             const val DEFAULT_APP_VERSION = 1
         }
 
-        var directory: Path? = null
-        var appCacheDirectory: Path? = null
-        var maxSize: Long? = null
-        var appVersion: Int? = null
+        private var directory: Path? = null
+        private var appCacheDirectory: Path? = null
+        private var maxSize: Long? = null
+        private var appVersion: Int? = null
 
         fun directory(directory: Path? = null): Builder = apply {
             this.directory = directory

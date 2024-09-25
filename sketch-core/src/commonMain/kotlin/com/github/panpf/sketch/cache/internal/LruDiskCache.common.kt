@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+@file:OptIn(InternalCoroutinesApi::class)
+@file:Suppress("FoldInitializerAndIfToElvis")
+
 package com.github.panpf.sketch.cache.internal
 
 import com.github.panpf.sketch.PlatformContext
@@ -25,8 +28,9 @@ import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.intMerged
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import com.github.panpf.sketch.util.md5
-import kotlinx.atomicfu.locks.SynchronizedObject
-import kotlinx.atomicfu.locks.synchronized
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.internal.SynchronizedObject
+import kotlinx.coroutines.internal.synchronized
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okio.FileSystem
@@ -46,7 +50,6 @@ expect fun checkDiskCacheDirectory(context: PlatformContext, directory: Path): P
  *
  * @see com.github.panpf.sketch.core.common.test.cache.internal.LruDiskCacheTest
  */
-@Suppress("FoldInitializerAndIfToElvis")
 class LruDiskCache(
     context: PlatformContext,
     override val fileSystem: FileSystem,

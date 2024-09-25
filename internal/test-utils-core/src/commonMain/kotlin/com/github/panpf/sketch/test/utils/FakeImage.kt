@@ -22,7 +22,7 @@ class FakeImage(val size: SketchSize, val valid: Boolean = true) : Image {
     override val shareable: Boolean
         get() = true
 
-    override val cacheInMemory: Boolean = false
+    override val cacheInMemory: Boolean = true
 
     override fun checkValid(): Boolean = valid
 

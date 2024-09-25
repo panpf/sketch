@@ -37,6 +37,7 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.TestCountTarget
 import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.test.utils.createCacheValue
@@ -196,7 +197,53 @@ class MemoryCacheRequestInterceptorTest {
         }
     }
 
-    // TODO test repeat block
+    @Test
+    fun testWithLock() {
+        val (context, sketch) = getTestContextAndSketch()
+        val memoryCache = sketch.memoryCache
+
+        memoryCache.clear()
+        assertEquals(expected = 0, actual = memoryCache.size)
+
+        runTest {
+            var endRequestInterceptorExecuteCount = 0
+            val endRequestInterceptor = object : RequestInterceptor {
+                override val key: String = "endRequestInterceptor"
+                override val sortWeight: Int = 100
+
+                override suspend fun intercept(chain: Chain): Result<ImageData> {
+                    endRequestInterceptorExecuteCount++
+                    return Result.success(
+                        ImageData(
+                            image = FakeImage(100, 100),
+                            imageInfo = ImageInfo(100, 100, "image/png"),
+                            resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
+                            dataFrom = DataFrom.LOCAL,
+                            transformeds = null,
+                            extras = null
+                        )
+                    )
+                }
+            }
+            val request = ImageRequest(context, ResourceImages.jpeg.uri)
+            val requestContext = request.toRequestContext(sketch)
+            repeat(10) {
+                val chain = RequestInterceptorChain(
+                    requestContext = requestContext,
+                    interceptors = listOf(endRequestInterceptor),
+                    index = 0
+                )
+                val interceptor = MemoryCacheRequestInterceptor()
+                withContext(Dispatchers.Main) {
+                    interceptor.intercept(chain)
+                }
+            }
+
+            assertEquals(expected = 1, actual = endRequestInterceptorExecuteCount)
+        }
+
+        assertEquals(expected = 100 * 100 * 4L, actual = memoryCache.size)
+    }
 
     @Test
     fun testEqualsAndHashCode() {

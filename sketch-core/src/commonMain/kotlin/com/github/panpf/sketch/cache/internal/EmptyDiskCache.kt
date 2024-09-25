@@ -21,6 +21,9 @@ import com.github.panpf.sketch.cache.DiskCache.Editor
 import com.github.panpf.sketch.cache.DiskCache.Snapshot
 import com.github.panpf.sketch.util.LruCache
 import com.github.panpf.sketch.util.md5
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.internal.SynchronizedObject
+import kotlinx.coroutines.internal.synchronized
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import okio.FileSystem
@@ -37,6 +40,9 @@ class EmptyDiskCache(override val fileSystem: FileSystem) : DiskCache {
     // DiskCache is usually used in the decoding stage,
     //  and the concurrency of the decoding stage is controlled at 4, so 200 is definitely enough.
     private val mutexMap = LruCache<String, Mutex>(200)
+
+    @OptIn(InternalCoroutinesApi::class)
+    private val mutexMapLock = SynchronizedObject()
 
     override val maxSize: Long = 0L
 
@@ -58,10 +64,13 @@ class EmptyDiskCache(override val fileSystem: FileSystem) : DiskCache {
 
     }
 
+    @OptIn(InternalCoroutinesApi::class)
     override suspend fun <R> withLock(key: String, action: suspend DiskCache.() -> R): R {
         val encodedKey = key.md5()
-        val lock = mutexMap[encodedKey] ?: Mutex().apply {
-            this@EmptyDiskCache.mutexMap.put(encodedKey, this)
+        val lock = synchronized(mutexMapLock) {
+            mutexMap[encodedKey] ?: Mutex().apply {
+                this@EmptyDiskCache.mutexMap.put(encodedKey, this)
+            }
         }
         return lock.withLock {
             action(this@EmptyDiskCache)

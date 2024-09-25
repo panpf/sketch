@@ -2,209 +2,300 @@ package com.github.panpf.sketch.core.common.test.cache
 
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.defaultDiskCacheMaxSize
-import com.github.panpf.sketch.cache.internal.EmptyDiskCache
+import com.github.panpf.sketch.cache.downloadCacheKey
+import com.github.panpf.sketch.cache.resultCacheKey
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.appCacheDirectory
 import com.github.panpf.sketch.util.defaultFileSystem
-import com.github.panpf.sketch.util.formatFileSize
+import kotlinx.coroutines.test.runTest
 import okio.Path.Companion.toPath
-import okio.use
 import kotlin.math.roundToLong
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 
 class DiskCacheTest {
 
     @Test
+    fun testCompanion() {
+        assertEquals(expected = "sketch4", actual = DiskCache.DIRECTORY_NAME)
+    }
+
+    @Test
     fun testBuilder() {
-        // TODO test: Builder
+        assertEquals(expected = 1, actual = DiskCache.Builder.DEFAULT_APP_VERSION)
+
+        val context = getTestContext()
+        val fileSystem = defaultFileSystem()
+
+        // directory
+        DiskCache.Builder(context, fileSystem).build().apply {
+            assertEquals(
+                expected = context.appCacheDirectory()
+                    ?.resolve(DiskCache.DIRECTORY_NAME)
+                    ?.toString()
+                    ?: "",
+                actual = directory.toString()
+            )
+        }
+
+        DiskCache.Builder(context, fileSystem, subDirectoryName = "sub").build().apply {
+            assertEquals(
+                expected = context.appCacheDirectory()
+                    ?.resolve(DiskCache.DIRECTORY_NAME)
+                    ?.resolve("sub")
+                    ?.toString()
+                    ?: "",
+                actual = directory.toString()
+            )
+        }
+
+        DiskCache.Builder(context, fileSystem, subDirectoryName = "sub").apply {
+            directory("/fake/fakeApp/cache".toPath())
+        }.build().apply {
+            assertEquals(
+                expected = "/fake/fakeApp/cache",
+                actual = directory.toString()
+            )
+        }
+
+        DiskCache.Builder(context, fileSystem, subDirectoryName = "sub").apply {
+            appCacheDirectory("/fake/fakeApp/cache".toPath())
+        }.build().apply {
+            assertEquals(
+                expected = "/fake/fakeApp/cache".toPath()
+                    .resolve(DiskCache.DIRECTORY_NAME)
+                    .resolve("sub")
+                    .toString(),
+                actual = directory.toString()
+            )
+        }
+
+        // maxSize
+        DiskCache.Builder(context, fileSystem).build().apply {
+            val platformDefaultMaxSize = defaultDiskCacheMaxSize(context) ?: 0L
+            assertEquals(
+                expected = (platformDefaultMaxSize * 1f).roundToLong(),
+                actual = maxSize
+            )
+        }
+
+        DiskCache.Builder(context, fileSystem, maxSizePercent = 0.5f).build().apply {
+            val platformDefaultMaxSize = defaultDiskCacheMaxSize(context) ?: 0L
+            assertEquals(
+                expected = (platformDefaultMaxSize * 0.5f).roundToLong(),
+                actual = maxSize
+            )
+        }
+
+        DiskCache.Builder(context, fileSystem, maxSizePercent = 0.5f).apply {
+            maxSize(100L * 1024 * 1024)
+        }.build().apply {
+            assertEquals(
+                expected = 100L * 1024 * 1024,
+                actual = maxSize
+            )
+        }
+
+        // appVersion
+        DiskCache.Builder(context, fileSystem).build().apply {
+            assertEquals(
+                expected = DiskCache.Builder.DEFAULT_APP_VERSION,
+                actual = appVersion
+            )
+        }
+
+        DiskCache.Builder(context, fileSystem).apply {
+            appVersion(2011)
+        }.build().apply {
+            assertEquals(
+                expected = 2011,
+                actual = appVersion
+            )
+        }
+
+        // internalVersion
+        DiskCache.Builder(context, fileSystem).build().apply {
+            assertEquals(
+                expected = 1,
+                actual = internalVersion
+            )
+        }
+
+        // options
+        DiskCache.Builder(context, fileSystem).apply {
+            directory("/fake/fakeApp/cache".toPath())
+            maxSize(100L * 1024 * 1024)
+            appVersion(101)
+        }.build().apply {
+            assertEquals("/fake/fakeApp/cache", directory.toString())
+            assertEquals(100L * 1024 * 1024, maxSize)
+            assertEquals(101, appVersion)
+        }
+
+        DiskCache.Builder(context, fileSystem).apply {
+            directory("/fake/fakeApp/cache".toPath())
+            maxSize(100L * 1024 * 1024)
+            appVersion(101)
+            options(
+                DiskCache.Options(
+                    directory = "/fake/fakeApp/cache2".toPath(),
+                    maxSize = 200L * 1024 * 1024,
+                    appVersion = 102
+                )
+            )
+        }.build().apply {
+            assertEquals("/fake/fakeApp/cache2", directory.toString())
+            assertEquals(200L * 1024 * 1024, maxSize)
+            assertEquals(102, appVersion)
+        }
+
+        // mergeOptions
+        DiskCache.Builder(context, fileSystem).apply {
+            maxSize(100L * 1024 * 1024)
+            appVersion(101)
+            mergeOptions(
+                DiskCache.Options(
+                    directory = "/fake/fakeApp/cache2".toPath(),
+                    maxSize = 200L * 1024 * 1024,
+                    appVersion = 102
+                )
+            )
+        }.build().apply {
+            assertEquals("/fake/fakeApp/cache2", directory.toString())
+            assertEquals(100L * 1024 * 1024, maxSize)
+            assertEquals(101, appVersion)
+        }
+
+        DiskCache.Builder(context, fileSystem).apply {
+            directory("/fake/fakeApp/cache".toPath())
+            appVersion(101)
+            mergeOptions(
+                DiskCache.Options(
+                    directory = "/fake/fakeApp/cache2".toPath(),
+                    maxSize = 200L * 1024 * 1024,
+                    appVersion = 102
+                )
+            )
+        }.build().apply {
+            assertEquals("/fake/fakeApp/cache", directory.toString())
+            assertEquals(200L * 1024 * 1024, maxSize)
+            assertEquals(101, appVersion)
+        }
+
+        DiskCache.Builder(context, fileSystem).apply {
+            directory("/fake/fakeApp/cache".toPath())
+            maxSize(100L * 1024 * 1024)
+            mergeOptions(
+                DiskCache.Options(
+                    directory = "/fake/fakeApp/cache2".toPath(),
+                    maxSize = 200L * 1024 * 1024,
+                    appVersion = 102
+                )
+            )
+        }.build().apply {
+            assertEquals("/fake/fakeApp/cache", directory.toString())
+            assertEquals(100L * 1024 * 1024, maxSize)
+            assertEquals(102, appVersion)
+        }
+
+        DiskCache.Builder(context, fileSystem).apply {
+            maxSize(100L * 1024 * 1024)
+            appVersion(101)
+            mergeOptions(
+                DiskCache.Options(
+                    appCacheDirectory = "/fake/fakeApp/cache2".toPath(),
+                    maxSize = 200L * 1024 * 1024,
+                    appVersion = 102
+                )
+            )
+        }.build().apply {
+            assertEquals("/fake/fakeApp/cache2/${DiskCache.DIRECTORY_NAME}", directory.toString())
+            assertEquals(100L * 1024 * 1024, maxSize)
+            assertEquals(101, appVersion)
+        }
     }
 
     @Test
     fun testDownloadBuilder() {
+        assertEquals(expected = "download", actual = DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME)
+        assertEquals(expected = 0.6f, actual = DiskCache.DownloadBuilder.MAX_SIZE_PERCENT)
+        assertEquals(expected = 1, actual = DiskCache.DownloadBuilder.INTERNAL_VERSION)
+
         val context = getTestContext()
         val fileSystem = defaultFileSystem()
-        val platformDefaultDiskCacheMaxSize = defaultDiskCacheMaxSize(context)
-        val defaultAppCacheDirectory = context.appCacheDirectory()
-        val appCacheDir = "/fake/fakeApp/cache".toPath()
-        val appCacheDir2 = "/fake/fakeApp/cache2".toPath()
-        val appCacheDir3 = "/fake/fakeApp/cache3".toPath()
-        val appCacheDir4 = "/fake/fakeApp/cache4".toPath()
 
-        DiskCache.DownloadBuilder(context, fileSystem).apply {
-            // for desktop platform
-            if (defaultAppCacheDirectory == null) {
-                appCacheDirectory(appCacheDir)
-            }
-        }.build().use {
-            if (platformDefaultDiskCacheMaxSize != null) {
-                assertEquals(
-                    (defaultAppCacheDirectory ?: appCacheDir)
-                        .resolve(DiskCache.DIRECTORY_NAME)
-                        .resolve(DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME),
-                    it.directory
-                )
-                assertEquals(
-                    (platformDefaultDiskCacheMaxSize * DiskCache.DownloadBuilder.MAX_SIZE_PERCENT).roundToLong()
-                        .formatFileSize(),
-                    it.maxSize.formatFileSize()
-                )
-                assertEquals(DiskCache.Builder.DEFAULT_APP_VERSION, it.appVersion)
-                assertEquals(DiskCache.DownloadBuilder.INTERNAL_VERSION, it.internalVersion)
-            } else {
-                assertEquals(EmptyDiskCache(fileSystem), it)
-            }
-        }
-
-        DiskCache.DownloadBuilder(context, fileSystem).apply {
-            directory(appCacheDir2)
-            maxSize(100L * 1024 * 1024)
-            appVersion(101)
-        }.build().use {
-            if (platformDefaultDiskCacheMaxSize != null) {
-                assertEquals(appCacheDir2, it.directory)
-                assertEquals("100MB", it.maxSize.formatFileSize())
-                assertEquals(101, it.appVersion)
-            } else {
-                assertEquals(EmptyDiskCache(fileSystem), it)
-            }
-        }
-
-        DiskCache.DownloadBuilder(context, fileSystem).apply {
-            appCacheDirectory(appCacheDir3)
-        }.build().use {
-            if (platformDefaultDiskCacheMaxSize != null) {
-                assertEquals(
-                    appCacheDir3.resolve(DiskCache.DIRECTORY_NAME)
-                        .resolve(DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME),
-                    it.directory
-                )
-            } else {
-                assertEquals(EmptyDiskCache(fileSystem), it)
-            }
-        }
-        DiskCache.DownloadBuilder(context, fileSystem).apply {
-            appCacheDirectory(appCacheDir3)
-            directory(appCacheDir4)
-        }.build().use {
-            if (platformDefaultDiskCacheMaxSize != null) {
-                assertEquals(appCacheDir4, it.directory)
-            } else {
-                assertEquals(EmptyDiskCache(fileSystem), it)
-            }
-        }
-
-        assertFailsWith(IllegalArgumentException::class) {
-            DiskCache.DownloadBuilder(context, fileSystem).maxSize(0)
-        }
-        assertFailsWith(IllegalArgumentException::class) {
-            DiskCache.DownloadBuilder(context, fileSystem).maxSize(-1)
-        }
-        assertFailsWith(IllegalArgumentException::class) {
-            DiskCache.DownloadBuilder(context, fileSystem).appVersion(0)
-        }
-        assertFailsWith(IllegalArgumentException::class) {
-            DiskCache.DownloadBuilder(context, fileSystem).appVersion(-1)
+        DiskCache.DownloadBuilder(context, fileSystem).build().apply {
+            assertEquals(
+                expected = context.appCacheDirectory()
+                    ?.resolve(DiskCache.DIRECTORY_NAME)
+                    ?.resolve(DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME)
+                    ?.toString()
+                    ?: "",
+                actual = directory.toString()
+            )
+            val platformDefaultMaxSize = defaultDiskCacheMaxSize(context) ?: 0L
+            assertEquals(
+                expected = (platformDefaultMaxSize * DiskCache.DownloadBuilder.MAX_SIZE_PERCENT).roundToLong(),
+                actual = maxSize
+            )
+            assertEquals(
+                expected = DiskCache.DownloadBuilder.INTERNAL_VERSION,
+                actual = internalVersion
+            )
         }
     }
 
     @Test
     fun testResultBuilder() {
+        assertEquals(expected = "result", actual = DiskCache.ResultBuilder.SUB_DIRECTORY_NAME)
+        assertEquals(expected = 0.4f, actual = DiskCache.ResultBuilder.MAX_SIZE_PERCENT)
+        assertEquals(expected = 1, actual = DiskCache.ResultBuilder.INTERNAL_VERSION)
+
         val context = getTestContext()
         val fileSystem = defaultFileSystem()
-        val platformDefaultDiskCacheMaxSize = defaultDiskCacheMaxSize(context)
-        val defaultAppCacheDirectory = context.appCacheDirectory()
-        val appCacheDir = "/fake/fakeApp/cache".toPath()
-        val appCacheDir2 = "/fake/fakeApp/cache2".toPath()
-        val appCacheDir3 = "/fake/fakeApp/cache3".toPath()
-        val appCacheDir4 = "/fake/fakeApp/cache4".toPath()
 
-        DiskCache.ResultBuilder(context, fileSystem).apply {
-            // for desktop platform
-            if (defaultAppCacheDirectory == null) {
-                appCacheDirectory(appCacheDir)
-            }
-        }.build().use {
-            if (platformDefaultDiskCacheMaxSize != null) {
-                assertEquals(
-                    (defaultAppCacheDirectory ?: appCacheDir)
-                        .resolve(DiskCache.DIRECTORY_NAME)
-                        .resolve(DiskCache.ResultBuilder.SUB_DIRECTORY_NAME),
-                    it.directory
-                )
-                assertEquals(
-                    (platformDefaultDiskCacheMaxSize * DiskCache.ResultBuilder.MAX_SIZE_PERCENT).roundToLong()
-                        .formatFileSize(),
-                    it.maxSize.formatFileSize()
-                )
-                assertEquals(DiskCache.Builder.DEFAULT_APP_VERSION, it.appVersion)
-                assertEquals(DiskCache.ResultBuilder.INTERNAL_VERSION, it.internalVersion)
-            } else {
-                assertEquals(EmptyDiskCache(fileSystem), it)
-            }
-        }
-
-        DiskCache.ResultBuilder(context, fileSystem).apply {
-            directory(appCacheDir2)
-            maxSize(100L * 1024 * 1024)
-            appVersion(101)
-        }.build().use {
-            if (platformDefaultDiskCacheMaxSize != null) {
-                assertEquals(appCacheDir2, it.directory)
-                assertEquals("100MB", it.maxSize.formatFileSize())
-                assertEquals(101, it.appVersion)
-            } else {
-                assertEquals(EmptyDiskCache(fileSystem), it)
-            }
-        }
-
-        DiskCache.ResultBuilder(context, fileSystem).apply {
-            appCacheDirectory(appCacheDir3)
-        }.build().use {
-            if (platformDefaultDiskCacheMaxSize != null) {
-                assertEquals(
-                    appCacheDir3.resolve(DiskCache.DIRECTORY_NAME)
-                        .resolve(DiskCache.ResultBuilder.SUB_DIRECTORY_NAME),
-                    it.directory
-                )
-            } else {
-                assertEquals(EmptyDiskCache(fileSystem), it)
-            }
-        }
-        DiskCache.ResultBuilder(context, fileSystem).apply {
-            appCacheDirectory(appCacheDir3)
-            directory(appCacheDir4)
-        }.build().use {
-            if (platformDefaultDiskCacheMaxSize != null) {
-                assertEquals(appCacheDir4, it.directory)
-            } else {
-                assertEquals(EmptyDiskCache(fileSystem), it)
-            }
-        }
-
-        assertFailsWith(IllegalArgumentException::class) {
-            DiskCache.ResultBuilder(context, fileSystem).maxSize(0)
-        }
-        assertFailsWith(IllegalArgumentException::class) {
-            DiskCache.ResultBuilder(context, fileSystem).maxSize(-1)
-        }
-        assertFailsWith(IllegalArgumentException::class) {
-            DiskCache.ResultBuilder(context, fileSystem).appVersion(0)
-        }
-        assertFailsWith(IllegalArgumentException::class) {
-            DiskCache.ResultBuilder(context, fileSystem).appVersion(-1)
+        DiskCache.ResultBuilder(context, fileSystem).build().apply {
+            assertEquals(
+                expected = context.appCacheDirectory()
+                    ?.resolve(DiskCache.DIRECTORY_NAME)
+                    ?.resolve(DiskCache.ResultBuilder.SUB_DIRECTORY_NAME)
+                    ?.toString()
+                    ?: "",
+                actual = directory.toString()
+            )
+            val platformDefaultMaxSize = defaultDiskCacheMaxSize(context) ?: 0L
+            assertEquals(
+                expected = (platformDefaultMaxSize * DiskCache.ResultBuilder.MAX_SIZE_PERCENT).roundToLong(),
+                actual = maxSize
+            )
+            assertEquals(
+                expected = DiskCache.ResultBuilder.INTERNAL_VERSION,
+                actual = internalVersion
+            )
         }
     }
 
-
     @Test
-    fun testDownloadCacheKey() {
-        // TODO test: downloadCacheKey
+    fun testDownloadCacheKey() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, "http://test.com/test.jpg")
+        val requestContext = request.toRequestContext(sketch)
+        assertEquals(
+            expected = requestContext.cacheKey,
+            actual = requestContext.resultCacheKey
+        )
     }
 
     @Test
     fun testResultCacheKey() {
-        // TODO test: resultCacheKey
+        val context = getTestContext()
+        val request = ImageRequest(context, "http://test.com/test.jpg")
+        assertEquals(
+            expected = request.uri.toString(),
+            actual = request.downloadCacheKey
+        )
     }
 }

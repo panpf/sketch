@@ -1,7 +1,16 @@
 package com.github.panpf.sketch.core.common.test.cache.internal
 
 import com.github.panpf.sketch.cache.internal.EmptyDiskCache
+import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.util.defaultFileSystem
+import com.github.panpf.sketch.util.ioCoroutineDispatcher
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.internal.SynchronizedObject
+import kotlinx.coroutines.internal.synchronized
+import kotlinx.coroutines.test.runTest
 import okio.Path.Companion.toPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -22,9 +31,57 @@ class EmptyDiskCacheTest {
         assertEquals(expected = null, actual = emptyDiskCache.openSnapshot("key"))
     }
 
+    @OptIn(InternalCoroutinesApi::class)
     @Test
     fun testWithLock() {
-        // TODO testWithLock
+        runTest {
+            var value: String? = null
+            var initialCount = 0
+            val initialCountLock = SynchronizedObject()
+            val jobs = mutableListOf<Deferred<*>>()
+            repeat(10) {
+                val job = async(ioCoroutineDispatcher()) {
+                    if (value == null) {
+                        println("init start: $it")
+                        value = "value"
+                        block(10)
+                        synchronized(initialCountLock) {
+                            initialCount++
+                        }
+                        println("init end: $it. initialCount=$initialCount")
+                    }
+                }
+                jobs.add(job)
+            }
+            jobs.awaitAll()
+            assertEquals(expected = 10, actual = initialCount)
+        }
+
+        val cache = EmptyDiskCache(defaultFileSystem())
+        runTest {
+            var value: String? = null
+            var initialCount = 0
+            val initialCountLock = SynchronizedObject()
+            val jobs = mutableListOf<Deferred<*>>()
+            repeat(10) {
+                val job = async(ioCoroutineDispatcher()) {
+                    cache.withLock("key") {
+                        if (value == null) {
+                            println("init start: $it")
+                            value = "value"
+                            block(10)
+                            synchronized(initialCountLock) {
+                                initialCount++
+                            }
+                            println("init end: $it. initialCount=$initialCount")
+                        }
+                    }
+                }
+                jobs.add(job)
+            }
+            jobs.awaitAll()
+            assertEquals(expected = 1, actual = initialCount)
+        }
     }
 
     @Test

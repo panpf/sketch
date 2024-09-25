@@ -27,6 +27,11 @@ import com.github.panpf.sketch.util.times
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 
+// TODO Check the use of synchronized.
+//  Use 'kotlinx.coroutines.internal.synchronized' in the coroutine.
+//  Use 'kotlinx.atomicfu.locks.synchronized' outside the coroutine.
+//  Avoid using 'kotlin.synchronized'.
+
 /**
  * Create a new [RequestContext] based on the specified [Sketch] and [ImageRequest]
  *

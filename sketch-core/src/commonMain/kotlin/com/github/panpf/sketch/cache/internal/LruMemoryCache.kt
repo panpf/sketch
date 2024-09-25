@@ -32,7 +32,7 @@ import kotlin.math.roundToLong
  *
  * @see com.github.panpf.sketch.core.common.test.cache.internal.LruMemoryCacheTest
  */
-class LruMemoryCache constructor(
+class LruMemoryCache(
     override val maxSize: Long,
     val valueLimitedSize: Long = (maxSize * 0.3f).roundToLong()
 ) : MemoryCache {
