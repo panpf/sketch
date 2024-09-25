@@ -18,11 +18,14 @@ package com.github.panpf.sketch.core.common.test.fetch
 
 import com.github.panpf.sketch.fetch.Base64Spec
 import com.github.panpf.sketch.fetch.Base64UriFetcher
+import com.github.panpf.sketch.fetch.base64UriSpec
 import com.github.panpf.sketch.fetch.isBase64Uri
 import com.github.panpf.sketch.fetch.newBase64Uri
+import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toUri
@@ -30,6 +33,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -39,18 +43,28 @@ class Base64UriFetcherTest {
     @Test
     fun testNewBase64Uri() {
         assertEquals(
-            "data:image/png;base64,4y2u1412421089084901240129",
-            newBase64Uri("image/png", "4y2u1412421089084901240129")
+            expected = "data:image/png;base64,4y2u1412421089084901240129",
+            actual = newBase64Uri("image/png", "4y2u1412421089084901240129")
         )
         assertEquals(
-            "data:image/jpeg;base64,4y2u1412421089084901240128",
-            newBase64Uri("image/jpeg", "4y2u1412421089084901240128")
+            expected = "data:image/jpeg;base64,4y2u1412421089084901240128",
+            actual = newBase64Uri("image/jpeg", "4y2u1412421089084901240128")
+        )
+        assertEquals(
+            expected = "data:image/jpeg;base64,AQIDBAUGBwgJAA==",
+            actual = newBase64Uri("image/jpeg", byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 0))
         )
     }
 
     @Test
-    fun testNewBase64Uri2() {
-        // TODO newBase64Uri(ByteArray)
+    fun testIsBase64Uri() {
+        assertTrue(isBase64Uri("data:image/png;base64,4y2u1412421089084901240129".toUri()))
+        assertTrue(isBase64Uri("data:img/png;base64,4y2u1412421089084901240129".toUri()))
+
+        assertFalse(isBase64Uri("data:application/zip;base64,4y2u1412421089084901240129".toUri()))
+        assertFalse(isBase64Uri("data:image/png;string,4y2u1412421089084901240129".toUri()))
+        assertFalse(isBase64Uri("data:img/pngbase64,4y2u1412421089084901240129".toUri()))
+        assertFalse(isBase64Uri("data:img/png;base644y2u1412421089084901240129".toUri()))
     }
 
     @Test
@@ -60,45 +74,68 @@ class Base64UriFetcherTest {
             expected = "Default, Mime, UrlSafe",
             actual = Base64Spec.values().joinToString()
         )
-    }
 
-    @Test
-    fun testIsBase64Uri() {
+        val context = getTestContext()
         assertEquals(
-            true,
-            isBase64Uri("data:image/png;base64,4y2u1412421089084901240129".toUri())
+            expected = null,
+            actual = ImageOptions().base64UriSpec
         )
         assertEquals(
-            true,
-            isBase64Uri("data:img/png;base64,4y2u1412421089084901240129".toUri())
+            expected = Base64Spec.Default,
+            actual = ImageOptions {
+                base64UriSpec(Base64Spec.Default)
+            }.base64UriSpec
+        )
+        assertEquals(
+            expected = Base64Spec.Mime,
+            actual = ImageOptions {
+                base64UriSpec(Base64Spec.Mime)
+            }.base64UriSpec
+        )
+        assertEquals(
+            expected = Base64Spec.UrlSafe,
+            actual = ImageOptions {
+                base64UriSpec(Base64Spec.UrlSafe)
+            }.base64UriSpec
         )
 
         assertEquals(
-            false,
-            isBase64Uri("data:application/zip;base64,4y2u1412421089084901240129".toUri())
+            expected = null,
+            actual = ImageRequest(context, "http://sample.com/sample.jpeg").base64UriSpec
         )
         assertEquals(
-            false,
-            isBase64Uri("data:image/png;string,4y2u1412421089084901240129".toUri())
+            expected = Base64Spec.Default,
+            actual = ImageRequest(context, "http://sample.com/sample.jpeg") {
+                base64UriSpec(Base64Spec.Default)
+            }.base64UriSpec
         )
         assertEquals(
-            false,
-            isBase64Uri("data:img/pngbase64,4y2u1412421089084901240129".toUri())
+            expected = Base64Spec.Mime,
+            actual = ImageRequest(context, "http://sample.com/sample.jpeg") {
+                base64UriSpec(Base64Spec.Mime)
+            }.base64UriSpec
         )
         assertEquals(
-            false,
-            isBase64Uri("data:img/png;base644y2u1412421089084901240129".toUri())
+            expected = Base64Spec.UrlSafe,
+            actual = ImageRequest(context, "http://sample.com/sample.jpeg") {
+                base64UriSpec(Base64Spec.UrlSafe)
+            }.base64UriSpec
         )
     }
 
     @Test
     fun testConstructor() {
-        // TODO test
+        Base64UriFetcher(
+            dataEncodedString = "AQIDBAUGBwgJAA==",
+            mimeType = "image/jpeg",
+            spec = Base64Spec.Default
+        )
     }
 
     @Test
     fun testCompanion() {
-        // TODO test
+        assertEquals("data", Base64UriFetcher.SCHEME)
+        assertEquals("base64", Base64UriFetcher.BASE64_IDENTIFIER)
     }
 
     @OptIn(ExperimentalEncodingApi::class)
@@ -120,12 +157,62 @@ class Base64UriFetcherTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        // TODO test
+        val element1 = Base64UriFetcher(
+            dataEncodedString = "AQIDBAUGBwgJAA==",
+            mimeType = "image/jpeg",
+            spec = Base64Spec.Default
+        )
+        val element11 = Base64UriFetcher(
+            dataEncodedString = "AQIDBAUGBwgJAA==",
+            mimeType = "image/jpeg",
+            spec = Base64Spec.Default
+        )
+        val element2 = Base64UriFetcher(
+            dataEncodedString = "BQIDBAUGBwgJAA==",
+            mimeType = "image/jpeg",
+            spec = Base64Spec.Default
+        )
+        val element3 = Base64UriFetcher(
+            dataEncodedString = "AQIDBAUGBwgJAA==",
+            mimeType = "image/png",
+            spec = Base64Spec.Default
+        )
+        val element4 = Base64UriFetcher(
+            dataEncodedString = "AQIDBAUGBwgJAA==",
+            mimeType = "image/jpeg",
+            spec = Base64Spec.Mime
+        )
+
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element1, element4)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element2, element4)
+        assertNotEquals(element3, element4)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
+
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element1.hashCode(), element4.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element4.hashCode())
+        assertNotEquals(element3.hashCode(), element4.hashCode())
     }
 
     @Test
     fun testToString() {
-        // TODO test
+        val base64UriFetcher = Base64UriFetcher(
+            dataEncodedString = "AQIDBAUGBwgJAA==",
+            mimeType = "image/jpeg",
+            spec = Base64Spec.Default
+        )
+        assertEquals(
+            expected = "Base64UriFetcher(data='AQIDBAUGBwgJAA==', mimeType='image/jpeg', spec=Default)",
+            actual = base64UriFetcher.toString()
+        )
     }
 
     @Test
@@ -188,7 +275,6 @@ class Base64UriFetcherTest {
 
         assertEquals(element1, element1)
         assertEquals(element1, element11)
-
         assertNotEquals(element1, Any())
         assertNotEquals(element1, null as Any?)
 
@@ -198,6 +284,6 @@ class Base64UriFetcherTest {
 
     @Test
     fun testFactoryToString() {
-        // TODO test
+        assertEquals(expected = "Base64UriFetcher", actual = Base64UriFetcher.Factory().toString())
     }
 }

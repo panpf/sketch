@@ -25,7 +25,7 @@ import com.github.panpf.sketch.request.ProgressListener
  *
  * @see com.github.panpf.sketch.core.common.test.request.internal.PairProgressListenerTest
  */
-class PairProgressListener constructor(
+data class PairProgressListener constructor(
     val first: ProgressListener,
     val second: ProgressListener,
 ) : ProgressListener {
@@ -33,24 +33,5 @@ class PairProgressListener constructor(
     override fun onUpdateProgress(request: ImageRequest, progress: Progress) {
         first.onUpdateProgress(request, progress)
         second.onUpdateProgress(request, progress)
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as PairProgressListener
-        if (first != other.first) return false
-        if (second != other.second) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = first.hashCode()
-        result = 31 * result + second.hashCode()
-        return result
-    }
-
-    override fun toString(): String {
-        return "PairProgressListener(first=$first, second=$second)"
     }
 }

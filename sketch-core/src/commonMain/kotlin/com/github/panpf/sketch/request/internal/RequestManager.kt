@@ -35,6 +35,10 @@ import kotlinx.coroutines.launch
 
 /**
  * Responsible for storing current requests and calling back events such as attach, detach.
+ *
+ * @see com.github.panpf.sketch.request.internal.BaseRequestManager
+ * @see com.github.panpf.sketch.request.internal.ViewRequestManager
+ * @see com.github.panpf.sketch.request.internal.ComposeRequestManager
  */
 interface RequestManager {
 
@@ -83,7 +87,8 @@ interface RequestManager {
 /**
  * Base implementation of [RequestManager] that handles the current request and request lifecycle.
  *
- * @see com.github.panpf.sketch.compose.core.common.test.request.internal.ComposeRequestManagerTest
+ * @see com.github.panpf.sketch.request.internal.ViewRequestManager
+ * @see com.github.panpf.sketch.request.internal.ComposeRequestManager
  */
 open class BaseRequestManager : RequestManager {
 
@@ -160,7 +165,7 @@ open class BaseRequestManager : RequestManager {
         return currentRequestDelegate?.sketch
     }
 
-    open fun isAttached(): Boolean {
+    open fun isAttached(): Boolean {    // TODO change to abstract
         return true
     }
 

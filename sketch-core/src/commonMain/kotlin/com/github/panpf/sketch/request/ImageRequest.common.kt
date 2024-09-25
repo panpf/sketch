@@ -186,6 +186,11 @@ data class ImageRequest(
     val transformations: List<Transformation>?,
 
     /**
+     * Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
+     */
+    val disallowAnimatedImage: Boolean,
+
+    /**
      * Disk caching policy for Bitmaps affected by [sizeResolver] or [transformations]
      *
      * @see com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
@@ -212,11 +217,6 @@ data class ImageRequest(
      * How the current image and the new image transition
      */
     val transitionFactory: Transition.Factory?,
-
-    /**
-     * Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
-     */
-    val disallowAnimatedImage: Boolean,
 
     /**
      * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, fallback, error and the decoded image
@@ -369,7 +369,11 @@ data class ImageRequest(
          * for this request through its [context].
          */
         fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
-            definedRequestOptionsBuilder.lifecycle(lifecycle)
+            definedRequestOptionsBuilder.lifecycle(
+                if (lifecycle != null) LifecycleResolver(
+                    lifecycle
+                ) else null
+            )
         }
 
         /**
@@ -639,6 +643,13 @@ data class ImageRequest(
         }
 
         /**
+         * Set disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
+         */
+        fun disallowAnimatedImage(disabled: Boolean? = true): Builder = apply {
+            definedOptionsBuilder.disallowAnimatedImage(disabled)
+        }
+
+        /**
          * Set disk caching policy for Bitmaps affected by [size] or [transformations]
          */
         fun resultCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
@@ -712,13 +723,6 @@ data class ImageRequest(
          */
         fun crossfade(enable: Boolean): Builder = apply {
             definedOptionsBuilder.crossfade(enable)
-        }
-
-        /**
-         * Set disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
-         */
-        fun disallowAnimatedImage(disabled: Boolean? = true): Builder = apply {
-            definedOptionsBuilder.disallowAnimatedImage(disabled)
         }
 
         /**

@@ -25,7 +25,7 @@ import com.github.panpf.sketch.request.Listener
  *
  * @see com.github.panpf.sketch.core.common.test.request.internal.PairListenerTest
  */
-class PairListener constructor(
+data class PairListener constructor(
     val first: Listener,
     val second: Listener,
 ) : Listener {
@@ -48,24 +48,5 @@ class PairListener constructor(
     override fun onSuccess(request: ImageRequest, result: ImageResult.Success) {
         first.onSuccess(request, result)
         second.onSuccess(request, result)
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as PairListener
-        if (first != other.first) return false
-        if (second != other.second) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = first.hashCode()
-        result = 31 * result + second.hashCode()
-        return result
-    }
-
-    override fun toString(): String {
-        return "PairListener(first=$first, second=$second)"
     }
 }

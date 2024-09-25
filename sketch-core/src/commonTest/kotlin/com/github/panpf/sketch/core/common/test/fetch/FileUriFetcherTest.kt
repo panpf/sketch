@@ -17,34 +17,25 @@
 package com.github.panpf.sketch.core.common.test.fetch
 
 import com.github.panpf.sketch.fetch.FileUriFetcher
+import com.github.panpf.sketch.fetch.isFileUri
 import com.github.panpf.sketch.fetch.newFileUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.defaultFileSystem
 import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.test.runTest
 import okio.Path.Companion.toPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class FileUriFetcherTest {
-
-    @Test
-    fun test() {
-        assertEquals(
-            expected = "file:///sdcard/sample%20s.jpeg",
-            actual = "file:///sdcard/sample%20s.jpeg".toUri().toString()
-        )
-        assertEquals(
-            expected = "/sdcard/sample s.jpeg",
-            actual = "file:///sdcard/sample%20s.jpeg".toUri().path
-        )
-    }
 
     @Test
     fun testNewFileUri() {
@@ -60,17 +51,19 @@ class FileUriFetcherTest {
 
     @Test
     fun testIsFileUri() {
-        // TODO isFileUri
+        assertTrue(isFileUri("/sdcard/sample.jpg".toUri()))
+        assertTrue(isFileUri("file:///sdcard/sample.jpg".toUri()))
+        assertFalse(isFileUri("http://sample.com/sample.jpg".toUri()))
     }
 
     @Test
     fun testConstructor() {
-        // TODO test
+        FileUriFetcher(path = "/sdcard/sample.jpg".toPath(), fileSystem = defaultFileSystem())
     }
 
     @Test
     fun testCompanion() {
-        // TODO test
+        assertEquals("file", FileUriFetcher.SCHEME)
     }
 
     @Test
@@ -89,12 +82,26 @@ class FileUriFetcherTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        // TODO test
+        val element1 = FileUriFetcher("/sdcard/sample.jpg".toPath())
+        val element11 = FileUriFetcher("/sdcard/sample.jpg".toPath())
+        val element2 =
+            FileUriFetcher("/sdcard/sample.png".toPath())
+
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
+
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
     }
 
     @Test
     fun testToString() {
-        // TODO test
+        assertEquals(
+            expected = "FileUriFetcher('/sdcard/sample.jpg')",
+            actual = FileUriFetcher("/sdcard/sample.jpg".toPath()).toString()
+        )
     }
 
     @Test
@@ -245,7 +252,6 @@ class FileUriFetcherTest {
 
         assertEquals(element1, element1)
         assertEquals(element1, element11)
-
         assertNotEquals(element1, Any())
         assertNotEquals(element1, null as Any?)
 
@@ -255,6 +261,6 @@ class FileUriFetcherTest {
 
     @Test
     fun testFactoryToString() {
-
+        assertEquals(expected = "FileUriFetcher", actual = FileUriFetcher.Factory().toString())
     }
 }

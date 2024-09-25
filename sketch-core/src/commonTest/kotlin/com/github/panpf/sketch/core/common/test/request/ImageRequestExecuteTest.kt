@@ -51,6 +51,7 @@ import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.ratio
+import com.github.panpf.sketch.test.utils.runBlock
 import com.github.panpf.sketch.test.utils.samplingByTarget
 import com.github.panpf.sketch.test.utils.target
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -942,9 +943,10 @@ class ImageRequestExecuteTest {
         var onStartImage: Image?
         val request = ImageRequest(context, imageUri) {
             size(500, 500)
-            target(onStart = { _, _, placeholder: Image? ->
-                onStartImage = placeholder
-            }
+            target(
+                onStart = { _, _, placeholder: Image? ->
+                    onStartImage = placeholder
+                }
             )
         }
         val memoryCacheKey = request.toRequestContext(sketch).memoryCacheKey
@@ -975,7 +977,46 @@ class ImageRequestExecuteTest {
         assertEquals(placeholderStateImage.image, onStartImage)
     }
 
-    // TODO fallback
+    @Test
+    fun testFallback() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val fallbackStateImage = FakeStateImage()
+
+        runBlock {
+            val target = TestTarget()
+            val request = ImageRequest(context, ResourceImages.jpeg.uri) {
+                size(500, 500)
+                target(target)
+            }
+            sketch.execute(request)
+            assertNotNull(target.successImage)
+            assertNotEquals(fallbackStateImage.image, target.successImage)
+        }
+
+        runBlock {
+            val target = TestTarget()
+            val request = ImageRequest(context, "") {
+                size(500, 500)
+                target(target)
+            }
+            sketch.execute(request)
+            assertNull(target.successImage)
+            assertNull(target.errorImage)
+        }
+
+        runBlock {
+            val target = TestTarget()
+            val request = ImageRequest(context, "") {
+                size(500, 500)
+                target(target)
+                fallback(fallbackStateImage)
+            }
+            sketch.execute(request)
+            assertNull(target.successImage)
+            assertNotNull(target.errorImage)
+            assertEquals(fallbackStateImage.image, target.errorImage)
+        }
+    }
 
     @Test
     fun testError() = runTest {
@@ -1105,7 +1146,13 @@ class ImageRequestExecuteTest {
             }
     }
 
-    // TODO allowNullImage
+    @Test
+    fun testAllowNullImage() = runTest {
+        /**
+         * @see com.github.panpf.sketch.view.core.test.target.GenericViewTargetTest.testAllowNullImage
+         * @see com.github.panpf.sketch.compose.core.common.test.target.GenericComposeTargetTest.testAllowNullImage
+         */
+    }
 
     @Test
     fun testMemoryCachePolicy() = runTest {

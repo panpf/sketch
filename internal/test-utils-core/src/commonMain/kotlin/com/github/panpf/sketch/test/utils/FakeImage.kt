@@ -3,9 +3,12 @@ package com.github.panpf.sketch.test.utils
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.util.SketchSize
 
-class FakeImage(val size: SketchSize) : Image {
+class FakeImage(val size: SketchSize, val valid: Boolean = true) : Image {
 
-    constructor(width: Int, height: Int) : this(SketchSize(width, height))
+    constructor(width: Int, height: Int, valid: Boolean = true) : this(
+        SketchSize(width, height),
+        valid
+    )
 
     override val width: Int
         get() = size.width
@@ -21,9 +24,7 @@ class FakeImage(val size: SketchSize) : Image {
 
     override val cacheInMemory: Boolean = false
 
-    override fun checkValid(): Boolean {
-        return true
-    }
+    override fun checkValid(): Boolean = valid
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

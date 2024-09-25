@@ -42,7 +42,7 @@ fun newBase64Uri(mimeType: String, base64String: String): String =
  *
  * @return 'data:image/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z'
  *
- * @see com.github.panpf.sketch.core.common.test.fetch.Base64UriFetcherTest.testNewBase64Uri2
+ * @see com.github.panpf.sketch.core.common.test.fetch.Base64UriFetcherTest.testNewBase64Uri
  */
 @OptIn(ExperimentalEncodingApi::class)
 fun newBase64Uri(mimeType: String, imageData: ByteArray): String {
@@ -185,7 +185,7 @@ class Base64UriFetcher constructor(
     }
 
     override fun toString(): String {
-        return "Base64UriFetcher(data='$dataEncodedString', mimeType=$mimeType, spec=$spec)"
+        return "Base64UriFetcher(data='$dataEncodedString', mimeType='$mimeType', spec=$spec)"
     }
 
     /**

@@ -32,7 +32,10 @@ import kotlin.test.assertTrue
 @RunWith(AndroidJUnit4::class)
 class GenericViewTargetTest {
 
-    // TODO test allowSetNullDrawable
+    @Test
+    fun testAllowNullImage() = runTest {
+        // TODO test allowNullImage
+    }
 
     @Test
     fun testUpdateDrawable() = runTest {

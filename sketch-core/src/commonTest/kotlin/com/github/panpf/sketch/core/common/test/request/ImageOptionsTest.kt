@@ -63,6 +63,7 @@ import com.github.panpf.sketch.test.utils.UriInvalidCondition
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
+import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchSize
 import kotlinx.coroutines.test.runTest
@@ -633,97 +634,6 @@ class ImageOptionsTest {
     }
 
     @Test
-    fun testEqualsHashCodeToString() {
-        val scopeActions = listOfNotNull<ScopeAction<ImageOptions.Builder>>(
-            ScopeAction {
-                depth(LOCAL)
-            },
-            ScopeAction {
-                setExtra("key", "value")
-            },
-            ScopeAction {
-                httpHeader("key1", "value1")
-            },
-            ScopeAction {
-                downloadCachePolicy(WRITE_ONLY)
-            },
-            ScopeAction {
-                size(100, 100)
-            },
-            ScopeAction {
-                precision(SAME_ASPECT_RATIO)
-            },
-            ScopeAction {
-                scale(FILL)
-            },
-            ScopeAction {
-                transformations(RotateTransformation(40))
-            },
-            ScopeAction {
-                resultCachePolicy(READ_ONLY)
-            },
-            ScopeAction {
-                disallowAnimatedImage(true)
-            },
-            ScopeAction {
-                placeholder(FakeStateImage(FakeImage(SketchSize(100, 100))))
-            },
-            ScopeAction {
-                fallback(FakeStateImage(FakeImage(SketchSize(100, 100))))
-            },
-            ScopeAction {
-                error(ErrorStateImage(FakeStateImage(FakeImage(SketchSize(100, 100)))))
-            },
-            ScopeAction {
-                transitionFactory(FakeTransition.Factory())
-            },
-            ScopeAction {
-                resizeOnDraw(true)
-            },
-            ScopeAction {
-                memoryCachePolicy(ENABLED)
-            },
-            ScopeAction {
-                components {
-                    addFetcher(HttpUriFetcher.Factory())
-                }
-            },
-        )
-
-        val optionsList = mutableListOf<ImageOptions>()
-        scopeActions.forEachIndexed { itemIndex, action ->
-            val options = optionsList.lastOrNull() ?: ImageOptions()
-            val builder = options.newBuilder()
-            with(action) {
-                builder.invoke()
-            }
-            val newOptions = builder.build()
-            assertEquals(
-                expected = newOptions, actual = newOptions.newOptions(),
-                message = "itemIndex=$itemIndex, newOptions=$newOptions",
-            )
-            assertEquals(
-                expected = newOptions.hashCode(),
-                actual = newOptions.newOptions().hashCode(),
-                message = "itemIndex=$itemIndex, newOptions=$newOptions",
-            )
-            optionsList.forEachIndexed { lastOptionsIndex, lastOptions ->
-                assertNotEquals(
-                    illegal = lastOptions,
-                    actual = newOptions,
-                    message = "itemIndex=$itemIndex, lastOptionsIndex=$lastOptionsIndex, lastOptions=$lastOptions, newOptions=$newOptions",
-                )
-                assertNotEquals(
-                    illegal = lastOptions.hashCode(),
-                    actual = newOptions.hashCode(),
-                    message = "itemIndex=$itemIndex, lastOptionsIndex=$lastOptionsIndex, lastOptions=$lastOptions, newOptions=$newOptions",
-                )
-            }
-            optionsList.add(newOptions)
-        }
-    }
-
-    @Test
     fun testDepth() {
         ImageOptions().apply {
             assertNull(depthHolder?.depth)
@@ -1059,7 +969,7 @@ class ImageOptionsTest {
     }
 
     @Test
-    fun testResizeSize() {
+    fun testSize() {
         ImageOptions.Builder().apply {
             build().apply {
                 assertNull(sizeResolver)
@@ -1088,26 +998,19 @@ class ImageOptionsTest {
     }
 
     @Test
-    fun testResizeSizeResolver() {
-        ImageOptions.Builder().apply {
-            build().apply {
-                assertNull(sizeResolver)
-            }
-
-            size(FixedSizeResolver(SketchSize(100, 100)))
-            build().apply {
-                assertEquals(FixedSizeResolver(SketchSize(100, 100)), sizeResolver)
-            }
-
-            this.size(null)
-            build().apply {
-                assertNull(sizeResolver)
-            }
+    fun testSizeMultiplier() {
+        ImageOptions().apply {
+            assertEquals(null, sizeMultiplier)
+        }
+        ImageOptions {
+            sizeMultiplier(1.5f)
+        }.apply {
+            assertEquals(1.5f, sizeMultiplier)
         }
     }
 
     @Test
-    fun testResizePrecision() {
+    fun testPrecision() {
         ImageOptions.Builder().apply {
             build().apply {
                 assertNull(precisionDecider)
@@ -1134,7 +1037,7 @@ class ImageOptionsTest {
     }
 
     @Test
-    fun testResizeScale() {
+    fun testScale() {
         ImageOptions.Builder().apply {
             build().apply {
                 assertNull(scaleDecider)
@@ -1387,7 +1290,7 @@ class ImageOptionsTest {
     }
 
     @Test
-    fun testTransition() {
+    fun testTransitionFactory() {
         ImageOptions.Builder().apply {
             build().apply {
                 assertNull(transitionFactory)
@@ -1407,6 +1310,48 @@ class ImageOptionsTest {
             build().apply {
                 assertNull(transitionFactory)
             }
+        }
+    }
+
+    @Test
+    fun testCrossfade() {
+        ImageOptions().apply {
+            assertNull(transitionFactory)
+        }.newOptions() {
+            crossfade()
+        }.apply {
+            assertEquals(
+                expected = CrossfadeTransition.Factory(),
+                actual = transitionFactory
+            )
+        }.newOptions {
+            crossfade(
+                durationMillis = CrossfadeTransition.DEFAULT_DURATION_MILLIS * 2,
+                fadeStart = !CrossfadeTransition.DEFAULT_FADE_START,
+                preferExactIntrinsicSize = !CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
+                alwaysUse = !CrossfadeTransition.DEFAULT_ALWAYS_USE
+            )
+        }.apply {
+            assertEquals(
+                expected = CrossfadeTransition.Factory(
+                    durationMillis = CrossfadeTransition.DEFAULT_DURATION_MILLIS * 2,
+                    fadeStart = !CrossfadeTransition.DEFAULT_FADE_START,
+                    preferExactIntrinsicSize = !CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
+                    alwaysUse = !CrossfadeTransition.DEFAULT_ALWAYS_USE
+                ),
+                actual = transitionFactory
+            )
+        }.newOptions {
+            crossfade(false)
+        }.apply {
+            assertNull(transitionFactory)
+        }.newOptions {
+            crossfade(true)
+        }.apply {
+            assertEquals(
+                expected = CrossfadeTransition.Factory(),
+                actual = transitionFactory
+            )
         }
     }
 
@@ -1481,40 +1426,205 @@ class ImageOptionsTest {
     }
 
     @Test
-    fun testComponentRegistry() {
-        ImageOptions.Builder().apply {
-            build().apply {
-                assertNull(componentRegistry)
-            }
+    fun testComponents() {
+        ImageOptions().apply {
+            assertNull(componentRegistry)
+        }
 
+        ImageOptions {
             components {
                 addFetcher(HttpUriFetcher.Factory())
+                addFetcher(TestFetcher.Factory())
+                addDecoder(TestDecoder.Factory())
+                addRequestInterceptor(TestRequestInterceptor())
+                addDecodeInterceptor(TestDecodeInterceptor())
             }
-            val options1 = build().apply {
-                assertEquals(ComponentRegistry.Builder().apply {
+        }.apply {
+            assertEquals(
+                ComponentRegistry.Builder().apply {
                     addFetcher(HttpUriFetcher.Factory())
-                }.build(), componentRegistry)
-            }
+                    addFetcher(TestFetcher.Factory())
+                    addDecoder(TestDecoder.Factory())
+                    addRequestInterceptor(TestRequestInterceptor())
+                    addDecodeInterceptor(TestDecodeInterceptor())
+                }.build(),
+                componentRegistry
+            )
+        }
 
+        ImageOptions {
             components {
+                addFetcher(HttpUriFetcher.Factory())
+                addFetcher(TestFetcher.Factory())
                 addDecoder(TestDecoder.Factory())
             }
-            val options2 = build().apply {
-                assertEquals(ComponentRegistry.Builder().apply {
-                    addDecoder(TestDecoder.Factory())
-                }.build(), componentRegistry)
+            components {
+                addRequestInterceptor(TestRequestInterceptor())
+                addDecodeInterceptor(TestDecodeInterceptor())
             }
-
-            assertNotEquals(options1, options2)
-
-            components(null)
-            build().apply {
-                assertNull(componentRegistry)
-            }
+        }.apply {
+            assertEquals(
+                ComponentRegistry.Builder().apply {
+                    addRequestInterceptor(TestRequestInterceptor())
+                    addDecodeInterceptor(TestDecodeInterceptor())
+                }.build(),
+                componentRegistry
+            )
         }
     }
 
-    // TODO test addComponents
-    // TODO test sizeMultiplier
-    // TODO test crossfade
+    @Test
+    fun testAddComponents() {
+        ImageOptions().apply {
+            assertNull(componentRegistry)
+        }
+
+        ImageOptions {
+            components {
+                addFetcher(HttpUriFetcher.Factory())
+                addFetcher(TestFetcher.Factory())
+                addDecoder(TestDecoder.Factory())
+            }
+            addComponents {
+                addRequestInterceptor(TestRequestInterceptor())
+                addDecodeInterceptor(TestDecodeInterceptor())
+            }
+        }.apply {
+            assertEquals(
+                ComponentRegistry.Builder().apply {
+                    addFetcher(HttpUriFetcher.Factory())
+                    addFetcher(TestFetcher.Factory())
+                    addDecoder(TestDecoder.Factory())
+                    addRequestInterceptor(TestRequestInterceptor())
+                    addDecodeInterceptor(TestDecodeInterceptor())
+                }.build(),
+                componentRegistry
+            )
+        }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val scopeActions = listOfNotNull<ScopeAction<ImageOptions.Builder>>(
+            ScopeAction {
+                depth(LOCAL)
+            },
+            ScopeAction {
+                setExtra("key", "value")
+            },
+            ScopeAction {
+                httpHeader("key1", "value1")
+            },
+            ScopeAction {
+                downloadCachePolicy(WRITE_ONLY)
+            },
+            ScopeAction {
+                size(100, 100)
+            },
+            ScopeAction {
+                precision(SAME_ASPECT_RATIO)
+            },
+            ScopeAction {
+                scale(FILL)
+            },
+            ScopeAction {
+                transformations(RotateTransformation(40))
+            },
+            ScopeAction {
+                resultCachePolicy(READ_ONLY)
+            },
+            ScopeAction {
+                disallowAnimatedImage(true)
+            },
+            ScopeAction {
+                placeholder(FakeStateImage(FakeImage(SketchSize(100, 100))))
+            },
+            ScopeAction {
+                fallback(FakeStateImage(FakeImage(SketchSize(100, 100))))
+            },
+            ScopeAction {
+                error(ErrorStateImage(FakeStateImage(FakeImage(SketchSize(100, 100)))))
+            },
+            ScopeAction {
+                transitionFactory(FakeTransition.Factory())
+            },
+            ScopeAction {
+                resizeOnDraw(true)
+            },
+            ScopeAction {
+                memoryCachePolicy(ENABLED)
+            },
+            ScopeAction {
+                components {
+                    addFetcher(HttpUriFetcher.Factory())
+                }
+            },
+        )
+
+        val optionsList = mutableListOf<ImageOptions>()
+        scopeActions.forEachIndexed { itemIndex, action ->
+            val options = optionsList.lastOrNull() ?: ImageOptions()
+            val builder = options.newBuilder()
+            with(action) {
+                builder.invoke()
+            }
+            val newOptions = builder.build()
+            assertEquals(
+                expected = newOptions, actual = newOptions.newOptions(),
+                message = "itemIndex=$itemIndex, newOptions=$newOptions",
+            )
+            assertEquals(
+                expected = newOptions.hashCode(),
+                actual = newOptions.newOptions().hashCode(),
+                message = "itemIndex=$itemIndex, newOptions=$newOptions",
+            )
+            optionsList.forEachIndexed { lastOptionsIndex, lastOptions ->
+                assertNotEquals(
+                    illegal = lastOptions,
+                    actual = newOptions,
+                    message = "itemIndex=$itemIndex, lastOptionsIndex=$lastOptionsIndex, lastOptions=$lastOptions, newOptions=$newOptions",
+                )
+                assertNotEquals(
+                    illegal = lastOptions.hashCode(),
+                    actual = newOptions.hashCode(),
+                    message = "itemIndex=$itemIndex, lastOptionsIndex=$lastOptionsIndex, lastOptions=$lastOptions, newOptions=$newOptions",
+                )
+            }
+            optionsList.add(newOptions)
+        }
+    }
+
+    @Test
+    fun testToString() {
+        ImageOptions {
+            depth(LOCAL, "test")
+            setExtra("key", "value")
+            httpHeader("key1", "value1")
+            downloadCachePolicy(WRITE_ONLY)
+            colorType("RGB_565")
+            colorSpace("SRGB")
+            size(100, 100)
+            sizeMultiplier(1.5f)
+            precision(SAME_ASPECT_RATIO)
+            scale(FILL)
+            transformations(RotateTransformation(40))
+            disallowAnimatedImage(true)
+            resultCachePolicy(READ_ONLY)
+            placeholder(FakeStateImage(FakeImage(SketchSize(100, 100))))
+            fallback(FakeStateImage(FakeImage(SketchSize(100, 100))))
+            error(ErrorStateImage(FakeStateImage(FakeImage(SketchSize(100, 100)))))
+            transitionFactory(FakeTransition.Factory())
+            resizeOnDraw(true)
+            allowNullImage(true)
+            memoryCachePolicy(ENABLED)
+            components {
+                addFetcher(HttpUriFetcher.Factory())
+            }
+        }.apply {
+            assertEquals(
+                "ImageOptions(depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), httpHeaders=HttpHeaders(sets=[key1:value1],adds=[]), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(FILL), transformations=[RotateTransformation(40)], disallowAnimatedImage=true, resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=ErrorStateImage([DefaultCondition:ErrorStateImage([DefaultCondition:FakeStateImage(image=FakeImage(size=100x100))])]), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[HttpUriFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[]))",
+                this.toString()
+            )
+        }
+    }
 }

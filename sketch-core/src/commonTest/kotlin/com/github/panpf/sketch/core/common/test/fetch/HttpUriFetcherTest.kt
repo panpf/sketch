@@ -16,10 +16,12 @@
 
 package com.github.panpf.sketch.core.common.test.fetch
 
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.downloadCacheKey
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.HttpUriFetcher
+import com.github.panpf.sketch.fetch.isHttpUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom
@@ -33,6 +35,7 @@ import com.github.panpf.sketch.test.utils.runBlock
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
+import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -51,17 +54,24 @@ class HttpUriFetcherTest {
 
     @Test
     fun testIsHttpUri() {
-        // TODO test
+        assertTrue(isHttpUri("http://sample.com/sample.jpg".toUri()))
+        assertTrue(isHttpUri("https://sample.com/sample.jpg".toUri()))
+        assertFalse(isHttpUri("ftp://sample.com/sample.jpg".toUri()))
+        assertFalse(isHttpUri("content://sample_app/sample".toUri()))
     }
 
     @Test
     fun testConstructor() {
-        // TODO test
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, "http://sample.com/sample.jpg")
+        HttpUriFetcher(sketch, request, "http://sample.com/sample.jpg")
     }
 
     @Test
     fun testCompanion() {
-        // TODO test
+        assertEquals("http", HttpUriFetcher.SCHEME_HTTP)
+        assertEquals("https", HttpUriFetcher.SCHEME_HTTPS)
+        assertEquals("text/plain", HttpUriFetcher.MIME_TYPE_TEXT_PLAIN)
     }
 
     @Test
@@ -518,12 +528,47 @@ class HttpUriFetcherTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        // TODO test
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, "http://sample.com/sample.jpg")
+        val element1 = HttpUriFetcher(sketch, request, "http://sample.com/sample.jpg")
+        val element11 = HttpUriFetcher(sketch, request, "http://sample.com/sample.jpg")
+        val element2 =
+            HttpUriFetcher(Sketch.Builder(context).build(), request, "http://sample.com/sample.jpg")
+        val element3 = HttpUriFetcher(
+            sketch,
+            request.newRequest { memoryCachePolicy(CachePolicy.DISABLED) },
+            "http://sample.com/sample.jpg"
+        )
+        val element4 = HttpUriFetcher(sketch, request, "http://sample.com/sample.png")
+
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element1, element4)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element2, element4)
+        assertNotEquals(element3, element4)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
+
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element1.hashCode(), element4.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element4.hashCode())
+        assertNotEquals(element3.hashCode(), element4.hashCode())
     }
 
     @Test
     fun testToString() {
-        // TODO test
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, "http://sample.com/sample.jpg")
+        val httpUriFetcher = HttpUriFetcher(sketch, request, "http://sample.com/sample.jpg")
+        assertEquals(
+            expected = "HttpUriFetcher('http://sample.com/sample.jpg')",
+            actual = httpUriFetcher.toString()
+        )
     }
 
     @Test
@@ -568,7 +613,6 @@ class HttpUriFetcherTest {
 
         assertEquals(element1, element1)
         assertEquals(element1, element11)
-
         assertNotEquals(element1, Any())
         assertNotEquals(element1, null as Any?)
 
@@ -578,6 +622,6 @@ class HttpUriFetcherTest {
 
     @Test
     fun testFactoryToString() {
-        // TODO test
+        assertEquals(expected = "HttpUriFetcher", actual = HttpUriFetcher.Factory().toString())
     }
 }

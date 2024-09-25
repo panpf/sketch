@@ -74,11 +74,14 @@ class EmptyDiskCache(override val fileSystem: FileSystem) : DiskCache {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        return other != null && this::class == other::class
+        if (other == null || this::class != other::class) return false
+        other as EmptyDiskCache
+        if (fileSystem != other.fileSystem) return false
+        return true
     }
 
     override fun hashCode(): Int {
-        return this::class.hashCode()
+        return fileSystem.hashCode()
     }
 
     override fun toString(): String = "EmptyDiskCache"

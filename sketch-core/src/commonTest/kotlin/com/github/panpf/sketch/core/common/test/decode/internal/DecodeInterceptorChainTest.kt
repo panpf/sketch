@@ -29,6 +29,7 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.createBitmapImage
+import com.github.panpf.sketch.test.utils.runBlock
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -40,11 +41,12 @@ class DecodeInterceptorChainTest {
     fun test() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        mutableListOf<String>().apply {
+        runBlock {
+            val historyList = mutableListOf<String>()
             val interceptors = listOf(
-                TestBitmapDecoderInterceptor1(this),
-                TestBitmapDecoderInterceptor2(this),
-                TestBitmapDecoderInterceptor3(this)
+                TestBitmapDecodeInterceptor1(historyList),
+                TestBitmapDecodeInterceptor2(historyList),
+                TestBitmapDecodeInterceptor3(historyList)
             )
             val request = ImageRequest(context, ResourceImages.jpeg.uri)
             val chain = DecodeInterceptorChain(
@@ -54,22 +56,22 @@ class DecodeInterceptorChainTest {
                 index = 0
             )
             chain.proceed().getOrThrow()
-        }.apply {
             assertEquals(
                 expected = listOf(
-                    "TestDecoderInterceptor1",
-                    "TestDecoderInterceptor2",
-                    "TestDecoderInterceptor3",
+                    "TestDecodeInterceptor1",
+                    "TestDecodeInterceptor2",
+                    "TestDecodeInterceptor3",
                 ),
-                actual = this
+                actual = historyList
             )
         }
 
-        mutableListOf<String>().apply {
+        runBlock {
+            val historyList = mutableListOf<String>()
             val interceptors = listOf(
-                TestBitmapDecoderInterceptor2(this),
-                TestBitmapDecoderInterceptor1(this),
-                TestBitmapDecoderInterceptor3(this),
+                TestBitmapDecodeInterceptor2(historyList),
+                TestBitmapDecodeInterceptor1(historyList),
+                TestBitmapDecodeInterceptor3(historyList),
             )
             val request = ImageRequest(context, ResourceImages.jpeg.uri)
             val chain = DecodeInterceptorChain(
@@ -79,18 +81,18 @@ class DecodeInterceptorChainTest {
                 index = 0
             )
             chain.proceed().getOrThrow()
-        }.apply {
             assertEquals(
-                listOf(
-                    "TestDecoderInterceptor2",
-                    "TestDecoderInterceptor1",
-                    "TestDecoderInterceptor3",
-                ), this
+                expected = listOf(
+                    "TestDecodeInterceptor2",
+                    "TestDecodeInterceptor1",
+                    "TestDecodeInterceptor3",
+                ),
+                actual = historyList
             )
         }
     }
 
-    private class TestBitmapDecoderInterceptor1(val historyList: MutableList<String>) :
+    private class TestBitmapDecodeInterceptor1(val historyList: MutableList<String>) :
         DecodeInterceptor {
 
         override val key: String? = null
@@ -98,16 +100,16 @@ class DecodeInterceptorChainTest {
         override val sortWeight: Int = 0
 
         override suspend fun intercept(chain: Chain): Result<DecodeResult> {
-            historyList.add("TestDecoderInterceptor1")
+            historyList.add("TestDecodeInterceptor1")
             return chain.proceed()
         }
 
         override fun toString(): String {
-            return "TestDecoderInterceptor1(sortWeight=$sortWeight)"
+            return "TestDecodeInterceptor1(sortWeight=$sortWeight)"
         }
     }
 
-    private class TestBitmapDecoderInterceptor2(val historyList: MutableList<String>) :
+    private class TestBitmapDecodeInterceptor2(val historyList: MutableList<String>) :
         DecodeInterceptor {
 
         override val key: String? = null
@@ -115,16 +117,16 @@ class DecodeInterceptorChainTest {
         override val sortWeight: Int = 0
 
         override suspend fun intercept(chain: Chain): Result<DecodeResult> {
-            historyList.add("TestDecoderInterceptor2")
+            historyList.add("TestDecodeInterceptor2")
             return chain.proceed()
         }
 
         override fun toString(): String {
-            return "TestDecoderInterceptor2(sortWeight=$sortWeight)"
+            return "TestDecodeInterceptor2(sortWeight=$sortWeight)"
         }
     }
 
-    private class TestBitmapDecoderInterceptor3(val historyList: MutableList<String>) :
+    private class TestBitmapDecodeInterceptor3(val historyList: MutableList<String>) :
         DecodeInterceptor {
 
         override val key: String? = null
@@ -132,7 +134,7 @@ class DecodeInterceptorChainTest {
         override val sortWeight: Int = 0
 
         override suspend fun intercept(chain: Chain): Result<DecodeResult> {
-            historyList.add("TestDecoderInterceptor3")
+            historyList.add("TestDecodeInterceptor3")
             return Result.success(
                 DecodeResult(
                     image = createBitmapImage(12, 45),
@@ -146,7 +148,7 @@ class DecodeInterceptorChainTest {
         }
 
         override fun toString(): String {
-            return "TestDecoderInterceptor3(sortWeight=$sortWeight)"
+            return "TestDecodeInterceptor3(sortWeight=$sortWeight)"
         }
     }
 }

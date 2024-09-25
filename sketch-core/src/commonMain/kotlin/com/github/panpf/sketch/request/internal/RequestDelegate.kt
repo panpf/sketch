@@ -100,6 +100,7 @@ class NoTargetRequestDelegate(
  * @see com.github.panpf.sketch.compose.core.common.test.request.internal.ComposeRequestDelegateTest
  * @see com.github.panpf.sketch.core.common.test.request.internal.RequestDelegateTest.testNoTargetRequestDelegate
  */
+// TODO change to abstract
 open class BaseRequestDelegate(
     override val sketch: Sketch,
     override val initialRequest: ImageRequest,
@@ -109,7 +110,7 @@ open class BaseRequestDelegate(
 
     protected var lifecycle: Lifecycle? = null
 
-    override fun assertActive() {
+    override fun assertActive() {   // TODO remove
         // Do Nothing.
     }
 

@@ -124,6 +124,11 @@ data class ImageOptions(
     val transformations: List<Transformation>?,
 
     /**
+     * Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
+     */
+    val disallowAnimatedImage: Boolean?,
+
+    /**
      * Disk caching policy for Bitmaps affected by [sizeResolver] or [transformations]
      *
      * @see com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
@@ -150,11 +155,6 @@ data class ImageOptions(
      * How the current image and the new image transition
      */
     val transitionFactory: Transition.Factory?,
-
-    /**
-     * Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
-     */
-    val disallowAnimatedImage: Boolean?,
 
     /**
      * Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, fallback, error and the decoded image
@@ -255,13 +255,13 @@ data class ImageOptions(
         private var precisionDecider: PrecisionDecider? = null
         private var scaleDecider: ScaleDecider? = null
         private var transformations: MutableList<Transformation>? = null
+        private var disallowAnimatedImage: Boolean? = null
         private var resultCachePolicy: CachePolicy? = null
 
         private var placeholder: StateImage? = null
         private var fallback: StateImage? = null
         private var error: ErrorStateImage? = null
         private var transitionFactory: Transition.Factory? = null
-        private var disallowAnimatedImage: Boolean? = null
         private var resizeOnDraw: Boolean? = null
         private var allowNullImage: Boolean? = null
         private var memoryCachePolicy: CachePolicy? = null
@@ -556,6 +556,13 @@ data class ImageOptions(
             removeTransformations(removeTransformations.toList())
 
         /**
+         * Set disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
+         */
+        fun disallowAnimatedImage(disabled: Boolean? = true): Builder = apply {
+            this.disallowAnimatedImage = disabled
+        }
+
+        /**
          * Set disk caching policy for Bitmaps affected by [size] or [transformations]
          */
         fun resultCachePolicy(cachePolicy: CachePolicy?): Builder =
@@ -633,13 +640,6 @@ data class ImageOptions(
             } else {
                 this.transitionFactory = null
             }
-        }
-
-        /**
-         * Set disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
-         */
-        fun disallowAnimatedImage(disabled: Boolean? = true): Builder = apply {
-            this.disallowAnimatedImage = disabled
         }
 
         /**

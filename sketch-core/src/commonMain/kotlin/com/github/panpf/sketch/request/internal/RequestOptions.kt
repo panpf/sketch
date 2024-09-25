@@ -106,16 +106,6 @@ data class RequestOptions(
         }
 
         /**
-         * Set the [Lifecycle] for this request.
-         *
-         * Requests are queued while the lifecycle is not at least [Lifecycle.State.STARTED].
-         * Requests are cancelled when the lifecycle reaches [Lifecycle.State.DESTROYED].
-         */
-        fun lifecycle(lifecycle: Lifecycle?): Builder = apply {
-            this.lifecycleResolver = if (lifecycle != null) LifecycleResolver(lifecycle) else null
-        }
-
-        /**
          * Set the [LifecycleResolver] for this request.
          *
          * Requests are queued while the lifecycle is not at least [Lifecycle.State.STARTED].

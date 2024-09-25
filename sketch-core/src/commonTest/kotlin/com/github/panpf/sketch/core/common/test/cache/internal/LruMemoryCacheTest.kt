@@ -226,6 +226,11 @@ class LruMemoryCacheTest {
     }
 
     @Test
+    fun testWithLock() {
+        // TODO testWithLock
+    }
+
+    @Test
     fun testEqualsAndHashCode() {
         val element1 = LruMemoryCache(100)
         val element11 = LruMemoryCache(100)

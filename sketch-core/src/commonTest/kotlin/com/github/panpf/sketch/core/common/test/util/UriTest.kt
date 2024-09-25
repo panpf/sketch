@@ -17,6 +17,22 @@ class UriTest {
     }
 
     @Test
+    fun testEscapeCharacter() {
+        assertEquals(
+            expected = "file:///sdcard/sample s.jpeg",
+            actual = "file:///sdcard/sample s.jpeg".toUri().toString()
+        )
+        assertEquals(
+            expected = "file:///sdcard/sample%20s.jpeg",
+            actual = "file:///sdcard/sample%20s.jpeg".toUri().toString()
+        )
+        assertEquals(
+            expected = "/sdcard/sample s.jpeg",
+            actual = "file:///sdcard/sample%20s.jpeg".toUri().path
+        )
+    }
+
+    @Test
     fun network() {
         val uri = "https://www.example.com/image.jpg?q=jpg#fragment".toUri()
         assertEquals("https", uri.scheme)

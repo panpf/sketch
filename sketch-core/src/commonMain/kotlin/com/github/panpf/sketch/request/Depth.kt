@@ -21,7 +21,7 @@ import com.github.panpf.sketch.util.Key
 /**
  * The processing depth of the request.
  *
- * @see com.github.panpf.sketch.core.common.test.request.DepthTest
+ * @see com.github.panpf.sketch.core.common.test.request.DepthTest.testDepth
  */
 enum class Depth {
     /**
@@ -43,7 +43,7 @@ enum class Depth {
 /**
  * Depth holder, used to specify the depth of the request
  *
- * @see com.github.panpf.sketch.core.common.test.request.DepthHolderTest
+ * @see com.github.panpf.sketch.core.common.test.request.DepthTest.testDepthHolder
  */
 data class DepthHolder(val depth: Depth, val from: String? = null) : Key {
 

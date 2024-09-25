@@ -51,7 +51,7 @@ import okio.use
  * @see com.github.panpf.sketch.core.common.test.fetch.HttpUriFetcherTest.testIsHttpUri
  */
 fun isHttpUri(uri: Uri): Boolean =
-    HttpUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
+    HttpUriFetcher.SCHEME_HTTP.equals(uri.scheme, ignoreCase = true)
             || HttpUriFetcher.SCHEME_HTTPS.equals(uri.scheme, ignoreCase = true)
 
 /**
@@ -66,12 +66,8 @@ class HttpUriFetcher(
 ) : Fetcher {
 
     companion object {
-        const val SCHEME = "http"
+        const val SCHEME_HTTP = "http"
         const val SCHEME_HTTPS = "https"
-
-        @Suppress("unused")
-        @Deprecated("Use SCHEME_HTTPS instead", ReplaceWith("SCHEME_HTTPS"))
-        const val SCHEME1 = SCHEME_HTTPS
         const val MIME_TYPE_TEXT_PLAIN = "text/plain"
     }
 

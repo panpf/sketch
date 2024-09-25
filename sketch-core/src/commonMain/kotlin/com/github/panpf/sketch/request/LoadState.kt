@@ -30,11 +30,15 @@ sealed interface LoadState {
 
     /**
      * The request has been started.
+     *
+     * @see com.github.panpf.sketch.core.common.test.request.LoadStateTest.testStarted
      */
     data class Started(override val request: ImageRequest) : LoadState
 
     /**
      * The request has completed successfully.
+     *
+     * @see com.github.panpf.sketch.core.common.test.request.LoadStateTest.testSuccess
      */
     data class Success(
         override val request: ImageRequest,
@@ -43,6 +47,8 @@ sealed interface LoadState {
 
     /**
      * The request has failed.
+     *
+     * @see com.github.panpf.sketch.core.common.test.request.LoadStateTest.testError
      */
     data class Error(
         override val request: ImageRequest,
@@ -51,6 +57,8 @@ sealed interface LoadState {
 
     /**
      * The request has been canceled.
+     *
+     * @see com.github.panpf.sketch.core.common.test.request.LoadStateTest.testCanceled
      */
     data class Canceled(override val request: ImageRequest) : LoadState
 }

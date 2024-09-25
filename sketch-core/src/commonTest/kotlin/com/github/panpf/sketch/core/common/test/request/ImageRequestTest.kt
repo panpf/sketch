@@ -60,10 +60,12 @@ import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeStateImage
+import com.github.panpf.sketch.test.utils.FakeTransition
 import com.github.panpf.sketch.test.utils.ScopeAction
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
+import com.github.panpf.sketch.test.utils.TestLifecycle
 import com.github.panpf.sketch.test.utils.TestListenerTarget
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestTarget
@@ -123,47 +125,37 @@ class ImageRequestTest {
         }
     }
 
-    @Suppress("UNUSED_ANONYMOUS_PARAMETER")
     @Test
+    @Suppress("UNUSED_ANONYMOUS_PARAMETER")
     fun testNewBuilder() {
         val context1 = getTestContext()
-        val uri = ResourceImages.jpeg.uri
+        val jpegUri = ResourceImages.jpeg.uri
 
-        ImageRequest(context1, uri).newBuilder().build().apply {
-            assertEquals(NETWORK, depthHolder.depth)
+        ImageRequest(context1, jpegUri).apply {
+            assertEquals(expected = jpegUri, actual = this.uri.toString())
+        }.newBuilder().build().apply {
+            assertEquals(expected = jpegUri, actual = this.uri.toString())
+        }.newBuilder(uri = ResourceImages.png.uri).build().apply {
+            assertEquals(expected = ResourceImages.png.uri, actual = this.uri.toString())
         }
-        ImageRequest(context1, uri).newBuilder {
+
+        ImageRequest(context1, jpegUri).apply {
+            assertEquals(NETWORK, depthHolder.depth)
+        }.newBuilder().build().apply {
+            assertEquals(NETWORK, depthHolder.depth)
+        }.newBuilder {
             depth(LOCAL)
         }.build().apply {
             assertEquals(LOCAL, depthHolder.depth)
         }
-        ImageRequest(context1, uri).newBuilder {
-            depth(LOCAL)
-        }.build().apply {
-            assertEquals(LOCAL, depthHolder.depth)
-        }
 
-        ImageRequest(context1, uri).newRequest().apply {
-            assertEquals(NETWORK, depthHolder.depth)
-        }
-        ImageRequest(context1, uri).newRequest {
-            depth(LOCAL)
-        }.apply {
-            assertEquals(LOCAL, depthHolder.depth)
-        }
-        ImageRequest(context1, uri).newRequest {
-            depth(LOCAL)
-        }.apply {
-            assertEquals(LOCAL, depthHolder.depth)
-        }
-
-        ImageRequest(context1, uri).newBuilder().build().apply {
-            assertEquals(NETWORK, depthHolder.depth)
+        ImageRequest(context1, jpegUri).apply {
             assertNull(listener)
             assertNull(progressListener)
-        }
-        ImageRequest(context1, uri).newBuilder {
-            depth(LOCAL)
+        }.newBuilder().build().apply {
+            assertNull(listener)
+            assertNull(progressListener)
+        }.newBuilder {
             registerListener(
                 onStart = { request: ImageRequest ->
 
@@ -182,45 +174,64 @@ class ImageRequestTest {
 
             }
         }.build().apply {
-            assertEquals(LOCAL, depthHolder.depth)
             assertNotNull(listener)
             assertNotNull(progressListener)
         }
-
-        ImageRequest(context1, uri).newRequest().apply {
-            assertEquals(NETWORK, depthHolder.depth)
-            assertNull(listener)
-            assertNull(progressListener)
-        }
-        ImageRequest(context1, uri).newRequest {
-            depth(LOCAL)
-            registerListener(
-                onStart = { request: ImageRequest ->
-
-                },
-                onCancel = { request: ImageRequest ->
-
-                },
-                onError = { request: ImageRequest, result: ImageResult.Error ->
-
-                },
-                onSuccess = { request: ImageRequest, result: ImageResult.Success ->
-
-                },
-            )
-            registerProgressListener { _, _ ->
-
-            }
-        }.apply {
-            assertEquals(LOCAL, depthHolder.depth)
-            assertNotNull(listener)
-            assertNotNull(progressListener)
-        }
-
-        // TODO : uri
     }
 
-    // TODO : testNewRequest
+    @Test
+    @Suppress("UNUSED_ANONYMOUS_PARAMETER")
+    fun testNewRequest() {
+        val context1 = getTestContext()
+        val jpegUri = ResourceImages.jpeg.uri
+
+        ImageRequest(context1, jpegUri).apply {
+            assertEquals(expected = jpegUri, actual = this.uri.toString())
+        }.newRequest().apply {
+            assertEquals(expected = jpegUri, actual = this.uri.toString())
+        }.newRequest(uri = ResourceImages.png.uri).apply {
+            assertEquals(expected = ResourceImages.png.uri, actual = this.uri.toString())
+        }
+
+        ImageRequest(context1, jpegUri).apply {
+            assertEquals(NETWORK, depthHolder.depth)
+        }.newRequest().apply {
+            assertEquals(NETWORK, depthHolder.depth)
+        }.newRequest {
+            depth(LOCAL)
+        }.apply {
+            assertEquals(LOCAL, depthHolder.depth)
+        }
+
+        ImageRequest(context1, jpegUri).apply {
+            assertNull(listener)
+            assertNull(progressListener)
+        }.newRequest().apply {
+            assertNull(listener)
+            assertNull(progressListener)
+        }.newRequest {
+            registerListener(
+                onStart = { request: ImageRequest ->
+
+                },
+                onCancel = { request: ImageRequest ->
+
+                },
+                onError = { request: ImageRequest, result: ImageResult.Error ->
+
+                },
+                onSuccess = { request: ImageRequest, result: ImageResult.Success ->
+
+                },
+            )
+            registerProgressListener { _, _ ->
+
+            }
+        }.apply {
+            assertNotNull(listener)
+            assertNotNull(progressListener)
+        }
+    }
 
     @Test
     fun testContext() {
@@ -281,15 +292,33 @@ class ImageRequestTest {
     fun testLifecycle() {
         val context1 = getTestContext()
         val uri = ResourceImages.jpeg.uri
+        val testLifecycle = TestLifecycle()
+        val testLifecycle2 = TestLifecycle()
 
         ImageRequest(context1, uri).apply {
             assertEquals(
-                LifecycleResolver(GlobalLifecycle),
-                this.lifecycleResolver
+                expected = LifecycleResolver(GlobalLifecycle),
+                actual = this.lifecycleResolver
             )
         }
 
-        // TODO test lifecycle
+        ImageRequest(context1, uri) {
+            lifecycle(testLifecycle)
+        }.apply {
+            assertEquals(
+                expected = LifecycleResolver(testLifecycle),
+                actual = this.lifecycleResolver
+            )
+        }
+
+        ImageRequest(context1, uri) {
+            lifecycle(LifecycleResolver(testLifecycle2))
+        }.apply {
+            assertEquals(
+                expected = LifecycleResolver(testLifecycle2),
+                actual = this.lifecycleResolver
+            )
+        }
     }
 
     @Test
@@ -782,7 +811,7 @@ class ImageRequestTest {
     }
 
     @Test
-    fun testResizeSize() {
+    fun testSize() {
         val context1 = getTestContext()
         val uri = ResourceImages.jpeg.uri
         ImageRequest.Builder(context1, uri).apply {
@@ -818,7 +847,20 @@ class ImageRequestTest {
     }
 
     @Test
-    fun testResizePrecision() = runTest {
+    fun testSizeMultiplier() {
+        val context = getTestContext()
+        ImageRequest(context, ResourceImages.jpeg.uri).apply {
+            assertEquals(null, sizeMultiplier)
+        }
+        ImageRequest(context, ResourceImages.jpeg.uri) {
+            sizeMultiplier(1.5f)
+        }.apply {
+            assertEquals(1.5f, sizeMultiplier)
+        }
+    }
+
+    @Test
+    fun testPrecision() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val uri = ResourceImages.jpeg.uri
         ImageRequest.Builder(context, uri).apply {
@@ -873,7 +915,7 @@ class ImageRequestTest {
     }
 
     @Test
-    fun testResizeScale() {
+    fun testScale() {
         val context1 = getTestContext()
         val uri = ResourceImages.jpeg.uri
         ImageRequest.Builder(context1, uri).apply {
@@ -1143,6 +1185,50 @@ class ImageRequestTest {
             build().apply {
                 assertNull(transitionFactory)
             }
+        }
+    }
+
+    @Test
+    fun testCrossfade() {
+        val context1 = getTestContext()
+        val uri = ResourceImages.jpeg.uri
+        ImageRequest(context1, uri).apply {
+            assertNull(transitionFactory)
+        }.newRequest {
+            crossfade()
+        }.apply {
+            assertEquals(
+                expected = CrossfadeTransition.Factory(),
+                actual = transitionFactory
+            )
+        }.newRequest {
+            crossfade(
+                durationMillis = CrossfadeTransition.DEFAULT_DURATION_MILLIS * 2,
+                fadeStart = !CrossfadeTransition.DEFAULT_FADE_START,
+                preferExactIntrinsicSize = !CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
+                alwaysUse = !CrossfadeTransition.DEFAULT_ALWAYS_USE
+            )
+        }.apply {
+            assertEquals(
+                expected = CrossfadeTransition.Factory(
+                    durationMillis = CrossfadeTransition.DEFAULT_DURATION_MILLIS * 2,
+                    fadeStart = !CrossfadeTransition.DEFAULT_FADE_START,
+                    preferExactIntrinsicSize = !CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
+                    alwaysUse = !CrossfadeTransition.DEFAULT_ALWAYS_USE
+                ),
+                actual = transitionFactory
+            )
+        }.newRequest {
+            crossfade(false)
+        }.apply {
+            assertNull(transitionFactory)
+        }.newRequest {
+            crossfade(true)
+        }.apply {
+            assertEquals(
+                expected = CrossfadeTransition.Factory(),
+                actual = transitionFactory
+            )
         }
     }
 
@@ -1467,6 +1553,57 @@ class ImageRequestTest {
                 componentRegistry
             )
         }
+
+        ImageRequest(context, ResourceImages.jpeg.uri) {
+            components {
+                addFetcher(HttpUriFetcher.Factory())
+                addFetcher(TestFetcher.Factory())
+                addDecoder(TestDecoder.Factory())
+            }
+            components {
+                addRequestInterceptor(TestRequestInterceptor())
+                addDecodeInterceptor(TestDecodeInterceptor())
+            }
+        }.apply {
+            assertEquals(
+                ComponentRegistry.Builder().apply {
+                    addRequestInterceptor(TestRequestInterceptor())
+                    addDecodeInterceptor(TestDecodeInterceptor())
+                }.build(),
+                componentRegistry
+            )
+        }
+    }
+
+    @Test
+    fun testAddComponents() {
+        val context = getTestContext()
+        ImageRequest(context, ResourceImages.jpeg.uri).apply {
+            assertNull(componentRegistry)
+        }
+
+        ImageRequest(context, ResourceImages.jpeg.uri) {
+            components {
+                addFetcher(HttpUriFetcher.Factory())
+                addFetcher(TestFetcher.Factory())
+                addDecoder(TestDecoder.Factory())
+            }
+            addComponents {
+                addRequestInterceptor(TestRequestInterceptor())
+                addDecodeInterceptor(TestDecodeInterceptor())
+            }
+        }.apply {
+            assertEquals(
+                ComponentRegistry.Builder().apply {
+                    addFetcher(HttpUriFetcher.Factory())
+                    addFetcher(TestFetcher.Factory())
+                    addDecoder(TestDecoder.Factory())
+                    addRequestInterceptor(TestRequestInterceptor())
+                    addDecodeInterceptor(TestDecodeInterceptor())
+                }.build(),
+                componentRegistry
+            )
+        }
     }
 
     @Test
@@ -1600,7 +1737,47 @@ class ImageRequestTest {
         }
     }
 
-    // TODO test addComponents
-    // TODO test sizeMultiplier
-    // TODO test crossfade
+    @Test
+    fun testToString() {
+        val context = getTestContext()
+        val testTarget = TestTarget()
+        val testListener = TestListenerTarget().myListener
+        val testProgressListener = TestListenerTarget().myProgressListener
+        val testLifecycle = TestLifecycle()
+        ImageRequest(context, "http://sample.com/sample.jpeg") {
+            target(testTarget)
+            registerListener(testListener)
+            registerProgressListener(testProgressListener)
+            lifecycle(testLifecycle)
+
+            depth(LOCAL, "test")
+            setExtra("key", "value")
+            httpHeader("key1", "value1")
+            downloadCachePolicy(WRITE_ONLY)
+            colorType("RGB_565")
+            colorSpace("SRGB")
+            size(100, 100)
+            sizeMultiplier(1.5f)
+            precision(SAME_ASPECT_RATIO)
+            scale(FILL)
+            transformations(RotateTransformation(40))
+            disallowAnimatedImage(true)
+            resultCachePolicy(READ_ONLY)
+            placeholder(FakeStateImage(FakeImage(SketchSize(100, 100))))
+            fallback(FakeStateImage(FakeImage(SketchSize(100, 100))))
+            error(ErrorStateImage(FakeStateImage(FakeImage(SketchSize(100, 100)))))
+            transitionFactory(FakeTransition.Factory())
+            resizeOnDraw(true)
+            allowNullImage(true)
+            memoryCachePolicy(ENABLED)
+            components {
+                addFetcher(HttpUriFetcher.Factory())
+            }
+        }.apply {
+            assertEquals(
+                "ImageRequest(context=$context, uri=http://sample.com/sample.jpeg, target=$testTarget, listener=$testListener, progressListener=$testProgressListener, lifecycleResolver=FixedLifecycleResolver($testLifecycle), definedRequestOptions=RequestOptions(listener=$testListener, progressListener=$testProgressListener, lifecycleResolver=FixedLifecycleResolver($testLifecycle)), definedOptions=ImageOptions(depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), httpHeaders=HttpHeaders(sets=[key1:value1],adds=[]), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(FILL), transformations=[RotateTransformation(40)], disallowAnimatedImage=true, resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=ErrorStateImage([DefaultCondition:ErrorStateImage([DefaultCondition:FakeStateImage(image=FakeImage(size=100x100))])]), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[HttpUriFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[])), defaultOptions=null, depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), httpHeaders=HttpHeaders(sets=[key1:value1],adds=[]), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(FILL), transformations=[RotateTransformation(40)], disallowAnimatedImage=true, resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=ErrorStateImage([DefaultCondition:ErrorStateImage([DefaultCondition:FakeStateImage(image=FakeImage(size=100x100))])]), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[HttpUriFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[]))",
+                this.toString()
+            )
+        }
+    }
 }

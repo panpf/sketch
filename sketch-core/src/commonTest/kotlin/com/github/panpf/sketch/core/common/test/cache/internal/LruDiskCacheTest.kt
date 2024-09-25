@@ -56,44 +56,44 @@ class LruDiskCacheTest {
 
             DiskCache.DownloadBuilder(context, fileSystem).apply {
                 directory(directory)
-            }.build().use {
-                assertEquals(1, it.appVersion)
-                assertNull(it.openSnapshot("file1").use { it })
-                assertNull(it.openSnapshot("file2").use { it })
-                it.putFile("file1", 1)
-                it.putFile("file2", 1)
-                assertNotNull(it.openSnapshot("file1").use { it })
-                assertNotNull(it.openSnapshot("file2").use { it })
+            }.build().use { diskCache ->
+                assertEquals(1, diskCache.appVersion)
+                assertNull(diskCache.openSnapshot("file1").use { it })
+                assertNull(diskCache.openSnapshot("file2").use { it })
+                diskCache.putFile("file1", 1)
+                diskCache.putFile("file2", 1)
+                assertNotNull(diskCache.openSnapshot("file1").use { it })
+                assertNotNull(diskCache.openSnapshot("file2").use { it })
             }
 
             DiskCache.DownloadBuilder(context, fileSystem).apply {
                 directory(directory)
-            }.build().use {
-                assertEquals(1, it.appVersion)
-                assertNotNull(it.openSnapshot("file1").use { it })
-                assertNotNull(it.openSnapshot("file2").use { it })
-            }
-
-            DiskCache.DownloadBuilder(context, fileSystem).apply {
-                directory(directory)
-                appVersion(2)
-            }.build().use {
-                assertEquals(2, it.appVersion)
-                assertNull(it.openSnapshot("file1").use { it })
-                assertNull(it.openSnapshot("file2").use { it })
+            }.build().use { diskCache ->
+                assertEquals(1, diskCache.appVersion)
+                assertNotNull(diskCache.openSnapshot("file1").use { it })
+                assertNotNull(diskCache.openSnapshot("file2").use { it })
             }
 
             DiskCache.DownloadBuilder(context, fileSystem).apply {
                 directory(directory)
                 appVersion(2)
-            }.build().use {
-                assertEquals(2, it.appVersion)
-                assertNull(it.openSnapshot("file1").use { it })
-                assertNull(it.openSnapshot("file2").use { it })
-                it.putFile("file1", 1)
-                it.putFile("file2", 1)
-                assertNotNull(it.openSnapshot("file1").use { it })
-                assertNotNull(it.openSnapshot("file2").use { it })
+            }.build().use { diskCache ->
+                assertEquals(2, diskCache.appVersion)
+                assertNull(diskCache.openSnapshot("file1").use { it })
+                assertNull(diskCache.openSnapshot("file2").use { it })
+            }
+
+            DiskCache.DownloadBuilder(context, fileSystem).apply {
+                directory(directory)
+                appVersion(2)
+            }.build().use { diskCache ->
+                assertEquals(2, diskCache.appVersion)
+                assertNull(diskCache.openSnapshot("file1").use { it })
+                assertNull(diskCache.openSnapshot("file2").use { it })
+                diskCache.putFile("file1", 1)
+                diskCache.putFile("file2", 1)
+                assertNotNull(diskCache.openSnapshot("file1").use { it })
+                assertNotNull(diskCache.openSnapshot("file2").use { it })
             }
         } finally {
             fileSystem.deleteRecursively(directory)
@@ -146,23 +146,23 @@ class LruDiskCacheTest {
             DiskCache.DownloadBuilder(context, fileSystem).apply {
                 directory(defaultCacheDir)
                 maxSize(10L * 1024 * 1024)
-            }.build().use {
-                assertNull(it.openSnapshot("file1").use { it })
-                it.putFile("file1", 1)
-                assertNotNull(it.openSnapshot("file1").use { it })
+            }.build().use { diskCache ->
+                assertNull(diskCache.openSnapshot("file1").use { it })
+                diskCache.putFile("file1", 1)
+                assertNotNull(diskCache.openSnapshot("file1").use { it })
 
-                assertNull(it.openSnapshot("file2").use { it })
-                it.putFile("file2", 2)
-                assertNotNull(it.openSnapshot("file1").use { it })
-                assertNotNull(it.openSnapshot("file2").use { it })
+                assertNull(diskCache.openSnapshot("file2").use { it })
+                diskCache.putFile("file2", 2)
+                assertNotNull(diskCache.openSnapshot("file1").use { it })
+                assertNotNull(diskCache.openSnapshot("file2").use { it })
 
-                it.remove("file1")
-                assertNull(it.openSnapshot("file1").use { it })
-                assertNotNull(it.openSnapshot("file2").use { it })
+                diskCache.remove("file1")
+                assertNull(diskCache.openSnapshot("file1").use { it })
+                assertNotNull(diskCache.openSnapshot("file2").use { it })
 
-                it.remove("file2")
-                assertNull(it.openSnapshot("file1").use { it })
-                assertNull(it.openSnapshot("file2").use { it })
+                diskCache.remove("file2")
+                assertNull(diskCache.openSnapshot("file1").use { it })
+                assertNull(diskCache.openSnapshot("file2").use { it })
             }
         } finally {
             defaultCacheDir?.let { fileSystem.deleteRecursively(it) }
@@ -186,57 +186,57 @@ class LruDiskCacheTest {
             DiskCache.DownloadBuilder(context, fileSystem).apply {
                 directory(defaultCacheDir)
                 maxSize(10L * 1024 * 1024)
-            }.build().use {
-                assertEquals("0B", it.size.formatFileSize())
+            }.build().use { diskCache ->
+                assertEquals("0B", diskCache.size.formatFileSize())
 
-                it.putFile(fileName = "file1", sizeMB = 1)
-                assertEquals("1MB", it.size.formatFileSize())
-                assertNotNull(it.openSnapshot("file1").use { it })
+                diskCache.putFile(fileName = "file1", sizeMB = 1)
+                assertEquals("1MB", diskCache.size.formatFileSize())
+                assertNotNull(diskCache.openSnapshot("file1").use { it })
 
-                it.putFile(fileName = "file2", sizeMB = 2)
-                assertEquals("3MB", it.size.formatFileSize())
-                assertNotNull(it.openSnapshot("file1").use { it })
-                assertNotNull(it.openSnapshot("file2").use { it })
+                diskCache.putFile(fileName = "file2", sizeMB = 2)
+                assertEquals("3MB", diskCache.size.formatFileSize())
+                assertNotNull(diskCache.openSnapshot("file1").use { it })
+                assertNotNull(diskCache.openSnapshot("file2").use { it })
 
-                it.putFile(fileName = "file3", sizeMB = 3)
-                assertEquals("6MB", it.size.formatFileSize())
-                assertNotNull(it.openSnapshot("file1").use { it })
-                assertNotNull(it.openSnapshot("file2").use { it })
-                assertNotNull(it.openSnapshot("file3").use { it })
+                diskCache.putFile(fileName = "file3", sizeMB = 3)
+                assertEquals("6MB", diskCache.size.formatFileSize())
+                assertNotNull(diskCache.openSnapshot("file1").use { it })
+                assertNotNull(diskCache.openSnapshot("file2").use { it })
+                assertNotNull(diskCache.openSnapshot("file3").use { it })
 
-                it.putFile(fileName = "file4", sizeMB = 4)
-                assertEquals("10MB", it.size.formatFileSize())
-                assertNotNull(it.openSnapshot("file1").use { it })
-                assertNotNull(it.openSnapshot("file2").use { it })
-                assertNotNull(it.openSnapshot("file3").use { it })
-                assertNotNull(it.openSnapshot("file4").use { it })
+                diskCache.putFile(fileName = "file4", sizeMB = 4)
+                assertEquals("10MB", diskCache.size.formatFileSize())
+                assertNotNull(diskCache.openSnapshot("file1").use { it })
+                assertNotNull(diskCache.openSnapshot("file2").use { it })
+                assertNotNull(diskCache.openSnapshot("file3").use { it })
+                assertNotNull(diskCache.openSnapshot("file4").use { it })
 
-                it.putFile(fileName = "file5", sizeMB = 5)
-                assertEquals("9MB", it.size.formatFileSize())   // TODO Often fail
-                assertNull(it.openSnapshot("file1").use { it })
-                assertNull(it.openSnapshot("file2").use { it })
-                assertNull(it.openSnapshot("file3").use { it })
-                assertNotNull(it.openSnapshot("file4").use { it })
-                assertNotNull(it.openSnapshot("file5").use { it })
+                diskCache.putFile(fileName = "file5", sizeMB = 5)
+                assertEquals("9MB", diskCache.size.formatFileSize())   // TODO Often fail
+                assertNull(diskCache.openSnapshot("file1").use { it })
+                assertNull(diskCache.openSnapshot("file2").use { it })
+                assertNull(diskCache.openSnapshot("file3").use { it })
+                assertNotNull(diskCache.openSnapshot("file4").use { it })
+                assertNotNull(diskCache.openSnapshot("file5").use { it })
 
-                it.putFile("file6", 6)
-                assertEquals("6MB", it.size.formatFileSize())
-                assertNull(it.openSnapshot("file1").use { it })
-                assertNull(it.openSnapshot("file2").use { it })
-                assertNull(it.openSnapshot("file3").use { it })
-                assertNull(it.openSnapshot("file4").use { it })
-                assertNull(it.openSnapshot("file5").use { it })
-                assertNotNull(it.openSnapshot("file6").use { it })
+                diskCache.putFile("file6", 6)
+                assertEquals("6MB", diskCache.size.formatFileSize())
+                assertNull(diskCache.openSnapshot("file1").use { it })
+                assertNull(diskCache.openSnapshot("file2").use { it })
+                assertNull(diskCache.openSnapshot("file3").use { it })
+                assertNull(diskCache.openSnapshot("file4").use { it })
+                assertNull(diskCache.openSnapshot("file5").use { it })
+                assertNotNull(diskCache.openSnapshot("file6").use { it })
 
-                it.putFile(fileName = "file7", sizeMB = 7)
-                assertEquals("7MB", it.size.formatFileSize())
-                assertNull(it.openSnapshot("file1").use { it })
-                assertNull(it.openSnapshot("file2").use { it })
-                assertNull(it.openSnapshot("file3").use { it })
-                assertNull(it.openSnapshot("file4").use { it })
-                assertNull(it.openSnapshot("file5").use { it })
-                assertNull(it.openSnapshot("file6").use { it })
-                assertNotNull(it.openSnapshot("file7").use { it })
+                diskCache.putFile(fileName = "file7", sizeMB = 7)
+                assertEquals("7MB", diskCache.size.formatFileSize())
+                assertNull(diskCache.openSnapshot("file1").use { it })
+                assertNull(diskCache.openSnapshot("file2").use { it })
+                assertNull(diskCache.openSnapshot("file3").use { it })
+                assertNull(diskCache.openSnapshot("file4").use { it })
+                assertNull(diskCache.openSnapshot("file5").use { it })
+                assertNull(diskCache.openSnapshot("file6").use { it })
+                assertNotNull(diskCache.openSnapshot("file7").use { it })
             }
         } finally {
             defaultCacheDir?.let { fileSystem.deleteRecursively(it) }
@@ -259,62 +259,33 @@ class LruDiskCacheTest {
 
             DiskCache.DownloadBuilder(context, fileSystem).apply {
                 directory(directory)
-            }.build().use {
-                assertEquals("0B", it.size.formatFileSize())
-                it.putFile("file1", 1)
-                it.putFile("file2", 2)
-                it.putFile("file3", 3)
-                it.putFile("file4", 4)
-                assertNotNull(it.openSnapshot("file1").use { it })
-                assertNotNull(it.openSnapshot("file2").use { it })
-                assertNotNull(it.openSnapshot("file3").use { it })
-                assertNotNull(it.openSnapshot("file4").use { it })
-                assertEquals("10MB", it.size.formatFileSize())
+            }.build().use { diskCache ->
+                assertEquals("0B", diskCache.size.formatFileSize())
+                diskCache.putFile("file1", 1)
+                diskCache.putFile("file2", 2)
+                diskCache.putFile("file3", 3)
+                diskCache.putFile("file4", 4)
+                assertNotNull(diskCache.openSnapshot("file1").use { it })
+                assertNotNull(diskCache.openSnapshot("file2").use { it })
+                assertNotNull(diskCache.openSnapshot("file3").use { it })
+                assertNotNull(diskCache.openSnapshot("file4").use { it })
+                assertEquals("10MB", diskCache.size.formatFileSize())
 
-                it.clear()
-                assertNull(it.openSnapshot("file1").use { it })
-                assertNull(it.openSnapshot("file2").use { it })
-                assertNull(it.openSnapshot("file3").use { it })
-                assertNull(it.openSnapshot("file4").use { it })
-                assertEquals("0B", it.size.formatFileSize())
+                diskCache.clear()
+                assertNull(diskCache.openSnapshot("file1").use { it })
+                assertNull(diskCache.openSnapshot("file2").use { it })
+                assertNull(diskCache.openSnapshot("file3").use { it })
+                assertNull(diskCache.openSnapshot("file4").use { it })
+                assertEquals("0B", diskCache.size.formatFileSize())
             }
         } finally {
             directory?.let { fileSystem.deleteRecursively(it) }
         }
     }
 
-    // TODO testWithLock
-
     @Test
-    fun testToString() {
-        val context = getTestContext()
-        val fileSystem = defaultFileSystem()
-
-        val defaultCacheDir = context.newAloneTestDiskCacheDirectory()
-        try {
-            DiskCache.DownloadBuilder(context, fileSystem).apply {
-                directory(defaultCacheDir)
-            }.build().use {
-                assertEquals(
-                    "LruDiskCache(maxSize=307.2MB,appVersion=1,internalVersion=${DiskCache.DownloadBuilder.INTERNAL_VERSION},directory='${defaultCacheDir}')",
-                    it.toString()
-                )
-            }
-
-            val cacheDir = "/sdcard/testDir".toPath()
-            DiskCache.DownloadBuilder(context, fileSystem).apply {
-                directory(cacheDir)
-                maxSize(100L * 1024 * 1024)
-                appVersion(2)
-            }.build().use {
-                assertEquals(
-                    "LruDiskCache(maxSize=100MB,appVersion=2,internalVersion=${DiskCache.DownloadBuilder.INTERNAL_VERSION},directory='${cacheDir}')",
-                    it.toString()
-                )
-            }
-        } finally {
-            defaultCacheDir?.let { fileSystem.deleteRecursively(it) }
-        }
+    fun testWithLock() {
+        // TODO testWithLock
     }
 
     @Test
@@ -368,20 +339,20 @@ class LruDiskCacheTest {
 
             DiskCache.DownloadBuilder(context, fileSystem).apply {
                 directory(directory)
-            }.build().use {
-                val file1Editor = it.openEditor("file1")!!
+            }.build().use { diskCache ->
+                val file1Editor = diskCache.openEditor("file1")!!
                 fileSystem.sink(file1Editor.data).buffer().use { outputStream ->
                     outputStream.writeInt(1)
                 }
                 file1Editor.commit()
-                assertNotNull(it.openSnapshot("file1").use { it })
+                assertNotNull(diskCache.openSnapshot("file1").use { it })
 
-                val file2Editor = it.openEditor("file2")!!
+                val file2Editor = diskCache.openEditor("file2")!!
                 fileSystem.sink(file2Editor.data).buffer().use { outputStream ->
                     outputStream.writeInt(2)
                 }
                 file2Editor.abort()
-                assertNull(it.openSnapshot("file2").use { it })
+                assertNull(diskCache.openSnapshot("file2").use { it })
             }
         } finally {
             directory?.let { fileSystem.deleteRecursively(it) }
@@ -417,6 +388,38 @@ class LruDiskCacheTest {
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
         assertNotEquals(element2.hashCode(), element11.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        val context = getTestContext()
+        val fileSystem = defaultFileSystem()
+
+        val defaultCacheDir = context.newAloneTestDiskCacheDirectory()
+        try {
+            DiskCache.DownloadBuilder(context, fileSystem).apply {
+                directory(defaultCacheDir)
+            }.build().use {
+                assertEquals(
+                    "LruDiskCache(maxSize=307.2MB,appVersion=1,internalVersion=${DiskCache.DownloadBuilder.INTERNAL_VERSION},directory='${defaultCacheDir}')",
+                    it.toString()
+                )
+            }
+
+            val cacheDir = "/sdcard/testDir".toPath()
+            DiskCache.DownloadBuilder(context, fileSystem).apply {
+                directory(cacheDir)
+                maxSize(100L * 1024 * 1024)
+                appVersion(2)
+            }.build().use {
+                assertEquals(
+                    "LruDiskCache(maxSize=100MB,appVersion=2,internalVersion=${DiskCache.DownloadBuilder.INTERNAL_VERSION},directory='${cacheDir}')",
+                    it.toString()
+                )
+            }
+        } finally {
+            defaultCacheDir?.let { fileSystem.deleteRecursively(it) }
+        }
     }
 
     private fun DiskCache.putFile(fileName: String, sizeMB: Int) {

@@ -219,11 +219,13 @@ class HurlStack private constructor(
         fun intercept(chain: Chain): Response
     }
 
+    // TODO move to Interceptor
     interface Chain {
         val connection: HttpURLConnection
         fun proceed(): Response
     }
 
+    // TODO move to Interceptor
     class InterceptorChain(
         override val connection: HttpURLConnection,
         private val interceptors: List<Interceptor>,

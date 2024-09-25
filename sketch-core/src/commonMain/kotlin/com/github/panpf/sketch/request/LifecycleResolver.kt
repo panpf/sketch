@@ -24,7 +24,7 @@ import kotlin.js.JsName
 /**
  * Lifecycle resolver
  *
- * @see com.github.panpf.sketch.core.common.test.request.LifecycleResolverTest
+ * @see com.github.panpf.sketch.core.common.test.request.LifecycleResolverTest.testLifecycleResolver
  */
 fun LifecycleResolver(lifecycle: Lifecycle): LifecycleResolver =
     FixedLifecycleResolver(lifecycle)
@@ -46,24 +46,13 @@ fun interface LifecycleResolver {
 /**
  * Fixed lifecycle
  *
- * @see com.github.panpf.sketch.core.common.test.request.FixedLifecycleResolverTest
+ * @see com.github.panpf.sketch.core.common.test.request.LifecycleResolverTest.testFixedLifecycleResolver
  */
-class FixedLifecycleResolver constructor(
-    val lifecycle: Lifecycle
+data class FixedLifecycleResolver constructor(
+    private val lifecycle: Lifecycle
 ) : LifecycleResolver {
 
     override suspend fun lifecycle(): Lifecycle = lifecycle
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as FixedLifecycleResolver
-        return lifecycle == other.lifecycle
-    }
-
-    override fun hashCode(): Int {
-        return lifecycle.hashCode()
-    }
 
     override fun toString(): String = "FixedLifecycleResolver($lifecycle)"
 }
