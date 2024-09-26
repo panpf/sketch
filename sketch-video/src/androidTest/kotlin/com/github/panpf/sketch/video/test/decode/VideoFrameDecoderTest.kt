@@ -27,7 +27,6 @@ import com.github.panpf.sketch.decode.VideoFrameDecoder
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
 import com.github.panpf.sketch.decode.supportVideoFrame
-import com.github.panpf.sketch.fetch.copy
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorType

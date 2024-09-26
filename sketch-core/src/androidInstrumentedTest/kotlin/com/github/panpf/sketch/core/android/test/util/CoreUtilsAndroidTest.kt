@@ -109,16 +109,16 @@ class CoreUtilsAndroidTest {
 
     @Test
     fun testFileNameCompatibilityMultiProcess() {
-        // TODO test
+        // TODO testFileNameCompatibilityMultiProcess
     }
 
     @Test
     fun testGetProcessNameCompat() {
-        // TODO test
+        // TODO testGetProcessNameCompat
     }
 
     @Test
     fun testGetProcessNameSuffix() {
-        // TODO test
+        // TODO testGetProcessNameSuffix
     }
 }
