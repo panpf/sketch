@@ -19,9 +19,7 @@ package com.github.panpf.sketch
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import com.github.panpf.sketch.util.heightWithBitmapFirst
 import com.github.panpf.sketch.util.toLogString
-import com.github.panpf.sketch.util.widthWithBitmapFirst
 
 /**
  * Convert [Drawable] to [Image]
@@ -59,15 +57,21 @@ data class DrawableImage internal constructor(
 
     override val byteCount: Long by lazy {
         when (drawable) {
-            is ByteCountProvider -> drawable.byteCount
             is BitmapDrawable -> drawable.bitmap.byteCount.toLong()
-            else -> 4L * drawable.widthWithBitmapFirst * drawable.heightWithBitmapFirst    // Estimate 4 bytes per pixel.
+            is ByteCountProvider -> drawable.byteCount
+            else -> 4L * drawable.intrinsicWidth * drawable.intrinsicHeight    // Estimate 4 bytes per pixel.
         }
     }
 
     override val cacheInMemory: Boolean = false
 
-    override fun checkValid(): Boolean = true
+    override fun checkValid(): Boolean {
+        return if (drawable is BitmapDrawable) {
+            drawable.bitmap.isRecycled.not()
+        } else {
+            true
+        }
+    }
 
     override fun toString(): String =
         "DrawableImage(drawable=${drawable.toLogString()}, shareable=$shareable)"

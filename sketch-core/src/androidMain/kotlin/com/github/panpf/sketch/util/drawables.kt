@@ -149,22 +149,6 @@ internal fun Drawable.toBitmap(
 }
 
 /**
- * Get the width of Drawable, if it is BitmapDrawable, return the width of Bitmap
- *
- * @see com.github.panpf.sketch.core.android.test.util.DrawablesTest.testWidthWithBitmapFirst
- */
-internal val Drawable.widthWithBitmapFirst: Int
-    get() = (this as? BitmapDrawable)?.bitmap?.width ?: intrinsicWidth
-
-/**
- * Get the height of Drawable. If it is BitmapDrawable, return the height of Bitmap.
- *
- * @see com.github.panpf.sketch.core.android.test.util.DrawablesTest.testHeightWithBitmapFirst
- */
-internal val Drawable.heightWithBitmapFirst: Int
-    get() = (this as? BitmapDrawable)?.bitmap?.height ?: intrinsicHeight
-
-/**
  * Get the string applicable to the log
  *
  * @see com.github.panpf.sketch.core.android.test.util.DrawablesTest.testToLogString
