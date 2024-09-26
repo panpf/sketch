@@ -17,20 +17,28 @@
 package com.github.panpf.sketch.core.android.test.util
 
 import android.content.res.Resources
-import android.graphics.Bitmap
+import android.graphics.ColorSpace
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.VectorDrawable
 import android.os.Build
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import com.github.panpf.sketch.ColorType
+import com.github.panpf.sketch.colorType
+import com.github.panpf.sketch.size
+import com.github.panpf.sketch.test.utils.TestColor
+import com.github.panpf.sketch.test.utils.colorSpaceNameCompat
+import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.shortInfoColorSpace
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.sketch.util.getXmlDrawableCompat
-import com.github.panpf.sketch.util.toNewBitmap
-import com.github.panpf.sketch.util.toShortInfoString
+import com.github.panpf.sketch.util.toBitmap
+import com.github.panpf.tools4a.dimen.ktx.dp2px
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -107,33 +115,61 @@ class DrawablesTest {
     }
 
     @Test
-    fun testToNewBitmap() {
+    fun testToBitmap() {
         val context = getTestContext()
 
-        val drawable = BitmapDrawable(
-            context.resources,
-            Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
-        )
+        val imageResId = com.github.panpf.sketch.test.utils.core.R.drawable.test
+        val imageSize = Size(60.dp2px, 30.dp2px)
+        val drawable = context.getDrawableCompat(imageResId)
 
-        assertEquals(Rect(0, 0, 0, 0), drawable.bounds)
-        drawable.toNewBitmap().apply {
-            assertEquals(Bitmap.Config.ARGB_8888, config)
+        // default
+        drawable.toBitmap().apply {
+            val bitmap = this
+            assertEquals(expected = imageSize, actual = bitmap.size)
+            assertEquals(expected = ColorType.ARGB_8888, actual = bitmap.colorType)
+            assertEquals(expected = colorSpaceNameCompat(), actual = bitmap.colorSpaceNameCompat)
+            assertEquals(expected = listOf(0, 0, 0, 0), actual = bitmap.corners())
+        }
+
+        // colorType
+        drawable.toBitmap(colorType = ColorType.RGB_565).apply {
+            val bitmap = this
+            assertEquals(expected = imageSize, actual = bitmap.size)
+            assertEquals(expected = ColorType.RGB_565, actual = bitmap.colorType)
+            assertEquals(expected = colorSpaceNameCompat(), actual = bitmap.colorSpaceNameCompat)
             assertEquals(
-                "Bitmap(100x100,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                toShortInfoString()
+                expected = listOf(
+                    TestColor.BLACK,
+                    TestColor.BLACK,
+                    TestColor.BLACK,
+                    TestColor.BLACK
+                ),
+                actual = bitmap.corners()
             )
         }
+
+        // colorSpace
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            drawable.toBitmap(colorSpace = ColorSpace.get(ColorSpace.Named.DISPLAY_P3)).apply {
+                val bitmap = this
+                assertEquals(expected = imageSize, actual = bitmap.size)
+                assertEquals(expected = ColorType.ARGB_8888, actual = bitmap.colorType)
+                assertEquals(
+                    expected = colorSpaceNameCompat("DISPLAY_P3"),
+                    actual = bitmap.colorSpaceNameCompat
+                )
+                assertEquals(expected = listOf(0, 0, 0, 0), actual = bitmap.corners())
+            }
+        }
+
+        // restore bounds
+        assertEquals(Rect(0, 0, 0, 0), drawable.bounds)
+        drawable.toBitmap()
         assertEquals(Rect(0, 0, 0, 0), drawable.bounds)
 
         drawable.setBounds(100, 100, 200, 200)
         assertEquals(Rect(100, 100, 200, 200), drawable.bounds)
-        drawable.toNewBitmap(Bitmap.Config.RGB_565).apply {
-            assertEquals(Bitmap.Config.RGB_565, config)
-            assertEquals(
-                "Bitmap(100x100,RGB_565${shortInfoColorSpace("SRGB")})",
-                toShortInfoString()
-            )
-        }
+        drawable.toBitmap()
         assertEquals(Rect(100, 100, 200, 200), drawable.bounds)
     }
 

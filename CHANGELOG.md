@@ -28,6 +28,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
   httpHeader
 * new: Non-Android platforms now also support ColorType
 * new: Non-Android platforms now also support ColorSpace
+* new: DrawableDecoder supports colorSpace
 
 # 4.0.0-alpha08
 

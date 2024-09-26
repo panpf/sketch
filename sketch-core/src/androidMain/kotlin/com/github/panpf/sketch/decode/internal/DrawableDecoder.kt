@@ -30,7 +30,7 @@ import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.safeToSoftware
-import com.github.panpf.sketch.util.toNewBitmap
+import com.github.panpf.sketch.util.toBitmap
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlin.math.roundToInt
 
@@ -77,8 +77,9 @@ open class DrawableDecoder(
         )
         val bitmapSize = Size(width = dstSize.width, height = dstSize.height)
         val decodeConfig = DecodeConfig(request, PNG.mimeType, isOpaque = false)
-        val bitmap = drawable.toNewBitmap(
-            preferredConfig = decodeConfig.colorType.safeToSoftware(),
+        val bitmap = drawable.toBitmap(
+            colorType = decodeConfig.colorType.safeToSoftware(),
+            colorSpace = decodeConfig.colorSpace,
             targetSize = bitmapSize
         )
         val resize = requestContext.computeResize(imageInfo.size)

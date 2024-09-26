@@ -22,6 +22,7 @@ import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.util.copyWith
+import com.github.panpf.sketch.util.simpleName
 
 fun shortInfoColorSpace(name: String): String {
     return if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -38,6 +39,21 @@ fun logColorSpace(name: String): String {
         ""
     }
 }
+
+fun colorSpaceNameCompat(name: String = "SRGB"): String {
+    return if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        name
+    } else {
+        "SRGB"
+    }
+}
+
+val Bitmap.colorSpaceNameCompat: String?
+    get() = if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        colorSpace?.simpleName
+    } else {
+        "SRGB"
+    }
 
 actual fun createBitmap(width: Int, height: Int): Bitmap {
     return Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)

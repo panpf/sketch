@@ -25,6 +25,7 @@
 * change: ImageRequest.Builder 和 ImageOptions.Builder 的 setHttpHeader 方法重命名为 httpHeader
 * new: 非安卓平台现在也支持 ColorType 了
 * new: 非安卓平台现在也支持 ColorSpace 了
+* new: DrawableDecoder 支持 colorSpace
 
 # 4.0.0-alpha08
 
