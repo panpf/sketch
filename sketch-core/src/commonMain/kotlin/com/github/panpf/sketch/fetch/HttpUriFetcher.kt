@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-@file:Suppress("FoldInitializerAndIfToElvis", "UnnecessaryVariable")    // for debug
+@file:Suppress(
+    "FoldInitializerAndIfToElvis",
+    "UnnecessaryVariable",
+    "RedundantConstructorKeyword"
+)
 
 package com.github.panpf.sketch.fetch
 
@@ -59,7 +63,7 @@ fun isHttpUri(uri: Uri): Boolean =
  *
  * @see com.github.panpf.sketch.core.common.test.fetch.HttpUriFetcherTest
  */
-class HttpUriFetcher(
+class HttpUriFetcher constructor(
     val sketch: Sketch,
     val request: ImageRequest,
     val url: String

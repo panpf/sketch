@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.annotation.WorkerThread

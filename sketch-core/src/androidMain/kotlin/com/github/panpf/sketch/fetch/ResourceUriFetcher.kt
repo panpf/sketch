@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.fetch
 
 import android.annotation.SuppressLint
@@ -86,6 +88,10 @@ fun isResourceUri(uri: Uri): Boolean =
     ResourceUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
 
 /**
+ * Decode image files in the resource directory.
+ * Resources in the raw folder will be decoded in the form of data streams,
+ * and resources in other folders will be decoded in the form of Drawable.
+ *
  * Support the following uri:
  * * 'android.resource:///drawable/ic_launcher'
  * * 'android.resource:///1031232'
@@ -145,7 +151,7 @@ class ResourceUriFetcher constructor(
             DrawableDataSource(
                 context = context,
                 dataFrom = DataFrom.LOCAL,
-                drawableFetcher = ResDrawable(packageName, resources, resId)
+                drawableFetcher = ResDrawable(resId, resources, packageName)
             )
         }
         FetchResult(dataSource, mimeType)

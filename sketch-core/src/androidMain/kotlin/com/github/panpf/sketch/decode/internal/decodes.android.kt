@@ -188,7 +188,7 @@ actual fun DataSource.readImageInfo(): ImageInfo = readImageInfo(null)
  *
  * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testReadImageInfo
  */
-fun Drawable.readImageInfo(mimeType: String?): ImageInfo {
+internal fun Drawable.readImageInfo(mimeType: String? = null): ImageInfo {
     val imageSize = Size(intrinsicWidth, intrinsicHeight)
     return ImageInfo(size = imageSize, mimeType = mimeType ?: "image/png")
         .apply { checkImageInfo(this) }

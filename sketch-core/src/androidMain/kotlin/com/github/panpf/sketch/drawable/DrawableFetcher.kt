@@ -45,9 +45,9 @@ interface DrawableFetcher : Key {
  * @see com.github.panpf.sketch.core.android.test.drawable.ResDrawableTest
  */
 class ResDrawable constructor(
-    val packageName: String? = null,
+    @DrawableRes val resId: Int,
     val resources: Resources? = null,
-    @DrawableRes val resId: Int
+    val packageName: String? = null,
 ) : DrawableFetcher {
 
     override val key: String = if (packageName != null && resources != null) {
@@ -55,8 +55,6 @@ class ResDrawable constructor(
     } else {
         "ResDrawable($resId)"
     }
-
-    constructor(@DrawableRes resId: Int) : this(null, null, resId)
 
     @SuppressLint("ResourceType")
     override fun getDrawable(context: Context): Drawable {
