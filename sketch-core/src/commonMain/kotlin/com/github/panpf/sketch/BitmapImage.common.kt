@@ -24,7 +24,7 @@ package com.github.panpf.sketch
  * @see com.github.panpf.sketch.core.android.test.BitmapImageAndroidTest.testAsImage
  * @see com.github.panpf.sketch.core.nonandroid.test.BitmapImageNonAndroidTest.testAsImage
  */
-expect fun Bitmap.asImage(): BitmapImage
+expect fun Bitmap.asImage(shareable: Boolean = true): BitmapImage
 
 /**
  * Bitmap image, which is a wrapper for [Bitmap]
@@ -43,8 +43,6 @@ expect class BitmapImage : Image {
     override val byteCount: Long
 
     override val shareable: Boolean
-
-    override val cacheInMemory: Boolean
 
     override fun checkValid(): Boolean
 }

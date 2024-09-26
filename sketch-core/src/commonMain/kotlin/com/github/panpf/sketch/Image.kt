@@ -58,13 +58,12 @@ interface Image {
      * For example, a bitmap can be shared between multiple targets if it's immutable.
      * Conversely, an animated image cannot be shared as its internal state is being mutated while
      * its animation is running.
+     *
+     * Only shareable images can be automatically cached in memory.
+     *
+     * @see com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor.saveToMemoryCache
      */
     val shareable: Boolean
-
-    /**
-     * True if the image can be cached in memory.
-     */
-    val cacheInMemory: Boolean
 
     /**
      * Check if the image is valid

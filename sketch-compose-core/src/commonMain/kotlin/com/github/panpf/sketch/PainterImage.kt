@@ -19,6 +19,7 @@ package com.github.panpf.sketch
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.graphics.painter.Painter
+import com.github.panpf.sketch.painter.AnimatablePainter
 import com.github.panpf.sketch.painter.toLogString
 import kotlin.math.roundToInt
 
@@ -27,7 +28,7 @@ import kotlin.math.roundToInt
  *
  * @see com.github.panpf.sketch.compose.core.common.test.PainterImageTest.testAsImage
  */
-fun Painter.asImage(shareable: Boolean = false): PainterImage {
+fun Painter.asImage(shareable: Boolean = this !is AnimatablePainter): PainterImage {
     return PainterImage(this, shareable)
 }
 
@@ -47,7 +48,7 @@ expect fun Image.asPainter(): Painter
 @Stable
 data class PainterImage(
     val painter: Painter,
-    override val shareable: Boolean = false
+    override val shareable: Boolean = painter !is AnimatablePainter
 ) : Image {
 
     override val width: Int =
@@ -57,8 +58,6 @@ data class PainterImage(
         painter.intrinsicSize.takeIf { it.isSpecified }?.height?.roundToInt() ?: -1
 
     override val byteCount: Long = 4L * width * height
-
-    override val cacheInMemory: Boolean = false
 
     override fun checkValid(): Boolean = true
 

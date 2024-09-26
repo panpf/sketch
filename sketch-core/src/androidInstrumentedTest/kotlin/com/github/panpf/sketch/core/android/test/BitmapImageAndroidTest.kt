@@ -3,8 +3,6 @@ package com.github.panpf.sketch.core.android.test
 import com.github.panpf.sketch.AndroidBitmap
 import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.asImage
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.util.toLogString
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -16,31 +14,27 @@ class BitmapImageAndroidTest {
 
     @Test
     fun testAsImage() {
-        val bitmap = AndroidBitmap(100, 100)
-        assertEquals(
-            expected = BitmapImage(bitmap),
-            actual = bitmap.asImage()
-        )
+        val sourceBitmap = AndroidBitmap(100, 100)
+        sourceBitmap.asImage().apply {
+            assertSame(expected = sourceBitmap, actual = bitmap)
+            assertTrue(actual = shareable)
+        }
+        sourceBitmap.asImage(shareable = false).apply {
+            assertSame(expected = sourceBitmap, actual = bitmap)
+            assertFalse(actual = shareable)
+        }
     }
 
     @Test
     fun testConstructor() {
-        val mutableBitmap = AndroidBitmap(100, 100)
-        assertTrue(mutableBitmap.isMutable)
-        BitmapImage(mutableBitmap).apply {
-            assertSame(expected = mutableBitmap, actual = bitmap)
+        val bitmap = AndroidBitmap(100, 100)
+        BitmapImage(bitmap).apply {
+            assertSame(expected = bitmap, actual = bitmap)
+            assertTrue(actual = shareable)
+        }
+        BitmapImage(bitmap, shareable = false).apply {
+            assertSame(expected = bitmap, actual = bitmap)
             assertFalse(actual = shareable)
-        }
-        BitmapImage(mutableBitmap, shareable = true).apply {
-            assertSame(expected = mutableBitmap, actual = bitmap)
-            assertTrue(actual = shareable)
-        }
-
-        val immutableBitmap = ResourceImages.jpeg.decode().bitmap
-        assertFalse(immutableBitmap.isMutable)
-        BitmapImage(immutableBitmap).apply {
-            assertSame(expected = immutableBitmap, actual = bitmap)
-            assertTrue(actual = shareable)
         }
     }
 
@@ -67,17 +61,6 @@ class BitmapImageAndroidTest {
     }
 
     @Test
-    fun testCacheInMemory() {
-        val bitmap = AndroidBitmap(100, 200)
-        BitmapImage(bitmap).apply {
-            assertTrue(actual = cacheInMemory)
-        }
-        BitmapImage(bitmap, cacheInMemory = false).apply {
-            assertFalse(actual = cacheInMemory)
-        }
-    }
-
-    @Test
     fun testCheckValid() {
         BitmapImage(AndroidBitmap(100, 200)).apply {
             assertTrue(actual = checkValid())
@@ -90,14 +73,8 @@ class BitmapImageAndroidTest {
     fun testToString() {
         val bitmap = AndroidBitmap(100, 200)
         assertEquals(
-            "BitmapImage(bitmap=${bitmap.toLogString()}, shareable=false)",
-            BitmapImage(bitmap).toString()
-        )
-
-        val bitmap2 = AndroidBitmap(200, 100)
-        assertEquals(
-            "BitmapImage(bitmap=${bitmap2.toLogString()}, shareable=false)",
-            BitmapImage(bitmap2, shareable = false).toString()
+            expected = "BitmapImage(bitmap=${bitmap.toLogString()}, shareable=true)",
+            actual = BitmapImage(bitmap).toString()
         )
     }
 }

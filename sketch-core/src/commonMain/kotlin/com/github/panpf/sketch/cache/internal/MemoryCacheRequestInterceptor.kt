@@ -110,7 +110,7 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
     private fun saveToMemoryCache(requestContext: RequestContext, imageData: ImageData): Boolean {
         val request = requestContext.request
         if (!request.memoryCachePolicy.writeEnabled) return false
-        if (!imageData.image.cacheInMemory) return false
+        if (!imageData.image.shareable) return false
         val cacheValue = ImageCacheValue(
             image = imageData.image,
             extras = newCacheValueExtras(

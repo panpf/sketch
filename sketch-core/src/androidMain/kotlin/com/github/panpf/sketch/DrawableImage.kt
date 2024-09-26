@@ -63,8 +63,6 @@ data class DrawableImage internal constructor(
         }
     }
 
-    override val cacheInMemory: Boolean = false
-
     override fun checkValid(): Boolean {
         return if (drawable is BitmapDrawable) {
             drawable.bitmap.isRecycled.not()

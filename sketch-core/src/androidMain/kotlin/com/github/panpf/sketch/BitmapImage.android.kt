@@ -25,7 +25,8 @@ import com.github.panpf.sketch.util.toLogString
  *
  * @see com.github.panpf.sketch.core.android.test.BitmapImageAndroidTest.testAsImage
  */
-actual fun Bitmap.asImage(): BitmapImage = BitmapImage(this)
+actual fun Bitmap.asImage(shareable: Boolean): BitmapImage =
+    BitmapImage(bitmap = this, shareable = shareable)
 
 /**
  * Bitmap image, which is a wrapper for [Bitmap]
@@ -34,8 +35,7 @@ actual fun Bitmap.asImage(): BitmapImage = BitmapImage(this)
  */
 actual data class BitmapImage(
     actual val bitmap: Bitmap,
-    actual override val shareable: Boolean = !bitmap.isMutable,
-    actual override val cacheInMemory: Boolean = true
+    actual override val shareable: Boolean = true,
 ) : Image {
 
     actual override val width: Int = bitmap.width

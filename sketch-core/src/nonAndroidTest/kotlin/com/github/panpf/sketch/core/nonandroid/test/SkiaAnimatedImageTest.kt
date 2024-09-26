@@ -26,7 +26,6 @@ class SkiaAnimatedImageTest {
             .let { Codec.makeFromData(it) }
         SkiaAnimatedImage(codec).apply {
             assertSame(expected = codec, actual = codec)
-            assertTrue(actual = shareable)
         }
     }
 
@@ -59,14 +58,14 @@ class SkiaAnimatedImageTest {
     }
 
     @Test
-    fun testCacheValue() {
+    fun testShareable() {
         val context = getTestContext()
         val codec = ResourceImages.animGif.toDataSource(context)
             .openSource().buffer().use { it.readByteArray() }
             .let { Data.makeFromBytes(it) }
             .let { Codec.makeFromData(it) }
         SkiaAnimatedImage(codec).apply {
-            assertFalse(actual = cacheInMemory)
+            assertFalse(actual = shareable)
         }
     }
 
@@ -93,7 +92,7 @@ class SkiaAnimatedImageTest {
             .let { Codec.makeFromData(it) }
         val skiaAnimatedImage = SkiaAnimatedImage(codec)
         assertEquals(
-            expected = "SkiaAnimatedImage(image=${codec.toLogString()}, shareable=true)",
+            expected = "SkiaAnimatedImage(image=${codec.toLogString()}, shareable=false)",
             actual = skiaAnimatedImage.toString()
         )
     }
