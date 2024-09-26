@@ -65,11 +65,13 @@ import com.github.panpf.sketch.test.utils.chunkingFour
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.similarity
 import com.github.panpf.sketch.test.utils.toRect
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.div
+import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.sketch.util.isSameAspectRatio
 import com.github.panpf.sketch.util.rotate
 import com.github.panpf.sketch.util.safeToSoftware
@@ -1345,7 +1347,15 @@ class DecodesAndroidTest {
                 .readImageInfo().toShortString()
         )
 
-        // TODO Drawable.readImageInfo()
+        val drawable = context.getDrawableCompat(android.R.drawable.ic_delete)
+        assertEquals(
+            expected = "ImageInfo(${drawable.intrinsicSize},'image/jpeg')",
+            actual = drawable.readImageInfo("image/jpeg").toShortString()
+        )
+        assertEquals(
+            expected = "ImageInfo(${drawable.intrinsicSize},'image/png')",
+            actual = drawable.readImageInfo().toShortString()
+        )
     }
 
     @Test

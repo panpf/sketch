@@ -109,16 +109,16 @@ class CoreUtilsAndroidTest {
 
     @Test
     fun testFileNameCompatibilityMultiProcess() {
-        // TODO testFileNameCompatibilityMultiProcess
+        // TODO testFileNameCompatibilityMultiProcess. Not testable: Because the test method cannot be run on a non-main thread
     }
 
     @Test
     fun testGetProcessNameCompat() {
-        // TODO testGetProcessNameCompat
+        // TODO testGetProcessNameCompat. Not testable: Because the test method cannot be run on a non-main thread
     }
 
     @Test
     fun testGetProcessNameSuffix() {
-        // TODO testGetProcessNameSuffix
+        // TODO testGetProcessNameSuffix. Not testable: Because the test method cannot be run on a non-main thread
     }
 }

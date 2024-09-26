@@ -15,11 +15,19 @@ import com.github.panpf.sketch.request.fallback
 import com.github.panpf.sketch.request.isNotEmpty
 import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.request.preferQualityOverSpeed
+import com.github.panpf.sketch.request.sizeWithDisplay
+import com.github.panpf.sketch.resize.FixedSizeResolver
+import com.github.panpf.sketch.state.ColorDrawableStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.state.addState
+import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.UriInvalidCondition
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.util.IntColor
+import com.github.panpf.sketch.util.ResColor
+import com.github.panpf.sketch.util.screenSize
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -32,7 +40,22 @@ class ImageOptionsAndroidTest {
 
     @Test
     fun testSizeWithDisplay() {
-        // TODO test
+        val context = getTestContext()
+        ImageOptions().apply {
+            assertEquals(
+                expected = null,
+                actual = sizeResolver
+            )
+        }
+
+        ImageOptions {
+            sizeWithDisplay(context)
+        }.apply {
+            assertEquals(
+                expected = FixedSizeResolver(context.screenSize()),
+                actual = sizeResolver
+            )
+        }
     }
 
     @Test
@@ -56,6 +79,22 @@ class ImageOptionsAndroidTest {
             build().apply {
                 assertEquals(
                     DrawableStateImage(android.R.drawable.bottom_bar),
+                    placeholder
+                )
+            }
+
+            placeholder(IntColor(TestColor.RED))
+            build().apply {
+                assertEquals(
+                    ColorDrawableStateImage(IntColor(TestColor.RED)),
+                    placeholder
+                )
+            }
+
+            placeholder(ResColor(8801))
+            build().apply {
+                assertEquals(
+                    ColorDrawableStateImage(ResColor(8801)),
                     placeholder
                 )
             }
@@ -92,13 +131,26 @@ class ImageOptionsAndroidTest {
                 )
             }
 
+            fallback(IntColor(TestColor.RED))
+            build().apply {
+                assertEquals(
+                    ColorDrawableStateImage(IntColor(TestColor.RED)),
+                    fallback
+                )
+            }
+
+            fallback(ResColor(8801))
+            build().apply {
+                assertEquals(
+                    ColorDrawableStateImage(ResColor(8801)),
+                    fallback
+                )
+            }
+
             fallback(null)
             build().apply {
                 assertNull(fallback)
             }
-
-            // TODO test: IntColor
-            // TODO test: ResColor
         }
     }
 
@@ -136,6 +188,30 @@ class ImageOptionsAndroidTest {
             build().apply {
                 assertEquals(
                     ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)) {
+                        addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
+                    },
+                    error
+                )
+            }
+
+            error(IntColor(TestColor.RED)) {
+                addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
+            }
+            build().apply {
+                assertEquals(
+                    ErrorStateImage(ColorDrawableStateImage(IntColor(TestColor.RED))) {
+                        addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
+                    },
+                    error
+                )
+            }
+
+            error(ResColor(8801)) {
+                addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
+            }
+            build().apply {
+                assertEquals(
+                    ErrorStateImage(ColorDrawableStateImage(ResColor(8801))) {
                         addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
                     },
                     error

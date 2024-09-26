@@ -18,18 +18,22 @@ package com.github.panpf.sketch.core.android.test.fetch
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.fetch.AssetUriFetcher
+import com.github.panpf.sketch.fetch.isAssetUri
 import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.test.runTest
 import okio.buffer
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -51,11 +55,61 @@ class AssetUriFetcherTest {
 
     @Test
     fun testIsAssetUri() {
-        // TODO test
+        assertFalse(actual = isAssetUri("file1:///android_asset/sample.jpeg".toUri()))
+        assertFalse(actual = isAssetUri("file://sample.com/android_asset/sample.jpeg".toUri()))
+        assertFalse(actual = isAssetUri("file:///android_asset1/sample.jpeg".toUri()))
+        assertTrue(actual = isAssetUri("file:///android_asset/sample.jpeg".toUri()))
     }
 
     @Test
-    fun testFactory() {
+    fun testCompanion() {
+        assertEquals("file", AssetUriFetcher.SCHEME)
+        assertEquals("android_asset", AssetUriFetcher.PATH_ROOT)
+    }
+
+    @Test
+    fun testFetch() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val fetcherFactory = AssetUriFetcher.Factory()
+        val assetUri = ResourceImages.jpeg.uri
+
+        val fetcher = fetcherFactory.create(
+            ImageRequest(context, assetUri)
+                .toRequestContext(sketch, Size.Empty)
+        )!!
+        val source = fetcher.fetch().getOrThrow().dataSource
+        assertTrue(source is AssetDataSource)
+
+        source.openSource().buffer().use { it.readByteArray() }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val context = getTestContext()
+        val element1 = AssetUriFetcher(context, "file.jpeg")
+        val element11 = AssetUriFetcher(context, "file.jpeg")
+        val element2 = AssetUriFetcher(context, "file.png")
+
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, Any())
+        assertNotEquals(element1, null as Any?)
+
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        val context = getTestContext()
+        assertEquals(
+            expected = "AssetUriFetcher('file.jpeg')",
+            actual = AssetUriFetcher(context, "file.jpeg").toString()
+        )
+    }
+
+    @Test
+    fun testFactoryCreate() {
         val (context, sketch) = getTestContextAndSketch()
         val fetcherFactory = AssetUriFetcher.Factory()
         val assetUri = ResourceImages.jpeg.uri
@@ -142,7 +196,6 @@ class AssetUriFetcherTest {
 
         assertEquals(element1, element1)
         assertEquals(element1, element11)
-
         assertNotEquals(element1, Any())
         assertNotEquals(element1, null as Any?)
 
@@ -151,20 +204,10 @@ class AssetUriFetcherTest {
     }
 
     @Test
-    fun testFetch() = runTest {
-        val (context, sketch) = getTestContextAndSketch()
-        val fetcherFactory = AssetUriFetcher.Factory()
-        val assetUri = ResourceImages.jpeg.uri
-
-        val fetcher = fetcherFactory.create(
-            ImageRequest(context, assetUri)
-                .toRequestContext(sketch, Size.Empty)
-        )!!
-        val source = fetcher.fetch().getOrThrow().dataSource
-        assertTrue(source is AssetDataSource)
-
-        source.openSource().buffer().use { it.readByteArray() }
+    fun testFactoryToString() {
+        assertEquals(
+            expected = "AssetUriFetcher",
+            actual = AssetUriFetcher.Factory().toString()
+        )
     }
-
-    // TODO test
 }

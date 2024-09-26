@@ -1,8 +1,10 @@
 package com.github.panpf.sketch.compose.resources.common.test.fetch
 
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.fetch.ComposeResourceUriFetcher
 import com.github.panpf.sketch.fetch.isComposeResourceUri
 import com.github.panpf.sketch.fetch.newComposeResourceUri
+import com.github.panpf.sketch.fetch.supportComposeResources
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -11,12 +13,51 @@ import com.github.panpf.sketch.util.toUri
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNotEquals
 
 class ComposeResourceUriFetcherTest {
 
     @Test
     fun testSupportComposeResources() {
-        // TODO test
+        ComponentRegistry.Builder().apply {
+            build().apply {
+                assertEquals(
+                    "ComponentRegistry(" +
+                            "fetcherFactoryList=[]," +
+                            "decoderFactoryList=[]," +
+                            "requestInterceptorList=[]," +
+                            "decodeInterceptorList=[]" +
+                            ")",
+                    toString()
+                )
+            }
+
+            supportComposeResources()
+            build().apply {
+                assertEquals(
+                    "ComponentRegistry(" +
+                            "fetcherFactoryList=[ComposeResourceUriFetcher]," +
+                            "decoderFactoryList=[]," +
+                            "requestInterceptorList=[]," +
+                            "decodeInterceptorList=[]" +
+                            ")",
+                    toString()
+                )
+            }
+
+            supportComposeResources()
+            build().apply {
+                assertEquals(
+                    "ComponentRegistry(" +
+                            "fetcherFactoryList=[ComposeResourceUriFetcher,ComposeResourceUriFetcher]," +
+                            "decoderFactoryList=[]," +
+                            "requestInterceptorList=[]," +
+                            "decodeInterceptorList=[]" +
+                            ")",
+                    toString()
+                )
+            }
+        }
     }
 
     @Test
@@ -84,7 +125,42 @@ class ComposeResourceUriFetcherTest {
         )
     }
 
-    // TODO test
+    @Test
+    fun testCompanion() {
+        assertEquals("file", ComposeResourceUriFetcher.SCHEME)
+        assertEquals("compose_resource", ComposeResourceUriFetcher.PATH_ROOT)
+    }
+
+    @Test
+    fun testFetch() {
+        // TODO Not testable: Because currently the compose resource file cannot be read from the test environment
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val element1 =
+            ComposeResourceUriFetcher("composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg")
+        val element11 =
+            ComposeResourceUriFetcher("composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg")
+        val element2 =
+            ComposeResourceUriFetcher("composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.png")
+
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, Any())
+        assertNotEquals(element1, null as Any?)
+
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        assertEquals(
+            expected = "ComposeResourceUriFetcher('composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg')",
+            actual = ComposeResourceUriFetcher("composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg").toString()
+        )
+    }
 
     @Test
     fun testFactoryCreate() {

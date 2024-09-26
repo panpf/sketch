@@ -100,7 +100,7 @@ class DrawableDecoderTest {
 
     @Test
     fun testFactoryEqualsAndHashCode() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return
+        if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
 
         val element1 = DrawableDecoder.Factory()
         val element11 = DrawableDecoder.Factory()
@@ -338,7 +338,5 @@ class DrawableDecoderTest {
                 )!!.decode()
             }
         }
-
-        // TODO test colorType and colorSpace
     }
 }

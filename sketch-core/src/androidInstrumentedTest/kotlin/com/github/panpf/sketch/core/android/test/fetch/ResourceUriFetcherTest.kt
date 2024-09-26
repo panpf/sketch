@@ -19,6 +19,7 @@ package com.github.panpf.sketch.core.android.test.fetch
 import android.content.res.Resources
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.fetch.ResourceUriFetcher
+import com.github.panpf.sketch.fetch.isResourceUri
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DrawableDataSource
@@ -33,6 +34,7 @@ import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -40,8 +42,6 @@ import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ResourceUriFetcherTest {
-
-    // TODO test
 
     @Test
     fun testNewResourceUri() {
@@ -67,11 +67,17 @@ class ResourceUriFetcherTest {
 
     @Test
     fun testIsResourceUri() {
-        // TODO test
+        assertFalse(actual = isResourceUri("android.resource1://com.github.panpf.sketch.sample/drawable/ic_launcher".toUri()))
+        assertTrue(actual = isResourceUri("android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher".toUri()))
     }
 
-    @Suppress("ComplexRedundantLet")
     @Test
+    fun testCompanion() {
+        assertEquals("android.resource", ResourceUriFetcher.SCHEME)
+    }
+
+    @Test
+    @Suppress("ComplexRedundantLet")
     fun testFetch() = runTest {
         val context = getTestContext()
         val resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
@@ -163,6 +169,43 @@ class ResourceUriFetcherTest {
     }
 
     @Test
+    fun testEqualsAndHashCode() {
+        val context = getTestContext()
+        val element1 = ResourceUriFetcher(
+            context,
+            "android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher".toUri()
+        )
+        val element11 = ResourceUriFetcher(
+            context,
+            "android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher".toUri()
+        )
+        val element2 = ResourceUriFetcher(
+            context,
+            "android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher2".toUri()
+        )
+
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, Any())
+        assertNotEquals(element1, null as Any?)
+
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        val context = getTestContext()
+        assertEquals(
+            expected = "ResourceUriFetcher('android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher')",
+            actual = ResourceUriFetcher(
+                context,
+                "android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher".toUri()
+            ).toString()
+        )
+    }
+
+    @Test
     fun testFactoryCreate() {
         val (context, sketch) = getTestContextAndSketch()
         val testAppPackage = context.packageName
@@ -231,11 +274,18 @@ class ResourceUriFetcherTest {
 
         assertEquals(element1, element1)
         assertEquals(element1, element11)
-
         assertNotEquals(element1, Any())
         assertNotEquals(element1, null as ResourceUriFetcher.Factory?)
 
         assertEquals(element1.hashCode(), element1.hashCode())
         assertEquals(element1.hashCode(), element11.hashCode())
+    }
+
+    @Test
+    fun testFactoryToString() {
+        assertEquals(
+            expected = "ResourceUriFetcher",
+            actual = ResourceUriFetcher.Factory().toString()
+        )
     }
 }

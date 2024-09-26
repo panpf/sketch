@@ -16,7 +16,6 @@
 
 package com.github.panpf.sketch.core.android.test.drawable
 
-import android.R
 import android.graphics.drawable.BitmapDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.drawable.ResDrawable
@@ -37,7 +36,7 @@ class ResDrawableTest {
     fun testGetDrawable() {
         val context = getTestContext()
 
-        ResDrawable(R.drawable.ic_delete).apply {
+        ResDrawable(android.R.drawable.ic_delete).apply {
             assertSame(
                 context.getDrawableCompat(android.R.drawable.ic_delete)
                     .asOrThrow<BitmapDrawable>().bitmap,
@@ -45,7 +44,7 @@ class ResDrawableTest {
             )
         }
 
-        ResDrawable(R.drawable.bottom_bar).apply {
+        ResDrawable(android.R.drawable.bottom_bar).apply {
             assertSame(
                 context.getDrawableCompat(android.R.drawable.bottom_bar)
                     .asOrThrow<BitmapDrawable>().bitmap,
@@ -56,16 +55,20 @@ class ResDrawableTest {
 
     @Test
     fun testToString() {
-        ResDrawable(R.drawable.ic_delete).apply {
+        ResDrawable(android.R.drawable.ic_delete).apply {
             assertEquals("ResDrawable(${android.R.drawable.ic_delete})", toString())
         }
 
-        ResDrawable(R.drawable.bottom_bar).apply {
+        ResDrawable(android.R.drawable.bottom_bar).apply {
             assertEquals("ResDrawable(${android.R.drawable.bottom_bar})", toString())
         }
 
         val context = getTestContext()
-        ResDrawable(context.packageName, context.resources, R.drawable.bottom_bar).apply {
+        ResDrawable(
+            resId = android.R.drawable.bottom_bar,
+            packageName = context.packageName,
+            resources = context.resources
+        ).apply {
             assertEquals(
                 "ResDrawable(packageName=${context.packageName}, resources=${context.resources}, resId=${android.R.drawable.bottom_bar})",
                 toString()
@@ -75,10 +78,10 @@ class ResDrawableTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = ResDrawable(R.drawable.ic_delete)
-        val element11 = ResDrawable(R.drawable.ic_delete)
-        val element2 = ResDrawable(R.drawable.bottom_bar)
-        val element3 = ResDrawable(R.drawable.btn_dialog)
+        val element1 = ResDrawable(android.R.drawable.ic_delete)
+        val element11 = ResDrawable(android.R.drawable.ic_delete)
+        val element2 = ResDrawable(android.R.drawable.bottom_bar)
+        val element3 = ResDrawable(android.R.drawable.btn_dialog)
 
         assertNotSame(element1, element11)
         assertNotSame(element1, element2)
