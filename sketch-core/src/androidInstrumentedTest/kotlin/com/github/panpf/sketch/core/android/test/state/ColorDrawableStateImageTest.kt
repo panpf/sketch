@@ -22,9 +22,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.state.ColorDrawableStateImage
 import com.github.panpf.sketch.state.IntColorDrawableStateImage
+import com.github.panpf.sketch.state.ResColorDrawableStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.util.IntColor
+import com.github.panpf.sketch.util.ResColor
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
 import org.junit.runner.RunWith
@@ -38,22 +42,34 @@ class ColorDrawableStateImageTest {
 
     @Test
     fun testIntColorDrawableStateImage() {
-        // TODO test
+        assertEquals(
+            expected = ColorDrawableStateImage(IntColor(TestColor.RED)),
+            actual = IntColorDrawableStateImage(TestColor.RED)
+        )
     }
 
     @Test
     fun testResColorDrawableStateImage() {
-        // TODO test
+        assertEquals(
+            expected = ColorDrawableStateImage(ResColor(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)),
+            actual = ResColorDrawableStateImage(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+        )
     }
 
     @Test
     fun testColorDrawableStateImageIntColor() {
-        // TODO test
+        assertEquals(
+            expected = ColorDrawableStateImage(IntColor(TestColor.RED)),
+            actual = ColorDrawableStateImage(IntColor(TestColor.RED))
+        )
     }
 
     @Test
     fun testColorDrawableStateImageResColor() {
-        // TODO test
+        assertEquals(
+            expected = ColorDrawableStateImage(ResColor(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)),
+            actual = ColorDrawableStateImage(ResColor(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated))
+        )
     }
 
     @Test

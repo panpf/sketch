@@ -156,6 +156,14 @@ fun Drawable.asEquality(equalKey: Any): DrawableEqualizer =
     DrawableEqualizer(wrapped = this, equalityKey = equalKey)
 
 /**
+ * Wrap the Drawable with a DrawableEqualizer, equalKey will be used as the comparison key
+ *
+ * @see com.github.panpf.sketch.core.android.test.drawable.DrawableEqualizerTest.testColorDrawableAsEquality
+ */
+fun ColorDrawable.asEquality(): DrawableEqualizer =
+    ColorDrawable(color).asEquality(color)
+
+/**
  * Wrap the ColorDrawable with a DrawableEqualizer, color will be used as the comparison key
  *
  * @see com.github.panpf.sketch.core.android.test.drawable.DrawableEqualizerTest.testColorDrawableEqualizer

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("FunctionName")
+
 package com.github.panpf.sketch.state
 
 import android.graphics.drawable.ColorDrawable

@@ -23,7 +23,7 @@ import com.github.panpf.sketch.drawable.DrawableEqualizer
 /**
  * Creates a [CurrentStateImage] using the specified [DrawableEqualizer] as the default [StateImage]
  *
- * @see com.github.panpf.sketch.core.android.test.state.CurrentStateImageAndroidTest.testCurrentStateImageDrawableEqualizer
+ * @see com.github.panpf.sketch.core.android.test.state.CurrentStateImageAndroidTest.testCurrentStateImage
  */
 fun CurrentStateImage(defaultDrawable: DrawableEqualizer): CurrentStateImage =
     CurrentStateImage(DrawableStateImage(defaultDrawable))
@@ -31,7 +31,7 @@ fun CurrentStateImage(defaultDrawable: DrawableEqualizer): CurrentStateImage =
 /**
  * Creates a [CurrentStateImage] using the specified resource ID as the default [StateImage]
  *
- * @see com.github.panpf.sketch.core.android.test.state.CurrentStateImageAndroidTest.testCurrentStateImageInt
+ * @see com.github.panpf.sketch.core.android.test.state.CurrentStateImageAndroidTest.testCurrentStateImage
  */
 fun CurrentStateImage(@DrawableRes defaultResId: Int): CurrentStateImage =
     CurrentStateImage(DrawableStateImage(defaultResId))

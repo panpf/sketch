@@ -50,6 +50,11 @@ class DrawableEqualizerTest {
     }
 
     @Test
+    fun testColorDrawableAsEquality() {
+        // TODO test
+    }
+
+    @Test
     fun testColorDrawableEqualizer() {
         // TODO test
     }

@@ -22,10 +22,15 @@ import android.graphics.drawable.StateListDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
+import com.github.panpf.sketch.drawable.RealEqualityDrawable
+import com.github.panpf.sketch.drawable.ResDrawable
+import com.github.panpf.sketch.drawable.asEquality
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.state.DrawableStateImage
+import com.github.panpf.sketch.state.asStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
 import org.junit.runner.RunWith
@@ -40,12 +45,27 @@ class DrawableStateImageTest {
 
     @Test
     fun testAsStateImage() {
-        // TODO test
+        assertEquals(
+            expected = DrawableStateImage(ColorDrawable(TestColor.RED).asEquality()),
+            actual = ColorDrawable(TestColor.RED).asEquality().asStateImage()
+        )
     }
 
     @Test
     fun testDrawableStateImage() {
-        // TODO test
+        assertEquals(
+            expected = DrawableStateImage(
+                RealEqualityDrawable(ColorDrawable(TestColor.RED).asEquality())
+            ),
+            actual = DrawableStateImage(ColorDrawable(TestColor.RED).asEquality())
+        )
+
+        assertEquals(
+            expected = DrawableStateImage(
+                ResDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+            ),
+            actual = DrawableStateImage(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+        )
     }
 
     @Test
