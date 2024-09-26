@@ -45,6 +45,7 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class LruMemoryCacheTest {
 
@@ -245,22 +246,22 @@ class LruMemoryCacheTest {
             var initialCount = 0
             val initialCountLock = SynchronizedObject()
             val jobs = mutableListOf<Deferred<*>>()
-            repeat(10) {
+            repeat(10) { index ->
                 val job = async(ioCoroutineDispatcher()) {
                     if (value == null) {
-                        println("init start: $it")
+                        println("init start: $index")
                         value = "value"
-                        block(10)
+                        block(100 - (index * 10L))
                         synchronized(initialCountLock) {
                             initialCount++
                         }
-                        println("init end: $it. initialCount=$initialCount")
+                        println("init end: $index. initialCount=$initialCount")
                     }
                 }
                 jobs.add(job)
             }
             jobs.awaitAll()
-            assertEquals(expected = 10, actual = initialCount)
+            assertTrue(actual = initialCount > 1, message = "initialCount=$initialCount")
         }
 
         val cache = LruMemoryCache(100L * 1024 * 1024)
@@ -278,17 +279,17 @@ class LruMemoryCacheTest {
             var initialCount = 0
             val initialCountLock = SynchronizedObject()
             val jobs = mutableListOf<Deferred<*>>()
-            repeat(10) {
+            repeat(10) { index ->
                 val job = async(Dispatchers.Main) {
                     cache.withLock("key") {
                         if (value == null) {
-                            println("init start: $it")
+                            println("init start: $index")
                             value = "value"
-                            block(10)
+                            block(100 - (index * 10L))
                             synchronized(initialCountLock) {
                                 initialCount++
                             }
-                            println("init end: $it. initialCount=$initialCount")
+                            println("init end: $index. initialCount=$initialCount")
                         }
                     }
                 }

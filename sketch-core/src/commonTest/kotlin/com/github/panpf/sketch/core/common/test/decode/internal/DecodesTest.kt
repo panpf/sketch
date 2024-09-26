@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.core.common.test.decode.internal
 
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.checkImageInfo
 import com.github.panpf.sketch.decode.internal.checkImageSize
 import com.github.panpf.sketch.decode.internal.checkSampledBitmapSize
@@ -96,22 +97,22 @@ class DecodesTest {
     @Test
     fun testCheckImageSize() {
         checkImageSize(Size(100, 100))
-        assertFailsWith(IllegalArgumentException::class) {
+        assertFailsWith(ImageInvalidException::class) {
             checkImageSize(Size(0, 100))
         }
-        assertFailsWith(IllegalArgumentException::class) {
+        assertFailsWith(ImageInvalidException::class) {
             checkImageSize(Size(100, 0))
         }
-        assertFailsWith(IllegalArgumentException::class) {
+        assertFailsWith(ImageInvalidException::class) {
             checkImageSize(Size(0, 0))
         }
-        assertFailsWith(IllegalArgumentException::class) {
+        assertFailsWith(ImageInvalidException::class) {
             checkImageSize(Size(-1, 100))
         }
-        assertFailsWith(IllegalArgumentException::class) {
+        assertFailsWith(ImageInvalidException::class) {
             checkImageSize(Size(100, -1))
         }
-        assertFailsWith(IllegalArgumentException::class) {
+        assertFailsWith(ImageInvalidException::class) {
             checkImageSize(Size(-1, -1))
         }
     }
@@ -119,22 +120,22 @@ class DecodesTest {
     @Test
     fun testCheckImageInfo() {
         checkImageInfo(ImageInfo(100, 100, "image/jpeg"))
-        assertFailsWith(IllegalArgumentException::class) {
+        assertFailsWith(ImageInvalidException::class) {
             checkImageInfo(ImageInfo(0, 100, "image/jpeg"))
         }
-        assertFailsWith(IllegalArgumentException::class) {
+        assertFailsWith(ImageInvalidException::class) {
             checkImageInfo(ImageInfo(100, 0, "image/jpeg"))
         }
-        assertFailsWith(IllegalArgumentException::class) {
+        assertFailsWith(ImageInvalidException::class) {
             checkImageInfo(ImageInfo(0, 0, "image/jpeg"))
         }
-        assertFailsWith(IllegalArgumentException::class) {
+        assertFailsWith(ImageInvalidException::class) {
             checkImageInfo(ImageInfo(-1, 100, "image/jpeg"))
         }
-        assertFailsWith(IllegalArgumentException::class) {
+        assertFailsWith(ImageInvalidException::class) {
             checkImageInfo(ImageInfo(100, -1, "image/jpeg"))
         }
-        assertFailsWith(IllegalArgumentException::class) {
+        assertFailsWith(ImageInvalidException::class) {
             checkImageInfo(ImageInfo(-1, -1, "image/jpeg"))
         }
     }

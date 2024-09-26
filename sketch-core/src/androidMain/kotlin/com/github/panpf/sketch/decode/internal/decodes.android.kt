@@ -260,5 +260,5 @@ fun ImageFormat.supportBitmapRegionDecoder(animated: Boolean = false): Boolean =
     this == ImageFormat.JPEG
             || this == ImageFormat.PNG
             || (this == ImageFormat.WEBP && (!animated || VERSION.SDK_INT >= VERSION_CODES.O))
-            || (this == ImageFormat.HEIC && VERSION.SDK_INT >= VERSION_CODES.P)
-            || (this == ImageFormat.HEIF && VERSION.SDK_INT >= VERSION_CODES.P)
+            || (this == ImageFormat.HEIC && VERSION.SDK_INT >= VERSION_CODES.O_MR1)
+            || (this == ImageFormat.HEIF && VERSION.SDK_INT >= VERSION_CODES.O_MR1)

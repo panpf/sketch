@@ -1173,7 +1173,7 @@ class DecodesAndroidTest {
         assertFailsWith(ImageInvalidException::class) {
             ResourceImages.svg.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
         }
-        if (VERSION.SDK_INT >= VERSION_CODES.P) {
+        if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
             assertEquals(
                 expected = "ImageInfo(750x932,'image/heif')",
                 actual = ResourceImages.heic.toDataSource(context)
@@ -1281,7 +1281,7 @@ class DecodesAndroidTest {
         assertFailsWith(ImageInvalidException::class) {
             ResourceImages.svg.toDataSource(context).readImageInfo()
         }
-        if (VERSION.SDK_INT >= VERSION_CODES.P) {
+        if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
             assertEquals(
                 expected = "ImageInfo(750x932,'image/heif')",
                 actual = ResourceImages.heic.toDataSource(context).readImageInfo().toShortString()

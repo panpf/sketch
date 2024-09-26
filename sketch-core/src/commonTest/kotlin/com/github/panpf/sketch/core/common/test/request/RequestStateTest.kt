@@ -44,150 +44,154 @@ class RequestStateTest {
                 }
             }
 
-            val context = getTestContext()
-            val request = ImageRequest(context, "http://test.com/test.jpg")
-
-            requestState.onStart(request)
             block(100)
-            assertEquals(
-                expected = listOf<LoadState?>(null, LoadState.Started(request)),
-                actual = loadStates
-            )
-            assertEquals(
-                expected = listOf<ImageResult?>(null),
-                actual = resultStates
-            )
-            assertEquals(
-                expected = listOf<Progress?>(null),
-                actual = progressStates
-            )
 
-            val progress1 = Progress(100, 10)
-            requestState.onUpdateProgress(request, progress1)
-            block(100)
-            assertEquals(
-                expected = listOf<LoadState?>(null, LoadState.Started(request)),
-                actual = loadStates
-            )
-            assertEquals(
-                expected = listOf<ImageResult?>(null),
-                actual = resultStates
-            )
-            assertEquals(
-                expected = listOf<Progress?>(null, progress1),
-                actual = progressStates
-            )
+            try {
+                val context = getTestContext()
+                val request = ImageRequest(context, "http://test.com/test.jpg")
 
-            val progress2 = Progress(100, 50)
-            requestState.onUpdateProgress(request, progress2)
-            block(100)
-            assertEquals(
-                expected = listOf<LoadState?>(null, LoadState.Started(request)),
-                actual = loadStates
-            )
-            assertEquals(
-                expected = listOf<ImageResult?>(null),
-                actual = resultStates
-            )
-            assertEquals(
-                expected = listOf<Progress?>(null, progress1, progress2),
-                actual = progressStates
-            )
+                requestState.onStart(request)
+                block(100)
+                assertEquals(
+                    expected = listOf<LoadState?>(null, LoadState.Started(request)),
+                    actual = loadStates
+                )
+                assertEquals(
+                    expected = listOf<ImageResult?>(null),
+                    actual = resultStates
+                )
+                assertEquals(
+                    expected = listOf<Progress?>(null),
+                    actual = progressStates
+                )
 
-            val progress3 = Progress(100, 100)
-            requestState.onUpdateProgress(request, progress3)
-            block(100)
-            assertEquals(
-                expected = listOf<LoadState?>(null, LoadState.Started(request)),
-                actual = loadStates
-            )
-            assertEquals(
-                expected = listOf<ImageResult?>(null),
-                actual = resultStates
-            )
-            assertEquals(
-                expected = listOf<Progress?>(null, progress1, progress2, progress3),
-                actual = progressStates
-            )
+                val progress1 = Progress(100, 10)
+                requestState.onUpdateProgress(request, progress1)
+                block(100)
+                assertEquals(
+                    expected = listOf<LoadState?>(null, LoadState.Started(request)),
+                    actual = loadStates
+                )
+                assertEquals(
+                    expected = listOf<ImageResult?>(null),
+                    actual = resultStates
+                )
+                assertEquals(
+                    expected = listOf<Progress?>(null, progress1),
+                    actual = progressStates
+                )
 
-            val successResult = ImageResult.Success(
-                request = request,
-                image = FakeImage(100, 100),
-                cacheKey = "cacheKey",
-                imageInfo = ImageInfo(100, 100, "image/jpeg"),
-                dataFrom = DataFrom.LOCAL,
-                resize = Resize(200, 200),
-                transformeds = null,
-                extras = null
-            )
-            requestState.onSuccess(request, successResult)
-            block(100)
-            assertEquals(
-                expected = listOf<LoadState?>(
-                    null,
-                    LoadState.Started(request),
-                    LoadState.Success(request, successResult)
-                ),
-                actual = loadStates
-            )
-            assertEquals(
-                expected = listOf<ImageResult?>(null, successResult),
-                actual = resultStates
-            )
-            assertEquals(
-                expected = listOf<Progress?>(null, progress1, progress2, progress3),
-                actual = progressStates
-            )
+                val progress2 = Progress(100, 50)
+                requestState.onUpdateProgress(request, progress2)
+                block(100)
+                assertEquals(
+                    expected = listOf<LoadState?>(null, LoadState.Started(request)),
+                    actual = loadStates
+                )
+                assertEquals(
+                    expected = listOf<ImageResult?>(null),
+                    actual = resultStates
+                )
+                assertEquals(
+                    expected = listOf<Progress?>(null, progress1, progress2),
+                    actual = progressStates
+                )
 
-            val errorResult = ImageResult.Error(
-                request = request,
-                image = FakeImage(100, 100),
-                throwable = Exception("test")
-            )
-            requestState.onError(request, errorResult)
-            block(100)
-            assertEquals(
-                expected = listOf<LoadState?>(
-                    null,
-                    LoadState.Started(request),
-                    LoadState.Success(request, successResult),
-                    LoadState.Error(request, errorResult)
-                ),
-                actual = loadStates
-            )
-            assertEquals(
-                expected = listOf<ImageResult?>(null, successResult, errorResult),
-                actual = resultStates
-            )
-            assertEquals(
-                expected = listOf<Progress?>(null, progress1, progress2, progress3),
-                actual = progressStates
-            )
+                val progress3 = Progress(100, 100)
+                requestState.onUpdateProgress(request, progress3)
+                block(100)
+                assertEquals(
+                    expected = listOf<LoadState?>(null, LoadState.Started(request)),
+                    actual = loadStates
+                )
+                assertEquals(
+                    expected = listOf<ImageResult?>(null),
+                    actual = resultStates
+                )
+                assertEquals(
+                    expected = listOf<Progress?>(null, progress1, progress2, progress3),
+                    actual = progressStates
+                )
 
-            requestState.onCancel(request)
-            block(100)
-            assertEquals(
-                expected = listOf<LoadState?>(
-                    null,
-                    LoadState.Started(request),
-                    LoadState.Success(request, successResult),
-                    LoadState.Error(request, errorResult),
-                    LoadState.Canceled(request),
-                ),
-                actual = loadStates
-            )
-            assertEquals(
-                expected = listOf<ImageResult?>(null, successResult, errorResult),
-                actual = resultStates
-            )
-            assertEquals(
-                expected = listOf<Progress?>(null, progress1, progress2, progress3),
-                actual = progressStates
-            )
+                val successResult = ImageResult.Success(
+                    request = request,
+                    image = FakeImage(100, 100),
+                    cacheKey = "cacheKey",
+                    imageInfo = ImageInfo(100, 100, "image/jpeg"),
+                    dataFrom = DataFrom.LOCAL,
+                    resize = Resize(200, 200),
+                    transformeds = null,
+                    extras = null
+                )
+                requestState.onSuccess(request, successResult)
+                block(100)
+                assertEquals(
+                    expected = listOf<LoadState?>(
+                        null,
+                        LoadState.Started(request),
+                        LoadState.Success(request, successResult)
+                    ),
+                    actual = loadStates
+                )
+                assertEquals(
+                    expected = listOf<ImageResult?>(null, successResult),
+                    actual = resultStates
+                )
+                assertEquals(
+                    expected = listOf<Progress?>(null, progress1, progress2, progress3),
+                    actual = progressStates
+                )
 
-            job1.cancel()
-            job2.cancel()
-            job3.cancel()
+                val errorResult = ImageResult.Error(
+                    request = request,
+                    image = FakeImage(100, 100),
+                    throwable = Exception("test")
+                )
+                requestState.onError(request, errorResult)
+                block(100)
+                assertEquals(
+                    expected = listOf<LoadState?>(
+                        null,
+                        LoadState.Started(request),
+                        LoadState.Success(request, successResult),
+                        LoadState.Error(request, errorResult)
+                    ),
+                    actual = loadStates
+                )
+                assertEquals(
+                    expected = listOf<ImageResult?>(null, successResult, errorResult),
+                    actual = resultStates
+                )
+                assertEquals(
+                    expected = listOf<Progress?>(null, progress1, progress2, progress3),
+                    actual = progressStates
+                )
+
+                requestState.onCancel(request)
+                block(100)
+                assertEquals(
+                    expected = listOf<LoadState?>(
+                        null,
+                        LoadState.Started(request),
+                        LoadState.Success(request, successResult),
+                        LoadState.Error(request, errorResult),
+                        LoadState.Canceled(request),
+                    ),
+                    actual = loadStates
+                )
+                assertEquals(
+                    expected = listOf<ImageResult?>(null, successResult, errorResult),
+                    actual = resultStates
+                )
+                assertEquals(
+                    expected = listOf<Progress?>(null, progress1, progress2, progress3),
+                    actual = progressStates
+                )
+            } finally {
+                job1.cancel()
+                job2.cancel()
+                job3.cancel()
+            }
         }
     }
 }
