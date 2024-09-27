@@ -6,7 +6,7 @@ import android.graphics.ColorSpace
 import android.os.Build
 import com.github.panpf.sketch.decode.BitmapColorSpace
 import com.github.panpf.sketch.decode.FixedColorType
-import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
+import com.github.panpf.sketch.drawable.ColorEquitableDrawable
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.colorType
@@ -70,7 +70,7 @@ class ImageOptionsAndroidTest {
                 assertEquals(IntColorDrawableStateImage(Color.BLUE), placeholder)
             }
 
-            placeholder(ColorDrawableEqualizer(Color.GREEN))
+            placeholder(ColorEquitableDrawable(Color.GREEN))
             build().apply {
                 assertEquals(true, placeholder is DrawableStateImage)
             }
@@ -118,7 +118,7 @@ class ImageOptionsAndroidTest {
                 assertEquals(IntColorDrawableStateImage(Color.BLUE), fallback)
             }
 
-            fallback(ColorDrawableEqualizer(Color.GREEN))
+            fallback(ColorEquitableDrawable(Color.GREEN))
             build().apply {
                 assertEquals(true, fallback is DrawableStateImage)
             }
@@ -169,7 +169,7 @@ class ImageOptionsAndroidTest {
                 )
             }
 
-            error(ColorDrawableEqualizer(Color.GREEN))
+            error(ColorEquitableDrawable(Color.GREEN))
             build().apply {
                 assertEquals(true, error is ErrorStateImage)
             }

@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.core.android.test.state
 
 import android.graphics.drawable.ColorDrawable
-import com.github.panpf.sketch.drawable.asEquality
+import com.github.panpf.sketch.drawable.asEquitable
 import com.github.panpf.sketch.state.ColorDrawableStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
@@ -19,26 +19,26 @@ class ErrorStateImageAndroidTest {
     fun testAddState() {
         assertEquals(
             expected = ErrorStateImage(
-                defaultImage = DrawableStateImage(ColorDrawable(TestColor.RED).asEquality())
+                defaultImage = DrawableStateImage(ColorDrawable(TestColor.RED).asEquitable())
             ) {
                 addState(
                     UriInvalidCondition,
-                    DrawableStateImage(ColorDrawable(TestColor.RED).asEquality())
+                    DrawableStateImage(ColorDrawable(TestColor.RED).asEquitable())
                 )
             },
             actual = ErrorStateImage(
-                defaultImage = DrawableStateImage(ColorDrawable(TestColor.RED).asEquality())
+                defaultImage = DrawableStateImage(ColorDrawable(TestColor.RED).asEquitable())
             ) {
                 addState(
                     condition = UriInvalidCondition,
-                    drawable = ColorDrawable(TestColor.RED).asEquality()
+                    drawable = ColorDrawable(TestColor.RED).asEquitable()
                 )
             }
         )
 
         assertEquals(
             expected = ErrorStateImage(
-                defaultImage = DrawableStateImage(ColorDrawable(TestColor.RED).asEquality())
+                defaultImage = DrawableStateImage(ColorDrawable(TestColor.RED).asEquitable())
             ) {
                 addState(
                     UriInvalidCondition,
@@ -46,7 +46,7 @@ class ErrorStateImageAndroidTest {
                 )
             },
             actual = ErrorStateImage(
-                defaultImage = DrawableStateImage(ColorDrawable(TestColor.RED).asEquality())
+                defaultImage = DrawableStateImage(ColorDrawable(TestColor.RED).asEquitable())
             ) {
                 addState(
                     condition = UriInvalidCondition,
@@ -57,12 +57,12 @@ class ErrorStateImageAndroidTest {
 
         assertEquals(
             expected = ErrorStateImage(
-                defaultImage = DrawableStateImage(ColorDrawable(TestColor.RED).asEquality())
+                defaultImage = DrawableStateImage(ColorDrawable(TestColor.RED).asEquitable())
             ) {
                 addState(UriInvalidCondition, ColorDrawableStateImage(IntColor(TestColor.RED)))
             },
             actual = ErrorStateImage(
-                defaultImage = DrawableStateImage(ColorDrawable(TestColor.RED).asEquality())
+                defaultImage = DrawableStateImage(ColorDrawable(TestColor.RED).asEquitable())
             ) {
                 addState(
                     condition = UriInvalidCondition,
@@ -73,7 +73,7 @@ class ErrorStateImageAndroidTest {
 
         assertEquals(
             expected = ErrorStateImage(
-                defaultImage = DrawableStateImage(ColorDrawable(TestColor.RED).asEquality())
+                defaultImage = DrawableStateImage(ColorDrawable(TestColor.RED).asEquitable())
             ) {
                 addState(
                     UriInvalidCondition,
@@ -81,7 +81,7 @@ class ErrorStateImageAndroidTest {
                 )
             },
             actual = ErrorStateImage(
-                defaultImage = DrawableStateImage(ColorDrawable(TestColor.RED).asEquality())
+                defaultImage = DrawableStateImage(ColorDrawable(TestColor.RED).asEquitable())
             ) {
                 addState(
                     condition = UriInvalidCondition,

@@ -7,7 +7,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
-import com.github.panpf.sketch.painter.asEquality
+import com.github.panpf.sketch.painter.asEquitable
 import com.github.panpf.sketch.painter.rememberIconAnimatablePainter
 import com.github.panpf.sketch.test.utils.SizeColorPainter
 import org.jetbrains.compose.resources.DrawableResource
@@ -22,7 +22,7 @@ class IconAnimatablePainterComposeResourcesTest {
     fun testRememberIconAnimatablePainter() {
         runComposeUiTest {
             val painterIcon =
-                Color.Cyan.let { SizeColorPainter(it, Size(100f, 100f)).asEquality(it) }
+                Color.Cyan.let { SizeColorPainter(it, Size(100f, 100f)).asEquitable(it) }
             val resourceIcon = DrawableResource(
                 "drawable:test_icon",
                 setOf(
@@ -35,7 +35,7 @@ class IconAnimatablePainterComposeResourcesTest {
                 )
             )
             val painterBackground =
-                Color.Gray.let { SizeColorPainter(it, Size(100f, 100f)).asEquality(it) }
+                Color.Gray.let { SizeColorPainter(it, Size(100f, 100f)).asEquitable(it) }
             val colorBackground = Color.DarkGray
             val resourceBackground = DrawableResource(
                 "drawable:test_background",

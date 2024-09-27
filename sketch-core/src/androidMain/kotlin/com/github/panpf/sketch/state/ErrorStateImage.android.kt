@@ -16,7 +16,7 @@
 
 package com.github.panpf.sketch.state
 
-import com.github.panpf.sketch.drawable.DrawableEqualizer
+import com.github.panpf.sketch.drawable.EquitableDrawable
 import com.github.panpf.sketch.state.ErrorStateImage.Condition
 import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.ResColor
@@ -29,7 +29,7 @@ import com.github.panpf.sketch.util.ResColor
  */
 fun ErrorStateImage.Builder.addState(
     condition: Condition,
-    drawable: DrawableEqualizer
+    drawable: EquitableDrawable
 ): ErrorStateImage.Builder = apply {
     addState(condition, DrawableStateImage(drawable))
 }

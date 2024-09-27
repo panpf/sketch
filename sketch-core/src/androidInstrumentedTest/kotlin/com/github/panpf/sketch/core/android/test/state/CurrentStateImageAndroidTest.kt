@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.core.android.test.state
 
 import android.graphics.drawable.ColorDrawable
-import com.github.panpf.sketch.drawable.asEquality
+import com.github.panpf.sketch.drawable.asEquitable
 import com.github.panpf.sketch.state.CurrentStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.test.utils.TestColor
@@ -13,8 +13,8 @@ class CurrentStateImageAndroidTest {
     @Test
     fun testCurrentStateImage() {
         assertEquals(
-            expected = CurrentStateImage(DrawableStateImage(ColorDrawable(TestColor.RED).asEquality())),
-            actual = CurrentStateImage(ColorDrawable(TestColor.RED).asEquality())
+            expected = CurrentStateImage(DrawableStateImage(ColorDrawable(TestColor.RED).asEquitable())),
+            actual = CurrentStateImage(ColorDrawable(TestColor.RED).asEquitable())
         )
 
         assertEquals(

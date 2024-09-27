@@ -21,26 +21,26 @@ import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
-import com.github.panpf.sketch.drawable.DrawableEqualizer
 import com.github.panpf.sketch.drawable.DrawableFetcher
-import com.github.panpf.sketch.drawable.RealEqualityDrawable
+import com.github.panpf.sketch.drawable.EquitableDrawable
+import com.github.panpf.sketch.drawable.RealEquitableDrawable
 import com.github.panpf.sketch.drawable.ResDrawable
 import com.github.panpf.sketch.request.ImageRequest
 
 /**
- * [DrawableEqualizer] as [StateImage]
+ * [EquitableDrawable] as [StateImage]
  *
  * @see com.github.panpf.sketch.core.android.test.state.DrawableStateImageTest.testAsStateImage
  */
-fun DrawableEqualizer.asStateImage(): DrawableStateImage = DrawableStateImage(this)
+fun EquitableDrawable.asStateImage(): DrawableStateImage = DrawableStateImage(this)
 
 /**
- * Create a [DrawableStateImage] with [DrawableEqualizer]
+ * Create a [DrawableStateImage] with [EquitableDrawable]
  *
  * @see com.github.panpf.sketch.core.android.test.state.DrawableStateImageTest.testDrawableStateImage
  */
-fun DrawableStateImage(drawable: DrawableEqualizer): DrawableStateImage =
-    DrawableStateImage(RealEqualityDrawable(drawable))
+fun DrawableStateImage(drawable: EquitableDrawable): DrawableStateImage =
+    DrawableStateImage(RealEquitableDrawable(drawable))
 
 /**
  * Create a [DrawableStateImage] with resource drawable

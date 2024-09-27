@@ -18,7 +18,7 @@ package com.github.panpf.sketch.extensions.core.android.test.state
 
 import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
+import com.github.panpf.sketch.drawable.ColorEquitableDrawable
 import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.state.SaveCellularTrafficCondition
@@ -50,7 +50,7 @@ class SaveCellularTrafficExtensionsAndroidTest {
         }
 
         ErrorStateImage(IntColorDrawableStateImage(Color.BLACK)) {
-            saveCellularTrafficError(ColorDrawableEqualizer(Color.GREEN))
+            saveCellularTrafficError(ColorEquitableDrawable(Color.GREEN))
         }.apply {
             assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
         }

@@ -21,20 +21,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.painter.PainterEqualizer
-import com.github.panpf.sketch.state.rememberIconAnimatablePainterStateImage
 import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.painter.EquitablePainter
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
+import com.github.panpf.sketch.state.rememberIconAnimatablePainterStateImage
 
 @Composable
-expect fun rememberIconPlaceholderEclipseAnimatedPainter(context: PlatformContext): PainterEqualizer?
+expect fun rememberIconPlaceholderEclipseAnimatedPainter(context: PlatformContext): EquitablePainter?
 
 class AnimatablePlaceholderTestScreen : BaseScreen() {
 

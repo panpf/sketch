@@ -32,7 +32,7 @@ class ColorFetcherDrawableTest {
         }
         ColorFetcherDrawable(ResColor(com.github.panpf.sketch.test.utils.core.R.color.colorPrimary)).apply {
             assertEquals(
-                expected = context.getColor(com.github.panpf.sketch.test.utils.core.R.color.colorPrimary),
+                expected = context.resources.getColor(com.github.panpf.sketch.test.utils.core.R.color.colorPrimary),
                 actual = getDrawable(context).asOrThrow<ColorDrawable>().color
             )
         }

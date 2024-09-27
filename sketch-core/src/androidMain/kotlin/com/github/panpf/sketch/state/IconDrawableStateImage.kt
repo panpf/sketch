@@ -23,10 +23,10 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.drawable.ColorFetcherDrawable
-import com.github.panpf.sketch.drawable.DrawableEqualizer
 import com.github.panpf.sketch.drawable.DrawableFetcher
+import com.github.panpf.sketch.drawable.EquitableDrawable
 import com.github.panpf.sketch.drawable.IconDrawable
-import com.github.panpf.sketch.drawable.RealEqualityDrawable
+import com.github.panpf.sketch.drawable.RealEquitableDrawable
 import com.github.panpf.sketch.drawable.ResDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.ColorFetcher
@@ -43,13 +43,13 @@ import com.github.panpf.sketch.util.Size
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
  */
 fun IconDrawableStateImage(
-    icon: DrawableEqualizer,
-    background: DrawableEqualizer? = null,
+    icon: EquitableDrawable,
+    background: EquitableDrawable? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
 ): IconDrawableStateImage = IconDrawableStateImage(
-    icon = RealEqualityDrawable(icon),
-    background = background?.let { RealEqualityDrawable(it) },
+    icon = RealEquitableDrawable(icon),
+    background = background?.let { RealEquitableDrawable(it) },
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
 )
@@ -60,12 +60,12 @@ fun IconDrawableStateImage(
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
  */
 fun IconDrawableStateImage(
-    icon: DrawableEqualizer,
+    icon: EquitableDrawable,
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
 ): IconDrawableStateImage = IconDrawableStateImage(
-    icon = RealEqualityDrawable(icon),
+    icon = RealEquitableDrawable(icon),
     background = background?.let { ResDrawable(it) },
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
@@ -77,12 +77,12 @@ fun IconDrawableStateImage(
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
  */
 fun IconDrawableStateImage(
-    icon: DrawableEqualizer,
+    icon: EquitableDrawable,
     background: IntColor? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
 ): IconDrawableStateImage = IconDrawableStateImage(
-    icon = RealEqualityDrawable(icon),
+    icon = RealEquitableDrawable(icon),
     background = background?.let { ColorFetcherDrawable(it) },
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
@@ -95,13 +95,13 @@ fun IconDrawableStateImage(
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
  */
 fun IconDrawableStateImage(
-    icon: DrawableEqualizer,
-    background: DrawableEqualizer? = null,
+    icon: EquitableDrawable,
+    background: EquitableDrawable? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
 ): IconDrawableStateImage = IconDrawableStateImage(
-    icon = RealEqualityDrawable(icon),
-    background = background?.let { RealEqualityDrawable(it) },
+    icon = RealEquitableDrawable(icon),
+    background = background?.let { RealEquitableDrawable(it) },
     iconSize = iconSize,
     iconTint = iconTint,
 )
@@ -112,12 +112,12 @@ fun IconDrawableStateImage(
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
  */
 fun IconDrawableStateImage(
-    icon: DrawableEqualizer,
+    icon: EquitableDrawable,
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
 ): IconDrawableStateImage = IconDrawableStateImage(
-    icon = RealEqualityDrawable(icon),
+    icon = RealEquitableDrawable(icon),
     background = background?.let { ResDrawable(it) },
     iconSize = iconSize,
     iconTint = iconTint,
@@ -129,12 +129,12 @@ fun IconDrawableStateImage(
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
  */
 fun IconDrawableStateImage(
-    icon: DrawableEqualizer,
+    icon: EquitableDrawable,
     background: IntColor? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
 ): IconDrawableStateImage = IconDrawableStateImage(
-    icon = RealEqualityDrawable(icon),
+    icon = RealEquitableDrawable(icon),
     background = background?.let { ColorFetcherDrawable(it) },
     iconSize = iconSize,
     iconTint = iconTint,
@@ -147,11 +147,11 @@ fun IconDrawableStateImage(
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
  */
 fun IconDrawableStateImage(
-    icon: DrawableEqualizer,
+    icon: EquitableDrawable,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
 ): IconDrawableStateImage = IconDrawableStateImage(
-    icon = RealEqualityDrawable(icon),
+    icon = RealEquitableDrawable(icon),
     background = null,
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
@@ -163,11 +163,11 @@ fun IconDrawableStateImage(
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.createIconDrawableStateImage
  */
 fun IconDrawableStateImage(
-    icon: DrawableEqualizer,
+    icon: EquitableDrawable,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
 ): IconDrawableStateImage = IconDrawableStateImage(
-    icon = RealEqualityDrawable(icon),
+    icon = RealEquitableDrawable(icon),
     background = null,
     iconSize = iconSize,
     iconTint = iconTint,
@@ -183,12 +183,12 @@ fun IconDrawableStateImage(
  */
 fun IconDrawableStateImage(
     @DrawableRes icon: Int,
-    background: DrawableEqualizer? = null,
+    background: EquitableDrawable? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int,
 ): IconDrawableStateImage = IconDrawableStateImage(
     icon = ResDrawable(icon),
-    background = background?.let { RealEqualityDrawable(it) },
+    background = background?.let { RealEquitableDrawable(it) },
     iconSize = iconSize,
     iconTint = ResColor(iconTint),
 )
@@ -235,12 +235,12 @@ fun IconDrawableStateImage(
  */
 fun IconDrawableStateImage(
     @DrawableRes icon: Int,
-    background: DrawableEqualizer? = null,
+    background: EquitableDrawable? = null,
     iconSize: Size? = null,
     iconTint: IntColor? = null,
 ): IconDrawableStateImage = IconDrawableStateImage(
     icon = ResDrawable(icon),
-    background = background?.let { RealEqualityDrawable(it) },
+    background = background?.let { RealEquitableDrawable(it) },
     iconSize = iconSize,
     iconTint = iconTint,
 )

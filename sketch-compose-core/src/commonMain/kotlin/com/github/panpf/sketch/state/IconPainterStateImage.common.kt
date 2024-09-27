@@ -25,9 +25,9 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
+import com.github.panpf.sketch.painter.EquitablePainter
 import com.github.panpf.sketch.painter.IconPainter
-import com.github.panpf.sketch.painter.PainterEqualizer
-import com.github.panpf.sketch.painter.asEquality
+import com.github.panpf.sketch.painter.asEquitable
 import com.github.panpf.sketch.request.ImageRequest
 
 /**
@@ -37,8 +37,8 @@ import com.github.panpf.sketch.request.ImageRequest
  */
 @Composable
 fun rememberIconPainterStateImage(
-    icon: PainterEqualizer,
-    background: PainterEqualizer? = null,
+    icon: EquitablePainter,
+    background: EquitablePainter? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainterStateImage {
@@ -59,7 +59,7 @@ fun rememberIconPainterStateImage(
  */
 @Composable
 fun rememberIconPainterStateImage(
-    icon: PainterEqualizer,
+    icon: EquitablePainter,
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
@@ -68,7 +68,7 @@ fun rememberIconPainterStateImage(
         val backgroundPainter = background?.let { ColorPainter(it) }
         IconPainterStateImage(
             icon = icon,
-            background = backgroundPainter?.asEquality(),
+            background = backgroundPainter?.asEquitable(),
             iconSize = iconSize,
             iconTint = iconTint
         )
@@ -82,7 +82,7 @@ fun rememberIconPainterStateImage(
  */
 @Composable
 fun rememberIconPainterStateImage(
-    icon: PainterEqualizer,
+    icon: EquitablePainter,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainterStateImage {
@@ -103,8 +103,8 @@ fun rememberIconPainterStateImage(
  */
 @Stable
 class IconPainterStateImage(
-    val icon: PainterEqualizer,
-    val background: PainterEqualizer? = null,
+    val icon: EquitablePainter,
+    val background: EquitablePainter? = null,
     val iconSize: Size? = null,
     val iconTint: Color? = null,
 ) : StateImage {

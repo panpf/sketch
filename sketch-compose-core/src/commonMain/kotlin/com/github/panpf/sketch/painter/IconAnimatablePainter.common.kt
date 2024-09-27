@@ -30,8 +30,8 @@ import androidx.compose.ui.graphics.painter.ColorPainter
  */
 @Composable
 fun rememberIconAnimatablePainter(
-    icon: PainterEqualizer,
-    background: PainterEqualizer? = null,
+    icon: EquitablePainter,
+    background: EquitablePainter? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconAnimatablePainter = remember(icon, background, iconSize, iconTint) {
@@ -50,7 +50,7 @@ fun rememberIconAnimatablePainter(
  */
 @Composable
 fun rememberIconAnimatablePainter(
-    icon: PainterEqualizer,
+    icon: EquitablePainter,
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
@@ -58,7 +58,7 @@ fun rememberIconAnimatablePainter(
     val backgroundPainter = background?.let { ColorPainter(it) }
     IconAnimatablePainter(
         icon = icon,
-        background = backgroundPainter?.asEquality(),
+        background = backgroundPainter?.asEquitable(),
         iconSize = iconSize,
         iconTint = iconTint
     )
@@ -71,7 +71,7 @@ fun rememberIconAnimatablePainter(
  */
 @Composable
 fun rememberIconAnimatablePainter(
-    icon: PainterEqualizer,
+    icon: EquitablePainter,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconAnimatablePainter = remember(icon, iconSize, iconTint) {
@@ -91,8 +91,8 @@ fun rememberIconAnimatablePainter(
  */
 @Stable
 class IconAnimatablePainter(
-    icon: PainterEqualizer,
-    background: PainterEqualizer? = null,
+    icon: EquitablePainter,
+    background: EquitablePainter? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ) : IconPainter(icon, background, iconSize, iconTint), AnimatablePainter {
@@ -104,11 +104,11 @@ class IconAnimatablePainter(
         "IconAnimatablePainter(icon=${icon.key},background=${background?.key},iconSize=$iconSize,iconTint=${iconTint?.value})"
 
     init {
-        require(icon.wrapped is AnimatablePainter || background?.wrapped is AnimatablePainter) {
+        require(icon is AnimatablePainter || background is AnimatablePainter) {
             "painter must be AnimatablePainter"
         }
-        animatablePainterIcon = icon.wrapped as? AnimatablePainter
-        animatablePainterBackground = background?.wrapped as? AnimatablePainter
+        animatablePainterIcon = icon as? AnimatablePainter
+        animatablePainterBackground = background as? AnimatablePainter
     }
 
     override fun start() {

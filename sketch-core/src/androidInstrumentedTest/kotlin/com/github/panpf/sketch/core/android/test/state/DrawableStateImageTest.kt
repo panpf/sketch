@@ -21,10 +21,11 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.StateListDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.DrawableImage
-import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
-import com.github.panpf.sketch.drawable.RealEqualityDrawable
+import com.github.panpf.sketch.drawable.ColorEquitableDrawable
+import com.github.panpf.sketch.drawable.EquitableDrawable
+import com.github.panpf.sketch.drawable.RealEquitableDrawable
 import com.github.panpf.sketch.drawable.ResDrawable
-import com.github.panpf.sketch.drawable.asEquality
+import com.github.panpf.sketch.drawable.asEquitable
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.state.DrawableStateImage
@@ -46,8 +47,8 @@ class DrawableStateImageTest {
     @Test
     fun testAsStateImage() {
         assertEquals(
-            expected = DrawableStateImage(ColorDrawable(TestColor.RED).asEquality()),
-            actual = ColorDrawable(TestColor.RED).asEquality().asStateImage()
+            expected = DrawableStateImage(ColorDrawable(TestColor.RED).asEquitable()),
+            actual = ColorDrawable(TestColor.RED).asEquitable().asStateImage()
         )
     }
 
@@ -55,9 +56,9 @@ class DrawableStateImageTest {
     fun testDrawableStateImage() {
         assertEquals(
             expected = DrawableStateImage(
-                RealEqualityDrawable(ColorDrawable(TestColor.RED).asEquality())
+                RealEquitableDrawable(ColorDrawable(TestColor.RED).asEquitable())
             ),
-            actual = DrawableStateImage(ColorDrawable(TestColor.RED).asEquality())
+            actual = DrawableStateImage(ColorDrawable(TestColor.RED).asEquitable())
         )
 
         assertEquals(
@@ -73,19 +74,23 @@ class DrawableStateImageTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, ResourceImages.jpeg.uri)
 
-        DrawableStateImage(ColorDrawableEqualizer(Color.BLUE)).apply {
+        DrawableStateImage(ColorEquitableDrawable(Color.BLUE)).apply {
             assertEquals(
                 Color.BLUE,
-                getImage(sketch, request, null)
-                    ?.asOrThrow<DrawableImage>()?.drawable.asOrNull<ColorDrawable>()!!.color
+                getImage(sketch, request, null)!!
+                    .asOrThrow<DrawableImage>().drawable
+                    .asOrThrow<EquitableDrawable>().drawable
+                    .asOrNull<ColorDrawable>()!!.color
             )
         }
 
-        DrawableStateImage(ColorDrawableEqualizer(Color.GREEN)).apply {
+        DrawableStateImage(ColorEquitableDrawable(Color.GREEN)).apply {
             assertEquals(
                 Color.GREEN,
-                getImage(sketch, request, null)
-                    ?.asOrThrow<DrawableImage>()?.drawable.asOrNull<ColorDrawable>()!!.color
+                getImage(sketch, request, null)!!
+                    .asOrThrow<DrawableImage>().drawable
+                    .asOrThrow<EquitableDrawable>().drawable
+                    .asOrNull<ColorDrawable>()!!.color
             )
         }
 

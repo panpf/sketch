@@ -18,15 +18,15 @@ package com.github.panpf.sketch.state
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
-import com.github.panpf.sketch.painter.PainterEqualizer
-import com.github.panpf.sketch.painter.asEquality
+import com.github.panpf.sketch.painter.EquitablePainter
+import com.github.panpf.sketch.painter.asEquitable
 
 /**
  * Create a CurrentStateImage
  *
  * @see com.github.panpf.sketch.compose.core.common.test.state.CurrentStateImageComposeTest.testCurrentStateImage
  */
-fun CurrentStateImage(defaultPainter: PainterEqualizer): CurrentStateImage =
+fun CurrentStateImage(defaultPainter: EquitablePainter): CurrentStateImage =
     CurrentStateImage(PainterStateImage(defaultPainter))
 
 /**
@@ -35,4 +35,4 @@ fun CurrentStateImage(defaultPainter: PainterEqualizer): CurrentStateImage =
  * @see com.github.panpf.sketch.compose.core.common.test.state.CurrentStateImageComposeTest.testCurrentStateImage
  */
 fun CurrentStateImage(defaultColor: Color): CurrentStateImage =
-    CurrentStateImage(PainterStateImage(ColorPainter(defaultColor).asEquality()))
+    CurrentStateImage(PainterStateImage(ColorPainter(defaultColor).asEquitable()))

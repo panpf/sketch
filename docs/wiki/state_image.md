@@ -49,13 +49,13 @@ and [ImageOptions], as follows:
 // View
 ImageRequest(context, "https://example.com/image.jpg") {
   placeholder(R.drawable.placeholder)
-  placeholder(context.getEqualityDrawable(R.drawable.placeholder))
+  placeholder(context.getEquitableDrawable(R.drawable.placeholder))
   placeholder(IntColorDrawableStateImage(Color.Gray))
   placeholder(DrawableStateImage(R.drawable.placeholder))
   placeholder(IconDrawableStateImage(R.drawable.placeholder, IntColor(Color.GRAY)))
 
   fallback(R.drawable.fallback)
-  fallback(context.getEqualityDrawable(R.drawable.fallback))
+  fallback(context.getEquitableDrawable(R.drawable.fallback))
   fallback(IntColorDrawableStateImage(Color.RED))
   fallback(DrawableStateImage(R.drawable.fallback))
   fallback(IconDrawableStateImage(R.drawable.fallback, IntColor(Color.RED)))

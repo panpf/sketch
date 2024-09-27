@@ -14,27 +14,17 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.util
+package com.github.panpf.sketch.state
 
-/**
- * Wrapping an object that cannot be compared for equality through the equals
- *  method so that it can be compared for equality through the equals method
- */
-interface Equalizer<T> {
+import android.graphics.drawable.Drawable
+import com.github.panpf.sketch.drawable.EquitableDrawable
+import com.github.panpf.sketch.painter.EquitablePainter
+import com.github.panpf.sketch.painter.asEquitable
+import com.github.panpf.sketch.painter.asPainter
 
-    /**
-     * Wrapped object
-     */
-    val wrapped: T
+// TODO test
+fun Drawable.asEquitablePainter(equalityKey: Any): EquitablePainter =
+    this.asPainter().asEquitable(equalityKey)
 
-    /**
-     * Key used to determine equality
-     */
-    val equalityKey: Any
-
-    override fun equals(other: Any?): Boolean
-
-    override fun hashCode(): Int
-
-    override fun toString(): String
-}
+fun EquitableDrawable.asEquitablePainter(): EquitablePainter =
+    this.asPainter().asEquitable(this.equalityKey)

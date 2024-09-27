@@ -30,12 +30,12 @@ import org.jetbrains.compose.resources.DrawableResource
  */
 @Composable
 fun rememberIconPainter(
-    icon: PainterEqualizer,
+    icon: EquitablePainter,
     background: DrawableResource? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter {
-    val backgroundPainter = background?.let { rememberEqualityPainterResource(it) }
+    val backgroundPainter = background?.let { rememberEquitablePainterResource(it) }
     return remember(icon, background, iconSize, iconTint) {
         IconPainter(
             icon = icon,
@@ -54,11 +54,11 @@ fun rememberIconPainter(
 @Composable
 fun rememberIconPainter(
     icon: DrawableResource,
-    background: PainterEqualizer? = null,
+    background: EquitablePainter? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter {
-    val iconPainter = rememberEqualityPainterResource(icon)
+    val iconPainter = rememberEquitablePainterResource(icon)
     return remember(icon, background, iconSize, iconTint) {
         IconPainter(
             icon = iconPainter,
@@ -81,12 +81,12 @@ fun rememberIconPainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter {
-    val iconPainter = rememberEqualityPainterResource(icon)
+    val iconPainter = rememberEquitablePainterResource(icon)
     return remember(icon, background, iconSize, iconTint) {
         val backgroundPainter = background?.let { ColorPainter(it) }
         IconPainter(
             icon = iconPainter,
-            background = backgroundPainter?.asEquality(),
+            background = backgroundPainter?.asEquitable(),
             iconSize = iconSize,
             iconTint = iconTint
         )
@@ -105,8 +105,8 @@ fun rememberIconPainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter {
-    val iconPainter = rememberEqualityPainterResource(icon)
-    val backgroundPainter = background?.let { rememberEqualityPainterResource(it) }
+    val iconPainter = rememberEquitablePainterResource(icon)
+    val backgroundPainter = background?.let { rememberEquitablePainterResource(it) }
     return remember(icon, background, iconSize, iconTint) {
         IconPainter(
             icon = iconPainter,
@@ -128,7 +128,7 @@ fun rememberIconPainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter {
-    val iconPainter = rememberEqualityPainterResource(icon)
+    val iconPainter = rememberEquitablePainterResource(icon)
     return remember(icon, iconSize, iconTint) {
         IconPainter(
             icon = iconPainter,

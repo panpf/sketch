@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
-import com.github.panpf.sketch.painter.asEquality
+import com.github.panpf.sketch.painter.asEquitable
 import com.github.panpf.sketch.state.rememberIconAnimatablePainterStateImage
 import com.github.panpf.sketch.test.utils.SizeColorPainter
 import com.github.panpf.sketch.test.utils.asAnimatable
@@ -21,10 +21,10 @@ class IconAnimatablePainterStateImageTest {
         runComposeUiTest {
             val painterIcon =
                 Color.Cyan.let {
-                    SizeColorPainter(it, Size(100f, 100f)).asAnimatable().asEquality(it)
+                    SizeColorPainter(it, Size(100f, 100f)).asAnimatable().asEquitable(it)
                 }
             val painterBackground =
-                Color.Gray.let { ColorPainter(it).asEquality(it) }
+                Color.Gray.let { ColorPainter(it).asEquitable(it) }
             val colorBackground = Color.DarkGray
             val iconSize = Size(200f, 200f)
             val iconTint = Color.Magenta

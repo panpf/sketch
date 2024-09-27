@@ -17,15 +17,15 @@
 package com.github.panpf.sketch.state
 
 import androidx.annotation.DrawableRes
-import com.github.panpf.sketch.drawable.DrawableEqualizer
+import com.github.panpf.sketch.drawable.EquitableDrawable
 
 
 /**
- * Creates a [CurrentStateImage] using the specified [DrawableEqualizer] as the default [StateImage]
+ * Creates a [CurrentStateImage] using the specified [EquitableDrawable] as the default [StateImage]
  *
  * @see com.github.panpf.sketch.core.android.test.state.CurrentStateImageAndroidTest.testCurrentStateImage
  */
-fun CurrentStateImage(defaultDrawable: DrawableEqualizer): CurrentStateImage =
+fun CurrentStateImage(defaultDrawable: EquitableDrawable): CurrentStateImage =
     CurrentStateImage(DrawableStateImage(defaultDrawable))
 
 /**

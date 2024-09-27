@@ -23,6 +23,7 @@
 * change: BitmapConfig 重构为 BitmapColorType
 * change: 合并 AndroidBitmapImage 和 SkiaBitmapImage 为 BitmapImage
 * change: ImageRequest.Builder 和 ImageOptions.Builder 的 setHttpHeader 方法重命名为 httpHeader
+* change: DrawableEqualizer 和 PainterEqualizer 改为 EquitableDrawable 和 EquitablePainter
 * new: 非安卓平台现在也支持 ColorType 了
 * new: 非安卓平台现在也支持 ColorSpace 了
 * new: DrawableDecoder 支持 colorSpace

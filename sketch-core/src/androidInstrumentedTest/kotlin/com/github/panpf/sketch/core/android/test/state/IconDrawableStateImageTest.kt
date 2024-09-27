@@ -23,10 +23,10 @@ import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.DrawableImage
-import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
+import com.github.panpf.sketch.drawable.ColorEquitableDrawable
 import com.github.panpf.sketch.drawable.IconDrawable
-import com.github.panpf.sketch.drawable.asEquality
-import com.github.panpf.sketch.drawable.getEqualityDrawable
+import com.github.panpf.sketch.drawable.asEquitable
+import com.github.panpf.sketch.drawable.getEquitableDrawable
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.state.IconDrawableStateImage
@@ -51,10 +51,10 @@ class IconDrawableStateImageTest {
     fun createIconDrawableStateImage() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val drawableIcon =
-            androidx.core.R.drawable.ic_call_decline.let { context.getEqualityDrawable(it) }
+            androidx.core.R.drawable.ic_call_decline.let { context.getEquitableDrawable(it) }
         val resIcon = androidx.core.R.drawable.ic_call_answer
         val drawableBackground =
-            androidx.core.R.drawable.notification_bg.let { context.getEqualityDrawable(it) }
+            androidx.core.R.drawable.notification_bg.let { context.getEquitableDrawable(it) }
         val resBackground = androidx.core.R.drawable.notification_template_icon_bg
         val intColorBackground = IntColor(Color.BLUE)
         val iconSize = Size(100, 100)
@@ -325,15 +325,15 @@ class IconDrawableStateImageTest {
         val iconDrawable = BitmapDrawable(
             context.resources,
             Bitmap.createBitmap(100, 100, Bitmap.Config.RGB_565)
-        ).let { it.asEquality(it) }
-        val greenBgDrawable = ColorDrawableEqualizer(Color.GREEN)
+        ).let { it.asEquitable(it) }
+        val greenBgDrawable = ColorEquitableDrawable(Color.GREEN)
 
         IconDrawableStateImage(icon = iconDrawable, background = greenBgDrawable)
             .getImage(sketch, request, null)
             ?.asOrThrow<DrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
-                assertEquals(iconDrawable.wrapped, icon)
-                assertEquals(greenBgDrawable.wrapped, background)
+                assertEquals(iconDrawable, icon)
+                assertEquals(greenBgDrawable, background)
                 assertNull(iconSize)
             }
 
@@ -344,7 +344,7 @@ class IconDrawableStateImageTest {
         ).getImage(sketch, request, null)
             ?.asOrThrow<DrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
-                assertEquals(iconDrawable.wrapped, icon)
+                assertEquals(iconDrawable, icon)
                 assertTrue(background is BitmapDrawable)
                 assertEquals(Size(40, 40), iconSize)
             }
@@ -355,7 +355,7 @@ class IconDrawableStateImageTest {
         ).getImage(sketch, request, null)
             ?.asOrThrow<DrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
-                assertEquals(iconDrawable.wrapped, icon)
+                assertEquals(iconDrawable, icon)
                 assertEquals(Color.BLUE, (background as ColorDrawable).color)
                 assertNull(iconSize)
             }
@@ -364,7 +364,7 @@ class IconDrawableStateImageTest {
             .getImage(sketch, request, null)
             ?.asOrThrow<DrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
-                assertEquals(iconDrawable.wrapped, icon)
+                assertEquals(iconDrawable, icon)
                 assertNull(background)
                 assertNull(iconSize)
             }
@@ -377,7 +377,7 @@ class IconDrawableStateImageTest {
             ?.asOrThrow<DrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
                 assertTrue(icon is BitmapDrawable)
-                assertEquals(greenBgDrawable.wrapped, background)
+                assertEquals(greenBgDrawable, background)
                 assertNull(iconSize)
             }
 

@@ -31,7 +31,7 @@ import com.github.panpf.sketch.decode.BitmapColorSpace
 import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.decode.HighQualityColorType
 import com.github.panpf.sketch.decode.LowQualityColorType
-import com.github.panpf.sketch.drawable.asEquality
+import com.github.panpf.sketch.drawable.asEquitable
 import com.github.panpf.sketch.extensions.view.R
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.ImageOptions
@@ -134,13 +134,13 @@ fun parseImageXmlAttributes(context: Context, attrs: AttributeSet? = null): Imag
                     }
                 }
             typedArray.getDrawable(R.styleable.SketchImageView_sketch_placeholder)?.apply {
-                placeholder(this.asEquality(this))
+                placeholder(this.asEquitable(this))
             }
             typedArray.getDrawable(R.styleable.SketchImageView_sketch_fallback)?.apply {
-                fallback(this.asEquality(this))
+                fallback(this.asEquitable(this))
             }
             typedArray.getDrawable(R.styleable.SketchImageView_sketch_error)?.apply {
-                error(this.asEquality(this))
+                error(this.asEquitable(this))
             }
         }.takeIf { !it.isEmpty() }
     } finally {

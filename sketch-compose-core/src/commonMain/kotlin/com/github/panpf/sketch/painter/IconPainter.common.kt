@@ -38,8 +38,8 @@ import com.github.panpf.sketch.util.Key
  */
 @Composable
 fun rememberIconPainter(
-    icon: PainterEqualizer,
-    background: PainterEqualizer? = null,
+    icon: EquitablePainter,
+    background: EquitablePainter? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter = remember(icon, background, iconSize, iconTint) {
@@ -58,7 +58,7 @@ fun rememberIconPainter(
  */
 @Composable
 fun rememberIconPainter(
-    icon: PainterEqualizer,
+    icon: EquitablePainter,
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
@@ -66,7 +66,7 @@ fun rememberIconPainter(
     val backgroundPainter = background?.let { ColorPainter(it) }
     IconPainter(
         icon = icon,
-        background = backgroundPainter?.asEquality(),
+        background = backgroundPainter?.asEquitable(),
         iconSize = iconSize,
         iconTint = iconTint
     )
@@ -79,7 +79,7 @@ fun rememberIconPainter(
  */
 @Composable
 fun rememberIconPainter(
-    icon: PainterEqualizer,
+    icon: EquitablePainter,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter = remember(icon, iconSize, iconTint) {
@@ -100,8 +100,8 @@ fun rememberIconPainter(
  */
 @Stable
 open class IconPainter(
-    val icon: PainterEqualizer,
-    val background: PainterEqualizer? = null,
+    val icon: EquitablePainter,
+    val background: EquitablePainter? = null,
     val iconSize: Size? = null,
     val iconTint: Color? = null,
 ) : Painter(), RememberObserver, SketchPainter, Key {
@@ -125,10 +125,10 @@ open class IconPainter(
     override val intrinsicSize: Size = Size.Unspecified
 
     init {
-        require(icon.wrapped.intrinsicSize.isSpecified) {
+        require(icon.intrinsicSize.isSpecified) {
             "icon's intrinsicSize must be specified"
         }
-        require(background == null || background.wrapped.intrinsicSize.isUnspecified) {
+        require(background == null || background.intrinsicSize.isUnspecified) {
             "background's intrinsicSize must be unspecified"
         }
         require(iconSize == null || iconSize.isSpecified) {
@@ -137,8 +137,8 @@ open class IconPainter(
     }
 
     override fun DrawScope.onDraw() {
-        val icon = icon.wrapped
-        val background = background?.wrapped
+        val icon = icon
+        val background = background
         (icon as? PainterDrawInvalidate)?.drawInvalidateTick?.value
         (background as? PainterDrawInvalidate)?.drawInvalidateTick?.value
 
@@ -160,19 +160,19 @@ open class IconPainter(
     }
 
     override fun onRemembered() {
-        (icon.wrapped as? RememberObserver)?.onRemembered()
-        (background?.wrapped as? RememberObserver)?.onRemembered()
-        (icon.wrapped as? AnimatablePainter)?.start()
-        (background?.wrapped as? AnimatablePainter)?.start()
+        (icon as? RememberObserver)?.onRemembered()
+        (background as? RememberObserver)?.onRemembered()
+        (icon as? AnimatablePainter)?.start()
+        (background as? AnimatablePainter)?.start()
     }
 
     override fun onAbandoned() = onForgotten()
 
     override fun onForgotten() {
-        (icon.wrapped as? AnimatablePainter)?.stop()
-        (background?.wrapped as? AnimatablePainter)?.stop()
-        (icon.wrapped as? RememberObserver)?.onForgotten()
-        (background?.wrapped as? RememberObserver)?.onForgotten()
+        (icon as? AnimatablePainter)?.stop()
+        (background as? AnimatablePainter)?.stop()
+        (icon as? RememberObserver)?.onForgotten()
+        (background as? RememberObserver)?.onForgotten()
     }
 
     override fun equals(other: Any?): Boolean {

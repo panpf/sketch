@@ -18,7 +18,7 @@ package com.github.panpf.sketch.state
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.github.panpf.sketch.painter.rememberEqualityPainterResource
+import com.github.panpf.sketch.painter.rememberEquitablePainterResource
 import org.jetbrains.compose.resources.DrawableResource
 
 /**
@@ -28,6 +28,6 @@ import org.jetbrains.compose.resources.DrawableResource
  */
 @Composable
 fun rememberPainterStateImage(resource: DrawableResource): PainterStateImage {
-    val painter = rememberEqualityPainterResource(resource)
+    val painter = rememberEquitablePainterResource(resource)
     return remember(resource) { PainterStateImage(painter) }
 }

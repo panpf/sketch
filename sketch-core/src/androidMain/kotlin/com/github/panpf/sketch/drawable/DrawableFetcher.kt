@@ -124,32 +124,32 @@ class RealDrawable constructor(val drawable: Drawable) : DrawableFetcher {
 }
 
 /**
- * Get Drawable from real DrawableEqualizer
+ * Get Drawable from real EquitableDrawable
  *
- * @see com.github.panpf.sketch.core.android.test.drawable.RealEqualityDrawableTest
+ * @see com.github.panpf.sketch.core.android.test.drawable.RealEquitableDrawableTest
  */
-class RealEqualityDrawable constructor(val wrapper: DrawableEqualizer) : DrawableFetcher {
+class RealEquitableDrawable constructor(val drawable: EquitableDrawable) : DrawableFetcher {
 
-    override val key: String = "RealEqualityDrawable(${wrapper.key})"
+    override val key: String = "RealEquitableDrawable(${drawable.key})"
 
     override fun getDrawable(context: Context): Drawable {
-        return wrapper.wrapped
+        return drawable
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
-        other as RealEqualityDrawable
-        if (wrapper != other.wrapper) return false
+        other as RealEquitableDrawable
+        if (drawable != other.drawable) return false
         return true
     }
 
     override fun hashCode(): Int {
-        return wrapper.hashCode()
+        return drawable.hashCode()
     }
 
     override fun toString(): String {
-        return "RealEqualityDrawable($wrapper)"
+        return "RealEquitableDrawable($drawable)"
     }
 }
 

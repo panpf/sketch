@@ -19,14 +19,14 @@ package com.github.panpf.sketch.state
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.github.panpf.sketch.drawable.DrawableEqualizer
+import com.github.panpf.sketch.drawable.EquitableDrawable
 
 @Composable
 fun rememberCurrentStateImage(defaultImage: StateImage? = null): CurrentStateImage =
     remember(defaultImage) { CurrentStateImage(defaultImage) }
 
 @Composable
-fun rememberCurrentStateImage(defaultDrawable: DrawableEqualizer): CurrentStateImage =
+fun rememberCurrentStateImage(defaultDrawable: EquitableDrawable): CurrentStateImage =
     remember(defaultDrawable) { CurrentStateImage(defaultDrawable) }
 
 @Composable

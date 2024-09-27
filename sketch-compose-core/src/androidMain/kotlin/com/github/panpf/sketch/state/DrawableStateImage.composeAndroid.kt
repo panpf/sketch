@@ -19,10 +19,10 @@ package com.github.panpf.sketch.state
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.github.panpf.sketch.drawable.DrawableEqualizer
+import com.github.panpf.sketch.drawable.EquitableDrawable
 
 @Composable
-fun rememberDrawableStateImage(drawable: DrawableEqualizer): DrawableStateImage =
+fun rememberDrawableStateImage(drawable: EquitableDrawable): DrawableStateImage =
     remember(drawable) { DrawableStateImage(drawable) }
 
 @Composable

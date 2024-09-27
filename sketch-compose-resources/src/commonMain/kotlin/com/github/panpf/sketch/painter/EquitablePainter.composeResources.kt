@@ -22,14 +22,26 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 /**
- * Create a [PainterEqualizer] that wraps the specified [DrawableResource] and remembers it.
+ * Create a [EquitablePainter] that wraps the specified [DrawableResource] and remembers it.
  *
- * @see com.github.panpf.sketch.compose.resources.common.test.painter.PainterEqualizerComposeResourcesTest.testRememberEqualityPainterResource
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.EquitablePainterComposeResourcesTest.testRememberEquitablePainterResource
  */
 @Composable
-fun rememberEqualityPainterResource(resource: DrawableResource): PainterEqualizer {
+fun rememberEquitablePainterResource(resource: DrawableResource): EquitablePainter {
     val painter = painterResource(resource)
     return remember(resource) {
-        PainterEqualizer(wrapped = painter, equalityKey = resource)
+        painter.asEquitable(equalityKey = resource)
     }
+}
+
+
+/**
+ * Create a [EquitablePainter] that wraps the specified [DrawableResource].
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.EquitablePainterComposeResourcesTest.testEquitablePainterResource
+ */
+@Composable
+fun equitablePainterResource(resource: DrawableResource): EquitablePainter {
+    val painter = painterResource(resource)
+    return painter.asEquitable(equalityKey = resource)
 }

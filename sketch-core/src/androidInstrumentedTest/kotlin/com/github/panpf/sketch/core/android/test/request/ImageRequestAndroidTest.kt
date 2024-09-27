@@ -24,7 +24,7 @@ import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.BitmapColorSpace
 import com.github.panpf.sketch.decode.FixedColorType
-import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
+import com.github.panpf.sketch.drawable.ColorEquitableDrawable
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorSpace
@@ -90,7 +90,7 @@ class ImageRequestAndroidTest {
                 assertEquals(IntColorDrawableStateImage(Color.BLUE), placeholder)
             }
 
-            placeholder(ColorDrawableEqualizer(Color.GREEN))
+            placeholder(ColorEquitableDrawable(Color.GREEN))
             build().apply {
                 assertEquals(true, placeholder is DrawableStateImage)
             }
@@ -140,7 +140,7 @@ class ImageRequestAndroidTest {
                 assertEquals(IntColorDrawableStateImage(Color.BLUE), fallback)
             }
 
-            fallback(ColorDrawableEqualizer(Color.GREEN))
+            fallback(ColorEquitableDrawable(Color.GREEN))
             build().apply {
                 assertEquals(true, fallback is DrawableStateImage)
             }
@@ -193,7 +193,7 @@ class ImageRequestAndroidTest {
                 )
             }
 
-            error(ColorDrawableEqualizer(Color.GREEN))
+            error(ColorEquitableDrawable(Color.GREEN))
             build().apply {
                 assertEquals(true, error is ErrorStateImage)
             }

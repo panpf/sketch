@@ -22,7 +22,7 @@ import androidx.compose.runtime.remember
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
-import com.github.panpf.sketch.painter.PainterEqualizer
+import com.github.panpf.sketch.painter.EquitablePainter
 import com.github.panpf.sketch.request.ImageRequest
 
 /**
@@ -31,7 +31,7 @@ import com.github.panpf.sketch.request.ImageRequest
  * @see com.github.panpf.sketch.compose.core.common.test.state.PainterStateImageTest.testRememberPainterStateImage
  */
 @Composable
-fun rememberPainterStateImage(painter: PainterEqualizer): PainterStateImage =
+fun rememberPainterStateImage(painter: EquitablePainter): PainterStateImage =
     remember(painter) { PainterStateImage(painter) }
 
 /**
@@ -40,12 +40,12 @@ fun rememberPainterStateImage(painter: PainterEqualizer): PainterStateImage =
  * @see com.github.panpf.sketch.compose.core.common.test.state.PainterStateImageTest
  */
 @Stable
-class PainterStateImage(val painter: PainterEqualizer) : StateImage {
+class PainterStateImage(val painter: EquitablePainter) : StateImage {
 
     override val key: String = "PainterStateImage(${painter.key})"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
-        return painter.wrapped.asImage()
+        return painter.asImage()
     }
 
     override fun equals(other: Any?): Boolean {

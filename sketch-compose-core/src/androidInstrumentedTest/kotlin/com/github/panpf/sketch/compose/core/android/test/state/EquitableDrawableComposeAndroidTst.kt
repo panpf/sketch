@@ -1,5 +1,5 @@
 package com.github.panpf.sketch.compose.core.android.test.state
 
-class DrawableEqualizerComposeAndroidTst {
+class EquitableDrawableComposeAndroidTst {
     // TODO test
 }

@@ -4,13 +4,13 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import androidx.core.content.res.ResourcesCompat
 import com.github.panpf.sketch.AndroidBitmap
-import com.github.panpf.sketch.drawable.ColorDrawableEqualizer
-import com.github.panpf.sketch.drawable.DrawableEqualizer
-import com.github.panpf.sketch.drawable.asEquality
-import com.github.panpf.sketch.drawable.getEqualityDrawable
-import com.github.panpf.sketch.drawable.getEqualityDrawableCompat
-import com.github.panpf.sketch.drawable.getEqualityDrawableCompatForDensity
-import com.github.panpf.sketch.drawable.getEqualityDrawableForDensity
+import com.github.panpf.sketch.drawable.ColorEquitableDrawable
+import com.github.panpf.sketch.drawable.EquitableDrawable
+import com.github.panpf.sketch.drawable.asEquitable
+import com.github.panpf.sketch.drawable.getEquitableDrawable
+import com.github.panpf.sketch.drawable.getEquitableDrawableCompat
+import com.github.panpf.sketch.drawable.getEquitableDrawableCompatForDensity
+import com.github.panpf.sketch.drawable.getEquitableDrawableForDensity
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.getDrawableCompat
 import com.github.panpf.sketch.test.utils.getTestContext
@@ -20,45 +20,45 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
-class DrawableEqualizerTest {
+class EquitableDrawableTest {
 
     @Test
-    fun testContextGetEqualityDrawable() {
+    fun testContextGetEquitableDrawable() {
         val context = getTestContext()
         assertEquals(
-            expected = DrawableEqualizer(
-                wrapped = context.getDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)!!,
+            expected = EquitableDrawable(
+                drawable = context.getDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)!!,
                 equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
             ),
-            actual = context.getEqualityDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)
+            actual = context.getEquitableDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)
         )
     }
 
     @Test
-    fun testContextGetEqualityDrawableCompat() {
+    fun testContextGetEquitableDrawableCompat() {
         val context = getTestContext()
         assertEquals(
-            expected = DrawableEqualizer(
-                wrapped = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy),
+            expected = EquitableDrawable(
+                drawable = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy),
                 equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
             ),
-            actual = context.getEqualityDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)
+            actual = context.getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)
         )
     }
 
     @Test
-    fun testResourcesGetEqualityDrawableCompat() {
+    fun testResourcesGetEquitableDrawableCompat() {
         val context = getTestContext()
         assertEquals(
-            expected = DrawableEqualizer(
-                wrapped = ResourcesCompat.getDrawable(
+            expected = EquitableDrawable(
+                drawable = ResourcesCompat.getDrawable(
                     /* res = */ context.resources,
                     /* id = */ com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
                     /* theme = */ null
                 )!!,
                 equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
             ),
-            actual = context.resources.getEqualityDrawableCompat(
+            actual = context.resources.getEquitableDrawableCompat(
                 resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
                 theme = null
             )
@@ -66,11 +66,11 @@ class DrawableEqualizerTest {
     }
 
     @Test
-    fun testResourcesGetEqualityDrawableCompatForDensity() {
+    fun testResourcesGetEquitableDrawableCompatForDensity() {
         val context = getTestContext()
         assertEquals(
-            expected = DrawableEqualizer(
-                wrapped = ResourcesCompat.getDrawableForDensity(
+            expected = EquitableDrawable(
+                drawable = ResourcesCompat.getDrawableForDensity(
                     /* res = */ context.resources,
                     /* id = */ com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
                     /* density = */ 2,
@@ -78,7 +78,7 @@ class DrawableEqualizerTest {
                 )!!,
                 equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
             ),
-            actual = context.resources.getEqualityDrawableCompatForDensity(
+            actual = context.resources.getEquitableDrawableCompatForDensity(
                 resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
                 density = 2,
                 theme = null
@@ -87,29 +87,29 @@ class DrawableEqualizerTest {
     }
 
     @Test
-    fun testResourcesGetEqualityDrawable() {
+    fun testResourcesGetEquitableDrawable() {
         val context = getTestContext()
         assertEquals(
-            expected = DrawableEqualizer(
-                wrapped = context.resources.getDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)!!,
+            expected = EquitableDrawable(
+                drawable = context.resources.getDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)!!,
                 equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
             ),
-            actual = context.resources.getEqualityDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)
+            actual = context.resources.getEquitableDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)
         )
     }
 
     @Test
-    fun testResourcesGetEqualityDrawableTheme() {
+    fun testResourcesGetEquitableDrawableTheme() {
         val context = getTestContext()
         assertEquals(
-            expected = DrawableEqualizer(
-                wrapped = context.resources.getDrawable(
+            expected = EquitableDrawable(
+                drawable = context.resources.getDrawable(
                     /* id = */ com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
                     /* theme = */ null
                 )!!,
                 equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
             ),
-            actual = context.resources.getEqualityDrawable(
+            actual = context.resources.getEquitableDrawable(
                 resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
                 theme = null
             )
@@ -117,17 +117,17 @@ class DrawableEqualizerTest {
     }
 
     @Test
-    fun testResourcesGetEqualityDrawableForDensity() {
+    fun testResourcesGetEquitableDrawableForDensity() {
         val context = getTestContext()
         assertEquals(
-            expected = DrawableEqualizer(
-                wrapped = context.resources.getDrawableForDensity(
+            expected = EquitableDrawable(
+                drawable = context.resources.getDrawableForDensity(
                     /* id = */ com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
                     /* density = */ 2
                 )!!,
                 equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
             ),
-            actual = context.resources.getEqualityDrawableForDensity(
+            actual = context.resources.getEquitableDrawableForDensity(
                 resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
                 density = 2
             )
@@ -135,18 +135,18 @@ class DrawableEqualizerTest {
     }
 
     @Test
-    fun testResourcesGetEqualityDrawableForDensityTheme() {
+    fun testResourcesGetEquitableDrawableForDensityTheme() {
         val context = getTestContext()
         assertEquals(
-            expected = DrawableEqualizer(
-                wrapped = context.resources.getDrawableForDensity(
+            expected = EquitableDrawable(
+                drawable = context.resources.getDrawableForDensity(
                     /* id = */ com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
                     /* density = */ 2,
                     /* theme = */ null
                 )!!,
                 equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
             ),
-            actual = context.resources.getEqualityDrawableForDensity(
+            actual = context.resources.getEquitableDrawableForDensity(
                 resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
                 density = 2,
                 theme = null
@@ -155,44 +155,44 @@ class DrawableEqualizerTest {
     }
 
     @Test
-    fun testDrawableAsEquality() {
+    fun testDrawableAsEquitable() {
         assertEquals(
-            expected = DrawableEqualizer(
-                wrapped = BitmapDrawable(null, AndroidBitmap(100, 100)),
+            expected = EquitableDrawable(
+                drawable = BitmapDrawable(null, AndroidBitmap(100, 100)),
                 equalityKey = 100
             ),
-            actual = BitmapDrawable(null, AndroidBitmap(100, 100)).asEquality(100)
+            actual = BitmapDrawable(null, AndroidBitmap(100, 100)).asEquitable(100)
         )
     }
 
     @Test
-    fun testColorDrawableAsEquality() {
+    fun testColorDrawableAsEquitable() {
         assertEquals(
-            expected = DrawableEqualizer(
-                wrapped = ColorDrawable(TestColor.RED),
+            expected = EquitableDrawable(
+                drawable = ColorDrawable(TestColor.RED),
                 equalityKey = 100
             ),
-            actual = ColorDrawable(TestColor.RED).asEquality(100)
+            actual = ColorDrawable(TestColor.RED).asEquitable(100)
         )
     }
 
     @Test
-    fun testColorDrawableEqualizer() {
+    fun testColorEquitableDrawable() {
         assertEquals(
-            expected = DrawableEqualizer(
-                wrapped = ColorDrawable(TestColor.RED),
+            expected = EquitableDrawable(
+                drawable = ColorDrawable(TestColor.RED),
                 equalityKey = TestColor.RED
             ),
-            actual = ColorDrawableEqualizer(TestColor.RED)
+            actual = ColorEquitableDrawable(TestColor.RED)
         )
     }
 
     @Test
     fun testKey() {
         assertEquals(
-            expected = "DrawableEqualizer('${key(TestColor.RED)}')",
-            actual = DrawableEqualizer(
-                wrapped = ColorDrawable(TestColor.RED),
+            expected = "EquitableDrawable('${key(TestColor.RED)}')",
+            actual = EquitableDrawable(
+                drawable = ColorDrawable(TestColor.RED),
                 equalityKey = TestColor.RED
             ).key
         )
@@ -200,16 +200,16 @@ class DrawableEqualizerTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = DrawableEqualizer(
-            wrapped = ColorDrawable(TestColor.RED),
+        val element1 = EquitableDrawable(
+            drawable = ColorDrawable(TestColor.RED),
             equalityKey = TestColor.RED
         )
-        val element11 = DrawableEqualizer(
-            wrapped = ColorDrawable(TestColor.RED),
+        val element11 = EquitableDrawable(
+            drawable = ColorDrawable(TestColor.RED),
             equalityKey = TestColor.RED
         )
-        val element2 = DrawableEqualizer(
-            wrapped = ColorDrawable(TestColor.RED),
+        val element2 = EquitableDrawable(
+            drawable = ColorDrawable(TestColor.RED),
             equalityKey = TestColor.CYAN
         )
 
@@ -224,11 +224,11 @@ class DrawableEqualizerTest {
 
     @Test
     fun testToString() {
-        val wrapped = ColorDrawable(TestColor.RED)
+        val drawable = ColorDrawable(TestColor.RED)
         assertEquals(
-            expected = "DrawableEqualizer(wrapped=${wrapped.toLogString()}, equalityKey=${TestColor.RED})",
-            actual = DrawableEqualizer(
-                wrapped = wrapped,
+            expected = "EquitableDrawable(drawable=${drawable.toLogString()}, equalityKey=${TestColor.RED})",
+            actual = EquitableDrawable(
+                drawable = drawable,
                 equalityKey = TestColor.RED,
             ).toString()
         )

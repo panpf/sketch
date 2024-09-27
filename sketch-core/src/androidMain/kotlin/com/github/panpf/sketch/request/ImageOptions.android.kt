@@ -25,7 +25,7 @@ import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.decode.BitmapColorSpace
 import com.github.panpf.sketch.decode.BitmapColorType
-import com.github.panpf.sketch.drawable.DrawableEqualizer
+import com.github.panpf.sketch.drawable.EquitableDrawable
 import com.github.panpf.sketch.state.ColorDrawableStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.ErrorStateImage
@@ -50,7 +50,7 @@ fun ImageOptions.Builder.sizeWithDisplay(context: Context): ImageOptions.Builder
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testPlaceholder
  */
-fun ImageOptions.Builder.placeholder(drawable: DrawableEqualizer): ImageOptions.Builder =
+fun ImageOptions.Builder.placeholder(drawable: EquitableDrawable): ImageOptions.Builder =
     placeholder(DrawableStateImage(drawable))
 
 /**
@@ -83,7 +83,7 @@ fun ImageOptions.Builder.placeholder(color: ResColor): ImageOptions.Builder =
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testFallback
  */
-fun ImageOptions.Builder.fallback(drawable: DrawableEqualizer): ImageOptions.Builder =
+fun ImageOptions.Builder.fallback(drawable: EquitableDrawable): ImageOptions.Builder =
     fallback(DrawableStateImage(drawable))
 
 /**
@@ -119,7 +119,7 @@ fun ImageOptions.Builder.fallback(color: ResColor): ImageOptions.Builder =
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testError
  */
 fun ImageOptions.Builder.error(
-    defaultDrawable: DrawableEqualizer,
+    defaultDrawable: EquitableDrawable,
     configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
 ): ImageOptions.Builder = error(DrawableStateImage(defaultDrawable), configBlock)
 

@@ -131,7 +131,7 @@ class AppIconUriFetcherTest {
             assertEquals(DataFrom.LOCAL, dataFrom)
 
             assertEquals(
-                "AppIconDrawableFetcher(packageName='$packageName',versionCode=$versionCode)",
+                "AppIconDrawableFetcher(packageName='$packageName', versionCode=$versionCode)",
                 drawableFetcher.toString()
             )
         }
