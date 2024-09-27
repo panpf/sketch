@@ -38,10 +38,25 @@ import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.source.getFileOrNull
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
-import kotlin.math.roundToInt
+import com.github.panpf.sketch.util.div
 
 /**
  * Use MediaMetadataRetriever to decode video frames
+ *
+ * The following decoding related properties are supported:
+ *
+ * * sizeResolver: Only sampleSize
+ * * sizeMultiplier
+ * * precisionDecider: Only LESS_PIXELS and SMALLER_SIZE is supported
+ * * colorSpace: Only on Android 30 or later
+ * * videoFrameMicros
+ * * videoFramePercent
+ * * videoFrameOption
+ *
+ * The following decoding related properties are not supported:
+ *
+ * * scaleDecider
+ * * colorType
  *
  * @see com.github.panpf.sketch.video.test.decode.internal.VideoFrameDecodeHelperTest
  */
@@ -70,10 +85,6 @@ class VideoFrameDecodeHelper constructor(
     private val exifOrientationHelper by lazy { ExifOrientationHelper(exifOrientation) }
 
     override fun decode(sampleSize: Int): Image {
-        val config = DecodeConfig(request, imageInfo.mimeType, isOpaque = false).apply {
-            this.sampleSize = sampleSize
-        }
-        val option = request.videoFrameOption ?: MediaMetadataRetriever.OPTION_CLOSEST_SYNC
         val frameMicros = request.videoFrameMicros
             ?: request.videoFramePercent?.let { percentDuration ->
                 val duration = mediaMetadataRetriever
@@ -82,59 +93,60 @@ class VideoFrameDecodeHelper constructor(
                 (duration * percentDuration * 1000).toLong()
             }
             ?: 0L
-
-        val inSampleSize = config.sampleSize?.toFloat()
-        val dstWidth = if (inSampleSize != null) {
-            (imageInfo.width / inSampleSize).roundToInt()
-        } else {
-            imageInfo.width
-        }
-        val dstHeight = if (inSampleSize != null) {
-            (imageInfo.height / inSampleSize).roundToInt()
-        } else {
-            imageInfo.height
-        }
+        val option = request.videoFrameOption ?: MediaMetadataRetriever.OPTION_CLOSEST_SYNC
+        val imageSize = imageInfo.size
+        val dstSize = imageSize / sampleSize.toFloat()
         val bitmap = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+                val config = DecodeConfig(request, imageInfo.mimeType, isOpaque = false)
                 val bitmapParams = BitmapParams().apply {
-                    val colorType = config.colorType
-                    if (colorType != null) {
-                        preferredConfig = colorType
-                    }
+                    config.colorType?.also { preferredConfig = it }
                 }
-                mediaMetadataRetriever
-                    .getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight, bitmapParams)
-                    ?: throw DecodeException(
-                        "Failed to getScaledFrameAtTime. frameMicros=%d, option=%s, dst=%dx%d, image=%dx%d, preferredConfig=%s.".format(
-                            frameMicros, optionToName(option), dstWidth, dstHeight,
-                            imageInfo.width, imageInfo.height, config.colorType
-                        )
-                    )
+                mediaMetadataRetriever.getScaledFrameAtTime(
+                    /* timeUs = */ frameMicros,
+                    /* option = */ option,
+                    /* dstWidth = */ dstSize.width,
+                    /* dstHeight = */ dstSize.height,
+                    /* params = */ bitmapParams
+                ) ?: throw DecodeException(
+                    "Failed to getScaledFrameAtTime. " +
+                            "frameMicros=$frameMicros, " +
+                            "option=${optionToName(option)}, " +
+                            "dstSize=$dstSize, " +
+                            "imageSize=$imageSize, " +
+                            "preferredConfig=${config.colorType}"
+                )
             }
 
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 -> {
-                mediaMetadataRetriever
-                    .getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight)
-                    ?: throw DecodeException(
-                        "Failed to getScaledFrameAtTime. frameMicros=%d, option=%s, dst=%dx%d, image=%dx%d.".format(
-                            frameMicros, optionToName(option), dstWidth, dstHeight,
-                            imageInfo.width, imageInfo.height
-                        )
-                    )
+                mediaMetadataRetriever.getScaledFrameAtTime(
+                    /* timeUs = */ frameMicros,
+                    /* option = */ option,
+                    /* dstWidth = */ dstSize.width,
+                    /* dstHeight = */ dstSize.height
+                ) ?: throw DecodeException(
+                    "Failed to getScaledFrameAtTime. " +
+                            "frameMicros=$frameMicros, " +
+                            "option=${optionToName(option)}, " +
+                            "dstSize=$dstSize, " +
+                            "imageSize=$imageSize"
+                )
             }
 
             else -> {
-                mediaMetadataRetriever.getFrameAtTime(frameMicros, option)
-                    ?: throw DecodeException(
-                        "Failed to getFrameAtTime. frameMicros=%d, option=%s, image=%dx%d.".format(
-                            frameMicros, optionToName(option), imageInfo.width, imageInfo.height
-                        )
-                    )
+                mediaMetadataRetriever.getFrameAtTime(
+                    /* timeUs = */ frameMicros,
+                    /* option = */ option
+                ) ?: throw DecodeException(
+                    "Failed to getFrameAtTime. " +
+                            "frameMicros=$frameMicros, " +
+                            "option=${optionToName(option)}, " +
+                            "imageSize=$imageSize"
+                )
             }
         }
-        val image = bitmap.asImage()
-        val correctedImage = exifOrientationHelper.applyToImage(image) ?: image
-        return correctedImage
+        val correctedBitmap = exifOrientationHelper.applyToBitmap(bitmap) ?: bitmap
+        return correctedBitmap.asImage()
     }
 
     override fun decodeRegion(region: Rect, sampleSize: Int): Image {

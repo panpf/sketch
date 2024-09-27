@@ -35,6 +35,24 @@ fun ComponentRegistry.Builder.supportSkiaGif(): ComponentRegistry.Builder = appl
 /**
  * Gif decoder based on Skia
  *
+ * The following decoding related properties are supported:
+ *
+ * * colorType
+ * * colorSpace
+ * * disallowAnimatedImage
+ * * repeatCount
+ * * onAnimationStart
+ * * onAnimationEnd
+ * * cacheDecodeTimeoutFrame
+ *
+ * The following decoding related properties are not supported:
+ *
+ * * sizeResolver
+ * * sizeMultiplier
+ * * precisionDecider
+ * * scaleDecider
+ * * animatedTransformation
+ *
  * @see com.github.panpf.sketch.animated.nonandroid.test.decode.GifSkiaAnimatedDecoderTest
  */
 class GifSkiaAnimatedDecoder(

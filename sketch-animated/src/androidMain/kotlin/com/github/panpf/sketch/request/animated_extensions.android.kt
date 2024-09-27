@@ -79,7 +79,6 @@ fun ImageOptions.Builder.animatedTransformation(
  *
  * @see com.github.panpf.sketch.animated.android.test.request.AnimatedExtensionsAndroidTest.testAnimatedTransformation
  */
-// TODO Support compose
 val ImageOptions.animatedTransformation: AnimatedTransformation?
     get() = extras?.value(ANIMATED_TRANSFORMATION_KEY)
 

@@ -41,6 +41,24 @@ import org.jetbrains.skia.impl.use
 /**
  * Animated image decoder based on Skia
  *
+ * The following decoding related properties are supported:
+ *
+ * * colorType
+ * * colorSpace
+ * * disallowAnimatedImage
+ * * repeatCount
+ * * onAnimationStart
+ * * onAnimationEnd
+ * * cacheDecodeTimeoutFrame
+ *
+ * The following decoding related properties are not supported:
+ *
+ * * sizeResolver
+ * * sizeMultiplier
+ * * precisionDecider
+ * * scaleDecider
+ * * animatedTransformation
+ *
  * @see com.github.panpf.sketch.animated.nonandroid.test.decode.GifSkiaAnimatedDecoderTest
  * @see com.github.panpf.sketch.animated.nonandroid.test.decode.WebpSkiaAnimatedDecoderTest
  */
@@ -71,11 +89,9 @@ open class SkiaAnimatedDecoder(
             _imageInfo ?: readImageInfoWithIgnoreExifOrientation(codec)
                 .apply { _imageInfo = this }
         }
-        // TODO Support resize
         val request = requestContext.request
         val repeatCount = request.repeatCount
         val cacheDecodeTimeoutFrame = request.cacheDecodeTimeoutFrame == true
-        val resize = requestContext.computeResize(imageInfo.size)
         val decodeConfig = DecodeConfig(request, imageInfo.mimeType, codec.isOpaque)
         val newColorType = decodeConfig.colorType ?: codec.imageInfo.colorType
         val newColorSpace = decodeConfig.colorSpace ?: codec.imageInfo.colorSpace
@@ -86,15 +102,18 @@ open class SkiaAnimatedDecoder(
             alphaType = codec.imageInfo.colorAlphaType,
             colorSpace = newColorSpace
         )
+        // TODO Support animatedTransformation
+        val animatedImage = SkiaAnimatedImage(
+            codec = codec,
+            imageInfo = skiaImageInfo,
+            repeatCount = repeatCount,
+            cacheDecodeTimeoutFrame = cacheDecodeTimeoutFrame,
+            animationStartCallback = request.animationStartCallback,
+            animationEndCallback = request.animationEndCallback
+        )
+        val resize = requestContext.computeResize(imageInfo.size)
         return DecodeResult(
-            image = SkiaAnimatedImage(
-                codec = codec,
-                imageInfo = skiaImageInfo,
-                repeatCount = repeatCount,
-                cacheDecodeTimeoutFrame = cacheDecodeTimeoutFrame,
-                animationStartCallback = request.animationStartCallback,
-                animationEndCallback = request.animationEndCallback
-            ),
+            image = animatedImage,
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,
             resize = resize,

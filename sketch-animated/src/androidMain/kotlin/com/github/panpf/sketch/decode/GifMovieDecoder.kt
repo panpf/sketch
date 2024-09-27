@@ -61,12 +61,22 @@ fun ComponentRegistry.Builder.supportMovieGif(): ComponentRegistry.Builder = app
 /**
  * A [Decoder] that uses [Movie] to decode GIFs.
  *
- * Only the following attributes are supported:
+ * The following decoding related properties are supported:
  *
+ * * colorType
+ * * disallowAnimatedImage
  * * repeatCount
  * * animatedTransformation
  * * onAnimationStart
  * * onAnimationEnd
+ *
+ * The following decoding related properties are not supported:
+ *
+ * * sizeResolver
+ * * sizeMultiplier
+ * * precisionDecider
+ * * scaleDecider
+ * * colorSpace
  *
  * @see com.github.panpf.sketch.animated.android.test.decode.GifMovieDecoderTest
  */
@@ -120,8 +130,6 @@ class GifMovieDecoder(
 
             // Set the animated transformation to be applied on each frame.
             setAnimatedTransformation(request.animatedTransformation)
-
-            // TODO Support resize
         }
 
         val animatableDrawable = AnimatableDrawable(movieDrawable).apply {

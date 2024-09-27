@@ -25,6 +25,15 @@ import com.github.panpf.sketch.source.DataSource
 /**
  * Decode image files using Skia Image
  *
+ * The following decoding related properties are supported:
+ *
+ * * sizeResolver
+ * * sizeMultiplier
+ * * precisionDecider
+ * * scaleDecider
+ * * colorType
+ * * colorSpace
+ *
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.SkiaDecoderTest
  */
 class SkiaDecoder(

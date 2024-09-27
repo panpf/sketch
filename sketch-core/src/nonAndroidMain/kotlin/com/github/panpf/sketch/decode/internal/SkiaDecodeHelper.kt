@@ -34,6 +34,15 @@ import org.jetbrains.skia.impl.use
 /**
  * Use Skia Image to decode statics images
  *
+ * The following decoding related properties are supported:
+ *
+ * * sizeResolver
+ * * sizeMultiplier
+ * * precisionDecider
+ * * scaleDecider
+ * * colorType
+ * * colorSpace
+ *
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.SkiaDecodeHelperTest
  */
 class SkiaDecodeHelper constructor(

@@ -24,6 +24,15 @@ import com.github.panpf.sketch.source.DataSource
 /**
  * Decode image files using BitmapFactory
  *
+ * The following decoding related properties are supported:
+ *
+ * * sizeResolver
+ * * sizeMultiplier
+ * * precisionDecider
+ * * scaleDecider
+ * * colorType
+ * * colorSpace
+ *
  * @see com.github.panpf.sketch.core.android.test.decode.internal.BitmapFactoryDecoderTest
  */
 open class BitmapFactoryDecoder(

@@ -37,6 +37,15 @@ import kotlin.math.roundToInt
 /**
  * Extract the icon of the installed app and convert it to Bitmap
  *
+ * The following decoding related properties are supported:
+ *
+ * * sizeResolver
+ * * sizeMultiplier
+ * * precisionDecider
+ * * scaleDecider
+ * * colorType
+ * * colorSpace
+ *
  * @see com.github.panpf.sketch.core.android.test.decode.internal.DrawableDecoderTest
  */
 open class DrawableDecoder(

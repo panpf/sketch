@@ -36,15 +36,24 @@ fun ComponentRegistry.Builder.supportAnimatedWebp(): ComponentRegistry.Builder =
 }
 
 /**
- * Only the following attributes are supported:
+ * Decode webp animated image files using ImageDecoder
  *
- * * resize.size
- * * resize.precision: It is always LESS_PIXELS or SMALLER_SIZE
+ * The following decoding related properties are supported:
+ *
+ * * sizeResolver: Only sampleSize
+ * * sizeMultiplier
+ * * precisionDecider: Only LESS_PIXELS and SMALLER_SIZE is supported
  * * colorSpace
+ * * disallowAnimatedImage
  * * repeatCount
  * * animatedTransformation
  * * onAnimationStart
  * * onAnimationEnd
+ *
+ * The following decoding related properties are not supported:
+ *
+ * * scaleDecider
+ * * colorType
  *
  * @see com.github.panpf.sketch.animated.android.test.decode.WebpAnimatedDecoderTest
  */

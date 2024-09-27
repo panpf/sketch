@@ -43,8 +43,20 @@ fun ComponentRegistry.Builder.supportVideoFrame(): ComponentRegistry.Builder = a
  * Notes: Android O(26/8.0) and before versions do not support scale to read frames,
  * resulting in slow decoding speed and large memory consumption in the case of large videos and causes memory jitter
  *
- * Notes：ImageRequest's preferQualityOverSpeed, colorSpace attributes will not take effect;
- * The colorType attribute takes effect only on Android 30 or later
+ * The following decoding related properties are supported:
+ *
+ * * sizeResolver: Only sampleSize
+ * * sizeMultiplier
+ * * precisionDecider: Only LESS_PIXELS and SMALLER_SIZE is supported
+ * * colorSpace: Only on Android 30 or later
+ * * videoFrameMicros
+ * * videoFramePercent
+ * * videoFrameOption
+ *
+ * The following decoding related properties are not supported:
+ *
+ * * scaleDecider
+ * * colorType
  *
  * @see com.github.panpf.sketch.video.test.decode.VideoFrameDecoderTest
  */

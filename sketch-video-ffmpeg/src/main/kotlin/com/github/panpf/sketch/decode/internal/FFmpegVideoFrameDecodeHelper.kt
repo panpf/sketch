@@ -22,7 +22,6 @@ import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
-import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest
@@ -34,11 +33,26 @@ import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.source.getFileOrNull
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.div
 import wseemann.media.FFmpegMediaMetadataRetriever
-import kotlin.math.roundToInt
 
 /**
  * Use FFmpegMediaMetadataRetriever to decode video frames
+ *
+ * The following decoding related properties are supported:
+ *
+ * * sizeResolver: Only sampleSize
+ * * sizeMultiplier
+ * * precisionDecider: Only LESS_PIXELS and SMALLER_SIZE is supported
+ * * videoFrameMicros
+ * * videoFramePercent
+ * * videoFrameOption
+ *
+ * The following decoding related properties are not supported:
+ *
+ * * scaleDecider
+ * * colorType
+ * * colorSpace
  *
  * @see com.github.panpf.sketch.video.ffmpeg.test.decode.internal.FFmpegVideoFrameDecodeHelperTest
  */
@@ -66,10 +80,6 @@ class FFmpegVideoFrameDecodeHelper(
     private val exifOrientationHelper by lazy { ExifOrientationHelper(exifOrientation) }
 
     override fun decode(sampleSize: Int): Image {
-        val config = DecodeConfig(request, imageInfo.mimeType, isOpaque = false).apply {
-            this.sampleSize = sampleSize
-        }
-        val option = request.videoFrameOption ?: FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC
         val frameMicros = request.videoFrameMicros
             ?: request.videoFramePercent?.let { percentDuration ->
                 val duration = mediaMetadataRetriever
@@ -78,32 +88,23 @@ class FFmpegVideoFrameDecodeHelper(
                 (duration * percentDuration * 1000).toLong()
             }
             ?: 0L
-
-        val inSampleSize = config.sampleSize?.toFloat()
-        val dstWidth = if (inSampleSize != null) {
-            (imageInfo.width / inSampleSize).roundToInt()
-        } else {
-            imageInfo.width
-        }
-        val dstHeight = if (inSampleSize != null) {
-            (imageInfo.height / inSampleSize).roundToInt()
-        } else {
-            imageInfo.height
-        }
-        val bitmap =
-            mediaMetadataRetriever.getScaledFrameAtTime(frameMicros, option, dstWidth, dstHeight)
-        if (bitmap == null) {
-            throw DecodeException(
-                "Failed to getScaledFrameAtTime. " +
-                        "frameMicros=${frameMicros}, " +
-                        "option=${optionToName(option)}, " +
-                        "dst=${dstWidth}x${dstHeight}, " +
-                        "image=${imageInfo.width}x${imageInfo.height}."
-            )
-        }
-        val image = bitmap.asImage()
-        val correctedImage = exifOrientationHelper.applyToImage(image) ?: image
-        return correctedImage
+        val option = request.videoFrameOption ?: FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC
+        val imageSize = imageInfo.size
+        val dstSize = imageSize / sampleSize.toFloat()
+        val bitmap = mediaMetadataRetriever.getScaledFrameAtTime(
+            /* timeUs = */ frameMicros,
+            /* option = */ option,
+            /* width = */ dstSize.width,
+            /* height = */ dstSize.height
+        ) ?: throw DecodeException(
+            "Failed to getScaledFrameAtTime. " +
+                    "frameMicros=${frameMicros}, " +
+                    "option=${optionToName(option)}, " +
+                    "dstSize=${dstSize}, " +
+                    "imageSize=$imageSize"
+        )
+        val correctedBitmap = exifOrientationHelper.applyToBitmap(bitmap) ?: bitmap
+        return correctedBitmap.asImage()
     }
 
     override fun decodeRegion(region: Rect, sampleSize: Int): Image {

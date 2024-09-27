@@ -37,6 +37,15 @@ fun ComponentRegistry.Builder.supportApkIcon(): ComponentRegistry.Builder = appl
 /**
  * Extract the icon of the Apk file and convert it to Bitmap
  *
+ * The following decoding related properties are supported:
+ *
+ * * sizeResolver
+ * * sizeMultiplier
+ * * precisionDecider
+ * * scaleDecider
+ * * colorType
+ * * colorSpace
+ *
  * @see com.github.panpf.sketch.extensions.core.android.test.decode.ApkIconDecoderTest
  */
 class ApkIconDecoder(

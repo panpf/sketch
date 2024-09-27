@@ -62,14 +62,24 @@ fun ComponentRegistry.Builder.supportKoralGif(): ComponentRegistry.Builder = app
 }
 
 /**
- * Only the following attributes are supported:
+ * Decoding GIF using koral GifDrawable
  *
- * * resize.size
- * * resize.precision: It is always LESS_PIXELS
+ * The following decoding related properties are supported:
+ *
+ * * sizeResolver: Only sampleSize
+ * * sizeMultiplier
+ * * precisionDecider: Only LESS_PIXELS and SMALLER_SIZE is supported
+ * * disallowAnimatedImage
  * * repeatCount
  * * animatedTransformation
  * * onAnimationStart
  * * onAnimationEnd
+ *
+ * The following decoding related properties are not supported:
+ *
+ * * scaleDecider
+ * * colorType
+ * * colorSpace
  *
  * @see com.github.panpf.sketch.animated.koralgif.test.decode.GifDrawableDecoderTest
  */

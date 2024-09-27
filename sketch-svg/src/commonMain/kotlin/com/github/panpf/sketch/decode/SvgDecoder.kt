@@ -44,6 +44,15 @@ fun ComponentRegistry.Builder.supportSvg(): ComponentRegistry.Builder = apply {
 /**
  * Decode svg file and convert to Bitmap
  *
+ * The following decoding related properties are supported:
+ *
+ * * sizeResolver
+ * * sizeMultiplier
+ * * precisionDecider
+ * * scaleDecider
+ * * colorType
+ * * colorSpace
+ *
  * @see com.github.panpf.sketch.svg.common.test.decode.SvgDecoderTest
  */
 class SvgDecoder(

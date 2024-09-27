@@ -70,6 +70,15 @@ internal actual fun DataSource.readSvgImageInfo(
 /**
  * Decode the SVG image
  *
+ * The following decoding related properties are supported:
+ *
+ * * sizeResolver
+ * * sizeMultiplier
+ * * precisionDecider
+ * * scaleDecider
+ * * colorType
+ * * colorSpace
+ *
  * @see com.github.panpf.sketch.svg.nonandroid.test.decode.internal.SvgsNonAndroidTest.testDecodeSvg
  */
 internal actual fun DataSource.decodeSvg(

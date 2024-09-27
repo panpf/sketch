@@ -35,9 +35,20 @@ fun ComponentRegistry.Builder.supportFFmpegVideoFrame(): ComponentRegistry.Build
 /**
  * Decode a frame of a video file and convert it to Bitmap
  *
- * Notes: It is not support MediaMetadataRetriever.BitmapParams
+ * The following decoding related properties are supported:
  *
- * Notes：ImageRequest's preferQualityOverSpeed, colorType, colorSpace attributes will not take effect
+ * * sizeResolver: Only sampleSize
+ * * sizeMultiplier
+ * * precisionDecider: Only LESS_PIXELS and SMALLER_SIZE is supported
+ * * videoFrameMicros
+ * * videoFramePercent
+ * * videoFrameOption
+ *
+ * The following decoding related properties are not supported:
+ *
+ * * scaleDecider
+ * * colorType
+ * * colorSpace
  *
  * @see com.github.panpf.sketch.video.ffmpeg.test.decode.FFmpegVideoFrameDecoderTest
  */
