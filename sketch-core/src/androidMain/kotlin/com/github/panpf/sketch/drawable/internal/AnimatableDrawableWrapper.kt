@@ -34,18 +34,27 @@ import com.github.panpf.sketch.util.requiredMainThread
  *
  * @see com.github.panpf.sketch.core.android.test.drawable.internal.AnimatableDrawableWrapperTest
  */
-abstract class AnimatableDrawableWrapper constructor(
+open class AnimatableDrawableWrapper constructor(
     drawable: Drawable,
 ) : DrawableWrapperCompat(drawable), Animatable2Compat {
 
     private var callbacks: MutableList<Animatable2Compat.AnimationCallback>? = null
-    private var callbackMap: HashMap<Animatable2Compat.AnimationCallback, Animatable2.AnimationCallback>? =
+    private var callbackProxyMap: HashMap<Animatable2Compat.AnimationCallback, Animatable2.AnimationCallback>? =
         null
     private val handler by lazy { Handler(Looper.getMainLooper()) }
 
     init {
+        checkDrawable(drawable)
+    }
+
+    override fun setDrawable(drawable: Drawable?) {
+        checkDrawable(drawable)
+        super.setDrawable(drawable)
+    }
+
+    private fun checkDrawable(drawable: Drawable?) {
         require(drawable is Animatable) {
-            "animatableDrawable must implement the Animatable"
+            "drawable must implement the Animatable"
         }
     }
 
@@ -54,11 +63,11 @@ abstract class AnimatableDrawableWrapper constructor(
         val drawable = drawable
         when {
             VERSION.SDK_INT >= VERSION_CODES.M && drawable is Animatable2 -> {
-                val callbackMap = callbackMap
+                val callbackProxyMap = callbackProxyMap
                     ?: HashMap<Animatable2Compat.AnimationCallback, Animatable2.AnimationCallback>().apply {
-                        this@AnimatableDrawableWrapper.callbackMap = this
+                        this@AnimatableDrawableWrapper.callbackProxyMap = this
                     }
-                if (callbackMap[callback] == null) {
+                if (callbackProxyMap[callback] == null) {
                     val proxyCallback = object : Animatable2.AnimationCallback() {
                         override fun onAnimationStart(drawable: Drawable?) {
                             callback.onAnimationStart(drawable)
@@ -68,7 +77,7 @@ abstract class AnimatableDrawableWrapper constructor(
                             callback.onAnimationEnd(drawable)
                         }
                     }
-                    callbackMap[callback] = proxyCallback
+                    callbackProxyMap[callback] = proxyCallback
                     drawable.registerAnimationCallback(proxyCallback)
                 }
             }
@@ -93,8 +102,8 @@ abstract class AnimatableDrawableWrapper constructor(
         val drawable = drawable
         return when {
             VERSION.SDK_INT >= VERSION_CODES.M && drawable is Animatable2 -> {
-                callbackMap?.get(callback)
-                    ?.let { drawable.unregisterAnimationCallback(it) } == true
+                val proxyCallback = callbackProxyMap?.remove(callback)
+                proxyCallback?.let { drawable.unregisterAnimationCallback(it) } == true
             }
 
             drawable is Animatable2Compat -> {
@@ -111,7 +120,7 @@ abstract class AnimatableDrawableWrapper constructor(
         val drawable = drawable
         when {
             VERSION.SDK_INT >= VERSION_CODES.M && drawable is Animatable2 -> {
-                callbackMap?.clear()
+                callbackProxyMap?.clear()
                 drawable.clearAnimationCallbacks()
             }
 
@@ -158,10 +167,7 @@ abstract class AnimatableDrawableWrapper constructor(
     }
 
     override fun isRunning(): Boolean {
-        val drawable = drawable
-        if (drawable !is Animatable) {
-            throw IllegalArgumentException("Drawable must implement the Animatable interface")
-        }
+        val drawable = drawable as Animatable
         return drawable.isRunning
     }
 }

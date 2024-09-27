@@ -19,13 +19,9 @@
 package com.github.panpf.sketch.fetch
 
 import android.content.Context
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.drawable.DrawableFetcher
-import com.github.panpf.sketch.internal.versionCodeCompat
+import com.github.panpf.sketch.drawable.AppIconDrawableFetcher
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.source.DataFrom
@@ -137,46 +133,4 @@ class AppIconUriFetcher constructor(
         }
     }
 
-    class AppIconDrawableFetcher(
-        private val packageName: String,
-        private val versionCode: Int,
-    ) : DrawableFetcher {
-
-        override val key: String =
-            "AppIconDrawableFetcher(packageName='$packageName',versionCode=$versionCode)"
-
-        override fun getDrawable(context: Context): Drawable {
-            val packageManager = context.packageManager
-            val packageInfo: PackageInfo = try {
-                packageManager.getPackageInfo(packageName, 0)
-            } catch (e: PackageManager.NameNotFoundException) {
-                throw Exception("Not found PackageInfo by '$packageName'", e)
-            }
-            val appVersionCode = packageInfo.versionCodeCompat
-            if (appVersionCode != versionCode) {
-                throw Exception("App versionCode mismatch, $appVersionCode != $versionCode")
-            }
-            return packageInfo.applicationInfo.loadIcon(packageManager)
-                ?: throw Exception("loadIcon return null '$packageName'")
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other == null || this::class != other::class) return false
-            other as AppIconDrawableFetcher
-            if (packageName != other.packageName) return false
-            if (versionCode != other.versionCode) return false
-            return true
-        }
-
-        override fun hashCode(): Int {
-            var result = packageName.hashCode()
-            result = 31 * result + versionCode
-            return result
-        }
-
-        override fun toString(): String {
-            return "AppIconDrawableFetcher(packageName='$packageName',versionCode=$versionCode)"
-        }
-    }
 }

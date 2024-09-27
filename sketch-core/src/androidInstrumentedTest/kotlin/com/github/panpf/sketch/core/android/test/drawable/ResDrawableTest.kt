@@ -26,11 +26,27 @@ import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNotSame
 import kotlin.test.assertSame
 
 @RunWith(AndroidJUnit4::class)
 class ResDrawableTest {
+
+    @Test
+    fun testKey() {
+        val context = getTestContext()
+        assertEquals(
+            expected = "ResDrawable(${android.R.drawable.ic_delete})",
+            actual = ResDrawable(android.R.drawable.ic_delete).key
+        )
+        assertEquals(
+            expected = "ResDrawable(resId=${android.R.drawable.ic_delete},resources=${context.resources},packageName=${context.packageName})",
+            actual = ResDrawable(
+                android.R.drawable.ic_delete,
+                context.resources,
+                context.packageName
+            ).key
+        )
+    }
 
     @Test
     fun testGetDrawable() {
@@ -54,55 +70,47 @@ class ResDrawableTest {
     }
 
     @Test
-    fun testToString() {
-        ResDrawable(android.R.drawable.ic_delete).apply {
-            assertEquals("ResDrawable(${android.R.drawable.ic_delete})", toString())
-        }
-
-        ResDrawable(android.R.drawable.bottom_bar).apply {
-            assertEquals("ResDrawable(${android.R.drawable.bottom_bar})", toString())
-        }
-
-        val context = getTestContext()
-        ResDrawable(
-            resId = android.R.drawable.bottom_bar,
-            packageName = context.packageName,
-            resources = context.resources
-        ).apply {
-            assertEquals(
-                "ResDrawable(packageName=${context.packageName}, resources=${context.resources}, resId=${android.R.drawable.bottom_bar})",
-                toString()
-            )
-        }
-    }
-
-    @Test
     fun testEqualsAndHashCode() {
+        val context = getTestContext()
         val element1 = ResDrawable(android.R.drawable.ic_delete)
         val element11 = ResDrawable(android.R.drawable.ic_delete)
         val element2 = ResDrawable(android.R.drawable.bottom_bar)
-        val element3 = ResDrawable(android.R.drawable.btn_dialog)
-
-        assertNotSame(element1, element11)
-        assertNotSame(element1, element2)
-        assertNotSame(element1, element3)
-        assertNotSame(element2, element11)
-        assertNotSame(element2, element3)
+        val element3 = ResDrawable(android.R.drawable.ic_delete, resources = context.resources)
+        val element4 = ResDrawable(android.R.drawable.ic_delete, packageName = context.packageName)
 
         assertEquals(element1, element1)
-        assertEquals(element1, element11)
         assertNotEquals(element1, element2)
         assertNotEquals(element1, element3)
-        assertNotEquals(element2, element11)
+        assertNotEquals(element1, element4)
         assertNotEquals(element2, element3)
+        assertNotEquals(element2, element4)
+        assertNotEquals(element3, element4)
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
-        assertEquals(element1.hashCode(), element1.hashCode())
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
         assertNotEquals(element1.hashCode(), element3.hashCode())
-        assertNotEquals(element2.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element4.hashCode())
         assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element4.hashCode())
+        assertNotEquals(element3.hashCode(), element4.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        val context = getTestContext()
+        assertEquals(
+            expected = "ResDrawable(${android.R.drawable.ic_delete})",
+            actual = ResDrawable(android.R.drawable.ic_delete).toString()
+        )
+        assertEquals(
+            expected = "ResDrawable(resId=${android.R.drawable.ic_delete}, resources=${context.resources}, packageName=${context.packageName})",
+            actual = ResDrawable(
+                android.R.drawable.ic_delete,
+                context.resources,
+                context.packageName
+            ).toString()
+        )
     }
 }

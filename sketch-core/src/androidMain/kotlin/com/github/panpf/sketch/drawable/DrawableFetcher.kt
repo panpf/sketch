@@ -51,7 +51,7 @@ class ResDrawable constructor(
 ) : DrawableFetcher {
 
     override val key: String = if (packageName != null && resources != null) {
-        "ResDrawable(packageName=$packageName,resources=$resources,resId=$resId)"
+        "ResDrawable(resId=$resId,resources=$resources,packageName=$packageName)"
     } else {
         "ResDrawable($resId)"
     }
@@ -71,22 +71,22 @@ class ResDrawable constructor(
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as ResDrawable
-        if (packageName != other.packageName) return false
-        if (resources != other.resources) return false
         if (resId != other.resId) return false
+        if (resources != other.resources) return false
+        if (packageName != other.packageName) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = packageName?.hashCode() ?: 0
+        var result = resId.hashCode()
         result = 31 * result + (resources?.hashCode() ?: 0)
-        result = 31 * result + resId
+        result = 31 * result + (packageName?.hashCode() ?: 0)
         return result
     }
 
     override fun toString(): String {
         return if (packageName != null && resources != null) {
-            "ResDrawable(packageName=$packageName, resources=$resources, resId=$resId)"
+            "ResDrawable(resId=$resId, resources=$resources, packageName=$packageName)"
         } else {
             "ResDrawable($resId)"
         }

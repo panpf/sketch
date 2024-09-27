@@ -181,13 +181,13 @@ fun ColorDrawableEqualizer(@ColorInt color: Int): DrawableEqualizer {
  *
  * @see com.github.panpf.sketch.core.android.test.drawable.DrawableEqualizerTest
  */
+// TODO Change it to EqualsDrawable, inherit from DrawableWrapper to implement Equalizer and implement the equals function. You can also consider that the Equalizer interface is not needed.
 class DrawableEqualizer constructor(
     override val wrapped: Drawable,
     override val equalityKey: Any,
-    private val equalityKeyString: String = key(equalityKey)
 ) : Equalizer<Drawable>, Key {
 
-    override val key: String = equalityKeyString
+    override val key: String = "DrawableEqualizer('${key(equalityKey)}')"
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -202,6 +202,6 @@ class DrawableEqualizer constructor(
     }
 
     override fun toString(): String {
-        return "DrawableEqualizer(wrapped=${wrapped.toLogString()}, equalityKey=$equalityKeyString)"
+        return "DrawableEqualizer(wrapped=${wrapped.toLogString()}, equalityKey=$equalityKey)"
     }
 }
