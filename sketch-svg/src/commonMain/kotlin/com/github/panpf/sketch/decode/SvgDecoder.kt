@@ -59,8 +59,8 @@ class SvgDecoder(
     private val requestContext: RequestContext,
     private val dataSource: DataSource,
     private val useViewBoundsAsIntrinsicSize: Boolean = true,
-    private val backgroundColor: Int?,
-    private val css: String?,
+    private val backgroundColor: Int? = null,
+    private val css: String? = null,
 ) : Decoder {
 
     companion object {

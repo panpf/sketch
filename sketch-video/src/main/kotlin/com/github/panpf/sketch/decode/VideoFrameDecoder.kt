@@ -62,9 +62,9 @@ fun ComponentRegistry.Builder.supportVideoFrame(): ComponentRegistry.Builder = a
  */
 @TargetApi(Build.VERSION_CODES.O_MR1)
 class VideoFrameDecoder constructor(
-    private val requestContext: RequestContext,
-    private val dataSource: DataSource,
-    private val mimeType: String,
+    requestContext: RequestContext,
+    dataSource: DataSource,
+    mimeType: String,
 ) : HelperDecoder(
     requestContext = requestContext,
     dataSource = dataSource,
