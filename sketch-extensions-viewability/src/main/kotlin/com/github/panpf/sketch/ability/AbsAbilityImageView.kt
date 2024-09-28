@@ -188,8 +188,11 @@ abstract class AbsAbilityImageView @JvmOverloads constructor(
 
     override fun onSaveInstanceState(): Parcelable? {
         val superParcelable = super.onSaveInstanceState()
-        val abilityListStateBundle1 =
-            viewAbilityManager?.onSaveInstanceState() ?: return superParcelable
+        val abilityListStateBundle1 = viewAbilityManager?.onSaveInstanceState()
+        @Suppress("FoldInitializerAndIfToElvis", "RedundantSuppression")
+        if (abilityListStateBundle1 == null) {
+            return superParcelable
+        }
         return SavedState(superParcelable).apply {
             abilityListStateBundle = abilityListStateBundle1
         }

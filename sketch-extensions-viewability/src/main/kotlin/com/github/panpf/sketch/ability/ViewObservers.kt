@@ -26,7 +26,6 @@ import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.Progress
-import com.github.panpf.sketch.request.RequestState
 
 /**
  * Mark as need to observe View
@@ -68,7 +67,7 @@ interface DrawForegroundObserver : ViewObserver {
 /**
  * Observe View's size changed event
  */
-interface SizeChangeObserver : ViewObserver {
+interface SizeChangedObserver : ViewObserver {
     fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int)
 }
 
@@ -152,8 +151,4 @@ interface InstanceStateObserver : ViewObserver {
     fun onSaveInstanceState(): Bundle?
 
     fun onRestoreInstanceState(state: Bundle?)
-}
-
-interface RequestStateObserver : ViewObserver {
-    val requestState: RequestState
 }

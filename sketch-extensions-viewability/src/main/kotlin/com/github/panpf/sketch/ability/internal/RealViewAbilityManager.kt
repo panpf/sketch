@@ -38,7 +38,7 @@ import com.github.panpf.sketch.ability.LongClickObserver
 import com.github.panpf.sketch.ability.RequestListenerObserver
 import com.github.panpf.sketch.ability.RequestProgressListenerObserver
 import com.github.panpf.sketch.ability.ScaleTypeObserver
-import com.github.panpf.sketch.ability.SizeChangeObserver
+import com.github.panpf.sketch.ability.SizeChangedObserver
 import com.github.panpf.sketch.ability.TouchEventObserver
 import com.github.panpf.sketch.ability.ViewAbility
 import com.github.panpf.sketch.ability.ViewAbilityContainer
@@ -74,7 +74,7 @@ class RealViewAbilityManager(
 
     private var attachObserverList: List<AttachObserver>? = null
     private var layoutAbilityList: List<LayoutObserver>? = null
-    private var sizeChangeAbilityList: List<SizeChangeObserver>? = null
+    private var sizeChangedAbilityList: List<SizeChangedObserver>? = null
     private var drawObserverList: List<DrawObserver>? = null
     private var drawForegroundObserverList: List<DrawForegroundObserver>? = null
     private var touchEventObserverList: List<TouchEventObserver>? = null
@@ -96,8 +96,8 @@ class RealViewAbilityManager(
             _viewAbilityList.filterIsInstance<AttachObserver>().takeIf { it.isNotEmpty() }
         layoutAbilityList =
             _viewAbilityList.filterIsInstance<LayoutObserver>().takeIf { it.isNotEmpty() }
-        sizeChangeAbilityList =
-            _viewAbilityList.filterIsInstance<SizeChangeObserver>()
+        sizeChangedAbilityList =
+            _viewAbilityList.filterIsInstance<SizeChangedObserver>()
                 .takeIf { it.isNotEmpty() }
         drawObserverList =
             _viewAbilityList.filterIsInstance<DrawObserver>().takeIf { it.isNotEmpty() }
@@ -205,7 +205,7 @@ class RealViewAbilityManager(
     }
 
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
-        sizeChangeAbilityList?.forEach {
+        sizeChangedAbilityList?.forEach {
             it.onSizeChanged(width, height, oldWidth, oldHeight)
         }
     }
