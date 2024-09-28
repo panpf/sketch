@@ -18,7 +18,6 @@ package com.github.panpf.sketch.animated.koralgif.test
 
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.newFileUri
 import com.github.panpf.sketch.images.ResourceImageFile
@@ -32,7 +31,7 @@ import com.github.panpf.sketch.source.DataFrom.NETWORK
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
-import com.github.panpf.sketch.test.singleton.sketch
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.asOrThrow
 import okio.Path
 import okio.Source
@@ -49,8 +48,7 @@ class GifInfoHandlerHelperTest {
 
     @Test
     fun test() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = getTestContextAndSketch()
 
         AssetDataSource(
             context = context,

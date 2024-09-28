@@ -22,6 +22,7 @@ import com.github.panpf.sketch.decode.internal.createResizeTransformed
 import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.decode.supportSvg
 import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
@@ -29,9 +30,10 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.createDecoderOrDefault
+import com.github.panpf.sketch.test.utils.createDecoderOrNull
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.fetch
-import com.github.panpf.sketch.test.utils.toDecoder
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchSize
@@ -42,135 +44,53 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNotSame
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class SvgDecoderTest {
 
     @Test
     fun testSupportSvg() {
-        ComponentRegistry.Builder().apply {
-            build().apply {
-                assertEquals(
-                    "ComponentRegistry(" +
-                            "fetcherFactoryList=[]," +
-                            "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]," +
-                            "decodeInterceptorList=[]" +
-                            ")",
-                    toString()
-                )
-            }
+        ComponentRegistry().apply {
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetcherFactoryList=[]," +
+                        "decoderFactoryList=[]," +
+                        "requestInterceptorList=[]," +
+                        "decodeInterceptorList=[]" +
+                        ")",
+                actual = toString()
+            )
+        }
 
+        ComponentRegistry {
             supportSvg()
-            build().apply {
-                assertEquals(
-                    "ComponentRegistry(" +
-                            "fetcherFactoryList=[]," +
-                            "decoderFactoryList=[SvgDecoder(useViewBoundsAsIntrinsicSize=true)]," +
-                            "requestInterceptorList=[]," +
-                            "decodeInterceptorList=[]" +
-                            ")",
-                    toString()
-                )
-            }
+        }.apply {
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetcherFactoryList=[]," +
+                        "decoderFactoryList=[SvgDecoder(useViewBoundsAsIntrinsicSize=true)]," +
+                        "requestInterceptorList=[]," +
+                        "decodeInterceptorList=[]" +
+                        ")",
+                actual = toString()
+            )
+        }
 
+        ComponentRegistry {
             supportSvg()
-            build().apply {
-                assertEquals(
-                    "ComponentRegistry(" +
-                            "fetcherFactoryList=[]," +
-                            "decoderFactoryList=[SvgDecoder(useViewBoundsAsIntrinsicSize=true),SvgDecoder(useViewBoundsAsIntrinsicSize=true)]," +
-                            "requestInterceptorList=[]," +
-                            "decodeInterceptorList=[]" +
-                            ")",
-                    toString()
-                )
-            }
-        }
-    }
-
-    @Test
-    fun testFactory() = runTest {
-        val (context, sketch) = getTestContextAndSketch()
-
-        assertEquals(
-            "SvgDecoder(useViewBoundsAsIntrinsicSize=false)",
-            SvgDecoder.Factory(false).toString()
-        )
-        assertEquals(
-            "SvgDecoder(useViewBoundsAsIntrinsicSize=true)",
-            SvgDecoder.Factory(true).toString()
-        )
-
-        // normal
-        val factory = SvgDecoder.Factory(false)
-        ImageRequest(context, ResourceImages.svg.uri)
-            .let {
-                val fetchResult =
-                    sketch.components.newFetcherOrThrow(it.toRequestContext(sketch, Size.Empty))
-                        .fetch().getOrThrow()
-                factory.create(it.toRequestContext(sketch), fetchResult)
-            }.apply {
-                assertNotNull(this)
-            }
-
-        // data error
-        ImageRequest(context, ResourceImages.png.uri)
-            .let {
-                val fetchResult =
-                    sketch.components.newFetcherOrThrow(it.toRequestContext(sketch, Size.Empty))
-                        .fetch().getOrThrow()
-                factory.create(it.toRequestContext(sketch), fetchResult)
-            }.apply {
-                assertNull(this)
-            }
-
-        // mimeType error
-        ImageRequest(context, ResourceImages.svg.uri).let {
-            val fetchResult =
-                sketch.components.newFetcherOrThrow(it.toRequestContext(sketch, Size.Empty)).fetch()
-                    .getOrThrow()
-                    .copy(mimeType = "image/svg")
-            factory.create(it.toRequestContext(sketch), fetchResult)
+            supportSvg()
         }.apply {
-            assertNotNull(this)
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetcherFactoryList=[]," +
+                        "decoderFactoryList=[SvgDecoder(useViewBoundsAsIntrinsicSize=true),SvgDecoder(useViewBoundsAsIntrinsicSize=true)]," +
+                        "requestInterceptorList=[]," +
+                        "decodeInterceptorList=[]" +
+                        ")",
+                actual = toString()
+            )
         }
-
-        // Disguised, mimeType; data error
-        ImageRequest(context, ResourceImages.png.uri).let {
-            val fetchResult =
-                sketch.components.newFetcherOrThrow(it.toRequestContext(sketch, Size.Empty)).fetch()
-                    .getOrThrow()
-                    .copy(mimeType = "image/svg+xml")
-            factory.create(it.toRequestContext(sketch), fetchResult)
-        }.apply {
-            assertNull(this)
-        }
-    }
-
-    @Test
-    fun testFactoryEqualsAndHashCode() {
-        val element1 = SvgDecoder.Factory()
-        val element11 = SvgDecoder.Factory()
-        val element2 = SvgDecoder.Factory(false)
-
-        assertNotSame(element1, element11)
-        assertNotSame(element1, element2)
-        assertNotSame(element2, element11)
-
-        assertEquals(element1, element1)
-        assertEquals(element1, element11)
-        assertNotEquals(element1, element2)
-        assertNotEquals(element2, element11)
-        assertNotEquals(element1, null as SvgDecoder.Factory?)
-        assertNotEquals(element1, Any())
-
-        assertEquals(element1.hashCode(), element1.hashCode())
-        assertEquals(element1.hashCode(), element11.hashCode())
-        assertNotEquals(element1.hashCode(), element2.hashCode())
-        assertNotEquals(element2.hashCode(), element11.hashCode())
     }
 
     @Test
@@ -179,16 +99,22 @@ class SvgDecoderTest {
 
         val factory = SvgDecoder.Factory()
         ImageRequest(context, ResourceImages.svg.uri)
-            .toDecoder(sketch, factory)
-            .imageInfo.apply {
-                assertEquals("ImageInfo(257x226,'image/svg+xml')", this.toShortString())
+            .createDecoderOrDefault(sketch, factory)
+            .apply {
+                assertEquals(
+                    expected = "ImageInfo(257x226,'image/svg+xml')",
+                    actual = imageInfo.toShortString()
+                )
             }
 
         val factory1 = SvgDecoder.Factory(useViewBoundsAsIntrinsicSize = false)
         ImageRequest(context, ResourceImages.svg.uri)
-            .toDecoder(sketch, factory1)
-            .imageInfo.apply {
-                assertEquals("ImageInfo(256x225,'image/svg+xml')", this.toShortString())
+            .createDecoderOrDefault(sketch, factory1)
+            .apply {
+                assertEquals(
+                    expected = "ImageInfo(256x225,'image/svg+xml')",
+                    actual = imageInfo.toShortString()
+                )
             }
     }
 
@@ -202,18 +128,21 @@ class SvgDecoderTest {
         ImageRequest(context, ResourceImages.svg.uri)
             .decode(sketch, factory).apply {
                 assertEquals(
-                    "ImageInfo(257x226,'image/svg+xml')",
-                    imageInfo.toShortString()
+                    expected = "ImageInfo(257x226,'image/svg+xml')",
+                    actual = imageInfo.toShortString()
                 )
                 val size = context.screenSize()
                 val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, size)
                 val bitmapSize = imageInfo.size.times(sizeMultiplier)
-                assertEquals(bitmapSize, image.size)
-                assertEquals(LOCAL, dataFrom)
+                assertEquals(expected = bitmapSize, actual = image.size)
+                assertEquals(expected = LOCAL, actual = dataFrom)
                 if (sizeMultiplier != 1f) {
-                    assertEquals(listOf(createScaledTransformed(sizeMultiplier)), transformeds)
+                    assertEquals(
+                        expected = listOf(createScaledTransformed(sizeMultiplier)),
+                        actual = transformeds
+                    )
                 } else {
-                    assertNull(transformeds)
+                    assertNull(actual = transformeds)
                 }
             }
 
@@ -310,5 +239,96 @@ class SvgDecoderTest {
                 )
             }
         }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, ResourceImages.svg.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = ResourceImages.svg.toDataSource(context)
+        val element1 = SvgDecoder(requestContext, dataSource)
+        val element11 = SvgDecoder(requestContext, dataSource)
+
+        assertNotEquals(illegal = element1, actual = element11)
+        assertNotEquals(illegal = element1, actual = null as Any?)
+        assertNotEquals(illegal = element1, actual = Any())
+        assertNotEquals(illegal = element1.hashCode(), actual = element11.hashCode())
+    }
+
+    @Test
+    fun testToString() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, ResourceImages.svg.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = ResourceImages.svg.toDataSource(context)
+        val decoder = SvgDecoder(requestContext, dataSource)
+        assertTrue(actual = decoder.toString().contains("SvgDecoder"))
+        assertTrue(actual = decoder.toString().contains("@"))
+    }
+
+    @Test
+    fun testFactoryKey() {
+        assertEquals(
+            expected = "SvgDecoder(useViewBoundsAsIntrinsicSize=false)",
+            actual = SvgDecoder.Factory(false).key
+        )
+    }
+
+    @Test
+    fun testFactoryCreate() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        // normal
+        val factory = SvgDecoder.Factory(false)
+        ImageRequest(context, ResourceImages.svg.uri)
+            .createDecoderOrNull(sketch, factory).apply {
+                assertTrue(this is SvgDecoder)
+            }
+
+        // data error
+        ImageRequest(context, ResourceImages.png.uri)
+            .createDecoderOrNull(sketch, factory).apply {
+                assertNull(this)
+            }
+
+        // mimeType error
+        ImageRequest(context, ResourceImages.svg.uri)
+            .createDecoderOrNull(sketch, factory) {
+                it.copy(mimeType = "image/svg")
+            }.apply {
+                assertTrue(this is SvgDecoder)
+            }
+
+        // Correct mimeType; data error
+        ImageRequest(context, ResourceImages.png.uri)
+            .createDecoderOrNull(sketch, factory) {
+                it.copy(mimeType = "image/svg+xml")
+            }.apply {
+                assertNull(this)
+            }
+    }
+
+    @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = SvgDecoder.Factory()
+        val element11 = SvgDecoder.Factory()
+        val element2 = SvgDecoder.Factory(false)
+
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, null as SvgDecoder.Factory?)
+        assertNotEquals(element1, Any())
+
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+    }
+
+    @Test
+    fun testFactoryToString() {
+        assertEquals(
+            expected = "SvgDecoder(useViewBoundsAsIntrinsicSize=false)",
+            actual = SvgDecoder.Factory(false).toString()
+        )
     }
 }

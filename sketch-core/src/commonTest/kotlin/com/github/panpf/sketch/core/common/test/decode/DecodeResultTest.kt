@@ -56,7 +56,7 @@ class DecodeResultTest {
                 "ImageInfo(size=3000x500, mimeType='image/png')",
                 imageInfo.toString()
             )
-            assertEquals(LOCAL, dataFrom)
+            assertEquals(expected = LOCAL, actual = dataFrom)
             assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
             assertEquals(
                 "InSampledTransformed(4), RotateTransformed(45)",
@@ -108,7 +108,7 @@ class DecodeResultTest {
         ).apply {
             assertEquals(image1, image)
             assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
-            assertEquals(LOCAL, dataFrom)
+            assertEquals(expected = LOCAL, actual = dataFrom)
             assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
             assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
@@ -125,7 +125,7 @@ class DecodeResultTest {
             assertEquals(result, this)
             assertEquals(image1, image)
             assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
-            assertEquals(LOCAL, dataFrom)
+            assertEquals(expected = LOCAL, actual = dataFrom)
             assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
             assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
@@ -142,7 +142,7 @@ class DecodeResultTest {
             assertNotEquals(result, this)
             assertEquals(image2, image)
             assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
-            assertEquals(LOCAL, dataFrom)
+            assertEquals(expected = LOCAL, actual = dataFrom)
             assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
             assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
@@ -160,7 +160,7 @@ class DecodeResultTest {
                 assertNotEquals(result, this)
                 assertEquals(image1, image)
                 assertEquals(ImageInfo(200, 200, "image/png"), imageInfo)
-                assertEquals(LOCAL, dataFrom)
+                assertEquals(expected = LOCAL, actual = dataFrom)
                 assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
                 assertEquals(
                     listOf(createInSampledTransformed(4), createRotateTransformed(45)),
@@ -196,7 +196,7 @@ class DecodeResultTest {
             assertNotEquals(result, this)
             assertEquals(image1, image)
             assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
-            assertEquals(LOCAL, dataFrom)
+            assertEquals(expected = LOCAL, actual = dataFrom)
             assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
             assertEquals(
                 listOf(
@@ -219,7 +219,7 @@ class DecodeResultTest {
             assertNotEquals(result, this)
             assertEquals(image1, image)
             assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
-            assertEquals(LOCAL, dataFrom)
+            assertEquals(expected = LOCAL, actual = dataFrom)
             assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
             assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),
@@ -236,7 +236,7 @@ class DecodeResultTest {
             assertNotEquals(result, this)
             assertEquals(image1, image)
             assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
-            assertEquals(LOCAL, dataFrom)
+            assertEquals(expected = LOCAL, actual = dataFrom)
             assertEquals(Resize(200, 300, EXACTLY, FILL), resize)
             assertEquals(
                 listOf(createInSampledTransformed(4), createRotateTransformed(45)),

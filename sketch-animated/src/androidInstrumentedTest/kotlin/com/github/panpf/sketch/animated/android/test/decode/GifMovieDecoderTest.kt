@@ -18,7 +18,6 @@ package com.github.panpf.sketch.animated.android.test.decode
 
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.animated.android.test.internal.TranslucentAnimatedTransformation
 import com.github.panpf.sketch.decode.GifMovieDecoder
@@ -26,19 +25,20 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.supportMovieGif
 import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.drawable.MovieDrawable
-import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.onAnimationEnd
 import com.github.panpf.sketch.request.onAnimationStart
 import com.github.panpf.sketch.request.repeatCount
-import com.github.panpf.sketch.source.AssetDataSource
+import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.singleton.sketch
+import com.github.panpf.sketch.test.utils.createDecoderOrDefault
+import com.github.panpf.sketch.test.utils.createDecoderOrNull
+import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.getDrawableOrThrow
-import com.github.panpf.sketch.test.utils.toDecoder
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.test.runTest
@@ -47,8 +47,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertNotSame
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class GifMovieDecoderTest {
@@ -57,145 +57,46 @@ class GifMovieDecoderTest {
     fun testSupportMovieGif() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return
 
-        ComponentRegistry.Builder().apply {
-            build().apply {
-                assertEquals(
-                    "ComponentRegistry(" +
-                            "fetcherFactoryList=[]," +
-                            "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]," +
-                            "decodeInterceptorList=[]" +
-                            ")",
-                    toString()
-                )
-            }
-
-            supportMovieGif()
-            build().apply {
-                assertEquals(
-                    "ComponentRegistry(" +
-                            "fetcherFactoryList=[]," +
-                            "decoderFactoryList=[GifMovieDecoder]," +
-                            "requestInterceptorList=[]," +
-                            "decodeInterceptorList=[]" +
-                            ")",
-                    toString()
-                )
-            }
-
-            supportMovieGif()
-            build().apply {
-                assertEquals(
-                    "ComponentRegistry(" +
-                            "fetcherFactoryList=[]," +
-                            "decoderFactoryList=[GifMovieDecoder,GifMovieDecoder]," +
-                            "requestInterceptorList=[]," +
-                            "decodeInterceptorList=[]" +
-                            ")",
-                    toString()
-                )
-            }
-        }
-    }
-
-    @Test
-    fun testFactory() = runTest {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return@runTest
-
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
-        val factory = GifMovieDecoder.Factory()
-
-        assertEquals("GifMovieDecoder", factory.toString())
-
-        // normal
-        ImageRequest(context, ResourceImages.animGif.uri).let {
-            val fetchResult =
-                FetchResult(
-                    AssetDataSource(context, ResourceImages.animGif.resourceName),
-                    "image/gif"
-                )
-            assertNotNull(factory.create(it.toRequestContext(sketch), fetchResult))
-        }.apply {
-            assertNotNull(this)
-        }
-
-        // no mimeType
-        ImageRequest(context, ResourceImages.animGif.uri).let {
-            val fetchResult =
-                FetchResult(AssetDataSource(context, ResourceImages.animGif.resourceName), null)
-            factory.create(it.toRequestContext(sketch), fetchResult)
-        }.apply {
-            assertNotNull(this)
-        }
-
-        // Disguised mimeType
-        ImageRequest(context, ResourceImages.animGif.uri).let {
-            val fetchResult = FetchResult(
-                AssetDataSource(context, ResourceImages.animGif.resourceName),
-                "image/jpeg",
+        ComponentRegistry().apply {
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetcherFactoryList=[]," +
+                        "decoderFactoryList=[]," +
+                        "requestInterceptorList=[]," +
+                        "decodeInterceptorList=[]" +
+                        ")",
+                actual = toString()
             )
-            factory.create(it.toRequestContext(sketch), fetchResult)
-        }.apply {
-            assertNotNull(this)
         }
 
-        // disallowAnimatedImage true
-        ImageRequest(context, ResourceImages.animGif.uri) {
-            disallowAnimatedImage()
-        }.let {
-            val fetchResult =
-                FetchResult(AssetDataSource(context, ResourceImages.animGif.resourceName), null)
-            factory.create(it.toRequestContext(sketch), fetchResult)
+        ComponentRegistry {
+            supportMovieGif()
         }.apply {
-            assertNull(this)
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetcherFactoryList=[]," +
+                        "decoderFactoryList=[GifMovieDecoder]," +
+                        "requestInterceptorList=[]," +
+                        "decodeInterceptorList=[]" +
+                        ")",
+                actual = toString()
+            )
         }
 
-        // data error
-        ImageRequest(context, ResourceImages.png.uri).let {
-            val fetchResult =
-                FetchResult(AssetDataSource(context, ResourceImages.png.resourceName), null)
-            factory.create(it.toRequestContext(sketch), fetchResult)
+        ComponentRegistry {
+            supportMovieGif()
+            supportMovieGif()
         }.apply {
-            assertNull(this)
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetcherFactoryList=[]," +
+                        "decoderFactoryList=[GifMovieDecoder,GifMovieDecoder]," +
+                        "requestInterceptorList=[]," +
+                        "decodeInterceptorList=[]" +
+                        ")",
+                actual = toString()
+            )
         }
-
-        // Disguised, mimeType; data error
-        ImageRequest(context, ResourceImages.png.uri).let {
-            val fetchResult =
-                FetchResult(
-                    AssetDataSource(context, ResourceImages.png.resourceName),
-                    "image/gif"
-                )
-            factory.create(it.toRequestContext(sketch), fetchResult)
-        }.apply {
-            assertNull(this)
-        }
-    }
-
-    @Test
-    fun testFactoryEqualsAndHashCode() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return
-
-        val element1 = GifMovieDecoder.Factory()
-        val element11 = GifMovieDecoder.Factory()
-        val element2 = GifMovieDecoder.Factory()
-
-        assertNotSame(element1, element11)
-        assertNotSame(element1, element2)
-        assertNotSame(element2, element11)
-
-        assertEquals(element1, element1)
-        assertEquals(element1, element11)
-        assertEquals(element1, element2)
-        assertEquals(element2, element11)
-        assertNotEquals(element1, null as Any?)
-        assertNotEquals(element1, Any())
-
-        assertEquals(element1.hashCode(), element1.hashCode())
-        assertEquals(element1.hashCode(), element11.hashCode())
-        assertEquals(element1.hashCode(), element2.hashCode())
-        assertEquals(element2.hashCode(), element11.hashCode())
     }
 
     @Test
@@ -206,38 +107,33 @@ class GifMovieDecoderTest {
         val factory = GifMovieDecoder.Factory()
 
         ImageRequest(context, ResourceImages.animGif.uri)
-            .toDecoder(sketch, factory)
-            .imageInfo.apply {
-                assertEquals(ImageInfo(480, 480, "image/gif"), this)
+            .createDecoderOrDefault(sketch, factory)
+            .apply {
+                assertEquals(
+                    expected = ImageInfo(480, 480, "image/gif"),
+                    actual = imageInfo
+                )
             }
     }
 
     @Test
-    fun testDecodeDrawable() = runTest {
+    fun testDecode() = runTest {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return@runTest
 
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = getTestContextAndSketch()
         val factory = GifMovieDecoder.Factory()
 
         ImageRequest(context, ResourceImages.animGif.uri) {
             onAnimationStart { }
-        }.apply {
-            val fetchResult = sketch.components.newFetcherOrThrow(
-                this.toRequestContext(sketch, Size.Empty)
-            ).fetch().getOrThrow()
-            factory.create(this@apply.toRequestContext(sketch), fetchResult)!!
-                .decode().apply {
-                    assertEquals(ImageInfo(480, 480, "image/gif"), this.imageInfo)
-                    assertEquals(480, image.getDrawableOrThrow().intrinsicWidth)
-                    assertEquals(480, image.getDrawableOrThrow().intrinsicHeight)
-                    assertEquals(LOCAL, this.dataFrom)
-                    assertNull(this.transformeds)
-                    val movieDrawable =
-                        (image.getDrawableOrThrow() as AnimatableDrawable).drawable as MovieDrawable
-                    assertEquals(-1, movieDrawable.getRepeatCount())
-                    assertNull(movieDrawable.getAnimatedTransformation())
-                }
+        }.decode(sketch, factory).apply {
+            assertEquals(expected = ImageInfo(480, 480, "image/gif"), actual = this.imageInfo)
+            assertEquals(expected = Size(480, 480), actual = image.size)
+            assertEquals(expected = LOCAL, actual = this.dataFrom)
+            assertEquals(expected = null, actual = this.transformeds)
+            val movieDrawable =
+                (image.getDrawableOrThrow() as AnimatableDrawable).drawable as MovieDrawable
+            assertEquals(expected = -1, actual = movieDrawable.getRepeatCount())
+            assertNull(actual = movieDrawable.getAnimatedTransformation())
         }
 
         ImageRequest(context, ResourceImages.animGif.uri) {
@@ -245,23 +141,126 @@ class GifMovieDecoderTest {
             animatedTransformation(TranslucentAnimatedTransformation)
             onAnimationEnd { }
             resize(300, 300)
-        }.apply {
-            val fetchResult1 = sketch.components.newFetcherOrThrow(
-                this.toRequestContext(sketch, Size.Empty)
-            ).fetch().getOrThrow()
-            factory.create(this@apply.toRequestContext(sketch), fetchResult1)!!
-                .decode()
-                .apply {
-                    assertEquals(ImageInfo(480, 480, "image/gif"), this.imageInfo)
-                    assertEquals(480, image.getDrawableOrThrow().intrinsicWidth)
-                    assertEquals(480, image.getDrawableOrThrow().intrinsicHeight)
-                    assertEquals(LOCAL, this.dataFrom)
-                    assertNull(this.transformeds)
-                    val movieDrawable =
-                        (image.getDrawableOrThrow() as AnimatableDrawable).drawable as MovieDrawable
-                    assertEquals(3, movieDrawable.getRepeatCount())
-                    assertNotNull(movieDrawable.getAnimatedTransformation())
-                }
+        }.decode(sketch, factory).apply {
+            assertEquals(expected = ImageInfo(480, 480, "image/gif"), actual = this.imageInfo)
+            assertEquals(expected = Size(480, 480), actual = image.size)
+            assertEquals(expected = LOCAL, actual = this.dataFrom)
+            assertEquals(expected = null, actual = this.transformeds)
+            val movieDrawable =
+                (image.getDrawableOrThrow() as AnimatableDrawable).drawable as MovieDrawable
+            assertEquals(expected = 3, actual = movieDrawable.getRepeatCount())
+            assertNotNull(actual = movieDrawable.getAnimatedTransformation())
         }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, ResourceImages.animGif.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = ResourceImages.animGif.toDataSource(context)
+        val element1 = GifMovieDecoder(requestContext, dataSource)
+        val element11 = GifMovieDecoder(requestContext, dataSource)
+
+        assertNotEquals(illegal = element1, actual = element11)
+        assertNotEquals(illegal = element1, actual = null as Any?)
+        assertNotEquals(illegal = element1, actual = Any())
+        assertNotEquals(illegal = element1.hashCode(), actual = element11.hashCode())
+    }
+
+    @Test
+    fun testToString() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, ResourceImages.animGif.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = ResourceImages.animGif.toDataSource(context)
+        val decoder = GifMovieDecoder(requestContext, dataSource)
+        assertTrue(actual = decoder.toString().contains("GifMovieDecoder"))
+        assertTrue(actual = decoder.toString().contains("@"))
+    }
+
+    @Test
+    fun testFactoryKey() = runTest {
+        assertEquals(
+            expected = "GifMovieDecoder",
+            actual = GifMovieDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactoryCreate() = runTest {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return@runTest
+
+        val (context, sketch) = getTestContextAndSketch()
+        val factory = GifMovieDecoder.Factory()
+
+        // normal
+        ImageRequest(context, ResourceImages.animGif.uri)
+            .createDecoderOrNull(sketch, factory) {
+                it.copy(mimeType = "image/gif")
+            }.apply {
+                assertTrue(this is GifMovieDecoder)
+            }
+
+        // no mimeType
+        ImageRequest(context, ResourceImages.animGif.uri)
+            .createDecoderOrNull(sketch, factory) {
+                it.copy(mimeType = null)
+            }.apply {
+                assertTrue(this is GifMovieDecoder)
+            }
+
+        // Disguised mimeType
+        ImageRequest(context, ResourceImages.animGif.uri)
+            .createDecoderOrNull(sketch, factory) {
+                it.copy(mimeType = "image/jpeg")
+            }.apply {
+                assertTrue(this is GifMovieDecoder)
+            }
+
+        // disallowAnimatedImage true
+        ImageRequest(context, ResourceImages.animGif.uri) {
+            disallowAnimatedImage()
+        }.createDecoderOrNull(sketch, factory) {
+            it.copy(mimeType = null)
+        }.apply {
+            assertNull(this)
+        }
+
+        // data error
+        ImageRequest(context, ResourceImages.png.uri)
+            .createDecoderOrNull(sketch, factory) {
+                it.copy(mimeType = null)
+            }.apply {
+                assertNull(this)
+            }
+
+        // Disguised, mimeType; data error
+        ImageRequest(context, ResourceImages.png.uri)
+            .createDecoderOrNull(sketch, factory) {
+                it.copy(mimeType = "image/gif")
+            }.apply {
+                assertNull(this)
+            }
+    }
+
+    @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = GifMovieDecoder.Factory()
+        val element11 = GifMovieDecoder.Factory()
+
+        assertEquals(expected = element1, actual = element11)
+        assertNotEquals(illegal = element1, actual = null as Any?)
+        assertNotEquals(illegal = element1, actual = Any())
+
+        assertEquals(expected = element1.hashCode(), actual = element11.hashCode())
+    }
+
+    @Test
+    fun testFactoryToString() = runTest {
+        assertEquals(
+            expected = "GifMovieDecoder",
+            actual = GifMovieDecoder.Factory().toString()
+        )
     }
 }

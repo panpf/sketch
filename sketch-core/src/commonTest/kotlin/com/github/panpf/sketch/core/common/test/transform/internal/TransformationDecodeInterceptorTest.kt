@@ -74,7 +74,7 @@ class TransformationDecodeInterceptorTest {
                 ),
                 image.corners()
             )
-            assertNull(transformeds)
+            assertNull(actual = transformeds)
         }
 
         runBlock {
@@ -171,7 +171,7 @@ class TransformationDecodeInterceptorTest {
                 ),
                 image.corners()
             )
-            assertNull(transformeds)
+            assertNull(actual = transformeds)
         }
     }
 

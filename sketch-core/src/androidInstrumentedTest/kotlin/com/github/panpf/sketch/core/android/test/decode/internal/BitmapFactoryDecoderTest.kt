@@ -30,6 +30,7 @@ import com.github.panpf.sketch.decode.internal.getInSampledTransformed
 import com.github.panpf.sketch.decode.internal.getResizeTransformed
 import com.github.panpf.sketch.decode.internal.getSubsamplingTransformed
 import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.colorType
@@ -48,11 +49,12 @@ import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.assertSizeEquals
 import com.github.panpf.sketch.test.utils.corners
+import com.github.panpf.sketch.test.utils.createDecoderOrDefault
+import com.github.panpf.sketch.test.utils.createDecoderOrNull
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.shortInfoColorSpace
 import com.github.panpf.sketch.test.utils.similarity
-import com.github.panpf.sketch.test.utils.toDecoder
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
@@ -65,7 +67,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -80,10 +81,14 @@ class BitmapFactoryDecoderTest {
         ResourceImages.statics.forEach { imageFile ->
             try {
                 ImageRequest(context, imageFile.uri)
-                    .toDecoder(sketch, factory)
-                    .imageInfo.apply {
-                        assertSizeEquals(imageFile.size, this.size, delta = Size(1, 1))
-                        assertEquals(imageFile.mimeType, this.mimeType)
+                    .createDecoderOrDefault(sketch, factory)
+                    .apply {
+                        assertSizeEquals(
+                            expected = imageFile.size,
+                            actual = imageInfo.size,
+                            delta = Size(1, 1)
+                        )
+                        assertEquals(expected = imageFile.mimeType, actual = imageInfo.mimeType)
                     }
             } catch (e: ImageInvalidException) {
                 e.printStackTrace()
@@ -92,7 +97,7 @@ class BitmapFactoryDecoderTest {
     }
 
     @Test
-    fun testDefault() = runTest {
+    fun testDecodeDefault() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
@@ -101,15 +106,15 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+                expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("SRGB")})",
+                actual = bitmap.toShortInfoString()
             )
             assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(1291x1936,'image/jpeg')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNull(transformeds)
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNull(actual = transformeds)
         }
 
         ImageRequest(context, ResourceImages.webp.uri) {
@@ -118,19 +123,22 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                "Bitmap(1080x1344,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+                expected = "Bitmap(1080x1344,ARGB_8888${shortInfoColorSpace("SRGB")})",
+                actual = bitmap.toShortInfoString()
             )
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                 assertEquals(
-                    "ImageInfo(1080x1344,'image/webp')",
-                    imageInfo.toShortString()
+                    expected = "ImageInfo(1080x1344,'image/webp')",
+                    actual = imageInfo.toShortString()
                 )
             } else {
-                assertEquals("ImageInfo(1080x1344,'')", imageInfo.toShortString())
+                assertEquals(
+                    expected = "ImageInfo(1080x1344,'')",
+                    actual = imageInfo.toShortString()
+                )
             }
-            assertEquals(LOCAL, dataFrom)
-            assertNull(transformeds)
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNull(actual = transformeds)
         }
 
         // exif
@@ -141,21 +149,21 @@ class BitmapFactoryDecoderTest {
             }.decode(sketch).apply {
                 val bitmap = image.getBitmapOrThrow()
                 assertEquals(
-                    "Bitmap(1500x750,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                    bitmap.toShortInfoString()
+                    expected = "Bitmap(1500x750,ARGB_8888${shortInfoColorSpace("SRGB")})",
+                    actual = bitmap.toShortInfoString()
                 )
                 assertEquals(
-                    "ImageInfo(1500x750,'image/jpeg')",
-                    imageInfo.toShortString()
+                    expected = "ImageInfo(1500x750,'image/jpeg')",
+                    actual = imageInfo.toShortString()
                 )
-                assertEquals(LOCAL, dataFrom)
-                assertNull(transformeds)
+                assertEquals(expected = LOCAL, actual = dataFrom)
+                assertNull(actual = transformeds)
             }
         }
     }
 
     @Test
-    fun testColorType() = runTest {
+    fun testDecodeColorType() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
@@ -165,15 +173,15 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
+                actual = bitmap.toShortInfoString()
             )
             assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(1291x1936,'image/jpeg')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNull(transformeds)
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNull(actual = transformeds)
         }
 
         ImageRequest(context, ResourceImages.webp.uri) {
@@ -183,24 +191,27 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                "Bitmap(1080x1344,RGB_565${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+                expected = "Bitmap(1080x1344,RGB_565${shortInfoColorSpace("SRGB")})",
+                actual = bitmap.toShortInfoString()
             )
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                 assertEquals(
-                    "ImageInfo(1080x1344,'image/webp')",
-                    imageInfo.toShortString()
+                    expected = "ImageInfo(1080x1344,'image/webp')",
+                    actual = imageInfo.toShortString()
                 )
             } else {
-                assertEquals("ImageInfo(1080x1344,'')", imageInfo.toShortString())
+                assertEquals(
+                    expected = "ImageInfo(1080x1344,'')",
+                    actual = imageInfo.toShortString()
+                )
             }
-            assertEquals(LOCAL, dataFrom)
-            assertNull(transformeds)
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNull(actual = transformeds)
         }
     }
 
     @Test
-    fun testColorSpace() = runTest {
+    fun testDecodeColorSpace() = runTest {
         if (VERSION.SDK_INT < VERSION_CODES.O) return@runTest
 
         val (context, sketch) = getTestContextAndSketch()
@@ -211,16 +222,16 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+                expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("SRGB")})",
+                actual = bitmap.toShortInfoString()
             )
             assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(1291x1936,'image/jpeg')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNull(transformeds)
-            assertEquals(ColorSpace.get(SRGB), bitmap.colorSpace)
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNull(actual = transformeds)
+            assertEquals(expected = ColorSpace.get(SRGB), actual = bitmap.colorSpace)
         }
 
         ImageRequest(context, ResourceImages.webp.uri) {
@@ -229,20 +240,23 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                "Bitmap(1080x1344,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                bitmap.toShortInfoString()
+                expected = "Bitmap(1080x1344,ARGB_8888${shortInfoColorSpace("SRGB")})",
+                actual = bitmap.toShortInfoString()
             )
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                 assertEquals(
-                    "ImageInfo(1080x1344,'image/webp')",
-                    imageInfo.toShortString()
+                    expected = "ImageInfo(1080x1344,'image/webp')",
+                    actual = imageInfo.toShortString()
                 )
             } else {
-                assertEquals("ImageInfo(1080x1344,'')", imageInfo.toShortString())
+                assertEquals(
+                    expected = "ImageInfo(1080x1344,'')",
+                    actual = imageInfo.toShortString()
+                )
             }
-            assertEquals(LOCAL, dataFrom)
-            assertNull(transformeds)
-            assertEquals(ColorSpace.get(SRGB), bitmap.colorSpace)
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNull(actual = transformeds)
+            assertEquals(expected = ColorSpace.get(SRGB), actual = bitmap.colorSpace)
         }
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
@@ -252,16 +266,16 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("ADOBE_RGB")})",
-                bitmap.toShortInfoString()
+                expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("ADOBE_RGB")})",
+                actual = bitmap.toShortInfoString()
             )
             assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(1291x1936,'image/jpeg')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNull(transformeds)
-            assertEquals(ColorSpace.get(ADOBE_RGB), bitmap.colorSpace)
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNull(actual = transformeds)
+            assertEquals(expected = ColorSpace.get(ADOBE_RGB), actual = bitmap.colorSpace)
         }
 
         ImageRequest(context, ResourceImages.webp.uri) {
@@ -271,25 +285,28 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                "Bitmap(1080x1344,ARGB_8888${shortInfoColorSpace("ADOBE_RGB")})",
-                bitmap.toShortInfoString()
+                expected = "Bitmap(1080x1344,ARGB_8888${shortInfoColorSpace("ADOBE_RGB")})",
+                actual = bitmap.toShortInfoString()
             )
             if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                 assertEquals(
-                    "ImageInfo(1080x1344,'image/webp')",
-                    imageInfo.toShortString()
+                    expected = "ImageInfo(1080x1344,'image/webp')",
+                    actual = imageInfo.toShortString()
                 )
             } else {
-                assertEquals("ImageInfo(1080x1344,'')", imageInfo.toShortString())
+                assertEquals(
+                    expected = "ImageInfo(1080x1344,'')",
+                    actual = imageInfo.toShortString()
+                )
             }
-            assertEquals(LOCAL, dataFrom)
-            assertNull(transformeds)
-            assertEquals(ColorSpace.get(ADOBE_RGB), bitmap.colorSpace)
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNull(actual = transformeds)
+            assertEquals(expected = ColorSpace.get(ADOBE_RGB), actual = bitmap.colorSpace)
         }
     }
 
     @Test
-    fun testResize() = runTest {
+    fun testDecodeResize() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         // precision = LESS_PIXELS
@@ -299,12 +316,12 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 800 * 800 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 800 * 800 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                imageInfo.width.toFloat().div(imageInfo.height).format(1)
+                expected = bitmap.width.toFloat().div(bitmap.height).format(1),
+                actual = imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             assertSizeEquals(
                 expected = Size(646, 968),
@@ -312,13 +329,13 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(1291x1936,'image/jpeg')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
-            assertNull(transformeds?.getSubsamplingTransformed())
-            assertNull(transformeds?.getResizeTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
+            assertNull(actual = transformeds?.getSubsamplingTransformed())
+            assertNull(actual = transformeds?.getResizeTransformed())
         }
         ImageRequest(context, ResourceImages.jpeg.uri) {
             size(500, 500)
@@ -326,12 +343,12 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 500 * 500 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 500 * 500 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                imageInfo.width.toFloat().div(imageInfo.height).format(1)
+                expected = bitmap.width.toFloat().div(bitmap.height).format(1),
+                actual = imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             assertSizeEquals(
                 expected = Size(323, 484),
@@ -339,13 +356,13 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(1291x1936,'image/jpeg')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
-            assertNull(transformeds?.getSubsamplingTransformed())
-            assertNull(transformeds?.getResizeTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
+            assertNull(actual = transformeds?.getSubsamplingTransformed())
+            assertNull(actual = transformeds?.getResizeTransformed())
         }
 
         // precision = SAME_ASPECT_RATIO
@@ -355,12 +372,12 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                500f.div(300).format(1)
+                expected = bitmap.width.toFloat().div(bitmap.height).format(1),
+                actual = 500f.div(300).format(1)
             )
             assertSizeEquals(
                 expected = Size(322, 193),
@@ -368,13 +385,13 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(1291x1936,'image/jpeg')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
-            assertNotNull(transformeds?.getSubsamplingTransformed())
-            assertNull(transformeds?.getResizeTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
+            assertNotNull(actual = transformeds?.getSubsamplingTransformed())
+            assertNull(actual = transformeds?.getResizeTransformed())
         }
         ImageRequest(context, ResourceImages.jpeg.uri) {
             size(300, 500)
@@ -382,12 +399,12 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                300f.div(500).format(1)
+                expected = bitmap.width.toFloat().div(bitmap.height).format(1),
+                actual = 300f.div(500).format(1)
             )
             assertSizeEquals(
                 expected = Size(290, 484),
@@ -395,13 +412,13 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(1291x1936,'image/jpeg')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
-            assertNotNull(transformeds?.getSubsamplingTransformed())
-            assertNull(transformeds?.getResizeTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
+            assertNotNull(actual = transformeds?.getSubsamplingTransformed())
+            assertNull(actual = transformeds?.getResizeTransformed())
         }
 
         // precision = EXACTLY
@@ -411,8 +428,8 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertSizeEquals(
                 expected = Size(500, 300),
@@ -420,13 +437,13 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(1291x1936,'image/jpeg')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
-            assertNotNull(transformeds?.getSubsamplingTransformed())
-            assertNotNull(transformeds?.getResizeTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
+            assertNotNull(actual = transformeds?.getSubsamplingTransformed())
+            assertNotNull(actual = transformeds?.getResizeTransformed())
         }
         ImageRequest(context, ResourceImages.jpeg.uri) {
             size(300, 500)
@@ -434,8 +451,8 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertSizeEquals(
                 expected = Size(300, 500),
@@ -443,13 +460,13 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1291x1936,'image/jpeg')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(1291x1936,'image/jpeg')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
-            assertNotNull(transformeds?.getSubsamplingTransformed())
-            assertNotNull(transformeds?.getResizeTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
+            assertNotNull(actual = transformeds?.getSubsamplingTransformed())
+            assertNotNull(actual = transformeds?.getResizeTransformed())
         }
 
         // scale
@@ -473,35 +490,38 @@ class BitmapFactoryDecoderTest {
             precision(SAME_ASPECT_RATIO)
             scale(FILL)
         }.decode(sketch).image.getBitmapOrThrow()
-        assertTrue(startCropBitmap.width * startCropBitmap.height <= 500 * 300 * 1.1f)
-        assertTrue(centerCropBitmap.width * centerCropBitmap.height <= 500 * 300 * 1.1f)
-        assertTrue(endCropBitmap.width * endCropBitmap.height <= 500 * 300 * 1.1f)
-        assertTrue(fillBitmap.width * fillBitmap.height <= 500 * 300 * 1.1f)
+        assertTrue(actual = startCropBitmap.width * startCropBitmap.height <= 500 * 300 * 1.1f)
+        assertTrue(actual = centerCropBitmap.width * centerCropBitmap.height <= 500 * 300 * 1.1f)
+        assertTrue(actual = endCropBitmap.width * endCropBitmap.height <= 500 * 300 * 1.1f)
+        assertTrue(actual = fillBitmap.width * fillBitmap.height <= 500 * 300 * 1.1f)
         assertNotEquals(
-            startCropBitmap.corners().toString(),
-            centerCropBitmap.corners().toString()
+            illegal = startCropBitmap.corners().toString(),
+            actual = centerCropBitmap.corners().toString()
         )
         assertNotEquals(
-            startCropBitmap.corners().toString(),
-            endCropBitmap.corners().toString()
+            illegal = startCropBitmap.corners().toString(),
+            actual = endCropBitmap.corners().toString()
         )
         assertNotEquals(
-            startCropBitmap.corners().toString(),
-            fillBitmap.corners().toString()
+            illegal = startCropBitmap.corners().toString(),
+            actual = fillBitmap.corners().toString()
         )
         assertNotEquals(
-            centerCropBitmap.corners().toString(),
-            endCropBitmap.corners().toString()
+            illegal = centerCropBitmap.corners().toString(),
+            actual = endCropBitmap.corners().toString()
         )
         assertNotEquals(
-            centerCropBitmap.corners().toString(),
-            fillBitmap.corners().toString()
+            illegal = centerCropBitmap.corners().toString(),
+            actual = fillBitmap.corners().toString()
         )
-        assertNotEquals(endCropBitmap.corners().toString(), fillBitmap.corners().toString())
+        assertNotEquals(
+            illegal = endCropBitmap.corners().toString(),
+            actual = fillBitmap.corners().toString()
+        )
     }
 
     @Test
-    fun testResizeNoRegion() = runTest {
+    fun testDecodeResizeNoRegion() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         // precision = LESS_PIXELS
@@ -511,12 +531,12 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 500 * 500 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 500 * 500 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                imageInfo.width.toFloat().div(imageInfo.height).format(1)
+                expected = bitmap.width.toFloat().div(bitmap.height).format(1),
+                actual = imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             assertSizeEquals(
                 expected = Size(350, 506),
@@ -524,12 +544,12 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(700x1012,'image/bmp')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(700x1012,'image/bmp')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
-            assertNull(transformeds?.getResizeTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
+            assertNull(actual = transformeds?.getResizeTransformed())
         }
         ImageRequest(context, ResourceImages.bmp.uri) {
             size(200, 200)
@@ -537,12 +557,12 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 200 * 200 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 200 * 200 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                imageInfo.width.toFloat().div(imageInfo.height).format(1)
+                expected = bitmap.width.toFloat().div(bitmap.height).format(1),
+                actual = imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             assertSizeEquals(
                 expected = Size(87, 126),
@@ -550,12 +570,12 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(700x1012,'image/bmp')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(700x1012,'image/bmp')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
-            assertNull(transformeds?.getResizeTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
+            assertNull(actual = transformeds?.getResizeTransformed())
         }
 
         // precision = SAME_ASPECT_RATIO
@@ -565,12 +585,12 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                500f.div(300).format(1)
+                expected = bitmap.width.toFloat().div(bitmap.height).format(1),
+                actual = 500f.div(300).format(1)
             )
             assertSizeEquals(
                 expected = Size(175, 105),
@@ -578,12 +598,12 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(700x1012,'image/bmp')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(700x1012,'image/bmp')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
-            assertNotNull(transformeds?.getResizeTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
+            assertNotNull(actual = transformeds?.getResizeTransformed())
         }
         ImageRequest(context, ResourceImages.bmp.uri) {
             size(300, 500)
@@ -591,12 +611,12 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                300f.div(500).format(1)
+                expected = bitmap.width.toFloat().div(bitmap.height).format(1),
+                actual = 300f.div(500).format(1)
             )
             assertSizeEquals(
                 expected = Size(152, 253),
@@ -604,11 +624,11 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(700x1012,'image/bmp')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(700x1012,'image/bmp')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
         }
 
         // precision = EXACTLY
@@ -618,8 +638,8 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertSizeEquals(
                 expected = Size(500, 300),
@@ -627,12 +647,12 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(700x1012,'image/bmp')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(700x1012,'image/bmp')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
-            assertNotNull(transformeds?.getResizeTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
+            assertNotNull(actual = transformeds?.getResizeTransformed())
         }
         ImageRequest(context, ResourceImages.bmp.uri) {
             size(300, 500)
@@ -640,8 +660,8 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertSizeEquals(
                 expected = Size(300, 500),
@@ -649,12 +669,12 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(700x1012,'image/bmp')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(700x1012,'image/bmp')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
-            assertNotNull(transformeds?.getResizeTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
+            assertNotNull(actual = transformeds?.getResizeTransformed())
         }
 
         // scale
@@ -678,35 +698,38 @@ class BitmapFactoryDecoderTest {
             precision(SAME_ASPECT_RATIO)
             scale(FILL)
         }.decode(sketch).image.getBitmapOrThrow()
-        assertTrue(startCropBitmap.width * startCropBitmap.height <= 500 * 300 * 1.1f)
-        assertTrue(centerCropBitmap.width * centerCropBitmap.height <= 500 * 300 * 1.1f)
-        assertTrue(endCropBitmap.width * endCropBitmap.height <= 500 * 300 * 1.1f)
-        assertTrue(fillBitmap.width * fillBitmap.height <= 500 * 300 * 1.1f)
+        assertTrue(actual = startCropBitmap.width * startCropBitmap.height <= 500 * 300 * 1.1f)
+        assertTrue(actual = centerCropBitmap.width * centerCropBitmap.height <= 500 * 300 * 1.1f)
+        assertTrue(actual = endCropBitmap.width * endCropBitmap.height <= 500 * 300 * 1.1f)
+        assertTrue(actual = fillBitmap.width * fillBitmap.height <= 500 * 300 * 1.1f)
         assertNotEquals(
-            startCropBitmap.corners().toString(),
-            centerCropBitmap.corners().toString()
+            illegal = startCropBitmap.corners().toString(),
+            actual = centerCropBitmap.corners().toString()
         )
         assertNotEquals(
-            startCropBitmap.corners().toString(),
-            endCropBitmap.corners().toString()
+            illegal = startCropBitmap.corners().toString(),
+            actual = endCropBitmap.corners().toString()
         )
         assertNotEquals(
-            startCropBitmap.corners().toString(),
-            fillBitmap.corners().toString()
+            illegal = startCropBitmap.corners().toString(),
+            actual = fillBitmap.corners().toString()
         )
         assertNotEquals(
-            centerCropBitmap.corners().toString(),
-            endCropBitmap.corners().toString()
+            illegal = centerCropBitmap.corners().toString(),
+            actual = endCropBitmap.corners().toString()
         )
         assertNotEquals(
-            centerCropBitmap.corners().toString(),
-            fillBitmap.corners().toString()
+            illegal = centerCropBitmap.corners().toString(),
+            actual = fillBitmap.corners().toString()
         )
-        assertNotEquals(endCropBitmap.corners().toString(), fillBitmap.corners().toString())
+        assertNotEquals(
+            illegal = endCropBitmap.corners().toString(),
+            actual = fillBitmap.corners().toString()
+        )
     }
 
     @Test
-    fun testResizeExif() = runTest {
+    fun testDecodeResizeExif() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         val testFile = ResourceImages.clockExifTranspose
@@ -718,12 +741,12 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 800 * 800 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 800 * 800 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                imageInfo.width.toFloat().div(imageInfo.height).format(1)
+                expected = bitmap.width.toFloat().div(bitmap.height).format(1),
+                actual = imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             assertSizeEquals(
                 expected = Size(750, 375),
@@ -731,13 +754,13 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1500x750,'image/jpeg')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(1500x750,'image/jpeg')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
-            assertNull(transformeds?.getSubsamplingTransformed())
-            assertNull(transformeds?.getResizeTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
+            assertNull(actual = transformeds?.getSubsamplingTransformed())
+            assertNull(actual = transformeds?.getResizeTransformed())
         }
         ImageRequest(context, testFile.uri) {
             size(500, 500)
@@ -745,12 +768,12 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 500 * 500 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 500 * 500 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                imageInfo.width.toFloat().div(imageInfo.height).format(1)
+                expected = bitmap.width.toFloat().div(bitmap.height).format(1),
+                actual = imageInfo.width.toFloat().div(imageInfo.height).format(1)
             )
             assertSizeEquals(
                 expected = Size(375, 188),
@@ -758,13 +781,13 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1500x750,'image/jpeg')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(1500x750,'image/jpeg')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
-            assertNull(transformeds?.getSubsamplingTransformed())
-            assertNull(transformeds?.getResizeTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
+            assertNull(actual = transformeds?.getSubsamplingTransformed())
+            assertNull(actual = transformeds?.getResizeTransformed())
         }
 
         // precision = SAME_ASPECT_RATIO
@@ -774,12 +797,12 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                500f.div(300).format(1)
+                expected = bitmap.width.toFloat().div(bitmap.height).format(1),
+                actual = 500f.div(300).format(1)
             )
             assertSizeEquals(
                 expected = Size(313, 188),
@@ -787,13 +810,13 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1500x750,'image/jpeg')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(1500x750,'image/jpeg')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
-            assertNotNull(transformeds?.getSubsamplingTransformed())
-            assertNull(transformeds?.getResizeTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
+            assertNotNull(actual = transformeds?.getSubsamplingTransformed())
+            assertNull(actual = transformeds?.getResizeTransformed())
         }
         ImageRequest(context, testFile.uri) {
             size(300, 500)
@@ -801,12 +824,12 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertEquals(
-                bitmap.width.toFloat().div(bitmap.height).format(1),
-                300f.div(500).format(1)
+                expected = bitmap.width.toFloat().div(bitmap.height).format(1),
+                actual = 300f.div(500).format(1)
             )
             assertSizeEquals(
                 expected = Size(225, 375),
@@ -814,13 +837,13 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1500x750,'image/jpeg')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(1500x750,'image/jpeg')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
-            assertNotNull(transformeds?.getSubsamplingTransformed())
-            assertNull(transformeds?.getResizeTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
+            assertNotNull(actual = transformeds?.getSubsamplingTransformed())
+            assertNull(actual = transformeds?.getResizeTransformed())
         }
 
         // precision = EXACTLY
@@ -830,8 +853,8 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertSizeEquals(
                 expected = Size(500, 300),
@@ -839,13 +862,13 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1500x750,'image/jpeg')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(1500x750,'image/jpeg')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
-            assertNotNull(transformeds?.getSubsamplingTransformed())
-            assertNotNull(transformeds?.getResizeTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
+            assertNotNull(actual = transformeds?.getSubsamplingTransformed())
+            assertNotNull(actual = transformeds?.getResizeTransformed())
         }
         ImageRequest(context, testFile.uri) {
             size(300, 500)
@@ -853,8 +876,8 @@ class BitmapFactoryDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertSizeEquals(
                 expected = Size(300, 500),
@@ -862,31 +885,28 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1500x750,'image/jpeg')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(1500x750,'image/jpeg')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
-            assertNotNull(transformeds?.getSubsamplingTransformed())
-            assertNotNull(transformeds?.getResizeTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
+            assertNotNull(actual = transformeds?.getSubsamplingTransformed())
+            assertNotNull(actual = transformeds?.getResizeTransformed())
         }
 
         // precision = LongImagePrecisionDecider
         ImageRequest(context, testFile.uri) {
             size(300, 400)
-            precision(
-                LongImagePrecisionDecider(
-                    longImageDecider = DefaultLongImageDecider(
-                        sameDirectionMultiple = 1f,
-                        notSameDirectionMultiple = 5f
-                    )
-                )
+            val longImageDecider = DefaultLongImageDecider(
+                sameDirectionMultiple = 1f,
+                notSameDirectionMultiple = 5f
             )
+            precision(LongImagePrecisionDecider(longImageDecider = longImageDecider))
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
-                bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
-                "${bitmap.width}x${bitmap.height}"
+                actual = bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
+                message = "${bitmap.width}x${bitmap.height}"
             )
             assertSizeEquals(
                 expected = Size(375, 188),
@@ -894,13 +914,13 @@ class BitmapFactoryDecoderTest {
                 delta = Size(1, 1)
             )
             assertEquals(
-                "ImageInfo(1500x750,'image/jpeg')",
-                imageInfo.toShortString()
+                expected = "ImageInfo(1500x750,'image/jpeg')",
+                actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
-            assertNotNull(transformeds?.getInSampledTransformed())
-            assertNull(transformeds?.getSubsamplingTransformed())
-            assertNull(transformeds?.getResizeTransformed())
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNotNull(actual = transformeds?.getInSampledTransformed())
+            assertNull(actual = transformeds?.getSubsamplingTransformed())
+            assertNull(actual = transformeds?.getResizeTransformed())
         }
 
         // scale
@@ -924,10 +944,10 @@ class BitmapFactoryDecoderTest {
             precision(SAME_ASPECT_RATIO)
             scale(FILL)
         }.decode(sketch).image.getBitmapOrThrow()
-        assertTrue(startCropBitmap.width * startCropBitmap.height <= 500 * 300 * 1.1f)
-        assertTrue(centerCropBitmap.width * centerCropBitmap.height <= 500 * 300 * 1.1f)
-        assertTrue(endCropBitmap.width * endCropBitmap.height <= 500 * 300 * 1.1f)
-        assertTrue(fillBitmap.width * fillBitmap.height <= 500 * 300 * 1.1f)
+        assertTrue(actual = startCropBitmap.width * startCropBitmap.height <= 500 * 300 * 1.1f)
+        assertTrue(actual = centerCropBitmap.width * centerCropBitmap.height <= 500 * 300 * 1.1f)
+        assertTrue(actual = endCropBitmap.width * endCropBitmap.height <= 500 * 300 * 1.1f)
+        assertTrue(actual = fillBitmap.width * fillBitmap.height <= 500 * 300 * 1.1f)
         startCropBitmap.similarity(centerCropBitmap).also { similarity ->
             assertTrue(
                 actual = similarity >= 10,
@@ -967,7 +987,7 @@ class BitmapFactoryDecoderTest {
     }
 
     @Test
-    fun testError() = runTest {
+    fun testDecodeError() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         /* full */
@@ -998,34 +1018,73 @@ class BitmapFactoryDecoderTest {
     }
 
     @Test
-    fun testFactoryEqualsAndHashCode() {
-        val element1 = BitmapFactoryDecoder.Factory()
-        val element11 = BitmapFactoryDecoder.Factory()
-        val element2 = BitmapFactoryDecoder.Factory()
+    fun testEqualsAndHashCode() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = ResourceImages.jpeg.toDataSource(context)
+        val element1 = BitmapFactoryDecoder(requestContext, dataSource)
+        val element11 = BitmapFactoryDecoder(requestContext, dataSource)
 
-        assertNotSame(element1, element11)
-        assertNotSame(element1, element2)
-        assertNotSame(element2, element11)
-
-        assertEquals(element1, element1)
-        assertEquals(element1, element11)
-        assertEquals(element1, element2)
-        assertEquals(element2, element11)
-        assertNotEquals(element1, null as Any?)
-        assertNotEquals(element1, Any())
-
-        assertEquals(element1.hashCode(), element1.hashCode())
-        assertEquals(element1.hashCode(), element11.hashCode())
-        assertEquals(element1.hashCode(), element2.hashCode())
-        assertEquals(element2.hashCode(), element11.hashCode())
+        assertNotEquals(illegal = element1, actual = element11)
+        assertNotEquals(illegal = element1, actual = null as Any?)
+        assertNotEquals(illegal = element1, actual = Any())
+        assertNotEquals(illegal = element1.hashCode(), actual = element11.hashCode())
     }
 
     @Test
-    fun testFactoryKeyAndToString() {
-        BitmapFactoryDecoder.Factory().apply {
-            assertEquals("BitmapFactoryDecoder", key)
-            assertEquals("BitmapFactoryDecoder", toString())
-        }
+    fun testToString() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = ResourceImages.jpeg.toDataSource(context)
+        val decoder = BitmapFactoryDecoder(requestContext, dataSource)
+        assertTrue(actual = decoder.toString().contains("BitmapFactoryDecoder"))
+        assertTrue(actual = decoder.toString().contains("@"))
+    }
+
+    @Test
+    fun testFactoryKey() {
+        assertEquals(
+            expected = "BitmapFactoryDecoder",
+            actual = BitmapFactoryDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactoryCreate() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val factory = BitmapFactoryDecoder.Factory()
+
+        ResourceImages.statics.plus(ResourceImages.anims)
+            .forEach { imageFile ->
+                ImageRequest(context, imageFile.uri)
+                    .createDecoderOrNull(sketch, factory) {
+                        it.copy(mimeType = it.mimeType)
+                    }.apply {
+                        assertTrue(this is BitmapFactoryDecoder)
+                    }
+            }
+    }
+
+    @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = BitmapFactoryDecoder.Factory()
+        val element11 = BitmapFactoryDecoder.Factory()
+
+        assertEquals(expected = element1, actual = element11)
+        assertNotEquals(illegal = element1, actual = null as Any?)
+        assertNotEquals(illegal = element1, actual = Any())
+
+        assertEquals(expected = element1.hashCode(), actual = element11.hashCode())
+    }
+
+    @Test
+    fun testFactoryToString() {
+        assertEquals(
+            expected = "BitmapFactoryDecoder",
+            actual = BitmapFactoryDecoder.Factory().toString()
+        )
     }
 
     class FullTestDataSource(

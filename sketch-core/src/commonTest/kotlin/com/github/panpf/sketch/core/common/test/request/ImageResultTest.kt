@@ -56,7 +56,7 @@ class ImageResultTest {
             assertSame(request1, request)
             assertSame(image1, image)
             assertEquals(ImageInfo(100, 100, "image/jpeg"), imageInfo)
-            assertEquals(LOCAL, dataFrom)
+            assertEquals(expected = LOCAL, actual = dataFrom)
             assertEquals(listOf(createCircleCropTransformed(END_CROP)), transformeds)
             assertEquals(mapOf("age" to "16"), extras)
         }

@@ -172,8 +172,6 @@ class AppIconUriFetcherTest {
         val (context, sketch) = getTestContextAndSketch()
         val fetcherFactory = AppIconUriFetcher.Factory()
 
-        assertEquals("AppIconUriFetcher", fetcherFactory.toString())
-
         fetcherFactory.create(
             ImageRequest(context, "app.icon://packageName1/12412")
                 .toRequestContext(sketch, Size.Empty)

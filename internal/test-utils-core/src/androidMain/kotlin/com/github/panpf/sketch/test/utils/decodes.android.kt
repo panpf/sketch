@@ -14,20 +14,21 @@ actual fun createDecodeHelper(request: ImageRequest, dataSource: DataSource): De
     return BitmapFactoryDecodeHelper(request, dataSource)
 }
 
-actual suspend fun ImageRequest.toDecoder(
+actual suspend fun ImageRequest.createDecoderOrDefault(
     sketch: Sketch,
     factory: Decoder.Factory?,
     fetchResultMap: ((FetchResult) -> FetchResult)?
 ): Decoder {
-    val request = this@toDecoder
+    val request = this@createDecoderOrDefault
     val requestContext = request.toRequestContext(sketch)
     val fetcher = sketch.components.newFetcherOrThrow(requestContext)
-    val fetchResult = fetcher.fetch().getOrThrow().let { fetchResultMap?.invoke(it) ?: it }
+    val fetchResult = fetcher.fetch().getOrThrow()
+        .let { fetchResultMap?.invoke(it) ?: it }
     val decoder = factory?.create(requestContext, fetchResult)
         ?: BitmapFactoryDecoder(requestContext, fetchResult.dataSource.asOrThrow())
     return decoder
 }
 
 actual suspend fun ImageRequest.decode(sketch: Sketch, factory: Decoder.Factory?): DecodeResult {
-    return toDecoder(sketch, factory).decode()
+    return createDecoderOrDefault(sketch, factory).decode()
 }

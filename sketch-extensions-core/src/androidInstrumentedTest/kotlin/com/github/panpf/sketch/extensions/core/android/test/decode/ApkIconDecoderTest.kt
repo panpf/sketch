@@ -18,7 +18,6 @@ package com.github.panpf.sketch.extensions.core.android.test.decode
 
 import android.graphics.Bitmap
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.decode.ApkIconDecoder
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
@@ -32,9 +31,9 @@ import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.source.DataFrom.LOCAL
-import com.github.panpf.sketch.test.singleton.sketch
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.createDecoderOrNull
 import com.github.panpf.sketch.test.utils.decode
-import com.github.panpf.sketch.test.utils.fetch
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.shortInfoColorSpace
@@ -45,14 +44,14 @@ import com.github.panpf.sketch.util.times
 import com.github.panpf.sketch.util.toShortInfoString
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
+import java.io.File
 import kotlin.math.ceil
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNotSame
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ApkIconDecoderTest {
@@ -101,60 +100,8 @@ class ApkIconDecoderTest {
     }
 
     @Test
-    fun testFactory() = runTest {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
-        val factory = ApkIconDecoder.Factory()
-
-        assertEquals("ApkIconDecoder", factory.toString())
-
-        // mimeType normal
-        ImageRequest(context, ResourceImages.svg.uri).let {
-            val fetchResult =
-                it.fetch(sketch).copy(mimeType = "application/vnd.android.package-archive")
-            factory.create(it.toRequestContext(sketch), fetchResult)
-        }.apply {
-            assertNotNull(this)
-        }
-
-        // mimeType null
-        ImageRequest(context, ResourceImages.png.uri).let {
-            val fetchResult = it.fetch(sketch).copy(mimeType = null)
-            factory.create(it.toRequestContext(sketch), fetchResult)
-        }.apply {
-            assertNull(this)
-        }
-
-        // mimeType error
-        ImageRequest(context, ResourceImages.png.uri).let {
-            val fetchResult = it.fetch(sketch).copy(mimeType = "image/svg+xml")
-            factory.create(it.toRequestContext(sketch), fetchResult)
-        }.apply {
-            assertNull(this)
-        }
-    }
-
-    @Test
-    fun testFactoryEqualsAndHashCode() {
-        val element1 = ApkIconDecoder.Factory()
-        val element11 = ApkIconDecoder.Factory()
-
-        assertNotSame(element1, element11)
-
-        assertEquals(element1, element1)
-        assertEquals(element1, element11)
-
-        assertNotEquals(element1, Any())
-        assertNotEquals(element1, null as Any?)
-
-        assertEquals(element1.hashCode(), element1.hashCode())
-        assertEquals(element1.hashCode(), element11.hashCode())
-    }
-
-    @Test
     fun testDecode() = runTest {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val sketch = context.sketch
+        val (context, sketch) = getTestContextAndSketch()
         val factory = ApkIconDecoder.Factory()
         val apkFilePath = context.applicationInfo.publicSourceDir
         val iconDrawable = context.applicationInfo.loadIcon(context.packageManager)!!
@@ -168,51 +115,55 @@ class ApkIconDecoderTest {
                 val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, screenSize)
                 val bitmapSize = imageInfo.size.times(sizeMultiplier)
                 assertEquals(
-                    "Bitmap(${bitmapSize},ARGB_8888${shortInfoColorSpace("SRGB")})",
-                    image.getBitmapOrThrow().toShortInfoString()
+                    expected = "Bitmap(${bitmapSize},ARGB_8888${shortInfoColorSpace("SRGB")})",
+                    actual = image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertEquals(
-                    "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'image/png')",
-                    imageInfo.toShortString()
+                    expected = "ImageInfo(${iconDrawable.intrinsicSize},'image/png')",
+                    actual = imageInfo.toShortString()
                 )
-                assertEquals(LOCAL, dataFrom)
-                assertEquals(listOf(createScaledTransformed(sizeMultiplier)), transformeds)
+                assertEquals(expected = LOCAL, actual = dataFrom)
+                assertEquals(
+                    expected = listOf(createScaledTransformed(sizeMultiplier)),
+                    actual = transformeds
+                )
             }
 
         ImageRequest(context, apkFilePath) {
             colorType(Bitmap.Config.RGB_565)
-        }.decode(sketch, factory)
-            .apply {
-                val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, screenSize)
-                val bitmapSize = imageInfo.size.times(sizeMultiplier)
-                assertEquals(
-                    "Bitmap(${bitmapSize},RGB_565${shortInfoColorSpace("SRGB")})",
-                    image.getBitmapOrThrow().toShortInfoString()
-                )
-                assertEquals(
-                    "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'image/png')",
-                    imageInfo.toShortString()
-                )
-                assertEquals(LOCAL, dataFrom)
-                assertEquals(listOf(createScaledTransformed(sizeMultiplier)), transformeds)
-            }
+        }.decode(sketch, factory).apply {
+            val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, screenSize)
+            val bitmapSize = imageInfo.size.times(sizeMultiplier)
+            assertEquals(
+                expected = "Bitmap(${bitmapSize},RGB_565${shortInfoColorSpace("SRGB")})",
+                actual = image.getBitmapOrThrow().toShortInfoString()
+            )
+            assertEquals(
+                expected = "ImageInfo(${iconDrawable.intrinsicSize},'image/png')",
+                actual = imageInfo.toShortString()
+            )
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertEquals(
+                expected = listOf(createScaledTransformed(sizeMultiplier)),
+                actual = transformeds
+            )
+        }
 
         ImageRequest(context, apkFilePath) {
             size(Size.Origin)
-        }.decode(sketch, factory)
-            .apply {
-                val iconSize = iconDrawable.intrinsicSize
-                assertEquals(
-                    "Bitmap(${iconSize},ARGB_8888${shortInfoColorSpace("SRGB")})",
-                    image.getBitmapOrThrow().toShortInfoString()
-                )
-                assertNull(transformeds)
-                assertEquals(
-                    "ImageInfo(${iconSize},'image/png')",
-                    imageInfo.toShortString()
-                )
-                assertEquals(LOCAL, dataFrom)
-            }
+        }.decode(sketch, factory).apply {
+            val iconSize = iconDrawable.intrinsicSize
+            assertEquals(
+                expected = "Bitmap(${iconSize},ARGB_8888${shortInfoColorSpace("SRGB")})",
+                actual = image.getBitmapOrThrow().toShortInfoString()
+            )
+            assertNull(actual = transformeds)
+            assertEquals(
+                expected = "ImageInfo(${iconSize},'image/png')",
+                actual = imageInfo.toShortString()
+            )
+            assertEquals(expected = LOCAL, actual = dataFrom)
+        }
 
         ImageRequest(context, apkFilePath) {
             resize(100, 100, LESS_PIXELS)
@@ -222,15 +173,15 @@ class ApkIconDecoderTest {
                     computeScaleMultiplierWithOneSide(imageInfo.size, Size(100, 100))
                 val bitmapSize = imageInfo.size.times(sizeMultiplier)
                 assertEquals(
-                    "Bitmap(${bitmapSize},ARGB_8888${shortInfoColorSpace("SRGB")})",
-                    image.getBitmapOrThrow().toShortInfoString()
+                    expected = "Bitmap(${bitmapSize},ARGB_8888${shortInfoColorSpace("SRGB")})",
+                    actual = image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertEquals(listOf(createScaledTransformed(sizeMultiplier)), transformeds)
                 assertEquals(
-                    "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'image/png')",
-                    imageInfo.toShortString()
+                    expected = "ImageInfo(${iconDrawable.intrinsicSize},'image/png')",
+                    actual = imageInfo.toShortString()
                 )
-                assertEquals(LOCAL, dataFrom)
+                assertEquals(expected = LOCAL, actual = dataFrom)
             }
 
         ImageRequest(context, apkFilePath) {
@@ -242,14 +193,14 @@ class ApkIconDecoderTest {
                     height = iconDrawable.intrinsicHeight
                 )
                 assertEquals(
-                    "Bitmap(${bitmapSize},ARGB_8888${shortInfoColorSpace("SRGB")})",
-                    image.getBitmapOrThrow().toShortInfoString()
+                    expected = "Bitmap(${bitmapSize},ARGB_8888${shortInfoColorSpace("SRGB")})",
+                    actual = image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertEquals(
-                    "ImageInfo(${iconDrawable.intrinsicWidth}x${iconDrawable.intrinsicHeight},'image/png')",
-                    imageInfo.toShortString()
+                    expected = "ImageInfo(${iconDrawable.intrinsicSize},'image/png')",
+                    actual = imageInfo.toShortString()
                 )
-                assertEquals(LOCAL, dataFrom)
+                assertEquals(expected = LOCAL, actual = dataFrom)
                 assertEquals(
                     listOf(
                         createResizeTransformed(
@@ -265,13 +216,94 @@ class ApkIconDecoderTest {
                 )
             }
 
-        ImageRequest(context, ResourceImages.png.uri).run {
-            val fetcher =
-                sketch.components.newFetcherOrThrow(this.toRequestContext(sketch, Size.Empty))
+        assertFailsWith(NullPointerException::class) {
+            val request = ImageRequest(context, ResourceImages.png.uri)
+            val requestContext = request.toRequestContext(sketch)
+            val fetcher = sketch.components.newFetcherOrThrow(requestContext)
             val fetchResult = fetcher.fetch().getOrThrow()
-            assertFailsWith(NullPointerException::class) {
-                factory.create(this@run.toRequestContext(sketch), fetchResult)!!.decode()
-            }
+            factory.create(requestContext, fetchResult)!!.decode()
         }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, "/sdcard/sample.apk")
+        val requestContext = request.toRequestContext(sketch)
+        val element1 = ApkIconDecoder(requestContext, LOCAL, File("/sdcard/sample.apk"))
+        val element11 = ApkIconDecoder(requestContext, LOCAL, File("/sdcard/sample.apk"))
+
+        assertNotEquals(illegal = element1, actual = element11)
+        assertNotEquals(illegal = element1, actual = null as Any?)
+        assertNotEquals(illegal = element1, actual = Any())
+        assertNotEquals(illegal = element1.hashCode(), actual = element11.hashCode())
+    }
+
+    @Test
+    fun testToString() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, "/sdcard/sample.apk")
+        val requestContext = request.toRequestContext(sketch)
+        val decoder = ApkIconDecoder(requestContext, LOCAL, File("/sdcard/sample.apk"))
+        assertTrue(actual = decoder.toString().contains("ApkIconDecoder"))
+        assertTrue(actual = decoder.toString().contains("@"))
+    }
+
+    @Test
+    fun testFactoryKey() = runTest {
+        assertEquals(
+            expected = "ApkIconDecoder",
+            actual = ApkIconDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactoryCreate() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val factory = ApkIconDecoder.Factory()
+
+        // mimeType normal
+        ImageRequest(context, ResourceImages.svg.uri)
+            .createDecoderOrNull(sketch, factory) {
+                it.copy(mimeType = "application/vnd.android.package-archive")
+            }.apply {
+                assertTrue(this is ApkIconDecoder)
+            }
+
+        // mimeType null
+        ImageRequest(context, ResourceImages.png.uri)
+            .createDecoderOrNull(sketch, factory) {
+                it.copy(mimeType = null)
+            }.apply {
+                assertNull(this)
+            }
+
+        // mimeType error
+        ImageRequest(context, ResourceImages.png.uri)
+            .createDecoderOrNull(sketch, factory) {
+                it.copy(mimeType = "image/svg+xml")
+            }.apply {
+                assertNull(this)
+            }
+    }
+
+    @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = ApkIconDecoder.Factory()
+        val element11 = ApkIconDecoder.Factory()
+
+        assertEquals(expected = element1, actual = element11)
+        assertNotEquals(illegal = element1, actual = null as Any?)
+        assertNotEquals(illegal = element1, actual = Any())
+
+        assertEquals(expected = element1.hashCode(), actual = element11.hashCode())
+    }
+
+    @Test
+    fun testFactoryToString() = runTest {
+        assertEquals(
+            expected = "ApkIconDecoder",
+            actual = ApkIconDecoder.Factory().toString()
+        )
     }
 }

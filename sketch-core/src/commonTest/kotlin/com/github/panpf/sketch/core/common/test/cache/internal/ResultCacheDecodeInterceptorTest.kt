@@ -227,14 +227,12 @@ class ResultCacheDecodeInterceptorTest {
         assertNotSame(illegal = element1, actual = element2)
         assertNotSame(illegal = element2, actual = element11)
 
-        assertEquals(expected = element1, actual = element1)
         assertEquals(expected = element1, actual = element11)
         assertEquals(expected = element1, actual = element2)
         assertEquals(expected = element2, actual = element11)
         assertNotEquals(illegal = element1, actual = null as Any?)
         assertNotEquals(illegal = element1, actual = Any())
 
-        assertEquals(expected = element1.hashCode(), actual = element1.hashCode())
         assertEquals(expected = element1.hashCode(), actual = element11.hashCode())
         assertEquals(expected = element1.hashCode(), actual = element2.hashCode())
         assertEquals(expected = element2.hashCode(), actual = element11.hashCode())

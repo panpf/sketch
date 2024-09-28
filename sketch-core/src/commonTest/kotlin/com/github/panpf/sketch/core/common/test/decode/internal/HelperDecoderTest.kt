@@ -55,7 +55,7 @@ class HelperDecoderTest {
                 resize.toString()
             )
             assertEquals(DataFrom.LOCAL, dataFrom)
-            assertNull(transformeds)
+            assertNull(actual = transformeds)
         }
 
         ImageRequest(context, exifRotate90ImageUri) {
@@ -69,7 +69,7 @@ class HelperDecoderTest {
                 resize.toString()
             )
             assertEquals(DataFrom.LOCAL, dataFrom)
-            assertNull(transformeds)
+            assertNull(actual = transformeds)
             assertEquals(result1.image.corners(), image.corners())
         }
 

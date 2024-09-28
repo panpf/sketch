@@ -18,7 +18,6 @@ package com.github.panpf.sketch.core.android.test.decode.internal
 
 import android.content.res.Resources
 import android.graphics.ColorSpace
-import android.os.Build
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -44,9 +43,10 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.colorSpaceNameCompat
 import com.github.panpf.sketch.test.utils.corners
+import com.github.panpf.sketch.test.utils.createDecoderOrDefault
+import com.github.panpf.sketch.test.utils.createDecoderOrNull
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
-import com.github.panpf.sketch.test.utils.toDecoder
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
@@ -57,64 +57,11 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNotSame
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class DrawableDecoderTest {
-
-    @Test
-    fun testFactory() = runTest {
-        val (context, sketch) = getTestContextAndSketch()
-        val factory = DrawableDecoder.Factory()
-
-        assertEquals("DrawableDecoder", factory.toString())
-        assertEquals("DrawableDecoder", factory.key)
-
-        // normal
-        ImageRequest(
-            context,
-            newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.test)
-        ).let {
-            val fetcher = sketch.components.newFetcherOrThrow(
-                it.toRequestContext(sketch, Size.Empty)
-            )
-            val fetchResult = fetcher.fetch().getOrThrow()
-            factory.create(it.toRequestContext(sketch), fetchResult)
-        }.apply {
-            assertNotNull(this)
-        }
-
-        // data error
-        ImageRequest(context, ResourceImages.png.uri).let {
-            val fetcher = sketch.components.newFetcherOrThrow(
-                it.toRequestContext(sketch, Size.Empty)
-            )
-            val fetchResult = fetcher.fetch().getOrThrow()
-            factory.create(it.toRequestContext(sketch), fetchResult)
-        }.apply {
-            assertNull(this)
-        }
-    }
-
-    @Test
-    fun testFactoryEqualsAndHashCode() {
-        if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
-
-        val element1 = DrawableDecoder.Factory()
-        val element11 = DrawableDecoder.Factory()
-
-        assertNotSame(element1, element11)
-
-        assertEquals(element1, element1)
-        assertEquals(element1, element11)
-        assertNotEquals(element1, null as Any?)
-        assertNotEquals(element1, Any())
-
-        assertEquals(element1.hashCode(), element1.hashCode())
-        assertEquals(element1.hashCode(), element11.hashCode())
-    }
 
     @Test
     fun testImageInfo() = runTest {
@@ -125,20 +72,20 @@ class DrawableDecoderTest {
         val imageSize = Size(60.dp2px, 30.dp2px)
         val request = ImageRequest(context, imageUri)
 
-        request.toDecoder(sketch, factory)
-            .imageInfo.apply {
+        request.createDecoderOrDefault(sketch, factory)
+            .apply {
                 assertEquals(
                     expected = "ImageInfo($imageSize,'text/xml')",
-                    actual = toShortString()
+                    actual = imageInfo.toShortString()
                 )
             }
 
-        request.toDecoder(sketch, factory) { fetchResult ->
+        request.createDecoderOrDefault(sketch, factory) { fetchResult ->
             fetchResult.copy(mimeType = null)
-        }.imageInfo.apply {
+        }.apply {
             assertEquals(
                 expected = "ImageInfo($imageSize,'image/png')",
-                actual = toShortString()
+                actual = imageInfo.toShortString()
             )
         }
 
@@ -182,7 +129,7 @@ class DrawableDecoderTest {
                 expected = "ImageInfo($imageSize,'text/xml')",
                 actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
+            assertEquals(expected = LOCAL, actual = dataFrom)
         }.image.getBitmapOrThrow()
 
         // resize: scale, EXACTLY, START_CROP
@@ -215,7 +162,7 @@ class DrawableDecoderTest {
                 expected = "ImageInfo($imageSize,'text/xml')",
                 actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
+            assertEquals(expected = LOCAL, actual = dataFrom)
         }.image.getBitmapOrThrow()
 
         // resize: scale, EXACTLY, CENTER_CROP
@@ -243,7 +190,7 @@ class DrawableDecoderTest {
                 expected = "ImageInfo($imageSize,'text/xml')",
                 actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
+            assertEquals(expected = LOCAL, actual = dataFrom)
         }.image.getBitmapOrThrow()
 
         // size: scale, EXACTLY, END_CROP
@@ -271,7 +218,7 @@ class DrawableDecoderTest {
                 expected = "ImageInfo($imageSize,'text/xml')",
                 actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
+            assertEquals(expected = LOCAL, actual = dataFrom)
         }.image.getBitmapOrThrow()
 
         // colorType
@@ -297,7 +244,7 @@ class DrawableDecoderTest {
                 expected = "ImageInfo($imageSize,'text/xml')",
                 actual = imageInfo.toShortString()
             )
-            assertEquals(LOCAL, dataFrom)
+            assertEquals(expected = LOCAL, actual = dataFrom)
         }.image.getBitmapOrThrow()
 
         // colorSpace
@@ -319,24 +266,98 @@ class DrawableDecoderTest {
                     expected = "ImageInfo($imageSize,'text/xml')",
                     actual = imageInfo.toShortString()
                 )
-                assertEquals(LOCAL, dataFrom)
+                assertEquals(expected = LOCAL, actual = dataFrom)
             }.image.getBitmapOrThrow()
         }
 
-        ImageRequest(context, newResourceUri(8801)).run {
-            assertFailsWith(Resources.NotFoundException::class) {
-                factory.create(
-                    requestContext = this@run.toRequestContext(sketch),
-                    fetchResult = FetchResult(
-                        dataSource = DrawableDataSource(
-                            context = context,
-                            dataFrom = LOCAL,
-                            drawableFetcher = ResDrawable(8801)
-                        ),
-                        mimeType = "image/png"
-                    )
-                )!!.decode()
-            }
+        assertFailsWith(Resources.NotFoundException::class) {
+            val request1 = ImageRequest(context, newResourceUri(8801))
+            val requestContext = request1.toRequestContext(sketch)
+            val dataSource = DrawableDataSource(context, ResDrawable(8801), LOCAL)
+            val fetchResult = FetchResult(dataSource = dataSource, mimeType = "image/png")
+            factory.create(requestContext, fetchResult)!!.decode()
         }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, ResourceImages.animGif.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = DrawableDataSource(
+            context = context,
+            drawableFetcher = ResDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy),
+            dataFrom = LOCAL
+        )
+        val element1 = DrawableDecoder(requestContext, dataSource, mimeType = null)
+        val element11 = DrawableDecoder(requestContext, dataSource, mimeType = null)
+
+        assertNotEquals(illegal = element1, actual = element11)
+        assertNotEquals(illegal = element1, actual = null as Any?)
+        assertNotEquals(illegal = element1, actual = Any())
+        assertNotEquals(illegal = element1.hashCode(), actual = element11.hashCode())
+    }
+
+    @Test
+    fun testToString() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, ResourceImages.animGif.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = DrawableDataSource(
+            context = context,
+            drawableFetcher = ResDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy),
+            dataFrom = LOCAL
+        )
+        val decoder = DrawableDecoder(requestContext, dataSource, mimeType = null)
+        assertTrue(actual = decoder.toString().contains("DrawableDecoder"))
+        assertTrue(actual = decoder.toString().contains("@"))
+    }
+
+    @Test
+    fun testFactoryKey() = runTest {
+        assertEquals(
+            expected = "DrawableDecoder",
+            actual = DrawableDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactoryCreate() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val factory = DrawableDecoder.Factory()
+
+        // normal
+        ImageRequest(
+            context = context,
+            uri = newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.test)
+        ).createDecoderOrNull(sketch, factory).apply {
+            assertTrue(this is DrawableDecoder)
+        }
+
+        // data error
+        ImageRequest(context, ResourceImages.png.uri)
+            .createDecoderOrNull(sketch, factory).apply {
+                assertNull(this)
+            }
+    }
+
+    @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = DrawableDecoder.Factory()
+        val element11 = DrawableDecoder.Factory()
+
+        assertEquals(expected = element1, actual = element11)
+        assertNotEquals(illegal = element1, actual = null as Any?)
+        assertNotEquals(illegal = element1, actual = Any())
+
+        assertEquals(expected = element1.hashCode(), actual = element11.hashCode())
+    }
+
+    @Test
+    fun testFactoryToString() = runTest {
+        assertEquals(
+            expected = "DrawableDecoder",
+            actual = DrawableDecoder.Factory().toString()
+        )
     }
 }

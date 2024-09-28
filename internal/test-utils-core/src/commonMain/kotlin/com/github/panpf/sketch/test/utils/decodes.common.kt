@@ -28,11 +28,25 @@ fun ResourceImageFile.decode(
     return decoderHelper.decode(1) as BitmapImage
 }
 
-expect suspend fun ImageRequest.toDecoder(
+expect suspend fun ImageRequest.createDecoderOrDefault(
     sketch: Sketch,
     factory: Decoder.Factory? = null,
     fetchResultMap: ((FetchResult) -> FetchResult)? = null
 ): Decoder
+
+suspend fun ImageRequest.createDecoderOrNull(
+    sketch: Sketch,
+    factory: Decoder.Factory?,
+    fetchResultMap: ((FetchResult) -> FetchResult)? = null
+): Decoder? {
+    val request = this@createDecoderOrNull
+    val requestContext = request.toRequestContext(sketch)
+    val fetcher = sketch.components.newFetcherOrThrow(requestContext)
+    val fetchResult = fetcher.fetch().getOrThrow()
+        .let { fetchResultMap?.invoke(it) ?: it }
+    val decoder = factory?.create(requestContext, fetchResult)
+    return decoder
+}
 
 expect suspend fun ImageRequest.decode(
     sketch: Sketch,
