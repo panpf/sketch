@@ -19,7 +19,9 @@
 package com.github.panpf.sketch.drawable
 
 import android.graphics.drawable.Drawable
-import com.github.panpf.sketch.drawable.internal.AnimatableDrawableWrapper
+import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import com.github.panpf.sketch.drawable.internal.AnimatableCallbackHelper
 import com.github.panpf.sketch.util.toLogString
 
 /**
@@ -29,7 +31,42 @@ import com.github.panpf.sketch.util.toLogString
  */
 class AnimatableDrawable constructor(
     drawable: Drawable,
-) : AnimatableDrawableWrapper(drawable), SketchDrawable {
+) : DrawableWrapperCompat(drawable), Animatable2Compat, SketchDrawable {
+
+    internal var callbackHelper: AnimatableCallbackHelper? = null
+
+    init {
+        callbackHelper = AnimatableCallbackHelper(drawable)
+    }
+
+    override fun setDrawable(drawable: Drawable?) {
+        callbackHelper?.setDrawable(drawable)
+        super.setDrawable(drawable)
+    }
+
+    override fun registerAnimationCallback(callback: Animatable2Compat.AnimationCallback) {
+        callbackHelper?.registerAnimationCallback(callback)
+    }
+
+    override fun unregisterAnimationCallback(callback: Animatable2Compat.AnimationCallback): Boolean {
+        return callbackHelper?.unregisterAnimationCallback(callback) == true
+    }
+
+    override fun clearAnimationCallbacks() {
+        callbackHelper?.clearAnimationCallbacks()
+    }
+
+    override fun start() {
+        callbackHelper?.start()
+    }
+
+    override fun stop() {
+        callbackHelper?.stop()
+    }
+
+    override fun isRunning(): Boolean {
+        return callbackHelper?.isRunning == true
+    }
 
     override fun mutate(): AnimatableDrawable {
         val mutateDrawable = drawable?.mutate()

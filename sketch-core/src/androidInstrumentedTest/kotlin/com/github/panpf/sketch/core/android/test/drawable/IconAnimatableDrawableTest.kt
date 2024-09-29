@@ -16,31 +16,28 @@
 
 package com.github.panpf.sketch.core.android.test.drawable
 
-import android.content.res.ColorStateList
-import android.graphics.Bitmap
-import android.graphics.Bitmap.Config.ARGB_8888
-import android.graphics.BlendMode.CLEAR
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.PixelFormat
-import android.graphics.PorterDuff.Mode.DST
-import android.graphics.PorterDuff.Mode.DST_IN
-import android.graphics.PorterDuffColorFilter
-import android.graphics.Rect
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
+import android.graphics.drawable.Drawable
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.drawable.IconAnimatableDrawable
-import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.drawable.asEquitable
+import com.github.panpf.sketch.test.utils.TestAnimatable2CompatDrawable
+import com.github.panpf.sketch.test.utils.TestAnimatable2Drawable
+import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
+import com.github.panpf.sketch.test.utils.TestColor
+import com.github.panpf.sketch.test.utils.block
+import com.github.panpf.sketch.test.utils.runBlock
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
-import com.github.panpf.sketch.util.calculateFitBounds
-import com.github.panpf.sketch.util.getDrawableCompat
-import com.github.panpf.tools4a.dimen.ktx.dp2px
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
-import kotlin.math.roundToInt
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -54,680 +51,269 @@ class IconAnimatableDrawableTest {
 
     @Test
     fun testConstructor() {
-        val context = getTestContext()
-
         IconAnimatableDrawable(
-            icon = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+            icon = TestAnimatable2Drawable(ColorDrawable(Color.GREEN))
         ).apply {
             assertTrue(icon is Animatable)
-            assertNull(iconSize)
             assertNull(background)
+            assertNull(iconSize)
+            assertNull(iconTint)
         }
 
         IconAnimatableDrawable(
-            icon = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+            icon = TestAnimatable2Drawable(ColorDrawable(Color.GREEN)),
             background = ColorDrawable(Color.GREEN),
             iconSize = Size(69, 44),
+            iconTint = Color.RED,
         ).apply {
             assertTrue(icon is Animatable)
-            assertEquals(Size(69, 44), iconSize)
             assertEquals(Color.GREEN, background!!.asOrThrow<ColorDrawable>().color)
+            assertEquals(Size(69, 44), iconSize)
+            assertEquals(Color.RED, iconTint)
         }
 
         assertFailsWith(IllegalArgumentException::class) {
-            IconAnimatableDrawable(icon = context.getDrawableCompat(android.R.drawable.ic_delete))
-        }
-    }
-
-//    @Test
-//    fun testMutate() {
-//        val context = getTestContext()
-//
-//        IconAnimatableDrawable(
-//            icon = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
-//            background = ColorDrawable(Color.GREEN)
-//        ).apply {
-//            mutate()
-//            alpha = 146
-//
-//            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated).also {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                    assertEquals(255, it.alpha)
-//                }
-//            }
-//        }
-//
-//        IconAnimatableDrawable(
-//            icon = TestNewMutateDrawable(context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)),
-//            background = ColorDrawable(Color.GREEN)
-//        ).apply {
-//            mutate()
-//            alpha = 146
-//
-//            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated).also {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                    assertEquals(255, it.alpha)
-//                }
-//            }
-//        }
-//
-//        IconAnimatableDrawable(
-//            icon = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
-//            background = TestNewMutateDrawable(ColorDrawable(Color.GREEN))
-//        ).apply {
-//            mutate()
-//            alpha = 146
-//
-//            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated).also {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                    assertEquals(255, it.alpha)
-//                }
-//            }
-//        }
-//    }
-
-    @Test
-    fun testTint() {
-        val context = getTestContext()
-
-        IconAnimatableDrawable(
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
-        ).apply {
-            setTint(Color.RED)
-            setTintList(ColorStateList.valueOf(Color.GREEN))
-            setTintMode(DST)
-            if (Build.VERSION.SDK_INT >= 29) {
-                setTintBlendMode(CLEAR)
-            }
-        }
-
-        IconAnimatableDrawable(
-            icon = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
-            background = context.getDrawableCompat(android.R.drawable.ic_input_add)
-        ).apply {
-            setTint(Color.RED)
-            setTintList(ColorStateList.valueOf(Color.GREEN))
-            setTintMode(DST)
-            if (Build.VERSION.SDK_INT >= 29) {
-                setTintBlendMode(CLEAR)
-            }
+            IconAnimatableDrawable(icon = ColorDrawable(Color.GREEN))
         }
     }
 
     @Test
-    fun testColorFilter() {
-        val context = getTestContext()
+    fun testCallback() = runTest {
+        // Animatable2
+        if (VERSION.SDK_INT >= VERSION_CODES.P) {
+            val animatedDrawable = TestAnimatable2Drawable(ColorDrawable(Color.GREEN))
+            val wrapper = IconAnimatableDrawable(animatedDrawable)
+            assertEquals(expected = 0, actual = animatedDrawable.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
 
-        IconAnimatableDrawable(
-            icon = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
-        ).apply {
-            if (Build.VERSION.SDK_INT >= 21) {
-                assertNull(colorFilter)
+            withContext(Dispatchers.Main) {
+                wrapper.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {})
             }
-            mutate()
+            assertEquals(expected = 1, actual = animatedDrawable.callbacks?.size ?: 0)
+            assertEquals(expected = 1, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
 
-            colorFilter = PorterDuffColorFilter(Color.BLUE, DST)
-            if (Build.VERSION.SDK_INT >= 21) {
-                assertTrue(colorFilter is PorterDuffColorFilter)
+            val callback2 = object : Animatable2Compat.AnimationCallback() {}
+            withContext(Dispatchers.Main) {
+                wrapper.registerAnimationCallback(callback2)
             }
+            assertEquals(expected = 2, actual = animatedDrawable.callbacks?.size ?: 0)
+            assertEquals(expected = 2, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
 
-            colorFilter = null
-            if (Build.VERSION.SDK_INT >= 21) {
-                assertNull(colorFilter)
+            withContext(Dispatchers.Main) {
+                wrapper.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {})
             }
+            assertEquals(expected = 3, actual = animatedDrawable.callbacks?.size ?: 0)
+            assertEquals(expected = 3, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
 
-            @Suppress("DEPRECATION")
-            setColorFilter(Color.RED, DST_IN)
-            if (Build.VERSION.SDK_INT >= 21) {
-                assertTrue(colorFilter is PorterDuffColorFilter)
-            }
+            wrapper.unregisterAnimationCallback(callback2)
+            assertEquals(expected = 2, actual = animatedDrawable.callbacks?.size ?: 0)
+            assertEquals(expected = 2, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+
+            wrapper.clearAnimationCallbacks()
+            assertEquals(expected = 0, actual = animatedDrawable.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
         }
 
-        IconAnimatableDrawable(
-            icon = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
-            background = context.getDrawableCompat(android.R.drawable.ic_input_add)
-        ).apply {
-            if (Build.VERSION.SDK_INT >= 21) {
-                assertNull(colorFilter)
+        // Animatable2Compat
+        runBlock {
+            val animatable2Drawable = TestAnimatable2CompatDrawable(ColorDrawable(Color.GREEN))
+            val wrapper = IconAnimatableDrawable(animatable2Drawable)
+            assertEquals(expected = 0, actual = animatable2Drawable.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+
+            withContext(Dispatchers.Main) {
+                wrapper.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {})
             }
-            mutate()
+            assertEquals(expected = 1, actual = animatable2Drawable.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
 
-            colorFilter = PorterDuffColorFilter(Color.BLUE, DST)
-            if (Build.VERSION.SDK_INT >= 21) {
-                assertTrue(colorFilter is PorterDuffColorFilter)
+            val callback2 = object : Animatable2Compat.AnimationCallback() {}
+            withContext(Dispatchers.Main) {
+                wrapper.registerAnimationCallback(callback2)
             }
+            assertEquals(expected = 2, actual = animatable2Drawable.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
 
-            colorFilter = null
-            if (Build.VERSION.SDK_INT >= 21) {
-                assertNull(colorFilter)
+            withContext(Dispatchers.Main) {
+                wrapper.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {})
             }
-
-            @Suppress("DEPRECATION")
-            setColorFilter(Color.RED, DST_IN)
-            if (Build.VERSION.SDK_INT >= 21) {
-                assertTrue(colorFilter is PorterDuffColorFilter)
-            }
-        }
-    }
-
-    @Test
-    fun testChange() {
-        val context = getTestContext()
-
-        IconAnimatableDrawable(
-            icon = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
-            background = ColorDrawable(Color.RED)
-        ).apply {
-            level = 4
-            state = intArrayOf(android.R.attr.state_enabled)
-        }
-
-        IconAnimatableDrawable(
-            icon = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
-        ).apply {
-            level = 4
-            state = intArrayOf(android.R.attr.state_enabled)
-        }
-    }
-
-    @Test
-    fun testOpacity() {
-        val context = getTestContext()
-
-        IconAnimatableDrawable(
-            icon = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
-        ).apply {
-            @Suppress("DEPRECATION")
-            assertEquals(PixelFormat.TRANSLUCENT, opacity)
-        }
-    }
-
-    @Test
-    fun testDraw() {
-        val context = getTestContext()
-
-        IconAnimatableDrawable(
-            icon = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
-        ).apply {
-            val canvas = Canvas(Bitmap.createBitmap(100, 100, ARGB_8888))
-            draw(canvas)
-        }
-
-        IconAnimatableDrawable(
-            icon = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
-            background = ColorDrawable(Color.RED)
-        ).apply {
-            val canvas = Canvas(Bitmap.createBitmap(100, 100, ARGB_8888))
-            draw(canvas)
-        }
-    }
-
-    @Test
-    fun testBounds() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-
-        val icon =
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
-        val iconIntrinsicSize = Size(icon.intrinsicWidth, icon.intrinsicHeight)
-        assertEquals(Size(48.dp2px, 48.dp2px), iconIntrinsicSize)
-        assertEquals(Rect(0, 0, 0, 0), icon.bounds)
-
-        val bgDrawable = ColorDrawable(Color.RED)
-        assertEquals(Rect(0, 0, 0, 0), bgDrawable.bounds)
-
-        val iconDrawable = IconAnimatableDrawable(icon = icon, background = bgDrawable)
-        assertNull(iconDrawable.iconSize)
-        assertEquals(Rect(0, 0, 0, 0), iconDrawable.bounds)
-
-        val iconBoundsList = mutableListOf<Rect>()
-        val boundsList = listOf(
-            Rect(
-                0,
-                0,
-                (icon.intrinsicWidth * 2f).toInt(),
-                (icon.intrinsicHeight * 2f).toInt()
-            ),
-            Rect(
-                0,
-                0,
-                (icon.intrinsicWidth * 0.5f).toInt(),
-                (icon.intrinsicHeight * 0.5f).toInt()
-            ),
-            Rect(
-                0,
-                0,
-                (icon.intrinsicWidth * 0.5f).toInt(),
-                (icon.intrinsicHeight * 2f).toInt()
-            ),
-            Rect(
-                0,
-                0,
-                (icon.intrinsicWidth * 2f).toInt(),
-                (icon.intrinsicHeight * 0.5f).toInt()
-            ),
-        )
-        boundsList.forEach { bounds ->
-            iconDrawable.bounds = bounds
-
-            val iconBounds = calculateFitBounds(iconIntrinsicSize, bounds)
-            assertNotEquals(Rect(0, 0, 0, 0), icon.bounds, "bounds=$bounds")
-            assertEquals(iconBounds, icon.bounds, "bounds=$bounds")
-            assertEquals(bounds, bgDrawable.bounds, "bounds=$bounds")
-
-            iconBoundsList.add(Rect(icon.bounds))
-        }
-
-        assertEquals(4, iconBoundsList.size)
-        assertEquals(4, iconBoundsList.distinct().size)
-    }
-
-    @Test
-    fun testIconSize() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-
-        val icon =
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
-        val iconIntrinsicSize = Size(icon.intrinsicWidth, icon.intrinsicHeight)
-        assertEquals(Size(48.dp2px, 48.dp2px), iconIntrinsicSize)
-        assertEquals(Rect(0, 0, 0, 0), icon.bounds)
-
-        val bgDrawable = ColorDrawable(Color.RED)
-        assertEquals(Rect(0, 0, 0, 0), bgDrawable.bounds)
-
-        val iconSize = Size(
-            (icon.intrinsicWidth * 1.3f).roundToInt(),
-            (icon.intrinsicHeight * 1.3f).roundToInt()
-        )
-        assertNotEquals(iconSize, iconIntrinsicSize)
-
-        val iconDrawable =
-            IconAnimatableDrawable(icon = icon, background = bgDrawable, iconSize = iconSize)
-        assertEquals(iconSize, iconDrawable.iconSize)
-        assertEquals(Rect(0, 0, 0, 0), iconDrawable.bounds)
-
-        val iconBoundsList = mutableListOf<Rect>()
-        val boundsList = listOf(
-            Rect(
-                0,
-                0,
-                (icon.intrinsicWidth * 2f).toInt(),
-                (icon.intrinsicHeight * 2f).toInt()
-            ),
-            Rect(
-                0,
-                0,
-                (icon.intrinsicWidth * 0.5f).toInt(),
-                (icon.intrinsicHeight * 0.5f).toInt()
-            ),
-            Rect(
-                0,
-                0,
-                (icon.intrinsicWidth * 0.5f).toInt(),
-                (icon.intrinsicHeight * 2f).toInt()
-            ),
-            Rect(
-                0,
-                0,
-                (icon.intrinsicWidth * 2f).toInt(),
-                (icon.intrinsicHeight * 0.5f).toInt()
-            ),
-        )
-        boundsList.forEach { bounds ->
-            iconDrawable.bounds = bounds
-
-            val iconBounds = calculateFitBounds(iconSize, bounds)
-            assertNotEquals(Rect(0, 0, 0, 0), icon.bounds, "bounds=$bounds")
-            assertEquals(iconBounds, icon.bounds, "bounds=$bounds")
-            assertEquals(bounds, bgDrawable.bounds, "bounds=$bounds")
-
-            iconBoundsList.add(Rect(icon.bounds))
-        }
-
-        assertEquals(4, iconBoundsList.size)
-        assertEquals(4, iconBoundsList.distinct().size)
-    }
-
-    @Test
-    fun testAlpha() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-
-        IconAnimatableDrawable(icon = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)).apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                assertEquals(255, alpha)
-            }
-
-            mutate()
-            alpha = 144
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                assertEquals(144, alpha)
-            }
-        }
-    }
-
-    @Test
-    fun testHotspot() {
-        if (Build.VERSION.SDK_INT < 21) return
-        val context = InstrumentationRegistry.getInstrumentation().context
-
-        val iconDrawable =
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
-        val bgDrawable = ColorDrawable(Color.RED)
-        IconAnimatableDrawable(icon = iconDrawable, background = bgDrawable).apply {
-            assertEquals(Rect(0, 0, 0, 0), Rect().apply { getHotspotBounds(this) })
+            assertEquals(expected = 3, actual = animatable2Drawable.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
             assertEquals(
-                Rect(0, 0, 0, 0),
-                Rect().apply { iconDrawable.getHotspotBounds(this) })
-            assertEquals(
-                Rect(0, 0, 0, 0),
-                Rect().apply { bgDrawable.getHotspotBounds(this) })
-
-            setHotspot(10f, 15f)
-            assertEquals(
-                Rect(0, 0, 0, 0),
-                Rect().apply { getHotspotBounds(this) }
-            )
-            assertEquals(
-                Rect(0, 0, 0, 0),
-                Rect().apply { iconDrawable.getHotspotBounds(this) }
-            )
-            assertEquals(
-                Rect(0, 0, 0, 0),
-                Rect().apply { bgDrawable.getHotspotBounds(this) }
+                expected = 0,
+                actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0
             )
 
-            setHotspotBounds(0, 0, 10, 15)
-            assertEquals(
-                Rect(0, 0, 0, 0),
-                Rect().apply { getHotspotBounds(this) }
-            )
-            assertEquals(
-                Rect(0, 0, 0, 0),
-                Rect().apply { iconDrawable.getHotspotBounds(this) }
-            )
-            assertEquals(
-                Rect(0, 0, 0, 0),
-                Rect().apply { bgDrawable.getHotspotBounds(this) }
-            )
+            wrapper.unregisterAnimationCallback(callback2)
+            assertEquals(expected = 2, actual = animatable2Drawable.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+
+            wrapper.clearAnimationCallbacks()
+            assertEquals(expected = 0, actual = animatable2Drawable.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
         }
 
-        IconAnimatableDrawable(icon = iconDrawable).apply {
-            assertEquals(Rect(0, 0, 0, 0), Rect().apply { getHotspotBounds(this) })
-            assertEquals(
-                Rect(0, 0, 0, 0),
-                Rect().apply { iconDrawable.getHotspotBounds(this) })
+        // Animatable
+        runBlock {
+            val animatableDrawable = TestAnimatableDrawable(ColorDrawable(Color.GREEN))
+            val wrapper = IconAnimatableDrawable(animatableDrawable)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
 
-            setHotspot(10f, 15f)
-            assertEquals(
-                Rect(0, 0, 0, 0),
-                Rect().apply { getHotspotBounds(this) }
-            )
-            assertEquals(
-                Rect(0, 0, 0, 0),
-                Rect().apply { iconDrawable.getHotspotBounds(this) }
-            )
+            withContext(Dispatchers.Main) {
+                wrapper.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {})
+            }
+            assertEquals(expected = 1, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
 
-            setHotspotBounds(0, 0, 10, 15)
-            assertEquals(
-                Rect(0, 0, 0, 0),
-                Rect().apply { getHotspotBounds(this) }
-            )
-            assertEquals(
-                Rect(0, 0, 0, 0),
-                Rect().apply { iconDrawable.getHotspotBounds(this) }
-            )
+            val callback2 = object : Animatable2Compat.AnimationCallback() {}
+            withContext(Dispatchers.Main) {
+                wrapper.registerAnimationCallback(callback2)
+            }
+            assertEquals(expected = 2, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+
+            withContext(Dispatchers.Main) {
+                wrapper.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {})
+            }
+            assertEquals(expected = 3, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+
+            wrapper.unregisterAnimationCallback(callback2)
+            assertEquals(expected = 2, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+
+            wrapper.clearAnimationCallbacks()
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
         }
     }
 
     @Test
-    fun testAutoMirrored() {
-        if (Build.VERSION.SDK_INT < 19) return
-        val context = InstrumentationRegistry.getInstrumentation().context
+    fun testStartStop() = runTest {
+        val animatableDrawable = TestAnimatableDrawable()
+        val wrapper = IconAnimatableDrawable(animatableDrawable)
 
-        val iconDrawable =
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
-        val bgDrawable = context.getDrawableCompat(android.R.drawable.editbox_background)
-        IconAnimatableDrawable(icon = iconDrawable, background = bgDrawable).apply {
-            assertFalse(isAutoMirrored)
-            assertFalse(iconDrawable.isAutoMirrored)
-            assertFalse(bgDrawable.isAutoMirrored)
-
-            isAutoMirrored = true
-            assertTrue(isAutoMirrored)
-            assertEquals(Build.VERSION.SDK_INT <= 23, iconDrawable.isAutoMirrored)
-            assertTrue(bgDrawable.isAutoMirrored)
-        }
-
-        iconDrawable.isAutoMirrored = false
-        IconAnimatableDrawable(icon = iconDrawable).apply {
-            assertFalse(isAutoMirrored)
-            assertFalse(iconDrawable.isAutoMirrored)
-
-            isAutoMirrored = true
-            assertEquals(Build.VERSION.SDK_INT <= 23, isAutoMirrored)
-            assertEquals(Build.VERSION.SDK_INT <= 23, iconDrawable.isAutoMirrored)
-        }
-    }
-
-//    @Test
-//    fun testPadding() {
-//        val context = InstrumentationRegistry.getInstrumentation().context
-//
-//        val iconDrawable = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated).apply {
-//            assertFalse(Rect().apply { getPadding(this) }
-//                .run { left == 0 && top == 0 && right == 0 && bottom == 0 })
-//        }
-//        val bgDrawable =
-//            context.getDrawableCompat(android.R.drawable.editbox_background_normal).apply {
-//                assertFalse(Rect().apply { getPadding(this) }
-//                    .run { left == 0 && top == 0 && right == 0 && bottom == 0 })
-//            }
-//
-//        IconAnimatableDrawable(icon = iconDrawable, background = bgDrawable).apply {
-//            assertEquals(
-//                Rect().apply { bgDrawable.getPadding(this) },
-//                Rect().apply { getPadding(this) }
-//            )
-//        }
-//
-//        IconAnimatableDrawable(icon = iconDrawable).apply {
-//            assertTrue(Rect().apply { getPadding(this) }
-//                .run { left == 0 && top == 0 && right == 0 && bottom == 0 })
-//        }
-//    }
-
-    @Test
-    fun testTransparentRegion() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-
-        val iconDrawable =
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
-                .apply {
-                    assertNull(transparentRegion)
+        val callbackHistory = mutableListOf<String>()
+        withContext(Dispatchers.Main) {
+            wrapper.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {
+                override fun onAnimationStart(drawable: Drawable?) {
+                    super.onAnimationStart(drawable)
+                    callbackHistory.add("onAnimationStart")
                 }
-        val bgDrawable =
-            context.getDrawableCompat(android.R.drawable.editbox_background_normal).apply {
-                assertNull(transparentRegion)
-            }
 
-        IconAnimatableDrawable(icon = iconDrawable, background = bgDrawable).apply {
-            assertNull(transparentRegion)
-        }
-
-        IconAnimatableDrawable(icon = iconDrawable).apply {
-            assertNull(transparentRegion)
-        }
-    }
-
-    @Test
-    fun testFilterBitmap() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
-
-        val context = InstrumentationRegistry.getInstrumentation().context
-
-        val iconDrawable =
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
-                .apply {
-                    assertFalse(isFilterBitmap)
-                    isFilterBitmap = true
-                    assertFalse(isFilterBitmap)
-                    isFilterBitmap = false
+                override fun onAnimationEnd(drawable: Drawable?) {
+                    super.onAnimationEnd(drawable)
+                    callbackHistory.add("onAnimationEnd")
                 }
-        val bgDrawable =
-            context.getDrawableCompat(android.R.drawable.editbox_background_normal).apply {
-                assertFalse(isFilterBitmap)
-                isFilterBitmap = true
-                assertTrue(isFilterBitmap)
-                isFilterBitmap = false
-            }
-
-        IconAnimatableDrawable(icon = iconDrawable, background = bgDrawable).apply {
-            assertFalse(isFilterBitmap)
-
-            isFilterBitmap = true
-            assertTrue(isFilterBitmap)
-            assertFalse(iconDrawable.isFilterBitmap)
-            assertTrue(bgDrawable.isFilterBitmap)
+            })
         }
+
+        assertFalse(actual = animatableDrawable.isRunning)
+        assertFalse(actual = wrapper.isRunning)
+        assertEquals(expected = listOf(), actual = callbackHistory)
+
+        wrapper.start()
+        block(100)
+        assertTrue(actual = animatableDrawable.isRunning)
+        assertTrue(actual = wrapper.isRunning)
+        assertEquals(expected = listOf("onAnimationStart"), actual = callbackHistory)
+
+        wrapper.start()
+        block(100)
+        assertTrue(actual = animatableDrawable.isRunning)
+        assertTrue(actual = wrapper.isRunning)
+        assertEquals(expected = listOf("onAnimationStart"), actual = callbackHistory)
+
+        wrapper.stop()
+        block(100)
+        assertFalse(actual = animatableDrawable.isRunning)
+        assertFalse(actual = wrapper.isRunning)
+        assertEquals(
+            expected = listOf("onAnimationStart", "onAnimationEnd"),
+            actual = callbackHistory
+        )
     }
 
     @Test
-    fun testChangingConfigurations() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-
-        val iconDrawable =
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
-        val bgDrawable = context.getDrawableCompat(android.R.drawable.editbox_background_normal)
-        val iconChangingConfigurations = iconDrawable.changingConfigurations
-        val bgChangingConfigurations = bgDrawable.changingConfigurations
-
-        iconDrawable.apply {
-            changingConfigurations = 1
-            assertEquals(iconChangingConfigurations + 1, changingConfigurations)
-        }
-        bgDrawable.apply {
-            changingConfigurations = 2
-            assertEquals(bgChangingConfigurations + 2, changingConfigurations)
-        }
-
-        IconAnimatableDrawable(icon = iconDrawable, background = bgDrawable).apply {
-            changingConfigurations = 0
-            assertEquals(iconChangingConfigurations, changingConfigurations)
-            assertEquals(iconChangingConfigurations, iconDrawable.changingConfigurations)
-            assertEquals(bgChangingConfigurations, bgDrawable.changingConfigurations)
-        }
-
-        iconDrawable.changingConfigurations = 1
-        IconAnimatableDrawable(icon = iconDrawable).apply {
-            assertEquals(iconChangingConfigurations + 1, changingConfigurations)
-
-            changingConfigurations = 0
-            assertEquals(iconChangingConfigurations, changingConfigurations)
-            assertEquals(iconChangingConfigurations, iconDrawable.changingConfigurations)
-            assertEquals(bgChangingConfigurations, bgDrawable.changingConfigurations)
-        }
+    fun testMutate() {
+        // TODO testMutate
     }
 
     @Test
-    fun testState() {
-        val context = InstrumentationRegistry.getInstrumentation().context
+    fun testEqualsAndHashCode() {
+        val element1 = IconAnimatableDrawable(
+            icon = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED).asEquitable()),
+        )
+        val element11 = IconAnimatableDrawable(
+            icon = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED).asEquitable()),
+        )
+        val element2 = IconAnimatableDrawable(
+            icon = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.GREEN).asEquitable()),
+        )
+        val element3 = IconAnimatableDrawable(
+            icon = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED).asEquitable()),
+            background = ColorDrawable(TestColor.GRAY).asEquitable(),
+        )
+        val element4 = IconAnimatableDrawable(
+            icon = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED).asEquitable()),
+            iconSize = Size(69, 44),
+        )
+        val element5 = IconAnimatableDrawable(
+            icon = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED).asEquitable()),
+            iconTint = TestColor.BLUE,
+        )
 
-        val iconDrawable =
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
-        val bgDrawable = context.getDrawableCompat(android.R.drawable.editbox_background_normal)
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element1, element4)
+        assertNotEquals(element1, element5)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element2, element4)
+        assertNotEquals(element2, element5)
+        assertNotEquals(element3, element4)
+        assertNotEquals(element3, element5)
+        assertNotEquals(element4, element5)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
 
-        IconAnimatableDrawable(icon = iconDrawable, background = bgDrawable).apply {
-            assertEquals(intArrayOf().toList(), state.toList())
-
-            state = intArrayOf(1)
-            assertEquals(intArrayOf(1).toList(), state.toList())
-            assertEquals(intArrayOf(1).toList(), iconDrawable.state.toList())
-            assertEquals(intArrayOf(1).toList(), bgDrawable.state.toList())
-
-            bgDrawable.state = intArrayOf(2)
-            assertEquals(intArrayOf(2).toList(), bgDrawable.state.toList())
-            state = intArrayOf(1)
-        }
-
-        iconDrawable.state = intArrayOf()
-        IconAnimatableDrawable(icon = iconDrawable).apply {
-            assertEquals(intArrayOf().toList(), state.toList())
-
-            state = intArrayOf(1)
-            assertEquals(intArrayOf(1).toList(), state.toList())
-            assertEquals(intArrayOf(1).toList(), iconDrawable.state.toList())
-        }
-
-        IconAnimatableDrawable(icon = iconDrawable, background = bgDrawable).apply {
-            jumpToCurrentState()
-        }
-        IconAnimatableDrawable(icon = iconDrawable).apply {
-            jumpToCurrentState()
-        }
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element1.hashCode(), element4.hashCode())
+        assertNotEquals(element1.hashCode(), element5.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element4.hashCode())
+        assertNotEquals(element2.hashCode(), element5.hashCode())
+        assertNotEquals(element3.hashCode(), element4.hashCode())
+        assertNotEquals(element3.hashCode(), element5.hashCode())
+        assertNotEquals(element4.hashCode(), element5.hashCode())
     }
 
     @Test
-    fun testVisible() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-
-        val iconDrawable =
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
-        val bgDrawable = context.getDrawableCompat(android.R.drawable.editbox_background_normal)
-
-        assertTrue(iconDrawable.isVisible)
-        assertTrue(bgDrawable.isVisible)
-
-        IconAnimatableDrawable(icon = iconDrawable, background = bgDrawable).apply {
-            assertTrue(iconDrawable.isVisible)
-            assertTrue(bgDrawable.isVisible)
-            assertTrue(isVisible)
-
-            iconDrawable.setVisible(false, false)
-            assertFalse(iconDrawable.isVisible)
-            assertTrue(bgDrawable.isVisible)
-            assertTrue(isVisible)
-
-            bgDrawable.setVisible(false, false)
-            assertFalse(iconDrawable.isVisible)
-            assertFalse(bgDrawable.isVisible)
-            assertTrue(isVisible)
-
-            iconDrawable.setVisible(true, false)
-            assertTrue(iconDrawable.isVisible)
-            assertFalse(bgDrawable.isVisible)
-            assertTrue(isVisible)
-
-            iconDrawable.setVisible(false, false)
-            assertFalse(iconDrawable.isVisible)
-            assertFalse(bgDrawable.isVisible)
-            assertTrue(isVisible)
-
-            setVisible(visible = true, restart = true)
-            assertTrue(iconDrawable.isVisible)
-            assertTrue(bgDrawable.isVisible)
-            assertTrue(isVisible)
-
-            setVisible(visible = false, restart = false)
-            assertFalse(iconDrawable.isVisible)
-            assertFalse(bgDrawable.isVisible)
-            assertFalse(isVisible)
-        }
+    fun testToString() {
+        val drawable = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED))
+        val background = ColorDrawable(TestColor.GRAY)
+        assertEquals(
+            expected = "IconAnimatableDrawable(icon=TestAnimatable2CompatDrawable(drawable=ColorDrawable(-65536)), background=ColorDrawable(-7829368), iconSize=69x44, iconTint=-16776961)",
+            actual = IconAnimatableDrawable(
+                icon = drawable,
+                background = background,
+                iconSize = Size(69, 44),
+                iconTint = TestColor.BLUE
+            ).toString()
+        )
     }
-
-//    @Test
-//    fun testStateful() {
-//        val context = InstrumentationRegistry.getInstrumentation().context
-//
-//        val iconDrawable = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
-//        val bgDrawable = context.getDrawableCompat(android.R.drawable.editbox_background_normal)
-//        IconAnimatableDrawable(icon = iconDrawable, background = bgDrawable).apply {
-//            assertTrue(isStateful)
-//            assertTrue(iconDrawable.isStateful)
-//            assertFalse(bgDrawable.isStateful)
-//        }
-//
-//        IconAnimatableDrawable(icon = iconDrawable).apply {
-//            assertTrue(isStateful)
-//            assertTrue(iconDrawable.isStateful)
-//        }
-//    }
 }

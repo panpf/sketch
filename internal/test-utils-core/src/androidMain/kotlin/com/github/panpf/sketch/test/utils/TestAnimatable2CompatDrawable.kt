@@ -5,10 +5,12 @@ import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import com.github.panpf.sketch.drawable.SketchDrawable
+import com.github.panpf.sketch.util.toLogString
 
 class TestAnimatable2CompatDrawable(
     drawable: Drawable? = null
-) : DrawableWrapperCompat(drawable), Animatable2Compat {
+) : DrawableWrapperCompat(drawable), Animatable2Compat, SketchDrawable {
 
     private var running = false
     private val handler by lazy { Handler(Looper.getMainLooper()) }
@@ -65,5 +67,22 @@ class TestAnimatable2CompatDrawable(
         } else {
             this
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        other as TestAnimatable2CompatDrawable
+        if (drawable != other.drawable) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return drawable.hashCode()
+    }
+
+    override fun toString(): String {
+
+        return "TestAnimatable2CompatDrawable(drawable=${drawable?.toLogString()})"
     }
 }

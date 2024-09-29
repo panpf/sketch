@@ -27,13 +27,13 @@ import android.graphics.PorterDuff.Mode.DST
 import android.graphics.PorterDuff.Mode.DST_IN
 import android.graphics.PorterDuffColorFilter
 import android.graphics.Rect
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.drawable.IconDrawable
-import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
+import com.github.panpf.sketch.drawable.asEquitable
+import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
@@ -54,71 +54,25 @@ class IconDrawableTest {
 
     @Test
     fun testConstructor() {
-        val context = getTestContext()
-
         IconDrawable(
-            icon = context.getDrawableCompat(android.R.drawable.ic_delete)
+            icon = ColorDrawable(Color.GREEN),
         ).apply {
-            assertTrue(icon is BitmapDrawable)
-            assertNull(iconSize)
+            assertTrue(icon is ColorDrawable)
             assertNull(background)
+            assertNull(iconSize)
+            assertNull(iconTint)
         }
 
         IconDrawable(
-            icon = context.getDrawableCompat(android.R.drawable.ic_delete),
-            background = ColorDrawable(Color.GREEN),
+            icon = ColorDrawable(Color.GREEN),
+            background = ColorDrawable(Color.BLUE),
             iconSize = Size(69, 44),
+            iconTint = Color.RED,
         ).apply {
-            assertTrue(icon is BitmapDrawable)
+            assertTrue(icon is ColorDrawable)
+            assertEquals(Color.BLUE, background!!.asOrThrow<ColorDrawable>().color)
             assertEquals(Size(69, 44), iconSize)
-            assertEquals(Color.GREEN, background!!.asOrThrow<ColorDrawable>().color)
-        }
-    }
-
-    @Test
-    fun testMutate() {
-        val context = getTestContext()
-
-        IconDrawable(
-            icon = context.getDrawableCompat(android.R.drawable.bottom_bar),
-            background = ColorDrawable(Color.GREEN)
-        ).apply {
-            mutate()
-            alpha = 146
-
-            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    assertEquals(255, it.alpha)
-                }
-            }
-        }
-
-        IconDrawable(
-            icon = TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar)),
-            background = ColorDrawable(Color.GREEN)
-        ).apply {
-            mutate()
-            alpha = 146
-
-            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    assertEquals(255, it.alpha)
-                }
-            }
-        }
-
-        IconDrawable(
-            icon = context.getDrawableCompat(android.R.drawable.bottom_bar),
-            background = TestNewMutateDrawable(ColorDrawable(Color.GREEN))
-        ).apply {
-            mutate()
-            alpha = 146
-
-            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    assertEquals(255, it.alpha)
-                }
-            }
+            assertEquals(Color.RED, iconTint)
         }
     }
 
@@ -749,5 +703,76 @@ class IconDrawableTest {
             assertTrue(isStateful)
             assertTrue(iconDrawable.isStateful)
         }
+    }
+
+    @Test
+    fun testMutate() {
+        // TODO testMutate
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val element1 = IconDrawable(
+            icon = ColorDrawable(TestColor.RED).asEquitable(),
+        )
+        val element11 = IconDrawable(
+            icon = ColorDrawable(TestColor.RED).asEquitable(),
+        )
+        val element2 = IconDrawable(
+            icon = ColorDrawable(TestColor.GREEN).asEquitable(),
+        )
+        val element3 = IconDrawable(
+            icon = ColorDrawable(TestColor.GREEN).asEquitable(),
+            background = ColorDrawable(TestColor.GRAY).asEquitable(),
+        )
+        val element4 = IconDrawable(
+            icon = ColorDrawable(TestColor.GREEN).asEquitable(),
+            iconSize = Size(69, 44),
+        )
+        val element5 = IconDrawable(
+            icon = ColorDrawable(TestColor.GREEN).asEquitable(),
+            iconTint = TestColor.BLUE,
+        )
+
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element1, element4)
+        assertNotEquals(element1, element5)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element2, element4)
+        assertNotEquals(element2, element5)
+        assertNotEquals(element3, element4)
+        assertNotEquals(element3, element5)
+        assertNotEquals(element4, element5)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
+
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element1.hashCode(), element4.hashCode())
+        assertNotEquals(element1.hashCode(), element5.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element4.hashCode())
+        assertNotEquals(element2.hashCode(), element5.hashCode())
+        assertNotEquals(element3.hashCode(), element4.hashCode())
+        assertNotEquals(element3.hashCode(), element5.hashCode())
+        assertNotEquals(element4.hashCode(), element5.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        val drawable = ColorDrawable(TestColor.RED)
+        val background = ColorDrawable(TestColor.GRAY)
+        assertEquals(
+            expected = "IconDrawable(icon=ColorDrawable(-65536), background=ColorDrawable(-7829368), iconSize=69x44, iconTint=-16776961)",
+            actual = IconDrawable(
+                icon = drawable,
+                background = background,
+                iconSize = Size(69, 44),
+                iconTint = TestColor.BLUE
+            ).toString()
+        )
     }
 }

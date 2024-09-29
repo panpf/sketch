@@ -94,7 +94,11 @@ class EquitableDrawableTest {
                 drawable = context.resources.getDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)!!,
                 equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
             ),
-            actual = context.resources.getEquitableDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)
+            actual = getEquitableDrawable(
+                com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
+                density,
+                theme
+            )
         )
     }
 
@@ -129,7 +133,8 @@ class EquitableDrawableTest {
             ),
             actual = context.resources.getEquitableDrawableForDensity(
                 resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
-                density = 2
+                density = 2,
+                theme = theme
             )
         )
     }
@@ -196,6 +201,11 @@ class EquitableDrawableTest {
                 equalityKey = TestColor.RED
             ).key
         )
+    }
+
+    @Test
+    fun testMutate() {
+        // TODO testMutate
     }
 
     @Test

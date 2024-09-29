@@ -31,7 +31,7 @@ import com.github.panpf.sketch.util.toLogString
  *
  * @see com.github.panpf.sketch.view.core.test.drawable.ResizeDrawableTest.testResize
  */
-fun Drawable.resize(size: Size, scale: Scale = CENTER_CROP): Drawable {
+fun Drawable.resize(size: Size, scale: Scale = CENTER_CROP): ResizeDrawable {
     return if (this is Animatable) {
         ResizeAnimatableDrawable(this, size, scale)
     } else {
@@ -59,15 +59,6 @@ open class ResizeDrawable(
         return size.height
     }
 
-    override fun mutate(): ResizeDrawable {
-        val mutateDrawable = drawable?.mutate()
-        return if (mutateDrawable != null && mutateDrawable !== drawable) {
-            ResizeDrawable(mutateDrawable, size, scale)
-        } else {
-            this
-        }
-    }
-
     override fun setBounds(left: Int, top: Int, right: Int, bottom: Int) {
         super.setBounds(left, top, right, bottom)
         drawable?.apply {
@@ -82,6 +73,15 @@ open class ResizeDrawable(
                 ),
                 scale = scale
             ).toAndroidRect()
+        }
+    }
+
+    override fun mutate(): ResizeDrawable {
+        val mutateDrawable = drawable?.mutate()
+        return if (mutateDrawable != null && mutateDrawable !== drawable) {
+            ResizeDrawable(mutateDrawable, size, scale)
+        } else {
+            this
         }
     }
 

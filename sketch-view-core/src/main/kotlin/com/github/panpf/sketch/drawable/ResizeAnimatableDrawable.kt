@@ -17,11 +17,10 @@
 package com.github.panpf.sketch.drawable
 
 import android.graphics.drawable.Drawable
-import com.github.panpf.sketch.drawable.internal.AnimatableDrawableWrapper
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import com.github.panpf.sketch.drawable.internal.AnimatableCallbackHelper
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.calculateBounds
-import com.github.panpf.sketch.util.toAndroidRect
 import com.github.panpf.sketch.util.toLogString
 
 /**
@@ -32,16 +31,43 @@ import com.github.panpf.sketch.util.toLogString
  */
 open class ResizeAnimatableDrawable(
     drawable: Drawable,
-    val size: Size,
-    val scale: Scale
-) : AnimatableDrawableWrapper(drawable), SketchDrawable {
+    size: Size,
+    scale: Scale
+) : ResizeDrawable(drawable, size, scale), Animatable2Compat, SketchDrawable {
 
-    override fun getIntrinsicWidth(): Int {
-        return size.width
+    internal var callbackHelper: AnimatableCallbackHelper? = null
+
+    init {
+        callbackHelper = AnimatableCallbackHelper(drawable)
     }
 
-    override fun getIntrinsicHeight(): Int {
-        return size.height
+    override fun setDrawable(drawable: Drawable?) {
+        callbackHelper?.setDrawable(drawable)
+        super.setDrawable(drawable)
+    }
+
+    override fun registerAnimationCallback(callback: Animatable2Compat.AnimationCallback) {
+        callbackHelper?.registerAnimationCallback(callback)
+    }
+
+    override fun unregisterAnimationCallback(callback: Animatable2Compat.AnimationCallback): Boolean {
+        return callbackHelper?.unregisterAnimationCallback(callback) == true
+    }
+
+    override fun clearAnimationCallbacks() {
+        callbackHelper?.clearAnimationCallbacks()
+    }
+
+    override fun start() {
+        callbackHelper?.start()
+    }
+
+    override fun stop() {
+        callbackHelper?.stop()
+    }
+
+    override fun isRunning(): Boolean {
+        return callbackHelper?.isRunning == true
     }
 
     override fun mutate(): ResizeAnimatableDrawable {
@@ -50,23 +76,6 @@ open class ResizeAnimatableDrawable(
             ResizeAnimatableDrawable(mutateDrawable, size, scale)
         } else {
             this
-        }
-    }
-
-    override fun setBounds(left: Int, top: Int, right: Int, bottom: Int) {
-        super.setBounds(left, top, right, bottom)
-        drawable?.apply {
-            this@apply.bounds = calculateBounds(
-                srcSize = Size(
-                    width = this@apply.intrinsicWidth,
-                    height = this@apply.intrinsicHeight
-                ),
-                dstSize = Size(
-                    width = this@ResizeAnimatableDrawable.bounds.width(),
-                    height = this@ResizeAnimatableDrawable.bounds.height()
-                ),
-                scale = scale
-            ).toAndroidRect()
         }
     }
 
@@ -87,6 +96,10 @@ open class ResizeAnimatableDrawable(
     }
 
     override fun toString(): String {
-        return "ResizeAnimatableDrawable(drawable=${drawable?.toLogString()}, size=$size, scale=$scale)"
+        return "ResizeAnimatableDrawable(" +
+                "drawable=${drawable?.toLogString()}, " +
+                "size=$size, " +
+                "scale=$scale" +
+                ")"
     }
 }

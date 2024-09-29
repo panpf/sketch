@@ -18,22 +18,12 @@
 
 package com.github.panpf.sketch.drawable
 
-import android.content.res.ColorStateList
-import android.graphics.Canvas
-import android.graphics.ColorFilter
-import android.graphics.PixelFormat
-import android.graphics.PorterDuff.Mode
-import android.graphics.Rect
-import android.graphics.Region
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Drawable.Callback
-import android.os.Build
-import android.os.Build.VERSION_CODES
 import androidx.annotation.ColorInt
-import androidx.core.graphics.drawable.DrawableCompat
-import com.github.panpf.sketch.drawable.internal.AnimatableDrawableWrapper
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import com.github.panpf.sketch.drawable.internal.AnimatableCallbackHelper
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.calculateFitBounds
 import com.github.panpf.sketch.util.toLogString
 
 /**
@@ -43,185 +33,56 @@ import com.github.panpf.sketch.util.toLogString
  * @see com.github.panpf.sketch.core.android.test.drawable.IconAnimatableDrawableTest
  */
 class IconAnimatableDrawable constructor(
-    val icon: Drawable,
-    val background: Drawable? = null,
-    val iconSize: Size? = null,
-    @ColorInt val iconTint: Int? = null
-) : AnimatableDrawableWrapper(icon), Callback, SketchDrawable {
+    icon: Drawable,
+    background: Drawable? = null,
+    iconSize: Size? = null,
+    @ColorInt iconTint: Int? = null
+) : IconDrawable(icon, background, iconSize, iconTint), Callback, Animatable2Compat,
+    SketchDrawable {
+
+    internal var callbackHelper: AnimatableCallbackHelper? = null
 
     init {
-        background?.callback = this
-        icon.callback = this
-        iconTint?.let { DrawableCompat.setTint(icon, it) }
+        callbackHelper = AnimatableCallbackHelper(icon)
     }
 
-    override fun getIntrinsicWidth(): Int {
-        return -1
+    override fun registerAnimationCallback(callback: Animatable2Compat.AnimationCallback) {
+        callbackHelper?.registerAnimationCallback(callback)
     }
 
-    override fun getIntrinsicHeight(): Int {
-        return -1
+    override fun unregisterAnimationCallback(callback: Animatable2Compat.AnimationCallback): Boolean {
+        return callbackHelper?.unregisterAnimationCallback(callback) == true
+    }
+
+    override fun clearAnimationCallbacks() {
+        callbackHelper?.clearAnimationCallbacks()
+    }
+
+    override fun start() {
+        callbackHelper?.start()
+    }
+
+    override fun stop() {
+        callbackHelper?.stop()
+    }
+
+    override fun isRunning(): Boolean {
+        return callbackHelper?.isRunning == true
     }
 
     override fun mutate(): IconAnimatableDrawable {
-        val newIcon = icon.mutate()
-        val newBackground = background?.mutate()
-        return if (newIcon !== icon || newBackground !== background) {
-            IconAnimatableDrawable(newIcon, newBackground, iconSize)
+        val mutateIcon = icon.mutate()
+        val mutateBackground = background?.mutate()
+        return if (mutateIcon !== icon || mutateBackground !== background) {
+            IconAnimatableDrawable(
+                icon = mutateIcon,
+                background = mutateBackground,
+                iconSize = iconSize,
+                iconTint = iconTint
+            )
         } else {
             this
         }
-    }
-
-    override fun draw(canvas: Canvas) {
-        background?.draw(canvas)
-        icon.draw(canvas)
-    }
-
-    override fun onBoundsChange(bounds: Rect) {
-        super.onBoundsChange(bounds)
-        background?.bounds = bounds
-        val contentSize = iconSize ?: Size(icon.intrinsicWidth, icon.intrinsicHeight)
-        val iconBounds = calculateFitBounds(contentSize, bounds)
-        icon.bounds = iconBounds
-    }
-
-    override fun setChangingConfigurations(configs: Int) {
-        background?.changingConfigurations = configs
-        icon.changingConfigurations = configs
-    }
-
-    override fun getChangingConfigurations(): Int {
-        return icon.changingConfigurations
-    }
-
-    override fun isFilterBitmap(): Boolean {
-        return Build.VERSION.SDK_INT >= VERSION_CODES.M
-                && (icon.isFilterBitmap || background?.isFilterBitmap == true)
-    }
-
-    override fun setFilterBitmap(filter: Boolean) {
-        background?.isFilterBitmap = filter
-        icon.isFilterBitmap = filter
-    }
-
-    override fun setAlpha(alpha: Int) {
-        background?.alpha = alpha
-        icon.alpha = alpha
-    }
-
-    override fun getAlpha(): Int {
-        return DrawableCompat.getAlpha(icon)
-    }
-
-    override fun setColorFilter(colorFilter: ColorFilter?) {
-        background?.colorFilter = colorFilter
-        icon.colorFilter = colorFilter
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun setColorFilter(color: Int, mode: Mode) {
-        @Suppress("DEPRECATION")
-        background?.setColorFilter(color, mode)
-        @Suppress("DEPRECATION")
-        icon.setColorFilter(color, mode)
-    }
-
-    override fun getColorFilter(): ColorFilter? {
-        return DrawableCompat.getColorFilter(icon)
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun getOpacity(): Int {
-        @Suppress("DEPRECATION")
-        return icon.opacity.takeIf { it != PixelFormat.OPAQUE }
-            ?: background?.opacity.takeIf { it != PixelFormat.OPAQUE }
-            ?: PixelFormat.OPAQUE
-    }
-
-
-    override fun isStateful(): Boolean {
-        return background?.isStateful == true || icon.isStateful
-    }
-
-    override fun setState(stateSet: IntArray): Boolean {
-        val result1 = background?.setState(stateSet) == true
-        val result2 = icon.setState(stateSet)
-        return result1 || result2
-    }
-
-    override fun getState(): IntArray {
-        return icon.state
-    }
-
-    override fun jumpToCurrentState() {
-        background?.jumpToCurrentState()
-        icon.jumpToCurrentState()
-    }
-
-    override fun setVisible(visible: Boolean, restart: Boolean): Boolean {
-        super.setVisible(visible, restart)
-        val result1 = background?.setVisible(visible, restart) == true
-        val result2 = icon.setVisible(visible, restart)
-        return result1 || result2
-    }
-
-    override fun getTransparentRegion(): Region? {
-        return background?.transparentRegion ?: icon.transparentRegion
-    }
-
-    override fun getPadding(padding: Rect): Boolean {
-        return background?.getPadding(padding) == true
-    }
-
-    override fun onLevelChange(level: Int): Boolean {
-        val result1 = background?.setLevel(level) == true
-        val result2 = icon.setLevel(level)
-        return result1 || result2
-    }
-
-    override fun setAutoMirrored(mirrored: Boolean) {
-        background?.let { DrawableCompat.setAutoMirrored(it, mirrored) }
-        DrawableCompat.setAutoMirrored(icon, mirrored)
-    }
-
-    override fun isAutoMirrored(): Boolean {
-        return background?.let { DrawableCompat.isAutoMirrored(it) } == true
-                || DrawableCompat.isAutoMirrored(icon)
-    }
-
-    override fun setTint(tint: Int) {
-        DrawableCompat.setTint(icon, tint)
-    }
-
-    override fun setTintList(tint: ColorStateList?) {
-        DrawableCompat.setTintList(icon, tint)
-    }
-
-    override fun setTintMode(tintMode: Mode?) {
-        DrawableCompat.setTintMode(icon, tintMode)
-    }
-
-    override fun setHotspot(x: Float, y: Float) {
-        background?.let { DrawableCompat.setHotspot(it, x, y) }
-        DrawableCompat.setHotspot(icon, x, y)
-    }
-
-    override fun setHotspotBounds(left: Int, top: Int, right: Int, bottom: Int) {
-        background?.let { DrawableCompat.setHotspotBounds(it, left, top, right, bottom) }
-        DrawableCompat.setHotspotBounds(icon, left, top, right, bottom)
-    }
-
-    override fun invalidateDrawable(who: Drawable) {
-        invalidateSelf()
-    }
-
-    override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
-        scheduleSelf(what, `when`)
-    }
-
-    override fun unscheduleDrawable(who: Drawable, what: Runnable) {
-        unscheduleSelf(what)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -243,6 +104,11 @@ class IconAnimatableDrawable constructor(
     }
 
     override fun toString(): String {
-        return "IconAnimatableDrawable(icon=${icon.toLogString()}, background=${background?.toLogString()}, iconSize=$iconSize, iconTint=$iconTint)"
+        return "IconAnimatableDrawable(" +
+                "icon=${icon.toLogString()}, " +
+                "background=${background?.toLogString()}, " +
+                "iconSize=$iconSize, " +
+                "iconTint=$iconTint" +
+                ")"
     }
 }

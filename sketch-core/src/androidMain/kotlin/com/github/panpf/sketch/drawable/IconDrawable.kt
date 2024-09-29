@@ -41,7 +41,7 @@ import com.github.panpf.sketch.util.toLogString
  *
  * @see com.github.panpf.sketch.core.android.test.drawable.IconDrawableTest
  */
-class IconDrawable constructor(
+open class IconDrawable constructor(
     val icon: Drawable,
     val background: Drawable? = null,
     val iconSize: Size? = null,
@@ -63,12 +63,12 @@ class IconDrawable constructor(
     }
 
     override fun mutate(): IconDrawable {
-        val newIcon = icon.mutate()
-        val newBackground = background?.mutate()
-        return if (newIcon !== icon || newBackground !== background) {
+        val mutateIcon = icon.mutate()
+        val mutateBackground = background?.mutate()
+        return if (mutateIcon !== icon || mutateBackground !== background) {
             IconDrawable(
-                icon = newIcon,
-                background = newBackground,
+                icon = mutateIcon,
+                background = mutateBackground,
                 iconSize = iconSize,
                 iconTint = iconTint
             )
@@ -247,6 +247,11 @@ class IconDrawable constructor(
     }
 
     override fun toString(): String {
-        return "IconDrawable(icon=${icon.toLogString()}, background=${background?.toLogString()}, iconSize=$iconSize, iconTint=$iconTint)"
+        return "IconDrawable(" +
+                "icon=${icon.toLogString()}, " +
+                "background=${background?.toLogString()}, " +
+                "iconSize=$iconSize, " +
+                "iconTint=$iconTint" +
+                ")"
     }
 }

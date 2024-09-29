@@ -347,12 +347,12 @@ class CrossfadeDrawable @JvmOverloads constructor(
     }
 
     override fun mutate(): CrossfadeDrawable {
-        val newStart = startDrawable?.mutate()
-        val newEnd = endDrawable?.mutate()
-        return if (newStart !== startDrawable || newEnd !== endDrawable) {
+        val mutateStart = startDrawable?.mutate()
+        val mutateEnd = endDrawable?.mutate()
+        return if (mutateStart !== startDrawable || mutateEnd !== endDrawable) {
             CrossfadeDrawable(
-                start = newStart,
-                end = newEnd,
+                start = mutateStart,
+                end = mutateEnd,
                 fitScale = fitScale,
                 durationMillis = durationMillis,
                 fadeStart = fadeStart,

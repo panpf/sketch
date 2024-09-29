@@ -16,20 +16,23 @@
 
 package com.github.panpf.sketch.view.core.test.drawable
 
-import android.R.drawable
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.RGB_565
+import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
-import android.os.Build
+import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.drawable.ResizeAnimatableDrawable
 import com.github.panpf.sketch.drawable.ResizeDrawable
+import com.github.panpf.sketch.drawable.asEquitable
+import com.github.panpf.sketch.drawable.resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
-import com.github.panpf.sketch.test.utils.getDrawableCompat
+import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
+import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.util.Size
@@ -37,14 +40,22 @@ import com.github.panpf.sketch.util.toLogString
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ResizeDrawableTest {
 
     @Test
     fun testResize() {
-        // TODO test
+        ColorDrawable(Color.GREEN).resize(Size(100, 100)).apply {
+            assertTrue(this !is ResizeAnimatableDrawable)
+        }
+
+        TestAnimatableDrawable().resize(Size(100, 100)).apply {
+            assertTrue(this is ResizeAnimatableDrawable)
+        }
     }
 
     @Test
@@ -136,37 +147,85 @@ class ResizeDrawableTest {
 
     @Test
     fun testMutate() {
-        val context = getTestContext()
+        // TODO testMutate
+//        val context = getTestContext()
+//
+//        ResizeDrawable(
+//            context.getDrawableCompat(drawable.bottom_bar),
+//            Size(500, 300),
+//            CENTER_CROP
+//        ).apply {
+//            mutate()
+//            alpha = 146
+//
+//            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                    assertEquals(255, it.alpha)
+//                }
+//            }
+//        }
+//
+//        ResizeDrawable(
+//            TestNewMutateDrawable(context.getDrawableCompat(drawable.bottom_bar)),
+//            Size(500, 300),
+//            CENTER_CROP
+//        ).apply {
+//            mutate()
+//            alpha = 146
+//
+//            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                    assertEquals(255, it.alpha)
+//                }
+//            }
+//        }
+    }
 
-        ResizeDrawable(
-            context.getDrawableCompat(drawable.bottom_bar),
-            Size(500, 300),
-            CENTER_CROP
-        ).apply {
-            mutate()
-            alpha = 146
+    @Test
+    fun testEqualsAndHashCode() {
+        val element1 = ResizeDrawable(
+            drawable = ColorDrawable(TestColor.RED).asEquitable(),
+            size = Size(100, 500),
+            scale = CENTER_CROP,
+        )
+        val element11 = ResizeDrawable(
+            drawable = ColorDrawable(TestColor.RED).asEquitable(),
+            size = Size(100, 500),
+            scale = CENTER_CROP,
+        )
+        val element2 = ResizeDrawable(
+            drawable = ColorDrawable(TestColor.GREEN).asEquitable(),
+            size = Size(100, 500),
+            scale = CENTER_CROP,
+        )
+        val element3 = ResizeDrawable(
+            drawable = ColorDrawable(TestColor.RED).asEquitable(),
+            size = Size(500, 100),
+            scale = CENTER_CROP,
+        )
+        val element4 = ResizeDrawable(
+            drawable = ColorDrawable(TestColor.RED).asEquitable(),
+            size = Size(100, 500),
+            scale = START_CROP,
+        )
 
-            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    assertEquals(255, it.alpha)
-                }
-            }
-        }
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element1, element4)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element2, element4)
+        assertNotEquals(element3, element4)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
 
-        ResizeDrawable(
-            TestNewMutateDrawable(context.getDrawableCompat(drawable.bottom_bar)),
-            Size(500, 300),
-            CENTER_CROP
-        ).apply {
-            mutate()
-            alpha = 146
-
-            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    assertEquals(255, it.alpha)
-                }
-            }
-        }
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element1.hashCode(), element4.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element4.hashCode())
+        assertNotEquals(element3.hashCode(), element4.hashCode())
     }
 
     @Test

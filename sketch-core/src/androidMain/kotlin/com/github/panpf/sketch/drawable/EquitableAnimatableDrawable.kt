@@ -71,6 +71,18 @@ open class EquitableAnimatableDrawable internal constructor(
         return callbackHelper?.isRunning == true
     }
 
+    override fun mutate(): EquitableAnimatableDrawable {
+        val mutateDrawable = drawable.mutate()
+        return if (mutateDrawable !== drawable) {
+            EquitableAnimatableDrawable(
+                drawable = drawable,
+                equalityKey = equalityKey,
+            )
+        } else {
+            this
+        }
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false

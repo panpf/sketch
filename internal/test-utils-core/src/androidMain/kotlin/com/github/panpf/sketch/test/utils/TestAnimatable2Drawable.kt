@@ -22,11 +22,13 @@ import android.os.Handler
 import android.os.Looper
 import androidx.annotation.RequiresApi
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
+import com.github.panpf.sketch.drawable.SketchDrawable
+import com.github.panpf.sketch.util.toLogString
 
 @RequiresApi(23)
 class TestAnimatable2Drawable(
     drawable: Drawable? = null
-) : DrawableWrapperCompat(drawable), Animatable2 {
+) : DrawableWrapperCompat(drawable), Animatable2, SketchDrawable {
 
     private var running = false
     private val handler by lazy { Handler(Looper.getMainLooper()) }
@@ -83,5 +85,21 @@ class TestAnimatable2Drawable(
         } else {
             this
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        other as TestAnimatable2Drawable
+        if (drawable != other.drawable) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return drawable.hashCode()
+    }
+
+    override fun toString(): String {
+        return "TestAnimatable2Drawable(drawable=${drawable?.toLogString()})"
     }
 }

@@ -31,7 +31,7 @@ import com.github.panpf.sketch.util.requiredMainThread
 /**
  * Provide unified Callback support for Animatable2, Animatable2Compat, Animatable
  *
- * @see com.github.panpf.sketch.core.android.test.drawable.internal.AnimatableDrawableWrapperTest
+ * @see com.github.panpf.sketch.core.android.test.drawable.internal.AnimatableCallbackHelperTest
  */
 class AnimatableCallbackHelper constructor(drawable: Drawable) {
 

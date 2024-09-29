@@ -227,6 +227,11 @@ class EquitableAnimatableDrawableTest {
     }
 
     @Test
+    fun testMutate() {
+        // TODO testMutate
+    }
+
+    @Test
     fun testEqualsAndHashCode() {
         val element1 = EquitableAnimatableDrawable(
             drawable = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED)),

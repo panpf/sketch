@@ -22,9 +22,12 @@ import android.os.Looper
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCallback
+import com.github.panpf.sketch.drawable.SketchDrawable
+import com.github.panpf.sketch.util.toLogString
 
 class TestAnimatableDrawable3(drawable: Drawable) : DrawableWrapperCompat(drawable),
-    Animatable2Compat {
+    Animatable2Compat, SketchDrawable {
+
     private var running = false
     private var callbacks: MutableList<AnimationCallback> = mutableListOf()
     private val handler by lazy { Handler(Looper.getMainLooper()) }
@@ -70,5 +73,21 @@ class TestAnimatableDrawable3(drawable: Drawable) : DrawableWrapperCompat(drawab
         } else {
             this
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        other as TestAnimatableDrawable3
+        if (drawable != other.drawable) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return drawable.hashCode()
+    }
+
+    override fun toString(): String {
+        return "TestAnimatableDrawable3(drawable=${drawable?.toLogString()})"
     }
 }
