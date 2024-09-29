@@ -23,6 +23,7 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.calculateBounds
+import com.github.panpf.sketch.util.toAndroidRect
 import com.github.panpf.sketch.util.toLogString
 
 /**
@@ -80,7 +81,7 @@ open class ResizeDrawable(
                     height = this@ResizeDrawable.bounds.height()
                 ),
                 scale = scale
-            )
+            ).toAndroidRect()
         }
     }
 

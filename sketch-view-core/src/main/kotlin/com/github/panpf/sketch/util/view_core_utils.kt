@@ -16,7 +16,6 @@
 
 package com.github.panpf.sketch.util
 
-import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Looper
@@ -96,10 +95,10 @@ fun Drawable.findLeafChildDrawable(): Drawable? {
 internal fun calculateBounds(srcSize: Size, dstSize: Size, scale: Scale): Rect {
     if (srcSize.isEmpty || dstSize.isEmpty) {
         return Rect(
-            /* left = */ 0,
-            /* top = */ 0,
-            /* right = */ srcSize.width.takeIf { it > 0 } ?: dstSize.width,
-            /* bottom = */ srcSize.height.takeIf { it > 0 } ?: dstSize.height
+            left = 0,
+            top = 0,
+            right = srcSize.width.takeIf { it > 0 } ?: dstSize.width,
+            bottom = srcSize.height.takeIf { it > 0 } ?: dstSize.height
         )
     }
 
@@ -111,10 +110,10 @@ internal fun calculateBounds(srcSize: Size, dstSize: Size, scale: Scale): Rect {
     return when (scale) {
         Scale.START_CROP -> {
             Rect(
-                /* left = */ 0,
-                /* top = */ 0,
-                /* right = */ srcScaledWidth,
-                /* bottom = */ srcScaledHeight
+                left = 0,
+                top = 0,
+                right = srcScaledWidth,
+                bottom = srcScaledHeight
             )
         }
 
@@ -122,10 +121,10 @@ internal fun calculateBounds(srcSize: Size, dstSize: Size, scale: Scale): Rect {
             val left: Int = -(srcScaledWidth - dstSize.width) / 2
             val top: Int = -(srcScaledHeight - dstSize.height) / 2
             Rect(
-                /* left = */ left,
-                /* top = */ top,
-                /* right = */ left + srcScaledWidth,
-                /* bottom = */ top + srcScaledHeight,
+                left = left,
+                top = top,
+                right = left + srcScaledWidth,
+                bottom = top + srcScaledHeight,
             )
         }
 
@@ -133,19 +132,19 @@ internal fun calculateBounds(srcSize: Size, dstSize: Size, scale: Scale): Rect {
             val left = -(srcScaledWidth - dstSize.width)
             val top = -(srcScaledHeight - dstSize.height)
             Rect(
-                /* left = */ left,
-                /* top = */ top,
-                /* right = */ left + srcScaledWidth,
-                /* bottom =*/ top + srcScaledHeight,
+                left = left,
+                top = top,
+                right = left + srcScaledWidth,
+                bottom = top + srcScaledHeight,
             )
         }
 
         Scale.FILL -> {
             Rect(
-                /* left = */ 0,
-                /* top = */ 0,
-                /* right = */ dstSize.width,
-                /* bottom = */ dstSize.height,
+                left = 0,
+                top = 0,
+                right = dstSize.width,
+                bottom = dstSize.height,
             )
         }
     }

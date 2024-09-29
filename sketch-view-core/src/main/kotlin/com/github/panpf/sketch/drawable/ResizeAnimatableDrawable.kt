@@ -21,6 +21,7 @@ import com.github.panpf.sketch.drawable.internal.AnimatableDrawableWrapper
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.calculateBounds
+import com.github.panpf.sketch.util.toAndroidRect
 import com.github.panpf.sketch.util.toLogString
 
 /**
@@ -65,7 +66,7 @@ open class ResizeAnimatableDrawable(
                     height = this@ResizeAnimatableDrawable.bounds.height()
                 ),
                 scale = scale
-            )
+            ).toAndroidRect()
         }
     }
 
