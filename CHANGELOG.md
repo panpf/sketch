@@ -12,6 +12,11 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 * fix: Fix the bug that the image cannot be loaded when the ImageView is attached to the window but
   the size is null due to padding. [#208](https://github.com/panpf/sketch/issues/208)
+* fix: Fixed CircleCrop, Rotate, RoundedCorners Transformation not working in RGB_565
+  bug. [#209](https://github.com/panpf/sketch/issues/209)
+* fix: Fixed the bug that the equals method of RingProgressDrawable, SectorProgressDrawable,
+  RingProgressPainter, SectorProgressPainter did not execute as
+  expected. [#210](https://github.com/panpf/sketch/issues/210)
 * remove: Remove ComposeBitmapImage
 * remove: Remove Image.getPixels()
 * change: SkiaBitmapImage is now cached in the memory cache on non-Android platforms, not

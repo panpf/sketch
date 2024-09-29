@@ -135,7 +135,7 @@ class RingProgressPainter(
         if (size != other.size) return false
         if (ringWidth != other.ringWidth) return false
         if (ringColor != other.ringColor) return false
-        if (backgroundColor == other.backgroundColor) return false
+        if (backgroundColor != other.backgroundColor) return false
         if (hiddenWhenIndeterminate != other.hiddenWhenIndeterminate) return false
         if (hiddenWhenCompleted != other.hiddenWhenCompleted) return false
         return stepAnimationDuration == other.stepAnimationDuration

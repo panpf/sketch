@@ -148,7 +148,7 @@ class SectorProgressPainter(
         if (backgroundColor != other.backgroundColor) return false
         if (strokeColor != other.strokeColor) return false
         if (progressColor != other.progressColor) return false
-        if (strokeWidth == other.strokeWidth) return false
+        if (strokeWidth != other.strokeWidth) return false
         if (hiddenWhenIndeterminate != other.hiddenWhenIndeterminate) return false
         if (hiddenWhenCompleted != other.hiddenWhenCompleted) return false
         return stepAnimationDuration == other.stepAnimationDuration
