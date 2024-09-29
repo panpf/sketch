@@ -30,6 +30,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * new: Non-Android platforms now also support ColorType
 * new: Non-Android platforms now also support ColorSpace
 * new: DrawableDecoder supports colorSpace
+* new: Added 'Drawable.asStateImage(Any)' and 'ColorDrawable.asStateImage()' extension functions
 
 # 4.0.0-alpha08
 

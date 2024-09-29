@@ -50,6 +50,22 @@ class DrawableStateImageTest {
             expected = DrawableStateImage(ColorDrawable(TestColor.RED).asEquitable()),
             actual = ColorDrawable(TestColor.RED).asEquitable().asStateImage()
         )
+        assertEquals(
+            expected = DrawableStateImage(
+                RealEquitableDrawable(
+                    ColorDrawable(TestColor.RED).asEquitable(101)
+                )
+            ),
+            actual = ColorDrawable(TestColor.RED).asStateImage(101)
+        )
+        assertEquals(
+            expected = DrawableStateImage(
+                RealEquitableDrawable(
+                    ColorDrawable(TestColor.RED).asEquitable()
+                )
+            ),
+            actual = ColorDrawable(TestColor.RED).asStateImage()
+        )
     }
 
     @Test
