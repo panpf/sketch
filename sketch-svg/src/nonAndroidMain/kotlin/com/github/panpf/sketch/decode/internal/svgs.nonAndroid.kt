@@ -25,6 +25,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.SvgDecoder.Companion.MIME_TYPE
 import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
 import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.request.svgBackgroundColor
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
@@ -78,14 +79,13 @@ internal actual fun DataSource.readSvgImageInfo(
  * * scaleDecider
  * * colorType
  * * colorSpace
+ * * svgBackgroundColor
  *
  * @see com.github.panpf.sketch.svg.nonandroid.test.decode.internal.SvgsNonAndroidTest.testDecodeSvg
  */
 internal actual fun DataSource.decodeSvg(
     requestContext: RequestContext,
     useViewBoundsAsIntrinsicSize: Boolean,
-    backgroundColor: Int?,
-    css: String?,
 ): DecodeResult {
     val bytes = openSource().buffer().use { it.readByteArray() }
     val svg = SVGDOM(Data.makeFromBytes(bytes))
@@ -119,8 +119,9 @@ internal actual fun DataSource.decodeSvg(
     val bitmapSize = imageSize.times(targetScale)
     svg.setContainerSize(bitmapSize.width.toFloat(), bitmapSize.height.toFloat())
 
+    val request = requestContext.request
     val decodeConfig = DecodeConfig(
-        request = requestContext.request,
+        request = request,
         mimeType = PNG.mimeType,
         isOpaque = false
     )
@@ -136,6 +137,7 @@ internal actual fun DataSource.decodeSvg(
         )
     )
     val canvas = Canvas(bitmap)
+    val backgroundColor = requestContext.request.svgBackgroundColor
     if (backgroundColor != null) {
         val rect = Rect(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
         val paint = Paint().apply { color = backgroundColor }

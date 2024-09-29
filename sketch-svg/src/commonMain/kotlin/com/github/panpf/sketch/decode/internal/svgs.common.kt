@@ -54,6 +54,4 @@ internal expect fun DataSource.readSvgImageInfo(
 internal expect fun DataSource.decodeSvg(
     requestContext: RequestContext,
     useViewBoundsAsIntrinsicSize: Boolean = true,
-    backgroundColor: Int? = null,
-    css: String? = null,
 ): DecodeResult

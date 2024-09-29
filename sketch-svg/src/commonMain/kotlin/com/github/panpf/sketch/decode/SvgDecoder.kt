@@ -25,8 +25,6 @@ import com.github.panpf.sketch.decode.internal.isSvg
 import com.github.panpf.sketch.decode.internal.readSvgImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.request.svgBackgroundColor
-import com.github.panpf.sketch.request.svgCss
 import com.github.panpf.sketch.source.DataSource
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.internal.SynchronizedObject
@@ -52,6 +50,8 @@ fun ComponentRegistry.Builder.supportSvg(): ComponentRegistry.Builder = apply {
  * * scaleDecider
  * * colorType
  * * colorSpace
+ * * svgBackgroundColor
+ * * svgCss: Only Android platform supports
  *
  * @see com.github.panpf.sketch.svg.common.test.decode.SvgDecoderTest
  */
@@ -59,8 +59,6 @@ class SvgDecoder(
     private val requestContext: RequestContext,
     private val dataSource: DataSource,
     private val useViewBoundsAsIntrinsicSize: Boolean = true,
-    private val backgroundColor: Int? = null,
-    private val css: String? = null,
 ) : Decoder {
 
     companion object {
@@ -87,8 +85,6 @@ class SvgDecoder(
         return dataSource.decodeSvg(
             requestContext = requestContext,
             useViewBoundsAsIntrinsicSize = useViewBoundsAsIntrinsicSize,
-            backgroundColor = backgroundColor,
-            css = css
         )
     }
 
@@ -107,8 +103,6 @@ class SvgDecoder(
                     requestContext = requestContext,
                     dataSource = dataSource,
                     useViewBoundsAsIntrinsicSize = useViewBoundsAsIntrinsicSize,
-                    backgroundColor = requestContext.request.svgBackgroundColor,
-                    css = requestContext.request.svgCss
                 )
             } else {
                 null

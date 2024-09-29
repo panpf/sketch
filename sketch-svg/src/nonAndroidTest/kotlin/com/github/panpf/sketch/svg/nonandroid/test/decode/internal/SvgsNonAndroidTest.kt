@@ -9,6 +9,7 @@ import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.colorType
+import com.github.panpf.sketch.request.svgBackgroundColor
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestColor
@@ -177,8 +178,8 @@ class SvgsNonAndroidTest {
                 .decodeSvg(
                     requestContext = ImageRequest(context, imageFile.uri) {
                         size(Size.Origin)
+                        svgBackgroundColor(TestColor.RED)
                     }.toRequestContext(sketch),
-                    backgroundColor = TestColor.RED
                 ).apply {
                     assertEquals(
                         expected = "ImageInfo(257x226,'image/svg+xml')",
