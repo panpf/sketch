@@ -17,8 +17,12 @@
 package com.github.panpf.sketch.extensions.core.android.test.internal
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.internal.dp2Px
 import com.github.panpf.sketch.internal.format
+import com.github.panpf.sketch.internal.versionCodeCompat
+import com.github.panpf.sketch.test.utils.getTestContext
 import org.junit.runner.RunWith
+import kotlin.math.roundToInt
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -35,11 +39,32 @@ class ExtensionsCoreAndroidUtilsTest {
 
     @Test
     fun testDp2Px() {
-        // TODO test
+        assertEquals(
+            expected = (0.5f * android.content.res.Resources.getSystem().displayMetrics.density + 0.5f).roundToInt(),
+            0.5f.dp2Px()
+        )
+        assertEquals(
+            expected = (1.5f * android.content.res.Resources.getSystem().displayMetrics.density + 0.5f).roundToInt(),
+            1.5f.dp2Px()
+        )
+        assertEquals(
+            expected = (1.3f * android.content.res.Resources.getSystem().displayMetrics.density + 0.5f).roundToInt(),
+            1.3f.dp2Px()
+        )
+        assertEquals(
+            expected = (3.33f * android.content.res.Resources.getSystem().displayMetrics.density + 0.5f).roundToInt(),
+            3.33f.dp2Px()
+        )
     }
 
     @Test
     fun testVersionCodeCompat() {
-        // TODO test
+        val context = getTestContext()
+        val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+            assertEquals(packageInfo.longVersionCode.toInt(), packageInfo.versionCodeCompat)
+        } else {
+            assertEquals(packageInfo.versionCode, packageInfo.versionCodeCompat)
+        }
     }
 }

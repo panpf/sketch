@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.extensions.core.common.test.request
 
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.Depth
@@ -31,6 +32,7 @@ import com.github.panpf.sketch.request.isDepthFromSaveCellularTraffic
 import com.github.panpf.sketch.request.isIgnoredSaveCellularTraffic
 import com.github.panpf.sketch.request.isSaveCellularTraffic
 import com.github.panpf.sketch.request.saveCellularTraffic
+import com.github.panpf.sketch.request.supportSaveCellularTraffic
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
@@ -51,7 +53,46 @@ class SaveCellularTrafficRequestInterceptorTest {
 
     @Test
     fun testSupportSaveCellularTraffic() {
-        // TODO test
+        ComponentRegistry().apply {
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetcherFactoryList=[]," +
+                        "decoderFactoryList=[]," +
+                        "requestInterceptorList=[]," +
+                        "decodeInterceptorList=[]" +
+                        ")",
+                actual = toString()
+            )
+        }
+
+        ComponentRegistry {
+            supportSaveCellularTraffic()
+        }.apply {
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetcherFactoryList=[]," +
+                        "decoderFactoryList=[]," +
+                        "requestInterceptorList=[SaveCellularTrafficRequestInterceptor(sortWeight=0,enabled=true)]," +
+                        "decodeInterceptorList=[]" +
+                        ")",
+                actual = toString()
+            )
+        }
+
+        ComponentRegistry {
+            supportSaveCellularTraffic()
+            supportSaveCellularTraffic()
+        }.apply {
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetcherFactoryList=[]," +
+                        "decoderFactoryList=[]," +
+                        "requestInterceptorList=[SaveCellularTrafficRequestInterceptor(sortWeight=0,enabled=true),SaveCellularTrafficRequestInterceptor(sortWeight=0,enabled=true)]," +
+                        "decodeInterceptorList=[]" +
+                        ")",
+                actual = toString()
+            )
+        }
     }
 
     @Test
@@ -292,7 +333,7 @@ class SaveCellularTrafficRequestInterceptorTest {
     fun testToString() {
         SaveCellularTrafficRequestInterceptor().apply {
             assertEquals(
-                "SaveCellularTrafficDisplayInterceptor(sortWeight=0,enabled=true)",
+                "SaveCellularTrafficRequestInterceptor(sortWeight=0,enabled=true)",
                 toString()
             )
         }
@@ -300,7 +341,7 @@ class SaveCellularTrafficRequestInterceptorTest {
         SaveCellularTrafficRequestInterceptor(30).apply {
             enabled = false
             assertEquals(
-                "SaveCellularTrafficDisplayInterceptor(sortWeight=30,enabled=false)",
+                "SaveCellularTrafficRequestInterceptor(sortWeight=30,enabled=false)",
                 toString()
             )
         }

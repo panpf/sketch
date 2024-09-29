@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.extensions.core.common.test.request
 
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
@@ -29,6 +30,7 @@ import com.github.panpf.sketch.request.ignorePauseLoadWhenScrolling
 import com.github.panpf.sketch.request.isIgnoredPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.isPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
+import com.github.panpf.sketch.request.supportPauseLoadWhenScrolling
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
@@ -52,7 +54,46 @@ class PauseLoadWhenScrollingDecodeInterceptorTest {
 
     @Test
     fun testSupportPauseLoadWhenScrolling() {
-        // TODO test
+        ComponentRegistry().apply {
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetcherFactoryList=[]," +
+                        "decoderFactoryList=[]," +
+                        "requestInterceptorList=[]," +
+                        "decodeInterceptorList=[]" +
+                        ")",
+                actual = toString()
+            )
+        }
+
+        ComponentRegistry {
+            supportPauseLoadWhenScrolling()
+        }.apply {
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetcherFactoryList=[]," +
+                        "decoderFactoryList=[]," +
+                        "requestInterceptorList=[]," +
+                        "decodeInterceptorList=[PauseLoadWhenScrollingDecodeInterceptor(sortWeight=0,enabled=true)]" +
+                        ")",
+                actual = toString()
+            )
+        }
+
+        ComponentRegistry {
+            supportPauseLoadWhenScrolling()
+            supportPauseLoadWhenScrolling()
+        }.apply {
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetcherFactoryList=[]," +
+                        "decoderFactoryList=[]," +
+                        "requestInterceptorList=[]," +
+                        "decodeInterceptorList=[PauseLoadWhenScrollingDecodeInterceptor(sortWeight=0,enabled=true),PauseLoadWhenScrollingDecodeInterceptor(sortWeight=0,enabled=true)]" +
+                        ")",
+                actual = toString()
+            )
+        }
     }
 
     @Test
