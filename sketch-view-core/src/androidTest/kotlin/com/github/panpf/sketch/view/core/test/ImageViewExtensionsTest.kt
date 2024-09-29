@@ -41,51 +41,55 @@ class ImageViewExtensionsTest {
 
     @Test
     fun testDisposeLoad() = runTest {
-        val activity = MediumImageViewTestActivity::class.launchActivity().getActivitySync()
-        val imageView = activity.imageView
+        MediumImageViewTestActivity::class.launchActivity().use { scenario ->
+            val activity = scenario.getActivitySync()
+            val imageView = activity.imageView
 
-        assertNull(imageView.drawable)
-        imageView.loadImage(ResourceImages.jpeg.uri).job.join()
-        assertNotNull(imageView.drawable)
+            assertNull(imageView.drawable)
+            imageView.loadImage(ResourceImages.jpeg.uri).job.join()
+            assertNotNull(imageView.drawable)
 
-        withContext(Dispatchers.Main) {
-            imageView.setImageDrawable(null)
-        }
-        assertNull(imageView.drawable)
-        imageView.loadImage(ResourceImages.png.uri) {
-            resultCachePolicy(DISABLED)
-            memoryCachePolicy(DISABLED)
-            components {
-                addDecodeInterceptor(DelayDecodeInterceptor(1000) {
-                    imageView.disposeLoad()
-                })
+            withContext(Dispatchers.Main) {
+                imageView.setImageDrawable(null)
             }
-        }.job.join()
-        assertNull(imageView.drawable)
+            assertNull(imageView.drawable)
+            imageView.loadImage(ResourceImages.png.uri) {
+                resultCachePolicy(DISABLED)
+                memoryCachePolicy(DISABLED)
+                components {
+                    addDecodeInterceptor(DelayDecodeInterceptor(1000) {
+                        imageView.disposeLoad()
+                    })
+                }
+            }.job.join()
+            assertNull(imageView.drawable)
+        }
     }
 
     @Test
     fun testImageResult() = runTest {
-        val activity = MediumImageViewTestActivity::class.launchActivity().getActivitySync()
-        val imageView = activity.imageView
+        MediumImageViewTestActivity::class.launchActivity().use { scenario ->
+            val activity = scenario.getActivitySync()
+            val imageView = activity.imageView
 
-        assertNull(imageView.imageResult)
+            assertNull(imageView.imageResult)
 
-        imageView.loadImage(ResourceImages.jpeg.uri).job.join()
-        assertTrue(imageView.imageResult is ImageResult.Success)
+            imageView.loadImage(ResourceImages.jpeg.uri).job.join()
+            assertTrue(imageView.imageResult is ImageResult.Success)
 
-        imageView.loadImage("file:///android_asset/fake.jpeg").job.join()
-        assertTrue(imageView.imageResult is ImageResult.Error)
+            imageView.loadImage("file:///android_asset/fake.jpeg").job.join()
+            assertTrue(imageView.imageResult is ImageResult.Error)
 
-        imageView.loadImage(ResourceImages.png.uri) {
-            resultCachePolicy(DISABLED)
-            memoryCachePolicy(DISABLED)
-            components {
-                addDecodeInterceptor(DelayDecodeInterceptor(1000) {
-                    imageView.disposeLoad()
-                })
-            }
-        }.job.join()
-        assertNull(imageView.imageResult)
+            imageView.loadImage(ResourceImages.png.uri) {
+                resultCachePolicy(DISABLED)
+                memoryCachePolicy(DISABLED)
+                components {
+                    addDecodeInterceptor(DelayDecodeInterceptor(1000) {
+                        imageView.disposeLoad()
+                    })
+                }
+            }.job.join()
+            assertNull(imageView.imageResult)
+        }
     }
 }

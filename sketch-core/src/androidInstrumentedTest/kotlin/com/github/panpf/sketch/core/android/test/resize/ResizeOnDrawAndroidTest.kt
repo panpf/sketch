@@ -30,60 +30,62 @@ class ResizeOnDrawAndroidTest {
 
     @Test
     fun testResizeOnDraw() = runTest {
-        val (context, sketch) = getTestContextAndSketch()
-        val resources = context.resources
-        val activity = MediumImageViewTestActivity::class.launchActivity().getActivitySync()
-        val imageView = activity.imageView
+        val (_, sketch) = getTestContextAndSketch()
+        MediumImageViewTestActivity::class.launchActivity().use { scenario ->
+            val activity = scenario.getActivitySync()
+            val resources = activity.resources
+            val imageView = activity.imageView
 
-        val imageUri = ResourceImages.jpeg.uri
-        val bitmapDrawable =
-            BitmapDrawable(resources, Bitmap.createBitmap(100, 200, Bitmap.Config.RGB_565))
+            val imageUri = ResourceImages.jpeg.uri
+            val bitmapDrawable =
+                BitmapDrawable(resources, Bitmap.createBitmap(100, 200, Bitmap.Config.RGB_565))
 
-        val request = ImageRequest(imageView, imageUri)
-        val bitmapDrawableImage = bitmapDrawable.asImage()
-        assertSame(
-            bitmapDrawableImage,
-            bitmapDrawableImage.resizeOnDraw(request, null)
-        )
-        val request1 = ImageRequest(imageView, imageUri) {
-            resizeOnDraw(true)
-        }
-        assertSame(
-            bitmapDrawableImage,
-            bitmapDrawableImage.resizeOnDraw(request1, null)
-        )
-        val request2 = ImageRequest(imageView, imageUri) {
-            size(500, 300)
-            precision(Precision.EXACTLY)
-        }
-        assertSame(
-            bitmapDrawable,
+            val request = ImageRequest(imageView, imageUri)
+            val bitmapDrawableImage = bitmapDrawable.asImage()
+            assertSame(
+                bitmapDrawableImage,
+                bitmapDrawableImage.resizeOnDraw(request, null)
+            )
+            val request1 = ImageRequest(imageView, imageUri) {
+                resizeOnDraw(true)
+            }
+            assertSame(
+                bitmapDrawableImage,
+                bitmapDrawableImage.resizeOnDraw(request1, null)
+            )
+            val request2 = ImageRequest(imageView, imageUri) {
+                size(500, 300)
+                precision(Precision.EXACTLY)
+            }
+            assertSame(
+                bitmapDrawable,
+                bitmapDrawableImage
+                    .resizeOnDraw(request2, request2.toRequestContext(sketch).size)
+                    .asDrawable()
+            )
+            val request3 = ImageRequest(imageView, imageUri) {
+                resizeOnDraw(true)
+                size(500, 300)
+                precision(Precision.EXACTLY)
+            }
             bitmapDrawableImage
-                .resizeOnDraw(request2, request2.toRequestContext(sketch).size)
+                .resizeOnDraw(request3, request3.toRequestContext(sketch).size)
                 .asDrawable()
-        )
-        val request3 = ImageRequest(imageView, imageUri) {
-            resizeOnDraw(true)
-            size(500, 300)
-            precision(Precision.EXACTLY)
-        }
-        bitmapDrawableImage
-            .resizeOnDraw(request3, request3.toRequestContext(sketch).size)
-            .asDrawable()
-            .let { it as ResizeDrawable }
-            .apply {
-                assertSame(bitmapDrawable, drawable)
-                assertEquals(Size(500, 300), size)
-            }
+                .let { it as ResizeDrawable }
+                .apply {
+                    assertSame(bitmapDrawable, drawable)
+                    assertEquals(Size(500, 300), size)
+                }
 
-        val animDrawable = AnimatableDrawable(TestAnimatableDrawable1(bitmapDrawable))
-        animDrawable.asImage()
-            .resizeOnDraw(request3, request3.toRequestContext(sketch).size)
-            .asDrawable()
-            .let { it as ResizeAnimatableDrawable }
-            .apply {
-                assertSame(animDrawable, drawable)
-                assertEquals(Size(500, 300), size)
-            }
+            val animDrawable = AnimatableDrawable(TestAnimatableDrawable1(bitmapDrawable))
+            animDrawable.asImage()
+                .resizeOnDraw(request3, request3.toRequestContext(sketch).size)
+                .asDrawable()
+                .let { it as ResizeAnimatableDrawable }
+                .apply {
+                    assertSame(animDrawable, drawable)
+                    assertEquals(Size(500, 300), size)
+                }
+        }
     }
 }

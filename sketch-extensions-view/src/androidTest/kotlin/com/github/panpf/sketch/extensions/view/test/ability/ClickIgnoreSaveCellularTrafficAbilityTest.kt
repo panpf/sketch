@@ -78,11 +78,10 @@ class ClickIgnoreSaveCellularTrafficAbilityTest {
             val activity = scenario.getActivitySync()
             val imageView1: SketchImageView
             withContext(Dispatchers.Main) {
-                val imageView = SketchImageView(activity)
-                    .apply {
-                        setClickIgnoreSaveCellularTrafficEnabled(true)
-                        imageView1 = this
-                    }
+                val imageView = SketchImageView(activity).apply {
+                    setClickIgnoreSaveCellularTrafficEnabled(true)
+                    imageView1 = this
+                }
                 activity.setContentView(imageView)
 
                 ImageRequest(activity, TestHttpStack.testImages.first().uri) {

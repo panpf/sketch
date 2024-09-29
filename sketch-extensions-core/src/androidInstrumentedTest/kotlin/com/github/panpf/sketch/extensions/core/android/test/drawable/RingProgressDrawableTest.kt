@@ -103,6 +103,8 @@ class RingProgressDrawableTest {
         assertNotEquals(illegal = drawable6, actual = drawable7)
         assertNotEquals(illegal = drawable6, actual = drawable8)
         assertNotEquals(illegal = drawable7, actual = drawable8)
+        assertNotEquals(illegal = drawable1, actual = null as Any?)
+        assertNotEquals(illegal = drawable1, actual = Any())
 
         assertEquals(expected = drawable1.hashCode(), actual = drawable11.hashCode())
         assertNotEquals(illegal = drawable1.hashCode(), actual = drawable2.hashCode())

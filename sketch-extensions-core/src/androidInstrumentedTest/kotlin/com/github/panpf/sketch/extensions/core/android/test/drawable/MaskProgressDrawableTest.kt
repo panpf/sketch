@@ -71,6 +71,8 @@ class MaskProgressDrawableTest {
         assertNotEquals(illegal = drawable3, actual = drawable4)
         assertNotEquals(illegal = drawable3, actual = drawable5)
         assertNotEquals(illegal = drawable4, actual = drawable5)
+        assertNotEquals(illegal = drawable1, actual = null as Any?)
+        assertNotEquals(illegal = drawable1, actual = Any())
 
         assertEquals(expected = drawable1.hashCode(), actual = drawable11.hashCode())
         assertNotEquals(illegal = drawable1.hashCode(), actual = drawable2.hashCode())

@@ -29,10 +29,12 @@ class SketchAndroidTest {
 
     @Test
     fun testBuilder() {
-        val activity = TestActivity::class.launchActivity().getActivitySync()
-        Builder(activity).build().apply {
-            assertNotEquals(activity, context)
-            assertEquals(activity.applicationContext, context)
+        TestActivity::class.launchActivity().use { scenario ->
+            val activity = scenario.getActivitySync()
+            Builder(activity).build().apply {
+                assertNotEquals(activity, context)
+                assertEquals(activity.applicationContext, context)
+            }
         }
     }
 
