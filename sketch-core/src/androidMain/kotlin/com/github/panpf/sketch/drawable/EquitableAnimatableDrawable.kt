@@ -14,22 +14,27 @@
  * limitations under the License.
  */
 
-@file:Suppress("RedundantConstructorKeyword")
-
-package com.github.panpf.sketch.drawable.internal
+package com.github.panpf.sketch.drawable
 
 import android.graphics.drawable.Drawable
-import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCallback
+import com.github.panpf.sketch.drawable.internal.AnimatableCallbackHelper
+import com.github.panpf.sketch.util.Key
+import com.github.panpf.sketch.util.key
+import com.github.panpf.sketch.util.toLogString
 
 /**
- * Provide unified Callback support for Animatable2, Animatable2Compat, Animatable
+ * Animatable version of EquitableDrawable
  *
- * @see com.github.panpf.sketch.core.android.test.drawable.internal.AnimatableDrawableWrapperTest
+ * @see com.github.panpf.sketch.core.android.test.drawable.EquitableAnimatableDrawableTest
  */
-open class AnimatableDrawableWrapper constructor(
+open class EquitableAnimatableDrawable internal constructor(
     drawable: Drawable,
-) : DrawableWrapperCompat(drawable), Animatable2Compat {
+    equalityKey: Any,
+) : EquitableDrawable(drawable, equalityKey), Animatable2Compat, Key {
+
+    override val key: String = "EquitableAnimatableDrawable('${key(equalityKey)}')"
 
     internal var callbackHelper: AnimatableCallbackHelper? = null
 
@@ -42,11 +47,11 @@ open class AnimatableDrawableWrapper constructor(
         super.setDrawable(drawable)
     }
 
-    override fun registerAnimationCallback(callback: Animatable2Compat.AnimationCallback) {
+    override fun registerAnimationCallback(callback: AnimationCallback) {
         callbackHelper?.registerAnimationCallback(callback)
     }
 
-    override fun unregisterAnimationCallback(callback: Animatable2Compat.AnimationCallback): Boolean {
+    override fun unregisterAnimationCallback(callback: AnimationCallback): Boolean {
         return callbackHelper?.unregisterAnimationCallback(callback) == true
     }
 
@@ -64,5 +69,21 @@ open class AnimatableDrawableWrapper constructor(
 
     override fun isRunning(): Boolean {
         return callbackHelper?.isRunning == true
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        other as EquitableAnimatableDrawable
+        if (equalityKey != other.equalityKey) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return equalityKey.hashCode()
+    }
+
+    override fun toString(): String {
+        return "EquitableAnimatableDrawable(drawable=${drawable.toLogString()}, equalityKey=$equalityKey)"
     }
 }

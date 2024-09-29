@@ -25,8 +25,8 @@ import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.drawable.AnimatableDrawable
+import com.github.panpf.sketch.test.utils.TestAnimatable2Drawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
-import com.github.panpf.sketch.test.utils.TestAnimatableDrawable2
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable3
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.getTestContext
@@ -57,7 +57,7 @@ class AnimatableDrawableTest {
         )
         if (Build.VERSION.SDK_INT >= 23) {
             AnimatableDrawable(
-                TestAnimatableDrawable2(
+                TestAnimatable2Drawable(
                     BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
                 ),
             )
@@ -118,7 +118,7 @@ class AnimatableDrawableTest {
 
         if (Build.VERSION.SDK_INT >= 23) {
             AnimatableDrawable(
-                TestAnimatableDrawable2(
+                TestAnimatable2Drawable(
                     BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
                 )
             ).apply {
@@ -212,7 +212,7 @@ class AnimatableDrawableTest {
 
         if (Build.VERSION.SDK_INT >= 23) {
             AnimatableDrawable(
-                TestAnimatableDrawable2(
+                TestAnimatable2Drawable(
                     BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
                 )
             ).apply {

@@ -17,7 +17,6 @@
 package com.github.panpf.sketch.test.utils
 
 import android.graphics.drawable.Animatable2
-import android.graphics.drawable.Animatable2.AnimationCallback
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
@@ -25,16 +24,23 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 
 @RequiresApi(23)
-class TestAnimatableDrawable2(drawable: Drawable) : DrawableWrapperCompat(drawable), Animatable2 {
+class TestAnimatable2Drawable(
+    drawable: Drawable? = null
+) : DrawableWrapperCompat(drawable), Animatable2 {
+
     private var running = false
-    private var callbacks: MutableList<AnimationCallback> = mutableListOf()
     private val handler by lazy { Handler(Looper.getMainLooper()) }
+
+    var callbacks: MutableList<Animatable2.AnimationCallback>? = null
 
     override fun start() {
         running = true
         handler.post {
-            for (callback in callbacks) {
-                callback.onAnimationStart(this)
+            val callbacks = callbacks
+            if (callbacks != null) {
+                for (callback in callbacks) {
+                    callback.onAnimationStart(this)
+                }
             }
         }
     }
@@ -42,8 +48,11 @@ class TestAnimatableDrawable2(drawable: Drawable) : DrawableWrapperCompat(drawab
     override fun stop() {
         running = false
         handler.post {
-            for (callback in callbacks) {
-                callback.onAnimationEnd(this)
+            val callbacks = callbacks
+            if (callbacks != null) {
+                for (callback in callbacks) {
+                    callback.onAnimationEnd(this)
+                }
             }
         }
     }
@@ -52,22 +61,25 @@ class TestAnimatableDrawable2(drawable: Drawable) : DrawableWrapperCompat(drawab
         return running
     }
 
-    override fun registerAnimationCallback(callback: AnimationCallback) {
+    override fun registerAnimationCallback(callback: Animatable2.AnimationCallback) {
+        val callbacks = callbacks ?: mutableListOf<Animatable2.AnimationCallback>().apply {
+            this@TestAnimatable2Drawable.callbacks = this
+        }
         callbacks.add(callback)
     }
 
-    override fun unregisterAnimationCallback(callback: AnimationCallback): Boolean {
-        return callbacks.remove(callback)
+    override fun unregisterAnimationCallback(callback: Animatable2.AnimationCallback): Boolean {
+        return callbacks?.remove(callback) == true
     }
 
     override fun clearAnimationCallbacks() {
-        callbacks.clear()
+        callbacks?.clear()
     }
 
-    override fun mutate(): TestAnimatableDrawable2 {
+    override fun mutate(): TestAnimatable2Drawable {
         val mutateDrawable = drawable?.mutate()
         return if (mutateDrawable != null && mutateDrawable !== drawable) {
-            TestAnimatableDrawable2(drawable = mutateDrawable)
+            TestAnimatable2Drawable(drawable = mutateDrawable)
         } else {
             this
         }

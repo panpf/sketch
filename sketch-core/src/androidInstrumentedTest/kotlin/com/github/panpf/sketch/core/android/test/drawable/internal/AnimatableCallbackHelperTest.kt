@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import com.github.panpf.sketch.drawable.internal.AnimatableDrawableWrapper
+import com.github.panpf.sketch.drawable.internal.AnimatableCallbackHelper
 import com.github.panpf.sketch.test.utils.TestAnimatable2CompatDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatable2Drawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
@@ -23,22 +23,22 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class AnimatableDrawableWrapperTest {
+class AnimatableCallbackHelperTest {
 
     @Test
-    fun testAcceptType() {
+    fun testSetDrawable() {
         val context = getTestContext()
 
         val bitmapDrawable = context.getDrawableCompat(android.R.drawable.ic_delete)
         assertFailsWith(IllegalArgumentException::class) {
-            AnimatableDrawableWrapper(bitmapDrawable)
+            AnimatableCallbackHelper(bitmapDrawable)
         }
 
         val animatedDrawable = TestAnimatable2CompatDrawable(ColorDrawable(Color.GREEN))
-        val wrapper = AnimatableDrawableWrapper(animatedDrawable)
+        val wrapper = AnimatableCallbackHelper(animatedDrawable)
 
         assertFailsWith(IllegalArgumentException::class) {
-            wrapper.drawable = bitmapDrawable
+            wrapper.setDrawable(bitmapDrawable)
         }
     }
 
@@ -47,128 +47,128 @@ class AnimatableDrawableWrapperTest {
         // Animatable2
         if (VERSION.SDK_INT >= VERSION_CODES.P) {
             val animatedDrawable = TestAnimatable2Drawable(ColorDrawable(Color.GREEN))
-            val wrapper = AnimatableDrawableWrapper(animatedDrawable)
+            val wrapper = AnimatableCallbackHelper(animatedDrawable)
             assertEquals(expected = 0, actual = animatedDrawable.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbacks?.size ?: 0)
 
             withContext(Dispatchers.Main) {
                 wrapper.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {})
             }
             assertEquals(expected = 1, actual = animatedDrawable.callbacks?.size ?: 0)
-            assertEquals(expected = 1, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+            assertEquals(expected = 1, actual = wrapper.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbacks?.size ?: 0)
 
             val callback2 = object : Animatable2Compat.AnimationCallback() {}
             withContext(Dispatchers.Main) {
                 wrapper.registerAnimationCallback(callback2)
             }
             assertEquals(expected = 2, actual = animatedDrawable.callbacks?.size ?: 0)
-            assertEquals(expected = 2, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+            assertEquals(expected = 2, actual = wrapper.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbacks?.size ?: 0)
 
             withContext(Dispatchers.Main) {
                 wrapper.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {})
             }
             assertEquals(expected = 3, actual = animatedDrawable.callbacks?.size ?: 0)
-            assertEquals(expected = 3, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+            assertEquals(expected = 3, actual = wrapper.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbacks?.size ?: 0)
 
             wrapper.unregisterAnimationCallback(callback2)
             assertEquals(expected = 2, actual = animatedDrawable.callbacks?.size ?: 0)
-            assertEquals(expected = 2, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+            assertEquals(expected = 2, actual = wrapper.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbacks?.size ?: 0)
 
             wrapper.clearAnimationCallbacks()
             assertEquals(expected = 0, actual = animatedDrawable.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbacks?.size ?: 0)
         }
 
         // Animatable2Compat
         runBlock {
             val animatable2Drawable = TestAnimatable2CompatDrawable(ColorDrawable(Color.GREEN))
-            val wrapper = AnimatableDrawableWrapper(animatable2Drawable)
+            val wrapper = AnimatableCallbackHelper(animatable2Drawable)
             assertEquals(expected = 0, actual = animatable2Drawable.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackProxyMap?.size ?: 0)
 
             withContext(Dispatchers.Main) {
                 wrapper.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {})
             }
             assertEquals(expected = 1, actual = animatable2Drawable.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackProxyMap?.size ?: 0)
 
             val callback2 = object : Animatable2Compat.AnimationCallback() {}
             withContext(Dispatchers.Main) {
                 wrapper.registerAnimationCallback(callback2)
             }
             assertEquals(expected = 2, actual = animatable2Drawable.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackProxyMap?.size ?: 0)
 
             withContext(Dispatchers.Main) {
                 wrapper.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {})
             }
             assertEquals(expected = 3, actual = animatable2Drawable.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbacks?.size ?: 0)
             assertEquals(
                 expected = 0,
-                actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0
+                actual = wrapper.callbackProxyMap?.size ?: 0
             )
 
             wrapper.unregisterAnimationCallback(callback2)
             assertEquals(expected = 2, actual = animatable2Drawable.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackProxyMap?.size ?: 0)
 
             wrapper.clearAnimationCallbacks()
             assertEquals(expected = 0, actual = animatable2Drawable.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackProxyMap?.size ?: 0)
         }
 
         // Animatable
         runBlock {
             val animatableDrawable = TestAnimatableDrawable(ColorDrawable(Color.GREEN))
-            val wrapper = AnimatableDrawableWrapper(animatableDrawable)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+            val wrapper = AnimatableCallbackHelper(animatableDrawable)
+            assertEquals(expected = 0, actual = wrapper.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackProxyMap?.size ?: 0)
 
             withContext(Dispatchers.Main) {
                 wrapper.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {})
             }
-            assertEquals(expected = 1, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 1, actual = wrapper.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackProxyMap?.size ?: 0)
 
             val callback2 = object : Animatable2Compat.AnimationCallback() {}
             withContext(Dispatchers.Main) {
                 wrapper.registerAnimationCallback(callback2)
             }
-            assertEquals(expected = 2, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 2, actual = wrapper.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackProxyMap?.size ?: 0)
 
             withContext(Dispatchers.Main) {
                 wrapper.registerAnimationCallback(object : Animatable2Compat.AnimationCallback() {})
             }
-            assertEquals(expected = 3, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 3, actual = wrapper.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackProxyMap?.size ?: 0)
 
             wrapper.unregisterAnimationCallback(callback2)
-            assertEquals(expected = 2, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 2, actual = wrapper.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackProxyMap?.size ?: 0)
 
             wrapper.clearAnimationCallbacks()
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
-            assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbacks?.size ?: 0)
+            assertEquals(expected = 0, actual = wrapper.callbackProxyMap?.size ?: 0)
         }
     }
 
     @Test
     fun testStartStop() = runTest {
         val animatableDrawable = TestAnimatableDrawable()
-        val wrapper = AnimatableDrawableWrapper(animatableDrawable)
+        val wrapper = AnimatableCallbackHelper(animatableDrawable)
 
         val callbackHistory = mutableListOf<String>()
         withContext(Dispatchers.Main) {

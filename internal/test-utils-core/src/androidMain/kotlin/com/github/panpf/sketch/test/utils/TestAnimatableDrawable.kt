@@ -1,29 +1,14 @@
 package com.github.panpf.sketch.test.utils
 
-import android.graphics.Canvas
-import android.graphics.ColorFilter
-import android.graphics.PixelFormat
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
+import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 
-class TestAnimatableDrawable : Drawable(), Animatable {
+class TestAnimatableDrawable(
+    drawable: Drawable? = null
+) : DrawableWrapperCompat(drawable), Animatable {
 
     private var running = false
-
-    override fun draw(canvas: Canvas) {
-
-    }
-
-    override fun setAlpha(alpha: Int) {
-
-    }
-
-    override fun setColorFilter(colorFilter: ColorFilter?) {
-
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun getOpacity(): Int = PixelFormat.OPAQUE
 
     override fun start() {
         running = true
@@ -33,5 +18,7 @@ class TestAnimatableDrawable : Drawable(), Animatable {
         running = false
     }
 
-    override fun isRunning(): Boolean = running
+    override fun isRunning(): Boolean {
+        return running
+    }
 }

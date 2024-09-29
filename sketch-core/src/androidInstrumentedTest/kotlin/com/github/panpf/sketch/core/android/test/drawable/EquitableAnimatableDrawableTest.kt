@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.core.android.test.drawable.internal
+package com.github.panpf.sketch.core.android.test.drawable
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -6,14 +6,17 @@ import android.graphics.drawable.Drawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import com.github.panpf.sketch.drawable.internal.AnimatableDrawableWrapper
+import com.github.panpf.sketch.drawable.EquitableAnimatableDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatable2CompatDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatable2Drawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
+import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.runBlock
 import com.github.panpf.sketch.util.getDrawableCompat
+import com.github.panpf.sketch.util.key
+import com.github.panpf.sketch.util.toLogString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
@@ -21,9 +24,21 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
-class AnimatableDrawableWrapperTest {
+class EquitableAnimatableDrawableTest {
+
+    @Test
+    fun testKey() {
+        assertEquals(
+            expected = "EquitableAnimatableDrawable('${key(TestColor.RED)}')",
+            actual = EquitableAnimatableDrawable(
+                drawable = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED)),
+                equalityKey = TestColor.RED
+            ).key
+        )
+    }
 
     @Test
     fun testAcceptType() {
@@ -31,11 +46,11 @@ class AnimatableDrawableWrapperTest {
 
         val bitmapDrawable = context.getDrawableCompat(android.R.drawable.ic_delete)
         assertFailsWith(IllegalArgumentException::class) {
-            AnimatableDrawableWrapper(bitmapDrawable)
+            EquitableAnimatableDrawable(bitmapDrawable, equalityKey = "key")
         }
 
         val animatedDrawable = TestAnimatable2CompatDrawable(ColorDrawable(Color.GREEN))
-        val wrapper = AnimatableDrawableWrapper(animatedDrawable)
+        val wrapper = EquitableAnimatableDrawable(animatedDrawable, equalityKey = "key")
 
         assertFailsWith(IllegalArgumentException::class) {
             wrapper.drawable = bitmapDrawable
@@ -47,7 +62,7 @@ class AnimatableDrawableWrapperTest {
         // Animatable2
         if (VERSION.SDK_INT >= VERSION_CODES.P) {
             val animatedDrawable = TestAnimatable2Drawable(ColorDrawable(Color.GREEN))
-            val wrapper = AnimatableDrawableWrapper(animatedDrawable)
+            val wrapper = EquitableAnimatableDrawable(animatedDrawable, equalityKey = "key")
             assertEquals(expected = 0, actual = animatedDrawable.callbacks?.size ?: 0)
             assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
             assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
@@ -88,7 +103,7 @@ class AnimatableDrawableWrapperTest {
         // Animatable2Compat
         runBlock {
             val animatable2Drawable = TestAnimatable2CompatDrawable(ColorDrawable(Color.GREEN))
-            val wrapper = AnimatableDrawableWrapper(animatable2Drawable)
+            val wrapper = EquitableAnimatableDrawable(animatable2Drawable, equalityKey = "key")
             assertEquals(expected = 0, actual = animatable2Drawable.callbacks?.size ?: 0)
             assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
             assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
@@ -132,7 +147,7 @@ class AnimatableDrawableWrapperTest {
         // Animatable
         runBlock {
             val animatableDrawable = TestAnimatableDrawable(ColorDrawable(Color.GREEN))
-            val wrapper = AnimatableDrawableWrapper(animatableDrawable)
+            val wrapper = EquitableAnimatableDrawable(animatableDrawable, equalityKey = "key")
             assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
             assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
 
@@ -168,7 +183,7 @@ class AnimatableDrawableWrapperTest {
     @Test
     fun testStartStop() = runTest {
         val animatableDrawable = TestAnimatableDrawable()
-        val wrapper = AnimatableDrawableWrapper(animatableDrawable)
+        val wrapper = EquitableAnimatableDrawable(animatableDrawable, equalityKey = "key")
 
         val callbackHistory = mutableListOf<String>()
         withContext(Dispatchers.Main) {
@@ -208,6 +223,42 @@ class AnimatableDrawableWrapperTest {
         assertEquals(
             expected = listOf("onAnimationStart", "onAnimationEnd"),
             actual = callbackHistory
+        )
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val element1 = EquitableAnimatableDrawable(
+            drawable = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED)),
+            equalityKey = TestColor.RED
+        )
+        val element11 = EquitableAnimatableDrawable(
+            drawable = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED)),
+            equalityKey = TestColor.RED
+        )
+        val element2 = EquitableAnimatableDrawable(
+            drawable = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED)),
+            equalityKey = TestColor.CYAN
+        )
+
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
+
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        val drawable = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED))
+        assertEquals(
+            expected = "EquitableAnimatableDrawable(drawable=${drawable.toLogString()}, equalityKey=${TestColor.RED})",
+            actual = EquitableAnimatableDrawable(
+                drawable = drawable,
+                equalityKey = TestColor.RED,
+            ).toString()
         )
     }
 }
