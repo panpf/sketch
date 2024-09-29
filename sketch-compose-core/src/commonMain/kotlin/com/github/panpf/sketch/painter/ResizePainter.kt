@@ -50,7 +50,7 @@ fun rememberResizePainter(painter: Painter, size: Size, scale: Scale = CENTER_CR
  *
  * @see com.github.panpf.sketch.compose.core.common.test.painter.ResizePainterTest.testPainterResize
  */
-fun Painter.resize(size: Size, scale: Scale): ResizePainter {
+fun Painter.resize(size: Size, scale: Scale = CENTER_CROP): ResizePainter {
     return if (this is AnimatablePainter) {
         ResizeAnimatablePainter(this, size, scale)
     } else {
