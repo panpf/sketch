@@ -7,9 +7,13 @@ import android.widget.ImageView
 import android.widget.ImageView.ScaleType
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.util.Rect
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.calculateBounds
 import com.github.panpf.sketch.util.findLeafChildDrawable
 import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.requiredMainThread
@@ -153,6 +157,85 @@ class ViewCoreUtilsTest {
 
     @Test
     fun testCalculateBounds() {
-        // TODO test
+        assertEquals(
+            expected = Rect(0, 0, 100, 100),
+            actual = calculateBounds(Size.Empty, Size(100, 100), Scale.CENTER_CROP)
+        )
+        assertEquals(
+            expected = Rect(0, 0, 100, 100),
+            actual = calculateBounds(Size(100, 100), Size.Empty, Scale.CENTER_CROP)
+        )
+        assertEquals(
+            expected = Rect(0, 0, 0, 0),
+            actual = calculateBounds(Size.Empty, Size.Empty, Scale.CENTER_CROP)
+        )
+
+        assertEquals(
+            expected = Rect(0, 0, 250, 100),
+            actual = calculateBounds(Size(50, 20), Size(100, 100), Scale.START_CROP)
+        )
+        assertEquals(
+            expected = Rect(-75, 0, 175, 100),
+            actual = calculateBounds(Size(50, 20), Size(100, 100), Scale.CENTER_CROP)
+        )
+        assertEquals(
+            expected = Rect(-150, 0, 100, 100),
+            actual = calculateBounds(Size(50, 20), Size(100, 100), Scale.END_CROP)
+        )
+        assertEquals(
+            expected = Rect(0, 0, 100, 100),
+            actual = calculateBounds(Size(50, 20), Size(100, 100), Scale.FILL)
+        )
+
+        assertEquals(
+            expected = Rect(0, 0, 100, 250),
+            actual = calculateBounds(Size(20, 50), Size(100, 100), Scale.START_CROP)
+        )
+        assertEquals(
+            expected = Rect(0, -75, 100, 175),
+            actual = calculateBounds(Size(20, 50), Size(100, 100), Scale.CENTER_CROP)
+        )
+        assertEquals(
+            expected = Rect(0, -150, 100, 100),
+            actual = calculateBounds(Size(20, 50), Size(100, 100), Scale.END_CROP)
+        )
+        assertEquals(
+            expected = Rect(0, 0, 100, 100),
+            actual = calculateBounds(Size(20, 50), Size(100, 100), Scale.FILL)
+        )
+
+        assertEquals(
+            expected = Rect(0, 0, 125, 100),
+            actual = calculateBounds(Size(150, 120), Size(100, 100), Scale.START_CROP)
+        )
+        assertEquals(
+            expected = Rect(-12, 0, 113, 100),
+            actual = calculateBounds(Size(150, 120), Size(100, 100), Scale.CENTER_CROP)
+        )
+        assertEquals(
+            expected = Rect(-25, 0, 100, 100),
+            actual = calculateBounds(Size(150, 120), Size(100, 100), Scale.END_CROP)
+        )
+        assertEquals(
+            expected = Rect(0, 0, 100, 100),
+            actual = calculateBounds(Size(150, 120), Size(100, 100), Scale.FILL)
+        )
+
+        assertEquals(
+            expected = Rect(0, 0, 100, 125),
+            actual = calculateBounds(Size(120, 150), Size(100, 100), Scale.START_CROP)
+        )
+        assertEquals(
+            expected = Rect(0, -12, 100, 113),
+            actual = calculateBounds(Size(120, 150), Size(100, 100), Scale.CENTER_CROP)
+        )
+        assertEquals(
+            expected = Rect(0, -25, 100, 100),
+            actual = calculateBounds(Size(120, 150), Size(100, 100), Scale.END_CROP)
+        )
+        assertEquals(
+            expected = Rect(0, 0, 100, 100),
+            actual = calculateBounds(Size(120, 150), Size(100, 100), Scale.FILL)
+        )
     }
 }

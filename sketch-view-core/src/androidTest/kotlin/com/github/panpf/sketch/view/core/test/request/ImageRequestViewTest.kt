@@ -9,6 +9,8 @@ import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ViewLifecycleResolver
 import com.github.panpf.sketch.request.preferQualityOverSpeed
+import com.github.panpf.sketch.request.sizeWithView
+import com.github.panpf.sketch.request.target
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -64,11 +66,39 @@ class ImageRequestViewTest {
 
     @Test
     fun testTarget() {
-        // TODO test
+        val context = getTestContext()
+        val imageView = ImageView(context)
+        ImageRequest(context, ResourceImages.webp.uri) {
+            target(imageView)
+        }.apply {
+            assertEquals(
+                expected = ImageViewTarget(imageView),
+                actual = this.target
+            )
+        }
     }
 
     @Test
     fun testSizeWithView() {
-        // TODO test
+        val context = getTestContext()
+        val imageView = ImageView(context)
+
+        ImageRequest(context, ResourceImages.webp.uri) {
+            sizeWithView(imageView)
+        }.apply {
+            assertEquals(
+                expected = ViewSizeResolver(imageView, subtractPadding = true),
+                actual = this.sizeResolver
+            )
+        }
+
+        ImageRequest(context, ResourceImages.webp.uri) {
+            sizeWithView(imageView, subtractPadding = false)
+        }.apply {
+            assertEquals(
+                expected = ViewSizeResolver(imageView, subtractPadding = false),
+                actual = this.sizeResolver
+            )
+        }
     }
 }
