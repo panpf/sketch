@@ -74,6 +74,18 @@ import kotlin.test.assertTrue
 class BitmapFactoryDecoderTest {
 
     @Test
+    fun testConstructor() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = ResourceImages.jpeg.toDataSource(context)
+
+        BitmapFactoryDecoder(requestContext, dataSource)
+        BitmapFactoryDecoder(requestContext = requestContext, dataSource = dataSource)
+    }
+
+    @Test
     fun testImageInfo() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = BitmapFactoryDecoder.Factory()
@@ -1041,6 +1053,11 @@ class BitmapFactoryDecoderTest {
         val decoder = BitmapFactoryDecoder(requestContext, dataSource)
         assertTrue(actual = decoder.toString().contains("BitmapFactoryDecoder"))
         assertTrue(actual = decoder.toString().contains("@"))
+    }
+
+    @Test
+    fun testFactoryConstructor() {
+        BitmapFactoryDecoder.Factory()
     }
 
     @Test

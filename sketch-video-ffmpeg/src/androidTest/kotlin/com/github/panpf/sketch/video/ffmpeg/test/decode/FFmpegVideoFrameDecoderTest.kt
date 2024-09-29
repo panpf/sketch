@@ -100,6 +100,22 @@ class FFmpegVideoFrameDecoderTest {
     }
 
     @Test
+    fun testConstructor() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val request = ImageRequest(context, ResourceImages.mp4.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = ResourceImages.mp4.toDataSource(context)
+
+        FFmpegVideoFrameDecoder(requestContext, dataSource, "video/mp4")
+        FFmpegVideoFrameDecoder(
+            requestContext = requestContext,
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
+    }
+
+    @Test
     fun testImageInfo() = runTest {
         if (Build.VERSION.SDK_INT < 24 && Devicex.isEmulator()) {
             // UnsatisfiedLinkError /data/app/com.github.panpf.sketch.video.ffmpeg.test-1/lib/arm64/libssl.so
@@ -286,7 +302,12 @@ class FFmpegVideoFrameDecoderTest {
     }
 
     @Test
-    fun testFactoryKey() = runTest {
+    fun testFactoryConstructor() {
+        FFmpegVideoFrameDecoder.Factory()
+    }
+
+    @Test
+    fun testFactoryKey() {
         assertEquals(
             expected = "FFmpegVideoFrameDecoder",
             actual = FFmpegVideoFrameDecoder.Factory().key

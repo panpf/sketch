@@ -49,6 +49,18 @@ import kotlin.test.assertTrue
 class SkiaDecoderTest {
 
     @Test
+    fun testConstructor() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = ResourceImages.jpeg.toDataSource(context)
+
+        SkiaDecoder(requestContext, dataSource)
+        SkiaDecoder(requestContext = requestContext, dataSource = dataSource)
+    }
+
+    @Test
     fun testImageInfo() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = SkiaDecoder.Factory()
@@ -978,6 +990,11 @@ class SkiaDecoderTest {
         val decoder = SkiaDecoder(requestContext, dataSource)
         assertTrue(actual = decoder.toString().contains("SkiaDecoder"))
         assertTrue(actual = decoder.toString().contains("@"))
+    }
+
+    @Test
+    fun testFactoryConstructor() {
+        SkiaDecoder.Factory()
     }
 
     @Test

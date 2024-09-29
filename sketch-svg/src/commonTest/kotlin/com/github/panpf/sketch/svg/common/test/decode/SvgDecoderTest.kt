@@ -94,6 +94,18 @@ class SvgDecoderTest {
     }
 
     @Test
+    fun testConstructor() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val request = ImageRequest(context, ResourceImages.svg.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = ResourceImages.svg.toDataSource(context)
+
+        SvgDecoder(requestContext, dataSource)
+        SvgDecoder(requestContext = requestContext, dataSource = dataSource)
+    }
+
+    @Test
     fun testImageInfo() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
@@ -265,6 +277,11 @@ class SvgDecoderTest {
         val decoder = SvgDecoder(requestContext, dataSource)
         assertTrue(actual = decoder.toString().contains("SvgDecoder"))
         assertTrue(actual = decoder.toString().contains("@"))
+    }
+
+    @Test
+    fun testFactoryConstructor() {
+        SvgDecoder.Factory()
     }
 
     @Test

@@ -105,6 +105,22 @@ class VideoFrameDecoderTest {
     }
 
     @Test
+    fun testConstructor() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val request = ImageRequest(context, ResourceImages.mp4.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = ResourceImages.mp4.toDataSource(context)
+
+        VideoFrameDecoder(requestContext, dataSource, "video/mp4")
+        VideoFrameDecoder(
+            requestContext = requestContext,
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
+    }
+
+    @Test
     fun testImageInfo() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = VideoFrameDecoder.Factory()
@@ -315,7 +331,12 @@ class VideoFrameDecoderTest {
     }
 
     @Test
-    fun testFactoryKey() = runTest {
+    fun testFactoryConstructor() {
+        VideoFrameDecoder.Factory()
+    }
+
+    @Test
+    fun testFactoryKey() {
         assertEquals(
             expected = "VideoFrameDecoder",
             actual = VideoFrameDecoder.Factory().key

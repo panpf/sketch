@@ -100,6 +100,20 @@ class HeifAnimatedDecoderTest {
     }
 
     @Test
+    fun testConstructor() = runTest {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return@runTest
+
+        val (context, sketch) = getTestContextAndSketch()
+
+        val request = ImageRequest(context, ResourceImages.heic.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = ResourceImages.heic.toDataSource(context)
+
+        HeifAnimatedDecoder(requestContext, dataSource)
+        HeifAnimatedDecoder(requestContext = requestContext, dataSource = dataSource)
+    }
+
+    @Test
     fun testImageInfo() = runTest {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return@runTest
 
@@ -185,7 +199,12 @@ class HeifAnimatedDecoderTest {
     }
 
     @Test
-    fun testFactoryKey() = runTest {
+    fun testFactoryConstructor() {
+        HeifAnimatedDecoder.Factory()
+    }
+
+    @Test
+    fun testFactoryKey() {
         assertEquals(
             expected = "HeifAnimatedDecoder",
             actual = HeifAnimatedDecoder.Factory().key

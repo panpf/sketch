@@ -100,6 +100,20 @@ class WebpAnimatedDecoderTest {
     }
 
     @Test
+    fun testConstructor() = runTest {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return@runTest
+
+        val (context, sketch) = getTestContextAndSketch()
+
+        val request = ImageRequest(context, ResourceImages.animWebp.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = ResourceImages.animWebp.toDataSource(context)
+
+        WebpAnimatedDecoder(requestContext, dataSource)
+        WebpAnimatedDecoder(requestContext = requestContext, dataSource = dataSource)
+    }
+
+    @Test
     fun testImageInfo() = runTest {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return@runTest
 
@@ -185,7 +199,12 @@ class WebpAnimatedDecoderTest {
     }
 
     @Test
-    fun testFactoryKey() = runTest {
+    fun testFactoryConstructor() {
+        WebpAnimatedDecoder.Factory()
+    }
+
+    @Test
+    fun testFactoryKey() {
         assertEquals(
             expected = "WebpAnimatedDecoder",
             actual = WebpAnimatedDecoder.Factory().key

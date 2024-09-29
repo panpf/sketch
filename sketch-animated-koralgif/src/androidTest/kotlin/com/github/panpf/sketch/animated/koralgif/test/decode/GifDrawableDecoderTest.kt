@@ -100,6 +100,18 @@ class GifDrawableDecoderTest {
     }
 
     @Test
+    fun testConstructor() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val request = ImageRequest(context, ResourceImages.animGif.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = ResourceImages.animGif.toDataSource(context)
+
+        GifDrawableDecoder(requestContext, dataSource)
+        GifDrawableDecoder(requestContext = requestContext, dataSource = dataSource)
+    }
+
+    @Test
     fun testImageInfo() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = GifDrawableDecoder.Factory()
@@ -180,7 +192,12 @@ class GifDrawableDecoderTest {
     }
 
     @Test
-    fun testFactoryKey() = runTest {
+    fun testFactoryConstructor() {
+        GifDrawableDecoder.Factory()
+    }
+
+    @Test
+    fun testFactoryKey() {
         assertEquals(
             expected = "GifDrawableDecoder",
             actual = GifDrawableDecoder.Factory().key

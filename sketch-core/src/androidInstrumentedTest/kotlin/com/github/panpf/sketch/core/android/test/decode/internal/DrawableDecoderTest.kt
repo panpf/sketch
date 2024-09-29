@@ -64,6 +64,29 @@ import kotlin.test.assertTrue
 class DrawableDecoderTest {
 
     @Test
+    fun testConstructor() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val request = ImageRequest(
+            context,
+            newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.test)
+        )
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = DrawableDataSource(
+            context = context,
+            drawableFetcher = ResDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy),
+            dataFrom = LOCAL
+        )
+
+        DrawableDecoder(requestContext, dataSource, "image/png")
+        DrawableDecoder(
+            requestContext = requestContext,
+            dataSource = dataSource,
+            mimeType = "image/png"
+        )
+    }
+
+    @Test
     fun testImageInfo() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = DrawableDecoder.Factory()
@@ -282,7 +305,10 @@ class DrawableDecoderTest {
     @Test
     fun testEqualsAndHashCode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.animGif.uri)
+        val request = ImageRequest(
+            context,
+            newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.test)
+        )
         val requestContext = request.toRequestContext(sketch)
         val dataSource = DrawableDataSource(
             context = context,
@@ -301,7 +327,10 @@ class DrawableDecoderTest {
     @Test
     fun testToString() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.animGif.uri)
+        val request = ImageRequest(
+            context,
+            newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.test)
+        )
         val requestContext = request.toRequestContext(sketch)
         val dataSource = DrawableDataSource(
             context = context,
@@ -314,7 +343,12 @@ class DrawableDecoderTest {
     }
 
     @Test
-    fun testFactoryKey() = runTest {
+    fun testFactoryConstructor() {
+        DrawableDecoder.Factory()
+    }
+
+    @Test
+    fun testFactoryKey() {
         assertEquals(
             expected = "DrawableDecoder",
             actual = DrawableDecoder.Factory().key

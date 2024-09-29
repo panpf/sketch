@@ -76,6 +76,18 @@ class WebpSkiaAnimatedDecoderTest {
     }
 
     @Test
+    fun testConstructor() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val request = ImageRequest(context, ResourceImages.animWebp.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = ResourceImages.animWebp.toDataSource(context)
+
+        WebpSkiaAnimatedDecoder(requestContext, dataSource)
+        WebpSkiaAnimatedDecoder(requestContext = requestContext, dataSource = dataSource)
+    }
+
+    @Test
     fun testImageInfo() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = WebpSkiaAnimatedDecoder.Factory()
@@ -146,7 +158,12 @@ class WebpSkiaAnimatedDecoderTest {
     }
 
     @Test
-    fun testFactoryKey() = runTest {
+    fun testFactoryConstructor() {
+        WebpSkiaAnimatedDecoder.Factory()
+    }
+
+    @Test
+    fun testFactoryKey() {
         assertEquals(
             expected = "WebpSkiaAnimatedDecoder",
             actual = WebpSkiaAnimatedDecoder.Factory().key

@@ -100,6 +100,18 @@ class GifAnimatedDecoderTest {
     }
 
     @Test
+    fun testConstructor() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val request = ImageRequest(context, ResourceImages.animGif.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = ResourceImages.animGif.toDataSource(context)
+
+        GifAnimatedDecoder(requestContext, dataSource)
+        GifAnimatedDecoder(requestContext = requestContext, dataSource = dataSource)
+    }
+
+    @Test
     fun testImageInfo() = runTest {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return@runTest
 
@@ -185,7 +197,12 @@ class GifAnimatedDecoderTest {
     }
 
     @Test
-    fun testFactoryKey() = runTest {
+    fun testFactoryConstructor() {
+        GifAnimatedDecoder.Factory()
+    }
+
+    @Test
+    fun testFactoryKey() {
         assertEquals(
             expected = "GifAnimatedDecoder",
             actual = GifAnimatedDecoder.Factory().key

@@ -100,6 +100,21 @@ class ApkIconDecoderTest {
     }
 
     @Test
+    fun testConstructor() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val request = ImageRequest(context, "/sdcard/sample.apk")
+        val requestContext = request.toRequestContext(sketch)
+
+        ApkIconDecoder(requestContext, LOCAL, File("/sdcard/sample.apk"))
+        ApkIconDecoder(
+            requestContext = requestContext,
+            dataFrom = LOCAL,
+            file = File("/sdcard/sample.apk")
+        )
+    }
+
+    @Test
     fun testDecode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = ApkIconDecoder.Factory()
@@ -250,7 +265,12 @@ class ApkIconDecoderTest {
     }
 
     @Test
-    fun testFactoryKey() = runTest {
+    fun testFactoryConstructor() {
+        ApkIconDecoder.Factory()
+    }
+
+    @Test
+    fun testFactoryKey() {
         assertEquals(
             expected = "ApkIconDecoder",
             actual = ApkIconDecoder.Factory().key
