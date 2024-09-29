@@ -138,7 +138,8 @@ class RingProgressPainter(
         if (backgroundColor != other.backgroundColor) return false
         if (hiddenWhenIndeterminate != other.hiddenWhenIndeterminate) return false
         if (hiddenWhenCompleted != other.hiddenWhenCompleted) return false
-        return stepAnimationDuration == other.stepAnimationDuration
+        if (stepAnimationDuration != other.stepAnimationDuration) return false
+        return true
     }
 
     override fun hashCode(): Int {
@@ -153,6 +154,14 @@ class RingProgressPainter(
     }
 
     override fun toString(): String {
-        return "RingProgressPainter(size=$size, ringWidth=$ringWidth, ringColor=$ringColor, backgroundColor=$backgroundColor, hiddenWhenIndeterminate=$hiddenWhenIndeterminate, hiddenWhenCompleted=$hiddenWhenCompleted, stepAnimationDuration=$stepAnimationDuration)"
+        return "RingProgressPainter(" +
+                "size=$size, " +
+                "ringWidth=$ringWidth, " +
+                "ringColor=$ringColor, " +
+                "backgroundColor=$backgroundColor, " +
+                "hiddenWhenIndeterminate=$hiddenWhenIndeterminate, " +
+                "hiddenWhenCompleted=$hiddenWhenCompleted, " +
+                "stepAnimationDuration=$stepAnimationDuration" +
+                ")"
     }
 }

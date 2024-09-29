@@ -37,6 +37,7 @@ import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_RING_WIDTH_PERCENT
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
 import com.github.panpf.sketch.drawable.internal.AbsProgressDrawable
 import com.github.panpf.sketch.internal.dp2Px
+import com.github.panpf.sketch.internal.format
 import kotlin.math.roundToInt
 
 /**
@@ -131,7 +132,8 @@ class RingProgressDrawable constructor(
         if (backgroundColor != other.backgroundColor) return false
         if (hiddenWhenIndeterminate != other.hiddenWhenIndeterminate) return false
         if (hiddenWhenCompleted != other.hiddenWhenCompleted) return false
-        return stepAnimationDuration == other.stepAnimationDuration
+        if (stepAnimationDuration != other.stepAnimationDuration) return false
+        return true
     }
 
     override fun hashCode(): Int {
@@ -146,6 +148,14 @@ class RingProgressDrawable constructor(
     }
 
     override fun toString(): String {
-        return "RingProgressDrawable(size=$size, ringWidth=$ringWidth, ringColor=$ringColor, backgroundColor=$backgroundColor, hiddenWhenIndeterminate=$hiddenWhenIndeterminate, hiddenWhenCompleted=$hiddenWhenCompleted, stepAnimationDuration=$stepAnimationDuration)"
+        return "RingProgressDrawable(" +
+                "size=$size, " +
+                "ringWidth=${ringWidth.format(2)}, " +
+                "ringColor=$ringColor, " +
+                "backgroundColor=$backgroundColor, " +
+                "hiddenWhenIndeterminate=$hiddenWhenIndeterminate, " +
+                "hiddenWhenCompleted=$hiddenWhenCompleted, " +
+                "stepAnimationDuration=$stepAnimationDuration" +
+                ")"
     }
 }

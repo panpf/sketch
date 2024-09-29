@@ -151,7 +151,8 @@ class SectorProgressPainter(
         if (strokeWidth != other.strokeWidth) return false
         if (hiddenWhenIndeterminate != other.hiddenWhenIndeterminate) return false
         if (hiddenWhenCompleted != other.hiddenWhenCompleted) return false
-        return stepAnimationDuration == other.stepAnimationDuration
+        if (stepAnimationDuration != other.stepAnimationDuration) return false
+        return true
     }
 
     override fun hashCode(): Int {
@@ -167,6 +168,15 @@ class SectorProgressPainter(
     }
 
     override fun toString(): String {
-        return "SectorProgressPainter(size=$size, backgroundColor=$backgroundColor, strokeColor=$strokeColor, progressColor=$progressColor, strokeWidth=$strokeWidth, hiddenWhenIndeterminate=$hiddenWhenIndeterminate, hiddenWhenCompleted=$hiddenWhenCompleted, stepAnimationDuration=$stepAnimationDuration)"
+        return "SectorProgressPainter(" +
+                "size=$size, " +
+                "backgroundColor=$backgroundColor, " +
+                "strokeColor=$strokeColor, " +
+                "progressColor=$progressColor, " +
+                "strokeWidth=$strokeWidth, " +
+                "hiddenWhenIndeterminate=$hiddenWhenIndeterminate, " +
+                "hiddenWhenCompleted=$hiddenWhenCompleted, " +
+                "stepAnimationDuration=$stepAnimationDuration" +
+                ")"
     }
 }

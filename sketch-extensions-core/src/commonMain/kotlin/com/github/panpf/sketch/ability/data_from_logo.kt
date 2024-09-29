@@ -49,4 +49,4 @@ fun dataFromColor(dataFrom: DataFrom): Int = when (dataFrom) {
  *
  * @see com.github.panpf.sketch.extensions.core.common.test.ability.DataFromLogoTest.testDataFromDefaultSize
  */
-val dataFromDefaultSize = 20f
+const val DATA_FROM_DEFAULT_SIZE = 20f

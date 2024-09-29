@@ -39,7 +39,7 @@ import com.github.panpf.sketch.request.name
  *
  * @see com.github.panpf.sketch.extensions.compose.common.test.ability.DataFromLogoModifierTest.testModifier
  */
-fun Modifier.dataFromLogo(state: AsyncImageState, size: Dp = dataFromDefaultSize.dp): Modifier {
+fun Modifier.dataFromLogo(state: AsyncImageState, size: Dp = DATA_FROM_DEFAULT_SIZE.dp): Modifier {
     return this.then(DataFromLogoElement(state, size))
 }
 

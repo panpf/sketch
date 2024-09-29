@@ -92,7 +92,8 @@ class MaskProgressDrawable(
         if (maskColor != other.maskColor) return false
         if (hiddenWhenIndeterminate != other.hiddenWhenIndeterminate) return false
         if (hiddenWhenCompleted != other.hiddenWhenCompleted) return false
-        return stepAnimationDuration == other.stepAnimationDuration
+        if (stepAnimationDuration != other.stepAnimationDuration) return false
+        return true
     }
 
     override fun hashCode(): Int {
@@ -104,6 +105,11 @@ class MaskProgressDrawable(
     }
 
     override fun toString(): String {
-        return "MaskProgressDrawable(maskColor=$maskColor, hiddenWhenIndeterminate=$hiddenWhenIndeterminate, hiddenWhenCompleted=$hiddenWhenCompleted, stepAnimationDuration=$stepAnimationDuration)"
+        return "MaskProgressDrawable(" +
+                "maskColor=$maskColor, " +
+                "hiddenWhenIndeterminate=$hiddenWhenIndeterminate, " +
+                "hiddenWhenCompleted=$hiddenWhenCompleted, " +
+                "stepAnimationDuration=$stepAnimationDuration" +
+                ")"
     }
 }

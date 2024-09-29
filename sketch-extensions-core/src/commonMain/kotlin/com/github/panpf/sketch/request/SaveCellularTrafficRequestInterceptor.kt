@@ -113,5 +113,5 @@ class SaveCellularTrafficRequestInterceptor constructor(
     }
 
     override fun toString(): String =
-        "SaveCellularTrafficDisplayInterceptor(sortWeight=$sortWeight,enabled=$enabled)"
+        "SaveCellularTrafficRequestInterceptor(sortWeight=$sortWeight,enabled=$enabled)"
 }

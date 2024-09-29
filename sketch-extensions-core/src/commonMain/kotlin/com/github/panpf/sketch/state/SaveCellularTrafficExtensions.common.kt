@@ -25,17 +25,8 @@ import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
  *
  * @see com.github.panpf.sketch.extensions.core.common.test.state.SaveCellularTrafficExtensionsTest.testSaveCellularTrafficError
  */
-fun ErrorStateImage.Builder.saveCellularTrafficError(): ErrorStateImage.Builder = apply {
-    addState(SaveCellularTrafficCondition, null)
-}
-
-/**
- * Set the error image when the save cellular traffic
- *
- * @see com.github.panpf.sketch.extensions.core.common.test.state.SaveCellularTrafficExtensionsTest.testSaveCellularTrafficError
- */
 fun ErrorStateImage.Builder.saveCellularTrafficError(
-    stateImage: StateImage
+    stateImage: StateImage? = null
 ): ErrorStateImage.Builder = apply {
     addState(SaveCellularTrafficCondition, stateImage)
 }

@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
  *
  * @see com.github.panpf.sketch.extensions.view.test.ability.DataFromLogoAbilityTest.testShowDataFromLogo
  */
-fun ViewAbilityContainer.showDataFromLogo(sizeDp: Float = dataFromDefaultSize) {
+fun ViewAbilityContainer.showDataFromLogo(sizeDp: Float = DATA_FROM_DEFAULT_SIZE) {
     removeDataFromLogo()
     addViewAbility(DataFromLogoAbility(sizeDp))
 }
@@ -63,7 +63,7 @@ val ViewAbilityContainer.isShowDataFromLogo: Boolean
  * @see com.github.panpf.sketch.extensions.view.test.ability.DataFromLogoAbilityTest
  */
 class DataFromLogoAbility(
-    sizeDp: Float = dataFromDefaultSize
+    sizeDp: Float = DATA_FROM_DEFAULT_SIZE
 ) : ViewAbility, AttachObserver, DrawObserver, LayoutObserver, DrawableObserver {
 
     private var path: Path = Path()
