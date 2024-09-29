@@ -25,6 +25,7 @@ import androidx.lifecycle.LifecycleEventObserver
  * Start the animation when the LifecycleOwner is in the [Lifecycle.Event.ON_START] state, and stop the animation when the LifecycleOwner is in the [Lifecycle.Event.ON_STOP] state
  *
  * @see com.github.panpf.sketch.view.core.test.drawable.AnimatablesTest.testStartWithLifecycle
+ * @see com.github.panpf.sketch.view.core.test.drawable.AnimatablesTest.testStartWithLifecycle2
  */
 fun Animatable.startWithLifecycle(lifecycle: Lifecycle) {
     val observer = LifecycleEventObserver { _, event ->
