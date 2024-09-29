@@ -17,8 +17,10 @@
 package com.github.panpf.sketch.extensions.view.test.util
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.util.dp2Px
 import com.github.panpf.sketch.util.format
 import org.junit.runner.RunWith
+import kotlin.math.roundToInt
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -35,6 +37,21 @@ class ExtensionsViewCoreUtilsTest {
 
     @Test
     fun testDp2Px() {
-        // TODO test
+        assertEquals(
+            expected = (0.5f * android.content.res.Resources.getSystem().displayMetrics.density + 0.5f).roundToInt(),
+            0.5f.dp2Px()
+        )
+        assertEquals(
+            expected = (1.5f * android.content.res.Resources.getSystem().displayMetrics.density + 0.5f).roundToInt(),
+            1.5f.dp2Px()
+        )
+        assertEquals(
+            expected = (1.3f * android.content.res.Resources.getSystem().displayMetrics.density + 0.5f).roundToInt(),
+            1.3f.dp2Px()
+        )
+        assertEquals(
+            expected = (3.33f * android.content.res.Resources.getSystem().displayMetrics.density + 0.5f).roundToInt(),
+            3.33f.dp2Px()
+        )
     }
 }

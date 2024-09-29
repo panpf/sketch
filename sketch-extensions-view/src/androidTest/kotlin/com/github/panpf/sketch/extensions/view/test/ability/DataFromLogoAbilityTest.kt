@@ -44,5 +44,8 @@ class DataFromLogoAbilityTest {
         assertFalse(imageView.isShowDataFromLogo)
     }
 
-    // TODO test
+    @Test
+    fun test() {
+        // TODO Looking forward to screenshot testing to support View
+    }
 }

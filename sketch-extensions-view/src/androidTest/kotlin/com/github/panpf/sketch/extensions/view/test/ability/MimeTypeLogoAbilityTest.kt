@@ -50,5 +50,8 @@ class MimeTypeLogoAbilityTest {
         assertTrue(imageView.isShowMimeTypeLogo)
     }
 
-    // TODO test
+    @Test
+    fun test() {
+        // TODO Looking forward to screenshot testing to support View
+    }
 }
