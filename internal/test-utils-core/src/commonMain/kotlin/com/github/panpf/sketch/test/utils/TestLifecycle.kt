@@ -28,6 +28,8 @@ class TestLifecycle : Lifecycle() {
 
     private val owner = TestLifecycleOwner(this)
 
+    val observers = mutableListOf<LifecycleEventObserver>()
+
     override var currentState: State = State.INITIALIZED
         set(value) {
             if (field == value) return
@@ -38,12 +40,11 @@ class TestLifecycle : Lifecycle() {
             } else {
                 Event.downTo(value)!!
             }
-            observers.forEach {
+            // toList avoid triggering ConcurrentModificationException
+            observers.toList().forEach {
                 it.onStateChanged(owner, event)
             }
         }
-
-    val observers = mutableListOf<LifecycleEventObserver>()
 
     override fun addObserver(observer: LifecycleObserver) {
         require(observer is LifecycleEventObserver) {

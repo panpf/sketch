@@ -3,6 +3,8 @@ package com.github.panpf.sketch.test.utils
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.util.Size
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 import kotlin.math.pow
 import kotlin.math.round
 import kotlin.time.TimeSource
@@ -12,6 +14,12 @@ fun Long.pow(n: Int): Long = this.toDouble().pow(n).toLong()
 
 suspend fun <T> runBlock(block: suspend () -> T): T {
     return block()
+}
+
+suspend fun <T> runBlock(context: CoroutineContext, block: suspend () -> T): T {
+    return withContext(context) {
+        block()
+    }
 }
 
 fun samplingByTarget(imageSize: Size, targetSize: Size, mimeType: String? = null): Size {

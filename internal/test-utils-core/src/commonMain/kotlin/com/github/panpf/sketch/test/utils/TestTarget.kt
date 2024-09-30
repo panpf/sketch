@@ -16,9 +16,13 @@
 
 package com.github.panpf.sketch.test.utils
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.internal.AttachObserver
 import com.github.panpf.sketch.request.internal.OneShotRequestDelegate
 import com.github.panpf.sketch.request.internal.OneShotRequestManager
 import com.github.panpf.sketch.request.internal.RequestDelegate
@@ -26,7 +30,8 @@ import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.target.Target
 import kotlinx.coroutines.Job
 
-class TestTarget(override val currentImage: Image? = null) : Target {
+class TestTarget(override val currentImage: Image? = null) : Target, LifecycleEventObserver,
+    AttachObserver {
 
     var startImage: Image? = null
     var successImage: Image? = null
@@ -56,4 +61,14 @@ class TestTarget(override val currentImage: Image? = null) : Target {
         initialRequest: ImageRequest,
         job: Job
     ): RequestDelegate = OneShotRequestDelegate(sketch, initialRequest, this, job)
+
+    override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+
+    }
+
+    var attached = false
+
+    override fun onAttachedChanged(attached: Boolean) {
+        this.attached = attached
+    }
 }
