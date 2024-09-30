@@ -181,13 +181,13 @@ class HurlStackTest {
     @Test
     fun testToString() {
         assertEquals(
-            "HurlStack(interceptors=[TimeoutInterceptor(connectTimeoutMillis=7000, readTimeoutMillis=7000)])",
-            HurlStack.Builder().build().toString()
+            expected = "HurlStack(interceptors=[TimeoutInterceptor(connectTimeoutMillis=7000, readTimeoutMillis=7000)])",
+            actual = HurlStack.Builder().build().toString()
         )
     }
 
     private class TestInterceptor : HurlStack.Interceptor {
-        override fun intercept(chain: HurlStack.Chain): HurlStack.Response {
+        override fun intercept(chain: HurlStack.Interceptor.Chain): HurlStack.Response {
             return chain.proceed()
         }
     }

@@ -217,20 +217,19 @@ class HurlStack private constructor(
 
     interface Interceptor {
         fun intercept(chain: Chain): Response
+
+        interface Chain {
+            val connection: HttpURLConnection
+            fun proceed(): Response
+        }
     }
 
-    // TODO move to Interceptor
-    interface Chain {
-        val connection: HttpURLConnection
-        fun proceed(): Response
-    }
-
-    // TODO move to Interceptor
-    class InterceptorChain(
+    private class InterceptorChain(
         override val connection: HttpURLConnection,
         private val interceptors: List<Interceptor>,
         private val index: Int = 0
-    ) : Chain {
+    ) : Interceptor.Chain {
+
         override fun proceed(): Response {
             val interceptor = interceptors[index]
             val next = InterceptorChain(connection, interceptors, index + 1)
@@ -242,7 +241,7 @@ class HurlStack private constructor(
         val httpHeaders: HttpHeaders?,
     ) : Interceptor {
 
-        override fun intercept(chain: Chain): Response {
+        override fun intercept(chain: Interceptor.Chain): Response {
             val connection = chain.connection
             httpHeaders?.addList?.forEach { (key, value) ->
                 connection.addRequestProperty(key, value)
@@ -259,7 +258,7 @@ class HurlStack private constructor(
         val readTimeoutMillis: Int? = null,
     ) : Interceptor {
 
-        override fun intercept(chain: Chain): Response {
+        override fun intercept(chain: Interceptor.Chain): Response {
             val connection = chain.connection
             if (connectTimeoutMillis != null) {
                 connection.connectTimeout = connectTimeoutMillis
@@ -275,7 +274,7 @@ class HurlStack private constructor(
         val userAgent: String,
     ) : Interceptor {
 
-        override fun intercept(chain: Chain): Response {
+        override fun intercept(chain: Interceptor.Chain): Response {
             chain.connection.setRequestProperty("User-Agent", userAgent)
             return chain.proceed()
         }
@@ -283,7 +282,7 @@ class HurlStack private constructor(
 
     private class EngineInterceptor : Interceptor {
 
-        override fun intercept(chain: Chain): Response {
+        override fun intercept(chain: Interceptor.Chain): Response {
             val connection = chain.connection
             connection.connect()
             return Response(connection)
