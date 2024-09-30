@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 /**
  * Set the error image when the save cellular traffic
  *
- * @see com.github.panpf.sketch.extensions.compose.common.test.state.SaveCellularTrafficExtensionsAndroidTest.testSaveCellularTrafficError
+ * @see com.github.panpf.sketch.extensions.compose.common.test.state.SaveCellularTrafficExtensionsComposeTest.testSaveCellularTrafficError
  */
 fun ErrorStateImage.Builder.saveCellularTrafficError(
     color: Color
