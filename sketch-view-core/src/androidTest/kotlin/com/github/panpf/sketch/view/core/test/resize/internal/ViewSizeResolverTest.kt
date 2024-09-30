@@ -1,25 +1,20 @@
 package com.github.panpf.sketch.view.core.test.resize.internal
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.view.updatePadding
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle.State.RESUMED
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.resize.internal.RealViewSizeResolver
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
+import com.github.panpf.sketch.test.utils.TestActivity
+import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.tools4a.test.ktx.getFragmentSync
-import com.github.panpf.tools4a.test.ktx.launchFragmentInContainer
+import com.github.panpf.tools4a.test.ktx.getActivitySync
+import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
@@ -47,177 +42,498 @@ class ViewSizeResolverTest {
     }
 
     @Test
-    fun test() = runTest {
-        val context = getTestContext()
-        val displaySize = context.resources.displayMetrics.let {
-            Size(it.widthPixels, it.heightPixels)
-        }
+    fun testSizeAttached() = runTest {
+        // Match parent, Attached
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
 
-        MatchParentTestFragment::class.launchFragmentInContainer().getFragmentSync()
-            .let { fragment ->
-                assertEquals(RESUMED, fragment.lifecycle.currentState)
-
-                withContext(Dispatchers.Main) {
-                    ViewSizeResolver(fragment.imageView).size()
-                }.apply {
-                    assertTrue(
-                        this.height > displaySize.height / 2 && this.height <= displaySize.height,
-                        "displaySize=$displaySize, viewSize=$this"
-                    )
-                }
+            val imageView = ImageView(activity).apply {
+                layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
             }
-
-        WrapContentTestFragment::class.launchFragmentInContainer().getFragmentSync()
-            .let { fragment ->
-                assertEquals(RESUMED, fragment.lifecycle.currentState)
-
-                withContext(Dispatchers.Main) {
-                    ViewSizeResolver(fragment.imageView).size()
-                }.apply {
-                    assertEquals(displaySize.width, this.width)
-                    assertTrue(
-                        this.height > displaySize.height / 2 && this.height <= displaySize.height,
-                        "displaySize=$displaySize, viewSize=$this"
-                    )
-                }
+            withContext(Dispatchers.Main) {
+                activity.setContentView(FrameLayout(activity).apply {
+                    layoutParams =
+                        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                    addView(imageView)
+                })
             }
+            block(100)
+            assertEquals(LayoutParams.MATCH_PARENT, imageView.layoutParams.width)
+            assertEquals(LayoutParams.MATCH_PARENT, imageView.layoutParams.height)
 
-        FixedSizeTestFragment::class.launchFragmentInContainer().getFragmentSync()
-            .let { fragment ->
-                assertEquals(RESUMED, fragment.lifecycle.currentState)
-
-                withContext(Dispatchers.Main) {
-                    ViewSizeResolver(fragment.imageView).size()
-                }.apply {
-                    assertEquals(Size(500 - 40, 600 - 60), this)
-                }
-                withContext(Dispatchers.Main) {
-                    ViewSizeResolver(fragment.imageView, subtractPadding = false).size()
-                }.apply {
-                    assertEquals(Size(500, 600), this)
-                }
+            val size = withContext(Dispatchers.Main) {
+                ViewSizeResolver(imageView).size()
             }
-
-        ErrorPaddingTestFragment::class.launchFragmentInContainer().getFragmentSync()
-            .let { fragment ->
-                assertEquals(RESUMED, fragment.lifecycle.currentState)
-
-                withContext(Dispatchers.Main) {
-                    val de = async {
-                        ViewSizeResolver(fragment.imageView).size()
-                    }
-                    delay(1000)
-                    val completed = de.isCompleted
-                    de.cancel()
-                    completed
-                }.apply {
-                    assertTrue(this)
-                }
-            }
-
-        withContext(Dispatchers.Main) {
-            ViewSizeResolver(ImageView(context)).size()
-        }.apply {
-            assertTrue(
-                this.height > displaySize.height / 2 && this.height <= displaySize.height,
-                "displaySize=$displaySize, viewSize=$this"
+            assertEquals(
+                expected = Size(imageView.width, imageView.height),
+                actual = size
             )
         }
 
-        ContainerTestFragment::class.launchFragmentInContainer().getFragmentSync()
-            .let { fragment ->
-                assertEquals(RESUMED, fragment.lifecycle.currentState)
+        // Wrap content, Attached
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
 
-                withContext(Dispatchers.Main) {
-                    val imageView = ImageView(context)
-                    val deferred = async {
-                        ViewSizeResolver(imageView).size()
-                    }
-                    fragment.container.addView(
-                        imageView,
+            val imageView = ImageView(activity).apply {
+                layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            }
+            withContext(Dispatchers.Main) {
+                activity.setContentView(FrameLayout(activity).apply {
+                    layoutParams =
                         LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
-                    )
-                    deferred.await()
-                }.apply {
-                    assertTrue(
-                        this.height > displaySize.height / 2 && this.height <= displaySize.height,
-                        "displaySize=$displaySize, viewSize=$this"
-                    )
-                }
+                    addView(imageView)
+                })
+            }
+            block(100)
+            assertEquals(LayoutParams.WRAP_CONTENT, imageView.layoutParams.width)
+            assertEquals(LayoutParams.WRAP_CONTENT, imageView.layoutParams.height)
+
+            val size = withContext(Dispatchers.Main) {
+                ViewSizeResolver(imageView).size()
+            }
+            val displayMetrics = activity.resources.displayMetrics
+            assertEquals(
+                expected = Size(displayMetrics.widthPixels, displayMetrics.heightPixels),
+                actual = size
+            )
+        }
+
+        // Match and Wrap, Attached
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+
+            val imageView = ImageView(activity).apply {
+                layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            }
+            withContext(Dispatchers.Main) {
+                activity.setContentView(FrameLayout(activity).apply {
+                    layoutParams =
+                        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                    addView(imageView)
+                })
+            }
+            block(100)
+            assertEquals(LayoutParams.MATCH_PARENT, imageView.layoutParams.width)
+            assertEquals(LayoutParams.WRAP_CONTENT, imageView.layoutParams.height)
+
+            val size = withContext(Dispatchers.Main) {
+                ViewSizeResolver(imageView).size()
+            }
+            val displayMetrics = activity.resources.displayMetrics
+            assertEquals(
+                expected = Size(imageView.width, displayMetrics.heightPixels),
+                actual = size
+            )
+
+            val imageView2 = ImageView(activity).apply {
+                layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
+            }
+            withContext(Dispatchers.Main) {
+                activity.setContentView(FrameLayout(activity).apply {
+                    layoutParams =
+                        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                    addView(imageView2)
+                })
+            }
+            block(100)
+            assertEquals(LayoutParams.WRAP_CONTENT, imageView2.layoutParams.width)
+            assertEquals(LayoutParams.MATCH_PARENT, imageView2.layoutParams.height)
+
+            val size2 = withContext(Dispatchers.Main) {
+                ViewSizeResolver(imageView2).size()
+            }
+            assertEquals(
+                expected = Size(displayMetrics.widthPixels, imageView2.height),
+                actual = size2
+            )
+        }
+
+        // Fixed Size, Attached
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+
+            val imageView = ImageView(activity).apply {
+                layoutParams = LayoutParams(101, 202)
+            }
+            withContext(Dispatchers.Main) {
+                activity.setContentView(FrameLayout(activity).apply {
+                    layoutParams =
+                        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                    addView(imageView)
+                })
+            }
+            block(100)
+            assertEquals(101, imageView.layoutParams.width)
+            assertEquals(202, imageView.layoutParams.height)
+
+            val size = withContext(Dispatchers.Main) {
+                ViewSizeResolver(imageView).size()
+            }
+            assertEquals(
+                expected = Size(101, 202),
+                actual = size
+            )
+        }
+
+        // Padding subtract, Attached
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+
+            val imageView = ImageView(activity).apply {
+                layoutParams = LayoutParams(500, 600)
+                updatePadding(left = 40, top = 20, right = 20, bottom = 50)
+            }
+            withContext(Dispatchers.Main) {
+                activity.setContentView(FrameLayout(activity).apply {
+                    layoutParams =
+                        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                    addView(imageView)
+                })
+            }
+            block(100)
+            assertEquals(500, imageView.layoutParams.width)
+            assertEquals(600, imageView.layoutParams.height)
+            assertEquals(40, imageView.paddingLeft)
+            assertEquals(20, imageView.paddingTop)
+            assertEquals(20, imageView.paddingRight)
+            assertEquals(50, imageView.paddingBottom)
+
+            val size = withContext(Dispatchers.Main) {
+                ViewSizeResolver(imageView).size()
+            }
+            assertEquals(
+                expected = Size(440, 530),
+                actual = size
+            )
+        }
+
+        // Padding ignore, Attached
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+
+            val imageView = ImageView(activity).apply {
+                layoutParams = LayoutParams(500, 600)
+                updatePadding(left = 40, top = 20, right = 20, bottom = 50)
+            }
+            withContext(Dispatchers.Main) {
+                activity.setContentView(FrameLayout(activity).apply {
+                    layoutParams =
+                        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                    addView(imageView)
+                })
+            }
+            block(100)
+            assertEquals(500, imageView.layoutParams.width)
+            assertEquals(600, imageView.layoutParams.height)
+            assertEquals(40, imageView.paddingLeft)
+            assertEquals(20, imageView.paddingTop)
+            assertEquals(20, imageView.paddingRight)
+            assertEquals(50, imageView.paddingBottom)
+
+            val size = withContext(Dispatchers.Main) {
+                ViewSizeResolver(imageView, subtractPadding = false).size()
+            }
+            assertEquals(
+                expected = Size(500, 600),
+                actual = size
+            )
+        }
+
+        // Padding error, Attached
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+
+            val imageView = ImageView(activity).apply {
+                layoutParams = LayoutParams(500, 600)
+                updatePadding(left = 400, top = 200, right = 200, bottom = 500)
+            }
+            withContext(Dispatchers.Main) {
+                activity.setContentView(FrameLayout(activity).apply {
+                    layoutParams =
+                        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                    addView(imageView)
+                })
+            }
+            block(100)
+            assertEquals(500, imageView.layoutParams.width)
+            assertEquals(600, imageView.layoutParams.height)
+            assertEquals(400, imageView.paddingLeft)
+            assertEquals(200, imageView.paddingTop)
+            assertEquals(200, imageView.paddingRight)
+            assertEquals(500, imageView.paddingBottom)
+
+            val size = withContext(Dispatchers.Main) {
+                ViewSizeResolver(imageView).size()
+            }
+            val displayMetrics = activity.resources.displayMetrics
+            assertEquals(
+                expected = Size(displayMetrics.widthPixels, displayMetrics.heightPixels),
+                actual = size
+            )
+        }
+    }
+
+    @Test
+    fun testSizeNoAttached() = runTest {
+        // Match parent, No Attached
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+
+            val imageView = ImageView(activity).apply {
+                layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
             }
 
-        // TODO Testing and handling when reaching the drawing stage
-    }
+            val job = async(Dispatchers.Main) {
+                ViewSizeResolver(imageView).size()
+            }
+            block(100)
 
-    class MatchParentTestFragment : Fragment() {
+            withContext(Dispatchers.Main) {
+                activity.setContentView(FrameLayout(activity).apply {
+                    layoutParams =
+                        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                    addView(imageView)
+                })
+            }
+            block(100)
+            assertEquals(LayoutParams.MATCH_PARENT, imageView.layoutParams.width)
+            assertEquals(LayoutParams.MATCH_PARENT, imageView.layoutParams.height)
 
-        override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View = ImageView(inflater.context).apply {
-            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            val size = job.await()
+            assertEquals(
+                expected = Size(imageView.width, imageView.height),
+                actual = size
+            )
         }
 
-        val imageView: ImageView
-            get() = view!! as ImageView
-    }
+        // Wrap content, No Attached
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
 
-    class WrapContentTestFragment : Fragment() {
+            val imageView = ImageView(activity).apply {
+                layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            }
 
-        override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View = ImageView(inflater.context).apply {
-            layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            val job = async(Dispatchers.Main) {
+                ViewSizeResolver(imageView).size()
+            }
+            block(100)
+
+            withContext(Dispatchers.Main) {
+                activity.setContentView(FrameLayout(activity).apply {
+                    layoutParams =
+                        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                    addView(imageView)
+                })
+            }
+            block(100)
+            assertEquals(LayoutParams.WRAP_CONTENT, imageView.layoutParams.width)
+            assertEquals(LayoutParams.WRAP_CONTENT, imageView.layoutParams.height)
+
+            val size = job.await()
+            val displayMetrics = activity.resources.displayMetrics
+            assertEquals(
+                expected = Size(displayMetrics.widthPixels, displayMetrics.heightPixels),
+                actual = size
+            )
         }
 
-        val imageView: ImageView
-            get() = view!! as ImageView
-    }
+        // Match and Wrap, No Attached
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
 
-    class FixedSizeTestFragment : Fragment() {
+            val imageView = ImageView(activity).apply {
+                layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+            }
 
-        override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View = ImageView(inflater.context).apply {
-            layoutParams = LayoutParams(500, 600)
-            updatePadding(left = 10, top = 20, right = 30, bottom = 40)
+            val job = async(Dispatchers.Main) {
+                ViewSizeResolver(imageView).size()
+            }
+            block(100)
+
+            withContext(Dispatchers.Main) {
+                activity.setContentView(FrameLayout(activity).apply {
+                    layoutParams =
+                        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                    addView(imageView)
+                })
+            }
+            block(100)
+            assertEquals(LayoutParams.MATCH_PARENT, imageView.layoutParams.width)
+            assertEquals(LayoutParams.WRAP_CONTENT, imageView.layoutParams.height)
+
+            val size = job.await()
+            val displayMetrics = activity.resources.displayMetrics
+            assertEquals(
+                expected = Size(imageView.width, displayMetrics.heightPixels),
+                actual = size
+            )
+
+            val imageView2 = ImageView(activity).apply {
+                layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
+            }
+
+            val job2 = async(Dispatchers.Main) {
+                ViewSizeResolver(imageView2).size()
+            }
+            block(100)
+
+            withContext(Dispatchers.Main) {
+                activity.setContentView(FrameLayout(activity).apply {
+                    layoutParams =
+                        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                    addView(imageView2)
+                })
+            }
+            block(100)
+            assertEquals(LayoutParams.WRAP_CONTENT, imageView2.layoutParams.width)
+            assertEquals(LayoutParams.MATCH_PARENT, imageView2.layoutParams.height)
+
+            val size2 = job2.await()
+            assertEquals(
+                expected = Size(displayMetrics.widthPixels, imageView2.height),
+                actual = size2
+            )
         }
 
-        val imageView: ImageView
-            get() = view!! as ImageView
-    }
+        // Fixed Size, No Attached
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
 
-    class ErrorPaddingTestFragment : Fragment() {
+            val imageView = ImageView(activity).apply {
+                layoutParams = LayoutParams(101, 202)
+            }
 
-        override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View = ImageView(inflater.context).apply {
-            layoutParams = LayoutParams(500, 600)
-            updatePadding(left = 400, top = 200, right = 200, bottom = 500)
+            val job = async(Dispatchers.Main) {
+                ViewSizeResolver(imageView).size()
+            }
+            block(100)
+
+            withContext(Dispatchers.Main) {
+                activity.setContentView(FrameLayout(activity).apply {
+                    layoutParams =
+                        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                    addView(imageView)
+                })
+            }
+            block(100)
+            assertEquals(101, imageView.layoutParams.width)
+            assertEquals(202, imageView.layoutParams.height)
+
+            val size = job.await()
+            assertEquals(
+                expected = Size(101, 202),
+                actual = size
+            )
         }
 
-        val imageView: ImageView
-            get() = view!! as ImageView
-    }
+        // Padding subtract, No Attached
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
 
-    class ContainerTestFragment : Fragment() {
+            val imageView = ImageView(activity).apply {
+                layoutParams = LayoutParams(500, 600)
+                updatePadding(left = 40, top = 20, right = 20, bottom = 50)
+            }
 
-        override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View = FrameLayout(inflater.context).apply {
-            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            val job = async(Dispatchers.Main) {
+                ViewSizeResolver(imageView).size()
+            }
+            block(100)
+
+            withContext(Dispatchers.Main) {
+                activity.setContentView(FrameLayout(activity).apply {
+                    layoutParams =
+                        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                    addView(imageView)
+                })
+            }
+            block(100)
+            assertEquals(500, imageView.layoutParams.width)
+            assertEquals(600, imageView.layoutParams.height)
+            assertEquals(40, imageView.paddingLeft)
+            assertEquals(20, imageView.paddingTop)
+            assertEquals(20, imageView.paddingRight)
+            assertEquals(50, imageView.paddingBottom)
+
+            val size = job.await()
+            assertEquals(
+                expected = Size(440, 530),
+                actual = size
+            )
         }
 
-        val container: FrameLayout
-            get() = view!! as FrameLayout
+        // Padding ignore, No Attached
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+
+            val imageView = ImageView(activity).apply {
+                layoutParams = LayoutParams(500, 600)
+                updatePadding(left = 40, top = 20, right = 20, bottom = 50)
+            }
+
+            val job = async(Dispatchers.Main) {
+                ViewSizeResolver(imageView, subtractPadding = false).size()
+            }
+            block(100)
+
+            withContext(Dispatchers.Main) {
+                activity.setContentView(FrameLayout(activity).apply {
+                    layoutParams =
+                        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                    addView(imageView)
+                })
+            }
+            block(100)
+            assertEquals(500, imageView.layoutParams.width)
+            assertEquals(600, imageView.layoutParams.height)
+            assertEquals(40, imageView.paddingLeft)
+            assertEquals(20, imageView.paddingTop)
+            assertEquals(20, imageView.paddingRight)
+            assertEquals(50, imageView.paddingBottom)
+
+            val size = job.await()
+            assertEquals(
+                expected = Size(500, 600),
+                actual = size
+            )
+        }
+
+        // Padding error, No Attached
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+
+            val imageView = ImageView(activity).apply {
+                layoutParams = LayoutParams(500, 600)
+                updatePadding(left = 400, top = 200, right = 200, bottom = 500)
+            }
+
+            val job = async(Dispatchers.Main) {
+                ViewSizeResolver(imageView).size()
+            }
+            block(100)
+
+            withContext(Dispatchers.Main) {
+                activity.setContentView(FrameLayout(activity).apply {
+                    layoutParams =
+                        LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+                    addView(imageView)
+                })
+            }
+            block(100)
+            assertEquals(500, imageView.layoutParams.width)
+            assertEquals(600, imageView.layoutParams.height)
+            assertEquals(400, imageView.paddingLeft)
+            assertEquals(200, imageView.paddingTop)
+            assertEquals(200, imageView.paddingRight)
+            assertEquals(500, imageView.paddingBottom)
+
+            val size = job.await()
+            val displayMetrics = activity.resources.displayMetrics
+            assertEquals(
+                expected = Size(displayMetrics.widthPixels, displayMetrics.heightPixels),
+                actual = size
+            )
+        }
     }
 }
