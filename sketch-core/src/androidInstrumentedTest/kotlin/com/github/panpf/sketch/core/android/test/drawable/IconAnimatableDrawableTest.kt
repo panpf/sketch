@@ -208,7 +208,7 @@ class IconAnimatableDrawableTest {
 
     @Test
     fun testStartStop() = runTest {
-        val animatableDrawable = TestAnimatableDrawable()
+        val animatableDrawable = TestAnimatableDrawable(ColorDrawable(Color.YELLOW))
         val wrapper = IconAnimatableDrawable(animatableDrawable)
 
         val callbackHistory = mutableListOf<String>()

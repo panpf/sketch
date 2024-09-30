@@ -6,8 +6,8 @@ import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.util.toLogString
 
-class TestAnimatableDrawable(
-    drawable: Drawable? = null
+class TestAnimatableDrawable constructor(
+    drawable: Drawable
 ) : DrawableWrapperCompat(drawable), Animatable, SketchDrawable {
 
     private var running = false

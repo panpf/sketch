@@ -57,7 +57,7 @@ class ResizeDrawableTest {
             assertTrue(this !is ResizeAnimatableDrawable)
         }
 
-        TestAnimatableDrawable().resize(Size(100, 100)).apply {
+        TestAnimatableDrawable(ColorDrawable(Color.YELLOW)).resize(Size(100, 100)).apply {
             assertTrue(this is ResizeAnimatableDrawable)
         }
     }

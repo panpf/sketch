@@ -1,5 +1,7 @@
 package com.github.panpf.sketch.view.core.test.drawable
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.ViewGroup.LayoutParams
 import android.widget.ImageView
 import androidx.lifecycle.Lifecycle
@@ -24,7 +26,7 @@ class AnimatablesTest {
     fun testStartWithLifecycle() = runTest {
         TestActivity::class.launchActivity().use { scenario ->
             val activity = scenario.getActivitySync()
-            val animatableDrawable = TestAnimatableDrawable()
+            val animatableDrawable = TestAnimatableDrawable(ColorDrawable(Color.YELLOW))
             val imageView = ImageView(activity)
             withContext(Dispatchers.Main) {
                 imageView.setImageDrawable(animatableDrawable)
@@ -98,7 +100,7 @@ class AnimatablesTest {
     fun testStartWithLifecycle2() = runTest {
         TestActivity::class.launchActivity().use { scenario ->
             val activity = scenario.getActivitySync()
-            val animatableDrawable = TestAnimatableDrawable()
+            val animatableDrawable = TestAnimatableDrawable(ColorDrawable(Color.YELLOW))
             val imageView = ImageView(activity)
             withContext(Dispatchers.Main) {
                 imageView.setImageDrawable(animatableDrawable)

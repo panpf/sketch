@@ -209,7 +209,7 @@ class AnimatableDrawableTest {
 
     @Test
     fun testStartStop() = runTest {
-        val animatableDrawable = TestAnimatableDrawable()
+        val animatableDrawable = TestAnimatableDrawable(ColorDrawable(Color.YELLOW))
         val wrapper = AnimatableDrawable(animatableDrawable)
 
         val callbackHistory = mutableListOf<String>()
@@ -258,9 +258,7 @@ class AnimatableDrawableTest {
         val context = getTestContext()
 
         AnimatableDrawable(
-            TestAnimatableDrawable(
-                context.getDrawableCompat(android.R.drawable.bottom_bar)
-            ),
+            TestAnimatableDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar)),
         ).apply {
             val mutateDrawable = mutate()
             assertSame(this, mutateDrawable)
@@ -274,9 +272,7 @@ class AnimatableDrawableTest {
         }
 
         AnimatableDrawable(
-            TestAnimatableDrawable(
-                TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar))
-            ),
+            TestAnimatableDrawable(TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar))),
         ).apply {
             val mutateDrawable = mutate()
             assertNotSame(this, mutateDrawable)

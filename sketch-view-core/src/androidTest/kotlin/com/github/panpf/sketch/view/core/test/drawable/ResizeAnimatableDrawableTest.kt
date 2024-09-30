@@ -288,7 +288,7 @@ class ResizeAnimatableDrawableTest {
 
     @Test
     fun testStartStop() = runTest {
-        val animatableDrawable = TestAnimatableDrawable()
+        val animatableDrawable = TestAnimatableDrawable(ColorDrawable(Color.YELLOW))
         val wrapper = ResizeAnimatableDrawable(animatableDrawable, Size(100, 500), CENTER_CROP)
 
         val callbackHistory = mutableListOf<String>()

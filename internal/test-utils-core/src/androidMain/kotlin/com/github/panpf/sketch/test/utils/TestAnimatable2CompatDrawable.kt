@@ -8,8 +8,8 @@ import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.util.toLogString
 
-class TestAnimatable2CompatDrawable(
-    drawable: Drawable? = null
+class TestAnimatable2CompatDrawable constructor(
+    drawable: Drawable
 ) : DrawableWrapperCompat(drawable), Animatable2Compat, SketchDrawable {
 
     private var running = false

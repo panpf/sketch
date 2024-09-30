@@ -26,8 +26,8 @@ import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.util.toLogString
 
 @RequiresApi(23)
-class TestAnimatable2Drawable(
-    drawable: Drawable? = null
+class TestAnimatable2Drawable constructor(
+    drawable: Drawable
 ) : DrawableWrapperCompat(drawable), Animatable2, SketchDrawable {
 
     private var running = false

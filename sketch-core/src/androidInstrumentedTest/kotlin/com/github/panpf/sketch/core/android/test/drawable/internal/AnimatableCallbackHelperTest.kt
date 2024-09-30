@@ -167,7 +167,7 @@ class AnimatableCallbackHelperTest {
 
     @Test
     fun testStartStop() = runTest {
-        val animatableDrawable = TestAnimatableDrawable()
+        val animatableDrawable = TestAnimatableDrawable(ColorDrawable(Color.YELLOW))
         val wrapper = AnimatableCallbackHelper(animatableDrawable)
 
         val callbackHistory = mutableListOf<String>()

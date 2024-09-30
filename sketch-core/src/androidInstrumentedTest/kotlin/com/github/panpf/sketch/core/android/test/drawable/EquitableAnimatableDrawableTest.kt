@@ -185,7 +185,7 @@ class EquitableAnimatableDrawableTest {
 
     @Test
     fun testStartStop() = runTest {
-        val animatableDrawable = TestAnimatableDrawable()
+        val animatableDrawable = TestAnimatableDrawable(ColorDrawable(Color.YELLOW))
         val wrapper = EquitableAnimatableDrawable(animatableDrawable, equalityKey = "key")
 
         val callbackHistory = mutableListOf<String>()
@@ -234,9 +234,7 @@ class EquitableAnimatableDrawableTest {
         val context = getTestContext()
 
         EquitableAnimatableDrawable(
-            drawable = TestAnimatableDrawable(
-                context.getDrawableCompat(android.R.drawable.bottom_bar)
-            ),
+            drawable = TestAnimatableDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar)),
             equalityKey = "key"
         ).apply {
             val mutateDrawable = mutate()
@@ -252,7 +250,11 @@ class EquitableAnimatableDrawableTest {
 
         EquitableAnimatableDrawable(
             drawable = TestAnimatableDrawable(
-                TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar))
+                TestNewMutateDrawable(
+                    context.getDrawableCompat(
+                        android.R.drawable.bottom_bar
+                    )
+                )
             ),
             equalityKey = "key"
         ).apply {
