@@ -25,11 +25,7 @@ import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
 import android.os.Build
-import androidx.annotation.WorkerThread
 import androidx.exifinterface.media.ExifInterface
-import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.reverse
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
@@ -83,12 +79,10 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
     /**
      * Returns if the current image orientation is flipped.
      */
-    fun isFlipHorizontally(): Boolean {
-        return exifOrientation == FLIP_HORIZONTAL
-                || exifOrientation == FLIP_VERTICAL
-                || exifOrientation == TRANSVERSE
-                || exifOrientation == TRANSPOSE
-    }
+    val isFlipHorizontally: Boolean = exifOrientation == FLIP_HORIZONTAL
+            || exifOrientation == FLIP_VERTICAL
+            || exifOrientation == TRANSVERSE
+            || exifOrientation == TRANSPOSE
 
     /**
      * Returns the rotation degrees for the current image orientation. If the image is flipped,
@@ -101,7 +95,7 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
      *
      * @see isFlipHorizontally
      */
-    fun getRotationDegrees(): Int = when (exifOrientation) {
+    val rotationDegrees: Int = when (exifOrientation) {
         ROTATE_90,
         TRANSVERSE -> 90
 
@@ -119,48 +113,21 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
     }
 
     fun applyToSize(size: Size, reverse: Boolean = false): Size {
-        val rotationDegrees = getRotationDegrees()
         return size.rotate(if (!reverse) rotationDegrees else -rotationDegrees)
     }
 
-    @Suppress("KotlinConstantConditions")
-    fun applyToScale(scale: Scale, imageSize: Size, reverse: Boolean = false): Scale {
-        val rotationDegrees = getRotationDegrees()
-        val flipHorizontally = isFlipHorizontally()
-        val apply = !reverse
-        val horImage = imageSize.width > imageSize.height
-        val reverseScaleFromFlip = if (horImage) flipHorizontally else false
-        val reverseScaleFromRotate = when {
-            horImage && apply -> rotationDegrees == 180 || rotationDegrees == 270
-            horImage && !apply -> rotationDegrees == 180 || rotationDegrees == 90
-            !horImage && apply -> rotationDegrees == 180 || rotationDegrees == 90
-            !horImage && !apply -> rotationDegrees == 180 || rotationDegrees == 270
-            else -> false
-        }
-        return if (
-            !(reverseScaleFromFlip && reverseScaleFromRotate)
-            && (reverseScaleFromFlip || reverseScaleFromRotate)
-        ) {
-            scale.reverse()
-        } else {
-            scale
-        }
-    }
-
     fun applyToRect(srcRect: Rect, spaceSize: Size, reverse: Boolean = false): Rect {
-        val isFlipHorizontally = isFlipHorizontally()
-        val rotationDegrees = getRotationDegrees()
         val isRotated = abs(rotationDegrees % 360) != 0
         return if (!reverse) {
             srcRect
-                .let { if (isFlipHorizontally) it.flip(spaceSize, vertical = false) else it }
+                .let { if (this.isFlipHorizontally) it.flip(spaceSize, vertical = false) else it }
                 .let { if (isRotated) it.rotateInSpace(spaceSize, rotationDegrees) else it }
         } else {
             val rotatedImageSize = spaceSize.rotate(-rotationDegrees)
             srcRect
                 .let { if (isRotated) it.rotateInSpace(spaceSize, -rotationDegrees) else it }
                 .let {
-                    if (isFlipHorizontally) it.flip(
+                    if (this.isFlipHorizontally) it.flip(
                         rotatedImageSize,
                         vertical = false
                     ) else it
@@ -168,86 +135,52 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
         }
     }
 
-    @WorkerThread
     fun applyToBitmap(bitmap: Bitmap, reverse: Boolean = false): Bitmap? {
-        val rotationDegrees = getRotationDegrees().let {
-            if (reverse) it * -1 else it
-        }
-        val outBitmap = applyFlipAndRotation(
-            inBitmap = bitmap,
-            isFlipHorizontally = isFlipHorizontally(),
-            rotationDegrees = rotationDegrees,
-            apply = !reverse
-        ) ?: return null
-        return outBitmap
-    }
-
-    @WorkerThread
-    private fun applyFlipAndRotation(
-        inBitmap: Bitmap,
-        isFlipHorizontally: Boolean,
-        rotationDegrees: Int,
-        apply: Boolean,
-    ): Bitmap? {
-        val isRotated = abs(rotationDegrees % 360) != 0
-        if (!isFlipHorizontally && !isRotated) {
+        if (!isFlipHorizontally && abs(rotationDegrees % 360) == 0) {
             return null
         }
 
         val matrix = Matrix().apply {
-            applyFlipAndRotationToMatrix(this, isFlipHorizontally, rotationDegrees, apply)
+            if (!reverse) {
+                if (isFlipHorizontally) {
+                    this.postScale(-1f, 1f)
+                }
+                this.postRotate(rotationDegrees.toFloat())
+            } else {
+                this.postRotate(-rotationDegrees.toFloat())
+                if (isFlipHorizontally) {
+                    this.postScale(-1f, 1f)
+                }
+            }
         }
-        val newRect = RectF(0f, 0f, inBitmap.width.toFloat(), inBitmap.height.toFloat())
-        matrix.mapRect(newRect)
-        matrix.postTranslate(-newRect.left, -newRect.top)
 
-        val config = inBitmap.safeConfig.safeToSoftware()
-        val newWidth = newRect.width().toInt()
-        val newHeight = newRect.height().toInt()
-        val outBitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val newBitmapSize = RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat())
+            .apply {
+                matrix.mapRect(this)
+                matrix.postTranslate(-this.left, -this.top)
+            }.let {
+                Size(it.width().toInt(), it.height().toInt())
+            }
+        val newBitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Bitmap.createBitmap(
-                /* width = */ newWidth,
-                /* height = */ newHeight,
-                /* config = */ config,
-                /* hasAlpha = */ inBitmap.hasAlpha(),
-                /* colorSpace = */ inBitmap.colorSpace ?: ColorSpace.get(ColorSpace.Named.SRGB)
+                /* width = */ newBitmapSize.width,
+                /* height = */ newBitmapSize.height,
+                /* config = */ bitmap.safeConfig.safeToSoftware(),
+                /* hasAlpha = */ bitmap.hasAlpha(),
+                /* colorSpace = */ bitmap.colorSpace ?: ColorSpace.get(ColorSpace.Named.SRGB)
             )
         } else {
             Bitmap.createBitmap(
-                /* width = */ newWidth,
-                /* height = */ newHeight,
-                /* config = */ config,
+                /* width = */ newBitmapSize.width,
+                /* height = */ newBitmapSize.height,
+                /* config = */ bitmap.safeConfig.safeToSoftware(),
             )
         }
 
-        val canvas = Canvas(outBitmap)
+        val canvas = Canvas(newBitmap)
         val paint = Paint(Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG)
-        canvas.drawBitmap(inBitmap, matrix, paint)
-        return outBitmap
-    }
-
-    private fun applyFlipAndRotationToMatrix(
-        matrix: Matrix,
-        isFlipped: Boolean,
-        rotationDegrees: Int,
-        apply: Boolean
-    ) {
-        val isRotated = abs(rotationDegrees % 360) != 0
-        if (apply) {
-            if (isFlipped) {
-                matrix.postScale(-1f, 1f)
-            }
-            if (isRotated) {
-                matrix.postRotate(rotationDegrees.toFloat())
-            }
-        } else {
-            if (isRotated) {
-                matrix.postRotate(rotationDegrees.toFloat())
-            }
-            if (isFlipped) {
-                matrix.postScale(-1f, 1f)
-            }
-        }
+        canvas.drawBitmap(bitmap, matrix, paint)
+        return newBitmap
     }
 
     companion object {
@@ -364,19 +297,4 @@ class ExifOrientationHelper constructor(val exifOrientation: Int) {
             ROTATE_270,
         )
     }
-}
-
-/**
- * Add exif rotation to Resize
- *
- * @see com.github.panpf.sketch.core.android.test.decode.internal.ExifOrientationHelperTest.testAddToResize
- */
-fun ExifOrientationHelper.addToResize(resize: Resize, imageSize: Size): Resize {
-    val newSize = applyToSize(resize.size, reverse = true)
-    val newScale = applyToScale(resize.scale, imageSize, reverse = true)
-    return Resize(
-        size = newSize,
-        precision = resize.precision,
-        scale = newScale,
-    )
 }
