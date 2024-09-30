@@ -39,6 +39,12 @@ interface BitmapColorType : Key {
      * Get the color type based on the image type and whether it is opaque
      */
     fun getColorType(mimeType: String?, isOpaque: Boolean): PlatformColorType?
+
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
 }
 
 /**

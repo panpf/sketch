@@ -25,7 +25,7 @@ import com.github.panpf.sketch.request.ImageRequest
  *
  * @see com.github.panpf.sketch.core.common.test.state.MemoryCacheStateImageTest
  */
-class MemoryCacheStateImage(
+data class MemoryCacheStateImage(
     val cacheKey: String?,
     val defaultImage: StateImage? = null
 ) : StateImage {
@@ -41,21 +41,6 @@ class MemoryCacheStateImage(
         val memoryCache = sketch.memoryCache
         val cachedValue = cacheKey?.let { memoryCache[it] }
         return cachedValue?.image ?: defaultImage?.getImage(sketch, request, throwable)
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as MemoryCacheStateImage
-        if (cacheKey != other.cacheKey) return false
-        if (defaultImage != other.defaultImage) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = cacheKey?.hashCode() ?: 0
-        result = 31 * result + (defaultImage?.hashCode() ?: 0)
-        return result
     }
 
     override fun toString(): String {

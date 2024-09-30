@@ -37,10 +37,16 @@ fun LifecycleResolver(lifecycle: Lifecycle): LifecycleResolver =
  * that is, the equals() and hashCode() methods of instances created with the same
  * construction parameters return consistent results. This is important in Compose
  */
-fun interface LifecycleResolver {
+interface LifecycleResolver {
 
     @JsName("getLifecycle")
     suspend fun lifecycle(): Lifecycle
+
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
 }
 
 /**

@@ -30,8 +30,6 @@ import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatable2CompatDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatable2Drawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
-import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
-import com.github.panpf.sketch.test.utils.TestAnimatableDrawable3
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.getDrawableCompat
@@ -58,19 +56,7 @@ class AnimatableDrawableTest {
     fun testConstructor() {
         val context = getTestContext()
         AnimatableDrawable(
-            TestAnimatableDrawable1(
-                BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
-            ),
-        )
-        if (VERSION.SDK_INT >= 23) {
-            AnimatableDrawable(
-                TestAnimatable2Drawable(
-                    BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
-                ),
-            )
-        }
-        AnimatableDrawable(
-            TestAnimatableDrawable3(
+            TestAnimatableDrawable(
                 BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
             ),
         )
@@ -87,7 +73,7 @@ class AnimatableDrawableTest {
     @Test
     fun testCallback() = runTest {
         // Animatable2
-        if (VERSION.SDK_INT >= VERSION_CODES.P) {
+        if (VERSION.SDK_INT >= VERSION_CODES.M) {
             val animatedDrawable = TestAnimatable2Drawable(ColorDrawable(Color.GREEN))
             val wrapper = AnimatableDrawable(animatedDrawable)
             assertEquals(expected = 0, actual = animatedDrawable.callbacks?.size ?: 0)
@@ -290,18 +276,16 @@ class AnimatableDrawableTest {
     fun testEqualsAndHashCode() {
         val context = getTestContext()
 
-        val drawable = TestAnimatableDrawable3(
+        val drawable = TestAnimatableDrawable(
             BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
         )
-        val drawable1 = TestAnimatableDrawable3(
+        val drawable1 = TestAnimatableDrawable(
             BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
         )
 
         val element1 = AnimatableDrawable(drawable)
         val element11 = AnimatableDrawable(drawable)
-        val element2 = AnimatableDrawable(
-            drawable1,
-        )
+        val element2 = AnimatableDrawable(drawable1)
 
         assertNotSame(element1, element11)
         assertNotSame(element1, element2)
@@ -321,7 +305,7 @@ class AnimatableDrawableTest {
     fun testToString() {
         val context = getTestContext()
 
-        val drawable = TestAnimatableDrawable3(
+        val drawable = TestAnimatableDrawable(
             BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, ARGB_8888)),
         )
 

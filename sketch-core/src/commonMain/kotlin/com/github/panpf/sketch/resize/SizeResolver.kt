@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.resize
 
 import com.github.panpf.sketch.annotation.MainThread
@@ -48,6 +50,12 @@ interface SizeResolver : Key {
     /** Return the [Size] that the image should be loaded at. */
     @MainThread
     suspend fun size(): Size
+
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
 }
 
 /**

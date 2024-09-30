@@ -37,7 +37,7 @@ class EquitableAnimatableDrawableTest {
         assertEquals(
             expected = "EquitableAnimatableDrawable('${key(TestColor.RED)}')",
             actual = EquitableAnimatableDrawable(
-                drawable = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED)),
+                drawable = TestAnimatableDrawable(ColorDrawable(TestColor.RED)),
                 equalityKey = TestColor.RED
             ).key
         )
@@ -52,7 +52,7 @@ class EquitableAnimatableDrawableTest {
             EquitableAnimatableDrawable(bitmapDrawable, equalityKey = "key")
         }
 
-        val animatedDrawable = TestAnimatable2CompatDrawable(ColorDrawable(Color.GREEN))
+        val animatedDrawable = TestAnimatableDrawable(ColorDrawable(Color.GREEN))
         val wrapper = EquitableAnimatableDrawable(animatedDrawable, equalityKey = "key")
 
         assertFailsWith(IllegalArgumentException::class) {
@@ -63,7 +63,7 @@ class EquitableAnimatableDrawableTest {
     @Test
     fun testCallback() = runTest {
         // Animatable2
-        if (VERSION.SDK_INT >= VERSION_CODES.P) {
+        if (VERSION.SDK_INT >= VERSION_CODES.M) {
             val animatedDrawable = TestAnimatable2Drawable(ColorDrawable(Color.GREEN))
             val wrapper = EquitableAnimatableDrawable(animatedDrawable, equalityKey = "key")
             assertEquals(expected = 0, actual = animatedDrawable.callbacks?.size ?: 0)
@@ -273,15 +273,15 @@ class EquitableAnimatableDrawableTest {
     @Test
     fun testEqualsAndHashCode() {
         val element1 = EquitableAnimatableDrawable(
-            drawable = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED)),
+            drawable = TestAnimatableDrawable(ColorDrawable(TestColor.RED)),
             equalityKey = TestColor.RED
         )
         val element11 = EquitableAnimatableDrawable(
-            drawable = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED)),
+            drawable = TestAnimatableDrawable(ColorDrawable(TestColor.RED)),
             equalityKey = TestColor.RED
         )
         val element2 = EquitableAnimatableDrawable(
-            drawable = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED)),
+            drawable = TestAnimatableDrawable(ColorDrawable(TestColor.RED)),
             equalityKey = TestColor.CYAN
         )
 
@@ -296,7 +296,7 @@ class EquitableAnimatableDrawableTest {
 
     @Test
     fun testToString() {
-        val drawable = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED))
+        val drawable = TestAnimatableDrawable(ColorDrawable(TestColor.RED))
         assertEquals(
             expected = "EquitableAnimatableDrawable(drawable=${drawable.toLogString()}, equalityKey=${TestColor.RED})",
             actual = EquitableAnimatableDrawable(

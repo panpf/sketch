@@ -16,6 +16,7 @@ import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestLifecycle
 import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.TestTransition
+import com.github.panpf.sketch.test.utils.TestTransitionTarget
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.pow
@@ -419,7 +420,7 @@ class CoreUtilsTest {
             )
         }
         request.newRequest {
-            target(TestTarget())
+            target(TestTransitionTarget())
         }.apply {
             assertEquals(
                 expected = "target different: '${request.target}' vs '${this@apply.target}'",

@@ -44,8 +44,6 @@ class RotateTransformation(val degrees: Int) : Transformation {
         return TransformResult(image = outBitmap.asImage(), transformed = transformed)
     }
 
-    override fun toString(): String = key
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
@@ -57,6 +55,8 @@ class RotateTransformation(val degrees: Int) : Transformation {
     override fun hashCode(): Int {
         return degrees
     }
+
+    override fun toString(): String = "RotateTransformation($degrees)"
 }
 
 /**

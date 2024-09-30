@@ -101,7 +101,7 @@ class SkiaColorTypeTestScreen : BaseScreen() {
         }
     }
 
-    object ConvertPixelsTransformation : Transformation {
+    data object ConvertPixelsTransformation : Transformation {
 
         override val key: String = "ConvertPixelsTransformation"
 

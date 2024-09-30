@@ -40,23 +40,12 @@ fun rememberPainterStateImage(painter: EquitablePainter): PainterStateImage =
  * @see com.github.panpf.sketch.compose.core.common.test.state.PainterStateImageTest
  */
 @Stable
-class PainterStateImage(val painter: EquitablePainter) : StateImage {
+data class PainterStateImage(val painter: EquitablePainter) : StateImage {
 
     override val key: String = "PainterStateImage(${painter.key})"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
         return painter.asImage()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as PainterStateImage
-        return painter == other.painter
-    }
-
-    override fun hashCode(): Int {
-        return painter.hashCode()
     }
 
     override fun toString(): String {

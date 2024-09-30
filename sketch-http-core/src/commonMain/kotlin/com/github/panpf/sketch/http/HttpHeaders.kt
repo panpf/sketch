@@ -66,16 +66,6 @@ class HttpHeaders(
         configBlock?.invoke(this)
     }.build()
 
-    override fun toString(): String {
-        val setListString = setList.joinToString(prefix = "[", postfix = "]", separator = ",") {
-            "${it.first}:${it.second}"
-        }
-        val addListString = addList.joinToString(prefix = "[", postfix = "]", separator = ",") {
-            "${it.first}:${it.second}"
-        }
-        return "HttpHeaders(sets=$setListString,adds=$addListString)"
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
@@ -91,6 +81,15 @@ class HttpHeaders(
         return result
     }
 
+    override fun toString(): String {
+        val setListString = setList.joinToString(prefix = "[", postfix = "]", separator = ",") {
+            "${it.first}:${it.second}"
+        }
+        val addListString = addList.joinToString(prefix = "[", postfix = "]", separator = ",") {
+            "${it.first}:${it.second}"
+        }
+        return "HttpHeaders(sets=$setListString,adds=$addListString)"
+    }
 
     class Builder {
 

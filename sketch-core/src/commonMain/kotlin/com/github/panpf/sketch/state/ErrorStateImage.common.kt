@@ -38,7 +38,7 @@ fun ErrorStateImage(
  *
  * @see com.github.panpf.sketch.core.common.test.state.ErrorStateImageTest
  */
-class ErrorStateImage(
+data class ErrorStateImage(
     val stateList: List<Pair<Condition, StateImage?>>
 ) : StateImage {
 
@@ -59,18 +59,6 @@ class ErrorStateImage(
         .find { it.first.accept(request, throwable) }
         ?.second?.getImage(sketch, request, throwable)
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as ErrorStateImage
-        if (stateList != other.stateList) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return stateList.hashCode()
-    }
-
     override fun toString(): String {
         return "ErrorStateImage(${
             stateList.joinToString(
@@ -89,7 +77,7 @@ class ErrorStateImage(
         ): Boolean
     }
 
-    class Builder constructor(private val defaultImage: StateImage?) {
+    class Builder(private val defaultImage: StateImage?) {
 
         private val stateList = mutableListOf<Pair<Condition, StateImage?>>()
 

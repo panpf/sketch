@@ -73,7 +73,7 @@ fun DrawableStateImage(@DrawableRes resId: Int): DrawableStateImage =
  *
  * @see com.github.panpf.sketch.core.android.test.state.DrawableStateImageTest.testDrawableStateImage
  */
-class DrawableStateImage(
+data class DrawableStateImage(
     val drawableFetcher: DrawableFetcher
 ) : StateImage {
 
@@ -91,18 +91,6 @@ class DrawableStateImage(
             e.printStackTrace()
             null
         }?.asImage()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as DrawableStateImage
-        if (drawableFetcher != other.drawableFetcher) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return drawableFetcher.hashCode()
     }
 
     override fun toString(): String {

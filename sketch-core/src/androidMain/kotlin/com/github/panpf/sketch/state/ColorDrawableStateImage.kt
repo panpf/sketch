@@ -67,7 +67,7 @@ fun ColorDrawableStateImage(color: ResColor): ColorDrawableStateImage =
  *
  * @see com.github.panpf.sketch.core.android.test.state.ColorDrawableStateImageTest
  */
-class ColorDrawableStateImage(val color: ColorFetcher) : StateImage {
+data class ColorDrawableStateImage(val color: ColorFetcher) : StateImage {
 
     override val key: String = "ColorDrawableStateImage(${color.key})"
 
@@ -77,18 +77,6 @@ class ColorDrawableStateImage(val color: ColorFetcher) : StateImage {
         throwable: Throwable?
     ): Image {
         return ColorDrawable(color.getColor(request.context)).asImage()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as ColorDrawableStateImage
-        if (color != other.color) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return color.hashCode()
     }
 
     override fun toString(): String {

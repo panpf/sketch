@@ -87,6 +87,12 @@ class ViewCrossfadeTransition @JvmOverloads constructor(
         val alwaysUse: Boolean = CrossfadeTransition.DEFAULT_ALWAYS_USE,
     ) : Transition.Factory {
 
+        override val key: String = "ViewCrossfadeTransition.Factory(" +
+                "durationMillis=$durationMillis," +
+                "fadeStart=$fadeStart," +
+                "preferExactIntrinsicSize=$preferExactIntrinsicSize," +
+                "alwaysUse=$alwaysUse)"
+
         init {
             require(durationMillis > 0) { "durationMillis must be > 0." }
         }
@@ -116,12 +122,6 @@ class ViewCrossfadeTransition @JvmOverloads constructor(
                 fitScale = fitScale
             )
         }
-
-        override val key: String = "ViewCrossfadeTransition.Factory(" +
-                "durationMillis=$durationMillis," +
-                "fadeStart=$fadeStart," +
-                "preferExactIntrinsicSize=$preferExactIntrinsicSize," +
-                "alwaysUse=$alwaysUse)"
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

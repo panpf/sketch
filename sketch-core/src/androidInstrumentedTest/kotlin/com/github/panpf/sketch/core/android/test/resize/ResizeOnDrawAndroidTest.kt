@@ -14,7 +14,7 @@ import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.resizeOnDraw
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.MediumImageViewTestActivity
-import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
+import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.test.ktx.getActivitySync
@@ -77,7 +77,7 @@ class ResizeOnDrawAndroidTest {
                     assertEquals(Size(500, 300), size)
                 }
 
-            val animDrawable = AnimatableDrawable(TestAnimatableDrawable1(bitmapDrawable))
+            val animDrawable = AnimatableDrawable(TestAnimatableDrawable(bitmapDrawable))
             animDrawable.asImage()
                 .resizeOnDraw(request3, request3.toRequestContext(sketch).size)
                 .asDrawable()

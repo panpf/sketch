@@ -320,7 +320,7 @@ fun IconAnimatableDrawableStateImage(
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest
  */
-class IconAnimatableDrawableStateImage internal constructor(
+data class IconAnimatableDrawableStateImage internal constructor(
     val icon: DrawableFetcher,
     val background: DrawableFetcher?,
     val iconSize: Size?,
@@ -365,23 +365,6 @@ class IconAnimatableDrawableStateImage internal constructor(
             e.printStackTrace()
             null
         }?.asImage()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as IconAnimatableDrawableStateImage
-        if (icon != other.icon) return false
-        if (iconSize != other.iconSize) return false
-        if (background != other.background) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = icon.hashCode()
-        result = 31 * result + (iconSize?.hashCode() ?: 0)
-        result = 31 * result + (background?.hashCode() ?: 0)
-        return result
     }
 
     override fun toString(): String {

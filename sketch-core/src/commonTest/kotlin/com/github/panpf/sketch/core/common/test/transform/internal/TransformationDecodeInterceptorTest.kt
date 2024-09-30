@@ -116,6 +116,18 @@ class TransformationDecodeInterceptorTest {
                         requestContext: RequestContext,
                         input: Image
                     ): TransformResult = TransformResult(input, "TestTransformation")
+
+                    override fun equals(other: Any?): Boolean {
+                        return super.equals(other)
+                    }
+
+                    override fun hashCode(): Int {
+                        return super.hashCode()
+                    }
+
+                    override fun toString(): String {
+                        return super.toString()
+                    }
                 })
             }
             val chain = DecodeInterceptorChain(
@@ -151,6 +163,18 @@ class TransformationDecodeInterceptorTest {
                         requestContext: RequestContext,
                         input: Image
                     ): TransformResult? = null
+
+                    override fun equals(other: Any?): Boolean {
+                        return super.equals(other)
+                    }
+
+                    override fun hashCode(): Int {
+                        return super.hashCode()
+                    }
+
+                    override fun toString(): String {
+                        return super.toString()
+                    }
                 })
             }
             val chain = DecodeInterceptorChain(

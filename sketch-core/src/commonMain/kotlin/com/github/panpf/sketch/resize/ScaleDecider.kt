@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.resize
 
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
@@ -40,6 +42,12 @@ fun ScaleDecider(scale: Scale): ScaleDecider {
 interface ScaleDecider : Key {
 
     fun get(imageSize: Size, targetSize: Size): Scale
+
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
 }
 
 /**
@@ -66,7 +74,7 @@ data class FixedScaleDecider(private val scale: Scale) : ScaleDecider {
  *
  * @see com.github.panpf.sketch.core.common.test.resize.ScaleDeciderTest
  */
-class LongImageScaleDecider constructor(
+data class LongImageScaleDecider constructor(
     val longImage: Scale = START_CROP,
     val otherImage: Scale = CENTER_CROP,
     val longImageDecider: LongImageDecider = LongImageDecider(),
@@ -77,23 +85,6 @@ class LongImageScaleDecider constructor(
     override fun get(imageSize: Size, targetSize: Size): Scale {
         val isLongImage = longImageDecider.isLongImage(imageSize, targetSize)
         return if (isLongImage) longImage else otherImage
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as LongImageScaleDecider
-        if (longImage != other.longImage) return false
-        if (otherImage != other.otherImage) return false
-        if (longImageDecider != other.longImageDecider) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = longImage.hashCode()
-        result = 31 * result + otherImage.hashCode()
-        result = 31 * result + longImageDecider.hashCode()
-        return result
     }
 
     override fun toString(): String {

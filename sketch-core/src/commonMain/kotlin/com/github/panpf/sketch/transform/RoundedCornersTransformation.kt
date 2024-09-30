@@ -94,8 +94,6 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
         return TransformResult(image = outBitmap.asImage(), transformed = transformed)
     }
 
-    override fun toString(): String = key
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
@@ -107,6 +105,9 @@ class RoundedCornersTransformation constructor(val radiusArray: FloatArray) : Tr
     override fun hashCode(): Int {
         return radiusArray.contentHashCode()
     }
+
+    override fun toString(): String =
+        "RoundedCornersTransformation(${radiusArray.joinToString(separator = ",")})"
 }
 
 /**

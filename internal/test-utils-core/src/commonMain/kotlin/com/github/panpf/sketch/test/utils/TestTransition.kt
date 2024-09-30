@@ -30,6 +30,8 @@ class TestTransition : Transition {
 
     class Factory : Transition.Factory {
 
+        override val key: String = "TestTransition.Factory"
+
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
@@ -38,8 +40,6 @@ class TestTransition : Transition {
         ): Transition {
             return TestTransition()
         }
-
-        override val key: String = "TestTransition.Factory"
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

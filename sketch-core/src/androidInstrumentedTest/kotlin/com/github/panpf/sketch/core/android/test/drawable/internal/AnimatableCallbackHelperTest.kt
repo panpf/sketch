@@ -34,7 +34,7 @@ class AnimatableCallbackHelperTest {
             AnimatableCallbackHelper(bitmapDrawable)
         }
 
-        val animatedDrawable = TestAnimatable2CompatDrawable(ColorDrawable(Color.GREEN))
+        val animatedDrawable = TestAnimatableDrawable(ColorDrawable(Color.GREEN))
         val wrapper = AnimatableCallbackHelper(animatedDrawable)
 
         assertFailsWith(IllegalArgumentException::class) {

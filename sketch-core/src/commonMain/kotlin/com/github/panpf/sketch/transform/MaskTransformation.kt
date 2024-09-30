@@ -38,8 +38,6 @@ class MaskTransformation constructor(
 
     override val key: String = "MaskTransformation($maskColor)"
 
-    override fun toString(): String = key
-
     @WorkerThread
     override fun transform(
         requestContext: RequestContext,
@@ -62,6 +60,8 @@ class MaskTransformation constructor(
     override fun hashCode(): Int {
         return maskColor
     }
+
+    override fun toString(): String = "MaskTransformation($maskColor)"
 }
 
 /**

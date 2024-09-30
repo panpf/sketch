@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.resize
 
 import com.github.panpf.sketch.util.Key
@@ -38,6 +40,12 @@ fun PrecisionDecider(precision: Precision): PrecisionDecider {
 interface PrecisionDecider : Key {
 
     fun get(imageSize: Size, targetSize: Size): Precision
+
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
 }
 
 
@@ -67,7 +75,7 @@ data class FixedPrecisionDecider(private val precision: Precision) : PrecisionDe
  *
  * @see com.github.panpf.sketch.core.common.test.resize.PrecisionDeciderTest
  */
-class LongImagePrecisionDecider constructor(
+data class LongImagePrecisionDecider constructor(
     val longImage: Precision = Precision.SAME_ASPECT_RATIO,
     val otherImage: Precision = Precision.LESS_PIXELS,
     val longImageDecider: LongImageDecider = LongImageDecider(),
@@ -78,23 +86,6 @@ class LongImagePrecisionDecider constructor(
     override fun get(imageSize: Size, targetSize: Size): Precision {
         val isLongImage = longImageDecider.isLongImage(imageSize, targetSize)
         return if (isLongImage) longImage else otherImage
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as LongImagePrecisionDecider
-        if (longImage != other.longImage) return false
-        if (otherImage != other.otherImage) return false
-        if (longImageDecider != other.longImageDecider) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = longImage.hashCode()
-        result = 31 * result + otherImage.hashCode()
-        result = 31 * result + longImageDecider.hashCode()
-        return result
     }
 
     override fun toString(): String {

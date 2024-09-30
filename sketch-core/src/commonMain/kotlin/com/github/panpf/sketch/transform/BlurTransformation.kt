@@ -36,7 +36,7 @@ import com.github.panpf.sketch.util.mutableCopy
  *
  * @see com.github.panpf.sketch.core.common.test.transform.BlurTransformationTest
  */
-class BlurTransformation constructor(
+data class BlurTransformation constructor(
     /** Blur radius */
     @IntRange(from = 0, to = 100)
     val radius: Int = 15,
@@ -70,23 +70,8 @@ class BlurTransformation constructor(
         return TransformResult(image = maskBitmap.asImage(), transformed = transformed)
     }
 
-    override fun toString(): String = key
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as BlurTransformation
-        if (radius != other.radius) return false
-        if (hasAlphaBitmapBgColor != other.hasAlphaBitmapBgColor) return false
-        if (maskColor != other.maskColor) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = radius
-        result = 31 * result + (hasAlphaBitmapBgColor ?: 0)
-        result = 31 * result + (maskColor ?: 0)
-        return result
+    override fun toString(): String {
+        return "BlurTransformation(radius=$radius, hasAlphaBitmapBgColor=$hasAlphaBitmapBgColor, maskColor=$maskColor)"
     }
 }
 

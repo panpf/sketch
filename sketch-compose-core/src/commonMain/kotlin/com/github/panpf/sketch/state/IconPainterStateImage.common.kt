@@ -102,7 +102,7 @@ fun rememberIconPainterStateImage(
  * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageTest
  */
 @Stable
-class IconPainterStateImage(
+data class IconPainterStateImage(
     val icon: EquitablePainter,
     val background: EquitablePainter? = null,
     val iconSize: Size? = null,
@@ -114,25 +114,6 @@ class IconPainterStateImage(
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
         return IconPainter(icon, background, iconSize, iconTint).asImage()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as IconPainterStateImage
-        if (icon != other.icon) return false
-        if (background != other.background) return false
-        if (iconSize != other.iconSize) return false
-        if (iconTint != other.iconTint) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = icon.hashCode()
-        result = 31 * result + (background?.hashCode() ?: 0)
-        result = 31 * result + (iconSize?.hashCode() ?: 0)
-        result = 31 * result + (iconTint?.hashCode() ?: 0)
-        return result
     }
 
     override fun toString(): String {

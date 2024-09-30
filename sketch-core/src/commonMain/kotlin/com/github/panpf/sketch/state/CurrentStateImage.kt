@@ -25,7 +25,7 @@ import com.github.panpf.sketch.request.ImageRequest
  *
  * @see com.github.panpf.sketch.core.common.test.state.CurrentStateImageTest
  */
-class CurrentStateImage(
+data class CurrentStateImage(
     val defaultImage: StateImage? = null
 ) : StateImage {
 
@@ -42,18 +42,6 @@ class CurrentStateImage(
         }
         val image = defaultImage?.getImage(sketch, request, throwable)
         return image
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as CurrentStateImage
-        if (defaultImage != other.defaultImage) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return defaultImage?.hashCode() ?: 0
     }
 
     override fun toString(): String {

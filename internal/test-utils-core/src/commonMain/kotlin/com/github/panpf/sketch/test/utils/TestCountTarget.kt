@@ -20,4 +20,15 @@ class TestCountTarget : Target {
         initialRequest: ImageRequest,
         job: Job
     ): RequestDelegate = OneShotRequestDelegate(sketch, initialRequest, this, job)
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        return other != null && this::class == other::class
+    }
+
+    override fun hashCode(): Int {
+        return this::class.hashCode()
+    }
+
+    override fun toString(): String = "TestCountTarget"
 }

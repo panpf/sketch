@@ -47,6 +47,12 @@ class CrossfadeTransition(
         val alwaysUse: Boolean = DEFAULT_ALWAYS_USE,
     ) : Transition.Factory {
 
+        override val key: String = "CrossfadeTransition.Factory(" +
+                "durationMillis=$durationMillis," +
+                "fadeStart=$fadeStart," +
+                "preferExactIntrinsicSize=$preferExactIntrinsicSize," +
+                "alwaysUse=$alwaysUse)"
+
         init {
             require(durationMillis > 0) { "durationMillis must be > 0." }
         }
@@ -64,12 +70,6 @@ class CrossfadeTransition(
                 .create(sketch, request, target, result) ?: return null
             return CrossfadeTransition(targetTransition)
         }
-
-        override val key: String = "CrossfadeTransition.Factory(" +
-                "durationMillis=$durationMillis," +
-                "fadeStart=$fadeStart," +
-                "preferExactIntrinsicSize=$preferExactIntrinsicSize," +
-                "alwaysUse=$alwaysUse)"
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

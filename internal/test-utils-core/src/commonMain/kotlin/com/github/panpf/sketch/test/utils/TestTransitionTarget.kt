@@ -32,6 +32,7 @@ import kotlinx.coroutines.Job
 class TestTransitionTarget : Target, TransitionTarget {
 
     var image: Image? = null
+        private set
 
     override val fitScale: Boolean get() = true
 
@@ -68,4 +69,15 @@ class TestTransitionTarget : Target, TransitionTarget {
         }
         return null
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        return other != null && this::class == other::class
+    }
+
+    override fun hashCode(): Int {
+        return this::class.hashCode()
+    }
+
+    override fun toString(): String = "TestTransitionTarget"
 }

@@ -54,6 +54,8 @@ class TestCrossfadeTransition(
         val alwaysUse: Boolean = CrossfadeTransition.DEFAULT_ALWAYS_USE,
     ) : Transition.Factory {
 
+        override val key: String = "TestTransition.Factory"
+
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
@@ -69,8 +71,6 @@ class TestCrossfadeTransition(
             }
             return TestCrossfadeTransition(sketch, request, target, result)
         }
-
-        override val key: String = "TestTransition.Factory"
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -88,4 +88,8 @@ class TestCrossfadeTransition(
     }
 }
 
-data class TestCrossfadeImage(val image: Image) : Image by image
+data class TestCrossfadeImage(val image: Image) : Image by image {
+    override fun toString(): String {
+        return "TestCrossfadeImage(image=$image)"
+    }
+}

@@ -40,6 +40,12 @@ interface ImageResult {
      */
     val image: Image?
 
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
+
     /**
      * Image loading success result
      */

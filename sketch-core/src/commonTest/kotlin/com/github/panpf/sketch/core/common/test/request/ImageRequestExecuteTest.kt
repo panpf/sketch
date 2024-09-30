@@ -1084,7 +1084,8 @@ class ImageRequestExecuteTest {
 
         memoryCache.clear()
         assertFalse(memoryCache.exist(memoryCacheKey))
-        request.newRequest().let { sketch.enqueue(it).job.join() }
+        request.newRequest().execute(sketch)
+        block(1000)
         assertFalse(
             actual = testTarget.image!!.toString().contains("Crossfade"),
             message = testTarget.image!!.toString()
@@ -1093,7 +1094,8 @@ class ImageRequestExecuteTest {
         assertTrue(memoryCache.exist(memoryCacheKey))
         request.newRequest {
             transitionFactory(CrossfadeTransition.Factory())
-        }.let { sketch.enqueue(it).job.join() }
+        }.execute(sketch)
+        block(1000)
         assertFalse(
             actual = testTarget.image!!.toString().contains("Crossfade"),
             message = testTarget.image!!.toString()
@@ -1103,7 +1105,8 @@ class ImageRequestExecuteTest {
         assertFalse(memoryCache.exist(memoryCacheKey))
         request.newRequest {
             transitionFactory(CrossfadeTransition.Factory())
-        }.let { sketch.enqueue(it).job.join() }
+        }.execute(sketch)
+        block(1000)
         assertTrue(
             actual = testTarget.image!!.toString().contains("Crossfade"),
             message = testTarget.image!!.toString()

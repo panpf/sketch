@@ -69,6 +69,12 @@ interface Image {
      * Check if the image is valid
      */
     fun checkValid(): Boolean
+
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
 }
 
 /**

@@ -71,4 +71,15 @@ class TestTarget(override val currentImage: Image? = null) : Target, LifecycleEv
     override fun onAttachedChanged(attached: Boolean) {
         this.attached = attached
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        return other != null && this::class == other::class
+    }
+
+    override fun hashCode(): Int {
+        return this::class.hashCode()
+    }
+
+    override fun toString(): String = "TestTarget"
 }

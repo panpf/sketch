@@ -33,7 +33,6 @@ import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.test.utils.TestAnimatable2CompatDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatable2Drawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
-import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.block
@@ -338,7 +337,7 @@ class ResizeAnimatableDrawableTest {
 
         ResizeAnimatableDrawable(
             AnimatableDrawable(
-                TestAnimatableDrawable1(context.getDrawableCompat(android.R.drawable.bottom_bar))
+                TestAnimatableDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar))
             ),
             Size(500, 300),
             CENTER_CROP
@@ -376,27 +375,27 @@ class ResizeAnimatableDrawableTest {
     @Test
     fun testEqualsAndHashCode() {
         val element1 = ResizeAnimatableDrawable(
-            drawable = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED).asEquitable()),
+            drawable = TestAnimatableDrawable(ColorDrawable(TestColor.RED).asEquitable()),
             size = Size(100, 500),
             scale = CENTER_CROP,
         )
         val element11 = ResizeAnimatableDrawable(
-            drawable = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED).asEquitable()),
+            drawable = TestAnimatableDrawable(ColorDrawable(TestColor.RED).asEquitable()),
             size = Size(100, 500),
             scale = CENTER_CROP,
         )
         val element2 = ResizeAnimatableDrawable(
-            drawable = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.GREEN).asEquitable()),
+            drawable = TestAnimatableDrawable(ColorDrawable(TestColor.GREEN).asEquitable()),
             size = Size(100, 500),
             scale = CENTER_CROP,
         )
         val element3 = ResizeAnimatableDrawable(
-            drawable = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED).asEquitable()),
+            drawable = TestAnimatableDrawable(ColorDrawable(TestColor.RED).asEquitable()),
             size = Size(500, 100),
             scale = CENTER_CROP,
         )
         val element4 = ResizeAnimatableDrawable(
-            drawable = TestAnimatable2CompatDrawable(ColorDrawable(TestColor.RED).asEquitable()),
+            drawable = TestAnimatableDrawable(ColorDrawable(TestColor.RED).asEquitable()),
             size = Size(100, 500),
             scale = START_CROP,
         )
@@ -422,7 +421,7 @@ class ResizeAnimatableDrawableTest {
 
     @Test
     fun testToString() {
-        val animatableDrawable = TestAnimatableDrawable1(ColorDrawable(Color.GREEN))
+        val animatableDrawable = TestAnimatableDrawable(ColorDrawable(Color.GREEN))
         val sketchAnimatableDrawable = AnimatableDrawable(animatableDrawable)
         ResizeAnimatableDrawable(
             sketchAnimatableDrawable,

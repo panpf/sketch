@@ -11,6 +11,7 @@ import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +22,7 @@ import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
@@ -535,5 +537,48 @@ class ViewSizeResolverTest {
                 actual = size
             )
         }
+    }
+
+    @Test
+    fun testKey() {
+        val context = getTestContext()
+        val imageView = ImageView(context)
+        val viewKey = "${imageView::class.simpleName}@${imageView.toHexString()}"
+        assertEquals(
+            expected = "ViewSize($viewKey,true)",
+            actual = ViewSizeResolver(imageView).key
+        )
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val context = getTestContext()
+        val imageView = ImageView(context)
+        val element1 = ViewSizeResolver(imageView)
+        val element11 = ViewSizeResolver(imageView)
+        val element2 = ViewSizeResolver(ImageView(context))
+        val element3 = ViewSizeResolver(ImageView(context), subtractPadding = false)
+
+        assertEquals(expected = element1, actual = element11)
+        assertNotEquals(illegal = element1, actual = element2)
+        assertNotEquals(illegal = element1, actual = element3)
+        assertNotEquals(illegal = element2, actual = element3)
+        assertNotEquals(illegal = element1, actual = null as Any?)
+        assertNotEquals(illegal = element1, actual = Any())
+
+        assertEquals(expected = element1.hashCode(), actual = element11.hashCode())
+        assertNotEquals(illegal = element1.hashCode(), actual = element2.hashCode())
+        assertNotEquals(illegal = element1.hashCode(), actual = element3.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        val context = getTestContext()
+        val imageView = ImageView(context)
+        val viewKey = "${imageView::class.simpleName}@${imageView.toHexString()}"
+        assertEquals(
+            expected = "ViewSizeResolver(view=$viewKey, subtractPadding=true)",
+            actual = ViewSizeResolver(imageView).toString()
+        )
     }
 }

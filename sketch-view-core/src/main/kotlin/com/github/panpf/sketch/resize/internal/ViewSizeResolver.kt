@@ -55,7 +55,9 @@ internal class RealViewSizeResolver<T : View>(
 
     private val viewReference: WeakReference<T> = WeakReference(view1)
 
-    override val key: String = "ViewSize@${view1.toHexString()}"
+    private val viewKey = "${view1::class.simpleName}@${view1.toHexString()}"
+
+    override val key: String = "ViewSize($viewKey,$subtractPadding)"
 
     override val view: T?
         get() = viewReference.get()
@@ -78,8 +80,7 @@ internal class RealViewSizeResolver<T : View>(
     }
 
     override fun toString(): String {
-        val viewString = view?.let { "${it::class.simpleName}@${it.toHexString()}" }
-        return "ViewSizeResolver(view=$viewString, subtractPadding=$subtractPadding)"
+        return "ViewSizeResolver(view=$viewKey, subtractPadding=$subtractPadding)"
     }
 }
 

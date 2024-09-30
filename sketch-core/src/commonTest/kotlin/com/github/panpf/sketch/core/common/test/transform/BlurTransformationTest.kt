@@ -68,14 +68,28 @@ class BlurTransformationTest {
     }
 
     @Test
-    fun testKeyAndToString() {
+    fun testKey() {
         BlurTransformation().apply {
             assertEquals("BlurTransformation(15,${TestColor.BLACK},null)", key)
-            assertEquals("BlurTransformation(15,${TestColor.BLACK},null)", toString())
         }
         BlurTransformation(20, hasAlphaBitmapBgColor = null, maskColor = TestColor.GREEN).apply {
             assertEquals("BlurTransformation(20,null,${TestColor.GREEN})", key)
-            assertEquals("BlurTransformation(20,null,${TestColor.GREEN})", toString())
+        }
+    }
+
+    @Test
+    fun testToString() {
+        BlurTransformation().apply {
+            assertEquals(
+                "BlurTransformation(radius=15, hasAlphaBitmapBgColor=${TestColor.BLACK}, maskColor=null)",
+                toString()
+            )
+        }
+        BlurTransformation(20, hasAlphaBitmapBgColor = null, maskColor = TestColor.GREEN).apply {
+            assertEquals(
+                "BlurTransformation(radius=20, hasAlphaBitmapBgColor=null, maskColor=${TestColor.GREEN})",
+                toString()
+            )
         }
     }
 

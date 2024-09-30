@@ -13,14 +13,15 @@ class FakeTransition : Transition {
     }
 
     class Factory : Transition.Factory {
+
+        override val key: String = "FakeTransition.Factory"
+
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
             target: TransitionTarget,
             result: ImageResult
         ): Transition = FakeTransition()
-
-        override val key: String = "FakeTransition.Factory"
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

@@ -56,8 +56,6 @@ class CircleCropTransformation(val scale: Scale? = null) : Transformation {
         return TransformResult(image = outImage.asImage(), transformed = transformed)
     }
 
-    override fun toString(): String = key
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
@@ -69,6 +67,8 @@ class CircleCropTransformation(val scale: Scale? = null) : Transformation {
     override fun hashCode(): Int {
         return scale.hashCode()
     }
+
+    override fun toString(): String = "CircleCropTransformation($scale)"
 }
 
 /**

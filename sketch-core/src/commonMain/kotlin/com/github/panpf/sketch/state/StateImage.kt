@@ -34,4 +34,10 @@ interface StateImage : Key {
      * Get the [Image] to be displayed
      */
     fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image?
+
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
 }

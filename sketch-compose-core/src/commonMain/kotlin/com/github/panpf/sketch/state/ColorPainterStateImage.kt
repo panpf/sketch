@@ -75,24 +75,12 @@ fun ColorPainterStateImage(color: Long): ColorPainterStateImage =
  * @see com.github.panpf.sketch.compose.core.common.test.state.ColorPainterStateImageTest
  */
 @Stable
-class ColorPainterStateImage(val color: Color) : StateImage {
+data class ColorPainterStateImage(val color: Color) : StateImage {
 
     override val key: String = "ColorPainterStateImage(${color.value})"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
         return ColorPainter(color).asImage()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as ColorPainterStateImage
-        if (color != other.color) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return color.hashCode()
     }
 
     override fun toString(): String {
