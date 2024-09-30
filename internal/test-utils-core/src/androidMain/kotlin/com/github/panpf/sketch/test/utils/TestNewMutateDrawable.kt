@@ -23,10 +23,10 @@ class TestNewMutateDrawable(drawable: Drawable) : DrawableWrapperCompat(drawable
 
     override fun mutate(): TestNewMutateDrawable {
         val mutateDrawable = drawable?.mutate()
-        return if (mutateDrawable != null && mutateDrawable !== drawable) {
-            TestNewMutateDrawable(drawable = mutateDrawable)
+        if (mutateDrawable != null) {
+            return TestNewMutateDrawable(drawable = mutateDrawable)
         } else {
-            this
+            return this
         }
     }
 }

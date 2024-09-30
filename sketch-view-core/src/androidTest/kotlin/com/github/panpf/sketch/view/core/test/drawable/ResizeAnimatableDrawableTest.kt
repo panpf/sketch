@@ -35,7 +35,10 @@ import com.github.panpf.sketch.test.utils.TestAnimatable2Drawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
 import com.github.panpf.sketch.test.utils.TestColor
+import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.block
+import com.github.panpf.sketch.test.utils.getDrawableCompat
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.runBlock
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toLogString
@@ -48,6 +51,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
@@ -329,44 +334,43 @@ class ResizeAnimatableDrawableTest {
 
     @Test
     fun testMutate() {
-        // TODO testMutate
-//        val context = getTestContext()
-//
-//        ResizeAnimatableDrawable(
-//            AnimatableDrawable(
-//                TestAnimatableDrawable1(context.getDrawableCompat(drawable.bottom_bar))
-//            ),
-//            Size(500, 300),
-//            CENTER_CROP
-//        ).apply {
-//            mutate()
-//            alpha = 146
-//
-//            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                    assertEquals(255, it.alpha)
-//                }
-//            }
-//        }
-//
-//        ResizeAnimatableDrawable(
-//            AnimatableDrawable(
-//                TestAnimatableDrawable1(
-//                    TestNewMutateDrawable(context.getDrawableCompat(drawable.bottom_bar))
-//                )
-//            ),
-//            Size(500, 300),
-//            CENTER_CROP
-//        ).apply {
-//            mutate()
-//            alpha = 146
-//
-//            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//                    assertEquals(255, it.alpha)
-//                }
-//            }
-//        }
+        val context = getTestContext()
+
+        ResizeAnimatableDrawable(
+            AnimatableDrawable(
+                TestAnimatableDrawable1(context.getDrawableCompat(android.R.drawable.bottom_bar))
+            ),
+            Size(500, 300),
+            CENTER_CROP
+        ).apply {
+            val mutateDrawable = mutate()
+            assertSame(this, mutateDrawable)
+            mutateDrawable.alpha = 146
+
+            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                    assertEquals(255, it.alpha)
+                }
+            }
+        }
+
+        ResizeAnimatableDrawable(
+            TestAnimatableDrawable(
+                TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar))
+            ),
+            Size(500, 300),
+            CENTER_CROP
+        ).apply {
+            val mutateDrawable = mutate()
+            assertNotSame(this, mutateDrawable)
+            mutateDrawable.alpha = 146
+
+            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                    assertEquals(255, it.alpha)
+                }
+            }
+        }
     }
 
     @Test

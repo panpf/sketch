@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.core.android.test.drawable
 
+import android.R
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
@@ -29,11 +30,14 @@ import android.graphics.PorterDuffColorFilter
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.drawable.IconDrawable
 import com.github.panpf.sketch.drawable.asEquitable
 import com.github.panpf.sketch.test.utils.TestColor
+import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
@@ -46,7 +50,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
 import kotlin.test.assertNull
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
@@ -707,7 +713,50 @@ class IconDrawableTest {
 
     @Test
     fun testMutate() {
-        // TODO testMutate
+        val context = getTestContext()
+
+        IconDrawable(
+            icon = context.getDrawableCompat(R.drawable.bottom_bar),
+        ).apply {
+            val mutateDrawable = mutate()
+            assertSame(this, mutateDrawable)
+            mutateDrawable.alpha = 146
+
+            context.getDrawableCompat(R.drawable.bottom_bar).also {
+                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                    assertEquals(255, it.alpha)
+                }
+            }
+        }
+
+        IconDrawable(
+            icon = TestNewMutateDrawable(context.getDrawableCompat(R.drawable.bottom_bar)),
+        ).apply {
+            val mutateDrawable = mutate()
+            assertNotSame(this, mutateDrawable)
+            mutateDrawable.alpha = 146
+
+            context.getDrawableCompat(R.drawable.bottom_bar).also {
+                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                    assertEquals(255, it.alpha)
+                }
+            }
+        }
+
+        IconDrawable(
+            icon = context.getDrawableCompat(R.drawable.bottom_bar),
+            background = TestNewMutateDrawable(ColorDrawable(Color.RED)),
+        ).apply {
+            val mutateDrawable = mutate()
+            assertNotSame(this, mutateDrawable)
+            mutateDrawable.alpha = 146
+
+            context.getDrawableCompat(R.drawable.bottom_bar).also {
+                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                    assertEquals(255, it.alpha)
+                }
+            }
+        }
     }
 
     @Test

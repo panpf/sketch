@@ -32,7 +32,9 @@ import com.github.panpf.sketch.test.utils.TestAnimatable2Drawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable1
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable3
+import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.block
+import com.github.panpf.sketch.test.utils.getDrawableCompat
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.runBlock
 import com.github.panpf.sketch.util.toLogString
@@ -46,6 +48,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotSame
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
@@ -252,7 +255,39 @@ class AnimatableDrawableTest {
 
     @Test
     fun testMutate() {
-        // TODO testMutate
+        val context = getTestContext()
+
+        AnimatableDrawable(
+            TestAnimatableDrawable(
+                context.getDrawableCompat(android.R.drawable.bottom_bar)
+            ),
+        ).apply {
+            val mutateDrawable = mutate()
+            assertSame(this, mutateDrawable)
+            mutateDrawable.alpha = 146
+
+            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                    assertEquals(255, it.alpha)
+                }
+            }
+        }
+
+        AnimatableDrawable(
+            TestAnimatableDrawable(
+                TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar))
+            ),
+        ).apply {
+            val mutateDrawable = mutate()
+            assertNotSame(this, mutateDrawable)
+            mutateDrawable.alpha = 146
+
+            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                    assertEquals(255, it.alpha)
+                }
+            }
+        }
     }
 
     @Test

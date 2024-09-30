@@ -46,7 +46,9 @@ import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotSame
 import kotlin.test.assertNull
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
@@ -146,8 +148,9 @@ class CrossfadeDrawableTest {
             context.getDrawableCompat(android.R.drawable.ic_input_add),
             context.getDrawableCompat(android.R.drawable.ic_delete),
         ).apply {
-            mutate()
-            alpha = 146
+            val mutateDrawable = mutate()
+            assertSame(this, mutateDrawable)
+            mutateDrawable.alpha = 146
 
             context.getDrawableCompat(android.R.drawable.ic_input_add).also {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -165,8 +168,9 @@ class CrossfadeDrawableTest {
             TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.ic_input_add)),
             TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.ic_delete)),
         ).apply {
-            mutate()
-            alpha = 146
+            val mutateDrawable = mutate()
+            assertNotSame(this, mutateDrawable)
+            mutateDrawable.alpha = 146
 
             context.getDrawableCompat(android.R.drawable.ic_input_add).also {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

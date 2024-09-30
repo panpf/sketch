@@ -11,6 +11,7 @@ import com.github.panpf.sketch.test.utils.TestAnimatable2CompatDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatable2Drawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
 import com.github.panpf.sketch.test.utils.TestColor
+import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.runBlock
@@ -25,6 +26,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class EquitableAnimatableDrawableTest {
@@ -228,7 +231,41 @@ class EquitableAnimatableDrawableTest {
 
     @Test
     fun testMutate() {
-        // TODO testMutate
+        val context = getTestContext()
+
+        EquitableAnimatableDrawable(
+            drawable = TestAnimatableDrawable(
+                context.getDrawableCompat(android.R.drawable.bottom_bar)
+            ),
+            equalityKey = "key"
+        ).apply {
+            val mutateDrawable = mutate()
+            assertSame(this, mutateDrawable)
+            mutateDrawable.alpha = 146
+
+            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                    assertEquals(255, it.alpha)
+                }
+            }
+        }
+
+        EquitableAnimatableDrawable(
+            drawable = TestAnimatableDrawable(
+                TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar))
+            ),
+            equalityKey = "key"
+        ).apply {
+            val mutateDrawable = mutate()
+            assertNotSame(this, mutateDrawable)
+            mutateDrawable.alpha = 146
+
+            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                    assertEquals(255, it.alpha)
+                }
+            }
+        }
     }
 
     @Test

@@ -24,6 +24,15 @@ class TestAnimatableDrawable(
         return running
     }
 
+    override fun mutate(): TestAnimatableDrawable {
+        val mutateDrawable = drawable?.mutate()
+        return if (mutateDrawable != null && mutateDrawable !== drawable) {
+            TestAnimatableDrawable(drawable = mutateDrawable)
+        } else {
+            this
+        }
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false

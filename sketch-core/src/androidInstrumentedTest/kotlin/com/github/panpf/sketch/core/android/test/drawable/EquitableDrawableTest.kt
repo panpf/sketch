@@ -2,6 +2,8 @@ package com.github.panpf.sketch.core.android.test.drawable
 
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import androidx.core.content.res.ResourcesCompat
 import com.github.panpf.sketch.AndroidBitmap
 import com.github.panpf.sketch.drawable.ColorEquitableDrawable
@@ -12,13 +14,16 @@ import com.github.panpf.sketch.drawable.getEquitableDrawableCompat
 import com.github.panpf.sketch.drawable.getEquitableDrawableCompatForDensity
 import com.github.panpf.sketch.drawable.getEquitableDrawableForDensity
 import com.github.panpf.sketch.test.utils.TestColor
-import com.github.panpf.sketch.test.utils.getDrawableCompat
+import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.sketch.util.key
 import com.github.panpf.sketch.util.toLogString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
+import kotlin.test.assertSame
 
 class EquitableDrawableTest {
 
@@ -94,10 +99,8 @@ class EquitableDrawableTest {
                 drawable = context.resources.getDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)!!,
                 equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
             ),
-            actual = getEquitableDrawable(
+            actual = context.resources.getEquitableDrawable(
                 com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
-                density,
-                theme
             )
         )
     }
@@ -134,7 +137,6 @@ class EquitableDrawableTest {
             actual = context.resources.getEquitableDrawableForDensity(
                 resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
                 density = 2,
-                theme = theme
             )
         )
     }
@@ -205,7 +207,37 @@ class EquitableDrawableTest {
 
     @Test
     fun testMutate() {
-        // TODO testMutate
+        val context = getTestContext()
+
+        EquitableDrawable(
+            drawable = context.getDrawableCompat(android.R.drawable.bottom_bar),
+            equalityKey = "key"
+        ).apply {
+            val mutateDrawable = mutate()
+            assertSame(this, mutateDrawable)
+            mutateDrawable.alpha = 146
+
+            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                    assertEquals(255, it.alpha)
+                }
+            }
+        }
+
+        EquitableDrawable(
+            drawable = TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar)),
+            equalityKey = "key"
+        ).apply {
+            val mutateDrawable = mutate()
+            assertNotSame(this, mutateDrawable)
+            mutateDrawable.alpha = 146
+
+            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+                if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
+                    assertEquals(255, it.alpha)
+                }
+            }
+        }
     }
 
     @Test
