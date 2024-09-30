@@ -142,4 +142,11 @@ interface Target {
     fun onError(sketch: Sketch, request: ImageRequest, error: Image?) {
 
     }
+
+//    TODO All interfaces used in ImageRequest and ImageOptions must implement equals, hashCode and toString
+//    override fun equals(other: Any?): Boolean
+
+//    override fun hashCode(): Int
+
+//    override fun toString(): String
 }

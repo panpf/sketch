@@ -4,8 +4,8 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.request.internal.BaseRequestDelegate
-import com.github.panpf.sketch.request.internal.BaseRequestManager
+import com.github.panpf.sketch.request.internal.OneShotRequestDelegate
+import com.github.panpf.sketch.request.internal.OneShotRequestManager
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.target.Target
@@ -26,7 +26,7 @@ inline fun ImageRequest.Builder.target(
     crossinline onSuccess: (sketch: Sketch, request: ImageRequest, result: Image) -> Unit = { _, _, _ -> },
 ) = target(object : Target {
 
-    private val requestManager = BaseRequestManager()
+    private val requestManager = OneShotRequestManager()
 
     override fun getRequestManager(): RequestManager = requestManager
 
@@ -34,7 +34,7 @@ inline fun ImageRequest.Builder.target(
         sketch: Sketch,
         initialRequest: ImageRequest,
         job: Job
-    ): RequestDelegate = BaseRequestDelegate(sketch, initialRequest, this, job)
+    ): RequestDelegate = OneShotRequestDelegate(sketch, initialRequest, this, job)
 
     override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) =
         onStart(sketch, request, placeholder)

@@ -45,6 +45,13 @@ internal fun requestDelegate(
 
 /**
  * A delegate that manages the lifecycle of an [ImageRequest] and its [Target].
+ *
+ * @see com.github.panpf.sketch.request.internal.BaseRequestDelegate
+ * @see com.github.panpf.sketch.request.internal.ViewRequestDelegate
+ * @see com.github.panpf.sketch.request.internal.ComposeRequestDelegate
+ * @see com.github.panpf.sketch.request.internal.RemoteViewsDelegate
+ * @see com.github.panpf.sketch.request.internal.NoTargetRequestDelegate
+ * @see com.github.panpf.sketch.request.internal.OneShotRequestDelegate
  */
 interface RequestDelegate {
 
@@ -91,17 +98,49 @@ class NoTargetRequestDelegate(
     sketch: Sketch,
     initialRequest: ImageRequest,
     job: Job
-) : BaseRequestDelegate(sketch, initialRequest, null, job)
+) : BaseRequestDelegate(sketch, initialRequest, null, job) {
+
+    override fun assertActive() {
+        // No Target, there is no need to judge whether it is active or not.
+    }
+
+    override fun finish() {
+        removeLifecycleObserver()
+    }
+}
+
+/**
+ * A request delegate for requests without a [Target].
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.internal.RequestDelegateTest.testOneShotRequestDelegate
+ */
+class OneShotRequestDelegate(
+    sketch: Sketch,
+    initialRequest: ImageRequest,
+    target: Target,
+    job: Job
+) : BaseRequestDelegate(sketch, initialRequest, target, job) {
+
+    override fun assertActive() {
+        // No action
+    }
+
+    override fun finish() {
+        removeLifecycleObserver()
+    }
+}
 
 /**
  * A base implementation of [RequestDelegate] that handles attaching to a [Lifecycle] and [Target].
  *
- * @see com.github.panpf.sketch.view.core.test.request.internal.ViewRequestDelegateTest
- * @see com.github.panpf.sketch.compose.core.common.test.request.internal.ComposeRequestDelegateTest
- * @see com.github.panpf.sketch.core.common.test.request.internal.RequestDelegateTest.testNoTargetRequestDelegate
+ * @see com.github.panpf.sketch.request.internal.ViewRequestDelegate
+ * @see com.github.panpf.sketch.request.internal.ComposeRequestDelegate
+ * @see com.github.panpf.sketch.request.internal.RemoteViewsDelegate
+ * @see com.github.panpf.sketch.request.internal.NoTargetRequestDelegate
+ * @see com.github.panpf.sketch.request.internal.OneShotRequestDelegate
+ * @see com.github.panpf.sketch.core.common.test.request.internal.RequestDelegateTest.testBaseRequestDelegate
  */
-// TODO change to abstract
-open class BaseRequestDelegate(
+abstract class BaseRequestDelegate(
     override val sketch: Sketch,
     override val initialRequest: ImageRequest,
     protected val target: Target?,
@@ -110,9 +149,7 @@ open class BaseRequestDelegate(
 
     protected var lifecycle: Lifecycle? = null
 
-    override fun assertActive() {   // TODO remove
-        // Do Nothing.
-    }
+    abstract override fun assertActive()
 
     override fun start(lifecycle: Lifecycle) {
         this.lifecycle = lifecycle
@@ -129,14 +166,12 @@ open class BaseRequestDelegate(
 
     override fun dispose() {
         job.cancel()
-        val target = target
-        if (target is LifecycleEventObserver) {
-            lifecycle?.removeObserver(target)
-        }
-        lifecycle?.removeObserver(this)
+        removeLifecycleObserver()
     }
 
-    override fun finish() {
+    abstract override fun finish()
+
+    protected fun removeLifecycleObserver() {
         val target = target
         if (target is LifecycleEventObserver) {
             lifecycle?.removeObserver(target)

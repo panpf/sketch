@@ -33,6 +33,11 @@ class RequestDelegateTest {
     }
 
     @Test
+    fun testBaseRequestDelegate() {
+        // TODO test
+    }
+
+    @Test
     fun testNoTargetRequestDelegate() {
         val (context, sketch) = getTestContextAndSketch()
         NoTargetRequestDelegate(
@@ -40,5 +45,11 @@ class RequestDelegateTest {
             initialRequest = ImageRequest(context, "http://test.com/test.jpg"),
             job = Job()
         )
+        // TODO Supplementary testing
+    }
+
+    @Test
+    fun testOneShotRequestDelegate() {
+        // TODO test
     }
 }

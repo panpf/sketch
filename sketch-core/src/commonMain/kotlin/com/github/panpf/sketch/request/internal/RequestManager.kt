@@ -39,6 +39,7 @@ import kotlinx.coroutines.launch
  * @see com.github.panpf.sketch.request.internal.BaseRequestManager
  * @see com.github.panpf.sketch.request.internal.ViewRequestManager
  * @see com.github.panpf.sketch.request.internal.ComposeRequestManager
+ * @see com.github.panpf.sketch.request.internal.OneShotRequestManager
  */
 interface RequestManager {
 
@@ -85,12 +86,23 @@ interface RequestManager {
 }
 
 /**
+ * Always Attached RequestManager
+ *
+ * @see com.github.panpf.sketch.core.common.test.request.internal.RequestManagerTest.testOneShotRequestManager
+ */
+class OneShotRequestManager : BaseRequestManager() {
+    override fun isAttached(): Boolean = true
+}
+
+/**
  * Base implementation of [RequestManager] that handles the current request and request lifecycle.
  *
  * @see com.github.panpf.sketch.request.internal.ViewRequestManager
  * @see com.github.panpf.sketch.request.internal.ComposeRequestManager
+ * @see com.github.panpf.sketch.request.internal.OneShotRequestManager
+ * @see com.github.panpf.sketch.core.common.test.request.internal.RequestManagerTest.testBaseRequestManager
  */
-open class BaseRequestManager : RequestManager {
+abstract class BaseRequestManager : RequestManager {
 
     private val lock = SynchronizedObject()
 
@@ -165,9 +177,7 @@ open class BaseRequestManager : RequestManager {
         return currentRequestDelegate?.sketch
     }
 
-    open fun isAttached(): Boolean {    // TODO change to abstract
-        return true
-    }
+    abstract fun isAttached(): Boolean
 
     protected fun callbackAttachedState() {
         val currentRequestDelegate = currentRequestDelegate

@@ -28,8 +28,8 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
-import com.github.panpf.sketch.request.internal.BaseRequestDelegate
-import com.github.panpf.sketch.request.internal.BaseRequestManager
+import com.github.panpf.sketch.request.internal.OneShotRequestManager
+import com.github.panpf.sketch.request.internal.RemoteViewsDelegate
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.resize.ScaleDecider
@@ -46,7 +46,7 @@ class RemoteViewsTarget constructor(
     private val onUpdated: () -> Unit,
 ) : Target {
 
-    private val requestManager = BaseRequestManager()
+    private val requestManager = OneShotRequestManager()
 
     override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) =
         setDrawable(request, placeholder)
@@ -90,7 +90,6 @@ class RemoteViewsTarget constructor(
 
     override fun getImageOptions(): ImageOptions? = null
 
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
@@ -112,10 +111,3 @@ class RemoteViewsTarget constructor(
         return "RemoteViewsDisplayTarget(remoteViews=$remoteViews, imageViewId=$imageViewId, onUpdated=$onUpdated)"
     }
 }
-
-class RemoteViewsDelegate(
-    sketch: Sketch,
-    initialRequest: ImageRequest,
-    target: RemoteViewsTarget,
-    job: Job
-) : BaseRequestDelegate(sketch, initialRequest, target, job)
