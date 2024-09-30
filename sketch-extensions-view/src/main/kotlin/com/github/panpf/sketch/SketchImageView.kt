@@ -19,6 +19,7 @@ package com.github.panpf.sketch
 import android.content.Context
 import android.util.AttributeSet
 import com.github.panpf.sketch.ability.AbsAbilityImageView
+import com.github.panpf.sketch.internal.parseSketchImageViewXmlAttributes
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageOptionsProvider
 import com.github.panpf.sketch.request.Listener
@@ -46,7 +47,7 @@ open class SketchImageView @JvmOverloads constructor(
 
     init {
         @Suppress("LeakingThis")
-        imageOptions = com.github.panpf.sketch.internal.parseImageXmlAttributes(context, attrs)
+        imageOptions = parseSketchImageViewXmlAttributes(context, attrs)
         @Suppress("LeakingThis")
         registerListener(requestState)
         registerProgressListener(requestState)

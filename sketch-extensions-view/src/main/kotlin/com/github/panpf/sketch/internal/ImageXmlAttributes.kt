@@ -54,7 +54,10 @@ import com.github.panpf.sketch.transition.Transition
  *
  * @see com.github.panpf.sketch.extensions.view.test.SketchImageViewTest.testAttrs
  */
-fun parseImageXmlAttributes(context: Context, attrs: AttributeSet? = null): ImageOptions? {
+fun parseSketchImageViewXmlAttributes(
+    context: Context,
+    attrs: AttributeSet? = null
+): ImageOptions? {
     val typedArray = context.obtainStyledAttributes(attrs, R.styleable.SketchImageView)
     return try {
         ImageOptions {

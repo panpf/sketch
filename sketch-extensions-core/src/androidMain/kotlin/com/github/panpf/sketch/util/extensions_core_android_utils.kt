@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.internal
+package com.github.panpf.sketch.util
 
 import android.content.pm.PackageInfo
 import kotlin.math.pow

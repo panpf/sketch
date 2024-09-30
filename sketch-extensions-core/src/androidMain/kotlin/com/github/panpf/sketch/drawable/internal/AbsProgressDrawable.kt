@@ -22,7 +22,7 @@ import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
 import com.github.panpf.sketch.drawable.ProgressDrawable
-import com.github.panpf.sketch.internal.format
+import com.github.panpf.sketch.util.format
 import kotlin.time.TimeSource
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 

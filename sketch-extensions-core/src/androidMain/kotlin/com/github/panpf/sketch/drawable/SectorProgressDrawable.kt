@@ -34,15 +34,15 @@ import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_SECTOR_STROKE_COLOR
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_SECTOR_STROKE_WIDTH_PERCENT
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
 import com.github.panpf.sketch.drawable.internal.AbsProgressDrawable
-import com.github.panpf.sketch.internal.dp2Px
-import com.github.panpf.sketch.internal.format
+import com.github.panpf.sketch.util.dp2Px
+import com.github.panpf.sketch.util.format
 
 /**
  * Sector Progress Drawable
  *
  * @see com.github.panpf.sketch.extensions.core.android.test.drawable.SectorProgressDrawableTest
  */
-class SectorProgressDrawable constructor(
+class SectorProgressDrawable(
     private val size: Int = PROGRESS_INDICATOR_SECTOR_SIZE.dp2Px(),
     @ColorInt private val backgroundColor: Int = PROGRESS_INDICATOR_SECTOR_BACKGROUND_COLOR,
     @ColorInt private val strokeColor: Int = PROGRESS_INDICATOR_SECTOR_STROKE_COLOR,

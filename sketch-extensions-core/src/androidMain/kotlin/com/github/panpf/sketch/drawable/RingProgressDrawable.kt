@@ -36,8 +36,8 @@ import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_RING_SIZE
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_RING_WIDTH_PERCENT
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
 import com.github.panpf.sketch.drawable.internal.AbsProgressDrawable
-import com.github.panpf.sketch.internal.dp2Px
-import com.github.panpf.sketch.internal.format
+import com.github.panpf.sketch.util.dp2Px
+import com.github.panpf.sketch.util.format
 import kotlin.math.roundToInt
 
 /**
@@ -45,7 +45,7 @@ import kotlin.math.roundToInt
  *
  * @see com.github.panpf.sketch.extensions.core.android.test.drawable.RingProgressDrawableTest
  */
-class RingProgressDrawable constructor(
+class RingProgressDrawable(
     private val size: Int = PROGRESS_INDICATOR_RING_SIZE.dp2Px(),
     private val ringWidth: Float = size * PROGRESS_INDICATOR_RING_WIDTH_PERCENT,
     @ColorInt private val ringColor: Int = PROGRESS_INDICATOR_RING_COLOR,

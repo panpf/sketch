@@ -20,7 +20,7 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
-import com.github.panpf.sketch.internal.versionCodeCompat
+import com.github.panpf.sketch.util.versionCodeCompat
 
 /**
  * Get the icon of the installed app

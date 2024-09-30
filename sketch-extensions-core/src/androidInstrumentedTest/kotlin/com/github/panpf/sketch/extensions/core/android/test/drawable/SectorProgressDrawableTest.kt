@@ -6,9 +6,9 @@ import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMIN
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_SECTOR_SIZE
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
 import com.github.panpf.sketch.drawable.SectorProgressDrawable
-import com.github.panpf.sketch.internal.dp2Px
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.dp2Px
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals

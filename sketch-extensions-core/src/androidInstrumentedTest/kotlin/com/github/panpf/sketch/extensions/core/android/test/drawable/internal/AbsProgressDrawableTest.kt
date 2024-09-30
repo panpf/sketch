@@ -9,10 +9,10 @@ import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMIN
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
 import com.github.panpf.sketch.drawable.ProgressDrawable
 import com.github.panpf.sketch.drawable.internal.AbsProgressDrawable
-import com.github.panpf.sketch.internal.format
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.format
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Dispatchers
