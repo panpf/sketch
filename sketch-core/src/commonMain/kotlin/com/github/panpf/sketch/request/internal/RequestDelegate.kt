@@ -138,7 +138,7 @@ class OneShotRequestDelegate(
  * @see com.github.panpf.sketch.request.internal.RemoteViewsDelegate
  * @see com.github.panpf.sketch.request.internal.NoTargetRequestDelegate
  * @see com.github.panpf.sketch.request.internal.OneShotRequestDelegate
- * @see com.github.panpf.sketch.core.common.test.request.internal.RequestDelegateTest.testBaseRequestDelegate
+ * @see com.github.panpf.sketch.core.common.test.request.internal.BaseRequestManagerTest
  */
 abstract class BaseRequestDelegate(
     override val sketch: Sketch,

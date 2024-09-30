@@ -88,7 +88,7 @@ interface RequestManager {
 /**
  * Always Attached RequestManager
  *
- * @see com.github.panpf.sketch.core.common.test.request.internal.RequestManagerTest.testOneShotRequestManager
+ * @see com.github.panpf.sketch.core.common.test.request.internal.OneShotRequestManagerTest
  */
 class OneShotRequestManager : BaseRequestManager() {
     override fun isAttached(): Boolean = true
@@ -100,7 +100,7 @@ class OneShotRequestManager : BaseRequestManager() {
  * @see com.github.panpf.sketch.request.internal.ViewRequestManager
  * @see com.github.panpf.sketch.request.internal.ComposeRequestManager
  * @see com.github.panpf.sketch.request.internal.OneShotRequestManager
- * @see com.github.panpf.sketch.core.common.test.request.internal.RequestManagerTest.testBaseRequestManager
+ * @see com.github.panpf.sketch.core.common.test.request.internal.BaseRequestManagerTest
  */
 abstract class BaseRequestManager : RequestManager {
 
@@ -110,11 +110,11 @@ abstract class BaseRequestManager : RequestManager {
     private var currentDisposable: ReusableDisposable? = null
 
     // A pending operation that is posting to the main thread to clear the current request.
-    private var pendingClear: Job? = null
+    private var pendingClearJob: Job? = null
 
     // Only accessed from the main thread.
     protected var currentRequestDelegate: RequestDelegate? = null
-    private var isRestart = false
+    internal var isRestart = false
 
     @MainThread
     override fun setRequest(requestDelegate: RequestDelegate?) {
@@ -138,8 +138,8 @@ abstract class BaseRequestManager : RequestManager {
             }
 
             // Cancel any pending clears since they were for the previous request.
-            pendingClear?.cancel()
-            pendingClear = null
+            pendingClearJob?.cancel()
+            pendingClearJob = null
 
             // Create a new disposable as this is a new request.
             return ReusableDisposable(this@BaseRequestManager, job).also {
@@ -149,8 +149,8 @@ abstract class BaseRequestManager : RequestManager {
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun dispose() = synchronized(lock) {
-        pendingClear?.cancel()
-        pendingClear = GlobalScope.launch(Dispatchers.Main.immediate) {
+        pendingClearJob?.cancel()
+        pendingClearJob = GlobalScope.launch(Dispatchers.Main.immediate) {
             setRequest(null)
         }
         currentDisposable = null
