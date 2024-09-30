@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.target
 
 import android.graphics.drawable.Drawable

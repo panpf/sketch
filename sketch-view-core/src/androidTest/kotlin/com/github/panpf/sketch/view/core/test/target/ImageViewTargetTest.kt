@@ -1,75 +1,113 @@
 package com.github.panpf.sketch.view.core.test.target
 
+import android.graphics.Bitmap
+import android.graphics.Bitmap.Config.RGB_565
 import android.widget.ImageView
+import android.widget.ImageView.ScaleType
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.asDrawable
+import com.github.panpf.sketch.asImage
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.resize.FixedScaleDecider
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.target.ImageViewTarget
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotSame
+import kotlin.test.assertNull
+import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class ImageViewTargetTest {
 
-    // TODO test fitScale, drawable
+    @Test
+    fun testDrawable() {
+        val (context, sketch) = getTestContextAndSketch()
+        val imageView = ImageView(context)
+        val target = ImageViewTarget(imageView)
 
-//    @Test
-//    fun testTarget() {
-//        val context1 = getTestContext()
-//        val uri = ResourceImages.jpeg.uri
-//        val imageView = TestOptionsImageView(context1)
-//
-//        ImageRequest(context1, uri).apply {
-//            assertNull(target)
-//        }
-//
-//        ImageRequest(imageView, uri).apply {
-//            assertEquals(ImageViewTarget(imageView), target)
-//        }
-//
-//        imageView.updateImageOptions {
-//            memoryCachePolicy(WRITE_ONLY)
-//        }
-//
-//        ImageRequest(imageView, uri).apply {
-//            assertEquals(ImageViewTarget(imageView), target)
-//            assertEquals(WRITE_ONLY, memoryCachePolicy)
-//        }
-//
-//        ImageRequest(imageView, uri) {
-//            target(null)
-//        }.apply {
-//            assertNull(target)
-//            assertEquals(ENABLED, memoryCachePolicy)
-//        }
-//
-//        ImageRequest(imageView, uri) {
-//            target(onStart = { _, _ -> }, onSuccess = { _, _ -> }, onError = { _, _ -> })
-//        }.apply {
-//            assertNotNull(target)
-//            assertEquals(ENABLED, memoryCachePolicy)
-//        }
-//        ImageRequest(imageView, uri) {
-//            target(onStart = { _, _ -> })
-//        }.apply {
-//            assertNotNull(target)
-//            assertEquals(ENABLED, memoryCachePolicy)
-//        }
-//        ImageRequest(imageView, uri) {
-//            target(onSuccess = { _, _ -> })
-//        }.apply {
-//            assertNotNull(target)
-//            assertEquals(ENABLED, memoryCachePolicy)
-//        }
-//        ImageRequest(imageView, uri) {
-//            target(onError = { _, _ -> })
-//        }.apply {
-//            assertNotNull(target)
-//            assertEquals(ENABLED, memoryCachePolicy)
-//        }
-//    }
+        assertNull(imageView.drawable)
+        assertNull(target.drawable)
+
+        val drawable1 = Bitmap.createBitmap(100, 100, RGB_565).asImage().asDrawable()
+        val drawable2 = Bitmap.createBitmap(100, 100, RGB_565).asImage().asDrawable()
+        imageView.setImageDrawable(drawable1)
+        assertSame(drawable1, imageView.drawable)
+        assertSame(drawable1, target.drawable)
+
+        val request = ImageRequest(context, "http://sample/com/sample/jpeg")
+        target.onSuccess(sketch, request, drawable2.asImage())
+        assertSame(drawable2, imageView.drawable)
+        assertSame(drawable2, target.drawable)
+    }
+
+    @Test
+    fun testFitScale() {
+        val context = getTestContext()
+        val imageView = ImageView(context)
+        val target = ImageViewTarget(imageView)
+
+        assertEquals(ScaleType.FIT_CENTER, imageView.scaleType)
+        assertTrue(target.fitScale)
+
+        imageView.scaleType = ScaleType.FIT_START
+        assertTrue(target.fitScale)
+
+        imageView.scaleType = ScaleType.FIT_END
+        assertTrue(target.fitScale)
+
+        imageView.scaleType = ScaleType.CENTER_INSIDE
+        assertTrue(target.fitScale)
+
+        imageView.scaleType = ScaleType.FIT_XY
+        assertFalse(target.fitScale)
+
+        imageView.scaleType = ScaleType.MATRIX
+        assertFalse(target.fitScale)
+
+        imageView.scaleType = ScaleType.CENTER
+        assertFalse(target.fitScale)
+
+        imageView.scaleType = ScaleType.CENTER_CROP
+        assertFalse(target.fitScale)
+    }
+
+    @Test
+    fun testScaleDecider() {
+        val context = getTestContext()
+        val imageView = ImageView(context)
+        val target = ImageViewTarget(imageView)
+
+        assertEquals(ScaleType.FIT_CENTER, imageView.scaleType)
+        assertEquals(FixedScaleDecider(Scale.CENTER_CROP), target.getScaleDecider())
+
+        imageView.scaleType = ScaleType.FIT_START
+        assertEquals(FixedScaleDecider(Scale.START_CROP), target.getScaleDecider())
+
+        imageView.scaleType = ScaleType.FIT_END
+        assertEquals(FixedScaleDecider(Scale.END_CROP), target.getScaleDecider())
+
+        imageView.scaleType = ScaleType.CENTER_INSIDE
+        assertEquals(FixedScaleDecider(Scale.CENTER_CROP), target.getScaleDecider())
+
+        imageView.scaleType = ScaleType.CENTER
+        assertEquals(FixedScaleDecider(Scale.CENTER_CROP), target.getScaleDecider())
+
+        imageView.scaleType = ScaleType.CENTER_CROP
+        assertEquals(FixedScaleDecider(Scale.CENTER_CROP), target.getScaleDecider())
+
+        imageView.scaleType = ScaleType.FIT_XY
+        assertEquals(FixedScaleDecider(Scale.FILL), target.getScaleDecider())
+
+        imageView.scaleType = ScaleType.MATRIX
+        assertEquals(FixedScaleDecider(Scale.FILL), target.getScaleDecider())
+    }
 
     @Test
     fun testEqualsAndHashCode() {
@@ -95,5 +133,16 @@ class ImageViewTargetTest {
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
         assertNotEquals(element2.hashCode(), element11.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        val context = getTestContext()
+        val imageView = ImageView(context)
+        val target = ImageViewTarget(imageView)
+        assertEquals(
+            expected = "ImageViewTarget($imageView)",
+            actual = target.toString()
+        )
     }
 }

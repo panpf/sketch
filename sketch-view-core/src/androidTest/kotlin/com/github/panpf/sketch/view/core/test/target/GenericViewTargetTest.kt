@@ -33,42 +33,79 @@ import kotlin.test.assertTrue
 class GenericViewTargetTest {
 
     @Test
-    fun testAllowNullImage() = runTest {
-        // TODO test allowNullImage
-    }
-
-    @Test
     fun testUpdateDrawable() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri) {
-            allowNullImage()
-        }
 
         val imageView = ImageView(context)
-        assertNull(imageView.drawable)
-
         val imageViewTarget = TestViewTarget(imageView)
+        assertNull(imageView.drawable)
         assertNull(imageViewTarget.drawable)
 
+        /*
+         * disallow null image
+         */
+        val request = ImageRequest(context, ResourceImages.jpeg.uri)
         val drawable1 = BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, RGB_565))
-        val drawable2 = BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, RGB_565))
-
         withContext(Dispatchers.Main) {
-            imageViewTarget.onSuccess(sketch, request, drawable1.asImage())
+            imageViewTarget.onStart(sketch, request, drawable1.asImage())
         }
-
         assertSame(drawable1, imageView.drawable)
         assertSame(drawable1, imageViewTarget.drawable)
 
         withContext(Dispatchers.Main) {
+            imageViewTarget.onStart(sketch, request, null)
+        }
+        assertSame(drawable1, imageView.drawable)
+        assertSame(drawable1, imageViewTarget.drawable)
+
+        val drawable2 = BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, RGB_565))
+        withContext(Dispatchers.Main) {
             imageViewTarget.onSuccess(sketch, request, drawable2.asImage())
         }
-
         assertSame(drawable2, imageView.drawable)
         assertSame(drawable2, imageViewTarget.drawable)
 
+        val drawable3 = BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, RGB_565))
+        withContext(Dispatchers.Main) {
+            imageViewTarget.onError(sketch, request, drawable3.asImage())
+        }
+        assertSame(drawable3, imageView.drawable)
+        assertSame(drawable3, imageViewTarget.drawable)
+
         withContext(Dispatchers.Main) {
             imageViewTarget.onError(sketch, request, null)
+        }
+        assertSame(drawable3, imageView.drawable)
+        assertSame(drawable3, imageViewTarget.drawable)
+
+        /*
+         * allow null image
+         */
+        val allowNullImageRequest = ImageRequest(context, ResourceImages.jpeg.uri) {
+            allowNullImage()
+        }
+        val drawable4 = BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, RGB_565))
+        withContext(Dispatchers.Main) {
+            imageViewTarget.onStart(sketch, allowNullImageRequest, drawable4.asImage())
+        }
+        assertSame(drawable4, imageView.drawable)
+        assertSame(drawable4, imageViewTarget.drawable)
+
+        withContext(Dispatchers.Main) {
+            imageViewTarget.onStart(sketch, allowNullImageRequest, null)
+        }
+        assertNull(imageView.drawable)
+        assertNull(imageViewTarget.drawable)
+
+        val drawable5 = BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, RGB_565))
+        withContext(Dispatchers.Main) {
+            imageViewTarget.onError(sketch, allowNullImageRequest, drawable5.asImage())
+        }
+        assertSame(drawable5, imageView.drawable)
+        assertSame(drawable5, imageViewTarget.drawable)
+
+        withContext(Dispatchers.Main) {
+            imageViewTarget.onError(sketch, allowNullImageRequest, null)
         }
         assertNull(imageView.drawable)
         assertNull(imageViewTarget.drawable)
@@ -107,7 +144,7 @@ class GenericViewTargetTest {
     }
 
     @Test
-    fun testAnimatableDrawable() {
+    fun testAnimatableDrawableAndLifecycle() {
         val (context, sketch) = getTestContextAndSketch()
         val imageView = ImageView(context)
         val request = ImageRequest(context, null)

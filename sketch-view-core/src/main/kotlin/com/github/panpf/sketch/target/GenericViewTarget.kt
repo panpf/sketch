@@ -48,9 +48,7 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
     private var isAttached = false
     private val requestManager = view.requestManager
 
-
     override fun getRequestManager(): RequestManager = requestManager
-
 
     override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) {
         updateImage(request, placeholder)
