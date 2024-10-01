@@ -74,19 +74,20 @@ class DataFromLogoAbility(
     override var host: Host? = null
 
     override fun onAttachedToWindow() {
-        val coroutineScope = CoroutineScope(Dispatchers.Main)
-        this.coroutineScope = coroutineScope
         val host = host!!
+        val coroutineScope = CoroutineScope(Dispatchers.Main)
         coroutineScope.launch {
             host.container.requestState.loadState.collectLatest {
                 reset()
                 host.view.invalidate()
             }
         }
+        this.coroutineScope = coroutineScope
     }
 
     override fun onDetachedFromWindow() {
         coroutineScope?.cancel()
+        coroutineScope = null
     }
 
     override fun onDrawableChanged(oldDrawable: Drawable?, newDrawable: Drawable?) {
