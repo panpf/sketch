@@ -71,8 +71,8 @@ import com.github.panpf.sketch.util.toIntSizeOrNull
 @NonRestartableComposable
 fun SubcomposeAsyncImage(
     uri: String?,
-    contentDescription: String?,
     sketch: Sketch,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     state: AsyncImageState = rememberAsyncImageState(),
     loading: @Composable (SubcomposeAsyncImageScope.(Loading) -> Unit)? = null,
@@ -126,8 +126,8 @@ fun SubcomposeAsyncImage(
 @NonRestartableComposable
 fun SubcomposeAsyncImage(
     uri: String?,
-    contentDescription: String?,
     sketch: Sketch,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     state: AsyncImageState = rememberAsyncImageState(),
     alignment: Alignment = Alignment.Center,
@@ -180,8 +180,8 @@ fun SubcomposeAsyncImage(
 @NonRestartableComposable
 fun SubcomposeAsyncImage(
     request: ImageRequest,
-    contentDescription: String?,
     sketch: Sketch,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     state: AsyncImageState = rememberAsyncImageState(),
     loading: @Composable (SubcomposeAsyncImageScope.(Loading) -> Unit)? = null,
@@ -234,8 +234,8 @@ fun SubcomposeAsyncImage(
 @Composable
 fun SubcomposeAsyncImage(
     request: ImageRequest,
-    contentDescription: String?,
     sketch: Sketch,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     state: AsyncImageState = rememberAsyncImageState(),
     alignment: Alignment = Alignment.Center,

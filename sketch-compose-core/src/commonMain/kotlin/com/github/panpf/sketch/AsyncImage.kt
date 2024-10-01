@@ -56,8 +56,8 @@ import com.github.panpf.sketch.request.ImageRequest
 @NonRestartableComposable
 fun AsyncImage(
     uri: String?,
-    contentDescription: String?,
     sketch: Sketch,
+    contentDescription: String?,
     modifier: Modifier = Modifier,
     state: AsyncImageState = rememberAsyncImageState(),
     alignment: Alignment = Alignment.Center,
