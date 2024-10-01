@@ -1,3 +1,5 @@
+import org.jetbrains.compose.resources.ResourcesExtension.ResourceClassGeneration
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.compose")
@@ -9,6 +11,10 @@ plugins {
 addAllMultiplatformTargets()
 
 androidLibrary(nameSpace = "com.github.panpf.sketch.compose.resources")
+
+compose.resources {
+    generateResClass = ResourceClassGeneration.Never
+}
 
 kotlin {
     sourceSets {
