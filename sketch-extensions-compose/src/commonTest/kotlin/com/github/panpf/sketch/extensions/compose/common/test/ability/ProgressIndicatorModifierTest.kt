@@ -5,17 +5,7 @@ import kotlin.test.Test
 class ProgressIndicatorModifierTest {
 
     @Test
-    fun testModifier() {
-        // TODO test
-    }
-
-    @Test
-    fun testElement() {
-        // TODO test
-    }
-
-    @Test
-    fun testNode() {
-        // TODO test
+    fun test() {
+        // TODO test: Draw to Bitmap, then compare Bitmap
     }
 }

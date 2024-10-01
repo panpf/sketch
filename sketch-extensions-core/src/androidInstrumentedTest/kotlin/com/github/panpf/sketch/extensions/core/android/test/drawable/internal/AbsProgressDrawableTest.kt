@@ -34,57 +34,164 @@ class AbsProgressDrawableTest {
                 hiddenWhenCompleted = true,
                 stepAnimationDuration = 150,
             )
-
             withContext(Dispatchers.Main) {
                 val imageView = ImageView(activity).apply {
                     setImageDrawable(testProgressDrawable)
                 }
                 activity.setContentView(imageView)
-            }
-            block(200)
-
-            withContext(Dispatchers.Main) {
-                testProgressDrawable.progress = -0.25f
-            }
-            block(200)
-
-            withContext(Dispatchers.Main) {
                 testProgressDrawable.progress = 0.25f
             }
             block(200)
 
+            val actions = testProgressDrawable.drawProgressHistory.distinct()
+            checkElements(actions)
+            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
+            assertEquals(expected = "0.2", actual = actions.last(), message = "$actions")
+            assertEquals(expected = 0.2f, actual = testProgressDrawable.progress)
+        }
+
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+            val testProgressDrawable = TestProgressDrawable(
+                size = Size(100, 100),
+                hiddenWhenIndeterminate = false,
+                hiddenWhenCompleted = true,
+                stepAnimationDuration = 150,
+            )
             withContext(Dispatchers.Main) {
+                val imageView = ImageView(activity).apply {
+                    setImageDrawable(testProgressDrawable)
+                }
+                activity.setContentView(imageView)
                 testProgressDrawable.progress = 0.5f
             }
             block(200)
 
+            val actions = testProgressDrawable.drawProgressHistory.distinct()
+            checkElements(actions)
+            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
+            assertEquals(expected = "0.5", actual = actions.last(), message = "$actions")
+            assertEquals(expected = 0.5f, actual = testProgressDrawable.progress)
+        }
+
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+            val testProgressDrawable = TestProgressDrawable(
+                size = Size(100, 100),
+                hiddenWhenIndeterminate = false,
+                hiddenWhenCompleted = true,
+                stepAnimationDuration = 150,
+            )
             withContext(Dispatchers.Main) {
+                val imageView = ImageView(activity).apply {
+                    setImageDrawable(testProgressDrawable)
+                }
+                activity.setContentView(imageView)
                 testProgressDrawable.progress = 0.75f
             }
             block(200)
 
+            val actions = testProgressDrawable.drawProgressHistory.distinct()
+            checkElements(actions)
+            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
+            assertEquals(expected = "0.8", actual = actions.last(), message = "$actions")
+            assertEquals(expected = 0.8f, actual = testProgressDrawable.progress)
+        }
+
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+            val testProgressDrawable = TestProgressDrawable(
+                size = Size(100, 100),
+                hiddenWhenIndeterminate = false,
+                hiddenWhenCompleted = true,
+                stepAnimationDuration = 150,
+            )
             withContext(Dispatchers.Main) {
+                val imageView = ImageView(activity).apply {
+                    setImageDrawable(testProgressDrawable)
+                }
+                activity.setContentView(imageView)
                 testProgressDrawable.progress = 1f
             }
             block(200)
 
+            val actions = testProgressDrawable.drawProgressHistory.distinct()
+            assertTrue(actual = actions.isEmpty(), message = "$actions")
+            assertEquals(expected = 1f, actual = testProgressDrawable.progress)
+        }
+
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+            val testProgressDrawable = TestProgressDrawable(
+                size = Size(100, 100),
+                hiddenWhenIndeterminate = false,
+                hiddenWhenCompleted = true,
+                stepAnimationDuration = 150,
+            )
             withContext(Dispatchers.Main) {
-                testProgressDrawable.progress = 1.25f
+                val imageView = ImageView(activity).apply {
+                    setImageDrawable(testProgressDrawable)
+                }
+                activity.setContentView(imageView)
+                testProgressDrawable.progress = 0.2f
+                testProgressDrawable.progress = 1f
             }
             block(200)
 
-            val actions = testProgressDrawable.drawProgressHistory
+            val actions = testProgressDrawable.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(
-                actual = actions.first().toFloat() >= 0.0f,
-                message = "$actions"
+            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
+            assertEquals(expected = "1.0", actual = actions.last(), message = "$actions")
+            assertEquals(expected = 1f, actual = testProgressDrawable.progress)
+        }
+
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+            val testProgressDrawable = TestProgressDrawable(
+                size = Size(100, 100),
+                hiddenWhenIndeterminate = false,
+                hiddenWhenCompleted = true,
+                stepAnimationDuration = 150,
             )
-            assertEquals(
-                expected = "1.0",
-                actual = actions.last(),
-                message = "$actions"
+            withContext(Dispatchers.Main) {
+                val imageView = ImageView(activity).apply {
+                    setImageDrawable(testProgressDrawable)
+                }
+                activity.setContentView(imageView)
+                testProgressDrawable.progress = -1.25f
+            }
+            block(200)
+
+            val actions = testProgressDrawable.drawProgressHistory.distinct()
+            assertTrue(actual = actions.isEmpty(), message = "$actions")
+            assertEquals(expected = -1f, actual = testProgressDrawable.progress)
+        }
+
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+            val testProgressDrawable = TestProgressDrawable(
+                size = Size(100, 100),
+                hiddenWhenIndeterminate = false,
+                hiddenWhenCompleted = true,
+                stepAnimationDuration = 150,
             )
-            assertTrue(actions.size >= 20)
+            withContext(Dispatchers.Main) {
+                val imageView = ImageView(activity).apply {
+                    setImageDrawable(testProgressDrawable)
+                }
+                activity.setContentView(imageView)
+                testProgressDrawable.progress = 1f
+                testProgressDrawable.progress = 1.2f
+            }
+            block(200)
+
+            val actions = testProgressDrawable.drawProgressHistory.distinct()
+            assertTrue(actual = actions.isEmpty(), message = "$actions")
+            assertEquals(expected = 1f, actual = testProgressDrawable.progress)
         }
     }
 
@@ -98,138 +205,225 @@ class AbsProgressDrawableTest {
                 hiddenWhenCompleted = false,
                 stepAnimationDuration = 150,
             )
-
             withContext(Dispatchers.Main) {
                 val imageView = ImageView(activity).apply {
                     setImageDrawable(testProgressDrawable)
                 }
                 activity.setContentView(imageView)
-            }
-            block(200)
-
-            withContext(Dispatchers.Main) {
-                testProgressDrawable.progress = -0.25f
-            }
-            block(200)
-
-            withContext(Dispatchers.Main) {
                 testProgressDrawable.progress = 0.25f
             }
             block(200)
 
+            val actions = testProgressDrawable.drawProgressHistory.distinct()
+            checkElements(actions)
+            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
+            assertEquals(expected = "0.2", actual = actions.last(), message = "$actions")
+            assertEquals(expected = 0.2f, actual = testProgressDrawable.progress)
+        }
+
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+            val testProgressDrawable = TestProgressDrawable(
+                size = Size(100, 100),
+                hiddenWhenIndeterminate = true,
+                hiddenWhenCompleted = false,
+                stepAnimationDuration = 150,
+            )
             withContext(Dispatchers.Main) {
+                val imageView = ImageView(activity).apply {
+                    setImageDrawable(testProgressDrawable)
+                }
+                activity.setContentView(imageView)
                 testProgressDrawable.progress = 0.5f
             }
             block(200)
 
+            val actions = testProgressDrawable.drawProgressHistory.distinct()
+            checkElements(actions)
+            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
+            assertEquals(expected = "0.5", actual = actions.last(), message = "$actions")
+            assertEquals(expected = 0.5f, actual = testProgressDrawable.progress)
+        }
+
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+            val testProgressDrawable = TestProgressDrawable(
+                size = Size(100, 100),
+                hiddenWhenIndeterminate = true,
+                hiddenWhenCompleted = false,
+                stepAnimationDuration = 150,
+            )
             withContext(Dispatchers.Main) {
+                val imageView = ImageView(activity).apply {
+                    setImageDrawable(testProgressDrawable)
+                }
+                activity.setContentView(imageView)
                 testProgressDrawable.progress = 0.75f
             }
             block(200)
 
+            val actions = testProgressDrawable.drawProgressHistory.distinct()
+            checkElements(actions)
+            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
+            assertEquals(expected = "0.8", actual = actions.last(), message = "$actions")
+            assertEquals(expected = 0.8f, actual = testProgressDrawable.progress)
+        }
+
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+            val testProgressDrawable = TestProgressDrawable(
+                size = Size(100, 100),
+                hiddenWhenIndeterminate = true,
+                hiddenWhenCompleted = false,
+                stepAnimationDuration = 150,
+            )
             withContext(Dispatchers.Main) {
+                val imageView = ImageView(activity).apply {
+                    setImageDrawable(testProgressDrawable)
+                }
+                activity.setContentView(imageView)
                 testProgressDrawable.progress = 1f
             }
             block(200)
 
+            val actions = testProgressDrawable.drawProgressHistory.distinct()
+            assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
+            assertEquals(expected = "1.0", actual = actions.last(), message = "$actions")
+            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertEquals(expected = 1f, actual = testProgressDrawable.progress)
+        }
+
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+            val testProgressDrawable = TestProgressDrawable(
+                size = Size(100, 100),
+                hiddenWhenIndeterminate = true,
+                hiddenWhenCompleted = false,
+                stepAnimationDuration = 150,
+            )
             withContext(Dispatchers.Main) {
-                testProgressDrawable.progress = 1.25f
+                val imageView = ImageView(activity).apply {
+                    setImageDrawable(testProgressDrawable)
+                }
+                activity.setContentView(imageView)
+                testProgressDrawable.progress = 0.2f
+                testProgressDrawable.progress = 1f
             }
             block(200)
 
-            val actions = testProgressDrawable.drawProgressHistory
+            val actions = testProgressDrawable.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(
-                actual = actions.first().toFloat() > 0.0f,
-                message = "$actions"
+            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
+            assertEquals(expected = "1.0", actual = actions.last(), message = "$actions")
+            assertEquals(expected = 1f, actual = testProgressDrawable.progress)
+        }
+
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+            val testProgressDrawable = TestProgressDrawable(
+                size = Size(100, 100),
+                hiddenWhenIndeterminate = true,
+                hiddenWhenCompleted = false,
+                stepAnimationDuration = 150,
             )
-            assertEquals(
-                expected = "1.0",
-                actual = actions.last(),
-                message = "$actions"
+            withContext(Dispatchers.Main) {
+                val imageView = ImageView(activity).apply {
+                    setImageDrawable(testProgressDrawable)
+                }
+                activity.setContentView(imageView)
+                testProgressDrawable.progress = -1.25f
+            }
+            block(200)
+
+            val actions = testProgressDrawable.drawProgressHistory.distinct()
+            assertTrue(actual = actions.isEmpty(), message = "$actions")
+            assertEquals(expected = -1f, actual = testProgressDrawable.progress)
+        }
+
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+            val testProgressDrawable = TestProgressDrawable(
+                size = Size(100, 100),
+                hiddenWhenIndeterminate = true,
+                hiddenWhenCompleted = false,
+                stepAnimationDuration = 150,
             )
-            assertTrue(actions.size >= 20)
+            withContext(Dispatchers.Main) {
+                val imageView = ImageView(activity).apply {
+                    setImageDrawable(testProgressDrawable)
+                }
+                activity.setContentView(imageView)
+                testProgressDrawable.progress = 1.2f
+            }
+            block(200)
+
+            val actions = testProgressDrawable.drawProgressHistory.distinct()
+            checkElements(actions)
+            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
+            assertEquals(expected = "1.0", actual = actions.last(), message = "$actions")
+            assertEquals(expected = 1f, actual = testProgressDrawable.progress)
         }
     }
 
-//    @Test
-//    fun testCompleted() = runTest {
-//        TestActivity::class.launchActivity().use { activityScenario ->
-//            val activity = activityScenario.getActivitySync()
-//            val testProgressDrawable = TestProgressDrawable(
-//                size = Size(100, 100),
-//                hiddenWhenIndeterminate = true,
-//                hiddenWhenCompleted = false,
-//                stepAnimationDuration = 150,
-//            )
-//
-//            withContext(Dispatchers.Main) {
-//                val imageView = ImageView(activity).apply {
-//                    setImageDrawable(testProgressDrawable)
-//                }
-//                activity.setContentView(imageView)
-//            }
-//            block(200)
-//
-//            withContext(Dispatchers.Main) {
-//                testProgressDrawable.progress = 1f
-//            }
-//            block(200)
-//
-//            val actions = testProgressDrawable.drawProgressHistory
-//            checkElements(actions)
-//            assertTrue(
-//                actual = actions.first().toFloat() >= 0.0f,
-//                message = "$actions"
-//            )
-//            assertEquals(
-//                expected = "1.0",
-//                actual = actions.last(),
-//                message = "$actions"
-//            )
-//        }
-//    }
-//
-//    @Test
-//    fun testSetVisible() = runTest {
-//        TestActivity::class.launchActivity().use { activityScenario ->
-//            val activity = activityScenario.getActivitySync()
-//            val testProgressDrawable = TestProgressDrawable(
-//                size = Size(100, 100),
-//                hiddenWhenIndeterminate = true,
-//                hiddenWhenCompleted = false,
-//                stepAnimationDuration = 150,
-//            )
-//
-//            withContext(Dispatchers.Main) {
-//                val imageView = ImageView(activity).apply {
-//                    setImageDrawable(testProgressDrawable)
-//                }
-//                activity.setContentView(imageView)
-//            }
-//            block(200)
-//
-//            withContext(Dispatchers.Main) {
-//                testProgressDrawable.progress = 1f
-//            }
-//            block(50)
-//            withContext(Dispatchers.Main) {
-//                testProgressDrawable.setVisible(visible = false, restart = false)
-//            }
-//            block(50)
-//
-//            val actions = testProgressDrawable.drawProgressHistory
-//            checkElements(actions)
-//            assertTrue(
-//                actual = actions.first().toFloat() >= 0.0f,
-//                message = "$actions"
-//            )
-//            assertTrue(
-//                actual = actions.last().toFloat() < 1.0f,
-//                message = "$actions"
-//            )
-//        }
-//    }
+    @Test
+    fun testSetVisible() = runTest {
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+            val testProgressDrawable = TestProgressDrawable(
+                size = Size(100, 100),
+                hiddenWhenIndeterminate = true,
+                hiddenWhenCompleted = false,
+                stepAnimationDuration = 150,
+            )
+            withContext(Dispatchers.Main) {
+                val imageView = ImageView(activity).apply {
+                    setImageDrawable(testProgressDrawable)
+                }
+                activity.setContentView(imageView)
+                testProgressDrawable.progress = 1f
+            }
+            block(200)
+
+            val actions = testProgressDrawable.drawProgressHistory.distinct()
+            assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
+            assertEquals(expected = "1.0", actual = actions.last(), message = "$actions")
+            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertEquals(expected = 1f, actual = testProgressDrawable.progress)
+        }
+
+        TestActivity::class.launchActivity().use { activityScenario ->
+            val activity = activityScenario.getActivitySync()
+            val testProgressDrawable = TestProgressDrawable(
+                size = Size(100, 100),
+                hiddenWhenIndeterminate = true,
+                hiddenWhenCompleted = false,
+                stepAnimationDuration = 150,
+            )
+            withContext(Dispatchers.Main) {
+                val imageView = ImageView(activity).apply {
+                    setImageDrawable(testProgressDrawable)
+                }
+                activity.setContentView(imageView)
+                testProgressDrawable.progress = 1f
+            }
+            block(50)
+            withContext(Dispatchers.Main) {
+                testProgressDrawable.setVisible(visible = false, restart = false)
+            }
+            block(50)
+
+            val actions = testProgressDrawable.drawProgressHistory.distinct()
+            assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
+            assertEquals(expected = "1.0", actual = actions.last(), message = "$actions")
+            assertTrue(actual = actions.size < 5, message = "$actions")
+            assertEquals(expected = 1f, actual = testProgressDrawable.progress)
+        }
+    }
 
     private fun checkElements(it: List<String>) {
         it.forEachIndexed { index, _ ->
