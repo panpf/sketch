@@ -84,6 +84,7 @@ class AbsProgressDrawableTest {
                 actual = actions.last(),
                 message = "$actions"
             )
+            assertTrue(actions.size >= 20)
         }
     }
 
@@ -147,6 +148,7 @@ class AbsProgressDrawableTest {
                 actual = actions.last(),
                 message = "$actions"
             )
+            assertTrue(actions.size >= 20)
         }
     }
 

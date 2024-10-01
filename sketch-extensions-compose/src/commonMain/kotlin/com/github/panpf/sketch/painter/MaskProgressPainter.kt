@@ -23,6 +23,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.toArgb
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_MASK_COLOR
@@ -105,7 +106,7 @@ class MaskProgressPainter(
 
     override fun toString(): String {
         return "MaskProgressPainter(" +
-                "maskColor=$maskColor, " +
+                "maskColor=${maskColor.toArgb()}, " +
                 "hiddenWhenIndeterminate=$hiddenWhenIndeterminate, " +
                 "hiddenWhenCompleted=$hiddenWhenCompleted, " +
                 "stepAnimationDuration=$stepAnimationDuration" +

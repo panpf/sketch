@@ -48,6 +48,11 @@ class RingProgressDrawableTest {
     }
 
     @Test
+    fun testDraw() {
+        // TODO test: Draw to Bitmap, then compare Bitmap
+    }
+
+    @Test
     fun testMutable() {
         val drawable = RingProgressDrawable(101)
         assertSame(

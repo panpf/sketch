@@ -171,9 +171,9 @@ class AbsAbilityImageViewTest {
         }
     }
 
-//    @Test
-//    fun testTouchEventObserver() = runTest {
-//        // TODO Not testable: No way to send touch events has been found yet
+    @Test
+    fun testTouchEventObserver() = runTest {
+        // TODO Not testable: No way to send touch events has been found yet
 //        ViewAbilityTestActivity::class.launchActivity().use { activityScenario ->
 //            val activity = activityScenario.getActivitySync()
 //            sendTouchClick(500, 500)
@@ -183,7 +183,7 @@ class AbsAbilityImageViewTest {
 //                actual = touchEventViewAbility.actions
 //            )
 //        }
-//    }
+    }
 //
 //    @WorkerThread
 //    private fun sendTouchClick(x: Int, y: Int) {

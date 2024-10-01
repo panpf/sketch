@@ -37,6 +37,11 @@ class MaskProgressDrawableTest {
     }
 
     @Test
+    fun testDraw() {
+        // TODO test: Draw to Bitmap, then compare Bitmap
+    }
+
+    @Test
     fun testMutable() {
         val drawable = MaskProgressDrawable()
         assertSame(
