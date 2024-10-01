@@ -13,6 +13,11 @@ addAllMultiplatformTargets()
 
 androidLibrary(nameSpace = "com.github.panpf.sketch.test.utils.compose.core")
 
+compose.resources {
+    packageOfResClass = "com.github.panpf.sketch.test.utils.compose.core.resources"
+    publicResClass = true
+}
+
 kotlin {
     sourceSets {
         commonMain.dependencies {
@@ -21,6 +26,7 @@ kotlin {
             api(compose.foundation)
             api(compose.ui)
             api(compose.uiTest)
+            api(compose.components.resources)
         }
     }
 }
