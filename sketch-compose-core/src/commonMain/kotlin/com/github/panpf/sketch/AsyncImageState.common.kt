@@ -134,7 +134,8 @@ class AsyncImageState internal constructor(
         private set
     var contentScale: ContentScale? by mutableStateOf(null)
         internal set
-    internal var filterQuality = DrawScope.DefaultFilterQuality
+    var filterQuality = DrawScope.DefaultFilterQuality
+        internal set
     private val sizeResolver = AsyncImageSizeResolver(size)
 
     var loadState: LoadState? by mutableStateOf(null)

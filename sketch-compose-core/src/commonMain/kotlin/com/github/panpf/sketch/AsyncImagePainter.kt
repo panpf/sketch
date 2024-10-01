@@ -104,7 +104,7 @@ fun rememberAsyncImagePainter(
  * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
  *  destination.
  *
- *  @see com.github.panpf.sketch.compose.core.common.test.AsyncImagePainterTest.testRememberAsyncImagePainter
+ *  @see com.github.panpf.sketch.compose.core.common.test.AsyncImagePainterTest.testRememberAsyncImagePainter2
  */
 @Composable
 fun rememberAsyncImagePainter(
@@ -130,7 +130,7 @@ fun rememberAsyncImagePainter(
  */
 @Stable
 class AsyncImagePainter internal constructor(
-    private val state: AsyncImageState,
+    val state: AsyncImageState,
 ) : Painter(), SketchPainter {
 
     private var alpha: Float by mutableFloatStateOf(DefaultAlpha)
