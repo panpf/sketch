@@ -93,20 +93,14 @@ fun ImageRequest.Builder.resize(
     size: IntSize,
     precision: Precision? = null,
     scale: Scale? = null
-): ImageRequest.Builder =
-    apply {
-        resize(size.toSketchSize(), precision, scale)
-    }
+): ImageRequest.Builder = resize(size.toSketchSize(), precision, scale)
 
 /**
  * Set the resize size
  *
  * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testSize
  */
-fun ImageRequest.Builder.size(size: IntSize): ImageRequest.Builder =
-    apply {
-        size(size.toSketchSize())
-    }
+fun ImageRequest.Builder.size(size: IntSize): ImageRequest.Builder = size(size.toSketchSize())
 
 /**
  * Use window size as resize size

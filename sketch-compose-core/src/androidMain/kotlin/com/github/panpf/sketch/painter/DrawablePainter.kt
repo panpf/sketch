@@ -65,6 +65,7 @@ import kotlin.math.roundToInt
 fun rememberDrawablePainter(drawable: EquitableDrawable): Painter =
     remember(drawable) { drawable.asPainter() }
 
+// TODO test
 fun Drawable?.asPainter(): Painter {
     return when (this) {
         null -> EmptyPainter
@@ -72,7 +73,7 @@ fun Drawable?.asPainter(): Painter {
         is BitmapDrawable -> BitmapPainter(this.bitmap.asImageBitmap())
         is ColorDrawable -> ColorPainter(Color(this.color))
         // Since the DrawablePainter will be remembered and it implements RememberObserver, it
-        // will receive the necessary events
+        //  will receive the necessary events
         else -> DrawablePainter(this.mutate())
     }
 }

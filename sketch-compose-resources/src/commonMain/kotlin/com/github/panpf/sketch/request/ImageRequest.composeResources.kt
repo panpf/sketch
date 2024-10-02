@@ -46,8 +46,5 @@ fun ImageRequest.Builder.fallback(resource: DrawableResource): ImageRequest.Buil
  * @see com.github.panpf.sketch.compose.resources.common.test.request.ImageRequestComposeResourcesTest.testError
  */
 @Composable
-fun ImageRequest.Builder.error(
-    defaultResource: DrawableResource,
-): ImageRequest.Builder = apply {
-    error(rememberPainterStateImage(defaultResource))
-}
+fun ImageRequest.Builder.error(resource: DrawableResource): ImageRequest.Builder =
+    error(rememberPainterStateImage(resource))

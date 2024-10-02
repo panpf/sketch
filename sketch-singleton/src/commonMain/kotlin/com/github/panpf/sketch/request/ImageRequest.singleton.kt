@@ -20,7 +20,6 @@ import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
 
-
 /**
  * Execute current ImageRequest asynchronously.
  *

@@ -46,5 +46,5 @@ fun ImageOptions.Builder.fallback(resource: DrawableResource): ImageOptions.Buil
  * @see com.github.panpf.sketch.compose.resources.common.test.request.ImageOptionsComposeResourcesTest.testError
  */
 @Composable
-fun ImageOptions.Builder.error(defaultResource: DrawableResource): ImageOptions.Builder =
-    error(rememberPainterStateImage(defaultResource))
+fun ImageOptions.Builder.error(resource: DrawableResource): ImageOptions.Builder =
+    error(rememberPainterStateImage(resource))

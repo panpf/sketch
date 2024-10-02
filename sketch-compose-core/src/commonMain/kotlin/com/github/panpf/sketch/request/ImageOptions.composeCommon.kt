@@ -51,20 +51,14 @@ fun ImageOptions.Builder.resize(
     size: IntSize,
     precision: Precision? = null,
     scale: Scale? = null
-): ImageOptions.Builder =
-    apply {
-        resize(size.toSketchSize(), precision, scale)
-    }
+): ImageOptions.Builder = resize(size.toSketchSize(), precision, scale)
 
 /**
  * Set the resize size
  *
  * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testSize
  */
-fun ImageOptions.Builder.size(size: IntSize): ImageOptions.Builder =
-    apply {
-        size(size.toSketchSize())
-    }
+fun ImageOptions.Builder.size(size: IntSize): ImageOptions.Builder = size(size.toSketchSize())
 
 /**
  * Use window size as resize size

@@ -116,9 +116,8 @@ fun ImageRequest.Builder.fallback(color: ResColor): ImageRequest.Builder =
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testError
  */
-fun ImageRequest.Builder.error(
-    defaultDrawable: EquitableDrawable,
-): ImageRequest.Builder = error(DrawableStateImage(defaultDrawable))
+fun ImageRequest.Builder.error(drawable: EquitableDrawable): ImageRequest.Builder =
+    error(DrawableStateImage(drawable))
 
 /**
  * Set Drawable res image to display when loading fails.
@@ -127,9 +126,8 @@ fun ImageRequest.Builder.error(
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testError
  */
-fun ImageRequest.Builder.error(
-    @DrawableRes defaultResId: Int,
-): ImageRequest.Builder = error(DrawableStateImage(defaultResId))
+fun ImageRequest.Builder.error(@DrawableRes resId: Int): ImageRequest.Builder =
+    error(DrawableStateImage(resId))
 
 /**
  * Set Color image to display when loading fails.
@@ -138,9 +136,8 @@ fun ImageRequest.Builder.error(
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testError
  */
-fun ImageRequest.Builder.error(
-    color: IntColor,
-): ImageRequest.Builder = error(ColorDrawableStateImage(color))
+fun ImageRequest.Builder.error(color: IntColor): ImageRequest.Builder =
+    error(ColorDrawableStateImage(color))
 
 /**
  * Set Color image to display when loading fails.
@@ -149,9 +146,9 @@ fun ImageRequest.Builder.error(
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testError
  */
-fun ImageRequest.Builder.error(
-    color: ResColor,
-): ImageRequest.Builder = error(ColorDrawableStateImage(color))
+fun ImageRequest.Builder.error(color: ResColor): ImageRequest.Builder =
+    error(ColorDrawableStateImage(color))
+
 
 /**
  * Set [ColorType] to use when creating the bitmap.
@@ -159,7 +156,7 @@ fun ImageRequest.Builder.error(
  * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testColorType
  */
 fun ImageRequest.Builder.colorType(colorType: ColorType?): ImageRequest.Builder =
-    this.colorType(colorType?.let { BitmapColorType(it) })
+    colorType(colorType?.let { BitmapColorType(it) })
 
 
 /**
@@ -169,7 +166,7 @@ fun ImageRequest.Builder.colorType(colorType: ColorType?): ImageRequest.Builder 
  */
 @RequiresApi(Build.VERSION_CODES.O)
 fun ImageRequest.Builder.colorSpace(colorSpace: ColorSpace.Named?): ImageRequest.Builder =
-    this.colorSpace(colorSpace?.let { BitmapColorSpace(it) })
+    colorSpace(colorSpace?.let { BitmapColorSpace(it) })
 
 
 const val PREFER_QUALITY_OVER_SPEED_KEY = "sketch#prefer_quality_over_speed"

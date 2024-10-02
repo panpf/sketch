@@ -5,7 +5,6 @@ import com.github.panpf.sketch.decode.BitmapColorType
 import org.jetbrains.skia.ColorSpace
 import org.jetbrains.skia.ColorType
 
-
 /**
  * Set [ColorType] to use when creating the bitmap.
  *

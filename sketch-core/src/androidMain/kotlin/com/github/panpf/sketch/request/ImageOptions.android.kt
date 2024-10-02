@@ -116,9 +116,8 @@ fun ImageOptions.Builder.fallback(color: ResColor): ImageOptions.Builder =
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testError
  */
-fun ImageOptions.Builder.error(
-    defaultDrawable: EquitableDrawable,
-): ImageOptions.Builder = error(DrawableStateImage(defaultDrawable))
+fun ImageOptions.Builder.error(drawable: EquitableDrawable): ImageOptions.Builder =
+    error(DrawableStateImage(drawable))
 
 /**
  * Set Drawable res image to display when loading fails.
@@ -127,9 +126,8 @@ fun ImageOptions.Builder.error(
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testError
  */
-fun ImageOptions.Builder.error(
-    @DrawableRes defaultResId: Int,
-): ImageOptions.Builder = error(DrawableStateImage(defaultResId))
+fun ImageOptions.Builder.error(@DrawableRes resId: Int): ImageOptions.Builder =
+    error(DrawableStateImage(resId))
 
 /**
  * Set Color image to display when loading fails.

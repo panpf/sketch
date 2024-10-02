@@ -21,7 +21,6 @@ import android.widget.ImageView
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
 import com.github.panpf.sketch.target.ImageViewTarget
 
-
 /**
  * Build and set the [ImageRequest], target is an ImageView
  *
