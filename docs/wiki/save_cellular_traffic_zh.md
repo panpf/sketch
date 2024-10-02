@@ -43,18 +43,22 @@ ImageRequest(context, "https://example.com/image.jpg") {
 ImageRequest(context, "https://example.com/image.jpg") {
     saveCellularTraffic(true)
 
-    error(R.drawable.ic_error) {
-        saveCellularTrafficError(R.drawable.ic_signal_cellular)
-    }
+    error(
+        ConditionStateImage(defaultImage = R.drawable.ic_error) {
+            saveCellularTrafficError(R.drawable.ic_signal_cellular)
+        }
+    )
 }
 
 // Compose
 ComposableImageRequest(context, "https://example.com/image.jpg") {
     saveCellularTraffic(true)
 
-    composableError(Res.drawable.ic_error) {
-        saveCellularTrafficError(Res.drawable.ic_signal_cellular)
-    }
+    error(
+        ComposableConditionStateImage(defaultImage = Res.drawable.ic_error) {
+            saveCellularTrafficError(Res.drawable.ic_signal_cellular)
+        }
+    )
 }
 ```
 

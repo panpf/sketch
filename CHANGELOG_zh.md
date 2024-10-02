@@ -26,6 +26,9 @@
 * change: 合并 AndroidBitmapImage 和 SkiaBitmapImage 为 BitmapImage
 * change: ImageRequest.Builder 和 ImageOptions.Builder 的 setHttpHeader 方法重命名为 httpHeader
 * change: DrawableEqualizer 和 PainterEqualizer 改为 EquitableDrawable 和 EquitablePainter
+* change: ImageRequest 和 ImageOptions 的 error 属性的类型从 ErrorImageState 改为 StateImage
+* change: ErrorImageState 重构为 ConditionStateImage，并且 ConditionStateImage 可以用在 placeholder 和
+  fallback
 * new: 非安卓平台现在也支持 ColorType 了
 * new: 非安卓平台现在也支持 ColorSpace 了
 * new: DrawableDecoder 支持 colorSpace

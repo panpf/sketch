@@ -234,14 +234,14 @@ class EquitableAnimatableDrawableTest {
         val context = getTestContext()
 
         EquitableAnimatableDrawable(
-            drawable = TestAnimatableDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar)),
+            drawable = TestAnimatableDrawable(context.getDrawableCompat(android.R.drawable.ic_lock_lock)),
             equalityKey = "key"
         ).apply {
             val mutateDrawable = mutate()
             assertSame(this, mutateDrawable)
             mutateDrawable.alpha = 146
 
-            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+            context.getDrawableCompat(android.R.drawable.ic_lock_lock).also {
                 if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                     assertEquals(255, it.alpha)
                 }
@@ -252,7 +252,7 @@ class EquitableAnimatableDrawableTest {
             drawable = TestAnimatableDrawable(
                 TestNewMutateDrawable(
                     context.getDrawableCompat(
-                        android.R.drawable.bottom_bar
+                        android.R.drawable.ic_lock_lock
                     )
                 )
             ),
@@ -262,7 +262,7 @@ class EquitableAnimatableDrawableTest {
             assertNotSame(this, mutateDrawable)
             mutateDrawable.alpha = 146
 
-            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+            context.getDrawableCompat(android.R.drawable.ic_lock_lock).also {
                 if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                     assertEquals(255, it.alpha)
                 }

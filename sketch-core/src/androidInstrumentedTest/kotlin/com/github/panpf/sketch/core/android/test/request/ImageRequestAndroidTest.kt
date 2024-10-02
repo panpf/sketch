@@ -37,11 +37,8 @@ import com.github.panpf.sketch.request.sizeWithDisplay
 import com.github.panpf.sketch.resize.FixedSizeResolver
 import com.github.panpf.sketch.state.ColorDrawableStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
-import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.IntColorDrawableStateImage
-import com.github.panpf.sketch.state.addState
 import com.github.panpf.sketch.test.utils.TestColor
-import com.github.panpf.sketch.test.utils.UriInvalidCondition
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.ResColor
@@ -50,7 +47,6 @@ import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
@@ -95,10 +91,10 @@ class ImageRequestAndroidTest {
                 assertEquals(true, placeholder is DrawableStateImage)
             }
 
-            placeholder(android.R.drawable.bottom_bar)
+            placeholder(android.R.drawable.ic_lock_lock)
             build().apply {
                 assertEquals(
-                    DrawableStateImage(android.R.drawable.bottom_bar),
+                    DrawableStateImage(android.R.drawable.ic_lock_lock),
                     placeholder
                 )
             }
@@ -111,10 +107,10 @@ class ImageRequestAndroidTest {
                 )
             }
 
-            placeholder(ResColor(8801))
+            placeholder(ResColor(android.R.drawable.ic_lock_lock))
             build().apply {
                 assertEquals(
-                    ColorDrawableStateImage(ResColor(8801)),
+                    ColorDrawableStateImage(ResColor(android.R.drawable.ic_lock_lock)),
                     placeholder
                 )
             }
@@ -145,10 +141,10 @@ class ImageRequestAndroidTest {
                 assertEquals(true, fallback is DrawableStateImage)
             }
 
-            fallback(android.R.drawable.bottom_bar)
+            fallback(android.R.drawable.ic_lock_lock)
             build().apply {
                 assertEquals(
-                    DrawableStateImage(android.R.drawable.bottom_bar),
+                    DrawableStateImage(android.R.drawable.ic_lock_lock),
                     fallback
                 )
             }
@@ -161,10 +157,10 @@ class ImageRequestAndroidTest {
                 )
             }
 
-            fallback(ResColor(8801))
+            fallback(ResColor(android.R.drawable.ic_lock_lock))
             build().apply {
                 assertEquals(
-                    ColorDrawableStateImage(ResColor(8801)),
+                    ColorDrawableStateImage(ResColor(android.R.drawable.ic_lock_lock)),
                     fallback
                 )
             }
@@ -185,73 +181,49 @@ class ImageRequestAndroidTest {
                 assertNull(error)
             }
 
-            error(IntColorDrawableStateImage(Color.BLUE))
-            build().apply {
-                assertEquals(
-                    ErrorStateImage(IntColorDrawableStateImage(Color.BLUE)),
-                    error
-                )
-            }
-
             error(ColorEquitableDrawable(Color.GREEN))
             build().apply {
-                assertEquals(true, error is ErrorStateImage)
-            }
-
-            error(android.R.drawable.bottom_bar)
-            build().apply {
                 assertEquals(
-                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)),
+                    DrawableStateImage(ColorEquitableDrawable(Color.GREEN)),
                     error
                 )
             }
 
-            error(android.R.drawable.bottom_bar) {
-                addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
-            }
+            error(android.R.drawable.ic_lock_lock)
             build().apply {
                 assertEquals(
-                    ErrorStateImage(DrawableStateImage(android.R.drawable.bottom_bar)) {
-                        addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
-                    },
+                    DrawableStateImage(android.R.drawable.ic_lock_lock),
                     error
                 )
             }
 
-            error(IntColor(TestColor.RED)) {
-                addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
-            }
+            error(android.R.drawable.ic_lock_lock)
             build().apply {
                 assertEquals(
-                    ErrorStateImage(ColorDrawableStateImage(IntColor(TestColor.RED))) {
-                        addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
-                    },
+                    DrawableStateImage(android.R.drawable.ic_lock_lock),
                     error
                 )
             }
 
-            error(ResColor(8801)) {
-                addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
-            }
+            error(IntColor(TestColor.RED))
             build().apply {
                 assertEquals(
-                    ErrorStateImage(ColorDrawableStateImage(ResColor(8801))) {
-                        addState(UriInvalidCondition, android.R.drawable.alert_dark_frame)
-                    },
+                    ColorDrawableStateImage(IntColor(TestColor.RED)),
                     error
                 )
             }
 
-            error()
+            error(ResColor(android.R.drawable.ic_lock_lock))
+            build().apply {
+                assertEquals(
+                    ColorDrawableStateImage(ResColor(android.R.drawable.ic_lock_lock)),
+                    error
+                )
+            }
+
+            error(null)
             build().apply {
                 assertNull(error)
-            }
-
-            error {
-                addState(UriInvalidCondition, android.R.drawable.btn_dialog)
-            }
-            build().apply {
-                assertNotNull(error)
             }
         }
     }

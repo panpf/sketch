@@ -28,10 +28,8 @@ import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.drawable.EquitableDrawable
 import com.github.panpf.sketch.state.ColorDrawableStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
-import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.ResColor
-
 
 /**
  * Use the screen size as the resize size
@@ -120,8 +118,7 @@ fun ImageRequest.Builder.fallback(color: ResColor): ImageRequest.Builder =
  */
 fun ImageRequest.Builder.error(
     defaultDrawable: EquitableDrawable,
-    configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
-): ImageRequest.Builder = error(DrawableStateImage(defaultDrawable), configBlock)
+): ImageRequest.Builder = error(DrawableStateImage(defaultDrawable))
 
 /**
  * Set Drawable res image to display when loading fails.
@@ -132,8 +129,7 @@ fun ImageRequest.Builder.error(
  */
 fun ImageRequest.Builder.error(
     @DrawableRes defaultResId: Int,
-    configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
-): ImageRequest.Builder = error(DrawableStateImage(defaultResId), configBlock)
+): ImageRequest.Builder = error(DrawableStateImage(defaultResId))
 
 /**
  * Set Color image to display when loading fails.
@@ -144,8 +140,7 @@ fun ImageRequest.Builder.error(
  */
 fun ImageRequest.Builder.error(
     color: IntColor,
-    configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
-): ImageRequest.Builder = error(ColorDrawableStateImage(color), configBlock)
+): ImageRequest.Builder = error(ColorDrawableStateImage(color))
 
 /**
  * Set Color image to display when loading fails.
@@ -156,8 +151,7 @@ fun ImageRequest.Builder.error(
  */
 fun ImageRequest.Builder.error(
     color: ResColor,
-    configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
-): ImageRequest.Builder = error(ColorDrawableStateImage(color), configBlock)
+): ImageRequest.Builder = error(ColorDrawableStateImage(color))
 
 /**
  * Set [ColorType] to use when creating the bitmap.

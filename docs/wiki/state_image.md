@@ -37,8 +37,7 @@ Generic:
   consistent with the original image, and the thumbnail that has not been modified by Transformation
   is used as the state image. It can also be used with crossfade to achieve a perfect transition
   from small images to large images.
-* [ErrorStateImage]: Specially used for error status, you can choose different status pictures
-  according to the error type
+* [ConditionStateImage]: Different status pictures can be used according to different conditions
 
 ## Configuration
 
@@ -52,20 +51,27 @@ ImageRequest(context, "https://example.com/image.jpg") {
   placeholder(context.getEquitableDrawable(R.drawable.placeholder))
   placeholder(IntColorDrawableStateImage(Color.Gray))
   placeholder(DrawableStateImage(R.drawable.placeholder))
-  placeholder(IconDrawableStateImage(R.drawable.placeholder, IntColor(Color.GRAY)))
+  placeholder(IconDrawableStateImage(icon = R.drawable.placeholder, background = IntColor(Color.GRAY)))
+  placeholder(ConditionStateImage(defaultResId = R.drawable.error){
+    addState(condition = MyCondition, resId = R.drawable.mystate)
+  })
 
   fallback(R.drawable.fallback)
   fallback(context.getEquitableDrawable(R.drawable.fallback))
   fallback(IntColorDrawableStateImage(Color.RED))
   fallback(DrawableStateImage(R.drawable.fallback))
-  fallback(IconDrawableStateImage(R.drawable.fallback, IntColor(Color.RED)))
+  fallback(IconDrawableStateImage(icon = R.drawable.fallback, background = IntColor(Color.RED)))
+  fallback(ConditionStateImage(defaultResId = R.drawable.error) {
+    addState(condition = MyCondition, resId = R.drawable.mystate)
+  })
 
   error(R.drawable.error)
-  error(R.drawable.error) {
-    addState(MyCondition, R.drawable.mystate)
-  }
-  error(ErrorStateImage(R.drawable.error)) {
-    addState(MyCondition, R.drawable.mystate)
+  error(context.getEquitableDrawable(R.drawable.error))
+  error(IntColorDrawableStateImage(Color.RED))
+  error(DrawableStateImage(R.drawable.error))
+  error(IconDrawableStateImage(icon = R.drawable.error, background = IntColor(Color.RED)))
+  error(ConditionStateImage(defaultResId = R.drawable.error) {
+    addState(condition = MyCondition, resId = R.drawable.mystate)
   })
 }
 
@@ -75,19 +81,24 @@ ComposableImageRequest("https://example.com/image.jpg") {
   placeholder(rememberPainterStateImage(Res.drawable.placeholder))
   placeholder(rememberColorPainterStateImage(Color.Gray))
   placeholder(rememberIconPainterStateImage(Res.drawable.placeholder, background = Color.Gray))
+  placeholder(ComposableConditionStateImage(defaultImage = Res.drawable.placeholder){
+    addState(condition = MyCondition, stateImage = Res.drawable.mystate)
+  })
 
   fallback(Res.drawable.fallback)
   fallback(rememberPainterStateImage(Res.drawable.fallback))
   fallback(rememberColorPainterStateImage(Color.Red))
   fallback(rememberIconPainterStateImage(Res.drawable.fallback, background = Color.Red))
-
+  fallback(ComposableConditionStateImage(defaultImage = Res.drawable.fallback){
+    addState(condition = MyCondition, stateImage = Res.drawable.mystate)
+  })
 
   error(Res.drawable.error)
-  error(Res.drawable.error) {
-    addState(MyCondition, Res.drawable.mystate)
-  }
-  error(ErrorStateImage(R.drawable.error)) {
-    addState(MyCondition, Res.drawable.mystate)
+  error(rememberPainterStateImage(Res.drawable.error))
+  error(rememberColorPainterStateImage(Color.Red))
+  error(rememberIconPainterStateImage(Res.drawable.error, background = Color.Red))
+  error(ComposableConditionStateImage(defaultImage = Res.drawable.error){
+    addState(condition = MyCondition, stateImage = Res.drawable.mystate)
   })
 }
 ```
@@ -100,14 +111,16 @@ ComposableImageRequest("https://example.com/image.jpg") {
 
 You can refer to the existing implementation of [StateImage]
 
-### ErrorStateImage
+### ConditionStateImage
 
-[ErrorStateImage] supports returning different status images according to different error types. You
-can implement the [ErrorStateImage] .Condition interface to extend the new type, and then use the
-custom type through [ErrorStateImage] .Builder.addState(), as follows:
+[ConditionStateImage] supports returning different status images according to different condition.
+You
+can implement the [ConditionStateImage] .Condition interface to extend the new type, and then use
+the
+custom type through [ConditionStateImage] .Builder.addState(), as follows:
 
 ```kotlin
-object MyCondition : ErrorStateImage.Condition {
+object MyCondition : ConditionStateImage.Condition {
 
     override fun accept(
         request: ImageRequest,
@@ -115,11 +128,18 @@ object MyCondition : ErrorStateImage.Condition {
     ): Boolean = throwable is IOException
 }
 
-ImageRequest(context, "https://example.com/image.jpg")
-{
-    error(R.drawable.error) {
-        addState(MyCondition, DrawableStateImage(R.drawable.mystate))
-    }
+// View
+ImageRequest(context, "https://example.com/image.jpg") {
+    error(ConditionStateImage(R.drawable.error) {
+        addState(condition = MyCondition, stateImage = DrawableStateImage(R.drawable.mystate))
+    })
+}
+
+// Compose
+ImageRequest(context, "https://example.com/image.jpg") {
+    error(ComposableConditionStateImage(Res.drawable.error) {
+        addState(condition = MyCondition, stateImage = DrawableStateImage(Res.drawable.mystate))
+    })
 }
 ```
 
@@ -172,9 +192,9 @@ ImageRequest(context, "https://example.com/image.jpg") {
 
 [ColorPainterStateImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/state/ColorPainterStateImage.kt
 
-[DrawableStateImage]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/state/DrawableStateImage.common.kt
+[ConditionStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/state/ConditionStateImage.common.kt
 
-[ErrorStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/state/ErrorStateImage.common.kt
+[DrawableStateImage]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/state/DrawableStateImage.common.kt
 
 [IconDrawableStateImage]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/state/IconDrawableStateImage.common.kt
 

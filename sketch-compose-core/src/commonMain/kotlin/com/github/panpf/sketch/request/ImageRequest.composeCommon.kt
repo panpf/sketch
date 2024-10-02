@@ -24,9 +24,6 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.state.ColorPainterStateImage
-import com.github.panpf.sketch.state.ComposableErrorStateImage
-import com.github.panpf.sketch.state.ErrorStateImage
-import com.github.panpf.sketch.state.StateImage
 import com.github.panpf.sketch.util.toSketchSize
 
 /**
@@ -143,39 +140,5 @@ fun ImageRequest.Builder.fallback(color: Color): ImageRequest.Builder =
  *
  * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testError
  */
-fun ImageRequest.Builder.error(
-    color: Color,
-    configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
-): ImageRequest.Builder = error(ColorPainterStateImage(color), configBlock)
-
-/**
- * Set Color image to display when loading fails.
- *
- * You can also set image of different error types via the trailing lambda function
- *
- * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
- *
- * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testComposableError
- */
-@Composable
-inline fun ImageRequest.Builder.composableError(
-    stateImage: StateImage,
-    crossinline configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)
-): ImageRequest.Builder = error(ComposableErrorStateImage(stateImage, configBlock))
-
-
-/**
- * Set Color image to display when loading fails.
- *
- * You can also set image of different error types via the trailing lambda function
- *
- * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
- *
- * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testComposableError
- */
-@Composable
-inline fun ImageRequest.Builder.composableError(
-    color: Color,
-    crossinline configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)
-): ImageRequest.Builder =
-    error(ComposableErrorStateImage(ColorPainterStateImage(color), configBlock))
+fun ImageRequest.Builder.error(color: Color): ImageRequest.Builder =
+    error(ColorPainterStateImage(color))

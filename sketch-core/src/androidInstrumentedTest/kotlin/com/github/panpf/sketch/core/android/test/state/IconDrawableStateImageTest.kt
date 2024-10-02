@@ -340,7 +340,7 @@ class IconDrawableStateImageTest {
         IconDrawableStateImage(
             icon = iconDrawable,
             iconSize = SketchSize(40, 40),
-            background = android.R.drawable.bottom_bar,
+            background = android.R.drawable.ic_lock_lock,
         ).getImage(sketch, request, null)
             ?.asOrThrow<DrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
@@ -384,7 +384,7 @@ class IconDrawableStateImageTest {
         IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
             iconSize = SketchSize(30, 30),
-            background = android.R.drawable.bottom_bar,
+            background = android.R.drawable.ic_lock_lock,
         ).getImage(sketch, request, null)
             ?.asOrThrow<DrawableImage>()
             ?.drawable.asOrNull<IconDrawable>()!!.apply {
@@ -422,11 +422,11 @@ class IconDrawableStateImageTest {
     fun testEqualsAndHashCode() {
         val element1 = IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
-            background = android.R.drawable.bottom_bar
+            background = android.R.drawable.ic_lock_lock
         )
         val element11 = IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
-            background = android.R.drawable.bottom_bar
+            background = android.R.drawable.ic_lock_lock
         )
         val element2 = IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
@@ -434,7 +434,7 @@ class IconDrawableStateImageTest {
         )
         val element3 = IconDrawableStateImage(
             icon = android.R.drawable.btn_star,
-            background = android.R.drawable.bottom_bar
+            background = android.R.drawable.ic_lock_lock
         )
         val element4 = IconDrawableStateImage(icon = android.R.drawable.btn_star)
 
@@ -480,10 +480,10 @@ class IconDrawableStateImageTest {
         }
         IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
-            background = android.R.drawable.bottom_bar
+            background = android.R.drawable.ic_lock_lock
         ).apply {
             assertEquals(
-                "IconDrawableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=ResDrawable(${android.R.drawable.bottom_bar}), iconSize=null)",
+                "IconDrawableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=ResDrawable(${android.R.drawable.ic_lock_lock}), iconSize=null)",
                 toString()
             )
         }

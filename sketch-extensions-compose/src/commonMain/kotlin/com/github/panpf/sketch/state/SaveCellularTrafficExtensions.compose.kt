@@ -19,12 +19,12 @@ package com.github.panpf.sketch.state
 import androidx.compose.ui.graphics.Color
 
 /**
- * Set the error image when the save cellular traffic
+ * Set the state image when the save cellular traffic
  *
  * @see com.github.panpf.sketch.extensions.compose.common.test.state.SaveCellularTrafficExtensionsComposeTest.testSaveCellularTrafficError
  */
-fun ErrorStateImage.Builder.saveCellularTrafficError(
+fun ConditionStateImage.Builder.saveCellularTrafficError(
     color: Color
-): ErrorStateImage.Builder = apply {
+): ConditionStateImage.Builder = apply {
     addState(SaveCellularTrafficCondition, ColorPainterStateImage(color))
 }

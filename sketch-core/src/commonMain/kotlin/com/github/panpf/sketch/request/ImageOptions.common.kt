@@ -32,7 +32,6 @@ import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
-import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.StateImage
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.CrossfadeTransition
@@ -43,7 +42,7 @@ import com.github.panpf.sketch.util.keyOrNull
 /**
  * Build and set the [ImageOptions]
  *
- * @see com.github.panpf.sketch.core.common.test.request.ImageOptionsTest.testFun
+ * @see com.github.panpf.sketch.core.common.test.request.ImageOptionsTest.testImageOptions
  */
 fun ImageOptions(
     configBlock: (ImageOptions.Builder.() -> Unit)? = null
@@ -149,7 +148,7 @@ data class ImageOptions(
     /**
      * Image to display when loading fails
      */
-    val error: ErrorStateImage?,
+    val error: StateImage?,
 
     /**
      * How the current image and the new image transition
@@ -260,7 +259,7 @@ data class ImageOptions(
 
         private var placeholder: StateImage? = null
         private var fallback: StateImage? = null
-        private var error: ErrorStateImage? = null
+        private var error: StateImage? = null
         private var transitionFactory: Transition.Factory? = null
         private var resizeOnDraw: Boolean? = null
         private var allowNullImage: Boolean? = null
@@ -565,10 +564,9 @@ data class ImageOptions(
         /**
          * Set disk caching policy for Bitmaps affected by [size] or [transformations]
          */
-        fun resultCachePolicy(cachePolicy: CachePolicy?): Builder =
-            apply {
-                this.resultCachePolicy = cachePolicy
-            }
+        fun resultCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
+            this.resultCachePolicy = cachePolicy
+        }
 
 
         /**
@@ -587,25 +585,10 @@ data class ImageOptions(
 
         /**
          * Set image to display when loading fails.
-         *
-         * You can also set image of different error types via the trailing lambda function
          */
-        fun error(
-            defaultImage: StateImage?,
-            configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
-        ): Builder = apply {
-            this.error = ErrorStateImage(defaultImage, configBlock)
-                .takeIf { it.stateList.isNotEmpty() }
+        fun error(stateImage: StateImage?): Builder = apply {
+            this.error = stateImage
         }
-
-        /**
-         * Set image to display when loading fails.
-         *
-         * You can also set image of different error types via the trailing lambda function
-         */
-        fun error(
-            configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
-        ): Builder = error(null, configBlock)
 
         /**
          * Set the transition between the current image and the new image

@@ -20,13 +20,13 @@ import androidx.compose.runtime.Composable
 import org.jetbrains.compose.resources.DrawableResource
 
 /**
- * Set the error image when the save cellular traffic
+ * Set the state image when the save cellular traffic
  *
  * @see com.github.panpf.sketch.extensions.compose.resources.common.test.SaveCellularTrafficExtensionsComposeResourcesTest.testSaveCellularTrafficError
  */
 @Composable
-fun ErrorStateImage.Builder.saveCellularTrafficError(
+fun ConditionStateImage.Builder.saveCellularTrafficError(
     resource: DrawableResource
-): ErrorStateImage.Builder = apply {
+): ConditionStateImage.Builder = apply {
     addState(SaveCellularTrafficCondition, resource)
 }

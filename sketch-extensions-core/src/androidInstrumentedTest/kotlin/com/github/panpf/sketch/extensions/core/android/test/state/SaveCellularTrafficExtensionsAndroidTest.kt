@@ -20,7 +20,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.drawable.asEquitable
-import com.github.panpf.sketch.state.ErrorStateImage
+import com.github.panpf.sketch.state.ConditionStateImage
 import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.state.SaveCellularTrafficCondition
 import com.github.panpf.sketch.state.saveCellularTrafficError
@@ -35,25 +35,25 @@ class SaveCellularTrafficExtensionsAndroidTest {
 
     @Test
     fun testSaveCellularTrafficError() {
-        ErrorStateImage(IntColorDrawableStateImage(Color.BLACK)) {
+        ConditionStateImage(IntColorDrawableStateImage(Color.BLACK)) {
             saveCellularTrafficError(ColorDrawable(Color.GREEN).asEquitable())
         }.apply {
             assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
         }
 
-        ErrorStateImage(IntColorDrawableStateImage(Color.BLACK)) {
+        ConditionStateImage(IntColorDrawableStateImage(Color.BLACK)) {
             saveCellularTrafficError(android.R.drawable.ic_delete)
         }.apply {
             assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
         }
 
-        ErrorStateImage(IntColorDrawableStateImage(Color.BLACK)) {
+        ConditionStateImage(IntColorDrawableStateImage(Color.BLACK)) {
             saveCellularTrafficError(IntColor(Color.GREEN))
         }.apply {
             assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })
         }
 
-        ErrorStateImage(IntColorDrawableStateImage(Color.BLACK)) {
+        ConditionStateImage(IntColorDrawableStateImage(Color.BLACK)) {
             saveCellularTrafficError(ResColor(android.R.drawable.btn_dialog))
         }.apply {
             assertNotNull(stateList.find { it.first is SaveCellularTrafficCondition })

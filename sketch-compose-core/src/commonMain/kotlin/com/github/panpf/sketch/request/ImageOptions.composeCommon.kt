@@ -22,11 +22,7 @@ import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.state.ColorPainterStateImage
-import com.github.panpf.sketch.state.ComposableErrorStateImage
-import com.github.panpf.sketch.state.ErrorStateImage
-import com.github.panpf.sketch.state.StateImage
 import com.github.panpf.sketch.util.toSketchSize
-
 
 /**
  * Build and set the [ImageOptions]
@@ -103,39 +99,5 @@ fun ImageOptions.Builder.fallback(color: Color): ImageOptions.Builder =
  *
  * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testError
  */
-fun ImageOptions.Builder.error(
-    color: Color,
-    configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
-): ImageOptions.Builder = error(ColorPainterStateImage(color), configBlock)
-
-/**
- * Set Color image to display when loading fails.
- *
- * You can also set image of different error types via the trailing lambda function
- *
- * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
- *
- * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testComposableError
- */
-@Composable
-inline fun ImageOptions.Builder.composableError(
-    stateImage: StateImage,
-    crossinline configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)
-): ImageOptions.Builder = error(ComposableErrorStateImage(stateImage, configBlock))
-
-
-/**
- * Set Color image to display when loading fails.
- *
- * You can also set image of different error types via the trailing lambda function
- *
- * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
- *
- * @see com.github.panpf.sketch.compose.core.common.test.request.ImageOptionsComposeCommonTest.testComposableError
- */
-@Composable
-inline fun ImageOptions.Builder.composableError(
-    color: Color,
-    crossinline configBlock: @Composable (ErrorStateImage.Builder.() -> Unit)
-): ImageOptions.Builder =
-    error(ComposableErrorStateImage(ColorPainterStateImage(color), configBlock))
+fun ImageOptions.Builder.error(color: Color): ImageOptions.Builder =
+    error(ColorPainterStateImage(color))

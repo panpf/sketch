@@ -27,6 +27,7 @@ import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.merged
+import com.github.panpf.sketch.request.ImageOptions.Builder
 import com.github.panpf.sketch.request.internal.PairListener
 import com.github.panpf.sketch.request.internal.PairProgressListener
 import com.github.panpf.sketch.request.internal.RequestOptions
@@ -36,7 +37,6 @@ import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
-import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.state.StateImage
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.transform.Transformation
@@ -53,7 +53,7 @@ import com.github.panpf.sketch.util.toUri
 /**
  * Build and set the [ImageRequest]
  *
- * @see com.github.panpf.sketch.core.common.test.request.ImageRequestTest.testFun
+ * @see com.github.panpf.sketch.core.common.test.request.ImageRequestTest.testImageRequest
  */
 fun ImageRequest(
     context: PlatformContext,
@@ -211,7 +211,7 @@ data class ImageRequest(
     /**
      * Image to display when loading fails
      */
-    val error: ErrorStateImage?,
+    val error: StateImage?,
 
     /**
      * How the current image and the new image transition
@@ -288,7 +288,7 @@ data class ImageRequest(
             this.context = context.application
             checkPlatformContext(this.context)
             this.uri = uri.orEmpty().toUri()
-            this.definedOptionsBuilder = ImageOptions.Builder()
+            this.definedOptionsBuilder = Builder()
             this.definedRequestOptionsBuilder = RequestOptions.Builder()
         }
 
@@ -673,25 +673,9 @@ data class ImageRequest(
 
         /**
          * Set image to display when loading fails.
-         *
-         * You can also set image of different error types via the trailing lambda function
          */
-        fun error(
-            defaultImage: StateImage?,
-            configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
-        ): Builder = apply {
-            definedOptionsBuilder.error(defaultImage, configBlock)
-        }
-
-        /**
-         * Set Drawable res image to display when loading fails.
-         *
-         * You can also set image of different error types via the trailing lambda function
-         */
-        fun error(
-            configBlock: (ErrorStateImage.Builder.() -> Unit)? = null
-        ): Builder = apply {
-            definedOptionsBuilder.error(configBlock)
+        fun error(stateImage: StateImage?): Builder = apply {
+            definedOptionsBuilder.error(stateImage)
         }
 
         /**

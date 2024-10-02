@@ -30,6 +30,7 @@ import com.github.panpf.sketch.request.SaveCellularTrafficRequestInterceptor
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.request.target
 import com.github.panpf.sketch.state.ColorDrawableStateImage
+import com.github.panpf.sketch.state.ConditionStateImage
 import com.github.panpf.sketch.state.saveCellularTrafficError
 import com.github.panpf.sketch.test.singleton.request.execute
 import com.github.panpf.sketch.test.utils.TestActivity
@@ -98,9 +99,9 @@ class ClickIgnoreSaveCellularTrafficAbilityTest {
                     memoryCachePolicy(CachePolicy.DISABLED)
                     resultCachePolicy(CachePolicy.DISABLED)
                     downloadCachePolicy(CachePolicy.DISABLED)
-                    error(ColorDrawableStateImage(IntColor(Color.RED))) {
+                    error(ConditionStateImage(ColorDrawableStateImage(IntColor(Color.RED))) {
                         saveCellularTrafficError(ColorDrawableStateImage(IntColor(Color.YELLOW)))
-                    }
+                    })
                     target(imageView)
                 }.execute(sketch)
             }
@@ -113,7 +114,7 @@ class ClickIgnoreSaveCellularTrafficAbilityTest {
             withContext(Dispatchers.Main) {
                 imageView1.performClick()
             }
-            block(100)
+            block(1000)
             assertTrue(
                 actual = imageView1.drawable is BitmapDrawable,
                 message = "drawable=${imageView1.drawable}"

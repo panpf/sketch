@@ -18,6 +18,7 @@ import com.github.panpf.sketch.target.GenericViewTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.fitScale
+import com.github.panpf.sketch.view.core.test.target.ViewTargetTest.TestImageViewTarget
 import com.github.panpf.tools4j.reflect.ktx.getFieldValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
@@ -222,6 +223,22 @@ class GenericViewTargetTest {
 
         override val fitScale: Boolean
             get() = view.scaleType.fitScale
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+            other as TestImageViewTarget
+            if (view != other.view) return false
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return view.hashCode()
+        }
+
+        override fun toString(): String {
+            return "TestViewTarget(view=$view)"
+        }
     }
 
     class TestAnimatableColorDrawable(color: Int) : ColorDrawable(color), Animatable {

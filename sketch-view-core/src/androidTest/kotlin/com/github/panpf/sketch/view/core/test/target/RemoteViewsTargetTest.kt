@@ -31,7 +31,7 @@ class RemoteViewsTargetTest {
 
             onStart(
                 sketch, request,
-                context.getDrawableCompat(android.R.drawable.bottom_bar).asImage()
+                context.getDrawableCompat(android.R.drawable.ic_lock_lock).asImage()
             )
             assertEquals(1, callbackCount)
 
@@ -40,7 +40,7 @@ class RemoteViewsTargetTest {
 
             onError(
                 sketch, request,
-                context.getDrawableCompat(android.R.drawable.bottom_bar).asImage()
+                context.getDrawableCompat(android.R.drawable.ic_lock_lock).asImage()
             )
             assertEquals(2, callbackCount)
 
@@ -49,7 +49,7 @@ class RemoteViewsTargetTest {
 
             onSuccess(
                 sketch, request,
-                context.getDrawableCompat(android.R.drawable.bottom_bar).asImage()
+                context.getDrawableCompat(android.R.drawable.ic_lock_lock).asImage()
             )
             assertEquals(3, callbackCount)
         }
@@ -63,7 +63,7 @@ class RemoteViewsTargetTest {
 
             onStart(
                 sketch, request2,
-                context.getDrawableCompat(android.R.drawable.bottom_bar).asImage()
+                context.getDrawableCompat(android.R.drawable.ic_lock_lock).asImage()
             )
             assertEquals(1, callbackCount)
 
@@ -72,7 +72,7 @@ class RemoteViewsTargetTest {
 
             onError(
                 sketch, request2,
-                context.getDrawableCompat(android.R.drawable.bottom_bar).asImage()
+                context.getDrawableCompat(android.R.drawable.ic_lock_lock).asImage()
             )
             assertEquals(3, callbackCount)
 
@@ -81,7 +81,7 @@ class RemoteViewsTargetTest {
 
             onSuccess(
                 sketch, request2,
-                context.getDrawableCompat(android.R.drawable.bottom_bar).asImage()
+                context.getDrawableCompat(android.R.drawable.ic_lock_lock).asImage()
             )
             assertEquals(5, callbackCount)
         }

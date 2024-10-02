@@ -6,7 +6,8 @@ import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.SAVE_CELLULAR_TRAFFIC_KEY
-import com.github.panpf.sketch.state.ErrorStateImage
+import com.github.panpf.sketch.state.ConditionStateImage
+import com.github.panpf.sketch.state.ConditionStateImage.DefaultCondition
 import com.github.panpf.sketch.state.SaveCellularTrafficCondition
 import com.github.panpf.sketch.state.saveCellularTrafficError
 import com.github.panpf.sketch.test.utils.FakeStateImage
@@ -15,29 +16,22 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class SaveCellularTrafficExtensionsTest {
 
     @Test
     fun testSaveCellularTrafficError() {
-        ErrorStateImage(null).apply {
-            assertEquals(expected = 0, actual = stateList.size)
-            assertNull(stateList.find { it.first is SaveCellularTrafficCondition })
-        }
-
-        ErrorStateImage(null) {
-            saveCellularTrafficError()
-        }.apply {
+        ConditionStateImage(FakeStateImage()) {}.apply {
             assertEquals(expected = 1, actual = stateList.size)
-            assertNull(stateList.find { it.first == SaveCellularTrafficCondition }!!.second)
+            assertNotNull(stateList.find { it.first is DefaultCondition })
         }
 
-        ErrorStateImage(null) {
+        ConditionStateImage(FakeStateImage()) {
             saveCellularTrafficError(FakeStateImage())
         }.apply {
-            assertEquals(expected = 1, actual = stateList.size)
+            assertEquals(expected = 2, actual = stateList.size)
+            assertNotNull(stateList.find { it.first is DefaultCondition })
             assertNotNull(stateList.find { it.first == SaveCellularTrafficCondition }!!.second)
         }
     }

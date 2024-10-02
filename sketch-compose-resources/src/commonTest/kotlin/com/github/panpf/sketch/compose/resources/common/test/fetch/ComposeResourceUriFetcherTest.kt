@@ -6,15 +6,23 @@ import com.github.panpf.sketch.fetch.isComposeResourceUri
 import com.github.panpf.sketch.fetch.newComposeResourceUri
 import com.github.panpf.sketch.fetch.supportComposeResources
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.compose.core.resources.Res
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toUri
+import kotlinx.coroutines.test.runTest
+import okio.buffer
+import okio.use
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
+@OptIn(ExperimentalResourceApi::class)
 class ComposeResourceUriFetcherTest {
 
     @Test
@@ -88,7 +96,7 @@ class ComposeResourceUriFetcherTest {
         )
 
         assertFailsWith(IllegalArgumentException::class) {
-            newComposeResourceUri("sample.jpeg")
+            newComposeResourceUri("moon.jpeg")
         }
     }
 
@@ -132,8 +140,18 @@ class ComposeResourceUriFetcherTest {
     }
 
     @Test
-    fun testFetch() {
-        // TODO Not testable: Because currently the compose resource file cannot be read from the test environment
+    fun testFetch() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val fetcherFactory = ComposeResourceUriFetcher.Factory()
+        val request =
+            ImageRequest(context, newComposeResourceUri(Res.getUri("drawable/moon.jpeg")))
+        val requestContext = request.toRequestContext(sketch, Size.Empty)
+        val fetcher = fetcherFactory.create(requestContext)!!
+        val source = fetcher.fetch().getOrThrow().dataSource
+        assertTrue(source is ByteArrayDataSource)
+
+        source.openSource().buffer().use { it.readByteArray() }
     }
 
     @Test

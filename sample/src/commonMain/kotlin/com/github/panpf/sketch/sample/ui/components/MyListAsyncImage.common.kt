@@ -23,7 +23,6 @@ import com.github.panpf.sketch.rememberAsyncImagePainter
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.composableError
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.sample.appSettings
@@ -36,6 +35,7 @@ import com.github.panpf.sketch.sample.ui.gallery.PhotoInfo
 import com.github.panpf.sketch.sample.ui.util.rememberMimeTypeLogoMap
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import com.github.panpf.sketch.sample.util.ifLet
+import com.github.panpf.sketch.state.ComposableConditionStateImage
 import com.github.panpf.sketch.state.StateImage
 import com.github.panpf.sketch.state.rememberIconPainterStateImage
 import com.github.panpf.sketch.state.saveCellularTrafficError
@@ -210,19 +210,23 @@ private fun buildListImageRequest(
             )
         placeholder(placeholderStateImage)
 
-        val errorStateImage = rememberIconPainterStateImage(
-            icon = Res.drawable.ic_image_broken_outline,
-            background = colorScheme.primaryContainer,
-            iconTint = colorScheme.onPrimaryContainer
+        error(
+            ComposableConditionStateImage(
+                defaultImage = rememberIconPainterStateImage(
+                    icon = Res.drawable.ic_image_broken_outline,
+                    background = colorScheme.primaryContainer,
+                    iconTint = colorScheme.onPrimaryContainer
+                )
+            ) {
+                saveCellularTrafficError(
+                    rememberIconPainterStateImage(
+                        icon = Res.drawable.ic_signal_cellular,
+                        background = colorScheme.primaryContainer,
+                        iconTint = colorScheme.onPrimaryContainer
+                    )
+                )
+            }
         )
-        val saveCellularTrafficErrorStateImage = rememberIconPainterStateImage(
-            icon = Res.drawable.ic_signal_cellular,
-            background = colorScheme.primaryContainer,
-            iconTint = colorScheme.onPrimaryContainer
-        )
-        composableError(errorStateImage) {
-            saveCellularTrafficError(saveCellularTrafficErrorStateImage)
-        }
 
         crossfade()
         resizeOnDraw()

@@ -337,7 +337,7 @@ class ResizeAnimatableDrawableTest {
 
         ResizeAnimatableDrawable(
             AnimatableDrawable(
-                TestAnimatableDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar))
+                TestAnimatableDrawable(context.getDrawableCompat(android.R.drawable.ic_lock_lock))
             ),
             Size(500, 300),
             CENTER_CROP
@@ -346,7 +346,7 @@ class ResizeAnimatableDrawableTest {
             assertSame(this, mutateDrawable)
             mutateDrawable.alpha = 146
 
-            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+            context.getDrawableCompat(android.R.drawable.ic_lock_lock).also {
                 if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                     assertEquals(255, it.alpha)
                 }
@@ -355,7 +355,7 @@ class ResizeAnimatableDrawableTest {
 
         ResizeAnimatableDrawable(
             TestAnimatableDrawable(
-                TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar))
+                TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.ic_lock_lock))
             ),
             Size(500, 300),
             CENTER_CROP
@@ -364,7 +364,7 @@ class ResizeAnimatableDrawableTest {
             assertNotSame(this, mutateDrawable)
             mutateDrawable.alpha = 146
 
-            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+            context.getDrawableCompat(android.R.drawable.ic_lock_lock).also {
                 if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                     assertEquals(255, it.alpha)
                 }

@@ -19,7 +19,7 @@ package com.github.panpf.sketch.core.common.test.state
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
-import com.github.panpf.sketch.state.ErrorStateImage
+import com.github.panpf.sketch.state.ConditionStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeStateImage
@@ -31,31 +31,24 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotSame
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class ErrorStateImageTest {
+class ConditionStateImageTest {
 
     @Test
-    fun testFun() {
+    fun testConditionStateImage() {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "")
         val stateImage = FakeStateImage()
         val stateImage2 = FakeStateImage(FakeImage(SketchSize(200, 200)))
 
-        ErrorStateImage().apply {
-            assertTrue(stateList.isEmpty())
-            assertNull(getImage(sketch, request, null))
-            assertNull(getImage(sketch, request, UriInvalidException("")))
-        }
-
-        ErrorStateImage(stateImage).apply {
+        ConditionStateImage(stateImage) {}.apply {
             assertFalse(stateList.isEmpty())
             assertEquals(stateImage.image, getImage(sketch, request, null))
             assertEquals(stateImage.image, getImage(sketch, request, UriInvalidException("")))
         }
 
-        ErrorStateImage(stateImage) {
+        ConditionStateImage(stateImage) {
             addState(UriInvalidCondition, stateImage2)
         }.apply {
             assertFalse(stateList.isEmpty())
@@ -67,20 +60,20 @@ class ErrorStateImageTest {
     @Test
     fun testKey() {
         val stateImage = FakeStateImage()
-        ErrorStateImage(stateImage).apply {
+        ConditionStateImage(stateImage) {}.apply {
             assertEquals(
-                "ErrorStateImage([DefaultCondition:${stateImage.key}])",
+                "ConditionStateImage([DefaultCondition:${stateImage.key}])",
                 key
             )
         }
 
         val stateImage2 = FakeStateImage(FakeImage(SketchSize(200, 200)))
         val stateImage3 = FakeStateImage(FakeImage(SketchSize(300, 300)))
-        ErrorStateImage(stateImage2) {
+        ConditionStateImage(stateImage2) {
             addState(UriInvalidCondition, stateImage3)
         }.apply {
             assertEquals(
-                "ErrorStateImage([UriInvalidCondition:${stateImage3.key},DefaultCondition:${stateImage2.key}])",
+                "ConditionStateImage([UriInvalidCondition:${stateImage3.key},DefaultCondition:${stateImage2.key}])",
                 key
             )
         }
@@ -93,19 +86,13 @@ class ErrorStateImageTest {
         val stateImage = FakeStateImage()
         val stateImage2 = FakeStateImage(FakeImage(SketchSize(200, 200)))
 
-        ErrorStateImage().apply {
-            assertTrue(stateList.isEmpty())
-            assertNull(getImage(sketch, request, null))
-            assertNull(getImage(sketch, request, UriInvalidException("")))
-        }
-
-        ErrorStateImage(stateImage).apply {
+        ConditionStateImage(stateImage) {}.apply {
             assertFalse(stateList.isEmpty())
             assertEquals(stateImage.image, getImage(sketch, request, null))
             assertEquals(stateImage.image, getImage(sketch, request, UriInvalidException("")))
         }
 
-        ErrorStateImage(stateImage) {
+        ConditionStateImage(stateImage) {
             addState(UriInvalidCondition, stateImage2)
         }.apply {
             assertFalse(stateList.isEmpty())
@@ -116,10 +103,12 @@ class ErrorStateImageTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = ErrorStateImage(FakeStateImage())
-        val element11 = ErrorStateImage(FakeStateImage())
-        val element2 = ErrorStateImage(FakeStateImage(FakeImage(SketchSize(200, 200))))
-        val element3 = ErrorStateImage(FakeStateImage(FakeImage(SketchSize(300, 300))))
+        val element1 = ConditionStateImage(FakeStateImage()) {}
+        val element11 = ConditionStateImage(FakeStateImage()) {}
+        val element2 = ConditionStateImage(FakeStateImage(FakeImage(SketchSize(200, 200)))) {}
+        val element3 = ConditionStateImage(FakeStateImage()) {
+            addState(UriInvalidCondition, FakeStateImage(FakeImage(SketchSize(300, 300))))
+        }
 
         assertNotSame(element1, element11)
         assertNotSame(element1, element2)
@@ -147,20 +136,20 @@ class ErrorStateImageTest {
     @Test
     fun testToString() {
         val stateImage = FakeStateImage()
-        ErrorStateImage(stateImage).apply {
+        ConditionStateImage(stateImage) {}.apply {
             assertEquals(
-                "ErrorStateImage([DefaultCondition:${stateImage.key}])",
+                "ConditionStateImage([DefaultCondition:${stateImage.key}])",
                 toString()
             )
         }
 
         val stateImage2 = FakeStateImage(FakeImage(SketchSize(200, 200)))
         val stateImage3 = FakeStateImage(FakeImage(SketchSize(300, 300)))
-        ErrorStateImage(stateImage2) {
+        ConditionStateImage(stateImage2) {
             addState(UriInvalidCondition, stateImage3)
         }.apply {
             assertEquals(
-                "ErrorStateImage([UriInvalidCondition:${stateImage3.key}, DefaultCondition:${stateImage2.key}])",
+                "ConditionStateImage([UriInvalidCondition:${stateImage3.key}, DefaultCondition:${stateImage2.key}])",
                 toString()
             )
         }
@@ -171,7 +160,7 @@ class ErrorStateImageTest {
         val context = getTestContext()
         val request = ImageRequest(context, ResourceImages.jpeg.uri)
 
-        ErrorStateImage.DefaultCondition.apply {
+        ConditionStateImage.DefaultCondition.apply {
             assertTrue(accept(request, null))
             assertTrue(accept(request, null))
             assertEquals("DefaultCondition", toString())

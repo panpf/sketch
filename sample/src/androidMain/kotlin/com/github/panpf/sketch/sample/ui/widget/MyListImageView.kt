@@ -42,6 +42,7 @@ import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.util.lifecycleOwner
 import com.github.panpf.sketch.sample.util.collectWithLifecycle
 import com.github.panpf.sketch.sample.util.ignoreFirst
+import com.github.panpf.sketch.state.ConditionStateImage
 import com.github.panpf.sketch.state.IconAnimatableDrawableStateImage
 import com.github.panpf.sketch.state.IconDrawableStateImage
 import com.github.panpf.sketch.state.saveCellularTrafficError
@@ -91,18 +92,20 @@ class MyListImageView @JvmOverloads constructor(
                 )
             )
             error(
-                defaultImage = IconDrawableStateImage(
-                    icon = R.drawable.ic_image_broken_outline,
-                    background = R.color.placeholder_bg
-                )
-            ) {
-                saveCellularTrafficError(
+                ConditionStateImage(
                     IconDrawableStateImage(
-                        icon = R.drawable.ic_signal_cellular,
+                        icon = R.drawable.ic_image_broken_outline,
                         background = R.color.placeholder_bg
                     )
-                )
-            }
+                ) {
+                    saveCellularTrafficError(
+                        IconDrawableStateImage(
+                            icon = R.drawable.ic_signal_cellular,
+                            background = R.color.placeholder_bg
+                        )
+                    )
+                }
+            )
             crossfade()
             resizeOnDraw()
             sizeMultiplier(2f)  // To get a clearer thumbnail

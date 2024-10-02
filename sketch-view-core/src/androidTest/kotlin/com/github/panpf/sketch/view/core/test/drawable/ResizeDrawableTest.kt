@@ -154,7 +154,7 @@ class ResizeDrawableTest {
         val context = getTestContext()
 
         ResizeDrawable(
-            context.getDrawableCompat(android.R.drawable.bottom_bar),
+            context.getDrawableCompat(android.R.drawable.ic_lock_lock),
             Size(500, 300),
             CENTER_CROP
         ).apply {
@@ -162,7 +162,7 @@ class ResizeDrawableTest {
             assertSame(this, mutateDrawable)
             mutateDrawable.alpha = 146
 
-            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+            context.getDrawableCompat(android.R.drawable.ic_lock_lock).also {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     assertEquals(255, it.alpha)
                 }
@@ -170,7 +170,7 @@ class ResizeDrawableTest {
         }
 
         ResizeDrawable(
-            TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar)),
+            TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.ic_lock_lock)),
             Size(500, 300),
             CENTER_CROP
         ).apply {
@@ -178,7 +178,7 @@ class ResizeDrawableTest {
             assertNotSame(this, mutateDrawable)
             mutateDrawable.alpha = 146
 
-            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+            context.getDrawableCompat(android.R.drawable.ic_lock_lock).also {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     assertEquals(255, it.alpha)
                 }

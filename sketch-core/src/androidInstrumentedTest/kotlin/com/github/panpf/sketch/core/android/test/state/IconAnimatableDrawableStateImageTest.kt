@@ -342,7 +342,7 @@ class IconAnimatableDrawableStateImageTest {
 
         IconAnimatableDrawableStateImage(
             icon = iconDrawable,
-            background = android.R.drawable.bottom_bar,
+            background = android.R.drawable.ic_lock_lock,
             iconSize = SketchSize(40, 40),
         ).apply {
             getImage(sketch, request, null)
@@ -390,11 +390,11 @@ class IconAnimatableDrawableStateImageTest {
     fun testEqualsAndHashCode() {
         val element1 = IconAnimatableDrawableStateImage(
             icon = android.R.drawable.ic_delete,
-            background = android.R.drawable.bottom_bar
+            background = android.R.drawable.ic_lock_lock
         )
         val element11 = IconAnimatableDrawableStateImage(
             icon = android.R.drawable.ic_delete,
-            background = android.R.drawable.bottom_bar
+            background = android.R.drawable.ic_lock_lock
         )
         val element2 = IconAnimatableDrawableStateImage(
             icon = android.R.drawable.ic_delete,
@@ -402,7 +402,7 @@ class IconAnimatableDrawableStateImageTest {
         )
         val element3 = IconAnimatableDrawableStateImage(
             icon = android.R.drawable.btn_star,
-            background = android.R.drawable.bottom_bar
+            background = android.R.drawable.ic_lock_lock
         )
         val element4 = IconAnimatableDrawableStateImage(icon = android.R.drawable.btn_star)
 
@@ -448,10 +448,10 @@ class IconAnimatableDrawableStateImageTest {
         }
         IconAnimatableDrawableStateImage(
             icon = android.R.drawable.ic_delete,
-            background = android.R.drawable.bottom_bar
+            background = android.R.drawable.ic_lock_lock
         ).apply {
             assertEquals(
-                "IconAnimatableDrawableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=ResDrawable(${android.R.drawable.bottom_bar}), iconSize=null)",
+                "IconAnimatableDrawableStateImage(icon=ResDrawable(${android.R.drawable.ic_delete}), background=ResDrawable(${android.R.drawable.ic_lock_lock}), iconSize=null)",
                 toString()
             )
         }

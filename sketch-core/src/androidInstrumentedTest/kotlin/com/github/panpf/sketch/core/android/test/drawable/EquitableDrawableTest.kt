@@ -99,8 +99,9 @@ class EquitableDrawableTest {
                 drawable = context.resources.getDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)!!,
                 equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
             ),
-            actual = context.resources.getEquitableDrawable(
+            actual = getEquitableDrawable(
                 com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
+                density, theme
             )
         )
     }
@@ -137,6 +138,7 @@ class EquitableDrawableTest {
             actual = context.resources.getEquitableDrawableForDensity(
                 resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
                 density = 2,
+                theme = theme
             )
         )
     }
@@ -210,14 +212,14 @@ class EquitableDrawableTest {
         val context = getTestContext()
 
         EquitableDrawable(
-            drawable = context.getDrawableCompat(android.R.drawable.bottom_bar),
+            drawable = context.getDrawableCompat(android.R.drawable.ic_lock_lock),
             equalityKey = "key"
         ).apply {
             val mutateDrawable = mutate()
             assertSame(this, mutateDrawable)
             mutateDrawable.alpha = 146
 
-            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+            context.getDrawableCompat(android.R.drawable.ic_lock_lock).also {
                 if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                     assertEquals(255, it.alpha)
                 }
@@ -225,14 +227,14 @@ class EquitableDrawableTest {
         }
 
         EquitableDrawable(
-            drawable = TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar)),
+            drawable = TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.ic_lock_lock)),
             equalityKey = "key"
         ).apply {
             val mutateDrawable = mutate()
             assertNotSame(this, mutateDrawable)
             mutateDrawable.alpha = 146
 
-            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
+            context.getDrawableCompat(android.R.drawable.ic_lock_lock).also {
                 if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                     assertEquals(255, it.alpha)
                 }

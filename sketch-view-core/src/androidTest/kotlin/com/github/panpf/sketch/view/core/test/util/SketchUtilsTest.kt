@@ -114,7 +114,7 @@ class SketchUtilsTest {
                 resultCachePolicy(DISABLED)
                 downloadCachePolicy(DISABLED)
             }
-            block(100)
+            block(1000)
             val drawable1 = imageView.drawable
             assertTrue(
                 actual = drawable1 is BitmapDrawable,
@@ -122,7 +122,7 @@ class SketchUtilsTest {
             )
 
             SketchUtils.restart(imageView)
-            block(100)
+            block(1000)
             val drawable2 = imageView.drawable
             assertTrue(
                 actual = drawable2 is BitmapDrawable,

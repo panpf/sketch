@@ -60,9 +60,9 @@ class ResDrawableTest {
             )
         }
 
-        ResDrawable(android.R.drawable.bottom_bar).apply {
+        ResDrawable(android.R.drawable.ic_lock_lock).apply {
             assertSame(
-                context.getDrawableCompat(android.R.drawable.bottom_bar)
+                context.getDrawableCompat(android.R.drawable.ic_lock_lock)
                     .asOrThrow<BitmapDrawable>().bitmap,
                 getDrawable(context).asOrThrow<BitmapDrawable>().bitmap
             )
@@ -74,7 +74,7 @@ class ResDrawableTest {
         val context = getTestContext()
         val element1 = ResDrawable(android.R.drawable.ic_delete)
         val element11 = ResDrawable(android.R.drawable.ic_delete)
-        val element2 = ResDrawable(android.R.drawable.bottom_bar)
+        val element2 = ResDrawable(android.R.drawable.ic_lock_lock)
         val element3 = ResDrawable(android.R.drawable.ic_delete, resources = context.resources)
         val element4 = ResDrawable(android.R.drawable.ic_delete, packageName = context.packageName)
 

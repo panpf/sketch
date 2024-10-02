@@ -47,7 +47,6 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
-import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeStateImage
 import com.github.panpf.sketch.test.utils.FakeTransition
@@ -59,7 +58,7 @@ import com.github.panpf.sketch.test.utils.TestDecoder2
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestTransition
-import com.github.panpf.sketch.test.utils.UriInvalidCondition
+import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
@@ -79,7 +78,7 @@ import kotlin.test.assertTrue
 class ImageOptionsTest {
 
     @Test
-    fun testFun() {
+    fun testImageOptions() {
         ImageOptions().apply {
             assertNotNull(this)
             assertTrue(this.isEmpty())
@@ -235,7 +234,7 @@ class ImageOptionsTest {
         }.apply {
             assertFalse(this.isEmpty())
             assertTrue(this.isNotEmpty())
-            assertEquals(ErrorStateImage(FakeStateImage()), this.error)
+            assertEquals(FakeStateImage(), this.error)
         }
 
         ImageOptions {
@@ -540,14 +539,14 @@ class ImageOptionsTest {
             error(FakeStateImage(FakeImage(SketchSize(100, 100))))
         }).apply {
             assertEquals(
-                ErrorStateImage(FakeStateImage(FakeImage(SketchSize(100, 100)))),
+                FakeStateImage(FakeImage(SketchSize(100, 100))),
                 this.error
             )
         }.merged(ImageOptions {
             error(FakeStateImage(FakeImage(SketchSize(200, 200))))
         }).apply {
             assertEquals(
-                ErrorStateImage(FakeStateImage(FakeImage(SketchSize(100, 100)))),
+                FakeStateImage(FakeImage(SketchSize(100, 100))),
                 this.error
             )
         }
@@ -1254,7 +1253,7 @@ class ImageOptionsTest {
             error(FakeStateImage(FakeImage(SketchSize(100, 100))))
             build().apply {
                 assertEquals(
-                    ErrorStateImage(FakeStateImage(FakeImage(SketchSize(100, 100)))),
+                    FakeStateImage(FakeImage(SketchSize(100, 100))),
                     error
                 )
             }
@@ -1262,27 +1261,12 @@ class ImageOptionsTest {
             error(FakeStateImage(FakeImage(SketchSize(200, 200))))
             build().apply {
                 assertEquals(
-                    ErrorStateImage(FakeStateImage(FakeImage(SketchSize(200, 200)))),
+                    FakeStateImage(FakeImage(SketchSize(200, 200))),
                     error
                 )
             }
 
-            error(FakeStateImage(FakeImage(SketchSize(200, 200)))) {
-                addState(UriInvalidCondition, FakeStateImage(FakeImage(SketchSize(300, 300))))
-            }
-            build().apply {
-                assertEquals(
-                    ErrorStateImage(FakeStateImage(FakeImage(SketchSize(200, 200)))) {
-                        addState(
-                            UriInvalidCondition,
-                            FakeStateImage(FakeImage(SketchSize(300, 300)))
-                        )
-                    },
-                    error
-                )
-            }
-
-            error()
+            error(null)
             build().apply {
                 assertNull(error)
             }
@@ -1317,7 +1301,7 @@ class ImageOptionsTest {
     fun testCrossfade() {
         ImageOptions().apply {
             assertNull(transitionFactory)
-        }.newOptions() {
+        }.newOptions {
             crossfade()
         }.apply {
             assertEquals(
@@ -1507,56 +1491,74 @@ class ImageOptionsTest {
     fun testEqualsAndHashCode() {
         val scopeActions = listOfNotNull<ScopeAction<ImageOptions.Builder>>(
             ScopeAction {
-                depth(LOCAL)
+                depth(LOCAL, "test")
             },
             ScopeAction {
-                setExtra("key", "value")
+                setExtra("type", "list")
+                setExtra("big", "true")
             },
             ScopeAction {
-                httpHeader("key1", "value1")
+                httpHeader("from", "china")
+                httpHeader("job", "Programmer")
+                addHttpHeader("Host", "www.google.com")
             },
             ScopeAction {
-                downloadCachePolicy(WRITE_ONLY)
+                downloadCachePolicy(READ_ONLY)
             },
             ScopeAction {
-                size(100, 100)
+                colorType("RAGB")
             },
             ScopeAction {
-                precision(SAME_ASPECT_RATIO)
+                colorSpace("SRGB")
+            },
+            ScopeAction {
+                size(300, 200)
+            },
+            ScopeAction {
+                precision(EXACTLY)
+            },
+            ScopeAction {
+                precision(LongImagePrecisionDecider())
             },
             ScopeAction {
                 scale(FILL)
             },
             ScopeAction {
-                transformations(RotateTransformation(40))
+                scale(LongImageScaleDecider())
             },
             ScopeAction {
-                resultCachePolicy(READ_ONLY)
+                transformations(CircleCropTransformation(), BlurTransformation())
+            },
+            ScopeAction {
+                resultCachePolicy(WRITE_ONLY)
             },
             ScopeAction {
                 disallowAnimatedImage(true)
             },
             ScopeAction {
-                placeholder(FakeStateImage(FakeImage(SketchSize(100, 100))))
+                placeholder(FakeStateImage())
             },
             ScopeAction {
-                fallback(FakeStateImage(FakeImage(SketchSize(100, 100))))
+                fallback(FakeStateImage())
             },
             ScopeAction {
-                error(ErrorStateImage(FakeStateImage(FakeImage(SketchSize(100, 100)))))
+                error(FakeStateImage())
             },
             ScopeAction {
-                transitionFactory(FakeTransition.Factory())
+                transitionFactory(CrossfadeTransition.Factory())
             },
             ScopeAction {
                 resizeOnDraw(true)
             },
             ScopeAction {
-                memoryCachePolicy(ENABLED)
+                memoryCachePolicy(WRITE_ONLY)
             },
             ScopeAction {
                 components {
-                    addFetcher(HttpUriFetcher.Factory())
+                    addFetcher(TestFetcher.Factory())
+                    addRequestInterceptor(TestRequestInterceptor())
+                    addDecodeInterceptor(TestDecodeInterceptor())
+                    addDecoder(TestDecoder.Factory())
                 }
             },
         )
@@ -1612,7 +1614,7 @@ class ImageOptionsTest {
             resultCachePolicy(READ_ONLY)
             placeholder(FakeStateImage(FakeImage(SketchSize(100, 100))))
             fallback(FakeStateImage(FakeImage(SketchSize(100, 100))))
-            error(ErrorStateImage(FakeStateImage(FakeImage(SketchSize(100, 100)))))
+            error(FakeStateImage(FakeImage(SketchSize(100, 100))))
             transitionFactory(FakeTransition.Factory())
             resizeOnDraw(true)
             allowNullImage(true)
@@ -1622,8 +1624,8 @@ class ImageOptionsTest {
             }
         }.apply {
             assertEquals(
-                "ImageOptions(depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), httpHeaders=HttpHeaders(sets=[key1:value1],adds=[]), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(FILL), transformations=[RotateTransformation(40)], disallowAnimatedImage=true, resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=ErrorStateImage([DefaultCondition:ErrorStateImage([DefaultCondition:FakeStateImage(image=FakeImage(size=100x100))])]), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[HttpUriFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[]))",
-                this.toString()
+                expected = "ImageOptions(depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), httpHeaders=HttpHeaders(sets=[key1:value1],adds=[]), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(FILL), transformations=[RotateTransformation(40)], disallowAnimatedImage=true, resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[HttpUriFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[]))",
+                actual = this.toString()
             )
         }
     }

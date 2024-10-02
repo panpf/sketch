@@ -56,7 +56,6 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.SizeResolver
-import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeStateImage
@@ -69,7 +68,6 @@ import com.github.panpf.sketch.test.utils.TestLifecycle
 import com.github.panpf.sketch.test.utils.TestListenerTarget
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestTarget
-import com.github.panpf.sketch.test.utils.UriInvalidCondition
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.target
 import com.github.panpf.sketch.transform.BlurTransformation
@@ -95,7 +93,7 @@ import kotlin.test.assertTrue
 class ImageRequestTest {
 
     @Test
-    fun testFun() {
+    fun testImageRequest() {
         val context1 = getTestContext()
         val uri1 = ResourceImages.jpeg.uri
         ImageRequest(context1, uri1).apply {
@@ -1135,34 +1133,12 @@ class ImageRequestTest {
 
             error(FakeStateImage())
             build().apply {
-                assertEquals(ErrorStateImage(FakeStateImage()), error)
+                assertEquals(FakeStateImage(), error)
             }
 
-            error(FakeStateImage()) {
-                addState(UriInvalidCondition, FakeStateImage(FakeImage(SketchSize(200, 200))))
-            }
-            build().apply {
-                assertEquals(
-                    ErrorStateImage(FakeStateImage()) {
-                        addState(
-                            UriInvalidCondition,
-                            FakeStateImage(FakeImage(SketchSize(200, 200)))
-                        )
-                    },
-                    error
-                )
-            }
-
-            error()
+            error(null)
             build().apply {
                 assertNull(error)
-            }
-
-            error {
-                addState(UriInvalidCondition, FakeStateImage(FakeImage(SketchSize(200, 200))))
-            }
-            build().apply {
-                assertNotNull(error)
             }
         }
     }
@@ -1657,6 +1633,12 @@ class ImageRequestTest {
                 downloadCachePolicy(READ_ONLY)
             },
             ScopeAction {
+                colorType("RAGB")
+            },
+            ScopeAction {
+                colorSpace("SRGB")
+            },
+            ScopeAction {
                 size(300, 200)
             },
             ScopeAction {
@@ -1666,7 +1648,7 @@ class ImageRequestTest {
                 precision(LongImagePrecisionDecider())
             },
             ScopeAction {
-                scale(END_CROP)
+                scale(FILL)
             },
             ScopeAction {
                 scale(LongImageScaleDecider())
@@ -1678,18 +1660,19 @@ class ImageRequestTest {
                 resultCachePolicy(WRITE_ONLY)
             },
             ScopeAction {
+                disallowAnimatedImage(true)
+            },
+            ScopeAction {
                 placeholder(FakeStateImage())
             },
             ScopeAction {
-                error(FakeStateImage()) {
-                    addState(UriInvalidCondition, FakeStateImage(FakeImage(SketchSize(200, 200))))
-                }
+                fallback(FakeStateImage())
+            },
+            ScopeAction {
+                error(FakeStateImage())
             },
             ScopeAction {
                 transitionFactory(CrossfadeTransition.Factory())
-            },
-            ScopeAction {
-                disallowAnimatedImage(true)
             },
             ScopeAction {
                 resizeOnDraw(true)
@@ -1765,7 +1748,7 @@ class ImageRequestTest {
             resultCachePolicy(READ_ONLY)
             placeholder(FakeStateImage(FakeImage(SketchSize(100, 100))))
             fallback(FakeStateImage(FakeImage(SketchSize(100, 100))))
-            error(ErrorStateImage(FakeStateImage(FakeImage(SketchSize(100, 100)))))
+            error(FakeStateImage(FakeImage(SketchSize(100, 100))))
             transitionFactory(FakeTransition.Factory())
             resizeOnDraw(true)
             allowNullImage(true)
@@ -1775,8 +1758,8 @@ class ImageRequestTest {
             }
         }.apply {
             assertEquals(
-                "ImageRequest(context=$context, uri=http://sample.com/sample.jpeg, target=$testTarget, listener=$testListener, progressListener=$testProgressListener, lifecycleResolver=FixedLifecycleResolver($testLifecycle), definedRequestOptions=RequestOptions(listener=$testListener, progressListener=$testProgressListener, lifecycleResolver=FixedLifecycleResolver($testLifecycle)), definedOptions=ImageOptions(depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), httpHeaders=HttpHeaders(sets=[key1:value1],adds=[]), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(FILL), transformations=[RotateTransformation(40)], disallowAnimatedImage=true, resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=ErrorStateImage([DefaultCondition:ErrorStateImage([DefaultCondition:FakeStateImage(image=FakeImage(size=100x100))])]), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[HttpUriFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[])), defaultOptions=null, depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), httpHeaders=HttpHeaders(sets=[key1:value1],adds=[]), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(FILL), transformations=[RotateTransformation(40)], disallowAnimatedImage=true, resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=ErrorStateImage([DefaultCondition:ErrorStateImage([DefaultCondition:FakeStateImage(image=FakeImage(size=100x100))])]), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[HttpUriFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[]))",
-                this.toString()
+                expected = "ImageRequest(context=$context, uri=http://sample.com/sample.jpeg, target=$testTarget, listener=$testListener, progressListener=$testProgressListener, lifecycleResolver=FixedLifecycleResolver($testLifecycle), definedRequestOptions=RequestOptions(listener=$testListener, progressListener=$testProgressListener, lifecycleResolver=FixedLifecycleResolver($testLifecycle)), definedOptions=ImageOptions(depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), httpHeaders=HttpHeaders(sets=[key1:value1],adds=[]), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(FILL), transformations=[RotateTransformation(40)], disallowAnimatedImage=true, resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[HttpUriFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[])), defaultOptions=null, depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), httpHeaders=HttpHeaders(sets=[key1:value1],adds=[]), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(FILL), transformations=[RotateTransformation(40)], disallowAnimatedImage=true, resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[HttpUriFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[]))",
+                actual = this.toString()
             )
         }
     }

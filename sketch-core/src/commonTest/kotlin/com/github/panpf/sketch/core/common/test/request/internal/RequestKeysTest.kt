@@ -27,7 +27,6 @@ import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.internal.newKey
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Scale.END_CROP
-import com.github.panpf.sketch.state.ErrorStateImage
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeStateImage
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
@@ -235,7 +234,7 @@ class RequestKeysTest {
         request = request.newRequest {
             error(error)
         }
-        val _error = "&_error=${ErrorStateImage(error).key}"
+        val _error = "&_error=${error.key}"
         verifyKey(
             uri + _depth + _extras + _httpHeaders + _downloadCachePolicy + _colorType + _colorSpace +
                     _size + _sizeMultiplier + _precision + _scale +

@@ -267,9 +267,9 @@ class AbsProgressPainterTest {
             waitForIdle()
 
             val actions = testProgressPainter.drawProgressHistory.distinct()
+            assertTrue(actual = actions.size >= 5, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "1.0", actual = actions.last(), message = "$actions")
-            assertTrue(actual = actions.size >= 5, message = "$actions")
             assertEquals(expected = 1f, actual = testProgressPainter.progress)
         }
 

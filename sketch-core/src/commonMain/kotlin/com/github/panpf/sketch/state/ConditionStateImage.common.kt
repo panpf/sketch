@@ -14,41 +14,42 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.state
 
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.state.ErrorStateImage.Builder
 
 /**
- * Create an ErrorStateImage
+ * Create an ConditionStateImage
  *
- * @see com.github.panpf.sketch.core.common.test.state.ErrorStateImageTest.testFun
+ * @see com.github.panpf.sketch.core.common.test.state.ConditionStateImageTest.testConditionStateImage
  */
-fun ErrorStateImage(
-    defaultImage: StateImage? = null,
-    configBlock: (Builder.() -> Unit)? = null
-): ErrorStateImage = Builder(defaultImage).apply {
-    configBlock?.invoke(this)
+fun ConditionStateImage(
+    defaultImage: StateImage,
+    conditionBlock: ConditionStateImage.Builder.() -> Unit
+): ConditionStateImage = ConditionStateImage.Builder(defaultImage).apply {
+    conditionBlock.invoke(this)
 }.build()
 
 /**
- * Provide Drawable specifically for error status, support custom [ErrorStateImage.Condition] Provide different Drawable according to different error types
+ * Support providing different [StateImage] based on different conditions
  *
- * @see com.github.panpf.sketch.core.common.test.state.ErrorStateImageTest
+ * @see com.github.panpf.sketch.core.common.test.state.ConditionStateImageTest
  */
-data class ErrorStateImage(
-    val stateList: List<Pair<Condition, StateImage?>>
+data class ConditionStateImage(
+    val stateList: List<Pair<Condition, StateImage>>
 ) : StateImage {
 
     override val key: String =
-        "ErrorStateImage(${
+        "ConditionStateImage(${
             stateList.joinToString(
                 prefix = "[",
                 postfix = "]",
                 separator = ",",
-                transform = { it.first.toString() + ":" + it.second?.key })
+                transform = { it.first.toString() + ":" + it.second.key })
         })"
 
     override fun getImage(
@@ -60,13 +61,27 @@ data class ErrorStateImage(
         ?.second?.getImage(sketch, request, throwable)
 
     override fun toString(): String {
-        return "ErrorStateImage(${
+        return "ConditionStateImage(${
             stateList.joinToString(
                 prefix = "[",
                 postfix = "]",
                 separator = ", ",
-                transform = { it.first.toString() + ":" + it.second?.key })
+                transform = { it.first.toString() + ":" + it.second.key })
         })"
+    }
+
+    class Builder constructor(private val defaultImage: StateImage) {
+
+        private val stateList = mutableListOf<Pair<Condition, StateImage>>()
+
+        fun addState(condition: Condition, stateImage: StateImage): Builder = apply {
+            stateList.add(Pair(condition, stateImage))
+        }
+
+        fun build(): ConditionStateImage {
+            val list = stateList.plus(DefaultCondition to defaultImage)
+            return ConditionStateImage(list)
+        }
     }
 
     interface Condition {
@@ -75,27 +90,6 @@ data class ErrorStateImage(
             request: ImageRequest,
             throwable: Throwable?
         ): Boolean
-    }
-
-    class Builder(private val defaultImage: StateImage?) {
-
-        private val stateList = mutableListOf<Pair<Condition, StateImage?>>()
-
-        /**
-         * Add a custom error state
-         */
-        fun addState(condition: Condition, stateImage: StateImage?): Builder = apply {
-            stateList.add(Pair(condition, stateImage))
-        }
-
-        fun build(): ErrorStateImage {
-            val list = if (defaultImage != null) {
-                stateList.plus(DefaultCondition to defaultImage)
-            } else {
-                stateList
-            }
-            return ErrorStateImage(list)
-        }
     }
 
     data object DefaultCondition : Condition {

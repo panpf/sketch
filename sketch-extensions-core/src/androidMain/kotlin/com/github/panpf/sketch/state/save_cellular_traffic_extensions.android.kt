@@ -23,45 +23,45 @@ import com.github.panpf.sketch.util.ResColor
 
 
 /**
- * Set the error image when the save cellular traffic
+ * Set the state image when the save cellular traffic
  *
  * @see com.github.panpf.sketch.extensions.core.android.test.state.SaveCellularTrafficExtensionsAndroidTest.testSaveCellularTrafficError
  */
-fun ErrorStateImage.Builder.saveCellularTrafficError(
+fun ConditionStateImage.Builder.saveCellularTrafficError(
     drawable: EquitableDrawable
-): ErrorStateImage.Builder = apply {
+): ConditionStateImage.Builder = apply {
     addState(SaveCellularTrafficCondition, DrawableStateImage(drawable))
 }
 
 /**
- * Set the error image when the save cellular traffic
+ * Set the state image when the save cellular traffic
  *
  * @see com.github.panpf.sketch.extensions.core.android.test.state.SaveCellularTrafficExtensionsAndroidTest.testSaveCellularTrafficError
  */
-fun ErrorStateImage.Builder.saveCellularTrafficError(
+fun ConditionStateImage.Builder.saveCellularTrafficError(
     @DrawableRes resId: Int
-): ErrorStateImage.Builder = apply {
+): ConditionStateImage.Builder = apply {
     addState(SaveCellularTrafficCondition, DrawableStateImage(resId))
 }
 
 /**
- * Set the error image when the save cellular traffic
+ * Set the state image when the save cellular traffic
  *
  * @see com.github.panpf.sketch.extensions.core.android.test.state.SaveCellularTrafficExtensionsAndroidTest.testSaveCellularTrafficError
  */
-fun ErrorStateImage.Builder.saveCellularTrafficError(
+fun ConditionStateImage.Builder.saveCellularTrafficError(
     color: IntColor
-): ErrorStateImage.Builder = apply {
+): ConditionStateImage.Builder = apply {
     addState(SaveCellularTrafficCondition, ColorDrawableStateImage(color))
 }
 
 /**
- * Set the error image when the save cellular traffic
+ * Set the state image when the save cellular traffic
  *
  * @see com.github.panpf.sketch.extensions.core.android.test.state.SaveCellularTrafficExtensionsAndroidTest.testSaveCellularTrafficError
  */
-fun ErrorStateImage.Builder.saveCellularTrafficError(
+fun ConditionStateImage.Builder.saveCellularTrafficError(
     color: ResColor
-): ErrorStateImage.Builder = apply {
+): ConditionStateImage.Builder = apply {
     addState(SaveCellularTrafficCondition, ColorDrawableStateImage(color))
 }

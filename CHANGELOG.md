@@ -32,6 +32,10 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * change: The setHttpHeader method of ImageRequest.Builder and ImageOptions.Builder is renamed to
   httpHeader
 * change: DrawableEqualizer and PainterEqualizer changed to EquitableDrawable and EquitablePainter
+* change: The type of error attribute of ImageRequest and ImageOptions changed from ErrorImageState
+  to StateImage
+* change: ErrorImageState is refactored into ConditionStateImage, and ConditionStateImage can be
+  used in placeholder and fallback
 * new: Non-Android platforms now also support ColorType
 * new: Non-Android platforms now also support ColorSpace
 * new: DrawableDecoder supports colorSpace

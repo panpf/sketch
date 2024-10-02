@@ -4,7 +4,7 @@
 
 [StateImage] 用来为加载中状态和错误状态提供图片，有以下几种实现：
 
-For View:
+View 专用:
 
 * [DrawableStateImage]：使用 Drawable 作为状态图片
 * [ColorDrawableStateImage]：使用颜色创建 ColorDrawable 作为状态图片
@@ -12,7 +12,7 @@ For View:
 * [IconAnimatableDrawableStateImage]：使用 [IconAnimatableDrawable]
   作为状态图片。可以确保图标大小始终不变，不受组件的缩放影响，适合用在瀑布流布局中
 
-For Compose:
+Compose 专用:
 
 * [PainterStateImage]：使用 Painter 作为状态图片
 * [ColorPainterStateImage]：使用颜色创建 ColorPainter 作为状态图片
@@ -20,7 +20,7 @@ For Compose:
 * [IconAnimatablePainterStateImage]：使用 [IconAnimatablePainter]
   作为状态图片。可以确保图标大小始终不变，不受组件的缩放影响，适合用在瀑布流布局中
 
-Generic:
+通用:
 
 * [CurrentStateImage]：使用组件当前的 Image 作为状态图片
 * [MemoryCacheStateImage]：使用给定的内存缓存 key 从内存缓存中获取 Image 作为状态图片，搭配 crossfade
@@ -28,7 +28,7 @@ Generic:
 * [ThumbnailMemoryCacheStateImage]：[MemoryCacheStateImage] 的简化版，使用给定的或当前请求的 uri
   匹配内存缓存中的宽高比和原图一致，并且没有用 Transformation 修改的缩略图作为状态图片。同样搭配
   crossfade 可以实现从小图到大图的完美过渡
-* [ErrorStateImage]：专门用于错误状态，可以根据错误类型选择不同的状态图片
+* [ConditionStateImage]：可根据不同条件使用不同的状态图片
 
 ## 配置
 
@@ -37,46 +37,59 @@ Generic:
 ```kotlin
 // View
 ImageRequest(context, "https://example.com/image.jpg") {
-    placeholder(R.drawable.placeholder)
-    placeholder(context.getEquitableDrawable(R.drawable.placeholder))
-    placeholder(IntColorDrawableStateImage(Color.Gray))
-    placeholder(DrawableStateImage(R.drawable.placeholder))
-    placeholder(IconDrawableStateImage(R.drawable.placeholder, IntColor(Color.GRAY)))
+  placeholder(R.drawable.placeholder)
+  placeholder(context.getEquitableDrawable(R.drawable.placeholder))
+  placeholder(IntColorDrawableStateImage(Color.Gray))
+  placeholder(DrawableStateImage(R.drawable.placeholder))
+  placeholder(IconDrawableStateImage(icon = R.drawable.placeholder, background = IntColor(Color.GRAY)))
+  placeholder(ConditionStateImage(defaultResId = R.drawable.error){
+    addState(condition = MyCondition, resId = R.drawable.mystate)
+  })
 
-    fallback(R.drawable.fallback)
-    fallback(context.getEquitableDrawable(R.drawable.fallback))
-    fallback(IntColorDrawableStateImage(Color.RED))
-    fallback(DrawableStateImage(R.drawable.fallback))
-    fallback(IconDrawableStateImage(R.drawable.fallback, IntColor(Color.RED)))
+  fallback(R.drawable.fallback)
+  fallback(context.getEquitableDrawable(R.drawable.fallback))
+  fallback(IntColorDrawableStateImage(Color.RED))
+  fallback(DrawableStateImage(R.drawable.fallback))
+  fallback(IconDrawableStateImage(icon = R.drawable.fallback, background = IntColor(Color.RED)))
+  fallback(ConditionStateImage(defaultResId = R.drawable.error) {
+    addState(condition = MyCondition, resId = R.drawable.mystate)
+  })
 
-    error(R.drawable.error)
-    error(R.drawable.error) {
-        addState(MyCondition, R.drawable.mystate)
-    }
-    error(ErrorStateImage(R.drawable.error)) {
-        addState(MyCondition, R.drawable.mystate)
-    })
+  error(R.drawable.error)
+  error(context.getEquitableDrawable(R.drawable.error))
+  error(IntColorDrawableStateImage(Color.RED))
+  error(DrawableStateImage(R.drawable.error))
+  error(IconDrawableStateImage(icon = R.drawable.error, background = IntColor(Color.RED)))
+  error(ConditionStateImage(defaultResId = R.drawable.error) {
+    addState(condition = MyCondition, resId = R.drawable.mystate)
+  })
 }
 
 // Compose
 ComposableImageRequest("https://example.com/image.jpg") {
-    placeholder(Res.drawable.placeholder)
-    placeholder(rememberPainterStateImage(Res.drawable.placeholder))
-    placeholder(rememberColorPainterStateImage(Color.Gray))
-    placeholder(rememberIconPainterStateImage(Res.drawable.placeholder, background = Color.Gray))
+  placeholder(Res.drawable.placeholder)
+  placeholder(rememberPainterStateImage(Res.drawable.placeholder))
+  placeholder(rememberColorPainterStateImage(Color.Gray))
+  placeholder(rememberIconPainterStateImage(Res.drawable.placeholder, background = Color.Gray))
+  placeholder(ComposableConditionStateImage(defaultImage = Res.drawable.placeholder){
+    addState(condition = MyCondition, stateImage = Res.drawable.mystate)
+  })
 
-    fallback(Res.drawable.fallback)
-    fallback(rememberPainterStateImage(Res.drawable.fallback))
-    fallback(rememberColorPainterStateImage(Color.Red))
-    fallback(rememberIconPainterStateImage(Res.drawable.fallback, background = Color.Red))
-  
-    error(Res.drawable.error)
-    error(Res.drawable.error) {
-        addState(MyCondition, Res.drawable.mystate)
-    }
-    error(ErrorStateImage(R.drawable.error)) {
-        addState(MyCondition, Res.drawable.mystate)
-    })
+  fallback(Res.drawable.fallback)
+  fallback(rememberPainterStateImage(Res.drawable.fallback))
+  fallback(rememberColorPainterStateImage(Color.Red))
+  fallback(rememberIconPainterStateImage(Res.drawable.fallback, background = Color.Red))
+  fallback(ComposableConditionStateImage(defaultImage = Res.drawable.fallback){
+    addState(condition = MyCondition, stateImage = Res.drawable.mystate)
+  })
+
+  error(Res.drawable.error)
+  error(rememberPainterStateImage(Res.drawable.error))
+  error(rememberColorPainterStateImage(Color.Red))
+  error(rememberIconPainterStateImage(Res.drawable.error, background = Color.Red))
+  error(ComposableConditionStateImage(defaultImage = Res.drawable.error){
+    addState(condition = MyCondition, stateImage = Res.drawable.mystate)
+  })
 }
 ```
 
@@ -88,13 +101,14 @@ ComposableImageRequest("https://example.com/image.jpg") {
 
 可参考现有 [StateImage] 的实现
 
-### ErrorStateImage
+### ConditionStateImage
 
-[ErrorStateImage] 支持根据不同的错误类型返回不同的状态图片，你可以实现 [ErrorStateImage].Condition
-接口来扩展新的类型，然后通过 [ErrorStateImage].Builder.addState() 使用自定义的类型，如下：
+[ConditionStateImage] 支持根据不同的条件返回不同的状态图片，你可以实现 [ConditionStateImage]
+.Condition
+接口来扩展新的类型，然后通过 [ConditionStateImage].Builder.addState() 使用自定义的类型，如下：
 
 ```kotlin
-object MyCondition : ErrorStateImage.Condition {
+object MyCondition : ConditionStateImage.Condition {
 
     override fun accept(
         request: ImageRequest,
@@ -102,11 +116,18 @@ object MyCondition : ErrorStateImage.Condition {
     ): Boolean = throwable is IOException
 }
 
-ImageRequest(context, "https://example.com/image.jpg")
-{
-    error(R.drawable.error) {
-        addState(MyCondition, DrawableStateImage(R.drawable.mystate))
-    }
+// View
+ImageRequest(context, "https://example.com/image.jpg") {
+  error(ConditionStateImage(R.drawable.error) {
+    addState(condition = MyCondition, stateImage = DrawableStateImage(R.drawable.mystate))
+  })
+}
+
+// Compose
+ImageRequest(context, "https://example.com/image.jpg") {
+  error(ComposableConditionStateImage(Res.drawable.error) {
+    addState(condition = MyCondition, stateImage = DrawableStateImage(Res.drawable.mystate))
+  })
 }
 ```
 
@@ -153,9 +174,9 @@ ImageRequest(context, "https://example.com/image.jpg") {
 
 [ColorPainterStateImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/state/ColorPainterStateImage.kt
 
-[DrawableStateImage]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/state/DrawableStateImage.common.kt
+[ConditionStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/state/ConditionStateImage.common.kt
 
-[ErrorStateImage]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/state/ErrorStateImage.common.kt
+[DrawableStateImage]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/state/DrawableStateImage.common.kt
 
 [IconDrawableStateImage]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/state/IconDrawableStateImage.common.kt
 
