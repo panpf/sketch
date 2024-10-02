@@ -3,6 +3,7 @@ android-plugin = "8.6.0"
 androidx-activity = "1.9.0"
 androidx-annotation = "1.8.0"
 androidx-appcompat = "1.7.0"
+androidx-compose = "1.6.7"
 androidx-constraintlayout = "2.1.4"
 androidx-constraintlayout-compose = "1.0.1"
 androidx-core = "1.13.1"
@@ -69,6 +70,8 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "androidx-annotation" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-appcompat-resources = { module = "androidx.appcompat:appcompat-resources", version.ref = "androidx-appcompat" }
+androidx-compose-ui-test-junit4-android = { module = "androidx.compose.ui:ui-test-junit4-android", version.ref = "androidx-compose" }
+androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "androidx-compose" }
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "androidx-constraintlayout-compose" }
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }

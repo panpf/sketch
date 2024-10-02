@@ -28,5 +28,9 @@ kotlin {
             api(compose.uiTest)
             api(compose.components.resources)
         }
+        androidMain.dependencies {
+            api(libs.androidx.compose.ui.test.junit4.android)
+            api(libs.androidx.compose.ui.test.manifest)
+        }
     }
 }
