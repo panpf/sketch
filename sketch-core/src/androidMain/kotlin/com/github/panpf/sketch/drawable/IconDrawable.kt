@@ -32,8 +32,12 @@ import android.os.Build.VERSION_CODES
 import androidx.annotation.ColorInt
 import androidx.core.graphics.drawable.DrawableCompat
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.calculateFitBounds
+import com.github.panpf.sketch.util.calculateCropBounds
+import com.github.panpf.sketch.util.calculateInsideBounds
+import com.github.panpf.sketch.util.isNotEmpty
+import com.github.panpf.sketch.util.toAndroidRect
 import com.github.panpf.sketch.util.toLogString
+import com.github.panpf.sketch.util.toSketchRect
 
 /**
  * It consists of two parts: icon and bg. bg is scaled to fill bounds, the icon size is unchanged always centered.
@@ -49,32 +53,18 @@ open class IconDrawable constructor(
 ) : Drawable(), Callback, SketchDrawable {
 
     init {
+        if (iconSize != null) {
+            require(!iconSize.isEmpty) {
+                "iconSize must be not empty"
+            }
+        } else {
+            require(icon.intrinsicWidth > 0 && icon.intrinsicHeight > 0) {
+                "When iconSize is not set, icon's size must be not empty"
+            }
+        }
         background?.callback = this
         icon.callback = this
         iconTint?.let { DrawableCompat.setTint(icon, it) }
-    }
-
-    override fun getIntrinsicWidth(): Int {
-        return -1
-    }
-
-    override fun getIntrinsicHeight(): Int {
-        return -1
-    }
-
-    override fun mutate(): IconDrawable {
-        val mutateIcon = icon.mutate()
-        val mutateBackground = background?.mutate()
-        return if (mutateIcon !== icon || mutateBackground !== background) {
-            IconDrawable(
-                icon = mutateIcon,
-                background = mutateBackground,
-                iconSize = iconSize,
-                iconTint = iconTint
-            )
-        } else {
-            this
-        }
     }
 
     override fun draw(canvas: Canvas) {
@@ -84,10 +74,32 @@ open class IconDrawable constructor(
 
     override fun onBoundsChange(bounds: Rect) {
         super.onBoundsChange(bounds)
-        background?.bounds = bounds
-        val contentSize = iconSize ?: Size(icon.intrinsicWidth, icon.intrinsicHeight)
-        val iconBounds = calculateFitBounds(contentSize, bounds)
+
+        val background = background
+        if (background != null) {
+            val backgroundSize = Size(background.intrinsicWidth, background.intrinsicHeight)
+            val backgroundBounds = if (backgroundSize.isNotEmpty) {
+                calculateCropBounds(
+                    contentSize = backgroundSize,
+                    containerBounds = bounds.toSketchRect()
+                ).toAndroidRect()
+            } else {
+                bounds
+            }
+            background.bounds = backgroundBounds
+        }
+
+        val iconSize = iconSize ?: Size(icon.intrinsicWidth, icon.intrinsicHeight)
+        val iconBounds = calculateInsideBounds(iconSize, bounds.toSketchRect()).toAndroidRect()
         icon.bounds = iconBounds
+    }
+
+    override fun getIntrinsicWidth(): Int {
+        return -1
+    }
+
+    override fun getIntrinsicHeight(): Int {
+        return -1
     }
 
     override fun setChangingConfigurations(configs: Int) {
@@ -142,7 +154,6 @@ open class IconDrawable constructor(
             ?: background?.opacity.takeIf { it != PixelFormat.OPAQUE }
             ?: PixelFormat.OPAQUE
     }
-
 
     override fun isStateful(): Boolean {
         return background?.isStateful == true || icon.isStateful
@@ -228,6 +239,21 @@ open class IconDrawable constructor(
         unscheduleSelf(what)
     }
 
+    override fun mutate(): IconDrawable {
+        val mutateIcon = icon.mutate()
+        val mutateBackground = background?.mutate()
+        return if (mutateIcon !== icon || mutateBackground !== background) {
+            IconDrawable(
+                icon = mutateIcon,
+                background = mutateBackground,
+                iconSize = iconSize,
+                iconTint = iconTint
+            )
+        } else {
+            this
+        }
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
@@ -246,12 +272,10 @@ open class IconDrawable constructor(
         return result
     }
 
-    override fun toString(): String {
-        return "IconDrawable(" +
-                "icon=${icon.toLogString()}, " +
-                "background=${background?.toLogString()}, " +
-                "iconSize=$iconSize, " +
-                "iconTint=$iconTint" +
-                ")"
-    }
+    override fun toString(): String = "IconDrawable(" +
+            "icon=${icon.toLogString()}, " +
+            "background=${background?.toLogString()}, " +
+            "iconSize=$iconSize, " +
+            "iconTint=$iconTint" +
+            ")"
 }

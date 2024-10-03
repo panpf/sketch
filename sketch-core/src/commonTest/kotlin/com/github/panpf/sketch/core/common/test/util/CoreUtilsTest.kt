@@ -23,9 +23,12 @@ import com.github.panpf.sketch.test.utils.pow
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.MaskTransformation
 import com.github.panpf.sketch.transition.CrossfadeTransition
+import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
+import com.github.panpf.sketch.util.calculateCropBounds
+import com.github.panpf.sketch.util.calculateInsideBounds
 import com.github.panpf.sketch.util.ceilRoundPow2
 import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
 import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
@@ -331,6 +334,77 @@ class CoreUtilsTest {
             actual = computeScaleMultiplierWithOneSide(
                 sourceSize = Size(100, 100),
                 targetSize = Size(0, 0)
+            )
+        )
+    }
+
+    @Test
+    fun testCalculateInsideBounds() {
+        assertEquals(
+            expected = Rect(450, 450, 550, 550),
+            actual = calculateInsideBounds(
+                contentSize = Size(100, 100),
+                containerBounds = Rect(0, 0, 1000, 1000)
+            )
+        )
+        assertEquals(
+            expected = Rect(475, 0, 525, 1000),
+            actual = calculateInsideBounds(
+                contentSize = Size(100, 2000),
+                containerBounds = Rect(0, 0, 1000, 1000)
+            )
+        )
+        assertEquals(
+            expected = Rect(0, 475, 1000, 525),
+            actual = calculateInsideBounds(
+                contentSize = Size(2000, 100),
+                containerBounds = Rect(0, 0, 1000, 1000)
+            )
+        )
+        assertEquals(
+            expected = Rect(0, 0, 1000, 1000),
+            actual = calculateInsideBounds(
+                contentSize = Size(2000, 2000),
+                containerBounds = Rect(0, 0, 1000, 1000)
+            )
+        )
+    }
+
+    @Test
+    fun testCalculateCropBounds() {
+        assertEquals(
+            expected = Rect(-500, 0, 1500, 1000),
+            actual = calculateCropBounds(
+                contentSize = Size(100, 50),
+                containerBounds = Rect(0, 0, 1000, 1000)
+            )
+        )
+        assertEquals(
+            expected = Rect(0, -500, 1000, 1500),
+            actual = calculateCropBounds(
+                contentSize = Size(50, 100),
+                containerBounds = Rect(0, 0, 1000, 1000)
+            )
+        )
+        assertEquals(
+            expected = Rect(0, -9500, 1000, 10500),
+            actual = calculateCropBounds(
+                contentSize = Size(100, 2000),
+                containerBounds = Rect(0, 0, 1000, 1000)
+            )
+        )
+        assertEquals(
+            expected = Rect(-9500, 0, 10500, 1000),
+            actual = calculateCropBounds(
+                contentSize = Size(2000, 100),
+                containerBounds = Rect(0, 0, 1000, 1000)
+            )
+        )
+        assertEquals(
+            expected = Rect(0, 0, 1000, 1000),
+            actual = calculateCropBounds(
+                contentSize = Size(2000, 2000),
+                containerBounds = Rect(0, 0, 1000, 1000)
             )
         )
     }

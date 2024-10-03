@@ -291,6 +291,57 @@ fun computeScaleMultiplierWithOneSide(sourceSize: SketchSize, targetSize: Sketch
     return 1f
 }
 
+
+/**
+ * Calculate the bounds of the Drawable to inside the container.
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testCalculateInsideBounds
+ */
+fun calculateInsideBounds(contentSize: Size, containerBounds: Rect): Rect {
+    val containerWidth = containerBounds.width()
+    val containerHeight = containerBounds.height()
+    if (contentSize.width <= containerWidth && contentSize.height <= containerHeight) {
+        // center
+        val left = containerBounds.left + (containerWidth - contentSize.width) / 2
+        val top = containerBounds.top + (containerHeight - contentSize.height) / 2
+        val right = left + contentSize.width
+        val bottom = top + contentSize.height
+        return Rect(left, top, right, bottom)
+    } else {
+        // fit
+        val widthScale = containerWidth.toFloat() / contentSize.width
+        val heightScale = containerHeight.toFloat() / contentSize.height
+        val scale = min(widthScale, heightScale)
+        val scaledWidth = (contentSize.width * scale).toInt()
+        val scaledHeight = (contentSize.height * scale).toInt()
+        val left = containerBounds.left + (containerWidth - scaledWidth) / 2
+        val top = containerBounds.top + (containerHeight - scaledHeight) / 2
+        val right = left + scaledWidth
+        val bottom = top + scaledHeight
+        return Rect(left, top, right, bottom)
+    }
+}
+
+/**
+ * Calculate the bounds of the Drawable to crop the container.
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testCalculateCropBounds
+ */
+fun calculateCropBounds(contentSize: Size, containerBounds: Rect): Rect {
+    val containerWidth = containerBounds.width()
+    val containerHeight = containerBounds.height()
+    val widthScale = containerWidth.toFloat() / contentSize.width
+    val heightScale = containerHeight.toFloat() / contentSize.height
+    val scale = max(widthScale, heightScale)
+    val scaledWidth = (contentSize.width * scale).toInt()
+    val scaledHeight = (contentSize.height * scale).toInt()
+    val left = containerBounds.left + (containerWidth - scaledWidth) / 2
+    val top = containerBounds.top + (containerHeight - scaledHeight) / 2
+    val right = left + scaledWidth
+    val bottom = top + scaledHeight
+    return Rect(left, top, right, bottom)
+}
+
 /**
  * Get the difference between two ImageRequests
  *

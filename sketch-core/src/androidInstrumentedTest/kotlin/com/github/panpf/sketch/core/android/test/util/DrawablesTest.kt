@@ -51,7 +51,6 @@ import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
-import com.github.panpf.sketch.util.calculateFitBounds
 import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.sketch.util.getXmlDrawableCompat
 import com.github.panpf.sketch.util.toBitmap
@@ -348,37 +347,5 @@ class DrawablesTest {
                 actual = this@apply.toSizeString()
             )
         }
-    }
-
-    @Test
-    fun testCalculateFitBounds() {
-        assertEquals(
-            expected = Rect(450, 450, 550, 550),
-            actual = calculateFitBounds(
-                contentSize = Size(100, 100),
-                containerBounds = Rect(0, 0, 1000, 1000)
-            )
-        )
-        assertEquals(
-            expected = Rect(475, 0, 525, 1000),
-            actual = calculateFitBounds(
-                contentSize = Size(100, 2000),
-                containerBounds = Rect(0, 0, 1000, 1000)
-            )
-        )
-        assertEquals(
-            expected = Rect(0, 475, 1000, 525),
-            actual = calculateFitBounds(
-                contentSize = Size(2000, 100),
-                containerBounds = Rect(0, 0, 1000, 1000)
-            )
-        )
-        assertEquals(
-            expected = Rect(0, 0, 1000, 1000),
-            actual = calculateFitBounds(
-                contentSize = Size(2000, 2000),
-                containerBounds = Rect(0, 0, 1000, 1000)
-            )
-        )
     }
 }

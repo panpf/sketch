@@ -18,6 +18,7 @@
 
 package com.github.panpf.sketch.drawable
 
+import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Drawable.Callback
 import androidx.annotation.ColorInt
@@ -37,12 +38,20 @@ class IconAnimatableDrawable constructor(
     background: Drawable? = null,
     iconSize: Size? = null,
     @ColorInt iconTint: Int? = null
-) : IconDrawable(icon, background, iconSize, iconTint), Callback, Animatable2Compat,
+) : IconDrawable(icon, background, iconSize, iconTint),
+    Callback,
+    Animatable2Compat,
     SketchDrawable {
 
     internal var callbackHelper: AnimatableCallbackHelper? = null
 
     init {
+        require(icon is Animatable) {
+            "icon must be Animatable"
+        }
+        require(background == null || background !is Animatable) {
+            "background can't be Animatable"
+        }
         callbackHelper = AnimatableCallbackHelper(icon)
     }
 
@@ -103,12 +112,10 @@ class IconAnimatableDrawable constructor(
         return result
     }
 
-    override fun toString(): String {
-        return "IconAnimatableDrawable(" +
-                "icon=${icon.toLogString()}, " +
-                "background=${background?.toLogString()}, " +
-                "iconSize=$iconSize, " +
-                "iconTint=$iconTint" +
-                ")"
-    }
+    override fun toString(): String = "IconAnimatableDrawable(" +
+            "icon=${icon.toLogString()}, " +
+            "background=${background?.toLogString()}, " +
+            "iconSize=$iconSize, " +
+            "iconTint=$iconTint" +
+            ")"
 }

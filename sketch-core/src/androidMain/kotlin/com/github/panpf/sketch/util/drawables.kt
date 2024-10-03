@@ -22,7 +22,6 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.ColorSpace
-import android.graphics.Rect
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.BitmapDrawable
@@ -53,7 +52,6 @@ import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.drawable.SketchDrawable
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
-import kotlin.math.min
 
 /**
  * Get a [Drawable] from the specified resource ID.
@@ -177,33 +175,3 @@ fun Drawable.toLogString(): String = when {
  * @see com.github.panpf.sketch.core.android.test.util.DrawablesTest.testToSizeString
  */
 internal fun Drawable.toSizeString(): String = "${intrinsicWidth}x${intrinsicHeight}"
-
-/**
- * Calculate the bounds of the Drawable to fit the container.
- *
- * @see com.github.panpf.sketch.core.android.test.util.DrawablesTest.testCalculateFitBounds
- */
-internal fun calculateFitBounds(contentSize: Size, containerBounds: Rect): Rect {
-    val left: Int
-    val top: Int
-    val right: Int
-    val bottom: Int
-    if (contentSize.width <= containerBounds.width() && contentSize.height <= containerBounds.height()) {
-        left = containerBounds.left + (containerBounds.width() - contentSize.width) / 2
-        top = containerBounds.top + (containerBounds.height() - contentSize.height) / 2
-        right = left + contentSize.width
-        bottom = top + contentSize.height
-    } else {
-        val scale = min(
-            containerBounds.width().toFloat() / contentSize.width,
-            containerBounds.height().toFloat() / contentSize.height
-        )
-        val scaledWidth = (contentSize.width * scale).toInt()
-        val scaledHeight = (contentSize.height * scale).toInt()
-        left = containerBounds.left + (containerBounds.width() - scaledWidth) / 2
-        top = containerBounds.top + (containerBounds.height() - scaledHeight) / 2
-        right = left + scaledWidth
-        bottom = top + scaledHeight
-    }
-    return Rect(left, top, right, bottom)
-}

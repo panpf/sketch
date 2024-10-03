@@ -16,7 +16,6 @@
 
 package com.github.panpf.sketch.core.android.test.drawable
 
-import android.R
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
@@ -29,25 +28,27 @@ import android.graphics.PorterDuff.Mode.DST_IN
 import android.graphics.PorterDuffColorFilter
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.drawable.IconDrawable
 import com.github.panpf.sketch.drawable.asEquitable
+import com.github.panpf.sketch.test.utils.SizeDrawable
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
-import com.github.panpf.sketch.util.calculateFitBounds
+import com.github.panpf.sketch.util.calculateInsideBounds
 import com.github.panpf.sketch.util.getDrawableCompat
+import com.github.panpf.sketch.util.toSketchRect
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 import org.junit.runner.RunWith
 import kotlin.math.roundToInt
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotSame
@@ -61,25 +62,56 @@ class IconDrawableTest {
     @Test
     fun testConstructor() {
         IconDrawable(
-            icon = ColorDrawable(Color.GREEN),
+            icon = SizeDrawable(ColorDrawable(Color.GREEN).asEquitable(), Size(100, 100)),
         ).apply {
-            assertTrue(icon is ColorDrawable)
+            assertEquals(
+                expected = SizeDrawable(ColorDrawable(Color.GREEN).asEquitable(), Size(100, 100)),
+                actual = icon
+            )
             assertNull(background)
             assertNull(iconSize)
             assertNull(iconTint)
         }
 
         IconDrawable(
-            icon = ColorDrawable(Color.GREEN),
+            icon = SizeDrawable(ColorDrawable(Color.GREEN).asEquitable(), Size(100, 100)),
             background = ColorDrawable(Color.BLUE),
             iconSize = Size(69, 44),
             iconTint = Color.RED,
         ).apply {
-            assertTrue(icon is ColorDrawable)
+            assertEquals(
+                expected = SizeDrawable(ColorDrawable(Color.GREEN).asEquitable(), Size(100, 100)),
+                actual = icon
+            )
             assertEquals(Color.BLUE, background!!.asOrThrow<ColorDrawable>().color)
             assertEquals(Size(69, 44), iconSize)
             assertEquals(Color.RED, iconTint)
         }
+
+        assertFailsWith(IllegalArgumentException::class) {
+            IconDrawable(icon = ColorDrawable(Color.GREEN))
+        }
+        assertFailsWith(IllegalArgumentException::class) {
+            IconDrawable(icon = ColorDrawable(Color.GREEN), iconSize = Size(-1, -1))
+        }
+        IconDrawable(icon = ColorDrawable(Color.GREEN), iconSize = Size(100, 100))
+
+        assertFailsWith(IllegalArgumentException::class) {
+            IconDrawable(icon = SizeDrawable(ColorDrawable(Color.GREEN), Size(-1, -1)))
+        }
+        assertFailsWith(IllegalArgumentException::class) {
+            IconDrawable(
+                icon = SizeDrawable(ColorDrawable(Color.GREEN), Size(-1, -1)),
+                iconSize = Size(-1, -1)
+            )
+        }
+        IconDrawable(
+            icon = SizeDrawable(ColorDrawable(Color.GREEN), Size(-1, -1)),
+            iconSize = Size(100, 100)
+        )
+        IconDrawable(
+            icon = SizeDrawable(ColorDrawable(Color.GREEN), Size(100, 100)),
+        )
     }
 
     @Test
@@ -92,7 +124,7 @@ class IconDrawableTest {
             setTint(Color.RED)
             setTintList(ColorStateList.valueOf(Color.GREEN))
             setTintMode(DST)
-            if (Build.VERSION.SDK_INT >= 29) {
+            if (VERSION.SDK_INT >= 29) {
                 setTintBlendMode(CLEAR)
             }
         }
@@ -104,7 +136,7 @@ class IconDrawableTest {
             setTint(Color.RED)
             setTintList(ColorStateList.valueOf(Color.GREEN))
             setTintMode(DST)
-            if (Build.VERSION.SDK_INT >= 29) {
+            if (VERSION.SDK_INT >= 29) {
                 setTintBlendMode(CLEAR)
             }
         }
@@ -117,24 +149,24 @@ class IconDrawableTest {
         IconDrawable(
             icon = context.getDrawableCompat(android.R.drawable.ic_delete)
         ).apply {
-            if (Build.VERSION.SDK_INT >= 21) {
+            if (VERSION.SDK_INT >= 21) {
                 assertNull(colorFilter)
             }
             mutate()
 
             colorFilter = PorterDuffColorFilter(Color.BLUE, DST)
-            if (Build.VERSION.SDK_INT >= 21) {
+            if (VERSION.SDK_INT >= 21) {
                 assertTrue(colorFilter is PorterDuffColorFilter)
             }
 
             colorFilter = null
-            if (Build.VERSION.SDK_INT >= 21) {
+            if (VERSION.SDK_INT >= 21) {
                 assertNull(colorFilter)
             }
 
             @Suppress("DEPRECATION")
             setColorFilter(Color.RED, DST_IN)
-            if (Build.VERSION.SDK_INT >= 21) {
+            if (VERSION.SDK_INT >= 21) {
                 assertTrue(colorFilter is PorterDuffColorFilter)
             }
         }
@@ -143,24 +175,24 @@ class IconDrawableTest {
             icon = context.getDrawableCompat(android.R.drawable.ic_delete),
             background = context.getDrawableCompat(android.R.drawable.ic_input_add)
         ).apply {
-            if (Build.VERSION.SDK_INT >= 21) {
+            if (VERSION.SDK_INT >= 21) {
                 assertNull(colorFilter)
             }
             mutate()
 
             colorFilter = PorterDuffColorFilter(Color.BLUE, DST)
-            if (Build.VERSION.SDK_INT >= 21) {
+            if (VERSION.SDK_INT >= 21) {
                 assertTrue(colorFilter is PorterDuffColorFilter)
             }
 
             colorFilter = null
-            if (Build.VERSION.SDK_INT >= 21) {
+            if (VERSION.SDK_INT >= 21) {
                 assertNull(colorFilter)
             }
 
             @Suppress("DEPRECATION")
             setColorFilter(Color.RED, DST_IN)
-            if (Build.VERSION.SDK_INT >= 21) {
+            if (VERSION.SDK_INT >= 21) {
                 assertTrue(colorFilter is PorterDuffColorFilter)
             }
         }
@@ -268,9 +300,9 @@ class IconDrawableTest {
         boundsList.forEach { bounds ->
             iconDrawable.bounds = bounds
 
-            val iconBounds = calculateFitBounds(iconIntrinsicSize, bounds)
+            val iconBounds = calculateInsideBounds(iconIntrinsicSize, bounds.toSketchRect())
             assertNotEquals(Rect(0, 0, 0, 0), icon.bounds, "bounds=$bounds")
-            assertEquals(iconBounds, icon.bounds, "bounds=$bounds")
+            assertEquals(iconBounds, icon.bounds.toSketchRect(), "bounds=$bounds")
             assertEquals(bounds, bgDrawable.bounds, "bounds=$bounds")
 
             iconBoundsList.add(Rect(icon.bounds))
@@ -336,9 +368,9 @@ class IconDrawableTest {
         boundsList.forEach { bounds ->
             iconDrawable.bounds = bounds
 
-            val iconBounds = calculateFitBounds(iconSize, bounds)
+            val iconBounds = calculateInsideBounds(iconSize, bounds.toSketchRect())
             assertNotEquals(Rect(0, 0, 0, 0), icon.bounds, "bounds=$bounds")
-            assertEquals(iconBounds, icon.bounds, "bounds=$bounds")
+            assertEquals(iconBounds, icon.bounds.toSketchRect(), "bounds=$bounds")
             assertEquals(bounds, bgDrawable.bounds, "bounds=$bounds")
 
             iconBoundsList.add(Rect(icon.bounds))
@@ -353,13 +385,13 @@ class IconDrawableTest {
         val context = InstrumentationRegistry.getInstrumentation().context
 
         IconDrawable(icon = context.getDrawableCompat(android.R.drawable.ic_delete)).apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                 assertEquals(255, alpha)
             }
 
             mutate()
             alpha = 144
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                 assertEquals(144, alpha)
             }
         }
@@ -367,7 +399,7 @@ class IconDrawableTest {
 
     @Test
     fun testHotspot() {
-        if (Build.VERSION.SDK_INT < 21) return
+        if (VERSION.SDK_INT < 21) return
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val iconDrawable = context.getDrawableCompat(android.R.drawable.ic_delete)
@@ -440,7 +472,7 @@ class IconDrawableTest {
 
     @Test
     fun testAutoMirrored() {
-        if (Build.VERSION.SDK_INT < 19) return
+        if (VERSION.SDK_INT < 19) return
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val iconDrawable = context.getDrawableCompat(android.R.drawable.ic_delete)
@@ -534,7 +566,7 @@ class IconDrawableTest {
 
     @Test
     fun testFilterBitmap() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return
+        if (VERSION.SDK_INT < VERSION_CODES.M) return
 
         val context = InstrumentationRegistry.getInstrumentation().context
 
@@ -716,13 +748,13 @@ class IconDrawableTest {
         val context = getTestContext()
 
         IconDrawable(
-            icon = context.getDrawableCompat(R.drawable.bottom_bar),
+            icon = context.getDrawableCompat(android.R.drawable.bottom_bar),
         ).apply {
             val mutateDrawable = mutate()
             assertSame(this, mutateDrawable)
             mutateDrawable.alpha = 146
 
-            context.getDrawableCompat(R.drawable.bottom_bar).also {
+            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
                 if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                     assertEquals(255, it.alpha)
                 }
@@ -730,13 +762,13 @@ class IconDrawableTest {
         }
 
         IconDrawable(
-            icon = TestNewMutateDrawable(context.getDrawableCompat(R.drawable.bottom_bar)),
+            icon = TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.bottom_bar)),
         ).apply {
             val mutateDrawable = mutate()
             assertNotSame(this, mutateDrawable)
             mutateDrawable.alpha = 146
 
-            context.getDrawableCompat(R.drawable.bottom_bar).also {
+            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
                 if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                     assertEquals(255, it.alpha)
                 }
@@ -744,14 +776,14 @@ class IconDrawableTest {
         }
 
         IconDrawable(
-            icon = context.getDrawableCompat(R.drawable.bottom_bar),
+            icon = context.getDrawableCompat(android.R.drawable.bottom_bar),
             background = TestNewMutateDrawable(ColorDrawable(Color.RED)),
         ).apply {
             val mutateDrawable = mutate()
             assertNotSame(this, mutateDrawable)
             mutateDrawable.alpha = 146
 
-            context.getDrawableCompat(R.drawable.bottom_bar).also {
+            context.getDrawableCompat(android.R.drawable.bottom_bar).also {
                 if (VERSION.SDK_INT >= VERSION_CODES.KITKAT) {
                     assertEquals(255, it.alpha)
                 }
@@ -762,24 +794,24 @@ class IconDrawableTest {
     @Test
     fun testEqualsAndHashCode() {
         val element1 = IconDrawable(
-            icon = ColorDrawable(TestColor.RED).asEquitable(),
+            icon = SizeDrawable(ColorDrawable(TestColor.RED).asEquitable(), Size(100, 100)),
         )
         val element11 = IconDrawable(
-            icon = ColorDrawable(TestColor.RED).asEquitable(),
+            icon = SizeDrawable(ColorDrawable(TestColor.RED).asEquitable(), Size(100, 100)),
         )
         val element2 = IconDrawable(
-            icon = ColorDrawable(TestColor.GREEN).asEquitable(),
+            icon = SizeDrawable(ColorDrawable(TestColor.GREEN).asEquitable(), Size(100, 100)),
         )
         val element3 = IconDrawable(
-            icon = ColorDrawable(TestColor.GREEN).asEquitable(),
+            icon = SizeDrawable(ColorDrawable(TestColor.RED).asEquitable(), Size(100, 100)),
             background = ColorDrawable(TestColor.GRAY).asEquitable(),
         )
         val element4 = IconDrawable(
-            icon = ColorDrawable(TestColor.GREEN).asEquitable(),
+            icon = SizeDrawable(ColorDrawable(TestColor.RED).asEquitable(), Size(100, 100)),
             iconSize = Size(69, 44),
         )
         val element5 = IconDrawable(
-            icon = ColorDrawable(TestColor.GREEN).asEquitable(),
+            icon = SizeDrawable(ColorDrawable(TestColor.RED).asEquitable(), Size(100, 100)),
             iconTint = TestColor.BLUE,
         )
 
@@ -812,13 +844,11 @@ class IconDrawableTest {
 
     @Test
     fun testToString() {
-        val drawable = ColorDrawable(TestColor.RED)
-        val background = ColorDrawable(TestColor.GRAY)
         assertEquals(
-            expected = "IconDrawable(icon=ColorDrawable(-65536), background=ColorDrawable(-7829368), iconSize=69x44, iconTint=-16776961)",
+            expected = "IconDrawable(icon=SizeDrawable(drawable=ColorDrawable(-65536), size=100x100), background=ColorDrawable(-7829368), iconSize=69x44, iconTint=-16776961)",
             actual = IconDrawable(
-                icon = drawable,
-                background = background,
+                icon = SizeDrawable(ColorDrawable(TestColor.RED), Size(100, 100)),
+                background = ColorDrawable(TestColor.GRAY),
                 iconSize = Size(69, 44),
                 iconTint = TestColor.BLUE
             ).toString()

@@ -36,6 +36,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
   to StateImage
 * change: ErrorImageState is refactored into ConditionStateImage, and ConditionStateImage can be
   used in placeholder and fallback
+* improve: Improve IconDrawable, support fixed-size background and restrict icons to have fixed
+  sizes or specify iconSize
 * new: Non-Android platforms now also support ColorType
 * new: Non-Android platforms now also support ColorSpace
 * new: DrawableDecoder supports colorSpace

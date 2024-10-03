@@ -60,7 +60,7 @@ class AnimatableCallbackHelper constructor(drawable: Drawable) {
 
     private fun checkDrawable(drawable: Drawable?) {
         require(drawable is Animatable) {
-            "drawable must implement the Animatable"
+            "drawable must be Animatable"
         }
     }
 

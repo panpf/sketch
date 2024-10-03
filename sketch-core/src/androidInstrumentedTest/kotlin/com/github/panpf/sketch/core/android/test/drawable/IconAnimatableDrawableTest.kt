@@ -27,6 +27,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.drawable.IconAnimatableDrawable
 import com.github.panpf.sketch.drawable.asEquitable
+import com.github.panpf.sketch.test.utils.SizeDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatable2CompatDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatable2Drawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
@@ -58,7 +59,7 @@ class IconAnimatableDrawableTest {
     @Test
     fun testConstructor() {
         IconAnimatableDrawable(
-            icon = TestAnimatableDrawable(ColorDrawable(Color.GREEN))
+            icon = TestAnimatableDrawable(SizeDrawable(ColorDrawable(Color.GREEN), Size(100, 100)))
         ).apply {
             assertTrue(icon is Animatable)
             assertNull(background)
@@ -67,7 +68,7 @@ class IconAnimatableDrawableTest {
         }
 
         IconAnimatableDrawable(
-            icon = TestAnimatableDrawable(ColorDrawable(Color.GREEN)),
+            icon = TestAnimatableDrawable(SizeDrawable(ColorDrawable(Color.GREEN), Size(100, 100))),
             background = ColorDrawable(Color.GREEN),
             iconSize = Size(69, 44),
             iconTint = Color.RED,
@@ -79,7 +80,18 @@ class IconAnimatableDrawableTest {
         }
 
         assertFailsWith(IllegalArgumentException::class) {
-            IconAnimatableDrawable(icon = ColorDrawable(Color.GREEN))
+            IconAnimatableDrawable(icon = SizeDrawable(ColorDrawable(Color.GREEN), Size(100, 100)))
+        }
+        assertFailsWith(IllegalArgumentException::class) {
+            IconAnimatableDrawable(
+                icon = TestAnimatableDrawable(
+                    SizeDrawable(
+                        ColorDrawable(Color.GREEN),
+                        Size(100, 100)
+                    )
+                ),
+                background = TestAnimatableDrawable(ColorDrawable(Color.GREEN))
+            )
         }
     }
 
@@ -87,7 +99,8 @@ class IconAnimatableDrawableTest {
     fun testCallback() = runTest {
         // Animatable2
         if (VERSION.SDK_INT >= VERSION_CODES.M) {
-            val animatedDrawable = TestAnimatable2Drawable(ColorDrawable(Color.GREEN))
+            val animatedDrawable =
+                TestAnimatable2Drawable(SizeDrawable(ColorDrawable(Color.GREEN), Size(100, 100)))
             val wrapper = IconAnimatableDrawable(animatedDrawable)
             assertEquals(expected = 0, actual = animatedDrawable.callbacks?.size ?: 0)
             assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
@@ -128,7 +141,12 @@ class IconAnimatableDrawableTest {
 
         // Animatable2Compat
         runBlock {
-            val animatable2Drawable = TestAnimatable2CompatDrawable(ColorDrawable(Color.GREEN))
+            val animatable2Drawable = TestAnimatable2CompatDrawable(
+                SizeDrawable(
+                    ColorDrawable(Color.GREEN),
+                    Size(100, 100)
+                )
+            )
             val wrapper = IconAnimatableDrawable(animatable2Drawable)
             assertEquals(expected = 0, actual = animatable2Drawable.callbacks?.size ?: 0)
             assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
@@ -172,7 +190,8 @@ class IconAnimatableDrawableTest {
 
         // Animatable
         runBlock {
-            val animatableDrawable = TestAnimatableDrawable(ColorDrawable(Color.GREEN))
+            val animatableDrawable =
+                TestAnimatableDrawable(SizeDrawable(ColorDrawable(Color.GREEN), Size(100, 100)))
             val wrapper = IconAnimatableDrawable(animatableDrawable)
             assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbacks?.size ?: 0)
             assertEquals(expected = 0, actual = wrapper.callbackHelper?.callbackProxyMap?.size ?: 0)
@@ -208,7 +227,8 @@ class IconAnimatableDrawableTest {
 
     @Test
     fun testStartStop() = runTest {
-        val animatableDrawable = TestAnimatableDrawable(ColorDrawable(Color.YELLOW))
+        val animatableDrawable =
+            TestAnimatableDrawable(SizeDrawable(ColorDrawable(Color.YELLOW), Size(100, 100)))
         val wrapper = IconAnimatableDrawable(animatableDrawable)
 
         val callbackHistory = mutableListOf<String>()
@@ -307,24 +327,54 @@ class IconAnimatableDrawableTest {
     @Test
     fun testEqualsAndHashCode() {
         val element1 = IconAnimatableDrawable(
-            icon = TestAnimatableDrawable(ColorDrawable(TestColor.RED).asEquitable()),
+            icon = TestAnimatableDrawable(
+                SizeDrawable(
+                    ColorDrawable(TestColor.RED).asEquitable(),
+                    Size(100, 100)
+                )
+            ),
         )
         val element11 = IconAnimatableDrawable(
-            icon = TestAnimatableDrawable(ColorDrawable(TestColor.RED).asEquitable()),
+            icon = TestAnimatableDrawable(
+                SizeDrawable(
+                    ColorDrawable(TestColor.RED).asEquitable(),
+                    Size(100, 100)
+                )
+            ),
         )
         val element2 = IconAnimatableDrawable(
-            icon = TestAnimatableDrawable(ColorDrawable(TestColor.GREEN).asEquitable()),
+            icon = TestAnimatableDrawable(
+                SizeDrawable(
+                    ColorDrawable(TestColor.GREEN).asEquitable(),
+                    Size(100, 100)
+                )
+            ),
         )
         val element3 = IconAnimatableDrawable(
-            icon = TestAnimatableDrawable(ColorDrawable(TestColor.RED).asEquitable()),
+            icon = TestAnimatableDrawable(
+                SizeDrawable(
+                    ColorDrawable(TestColor.RED).asEquitable(),
+                    Size(100, 100)
+                )
+            ),
             background = ColorDrawable(TestColor.GRAY).asEquitable(),
         )
         val element4 = IconAnimatableDrawable(
-            icon = TestAnimatableDrawable(ColorDrawable(TestColor.RED).asEquitable()),
+            icon = TestAnimatableDrawable(
+                SizeDrawable(
+                    ColorDrawable(TestColor.RED).asEquitable(),
+                    Size(100, 100)
+                )
+            ),
             iconSize = Size(69, 44),
         )
         val element5 = IconAnimatableDrawable(
-            icon = TestAnimatableDrawable(ColorDrawable(TestColor.RED).asEquitable()),
+            icon = TestAnimatableDrawable(
+                SizeDrawable(
+                    ColorDrawable(TestColor.RED).asEquitable(),
+                    Size(100, 100)
+                )
+            ),
             iconTint = TestColor.BLUE,
         )
 
@@ -357,10 +407,11 @@ class IconAnimatableDrawableTest {
 
     @Test
     fun testToString() {
-        val drawable = TestAnimatableDrawable(ColorDrawable(TestColor.RED))
+        val drawable =
+            TestAnimatableDrawable(SizeDrawable(ColorDrawable(TestColor.RED), Size(100, 100)))
         val background = ColorDrawable(TestColor.GRAY)
         assertEquals(
-            expected = "IconAnimatableDrawable(icon=TestAnimatableDrawable(drawable=ColorDrawable(-65536)), background=ColorDrawable(-7829368), iconSize=69x44, iconTint=-16776961)",
+            expected = "IconAnimatableDrawable(icon=TestAnimatableDrawable(drawable=SizeDrawable(drawable=ColorDrawable(-65536), size=100x100)), background=ColorDrawable(-7829368), iconSize=69x44, iconTint=-16776961)",
             actual = IconAnimatableDrawable(
                 icon = drawable,
                 background = background,
