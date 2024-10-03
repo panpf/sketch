@@ -142,6 +142,7 @@ class MyListImageView @JvmOverloads constructor(
 
     fun setAnimatedPlaceholder(animatedPlaceholder: Boolean) {
         updateImageOptions {
+            // TODO uses a custom animation Drawable, and can also demonstrate placeholder support animation
             if (animatedPlaceholder) {
                 placeholder(
                     IconAnimatableDrawableStateImage(

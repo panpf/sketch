@@ -200,6 +200,7 @@ private fun buildListImageRequest(
         val disallowAnimatedImage by appSettings.disallowAnimatedImageInList.collectAsState()
         disallowAnimatedImage(disallowAnimatedImage)
 
+        // TODO uses a custom animation Painter, and can also demonstrate placeholder support animation
         val animatedPlaceholderStateImage =
             if (animatedPlaceholder) rememberAnimatedPlaceholderStateImage(context) else null
         val placeholderStateImage = animatedPlaceholderStateImage
