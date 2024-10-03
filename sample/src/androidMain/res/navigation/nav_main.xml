@@ -236,6 +236,18 @@
         app:popEnterAnim="@anim/nav_pop_enter"
         app:popExitAnim="@anim/nav_pop_exit" />
 
+    <fragment
+        android:id="@+id/iconDrawableTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.IconDrawableTestFragment"
+        android:label="ProgressIndicatorTestFragment" />
+    <action
+        android:id="@+id/action_iconDrawableTestFragment"
+        app:destination="@id/iconDrawableTestFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+
     <!-- Dialog -->
 
     <dialog

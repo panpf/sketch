@@ -107,6 +107,10 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
             navDirections = NavMainDirections.actionTransformationTestPagerFragment()
         ),
         Link(
+            title = "IconDrawable",
+            navDirections = NavMainDirections.actionIconDrawableTestFragment()
+        ),
+        Link(
             title = "Temp",
             navDirections = NavMainDirections.actionTempTestFragment()
         ),

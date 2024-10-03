@@ -53,6 +53,7 @@ fun TestPage() {
             TestItem("Fetcher", FetcherTestScreen()),
             TestItem("ProgressIndicator", ProgressIndicatorTestScreen()),
             TestItem("Transformation", TransformationTestScreen()),
+            TestItem("IconPainter", IconPainterTestScreen()),
             TestItem("Temp", TempTestScreen()),
         ).plus(platformTestScreens())
     }
