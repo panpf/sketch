@@ -18,11 +18,10 @@ package com.github.panpf.sketch.painter
 
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.graphics.painter.BrushPainter
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.VectorPainter
-import com.github.panpf.sketch.util.toHexString
 
 /**
  * Convert the painter to a log string
@@ -31,20 +30,12 @@ import com.github.panpf.sketch.util.toHexString
  */
 fun Painter.toLogString(): String = when (this) {
     is SketchPainter -> toString()
-    is BitmapPainter -> "BitmapPainter@${toHexString()}(${toSizeString()})"
-    is ColorPainter -> "ColorPainter@${toHexString()}(${color})"
-    is BrushPainter -> "BrushPainter@${toHexString()}(${brush})"
-    is VectorPainter -> "VectorPainter@${toHexString()}(${toSizeString()})"
-    else -> platformToLogString() ?: toString()
+    is BitmapPainter -> "BitmapPainter(size=${toSizeString()})"
+    is ColorPainter -> "ColorPainter(color=${color.toArgb()})"
+    is VectorPainter -> "VectorPainter(size=${toSizeString()})"
+    is PainterWrapper -> "PainterWrapper(painter=${painter.toLogString()})"
+    else -> toString()
 }
-
-/**
- * Convert the painter to a platform log string
- *
- * @see com.github.panpf.sketch.compose.core.android.test.painter.PaintersAndroidTest.testPainterPlatformToLogString
- * @see com.github.panpf.sketch.compose.core.nonandroid.test.painter.PaintersNonAndroidTest.testPainterPlatformToLogString
- */
-expect fun Painter.platformToLogString(): String?
 
 /**
  * Convert the painter to a size string
