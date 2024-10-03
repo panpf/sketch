@@ -7,6 +7,7 @@ import com.github.panpf.sketch.util.toLogString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
@@ -67,6 +68,26 @@ class BitmapImageNonAndroidTest {
             assertTrue(actual = checkValid())
             assertTrue(actual = checkValid())
         }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val element1 = BitmapImage(SkiaBitmap(100, 200))
+        val element11 = element1.copy()
+        val element2 = element1.copy(SkiaBitmap(200, 100))
+        val element3 = element1.copy(shareable = false)
+
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
+
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
     }
 
     @Test
