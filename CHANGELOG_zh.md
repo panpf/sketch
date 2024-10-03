@@ -30,6 +30,7 @@
 * change: ErrorImageState 重构为 ConditionStateImage，并且 ConditionStateImage 可以用在 placeholder 和
   fallback
 * improve: 改进 IconDrawable，支持有固定大小的 background 并且限制 icon 必须有固定尺寸或指定 iconSize
+* improve: 改进 IconPainter，支持有固定大小的 background 并且限制 icon 必须有固定尺寸或指定 iconSize
 * new: 非安卓平台现在也支持 ColorType 了
 * new: 非安卓平台现在也支持 ColorSpace 了
 * new: DrawableDecoder 支持 colorSpace

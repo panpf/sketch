@@ -22,14 +22,19 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
-import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
-import com.github.panpf.sketch.util.Key
+import com.github.panpf.sketch.util.Rect
+import com.github.panpf.sketch.util.calculateCropBounds
+import com.github.panpf.sketch.util.calculateInsideBounds
+import com.github.panpf.sketch.util.size
+import com.github.panpf.sketch.util.toIntSizeOrNull
+import com.github.panpf.sketch.util.toSize
+import com.github.panpf.sketch.util.toSketchSize
 
 /**
  * Create a [IconPainter] and remember it.
@@ -100,17 +105,73 @@ fun rememberIconPainter(
  */
 @Stable
 open class IconPainter(
-    val icon: EquitablePainter,
-    val background: EquitablePainter? = null,
+    val icon: Painter,
+    val background: Painter? = null,
     val iconSize: Size? = null,
     val iconTint: Color? = null,
-) : Painter(), RememberObserver, SketchPainter, Key {
+) : Painter(), RememberObserver, SketchPainter {
 
     private var alpha: Float = 1.0f
     private var colorFilter: ColorFilter? = null
 
-    override val key: String =
-        "IconPainter(icon=${icon.key},background=${background?.key},iconSize=$iconSize,iconTint=${iconTint?.value})"
+    override val intrinsicSize: Size = Size.Unspecified
+
+    init {
+        if (iconSize != null) {
+            require(!iconSize.isEmpty()) {
+                "iconSize must be not empty"
+            }
+        } else {
+            require(!icon.intrinsicSize.isEmpty()) {
+                "When iconSize is not set, icon's size must be not empty"
+            }
+        }
+    }
+
+    override fun DrawScope.onDraw() {
+        (icon as? PainterDrawInvalidate)?.drawInvalidateTick?.value
+        (background as? PainterDrawInvalidate)?.drawInvalidateTick?.value
+
+        val containerSize = this@onDraw.size
+        val containerBounds = Rect(0, 0, containerSize.width.toInt(), containerSize.height.toInt())
+        if (background != null) {
+            val backgroundSize = background.intrinsicSize
+            val backgroundBounds = if (backgroundSize.isSpecified) {
+                calculateCropBounds(
+                    contentSize = backgroundSize.toIntSizeOrNull()!!.toSketchSize(),
+                    containerBounds = containerBounds
+                )
+            } else {
+                containerBounds
+            }
+            translate(
+                left = backgroundBounds.left.toFloat(),
+                top = backgroundBounds.top.toFloat()
+            ) {
+                with(background) {
+                    draw(
+                        size = backgroundBounds.size.toSize(),
+                        colorFilter = colorFilter
+                    )
+                }
+            }
+        }
+
+        val realIconSize = iconSize ?: icon.intrinsicSize
+        val iconBounds = calculateInsideBounds(
+            contentSize = realIconSize.toIntSizeOrNull()!!.toSketchSize(),
+            containerBounds = containerBounds
+        )
+        translate(left = iconBounds.left.toFloat(), top = iconBounds.top.toFloat()) {
+            with(icon) {
+                val filter = iconTint?.let { ColorFilter.tint(it) } ?: colorFilter
+                draw(
+                    size = iconBounds.size.toSize(),
+                    colorFilter = filter
+                )
+            }
+        }
+    }
 
     override fun applyAlpha(alpha: Float): Boolean {
         this.alpha = alpha
@@ -120,43 +181,6 @@ open class IconPainter(
     override fun applyColorFilter(colorFilter: ColorFilter?): Boolean {
         this.colorFilter = colorFilter
         return true
-    }
-
-    override val intrinsicSize: Size = Size.Unspecified
-
-    init {
-        require(icon.intrinsicSize.isSpecified) {
-            "icon's intrinsicSize must be specified"
-        }
-        require(background == null || background.intrinsicSize.isUnspecified) {
-            "background's intrinsicSize must be unspecified"
-        }
-        require(iconSize == null || iconSize.isSpecified) {
-            "iconSize must be specified"
-        }
-    }
-
-    override fun DrawScope.onDraw() {
-        val icon = icon
-        val background = background
-        (icon as? PainterDrawInvalidate)?.drawInvalidateTick?.value
-        (background as? PainterDrawInvalidate)?.drawInvalidateTick?.value
-
-        if (background != null) {
-            with(background) {
-                draw(size = this@onDraw.size, alpha = alpha, colorFilter = colorFilter)
-            }
-        }
-
-        val finalIconSize = iconSize ?: icon.intrinsicSize
-        val translateLeft = (size.width - finalIconSize.width) / 2
-        val translateTop = (size.height - finalIconSize.height) / 2
-        translate(left = translateLeft, top = translateTop) {
-            with(icon) {
-                val filter = iconTint?.let { ColorFilter.tint(it) }
-                draw(size = finalIconSize, colorFilter = filter)
-            }
-        }
     }
 
     override fun onRemembered() {

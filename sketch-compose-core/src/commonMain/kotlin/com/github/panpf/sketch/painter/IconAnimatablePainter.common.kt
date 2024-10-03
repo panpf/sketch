@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.painter.Painter
 
 /**
  * Create an [IconAnimatablePainter] and remember it.
@@ -91,8 +92,8 @@ fun rememberIconAnimatablePainter(
  */
 @Stable
 class IconAnimatablePainter(
-    icon: EquitablePainter,
-    background: EquitablePainter? = null,
+    icon: Painter,
+    background: Painter? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ) : IconPainter(icon, background, iconSize, iconTint), AnimatablePainter {
@@ -100,13 +101,14 @@ class IconAnimatablePainter(
     private val animatablePainterIcon: AnimatablePainter?
     private val animatablePainterBackground: AnimatablePainter?
 
-    override val key: String =
-        "IconAnimatablePainter(icon=${icon.key},background=${background?.key},iconSize=$iconSize,iconTint=${iconTint?.value})"
-
     init {
-        require(icon is AnimatablePainter || background is AnimatablePainter) {
-            "painter must be AnimatablePainter"
+        require(icon is AnimatablePainter) {
+            "icon must be AnimatablePainter"
         }
+        require(background == null || background !is AnimatablePainter) {
+            "background can't be Animatable"
+        }
+        @Suppress("USELESS_CAST")
         animatablePainterIcon = icon as? AnimatablePainter
         animatablePainterBackground = background as? AnimatablePainter
     }
