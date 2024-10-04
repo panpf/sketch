@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
 import org.jetbrains.compose.resources.DrawableResource
 
 /**
@@ -46,95 +45,96 @@ fun rememberIconAnimatablePainter(
     }
 }
 
-/**
- * Create an [IconAnimatablePainter] that can be remembered in the composition
- *
- * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainter
- */
-@Composable
-fun rememberIconAnimatablePainter(
-    icon: DrawableResource,
-    background: EquitablePainter? = null,
-    iconSize: Size? = null,
-    iconTint: Color? = null,
-): IconAnimatablePainter {
-    val iconPainter = rememberEquitablePainterResource(icon)
-    return remember(icon, background, iconSize, iconTint) {
-        IconAnimatablePainter(
-            icon = iconPainter,
-            background = background,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
-}
-
-/**
- * Create an [IconAnimatablePainter] that can be remembered in the composition
- *
- * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainter
- */
-@Composable
-fun rememberIconAnimatablePainter(
-    icon: DrawableResource,
-    background: Color? = null,
-    iconSize: Size? = null,
-    iconTint: Color? = null,
-): IconAnimatablePainter {
-    val iconPainter = rememberEquitablePainterResource(icon)
-    return remember(icon, background, iconSize, iconTint) {
-        val backgroundPainter = background?.let { ColorPainter(it) }
-        IconAnimatablePainter(
-            icon = iconPainter,
-            background = backgroundPainter?.asEquitable(),
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
-}
-
-/**
- * Create an [IconAnimatablePainter] that can be remembered in the composition
- *
- * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainter
- */
-@Composable
-fun rememberIconAnimatablePainter(
-    icon: DrawableResource,
-    background: DrawableResource? = null,
-    iconSize: Size? = null,
-    iconTint: Color? = null,
-): IconAnimatablePainter {
-    val iconPainter = rememberEquitablePainterResource(icon)
-    val backgroundPainter = background?.let { rememberEquitablePainterResource(it) }
-    return remember(icon, background, iconSize, iconTint) {
-        IconAnimatablePainter(
-            icon = iconPainter,
-            background = backgroundPainter,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
-}
-
-/**
- * Create an [IconAnimatablePainter] that can be remembered in the composition
- *
- * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainter
- */
-@Composable
-fun rememberIconAnimatablePainter(
-    icon: DrawableResource,
-    iconSize: Size? = null,
-    iconTint: Color? = null,
-): IconAnimatablePainter {
-    val iconPainter = rememberEquitablePainterResource(icon)
-    return remember(icon, iconSize, iconTint) {
-        IconAnimatablePainter(
-            icon = iconPainter,
-            background = null,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
-}
+// DrawableResource does not support animations, and it is impossible to implement the AnimatablePainter interface
+///**
+// * Create an [IconAnimatablePainter] that can be remembered in the composition
+// *
+// * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainter
+// */
+//@Composable
+//fun rememberIconAnimatablePainter(
+//    icon: DrawableResource,
+//    background: EquitablePainter? = null,
+//    iconSize: Size? = null,
+//    iconTint: Color? = null,
+//): IconAnimatablePainter {
+//    val iconPainter = rememberEquitablePainterResource(icon)
+//    return remember(icon, background, iconSize, iconTint) {
+//        IconAnimatablePainter(
+//            icon = iconPainter,
+//            background = background,
+//            iconSize = iconSize,
+//            iconTint = iconTint
+//        )
+//    }
+//}
+//
+///**
+// * Create an [IconAnimatablePainter] that can be remembered in the composition
+// *
+// * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainter
+// */
+//@Composable
+//fun rememberIconAnimatablePainter(
+//    icon: DrawableResource,
+//    background: Color? = null,
+//    iconSize: Size? = null,
+//    iconTint: Color? = null,
+//): IconAnimatablePainter {
+//    val iconPainter = rememberEquitablePainterResource(icon)
+//    return remember(icon, background, iconSize, iconTint) {
+//        val backgroundPainter = background?.let { ColorPainter(it) }
+//        IconAnimatablePainter(
+//            icon = iconPainter,
+//            background = backgroundPainter?.asEquitable(),
+//            iconSize = iconSize,
+//            iconTint = iconTint
+//        )
+//    }
+//}
+//
+///**
+// * Create an [IconAnimatablePainter] that can be remembered in the composition
+// *
+// * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainter
+// */
+//@Composable
+//fun rememberIconAnimatablePainter(
+//    icon: DrawableResource,
+//    background: DrawableResource? = null,
+//    iconSize: Size? = null,
+//    iconTint: Color? = null,
+//): IconAnimatablePainter {
+//    val iconPainter = rememberEquitablePainterResource(icon)
+//    val backgroundPainter = background?.let { rememberEquitablePainterResource(it) }
+//    return remember(icon, background, iconSize, iconTint) {
+//        IconAnimatablePainter(
+//            icon = iconPainter,
+//            background = backgroundPainter,
+//            iconSize = iconSize,
+//            iconTint = iconTint
+//        )
+//    }
+//}
+//
+///**
+// * Create an [IconAnimatablePainter] that can be remembered in the composition
+// *
+// * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainter
+// */
+//@Composable
+//fun rememberIconAnimatablePainter(
+//    icon: DrawableResource,
+//    iconSize: Size? = null,
+//    iconTint: Color? = null,
+//): IconAnimatablePainter {
+//    val iconPainter = rememberEquitablePainterResource(icon)
+//    return remember(icon, iconSize, iconTint) {
+//        IconAnimatablePainter(
+//            icon = iconPainter,
+//            background = null,
+//            iconSize = iconSize,
+//            iconTint = iconTint
+//        )
+//    }
+//}

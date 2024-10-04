@@ -2,158 +2,351 @@
 
 package com.github.panpf.sketch.compose.resources.common.test.painter
 
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
+import com.github.panpf.sketch.painter.IconAnimatablePainter
 import com.github.panpf.sketch.painter.asEquitable
+import com.github.panpf.sketch.painter.equitablePainterResource
 import com.github.panpf.sketch.painter.rememberIconAnimatablePainter
 import com.github.panpf.sketch.test.utils.SizeColorPainter
+import com.github.panpf.sketch.test.utils.asAnimatablePainter
+import com.github.panpf.sketch.test.utils.compose.core.resources.Res
+import com.github.panpf.sketch.test.utils.compose.core.resources.moon
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.InternalResourceApi
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class IconAnimatablePainterComposeResourcesTest {
-    // TODO test
 
-    //    @Test
-    @Composable
-    @OptIn(InternalResourceApi::class)
+    @Test
     fun testRememberIconAnimatablePainter() {
         runComposeUiTest {
-            val painterIcon =
-                Color.Cyan.let { SizeColorPainter(it, Size(100f, 100f)).asEquitable(it) }
-            val resourceIcon = DrawableResource(
-                "drawable:test_icon",
-                setOf(
-                    org.jetbrains.compose.resources.ResourceItem(
-                        setOf(),
-                        "composeResources/sketch_root.sample.generated.resources/drawable/ic_info_baseline.xml",
-                        -1,
-                        -1
-                    ),
-                )
-            )
-            val painterBackground =
-                Color.Gray.let { SizeColorPainter(it, Size(100f, 100f)).asEquitable(it) }
-            val colorBackground = Color.DarkGray
-            val resourceBackground = DrawableResource(
-                "drawable:test_background",
-                setOf(
-                    org.jetbrains.compose.resources.ResourceItem(
-                        setOf(),
-                        "composeResources/sketch_root.sample.generated.resources/drawable/ic_info_baseline.xml",
-                        -1,
-                        -1
-                    ),
-                )
-            )
-            val iconSize = Size(200f, 200f)
-            val iconTint = Color.Magenta
             setContent {
+                /*
+                 * icon: EquitablePainter, background: DrawableResource
+                 */
                 rememberIconAnimatablePainter(
-                    icon = resourceIcon,
-                    background = painterBackground,
-                    iconSize = iconSize,
-                    iconTint = iconTint
-                )
-                rememberIconAnimatablePainter(
-                    icon = resourceIcon,
-                    background = colorBackground,
-                    iconSize = iconSize,
-                    iconTint = iconTint
-                )
-                rememberIconAnimatablePainter(
-                    icon = resourceIcon,
-                    background = resourceBackground,
-                    iconSize = iconSize,
-                    iconTint = iconTint
-                )
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asAnimatablePainter()
+                        .asEquitable(Color.Gray),
+                    background = null as DrawableResource?
+                ).apply {
+                    assertEquals(
+                        expected = IconAnimatablePainter(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asAnimatablePainter()
+                                .asEquitable(Color.Gray),
+                            background = null,
+                            iconSize = null,
+                            iconTint = null
+                        ),
+                        actual = this
+                    )
+                }
 
                 rememberIconAnimatablePainter(
-                    icon = resourceIcon,
-                    background = painterBackground,
-                    iconSize = iconSize,
-                )
-                rememberIconAnimatablePainter(
-                    icon = resourceIcon,
-                    background = colorBackground,
-                    iconSize = iconSize,
-                )
-                rememberIconAnimatablePainter(
-                    icon = resourceIcon,
-                    background = resourceBackground,
-                    iconSize = iconSize,
-                )
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asAnimatablePainter()
+                        .asEquitable(Color.Gray),
+                    background = Res.drawable.moon
+                ).apply {
+                    assertEquals(
+                        expected = IconAnimatablePainter(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asAnimatablePainter()
+                                .asEquitable(Color.Gray),
+                            background = equitablePainterResource(Res.drawable.moon),
+                            iconSize = null,
+                            iconTint = null
+                        ),
+                        actual = this
+                    )
+                }
 
                 rememberIconAnimatablePainter(
-                    icon = resourceIcon,
-                    background = painterBackground,
-                    iconTint = iconTint
-                )
-                rememberIconAnimatablePainter(
-                    icon = resourceIcon,
-                    background = colorBackground,
-                    iconTint = iconTint
-                )
-                rememberIconAnimatablePainter(
-                    icon = resourceIcon,
-                    background = resourceBackground,
-                    iconTint = iconTint
-                )
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asAnimatablePainter()
+                        .asEquitable(Color.Gray),
+                    background = Res.drawable.moon,
+                    iconSize = Size(101f, 202f)
+                ).apply {
+                    assertEquals(
+                        expected = IconAnimatablePainter(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asAnimatablePainter()
+                                .asEquitable(Color.Gray),
+                            background = equitablePainterResource(Res.drawable.moon),
+                            iconSize = Size(101f, 202f),
+                            iconTint = null
+                        ),
+                        actual = this
+                    )
+                }
 
                 rememberIconAnimatablePainter(
-                    icon = resourceIcon,
-                    iconSize = iconSize,
-                    iconTint = iconTint
-                )
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asAnimatablePainter()
+                        .asEquitable(Color.Gray),
+                    background = Res.drawable.moon,
+                    iconSize = Size(101f, 202f),
+                    iconTint = Color.Blue
+                ).apply {
+                    assertEquals(
+                        expected = IconAnimatablePainter(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asAnimatablePainter()
+                                .asEquitable(Color.Gray),
+                            background = equitablePainterResource(Res.drawable.moon),
+                            iconSize = Size(101f, 202f),
+                            iconTint = Color.Blue
+                        ),
+                        actual = this
+                    )
+                }
 
-                rememberIconAnimatablePainter(
-                    icon = resourceIcon,
-                    background = painterBackground,
-                )
-                rememberIconAnimatablePainter(
-                    icon = resourceIcon,
-                    background = colorBackground,
-                )
-                rememberIconAnimatablePainter(
-                    icon = resourceIcon,
-                    background = resourceBackground,
-                )
-
-                rememberIconAnimatablePainter(
-                    icon = resourceIcon,
-                    iconSize = iconSize,
-                )
-                rememberIconAnimatablePainter(
-                    icon = resourceIcon,
-                    iconTint = iconTint
-                )
-
-                rememberIconAnimatablePainter(
-                    icon = resourceIcon,
-                )
-
-                rememberIconAnimatablePainter(
-                    icon = painterIcon,
-                    background = resourceBackground,
-                    iconSize = iconSize,
-                    iconTint = iconTint
-                )
-                rememberIconAnimatablePainter(
-                    icon = painterIcon,
-                    background = resourceBackground,
-                    iconSize = iconSize,
-                )
-                rememberIconAnimatablePainter(
-                    icon = painterIcon,
-                    background = resourceBackground,
-                    iconTint = iconTint
-                )
-                rememberIconAnimatablePainter(
-                    icon = painterIcon,
-                    background = resourceBackground,
-                )
+//                /*
+//                 * icon: DrawableResource, background: EquitablePainter
+//                 */
+//                rememberIconAnimatablePainter(
+//                    icon = Res.drawable.moon,
+//                    background = null as EquitablePainter?
+//                ).apply {
+//                    assertEquals(
+//                        expected = IconAnimatablePainter(
+//                            icon = equitablePainterResource(Res.drawable.moon),
+//                            background = null,
+//                            iconSize = null,
+//                            iconTint = null
+//                        ),
+//                        actual = this
+//                    )
+//                }
+//
+//                rememberIconAnimatablePainter(
+//                    icon = Res.drawable.moon,
+//                    background = ColorPainter(Color.Gray).asEquitable()
+//                ).apply {
+//                    assertEquals(
+//                        expected = IconAnimatablePainter(
+//                            icon = equitablePainterResource(Res.drawable.moon),
+//                            background = ColorPainter(Color.Gray).asEquitable(),
+//                            iconSize = null,
+//                            iconTint = null
+//                        ),
+//                        actual = this
+//                    )
+//                }
+//
+//                rememberIconAnimatablePainter(
+//                    icon = Res.drawable.moon,
+//                    background = ColorPainter(Color.Gray).asEquitable(),
+//                    iconSize = Size(101f, 202f)
+//                ).apply {
+//                    assertEquals(
+//                        expected = IconAnimatablePainter(
+//                            icon = equitablePainterResource(Res.drawable.moon),
+//                            background = ColorPainter(Color.Gray).asEquitable(),
+//                            iconSize = Size(101f, 202f),
+//                            iconTint = null
+//                        ),
+//                        actual = this
+//                    )
+//                }
+//
+//                rememberIconAnimatablePainter(
+//                    icon = Res.drawable.moon,
+//                    background = ColorPainter(Color.Gray).asEquitable(),
+//                    iconSize = Size(101f, 202f),
+//                    iconTint = Color.Blue
+//                ).apply {
+//                    assertEquals(
+//                        expected = IconAnimatablePainter(
+//                            icon = equitablePainterResource(Res.drawable.moon),
+//                            background = ColorPainter(Color.Gray).asEquitable(),
+//                            iconSize = Size(101f, 202f),
+//                            iconTint = Color.Blue
+//                        ),
+//                        actual = this
+//                    )
+//                }
+//
+//                /*
+//                 * icon: DrawableResource, background: Color
+//                 */
+//                rememberIconAnimatablePainter(
+//                    icon = Res.drawable.moon,
+//                    background = null as Color?
+//                ).apply {
+//                    assertEquals(
+//                        expected = IconAnimatablePainter(
+//                            icon = equitablePainterResource(Res.drawable.moon),
+//                            background = null,
+//                            iconSize = null,
+//                            iconTint = null
+//                        ),
+//                        actual = this
+//                    )
+//                }
+//
+//                rememberIconAnimatablePainter(
+//                    icon = Res.drawable.moon,
+//                    background = Color.Gray
+//                ).apply {
+//                    assertEquals(
+//                        expected = IconAnimatablePainter(
+//                            icon = equitablePainterResource(Res.drawable.moon),
+//                            background = ColorPainter(Color.Gray).asEquitable(),
+//                            iconSize = null,
+//                            iconTint = null
+//                        ),
+//                        actual = this
+//                    )
+//                }
+//
+//                rememberIconAnimatablePainter(
+//                    icon = Res.drawable.moon,
+//                    background = Color.Gray,
+//                    iconSize = Size(101f, 202f)
+//                ).apply {
+//                    assertEquals(
+//                        expected = IconAnimatablePainter(
+//                            icon = equitablePainterResource(Res.drawable.moon),
+//                            background = ColorPainter(Color.Gray).asEquitable(),
+//                            iconSize = Size(101f, 202f),
+//                            iconTint = null
+//                        ),
+//                        actual = this
+//                    )
+//                }
+//
+//                rememberIconAnimatablePainter(
+//                    icon = Res.drawable.moon,
+//                    background = Color.Gray,
+//                    iconSize = Size(101f, 202f),
+//                    iconTint = Color.Blue
+//                ).apply {
+//                    assertEquals(
+//                        expected = IconAnimatablePainter(
+//                            icon = equitablePainterResource(Res.drawable.moon),
+//                            background = ColorPainter(Color.Gray).asEquitable(),
+//                            iconSize = Size(101f, 202f),
+//                            iconTint = Color.Blue
+//                        ),
+//                        actual = this
+//                    )
+//                }
+//
+//                /*
+//                 * icon: DrawableResource, background: DrawableResource
+//                 */
+//                rememberIconAnimatablePainter(
+//                    icon = Res.drawable.moon,
+//                    background = null as DrawableResource?
+//                ).apply {
+//                    assertEquals(
+//                        expected = IconAnimatablePainter(
+//                            icon = equitablePainterResource(Res.drawable.moon),
+//                            background = null,
+//                            iconSize = null,
+//                            iconTint = null
+//                        ),
+//                        actual = this
+//                    )
+//                }
+//
+//                rememberIconAnimatablePainter(
+//                    icon = Res.drawable.moon,
+//                    background = Res.drawable.desert
+//                ).apply {
+//                    assertEquals(
+//                        expected = IconAnimatablePainter(
+//                            icon = equitablePainterResource(Res.drawable.moon),
+//                            background = equitablePainterResource(Res.drawable.desert),
+//                            iconSize = null,
+//                            iconTint = null
+//                        ),
+//                        actual = this
+//                    )
+//                }
+//
+//                rememberIconAnimatablePainter(
+//                    icon = Res.drawable.moon,
+//                    background = Res.drawable.desert,
+//                    iconSize = Size(101f, 202f)
+//                ).apply {
+//                    assertEquals(
+//                        expected = IconAnimatablePainter(
+//                            icon = equitablePainterResource(Res.drawable.moon),
+//                            background = equitablePainterResource(Res.drawable.desert),
+//                            iconSize = Size(101f, 202f),
+//                            iconTint = null
+//                        ),
+//                        actual = this
+//                    )
+//                }
+//
+//                rememberIconAnimatablePainter(
+//                    icon = Res.drawable.moon,
+//                    background = Res.drawable.desert,
+//                    iconSize = Size(101f, 202f),
+//                    iconTint = Color.Blue
+//                ).apply {
+//                    assertEquals(
+//                        expected = IconAnimatablePainter(
+//                            icon = equitablePainterResource(Res.drawable.moon),
+//                            background = equitablePainterResource(Res.drawable.desert),
+//                            iconSize = Size(101f, 202f),
+//                            iconTint = Color.Blue
+//                        ),
+//                        actual = this
+//                    )
+//                }
+//
+//                /*
+//                 * icon: DrawableResource
+//                 */
+//                rememberIconAnimatablePainter(
+//                    icon = Res.drawable.moon,
+//                ).apply {
+//                    assertEquals(
+//                        expected = IconAnimatablePainter(
+//                            icon = equitablePainterResource(Res.drawable.moon),
+//                            background = null,
+//                            iconSize = null,
+//                            iconTint = null
+//                        ),
+//                        actual = this
+//                    )
+//                }
+//
+//                rememberIconAnimatablePainter(
+//                    icon = Res.drawable.moon,
+//                    iconSize = Size(101f, 202f)
+//                ).apply {
+//                    assertEquals(
+//                        expected = IconAnimatablePainter(
+//                            icon = equitablePainterResource(Res.drawable.moon),
+//                            iconSize = Size(101f, 202f),
+//                            iconTint = null
+//                        ),
+//                        actual = this
+//                    )
+//                }
+//
+//                rememberIconAnimatablePainter(
+//                    icon = Res.drawable.moon,
+//                    iconTint = Color.Blue
+//                ).apply {
+//                    assertEquals(
+//                        expected = IconAnimatablePainter(
+//                            icon = equitablePainterResource(Res.drawable.moon),
+//                            iconTint = Color.Blue
+//                        ),
+//                        actual = this
+//                    )
+//                }
             }
         }
     }
