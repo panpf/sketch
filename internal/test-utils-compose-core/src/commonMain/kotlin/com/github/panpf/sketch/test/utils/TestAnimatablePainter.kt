@@ -5,6 +5,14 @@ import com.github.panpf.sketch.painter.AnimatablePainter
 import com.github.panpf.sketch.painter.PainterWrapper
 import com.github.panpf.sketch.painter.toLogString
 
+fun Painter.asAnimatablePainter(): Painter {
+    return if (this is AnimatablePainter) {
+        this
+    } else {
+        TestAnimatablePainter(this)
+    }
+}
+
 class TestAnimatablePainter(painter: Painter) : PainterWrapper(painter), AnimatablePainter {
 
     private var running = false

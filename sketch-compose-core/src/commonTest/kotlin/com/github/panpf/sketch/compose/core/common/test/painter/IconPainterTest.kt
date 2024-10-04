@@ -7,88 +7,220 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
+import com.github.panpf.sketch.painter.EquitablePainter
+import com.github.panpf.sketch.painter.IconPainter
 import com.github.panpf.sketch.painter.asEquitable
 import com.github.panpf.sketch.painter.rememberIconPainter
 import com.github.panpf.sketch.test.utils.SizeColorPainter
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class IconPainterTest {
-    // TODO test
 
     @Test
     fun testRememberIconPainter() {
         runComposeUiTest {
-            val painterIcon =
-                Color.Cyan.let { SizeColorPainter(it, Size(100f, 100f)).asEquitable(it) }
-            val painterBackground =
-                Color.Gray.let { ColorPainter(it).asEquitable(it) }
-            val colorBackground = Color.DarkGray
-            val iconSize = Size(200f, 200f)
-            val iconTint = Color.Magenta
             setContent {
+                /*
+                 * icon: EquitablePainter, background: EquitablePainter
+                 */
                 rememberIconPainter(
-                    icon = painterIcon,
-                    background = painterBackground,
-                    iconSize = iconSize,
-                    iconTint = iconTint
-                )
-                rememberIconPainter(
-                    icon = painterIcon,
-                    background = colorBackground,
-                    iconSize = iconSize,
-                    iconTint = iconTint
-                )
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asEquitable(Color.Gray),
+                    background = null as EquitablePainter?
+                ).apply {
+                    assertEquals(
+                        expected = IconPainter(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asEquitable(Color.Gray),
+                            background = null,
+                            iconSize = null,
+                            iconTint = null
+                        ),
+                        actual = this
+                    )
+                }
 
                 rememberIconPainter(
-                    icon = painterIcon,
-                    background = painterBackground,
-                    iconSize = iconSize,
-                )
-                rememberIconPainter(
-                    icon = painterIcon,
-                    background = colorBackground,
-                    iconSize = iconSize,
-                )
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asEquitable(Color.Gray),
+                    background = ColorPainter(Color.Gray).asEquitable()
+                ).apply {
+                    assertEquals(
+                        expected = IconPainter(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asEquitable(Color.Gray),
+                            background = ColorPainter(Color.Gray).asEquitable(),
+                            iconSize = null,
+                            iconTint = null
+                        ),
+                        actual = this
+                    )
+                }
 
                 rememberIconPainter(
-                    icon = painterIcon,
-                    background = painterBackground,
-                    iconTint = iconTint
-                )
-                rememberIconPainter(
-                    icon = painterIcon,
-                    background = colorBackground,
-                    iconTint = iconTint
-                )
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asEquitable(Color.Gray),
+                    background = ColorPainter(Color.Gray).asEquitable(),
+                    iconSize = Size(101f, 202f)
+                ).apply {
+                    assertEquals(
+                        expected = IconPainter(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asEquitable(Color.Gray),
+                            background = ColorPainter(Color.Gray).asEquitable(),
+                            iconSize = Size(101f, 202f),
+                            iconTint = null
+                        ),
+                        actual = this
+                    )
+                }
 
                 rememberIconPainter(
-                    icon = painterIcon,
-                    iconSize = iconSize,
-                    iconTint = iconTint
-                )
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asEquitable(Color.Gray),
+                    background = ColorPainter(Color.Gray).asEquitable(),
+                    iconSize = Size(101f, 202f),
+                    iconTint = Color.Blue
+                ).apply {
+                    assertEquals(
+                        expected = IconPainter(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asEquitable(Color.Gray),
+                            background = ColorPainter(Color.Gray).asEquitable(),
+                            iconSize = Size(101f, 202f),
+                            iconTint = Color.Blue
+                        ),
+                        actual = this
+                    )
+                }
+
+                /*
+                 * icon: EquitablePainter, background: Color
+                 */
+                rememberIconPainter(
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asEquitable(Color.Gray),
+                    background = null as Color?
+                ).apply {
+                    assertEquals(
+                        expected = IconPainter(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asEquitable(Color.Gray),
+                            background = null,
+                            iconSize = null,
+                            iconTint = null
+                        ),
+                        actual = this
+                    )
+                }
 
                 rememberIconPainter(
-                    icon = painterIcon,
-                    background = painterBackground,
-                )
-                rememberIconPainter(
-                    icon = painterIcon,
-                    background = colorBackground,
-                )
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asEquitable(Color.Gray),
+                    background = Color.Gray
+                ).apply {
+                    assertEquals(
+                        expected = IconPainter(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asEquitable(Color.Gray),
+                            background = ColorPainter(Color.Gray).asEquitable(),
+                            iconSize = null,
+                            iconTint = null
+                        ),
+                        actual = this
+                    )
+                }
 
                 rememberIconPainter(
-                    icon = painterIcon,
-                    iconSize = iconSize,
-                )
-                rememberIconPainter(
-                    icon = painterIcon,
-                    iconTint = iconTint
-                )
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asEquitable(Color.Gray),
+                    background = Color.Gray,
+                    iconSize = Size(101f, 202f)
+                ).apply {
+                    assertEquals(
+                        expected = IconPainter(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asEquitable(Color.Gray),
+                            background = ColorPainter(Color.Gray).asEquitable(),
+                            iconSize = Size(101f, 202f),
+                            iconTint = null
+                        ),
+                        actual = this
+                    )
+                }
 
                 rememberIconPainter(
-                    icon = painterIcon,
-                )
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asEquitable(Color.Gray),
+                    background = Color.Gray,
+                    iconSize = Size(101f, 202f),
+                    iconTint = Color.Blue
+                ).apply {
+                    assertEquals(
+                        expected = IconPainter(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asEquitable(Color.Gray),
+                            background = ColorPainter(Color.Gray).asEquitable(),
+                            iconSize = Size(101f, 202f),
+                            iconTint = Color.Blue
+                        ),
+                        actual = this
+                    )
+                }
+
+                /*
+                 * icon: EquitablePainter
+                 */
+                rememberIconPainter(
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asEquitable(Color.Gray),
+                ).apply {
+                    assertEquals(
+                        expected = IconPainter(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asEquitable(Color.Gray),
+                            background = null,
+                            iconSize = null,
+                            iconTint = null
+                        ),
+                        actual = this
+                    )
+                }
+
+                rememberIconPainter(
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asEquitable(Color.Gray),
+                    iconSize = Size(101f, 202f)
+                ).apply {
+                    assertEquals(
+                        expected = IconPainter(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asEquitable(Color.Gray),
+                            iconSize = Size(101f, 202f),
+                            iconTint = null
+                        ),
+                        actual = this
+                    )
+                }
+
+                rememberIconPainter(
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asEquitable(Color.Gray),
+                    iconTint = Color.Blue
+                ).apply {
+                    assertEquals(
+                        expected = IconPainter(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asEquitable(Color.Gray),
+                            iconTint = Color.Blue
+                        ),
+                        actual = this
+                    )
+                }
             }
         }
     }
+
+    // TODO test
 }
