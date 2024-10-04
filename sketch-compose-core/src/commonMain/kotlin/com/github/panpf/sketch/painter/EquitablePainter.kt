@@ -15,6 +15,7 @@
  */
 
 @file:JvmName("EqualsPainterKt")
+@file:Suppress("RedundantConstructorKeyword")
 
 package com.github.panpf.sketch.painter
 
@@ -95,7 +96,7 @@ fun BrushPainter.asEquitable(): EquitablePainter =
  * @see com.github.panpf.sketch.compose.core.common.test.painter.EquitablePainterTest.testEquitablePainter
  */
 @Stable
-open class EquitablePainter internal constructor(
+open class EquitablePainter constructor(
     painter: Painter,
     val equalityKey: Any,
 ) : PainterWrapper(painter), Key {
@@ -125,7 +126,7 @@ open class EquitablePainter internal constructor(
  * @see com.github.panpf.sketch.compose.core.common.test.painter.EquitablePainterTest.testEquitableAnimatablePainter
  */
 @Stable
-class EquitableAnimatablePainter internal constructor(
+class EquitableAnimatablePainter constructor(
     painter: Painter,
     equalityKey: Any,
 ) : EquitablePainter(painter, equalityKey), AnimatablePainter, Key {

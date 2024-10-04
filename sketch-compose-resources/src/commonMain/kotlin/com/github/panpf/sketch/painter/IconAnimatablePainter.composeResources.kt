@@ -25,7 +25,7 @@ import org.jetbrains.compose.resources.DrawableResource
 /**
  * Create an [IconAnimatablePainter] that can be remembered in the composition
  *
- * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainter
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainterWithPainterIcon
  */
 @Composable
 fun rememberIconAnimatablePainter(
@@ -49,7 +49,7 @@ fun rememberIconAnimatablePainter(
 ///**
 // * Create an [IconAnimatablePainter] that can be remembered in the composition
 // *
-// * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainter
+// * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainterWithPainterIcon
 // */
 //@Composable
 //fun rememberIconAnimatablePainter(
@@ -72,7 +72,7 @@ fun rememberIconAnimatablePainter(
 ///**
 // * Create an [IconAnimatablePainter] that can be remembered in the composition
 // *
-// * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainter
+// * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainterWithPainterIcon
 // */
 //@Composable
 //fun rememberIconAnimatablePainter(
@@ -96,7 +96,7 @@ fun rememberIconAnimatablePainter(
 ///**
 // * Create an [IconAnimatablePainter] that can be remembered in the composition
 // *
-// * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainter
+// * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainterWithPainterIcon
 // */
 //@Composable
 //fun rememberIconAnimatablePainter(
@@ -120,7 +120,7 @@ fun rememberIconAnimatablePainter(
 ///**
 // * Create an [IconAnimatablePainter] that can be remembered in the composition
 // *
-// * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainter
+// * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconAnimatablePainterComposeResourcesTest.testRememberIconAnimatablePainterWithPainterIcon
 // */
 //@Composable
 //fun rememberIconAnimatablePainter(

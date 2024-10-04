@@ -2,6 +2,8 @@ package com.github.panpf.sketch.test.utils
 
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.painter.AnimatablePainter
+import com.github.panpf.sketch.painter.EquitableAnimatablePainter
+import com.github.panpf.sketch.painter.EquitablePainter
 import com.github.panpf.sketch.painter.PainterWrapper
 import com.github.panpf.sketch.painter.toLogString
 
@@ -10,6 +12,14 @@ fun Painter.asAnimatablePainter(): Painter {
         this
     } else {
         TestAnimatablePainter(this)
+    }
+}
+
+fun Painter.asEquitableWithThis(): EquitablePainter {
+    return if (this is AnimatablePainter) {
+        EquitableAnimatablePainter(painter = this, equalityKey = this)
+    } else {
+        EquitablePainter(painter = this, equalityKey = this)
     }
 }
 

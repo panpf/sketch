@@ -26,7 +26,7 @@ import org.jetbrains.compose.resources.DrawableResource
 /**
  * Create and remember an [IconPainter] instance
  *
- * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconPainterComposeResourcesTest.testRememberIconPainter
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconPainterComposeResourcesTest.testRememberIconPainterWithPainterIcon
  */
 @Composable
 fun rememberIconPainter(
@@ -49,7 +49,7 @@ fun rememberIconPainter(
 /**
  * Create and remember an [IconPainter] instance
  *
- * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconPainterComposeResourcesTest.testRememberIconPainter
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconPainterComposeResourcesTest.testRememberIconPainterWithDrawableResourcesIcon
  */
 @Composable
 fun rememberIconPainter(
@@ -72,7 +72,7 @@ fun rememberIconPainter(
 /**
  * Create and remember an [IconPainter] instance
  *
- * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconPainterComposeResourcesTest.testRememberIconPainter
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconPainterComposeResourcesTest.testRememberIconPainterWithDrawableResourcesIcon
  */
 @Composable
 fun rememberIconPainter(
@@ -96,7 +96,7 @@ fun rememberIconPainter(
 /**
  * Create and remember an [IconPainter] instance
  *
- * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconPainterComposeResourcesTest.testRememberIconPainter
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconPainterComposeResourcesTest.testRememberIconPainterWithDrawableResourcesIcon
  */
 @Composable
 fun rememberIconPainter(
@@ -120,7 +120,7 @@ fun rememberIconPainter(
 /**
  * Create and remember an [IconPainter] instance
  *
- * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconPainterComposeResourcesTest.testRememberIconPainter
+ * @see com.github.panpf.sketch.compose.resources.common.test.painter.IconPainterComposeResourcesTest.testRememberIconPainterWithDrawableResourcesIcon
  */
 @Composable
 fun rememberIconPainter(

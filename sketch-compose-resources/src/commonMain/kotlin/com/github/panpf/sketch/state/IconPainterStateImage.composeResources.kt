@@ -29,7 +29,7 @@ import org.jetbrains.compose.resources.DrawableResource
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.resources.common.test.state.IconPainterStateImageComposeResourcesTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.resources.common.test.state.IconPainterStateImageComposeResourcesTest.testRememberIconPainterStateImageWithPainterIcon
  */
 @Composable
 fun rememberIconPainterStateImage(
@@ -52,7 +52,7 @@ fun rememberIconPainterStateImage(
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.resources.common.test.state.IconPainterStateImageComposeResourcesTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.resources.common.test.state.IconPainterStateImageComposeResourcesTest.testRememberIconPainterStateImageWithDrawableResourcesIcon
  */
 @Composable
 fun rememberIconPainterStateImage(
@@ -75,7 +75,7 @@ fun rememberIconPainterStateImage(
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.resources.common.test.state.IconPainterStateImageComposeResourcesTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.resources.common.test.state.IconPainterStateImageComposeResourcesTest.testRememberIconPainterStateImageWithDrawableResourcesIcon
  */
 @Composable
 fun rememberIconPainterStateImage(
@@ -99,7 +99,7 @@ fun rememberIconPainterStateImage(
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.resources.common.test.state.IconPainterStateImageComposeResourcesTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.resources.common.test.state.IconPainterStateImageComposeResourcesTest.testRememberIconPainterStateImageWithDrawableResourcesIcon
  */
 @Composable
 fun rememberIconPainterStateImage(
@@ -123,7 +123,7 @@ fun rememberIconPainterStateImage(
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.resources.common.test.state.IconPainterStateImageComposeResourcesTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.resources.common.test.state.IconPainterStateImageComposeResourcesTest.testRememberIconPainterStateImageWithDrawableResourcesIcon
  */
 @Composable
 fun rememberIconPainterStateImage(

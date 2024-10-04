@@ -7,12 +7,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
-import com.github.panpf.sketch.painter.EquitablePainter
 import com.github.panpf.sketch.painter.asEquitable
 import com.github.panpf.sketch.state.IconAnimatablePainterStateImage
 import com.github.panpf.sketch.state.rememberIconAnimatablePainterStateImage
 import com.github.panpf.sketch.test.utils.SizeColorPainter
 import com.github.panpf.sketch.test.utils.asAnimatablePainter
+import com.github.panpf.sketch.test.utils.asEquitableWithThis
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -20,22 +20,19 @@ class IconAnimatablePainterStateImageTest {
 
     @Test
     fun testRememberIconAnimatablePainterStateImage() {
+        // One parameters
         runComposeUiTest {
             setContent {
-                /*
-                 * icon: EquitablePainter, background: EquitablePainter
-                 */
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                         .asAnimatablePainter()
-                        .asEquitable(Color.Gray),
-                    background = null as EquitablePainter?
+                        .asEquitableWithThis(),
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                                 .asAnimatablePainter()
-                                .asEquitable(Color.Gray),
+                                .asEquitableWithThis(),
                             background = null,
                             iconSize = null,
                             iconTint = null
@@ -43,19 +40,42 @@ class IconAnimatablePainterStateImageTest {
                         actual = this
                     )
                 }
+            }
+        }
 
+        // Two parameters
+        runComposeUiTest {
+            setContent {
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                         .asAnimatablePainter()
-                        .asEquitable(Color.Gray),
-                    background = ColorPainter(Color.Gray).asEquitable()
+                        .asEquitableWithThis(),
+                    background = ColorPainter(Color.Green).asEquitable(),
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                                 .asAnimatablePainter()
-                                .asEquitable(Color.Gray),
-                            background = ColorPainter(Color.Gray).asEquitable(),
+                                .asEquitableWithThis(),
+                            background = ColorPainter(Color.Green).asEquitable(),
+                            iconSize = null,
+                            iconTint = null
+                        ),
+                        actual = this
+                    )
+                }
+                rememberIconAnimatablePainterStateImage(
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asAnimatablePainter()
+                        .asEquitableWithThis(),
+                    background = Color.Green,
+                ).apply {
+                    assertEquals(
+                        expected = IconAnimatablePainterStateImage(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asAnimatablePainter()
+                                .asEquitableWithThis(),
+                            background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
                             iconTint = null
                         ),
@@ -66,18 +86,79 @@ class IconAnimatablePainterStateImageTest {
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                         .asAnimatablePainter()
-                        .asEquitable(Color.Gray),
-                    background = ColorPainter(Color.Gray).asEquitable(),
-                    iconSize = Size(101f, 202f)
+                        .asEquitableWithThis(),
+                    iconSize = Size(101f, 202f),
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                                 .asAnimatablePainter()
-                                .asEquitable(Color.Gray),
-                            background = ColorPainter(Color.Gray).asEquitable(),
+                                .asEquitableWithThis(),
+                            background = null,
                             iconSize = Size(101f, 202f),
                             iconTint = null
+                        ),
+                        actual = this
+                    )
+                }
+                rememberIconAnimatablePainterStateImage(
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asAnimatablePainter()
+                        .asEquitableWithThis(),
+                    iconTint = Color.Blue
+                ).apply {
+                    assertEquals(
+                        expected = IconAnimatablePainterStateImage(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asAnimatablePainter()
+                                .asEquitableWithThis(),
+                            background = null,
+                            iconSize = null,
+                            iconTint = Color.Blue
+                        ),
+                        actual = this
+                    )
+                }
+            }
+        }
+
+        // Three parameters
+        runComposeUiTest {
+            setContent {
+                rememberIconAnimatablePainterStateImage(
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asAnimatablePainter()
+                        .asEquitableWithThis(),
+                    background = ColorPainter(Color.Green).asEquitable(),
+                    iconSize = Size(101f, 202f),
+                ).apply {
+                    assertEquals(
+                        expected = IconAnimatablePainterStateImage(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asAnimatablePainter()
+                                .asEquitableWithThis(),
+                            background = ColorPainter(Color.Green).asEquitable(),
+                            iconSize = Size(101f, 202f),
+                            iconTint = null
+                        ),
+                        actual = this
+                    )
+                }
+                rememberIconAnimatablePainterStateImage(
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asAnimatablePainter()
+                        .asEquitableWithThis(),
+                    background = ColorPainter(Color.Green).asEquitable(),
+                    iconTint = Color.Blue
+                ).apply {
+                    assertEquals(
+                        expected = IconAnimatablePainterStateImage(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asAnimatablePainter()
+                                .asEquitableWithThis(),
+                            background = ColorPainter(Color.Green).asEquitable(),
+                            iconSize = null,
+                            iconTint = Color.Blue
                         ),
                         actual = this
                     )
@@ -86,8 +167,46 @@ class IconAnimatablePainterStateImageTest {
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                         .asAnimatablePainter()
-                        .asEquitable(Color.Gray),
-                    background = ColorPainter(Color.Gray).asEquitable(),
+                        .asEquitableWithThis(),
+                    background = Color.Green,
+                    iconSize = Size(101f, 202f),
+                ).apply {
+                    assertEquals(
+                        expected = IconAnimatablePainterStateImage(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asAnimatablePainter()
+                                .asEquitableWithThis(),
+                            background = ColorPainter(Color.Green).asEquitable(),
+                            iconSize = Size(101f, 202f),
+                            iconTint = null
+                        ),
+                        actual = this
+                    )
+                }
+                rememberIconAnimatablePainterStateImage(
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asAnimatablePainter()
+                        .asEquitableWithThis(),
+                    background = Color.Green,
+                    iconTint = Color.Blue
+                ).apply {
+                    assertEquals(
+                        expected = IconAnimatablePainterStateImage(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asAnimatablePainter()
+                                .asEquitableWithThis(),
+                            background = ColorPainter(Color.Green).asEquitable(),
+                            iconSize = null,
+                            iconTint = Color.Blue
+                        ),
+                        actual = this
+                    )
+                }
+
+                rememberIconAnimatablePainterStateImage(
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asAnimatablePainter()
+                        .asEquitableWithThis(),
                     iconSize = Size(101f, 202f),
                     iconTint = Color.Blue
                 ).apply {
@@ -95,81 +214,25 @@ class IconAnimatablePainterStateImageTest {
                         expected = IconAnimatablePainterStateImage(
                             icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                                 .asAnimatablePainter()
-                                .asEquitable(Color.Gray),
-                            background = ColorPainter(Color.Gray).asEquitable(),
+                                .asEquitableWithThis(),
+                            background = null,
                             iconSize = Size(101f, 202f),
                             iconTint = Color.Blue
                         ),
                         actual = this
                     )
                 }
+            }
+        }
 
-                /*
-                 * icon: EquitablePainter, background: Color
-                 */
+        // Four parameters
+        runComposeUiTest {
+            setContent {
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                         .asAnimatablePainter()
-                        .asEquitable(Color.Gray),
-                    background = null as Color?
-                ).apply {
-                    assertEquals(
-                        expected = IconAnimatablePainterStateImage(
-                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
-                                .asAnimatablePainter()
-                                .asEquitable(Color.Gray),
-                            background = null,
-                            iconSize = null,
-                            iconTint = null
-                        ),
-                        actual = this
-                    )
-                }
-
-                rememberIconAnimatablePainterStateImage(
-                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
-                        .asAnimatablePainter()
-                        .asEquitable(Color.Gray),
-                    background = Color.Gray
-                ).apply {
-                    assertEquals(
-                        expected = IconAnimatablePainterStateImage(
-                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
-                                .asAnimatablePainter()
-                                .asEquitable(Color.Gray),
-                            background = ColorPainter(Color.Gray).asEquitable(),
-                            iconSize = null,
-                            iconTint = null
-                        ),
-                        actual = this
-                    )
-                }
-
-                rememberIconAnimatablePainterStateImage(
-                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
-                        .asAnimatablePainter()
-                        .asEquitable(Color.Gray),
-                    background = Color.Gray,
-                    iconSize = Size(101f, 202f)
-                ).apply {
-                    assertEquals(
-                        expected = IconAnimatablePainterStateImage(
-                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
-                                .asAnimatablePainter()
-                                .asEquitable(Color.Gray),
-                            background = ColorPainter(Color.Gray).asEquitable(),
-                            iconSize = Size(101f, 202f),
-                            iconTint = null
-                        ),
-                        actual = this
-                    )
-                }
-
-                rememberIconAnimatablePainterStateImage(
-                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
-                        .asAnimatablePainter()
-                        .asEquitable(Color.Gray),
-                    background = Color.Gray,
+                        .asEquitableWithThis(),
+                    background = ColorPainter(Color.Green).asEquitable(),
                     iconSize = Size(101f, 202f),
                     iconTint = Color.Blue
                 ).apply {
@@ -177,8 +240,8 @@ class IconAnimatablePainterStateImageTest {
                         expected = IconAnimatablePainterStateImage(
                             icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                                 .asAnimatablePainter()
-                                .asEquitable(Color.Gray),
-                            background = ColorPainter(Color.Gray).asEquitable(),
+                                .asEquitableWithThis(),
+                            background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
                             iconTint = Color.Blue
                         ),
@@ -186,56 +249,21 @@ class IconAnimatablePainterStateImageTest {
                     )
                 }
 
-                /*
-                 * icon: EquitablePainter
-                 */
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                         .asAnimatablePainter()
-                        .asEquitable(Color.Gray),
-                ).apply {
-                    assertEquals(
-                        expected = IconAnimatablePainterStateImage(
-                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
-                                .asAnimatablePainter()
-                                .asEquitable(Color.Gray),
-                            background = null,
-                            iconSize = null,
-                            iconTint = null
-                        ),
-                        actual = this
-                    )
-                }
-
-                rememberIconAnimatablePainterStateImage(
-                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
-                        .asAnimatablePainter()
-                        .asEquitable(Color.Gray),
-                    iconSize = Size(101f, 202f)
-                ).apply {
-                    assertEquals(
-                        expected = IconAnimatablePainterStateImage(
-                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
-                                .asAnimatablePainter()
-                                .asEquitable(Color.Gray),
-                            iconSize = Size(101f, 202f),
-                            iconTint = null
-                        ),
-                        actual = this
-                    )
-                }
-
-                rememberIconAnimatablePainterStateImage(
-                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
-                        .asAnimatablePainter()
-                        .asEquitable(Color.Gray),
+                        .asEquitableWithThis(),
+                    background = Color.Green,
+                    iconSize = Size(101f, 202f),
                     iconTint = Color.Blue
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                                 .asAnimatablePainter()
-                                .asEquitable(Color.Gray),
+                                .asEquitableWithThis(),
+                            background = ColorPainter(Color.Green).asEquitable(),
+                            iconSize = Size(101f, 202f),
                             iconTint = Color.Blue
                         ),
                         actual = this
