@@ -21,10 +21,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.github.panpf.sketch.drawable.EquitableDrawable
 
+/**
+ * Create a [DrawableStateImage] instance and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.DrawableStateImageComposeAndroidTest.testRememberDrawableStateImage
+ */
 @Composable
 fun rememberDrawableStateImage(drawable: EquitableDrawable): DrawableStateImage =
     remember(drawable) { DrawableStateImage(drawable) }
 
+/**
+ * Create a [DrawableStateImage] instance and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.DrawableStateImageComposeAndroidTest.testRememberDrawableStateImage
+ */
 @Composable
 fun rememberDrawableStateImage(@DrawableRes resId: Int): DrawableStateImage =
     remember(resId) { DrawableStateImage(resId) }

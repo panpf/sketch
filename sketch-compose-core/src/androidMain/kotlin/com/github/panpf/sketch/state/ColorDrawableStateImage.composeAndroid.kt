@@ -21,10 +21,20 @@ import androidx.annotation.ColorRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 
+/**
+ * Create a [ColorDrawableStateImage] that uses the specified color as the drawable
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.ColorDrawableStateImageComposeAndroidTest.testRememberIntColorDrawableStateImage
+ */
 @Composable
 fun rememberIntColorDrawableStateImage(@ColorInt color: Int): ColorDrawableStateImage =
     remember(color) { IntColorDrawableStateImage(color) }
 
+/**
+ * Create a [ColorDrawableStateImage] that uses the specified color resource as the drawable
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.ColorDrawableStateImageComposeAndroidTest.testRememberResColorDrawableStateImage
+ */
 @Composable
 fun rememberResColorDrawableStateImage(@ColorRes resId: Int): ColorDrawableStateImage =
     remember(resId) { ResColorDrawableStateImage(resId) }

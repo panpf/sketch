@@ -31,9 +31,13 @@ import com.github.panpf.sketch.util.ResColor
 import com.github.panpf.sketch.util.SketchSize
 import com.github.panpf.sketch.util.toSize
 
-
 /* ********************************************* drawable icon ********************************************* */
 
+/**
+ * Create and remember a IconAnimatablePainter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterAndroidTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     icon: EquitableDrawable,
@@ -55,6 +59,11 @@ fun rememberIconAnimatablePainter(
     }
 }
 
+/**
+ * Create and remember a IconAnimatablePainter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterAndroidTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     icon: EquitableDrawable,
@@ -79,6 +88,11 @@ fun rememberIconAnimatablePainter(
     }
 }
 
+/**
+ * Create and remember a IconAnimatablePainter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterAndroidTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     icon: EquitableDrawable,
@@ -101,6 +115,11 @@ fun rememberIconAnimatablePainter(
 }
 
 
+/**
+ * Create and remember a IconAnimatablePainter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterAndroidTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     icon: EquitableDrawable,
@@ -116,6 +135,11 @@ fun rememberIconAnimatablePainter(
     )
 }
 
+/**
+ * Create and remember a IconAnimatablePainter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterAndroidTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     icon: EquitableDrawable,
@@ -137,6 +161,11 @@ fun rememberIconAnimatablePainter(
     }
 }
 
+/**
+ * Create and remember a IconAnimatablePainter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterAndroidTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     icon: EquitableDrawable,
@@ -153,6 +182,11 @@ fun rememberIconAnimatablePainter(
 }
 
 
+/**
+ * Create and remember a IconAnimatablePainter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterAndroidTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     icon: EquitableDrawable,
@@ -173,6 +207,11 @@ fun rememberIconAnimatablePainter(
     }
 }
 
+/**
+ * Create and remember a IconAnimatablePainter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterAndroidTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     icon: EquitableDrawable,
@@ -190,6 +229,11 @@ fun rememberIconAnimatablePainter(
 
 /* ********************************************* res icon ********************************************* */
 
+/**
+ * Create and remember a IconAnimatablePainter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterAndroidTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     @DrawableRes icon: Int,
@@ -212,6 +256,11 @@ fun rememberIconAnimatablePainter(
     }
 }
 
+/**
+ * Create and remember a IconAnimatablePainter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterAndroidTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     @DrawableRes icon: Int,
@@ -237,6 +286,11 @@ fun rememberIconAnimatablePainter(
     }
 }
 
+/**
+ * Create and remember a IconAnimatablePainter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterAndroidTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     @DrawableRes icon: Int,
@@ -260,6 +314,11 @@ fun rememberIconAnimatablePainter(
 }
 
 
+/**
+ * Create and remember a IconAnimatablePainter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterAndroidTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     @DrawableRes icon: Int,
@@ -279,6 +338,11 @@ fun rememberIconAnimatablePainter(
     }
 }
 
+/**
+ * Create and remember a IconAnimatablePainter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterAndroidTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     @DrawableRes icon: Int,
@@ -301,6 +365,11 @@ fun rememberIconAnimatablePainter(
     }
 }
 
+/**
+ * Create and remember a IconAnimatablePainter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterAndroidTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     @DrawableRes icon: Int,
@@ -321,6 +390,11 @@ fun rememberIconAnimatablePainter(
 }
 
 
+/**
+ * Create and remember a IconAnimatablePainter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterAndroidTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     @DrawableRes icon: Int,
@@ -342,6 +416,11 @@ fun rememberIconAnimatablePainter(
     }
 }
 
+/**
+ * Create and remember a IconAnimatablePainter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterAndroidTest.testRememberIconAnimatablePainter
+ */
 @Composable
 fun rememberIconAnimatablePainter(
     @DrawableRes icon: Int,

@@ -21,14 +21,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.github.panpf.sketch.drawable.EquitableDrawable
 
+/**
+ * Create a [CurrentStateImage] and remember it
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.CurrentStateImageComposeAndroidTest.testRememberCurrentStateImage
+ */
 @Composable
 fun rememberCurrentStateImage(defaultImage: StateImage? = null): CurrentStateImage =
     remember(defaultImage) { CurrentStateImage(defaultImage) }
 
+/**
+ * Create a [CurrentStateImage] and remember it
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.CurrentStateImageComposeAndroidTest.testRememberCurrentStateImage
+ */
 @Composable
 fun rememberCurrentStateImage(defaultDrawable: EquitableDrawable): CurrentStateImage =
     remember(defaultDrawable) { CurrentStateImage(defaultDrawable) }
 
+/**
+ * Create a [CurrentStateImage] and remember it
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.CurrentStateImageComposeAndroidTest.testRememberCurrentStateImage
+ */
 @Composable
-fun rememberCurrentStateImage(@DrawableRes defaultDrawableRes: Int): CurrentStateImage =
-    remember(defaultDrawableRes) { CurrentStateImage(defaultDrawableRes) }
+fun rememberCurrentStateImage(@DrawableRes defaultResId: Int): CurrentStateImage =
+    remember(defaultResId) { CurrentStateImage(defaultResId) }

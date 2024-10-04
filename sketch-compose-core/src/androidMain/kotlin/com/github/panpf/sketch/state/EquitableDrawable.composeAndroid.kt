@@ -22,9 +22,18 @@ import com.github.panpf.sketch.painter.EquitablePainter
 import com.github.panpf.sketch.painter.asEquitable
 import com.github.panpf.sketch.painter.asPainter
 
-// TODO test
+/**
+ * Convert [Drawable] to [EquitablePainter]
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.EquitableDrawableComposeAndroidTst.testAsEquitablePainter
+ */
 fun Drawable.asEquitablePainter(equalityKey: Any): EquitablePainter =
     this.asPainter().asEquitable(equalityKey)
 
+/**
+ * Convert [EquitableDrawable] to [EquitablePainter]
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.EquitableDrawableComposeAndroidTst.testAsEquitablePainter
+ */
 fun EquitableDrawable.asEquitablePainter(): EquitablePainter =
     this.asPainter().asEquitable(this.equalityKey)

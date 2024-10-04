@@ -34,6 +34,11 @@ import com.github.panpf.sketch.util.toSize
 
 /* ********************************************* drawable icon ********************************************* */
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     icon: EquitableDrawable,
@@ -55,6 +60,11 @@ fun rememberIconAnimatablePainterStateImage(
     }
 }
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     icon: EquitableDrawable,
@@ -79,6 +89,11 @@ fun rememberIconAnimatablePainterStateImage(
     }
 }
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     icon: EquitableDrawable,
@@ -101,6 +116,11 @@ fun rememberIconAnimatablePainterStateImage(
 }
 
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     icon: EquitableDrawable,
@@ -116,6 +136,11 @@ fun rememberIconAnimatablePainterStateImage(
     )
 }
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     icon: EquitableDrawable,
@@ -137,6 +162,11 @@ fun rememberIconAnimatablePainterStateImage(
     }
 }
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     icon: EquitableDrawable,
@@ -153,6 +183,11 @@ fun rememberIconAnimatablePainterStateImage(
 }
 
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     icon: EquitableDrawable,
@@ -173,6 +208,11 @@ fun rememberIconAnimatablePainterStateImage(
     }
 }
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     icon: EquitableDrawable,
@@ -190,6 +230,11 @@ fun rememberIconAnimatablePainterStateImage(
 
 /* ********************************************* res icon ********************************************* */
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     @DrawableRes icon: Int,
@@ -212,6 +257,11 @@ fun rememberIconAnimatablePainterStateImage(
     }
 }
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     @DrawableRes icon: Int,
@@ -237,6 +287,11 @@ fun rememberIconAnimatablePainterStateImage(
     }
 }
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     @DrawableRes icon: Int,
@@ -260,6 +315,11 @@ fun rememberIconAnimatablePainterStateImage(
 }
 
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     @DrawableRes icon: Int,
@@ -279,6 +339,11 @@ fun rememberIconAnimatablePainterStateImage(
     }
 }
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     @DrawableRes icon: Int,
@@ -301,6 +366,11 @@ fun rememberIconAnimatablePainterStateImage(
     }
 }
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     @DrawableRes icon: Int,
@@ -321,6 +391,11 @@ fun rememberIconAnimatablePainterStateImage(
 }
 
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     @DrawableRes icon: Int,
@@ -342,6 +417,11 @@ fun rememberIconAnimatablePainterStateImage(
     }
 }
 
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImage
+ */
 @Composable
 fun rememberIconAnimatablePainterStateImage(
     @DrawableRes icon: Int,

@@ -21,6 +21,11 @@ import android.graphics.drawable.Drawable
 import androidx.compose.runtime.Stable
 import com.github.panpf.sketch.util.toLogString
 
+/**
+ * Drawable painter that implements the [AnimatablePainter] interface
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.DrawableAnimatablePainterTest
+ */
 @Stable
 class DrawableAnimatablePainter(
     drawable: Drawable

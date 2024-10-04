@@ -60,12 +60,18 @@ import kotlin.math.roundToInt
  *
  * This function tries to dispatch lifecycle events to [drawable] as much as possible from
  * within Compose.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.DrawablePainterTest.testRememberDrawablePainter
  */
 @Composable
 fun rememberDrawablePainter(drawable: EquitableDrawable): Painter =
     remember(drawable) { drawable.asPainter() }
 
-// TODO test
+/**
+ * Converts a [Drawable] to a [Painter]. This function attempts to un-wrap the drawable contents
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.DrawablePainterTest.testAsPainter
+ */
 fun Drawable?.asPainter(): Painter {
     return when (this) {
         null -> EmptyPainter
@@ -83,6 +89,8 @@ fun Drawable?.asPainter(): Painter {
  * should be remembered to be able to start and stop [Animatable] animations.
  *
  * Instances are usually retrieved from [rememberDrawablePainter].
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.DrawablePainterTest
  */
 @Stable
 open class DrawablePainter(
@@ -185,10 +193,18 @@ open class DrawablePainter(
     }
 }
 
+/**
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.DrawablePainterTest.testMainHandler
+ */
 internal val MAIN_HANDLER by lazy(LazyThreadSafetyMode.NONE) {
     Handler(Looper.getMainLooper())
 }
 
+/**
+ * Get the intrinsic size of Drawable, if Drawable has no intrinsic size, return [Size.Unspecified]
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.DrawablePainterTest.testIntrinsicSize
+ */
 internal val Drawable.intrinsicSize: Size
     get() = when {
         // Only return a finite size if the drawable has an intrinsic size
@@ -199,6 +215,11 @@ internal val Drawable.intrinsicSize: Size
         else -> Size.Unspecified
     }
 
+/**
+ * Empty Painter
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.DrawablePainterTest.testEmptyPainter
+ */
 internal object EmptyPainter : Painter() {
     override val intrinsicSize: Size get() = Size.Unspecified
     override fun DrawScope.onDraw() {}
