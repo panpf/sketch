@@ -102,6 +102,7 @@ class IconPainterComposeResourcesTest {
                         actual = this
                     )
                 }
+
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     iconTint = Color.Blue
@@ -137,6 +138,7 @@ class IconPainterComposeResourcesTest {
                         actual = this
                     )
                 }
+
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     background = ColorPainter(Color.Green).asEquitable(),
@@ -168,6 +170,7 @@ class IconPainterComposeResourcesTest {
                         actual = this
                     )
                 }
+
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     background = Color.Green,
@@ -199,6 +202,7 @@ class IconPainterComposeResourcesTest {
                         actual = this
                     )
                 }
+
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     background = Res.drawable.desert,
@@ -371,6 +375,7 @@ class IconPainterComposeResourcesTest {
                         actual = this
                     )
                 }
+
                 rememberIconPainter(
                     icon = Res.drawable.moon,
                     iconTint = Color.Blue
@@ -406,6 +411,7 @@ class IconPainterComposeResourcesTest {
                         actual = this
                     )
                 }
+
                 rememberIconPainter(
                     icon = Res.drawable.moon,
                     background = ColorPainter(Color.Green).asEquitable(),
@@ -437,6 +443,7 @@ class IconPainterComposeResourcesTest {
                         actual = this
                     )
                 }
+
                 rememberIconPainter(
                     icon = Res.drawable.moon,
                     background = Color.Green,
@@ -468,6 +475,7 @@ class IconPainterComposeResourcesTest {
                         actual = this
                     )
                 }
+
                 rememberIconPainter(
                     icon = Res.drawable.moon,
                     background = Res.drawable.desert,

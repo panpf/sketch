@@ -101,6 +101,7 @@ class IconAnimatablePainterStateImageTest {
                         actual = this
                     )
                 }
+
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                         .asAnimatablePainter()
@@ -144,6 +145,7 @@ class IconAnimatablePainterStateImageTest {
                         actual = this
                     )
                 }
+
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                         .asAnimatablePainter()
@@ -183,6 +185,7 @@ class IconAnimatablePainterStateImageTest {
                         actual = this
                     )
                 }
+
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                         .asAnimatablePainter()

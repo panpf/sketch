@@ -122,6 +122,7 @@ class IconAnimatablePainterStateImageComposeResourcesTest {
                         actual = this
                     )
                 }
+
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                         .asAnimatablePainter()
@@ -165,6 +166,7 @@ class IconAnimatablePainterStateImageComposeResourcesTest {
                         actual = this
                     )
                 }
+
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                         .asAnimatablePainter()
@@ -204,6 +206,7 @@ class IconAnimatablePainterStateImageComposeResourcesTest {
                         actual = this
                     )
                 }
+
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                         .asAnimatablePainter()

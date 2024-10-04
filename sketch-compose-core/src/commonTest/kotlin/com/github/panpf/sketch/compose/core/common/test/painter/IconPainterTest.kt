@@ -84,6 +84,7 @@ class IconPainterTest {
                         actual = this
                     )
                 }
+
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     iconTint = Color.Blue
@@ -119,6 +120,7 @@ class IconPainterTest {
                         actual = this
                     )
                 }
+
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     background = ColorPainter(Color.Green).asEquitable(),
@@ -150,6 +152,7 @@ class IconPainterTest {
                         actual = this
                     )
                 }
+
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     background = Color.Green,
