@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.painter
 
 import androidx.compose.runtime.Composable
@@ -104,9 +106,9 @@ fun rememberIconPainter(
  * @see com.github.panpf.sketch.compose.core.common.test.painter.IconPainterTest
  */
 @Stable
-open class IconPainter(
-    val icon: Painter,
-    val background: Painter? = null,
+open class IconPainter constructor(
+    val icon: EquitablePainter,
+    val background: EquitablePainter? = null,
     val iconSize: Size? = null,
     val iconTint: Color? = null,
 ) : Painter(), RememberObserver, SketchPainter {

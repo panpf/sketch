@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.painter
 
 import androidx.compose.runtime.Composable
@@ -22,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
-import androidx.compose.ui.graphics.painter.Painter
 
 /**
  * Create an [IconAnimatablePainter] and remember it.
@@ -91,9 +92,9 @@ fun rememberIconAnimatablePainter(
  * @see com.github.panpf.sketch.compose.core.common.test.painter.IconAnimatablePainterTest
  */
 @Stable
-class IconAnimatablePainter(
-    icon: Painter,
-    background: Painter? = null,
+class IconAnimatablePainter constructor(
+    icon: EquitablePainter,
+    background: EquitablePainter? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ) : IconPainter(icon, background, iconSize, iconTint), AnimatablePainter {
