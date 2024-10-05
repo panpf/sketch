@@ -29,11 +29,12 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.GridItemImageBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 import com.github.panpf.sketch.sample.ui.model.Photo
+import com.github.panpf.sketch.sample.ui.model.photoSize
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
 import kotlin.math.roundToInt
 
-class PhotoGridItemFactory constructor(val animatedPlaceholder: Boolean = false) :
+class PhotoGridItemFactory(val animatedPlaceholder: Boolean = false) :
     BaseBindingItemFactory<Photo, GridItemImageBinding>(Photo::class) {
 
     private var baseItemSize: Size? = null

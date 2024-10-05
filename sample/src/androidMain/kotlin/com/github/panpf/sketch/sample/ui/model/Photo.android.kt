@@ -18,11 +18,9 @@ package com.github.panpf.sketch.sample.ui.model
 
 import android.os.Parcelable
 import com.github.panpf.sketch.util.Size
-import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 @Serializable
 @Parcelize
@@ -38,9 +36,8 @@ actual data class Photo actual constructor(
     actual val listThumbnailUrl: String = thumbnailUrl ?: mediumUrl ?: originalUrl
 
     actual val detailPreviewUrl: String = mediumUrl ?: originalUrl
-
-    @IgnoredOnParcel
-    @Transient
-    val photoSize: Size? = if (width != null && height != null)
-        Size(width, height) else null
 }
+
+val Photo.photoSize: Size?
+    get() = if (width != null && height != null)
+        Size(width, height) else null
