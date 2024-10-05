@@ -1,6 +1,10 @@
 package com.github.panpf.sketch.sample
 
+import android.content.Context
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import androidx.fragment.app.Fragment
@@ -224,4 +228,30 @@ actual class AppSettings actual constructor(val context: PlatformContext) {
     actual val pagerGuideShowed: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "pagerGuideShowed", false)
     }
+
+    actual val darkMode: SettingsStateFlow<DarkMode> by lazy {
+        enumSettingsStateFlow(
+            context = context,
+            key = "darkMode",
+            initialize = platformSupportedDarkModes().first(),
+            convert = DarkMode::valueOf
+        )
+    }
+}
+
+actual fun platformSupportedDarkModes(): List<DarkMode> {
+    return if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        DarkMode.values().toList()
+    } else {
+        listOf(DarkMode.LIGHT, DarkMode.DARK)
+    }
+}
+
+fun applyDarkMode(context: Context) {
+    val mode = when (context.appSettings.darkMode.value) {
+        DarkMode.SYSTEM -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        DarkMode.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
+        DarkMode.DARK -> AppCompatDelegate.MODE_NIGHT_YES
+    }
+    AppCompatDelegate.setDefaultNightMode(mode)
 }

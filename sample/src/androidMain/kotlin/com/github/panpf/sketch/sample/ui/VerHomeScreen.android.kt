@@ -1,14 +1,16 @@
 package com.github.panpf.sketch.sample.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -21,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.ui.theme.DarkModeSwitch
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,20 +40,28 @@ actual fun VerHomeHeader() {
 
         val appSettings = LocalContext.current.appSettings
         val top = with(LocalDensity.current) { TopAppBarDefaults.windowInsets.getTop(this).toDp() }
-        Box(
+        Row(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .padding(top = top)
                 .height(50.dp)
-                .clickable { appSettings.composePage.value = false }
                 .padding(start = 16.dp, end = 16.dp),
-            contentAlignment = Alignment.Center,
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(
-                painter = painterResource(id = com.github.panpf.sketch.sample.R.drawable.ic_android),
-                contentDescription = "Android Page",
-                modifier = Modifier.size(20.dp)
-            )
+            DarkModeSwitch()
+
+            Spacer(Modifier.size(10.dp))
+
+            IconButton(
+                onClick = {
+                    appSettings.composePage.value = false
+                }
+            ) {
+                Icon(
+                    painter = painterResource(id = com.github.panpf.sketch.sample.R.drawable.ic_android),
+                    contentDescription = "Android Page",
+                )
+            }
         }
     }
 }

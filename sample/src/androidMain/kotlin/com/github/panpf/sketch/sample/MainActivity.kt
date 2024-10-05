@@ -31,6 +31,7 @@ class MainActivity : BaseActivity() {
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        applyDarkMode(this)
 
         EdgeToEdgeUtils.applyEdgeToEdge(/* window = */ window,/* edgeToEdgeEnabled = */ true)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {

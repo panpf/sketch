@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 expect val PlatformContext.appSettings: AppSettings
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
-expect class AppSettings constructor(context: PlatformContext) {
+expect class AppSettings(context: PlatformContext) {
 
     // -------------------------------------- image --------------------------------------
     val memoryCacheName: SettingsStateFlow<Boolean>
@@ -94,7 +94,15 @@ expect class AppSettings constructor(context: PlatformContext) {
     val currentPageIndex: SettingsStateFlow<Int>
 
     val pagerGuideShowed: SettingsStateFlow<Boolean>
+
+    val darkMode: SettingsStateFlow<DarkMode>
 }
+
+enum class DarkMode {
+    SYSTEM, LIGHT, DARK
+}
+
+expect fun platformSupportedDarkModes(): List<DarkMode>
 
 fun buildPrecision(precisionName: String): PrecisionDecider {
     return if (precisionName == "LongImageMode") {

@@ -204,4 +204,13 @@ actual class AppSettings actual constructor(val context: PlatformContext) {
     actual val pagerGuideShowed: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "pagerGuideShowed", false)
     }
+
+    actual val darkMode: SettingsStateFlow<DarkMode> by lazy {
+        enumSettingsStateFlow(
+            context = context,
+            key = "darkMode",
+            initialize = platformSupportedDarkModes().first(),
+            convert = DarkMode::valueOf
+        )
+    }
 }

@@ -14,8 +14,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:title="@string/app_name" />
 
-    <FrameLayout
-        android:id="@+id/composePageIconLayout"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:paddingStart="16dp"
@@ -25,13 +24,24 @@
         app:layout_constraintTop_toTopOf="@id/toolbar">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/composePageIcon"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:id="@+id/darkModeIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginEnd="10dp"
+            android:padding="10dp"
+            app:srcCompat="@drawable/ic_dark_mode"
+            app:tint="@color/md_theme_onBackground" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/composePageIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="10dp"
             app:srcCompat="@drawable/ic_compose"
             app:tint="@color/md_theme_onBackground" />
-    </FrameLayout>
+    </LinearLayout>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pager"

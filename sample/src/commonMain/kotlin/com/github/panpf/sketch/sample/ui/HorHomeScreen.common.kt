@@ -33,6 +33,7 @@ import com.github.panpf.sketch.sample.resources.Res
 import com.github.panpf.sketch.sample.resources.logo
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.gallery.MainMenu
+import com.github.panpf.sketch.sample.ui.theme.DarkModeSwitch
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 
@@ -57,39 +58,46 @@ object HorHomeScreen : BaseScreen() {
                 }
             }
 
-            NavigationRail(
-                modifier = Modifier.fillMaxHeight(),
-                header = {
-                    Image(
-                        painter = painterResource(Res.drawable.logo),
-                        contentDescription = "Logo",
-                        modifier = Modifier
-                            .padding(top = 20.dp, bottom = 50.dp)
-                            .size(40.dp)
-                            .background(
-                                color = MaterialTheme.colorScheme.primaryContainer,
-                                shape = RoundedCornerShape(10.dp)
-                            )
-                            .align(Alignment.CenterHorizontally)
-                    )
+            Box(Modifier.fillMaxHeight()) {
+                NavigationRail(
+                    modifier = Modifier.fillMaxHeight(),
+                    header = {
+                        Image(
+                            painter = painterResource(Res.drawable.logo),
+                            contentDescription = "Logo",
+                            modifier = Modifier
+                                .padding(top = 20.dp, bottom = 50.dp)
+                                .size(40.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.primaryContainer,
+                                    shape = RoundedCornerShape(10.dp)
+                                )
+                                .align(Alignment.CenterHorizontally)
+                        )
+                    }
+                ) {
+                    homeTabs.forEachIndexed { index, homeTab ->
+                        NavigationRailItem(
+                            icon = {
+                                Icon(
+                                    painter = painterResource(homeTab.icon),
+                                    contentDescription = homeTab.title,
+                                    modifier = Modifier.size(24.dp)
+                                        .padding(homeTab.padding)
+                                )
+                            },
+                            label = { Text(homeTab.title) },
+                            selected = pagerState.currentPage == index,
+                            onClick = { coroutineScope.launch { pagerState.scrollToPage(index) } },
+                            modifier = Modifier.padding(vertical = 14.dp)
+                        )
+                    }
                 }
-            ) {
-                homeTabs.forEachIndexed { index, homeTab ->
-                    NavigationRailItem(
-                        icon = {
-                            Icon(
-                                painter = painterResource(homeTab.icon),
-                                contentDescription = homeTab.title,
-                                modifier = Modifier.size(24.dp)
-                                    .padding(homeTab.padding)
-                            )
-                        },
-                        label = { Text(homeTab.title) },
-                        selected = pagerState.currentPage == index,
-                        onClick = { coroutineScope.launch { pagerState.scrollToPage(index) } },
-                        modifier = Modifier.padding(vertical = 14.dp)
-                    )
-                }
+
+                DarkModeSwitch(
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                        .padding(top = 20.dp, bottom = 20.dp)
+                )
             }
 
             Box(modifier = Modifier.fillMaxSize().weight(1f)) {

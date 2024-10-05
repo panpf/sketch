@@ -22,10 +22,13 @@ import androidx.lifecycle.Lifecycle.State
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
+import com.github.panpf.sketch.sample.DarkMode
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.applyDarkMode
 import com.github.panpf.sketch.sample.databinding.FragmentViewHomeBinding
+import com.github.panpf.sketch.sample.platformSupportedDarkModes
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.base.PermissionContainerFragment
 import com.github.panpf.sketch.sample.ui.gallery.GiphyPhotoListFragment
@@ -80,8 +83,34 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
             }
         }
 
-        binding.composePageIconLayout.setOnClickListener {
+        binding.composePageIcon.setOnClickListener {
             appSettings.composePage.value = true
+        }
+
+        binding.darkModeIcon.apply {
+            val nextDarkMode: () -> DarkMode = {
+                val appSettings = binding.darkModeIcon.appSettings
+                val darkMode = appSettings.darkMode.value
+                val platformSupportedDarkModes = platformSupportedDarkModes()
+                val index = platformSupportedDarkModes.indexOf(darkMode)
+                val nextDarkModeIndex = (index + 1) % platformSupportedDarkModes.size
+                platformSupportedDarkModes[nextDarkModeIndex]
+            }
+            val setIcon: (DarkMode) -> Unit = {
+                val icon = when (it) {
+                    DarkMode.SYSTEM -> R.drawable.ic_auto_mode
+                    DarkMode.LIGHT -> R.drawable.ic_light_mode
+                    DarkMode.DARK -> R.drawable.ic_dark_mode
+                }
+                setImageResource(icon)
+            }
+            setIcon(nextDarkMode())
+
+            setOnClickListener {
+                appSettings.darkMode.value = nextDarkMode()
+                setIcon(nextDarkMode())
+                applyDarkMode(requireContext())
+            }
         }
 
         binding.settingsImage.setOnClickListener {

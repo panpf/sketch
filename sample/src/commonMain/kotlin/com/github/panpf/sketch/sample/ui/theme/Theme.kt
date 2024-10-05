@@ -5,6 +5,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import com.github.panpf.sketch.LocalPlatformContext
+import com.github.panpf.sketch.sample.DarkMode
+import com.github.panpf.sketch.sample.appSettings
 
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -73,13 +78,20 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun AppTheme(
-    useDarkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable() () -> Unit
+    darkMode: DarkMode? = null,
+    content: @Composable () -> Unit
 ) {
-    val colors = if (!useDarkTheme) {
-        LightColors
-    } else {
+    val settingsDarkMode by LocalPlatformContext.current.appSettings.darkMode.collectAsState()
+    val realDarkMode = darkMode ?: settingsDarkMode
+    val useDarkTheme = when (realDarkMode) {
+        DarkMode.SYSTEM -> isSystemInDarkTheme()
+        DarkMode.DARK -> true
+        DarkMode.LIGHT -> false
+    }
+    val colors = if (useDarkTheme) {
         DarkColors
+    } else {
+        LightColors
     }
 
     MaterialTheme(
