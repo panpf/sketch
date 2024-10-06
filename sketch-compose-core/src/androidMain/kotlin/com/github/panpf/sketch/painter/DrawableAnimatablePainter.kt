@@ -40,12 +40,26 @@ class DrawableAnimatablePainter(
         animatable = drawable
     }
 
-    override fun start() {
+    override fun onFirstRemembered() {
+        super.onFirstRemembered()
         animatable.start()
     }
 
-    override fun stop() {
+    override fun onLastRemembered() {
+        super.onLastRemembered()
         animatable.stop()
+    }
+
+    override fun start() {
+        if (rememberedCount > 0) {
+            animatable.start()
+        }
+    }
+
+    override fun stop() {
+        if (rememberedCount > 0) {
+            animatable.stop()
+        }
     }
 
     override fun isRunning(): Boolean {

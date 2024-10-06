@@ -118,6 +118,16 @@ open class DrawablePainter(
         }
     }
 
+    /*
+     * Why do you need to remember to count?
+     *
+     * Because when RememberObserver is passed as a parameter of the Composable function, the onRemembered method
+     * will be called when the Composable function is executed for the first time, causing it to be remembered multiple times.
+     */
+    internal var rememberedCount = 0
+
+    override val intrinsicSize: Size get() = drawableIntrinsicSize
+
     init {
         if (drawable.intrinsicWidth >= 0 && drawable.intrinsicHeight >= 0) {
             // Update the drawable's bounds to match the intrinsic size
@@ -126,15 +136,25 @@ open class DrawablePainter(
     }
 
     override fun onRemembered() {
+        rememberedCount++
+        if (rememberedCount != 1) return
+        onFirstRemembered()
+    }
+
+    protected open fun onFirstRemembered() {
         drawable.callback = callback
         drawable.setVisible(true, true)
-        if (drawable is Animatable) drawable.start()
     }
 
     override fun onAbandoned() = onForgotten()
-
     override fun onForgotten() {
-        if (drawable is Animatable) drawable.stop()
+        if (rememberedCount <= 0) return
+        rememberedCount--
+        if (rememberedCount != 0) return
+        onLastRemembered()
+    }
+
+    protected open fun onLastRemembered() {
         drawable.setVisible(false, false)
         drawable.callback = null
     }
@@ -160,8 +180,6 @@ open class DrawablePainter(
         }
         return false
     }
-
-    override val intrinsicSize: Size get() = drawableIntrinsicSize
 
     override fun DrawScope.onDraw() {
         drawIntoCanvas { canvas ->
@@ -203,7 +221,7 @@ internal val MAIN_HANDLER by lazy(LazyThreadSafetyMode.NONE) {
 /**
  * Get the intrinsic size of Drawable, if Drawable has no intrinsic size, return [Size.Unspecified]
  *
- * @see com.github.panpf.sketch.compose.core.android.test.painter.DrawablePainterTest.testIntrinsicSize
+ * @see com.github.panpf.sketch.compose.core.android.test.painter.DrawablePainterTest.testDrawableIntrinsicSize
  */
 internal val Drawable.intrinsicSize: Size
     get() = when {
