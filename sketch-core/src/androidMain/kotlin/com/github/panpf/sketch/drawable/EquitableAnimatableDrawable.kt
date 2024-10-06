@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.drawable
 
 import android.graphics.drawable.Drawable
@@ -29,7 +31,7 @@ import com.github.panpf.sketch.util.toLogString
  *
  * @see com.github.panpf.sketch.core.android.test.drawable.EquitableAnimatableDrawableTest
  */
-open class EquitableAnimatableDrawable internal constructor(
+open class EquitableAnimatableDrawable constructor(
     drawable: Drawable,
     equalityKey: Any,
 ) : EquitableDrawable(drawable, equalityKey), Animatable2Compat, Key {

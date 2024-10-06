@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 
 /**
- * Create an [IconAnimatablePainter] and remember it.
+ * Create a [IconAnimatablePainter] and remember it.
  *
  * @see com.github.panpf.sketch.compose.core.common.test.painter.IconAnimatablePainterTest.testRememberIconAnimatablePainter
  */
@@ -46,7 +46,7 @@ fun rememberIconAnimatablePainter(
 }
 
 /**
- * Create an [IconAnimatablePainter] and remember it.
+ * Create a [IconAnimatablePainter] and remember it.
  *
  * @see com.github.panpf.sketch.compose.core.common.test.painter.IconAnimatablePainterTest.testRememberIconAnimatablePainter
  */
@@ -57,17 +57,57 @@ fun rememberIconAnimatablePainter(
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconAnimatablePainter = remember(icon, background, iconSize, iconTint) {
-    val backgroundPainter = background?.let { ColorPainter(it) }
+    val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
     IconAnimatablePainter(
         icon = icon,
-        background = backgroundPainter?.asEquitable(),
+        background = backgroundPainter,
         iconSize = iconSize,
         iconTint = iconTint
     )
 }
 
+
 /**
- * Create an [IconAnimatablePainter] and remember it.
+ * Create a [IconAnimatablePainter] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.IconAnimatablePainterTest.testRememberIconAnimatablePainter
+ */
+@Composable
+fun rememberIconAnimatablePainter(
+    icon: EquitablePainter,
+    background: EquitablePainter? = null,
+    iconSize: Size? = null,
+): IconAnimatablePainter = remember(icon, background, iconSize) {
+    IconAnimatablePainter(
+        icon = icon,
+        background = background,
+        iconSize = iconSize,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconAnimatablePainter] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.IconAnimatablePainterTest.testRememberIconAnimatablePainter
+ */
+@Composable
+fun rememberIconAnimatablePainter(
+    icon: EquitablePainter,
+    background: Color? = null,
+    iconSize: Size? = null,
+): IconAnimatablePainter = remember(icon, background, iconSize) {
+    val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+    IconAnimatablePainter(
+        icon = icon,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconAnimatablePainter] and remember it.
  *
  * @see com.github.panpf.sketch.compose.core.common.test.painter.IconAnimatablePainterTest.testRememberIconAnimatablePainter
  */
@@ -87,7 +127,80 @@ fun rememberIconAnimatablePainter(
 
 
 /**
- * An [IconPainter] that can be animated.
+ * Create a [IconAnimatablePainter] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.IconAnimatablePainterTest.testRememberIconAnimatablePainter
+ */
+@Composable
+fun rememberIconAnimatablePainter(
+    icon: EquitablePainter,
+    background: EquitablePainter? = null,
+): IconAnimatablePainter = remember(icon, background) {
+    IconAnimatablePainter(
+        icon = icon,
+        background = background,
+        iconSize = null,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconAnimatablePainter] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.IconAnimatablePainterTest.testRememberIconAnimatablePainter
+ */
+@Composable
+fun rememberIconAnimatablePainter(
+    icon: EquitablePainter,
+    background: Color? = null,
+): IconAnimatablePainter = remember(icon, background) {
+    val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+    IconAnimatablePainter(
+        icon = icon,
+        background = backgroundPainter,
+        iconSize = null,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconAnimatablePainter] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.IconAnimatablePainterTest.testRememberIconAnimatablePainter
+ */
+@Composable
+fun rememberIconAnimatablePainter(
+    icon: EquitablePainter,
+    iconSize: Size? = null,
+): IconAnimatablePainter = remember(icon, iconSize) {
+    IconAnimatablePainter(
+        icon = icon,
+        background = null,
+        iconSize = iconSize,
+        iconTint = null
+    )
+}
+
+
+/**
+ * Create a [IconAnimatablePainter] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.IconAnimatablePainterTest.testRememberIconAnimatablePainter
+ */
+@Composable
+fun rememberIconAnimatablePainter(
+    icon: EquitablePainter,
+): IconAnimatablePainter = remember(icon) {
+    IconAnimatablePainter(
+        icon = icon,
+        background = null,
+        iconSize = null,
+        iconTint = null
+    )
+}
+
+/**
+ * An [IconAnimatablePainter] that can be animated.
  *
  * @see com.github.panpf.sketch.compose.core.common.test.painter.IconAnimatablePainterTest
  */

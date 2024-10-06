@@ -20,41 +20,41 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.platform.LocalContext
 import com.github.panpf.sketch.drawable.EquitableDrawable
 import com.github.panpf.sketch.drawable.ResDrawable
+import com.github.panpf.sketch.painter.EquitablePainter
 import com.github.panpf.sketch.painter.asEquitable
 import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.ResColor
-import com.github.panpf.sketch.util.SketchSize
-import com.github.panpf.sketch.util.toSize
 
-
-/* ********************************************* drawable icon ********************************************* */
+/* ********************************************* Painter icon ********************************************* */
 
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
  */
 @Composable
 fun rememberIconPainterStateImage(
-    icon: EquitableDrawable,
-    background: EquitableDrawable? = null,
-    iconSize: SketchSize? = null,
-    @ColorRes iconTint: Int,
+    icon: EquitablePainter,
+    background: EquitablePainter? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
 ): IconPainterStateImage {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconTintColor = ResColor(iconTint)
-            .getColor(context)
-            .let { Color(it) }
+        val iconTintColor = iconTint
+            ?.let { ResColor(it) }
+            ?.getColor(context)
+            ?.let { Color(it) }
         IconPainterStateImage(
-            icon = icon.asEquitablePainter(),
-            background = background?.asEquitablePainter(),
-            iconSize = iconSize?.toSize(),
+            icon = icon,
+            background = background,
+            iconSize = iconSize,
             iconTint = iconTintColor
         )
     }
@@ -63,28 +63,105 @@ fun rememberIconPainterStateImage(
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
  */
 @Composable
 fun rememberIconPainterStateImage(
-    icon: EquitableDrawable,
-    @DrawableRes background: Int? = null,
-    iconSize: SketchSize? = null,
-    @ColorRes iconTint: Int,
+    icon: EquitablePainter,
+    background: EquitablePainter? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconPainterStateImage {
+    return remember(icon, background, iconSize, iconTint) {
+        val iconTintColor = iconTint
+            ?.color
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = icon,
+            background = background,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    background: Color? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
 ): IconPainterStateImage {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val backgroundDrawable = background
+        val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+        val iconTintColor = iconTint
+            ?.let { ResColor(it) }
+            ?.getColor(context)
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = icon,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    background: Color? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconPainterStateImage {
+    return remember(icon, background, iconSize, iconTint) {
+        val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+        val iconTintColor = iconTint
+            ?.color
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = icon,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val backgroundPainter = background
             ?.let { ResDrawable(it) }
             ?.getDrawable(context)
-        val iconTintColor = ResColor(iconTint)
-            .getColor(context)
-            .let { Color(it) }
+            ?.asEquitablePainter(background)
         IconPainterStateImage(
-            icon = icon.asEquitablePainter(),
-            background = backgroundDrawable?.asEquitablePainter(background),
-            iconSize = iconSize?.toSize(),
-            iconTint = iconTintColor
+            icon = icon,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTint
         )
     }
 }
@@ -92,72 +169,113 @@ fun rememberIconPainterStateImage(
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
  */
 @Composable
 fun rememberIconPainterStateImage(
-    icon: EquitableDrawable,
-    background: IntColor? = null,
-    iconSize: SketchSize? = null,
-    @ColorRes iconTint: Int,
+    icon: EquitablePainter,
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
 ): IconPainterStateImage {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconTintColor = ResColor(iconTint)
-            .getColor(context)
-            .let { Color(it) }
+        val backgroundPainter = background
+            ?.let { ResDrawable(it) }
+            ?.getDrawable(context)
+            ?.asEquitablePainter(background)
+        val iconTintColor = iconTint
+            ?.let { ResColor(it) }
+            ?.getColor(context)
+            ?.let { Color(it) }
         IconPainterStateImage(
-            icon = icon.asEquitablePainter(),
-            background = background?.let { ColorPainter(Color(it.color)) }?.asEquitable(),
-            iconSize = iconSize?.toSize(),
+            icon = icon,
+            background = backgroundPainter,
+            iconSize = iconSize,
             iconTint = iconTintColor
         )
     }
 }
 
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val backgroundPainter = background
+            ?.let { ResDrawable(it) }
+            ?.getDrawable(context)
+            ?.asEquitablePainter(background)
+        val iconTintColor = iconTint
+            ?.color
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = icon,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
 
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
  */
 @Composable
 fun rememberIconPainterStateImage(
-    icon: EquitableDrawable,
-    background: EquitableDrawable? = null,
-    iconSize: SketchSize? = null,
-    iconTint: IntColor? = null,
+    icon: EquitablePainter,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
 ): IconPainterStateImage = remember(icon, background, iconSize, iconTint) {
+    val backgroundPainter = background
+        ?.let { ColorPainter(Color(it.color)) }
+        ?.asEquitable()
     IconPainterStateImage(
-        icon = icon.asEquitablePainter(),
-        background = background?.asEquitablePainter(),
-        iconSize = iconSize?.toSize(),
-        iconTint = iconTint?.let { Color(it.color) }
+        icon = icon,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = iconTint
     )
 }
 
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
  */
 @Composable
 fun rememberIconPainterStateImage(
-    icon: EquitableDrawable,
-    @DrawableRes background: Int? = null,
-    iconSize: SketchSize? = null,
-    iconTint: IntColor? = null,
+    icon: EquitablePainter,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
 ): IconPainterStateImage {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val backgroundDrawable = background
-            ?.let { ResDrawable(it) }
-            ?.getDrawable(context)
+        val backgroundPainter = background
+            ?.let { ColorPainter(Color(it.color)) }
+            ?.asEquitable()
+        val iconTintColor = iconTint
+            ?.let { ResColor(it) }
+            ?.getColor(context)
+            ?.let { Color(it) }
         IconPainterStateImage(
-            icon = icon.asEquitablePainter(),
-            background = backgroundDrawable?.asEquitablePainter(background),
-            iconSize = iconSize?.toSize(),
-            iconTint = iconTint?.let { Color(it.color) }
+            icon = icon,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTintColor
         )
     }
 }
@@ -165,44 +283,189 @@ fun rememberIconPainterStateImage(
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
  */
 @Composable
 fun rememberIconPainterStateImage(
-    icon: EquitableDrawable,
+    icon: EquitablePainter,
     background: IntColor? = null,
-    iconSize: SketchSize? = null,
+    iconSize: Size? = null,
     iconTint: IntColor? = null,
 ): IconPainterStateImage = remember(icon, background, iconSize, iconTint) {
+    val backgroundPainter = background
+        ?.let { ColorPainter(Color(it.color)) }
+        ?.asEquitable()
+    val iconTintColor = iconTint
+        ?.color
+        ?.let { Color(it) }
     IconPainterStateImage(
-        icon = icon.asEquitablePainter(),
-        background = background?.let { ColorPainter(Color(it.color)) }?.asEquitable(),
-        iconSize = iconSize?.toSize(),
-        iconTint = iconTint?.let { Color(it.color) }
+        icon = icon,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = iconTintColor
     )
 }
-
 
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
  */
 @Composable
 fun rememberIconPainterStateImage(
-    icon: EquitableDrawable,
-    iconSize: SketchSize? = null,
-    @ColorRes iconTint: Int,
+    icon: EquitablePainter,
+    background: EquitableDrawable? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainterStateImage = remember(icon, background, iconSize, iconTint) {
+    val backgroundPainter = background?.asEquitablePainter()
+    IconPainterStateImage(
+        icon = icon,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    background: EquitableDrawable? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val backgroundPainter = background?.asEquitablePainter()
+        val iconTintColor = iconTint
+            ?.let { ResColor(it) }
+            ?.getColor(context)
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = icon,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    background: EquitableDrawable? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconPainterStateImage = remember(icon, background, iconSize, iconTint) {
+    val backgroundPainter = background?.asEquitablePainter()
+    val iconTintColor = iconTint?.color?.let { Color(it) }
+    IconPainterStateImage(
+        icon = icon,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = iconTintColor
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize) {
+        val backgroundPainter = background
+            ?.let { ResDrawable(it) }
+            ?.getDrawable(context)
+            ?.asEquitablePainter(background)
+        IconPainterStateImage(
+            icon = icon,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = null
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+): IconPainterStateImage = remember(icon, background, iconSize) {
+    val backgroundPainter = background
+        ?.let { ColorPainter(Color(it.color)) }
+        ?.asEquitable()
+    IconPainterStateImage(
+        icon = icon,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    background: EquitableDrawable? = null,
+    iconSize: Size? = null,
+): IconPainterStateImage = remember(icon, background, iconSize) {
+    val backgroundPainter = background?.asEquitablePainter()
+    IconPainterStateImage(
+        icon = icon,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
 ): IconPainterStateImage {
     val context = LocalContext.current
     return remember(icon, iconSize, iconTint) {
-        val iconTintColor = ResColor(iconTint)
-            .getColor(context)
-            .let { Color(it) }
+        val iconTintColor = iconTint
+            ?.let { ResColor(it) }
+            ?.getColor(context)
+            ?.let { Color(it) }
         IconPainterStateImage(
-            icon = icon.asEquitablePainter(),
+            icon = icon,
             background = null,
-            iconSize = iconSize?.toSize(),
+            iconSize = iconSize,
             iconTint = iconTintColor
         )
     }
@@ -211,19 +474,818 @@ fun rememberIconPainterStateImage(
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconPainterStateImage = remember(icon, iconSize, iconTint) {
+    val iconTintColor = iconTint
+        ?.color
+        ?.let { Color(it) }
+    IconPainterStateImage(
+        icon = icon,
+        background = null,
+        iconSize = iconSize,
+        iconTint = iconTintColor
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    @DrawableRes background: Int? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background) {
+        val backgroundPainter = background
+            ?.let { ResDrawable(it) }
+            ?.getDrawable(context)
+            ?.asEquitablePainter(background)
+        IconPainterStateImage(
+            icon = icon,
+            background = backgroundPainter,
+            iconSize = null,
+            iconTint = null
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    background: IntColor? = null,
+): IconPainterStateImage = remember(icon, background) {
+    val backgroundPainter = background
+        ?.let { ColorPainter(Color(it.color)) }
+        ?.asEquitable()
+    IconPainterStateImage(
+        icon = icon,
+        background = backgroundPainter,
+        iconSize = null,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    background: EquitableDrawable? = null,
+): IconPainterStateImage = remember(icon, background) {
+    val backgroundPainter = background?.asEquitablePainter()
+    IconPainterStateImage(
+        icon = icon,
+        background = backgroundPainter,
+        iconSize = null,
+        iconTint = null
+    )
+}
+
+
+/* ********************************************* Drawable icon ********************************************* */
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithDrawableIcon
  */
 @Composable
 fun rememberIconPainterStateImage(
     icon: EquitableDrawable,
-    iconSize: SketchSize? = null,
+    background: EquitablePainter? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainterStateImage = remember(icon, background, iconSize, iconTint) {
+    val iconPainter = icon.asEquitablePainter()
+    IconPainterStateImage(
+        icon = iconPainter,
+        background = background,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithDrawableIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: Color? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainterStateImage = remember(icon, background, iconSize, iconTint) {
+    val iconPainter = icon.asEquitablePainter()
+    val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+    IconPainterStateImage(
+        icon = iconPainter,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+}
+
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithDrawableIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: EquitablePainter? = null,
+    iconSize: Size? = null,
+): IconPainterStateImage = remember(icon, background, iconSize) {
+    val iconPainter = icon.asEquitablePainter()
+    IconPainterStateImage(
+        icon = iconPainter,
+        background = background,
+        iconSize = iconSize,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithDrawableIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: Color? = null,
+    iconSize: Size? = null,
+): IconPainterStateImage = remember(icon, background, iconSize) {
+    val iconPainter = icon.asEquitablePainter()
+    val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+    IconPainterStateImage(
+        icon = iconPainter,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithDrawableIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainterStateImage = remember(icon, iconSize, iconTint) {
+    val iconPainter = icon.asEquitablePainter()
+    IconPainterStateImage(
+        icon = iconPainter,
+        background = null,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+}
+
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithDrawableIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: EquitablePainter? = null,
+): IconPainterStateImage = remember(icon, background) {
+    val iconPainter = icon.asEquitablePainter()
+    IconPainterStateImage(
+        icon = iconPainter,
+        background = background,
+        iconSize = null,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithDrawableIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: Color? = null,
+): IconPainterStateImage = remember(icon, background) {
+    val iconPainter = icon.asEquitablePainter()
+    val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+    IconPainterStateImage(
+        icon = iconPainter,
+        background = backgroundPainter,
+        iconSize = null,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithDrawableIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    iconSize: Size? = null,
+): IconPainterStateImage = remember(icon, iconSize) {
+    val iconPainter = icon.asEquitablePainter()
+    IconPainterStateImage(
+        icon = iconPainter,
+        background = null,
+        iconSize = iconSize,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithDrawableIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+): IconPainterStateImage = remember(icon) {
+    val iconPainter = icon.asEquitablePainter()
+    IconPainterStateImage(
+        icon = iconPainter,
+        background = null,
+        iconSize = null,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: EquitablePainter? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = icon.asEquitablePainter()
+        val iconTintColor = iconTint
+            ?.let { ResColor(it) }
+            ?.getColor(context)
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = background,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: EquitablePainter? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconPainterStateImage {
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = icon.asEquitablePainter()
+        val iconTintColor = iconTint
+            ?.color
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = background,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: Color? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = icon.asEquitablePainter()
+        val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+        val iconTintColor = iconTint
+            ?.let { ResColor(it) }
+            ?.getColor(context)
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: Color? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconPainterStateImage {
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = icon.asEquitablePainter()
+        val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+        val iconTintColor = iconTint
+            ?.color
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = icon.asEquitablePainter()
+        val backgroundPainter = background
+            ?.let { ResDrawable(it) }
+            ?.getDrawable(context)
+            ?.asEquitablePainter(background)
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = icon.asEquitablePainter()
+        val backgroundPainter = background
+            ?.let { ResDrawable(it) }
+            ?.getDrawable(context)
+            ?.asEquitablePainter(background)
+        val iconTintColor = iconTint
+            ?.let { ResColor(it) }
+            ?.getColor(context)
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = icon.asEquitablePainter()
+        val backgroundPainter = background
+            ?.let { ResDrawable(it) }
+            ?.getDrawable(context)
+            ?.asEquitablePainter(background)
+        val iconTintColor = iconTint
+            ?.color
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainterStateImage = remember(icon, background, iconSize, iconTint) {
+    val iconPainter = icon.asEquitablePainter()
+    val backgroundPainter = background
+        ?.let { ColorPainter(Color(it.color)) }
+        ?.asEquitable()
+    IconPainterStateImage(
+        icon = iconPainter,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = icon.asEquitablePainter()
+        val backgroundPainter = background
+            ?.let { ColorPainter(Color(it.color)) }
+            ?.asEquitable()
+        val iconTintColor = iconTint
+            ?.let { ResColor(it) }
+            ?.getColor(context)
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconPainterStateImage = remember(icon, background, iconSize, iconTint) {
+    val iconPainter = icon.asEquitablePainter()
+    val backgroundPainter = background
+        ?.let { ColorPainter(Color(it.color)) }
+        ?.asEquitable()
+    val iconTintColor = iconTint
+        ?.color
+        ?.let { Color(it) }
+    IconPainterStateImage(
+        icon = iconPainter,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = iconTintColor
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: EquitableDrawable? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainterStateImage = remember(icon, background, iconSize, iconTint) {
+    val iconPainter = icon.asEquitablePainter()
+    val backgroundPainter = background?.asEquitablePainter()
+    IconPainterStateImage(
+        icon = iconPainter,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: EquitableDrawable? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = icon.asEquitablePainter()
+        val backgroundPainter = background?.asEquitablePainter()
+        val iconTintColor = iconTint
+            ?.let { ResColor(it) }
+            ?.getColor(context)
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: EquitableDrawable? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconPainterStateImage = remember(icon, background, iconSize, iconTint) {
+    val iconPainter = icon.asEquitablePainter()
+    val backgroundPainter = background?.asEquitablePainter()
+    val iconTintColor = iconTint?.color?.let { Color(it) }
+    IconPainterStateImage(
+        icon = iconPainter,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = iconTintColor
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize) {
+        val iconPainter = icon.asEquitablePainter()
+        val backgroundPainter = background
+            ?.let { ResDrawable(it) }
+            ?.getDrawable(context)
+            ?.asEquitablePainter(background)
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = null
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+): IconPainterStateImage = remember(icon, background, iconSize) {
+    val iconPainter = icon.asEquitablePainter()
+    val backgroundPainter = background
+        ?.let { ColorPainter(Color(it.color)) }
+        ?.asEquitable()
+    IconPainterStateImage(
+        icon = iconPainter,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: EquitableDrawable? = null,
+    iconSize: Size? = null,
+): IconPainterStateImage = remember(icon, background, iconSize) {
+    val iconPainter = icon.asEquitablePainter()
+    val backgroundPainter = background?.asEquitablePainter()
+    IconPainterStateImage(
+        icon = iconPainter,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, iconSize, iconTint) {
+        val iconPainter = icon.asEquitablePainter()
+        val iconTintColor = iconTint
+            ?.let { ResColor(it) }
+            ?.getColor(context)
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = null,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    iconSize: Size? = null,
     iconTint: IntColor? = null,
 ): IconPainterStateImage = remember(icon, iconSize, iconTint) {
+    val iconPainter = icon.asEquitablePainter()
+    val iconTintColor = iconTint
+        ?.color
+        ?.let { Color(it) }
     IconPainterStateImage(
-        icon = icon.asEquitablePainter(),
+        icon = iconPainter,
         background = null,
-        iconSize = iconSize?.toSize(),
-        iconTint = iconTint?.let { Color(it.color) }
+        iconSize = iconSize,
+        iconTint = iconTintColor
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    @DrawableRes background: Int? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background) {
+        val iconPainter = icon.asEquitablePainter()
+        val backgroundPainter = background
+            ?.let { ResDrawable(it) }
+            ?.getDrawable(context)
+            ?.asEquitablePainter(background)
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = null,
+            iconTint = null
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: IntColor? = null,
+): IconPainterStateImage = remember(icon, background) {
+    val iconPainter = icon.asEquitablePainter()
+    val backgroundPainter = background
+        ?.let { ColorPainter(Color(it.color)) }
+        ?.asEquitable()
+    IconPainterStateImage(
+        icon = iconPainter,
+        background = backgroundPainter,
+        iconSize = null,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitableDrawable,
+    background: EquitableDrawable? = null,
+): IconPainterStateImage = remember(icon, background) {
+    val iconPainter = icon.asEquitablePainter()
+    val backgroundPainter = background?.asEquitablePainter()
+    IconPainterStateImage(
+        icon = iconPainter,
+        background = backgroundPainter,
+        iconSize = null,
+        iconTint = null
     )
 }
 
@@ -233,25 +1295,235 @@ fun rememberIconPainterStateImage(
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
  */
 @Composable
 fun rememberIconPainterStateImage(
     @DrawableRes icon: Int,
-    background: EquitableDrawable? = null,
-    iconSize: SketchSize? = null,
-    @ColorRes iconTint: Int,
+    background: EquitablePainter? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
 ): IconPainterStateImage {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconDrawable = ResDrawable(icon).getDrawable(context)
-        val iconTintColor = ResColor(iconTint)
-            .getColor(context)
-            .let { Color(it) }
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
         IconPainterStateImage(
-            icon = iconDrawable.asEquitablePainter(icon),
-            background = background?.asEquitablePainter(),
-            iconSize = iconSize?.toSize(),
+            icon = iconPainter,
+            background = background,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: Color? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
+    }
+}
+
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: EquitablePainter? = null,
+    iconSize: Size? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = background,
+            iconSize = iconSize,
+            iconTint = null
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: Color? = null,
+    iconSize: Size? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = null
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, iconSize, iconTint) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = null,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
+    }
+}
+
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: EquitablePainter? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = background,
+            iconSize = null,
+            iconTint = null
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: Color? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = null,
+            iconTint = null
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    iconSize: Size? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, iconSize) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = null,
+            iconSize = iconSize,
+            iconTint = null
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = null,
+            iconSize = null,
+            iconTint = null
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: EquitablePainter? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconTintColor = iconTint
+            ?.let { ResColor(it) }
+            ?.getColor(context)
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = background,
+            iconSize = iconSize,
             iconTint = iconTintColor
         )
     }
@@ -260,29 +1532,111 @@ fun rememberIconPainterStateImage(
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: EquitablePainter? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconTintColor = iconTint
+            ?.color
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = background,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: Color? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+        val iconTintColor = iconTint
+            ?.let { ResColor(it) }
+            ?.getColor(context)
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: Color? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+        val iconTintColor = iconTint
+            ?.color
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
  */
 @Composable
 fun rememberIconPainterStateImage(
     @DrawableRes icon: Int,
     @DrawableRes background: Int? = null,
-    iconSize: SketchSize? = null,
-    @ColorRes iconTint: Int,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
 ): IconPainterStateImage {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconDrawable = ResDrawable(icon).getDrawable(context)
-        val backgroundDrawable = background
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background
             ?.let { ResDrawable(it) }
             ?.getDrawable(context)
-        val iconTintColor = ResColor(iconTint)
-            .getColor(context)
-            .let { Color(it) }
+            ?.asEquitablePainter(background)
         IconPainterStateImage(
-            icon = iconDrawable.asEquitablePainter(icon),
-            background = backgroundDrawable?.asEquitablePainter(background),
-            iconSize = iconSize?.toSize(),
-            iconTint = iconTintColor
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTint
         )
     }
 }
@@ -290,128 +1644,30 @@ fun rememberIconPainterStateImage(
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImage
- */
-@Composable
-fun rememberIconPainterStateImage(
-    @DrawableRes icon: Int,
-    background: IntColor? = null,
-    iconSize: SketchSize? = null,
-    @ColorRes iconTint: Int,
-): IconPainterStateImage {
-    val context = LocalContext.current
-    return remember(icon, background, iconSize, iconTint) {
-        val iconDrawable = ResDrawable(icon).getDrawable(context)
-        val iconTintColor = ResColor(iconTint)
-            .getColor(context)
-            .let { Color(it) }
-        IconPainterStateImage(
-            icon = iconDrawable.asEquitablePainter(icon),
-            background = background?.let { ColorPainter(Color(it.color)) }?.asEquitable(),
-            iconSize = iconSize?.toSize(),
-            iconTint = iconTintColor
-        )
-    }
-}
-
-
-/**
- * Create a [IconPainterStateImage] and remember it.
- *
- * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImage
- */
-@Composable
-fun rememberIconPainterStateImage(
-    @DrawableRes icon: Int,
-    background: EquitableDrawable? = null,
-    iconSize: SketchSize? = null,
-    iconTint: IntColor? = null,
-): IconPainterStateImage {
-    val context = LocalContext.current
-    return remember(icon, background, iconSize, iconTint) {
-        val iconDrawable = ResDrawable(icon).getDrawable(context)
-        IconPainterStateImage(
-            icon = iconDrawable.asEquitablePainter(icon),
-            background = background?.asEquitablePainter(),
-            iconSize = iconSize?.toSize(),
-            iconTint = iconTint?.let { Color(it.color) }
-        )
-    }
-}
-
-/**
- * Create a [IconPainterStateImage] and remember it.
- *
- * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
  */
 @Composable
 fun rememberIconPainterStateImage(
     @DrawableRes icon: Int,
     @DrawableRes background: Int? = null,
-    iconSize: SketchSize? = null,
-    iconTint: IntColor? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
 ): IconPainterStateImage {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconDrawable = ResDrawable(icon).getDrawable(context)
-        val backgroundDrawable = background
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background
             ?.let { ResDrawable(it) }
             ?.getDrawable(context)
+            ?.asEquitablePainter(background)
+        val iconTintColor = iconTint
+            ?.let { ResColor(it) }
+            ?.getColor(context)
+            ?.let { Color(it) }
         IconPainterStateImage(
-            icon = iconDrawable.asEquitablePainter(icon),
-            background = backgroundDrawable?.asEquitablePainter(background),
-            iconSize = iconSize?.toSize(),
-            iconTint = iconTint?.let { Color(it.color) }
-        )
-    }
-}
-
-/**
- * Create a [IconPainterStateImage] and remember it.
- *
- * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImage
- */
-@Composable
-fun rememberIconPainterStateImage(
-    @DrawableRes icon: Int,
-    background: IntColor? = null,
-    iconSize: SketchSize? = null,
-    iconTint: IntColor? = null,
-): IconPainterStateImage {
-    val context = LocalContext.current
-    return remember(icon, background, iconSize, iconTint) {
-        val iconDrawable = ResDrawable(icon).getDrawable(context)
-        IconPainterStateImage(
-            icon = iconDrawable.asEquitablePainter(icon),
-            background = background?.let { ColorPainter(Color(it.color)) }?.asEquitable(),
-            iconSize = iconSize?.toSize(),
-            iconTint = iconTint?.let { Color(it.color) }
-        )
-    }
-}
-
-
-/**
- * Create a [IconPainterStateImage] and remember it.
- *
- * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImage
- */
-@Composable
-fun rememberIconPainterStateImage(
-    @DrawableRes icon: Int,
-    iconSize: SketchSize? = null,
-    @ColorRes iconTint: Int,
-): IconPainterStateImage {
-    val context = LocalContext.current
-    return remember(icon, iconSize, iconTint) {
-        val iconDrawable = ResDrawable(icon).getDrawable(context)
-        val iconTintColor = ResColor(iconTint)
-            .getColor(context)
-            .let { Color(it) }
-        IconPainterStateImage(
-            icon = iconDrawable.asEquitablePainter(icon),
-            background = null,
-            iconSize = iconSize?.toSize(),
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
             iconTint = iconTintColor
         )
     }
@@ -420,22 +1676,402 @@ fun rememberIconPainterStateImage(
 /**
  * Create a [IconPainterStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImage
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
  */
 @Composable
 fun rememberIconPainterStateImage(
     @DrawableRes icon: Int,
-    iconSize: SketchSize? = null,
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background
+            ?.let { ResDrawable(it) }
+            ?.getDrawable(context)
+            ?.asEquitablePainter(background)
+        val iconTintColor = iconTint
+            ?.color
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background
+            ?.let { ColorPainter(Color(it.color)) }
+            ?.asEquitable()
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background
+            ?.let { ColorPainter(Color(it.color)) }
+            ?.asEquitable()
+        val iconTintColor = iconTint
+            ?.let { ResColor(it) }
+            ?.getColor(context)
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background
+            ?.let { ColorPainter(Color(it.color)) }
+            ?.asEquitable()
+        val iconTintColor = iconTint
+            ?.color
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: EquitableDrawable? = null,
+    iconSize: Size? = null,
+    iconTint: Color? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background?.asEquitablePainter()
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTint
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: EquitableDrawable? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background?.asEquitablePainter()
+        val iconTintColor = iconTint
+            ?.let { ResColor(it) }
+            ?.getColor(context)
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: EquitableDrawable? = null,
+    iconSize: Size? = null,
+    iconTint: IntColor? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize, iconTint) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background?.asEquitablePainter()
+        val iconTintColor = iconTint?.color?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background
+            ?.let { ResDrawable(it) }
+            ?.getDrawable(context)
+            ?.asEquitablePainter(background)
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = null
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background
+            ?.let { ColorPainter(Color(it.color)) }
+            ?.asEquitable()
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = null
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: EquitableDrawable? = null,
+    iconSize: Size? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background, iconSize) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background?.asEquitablePainter()
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = null
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, iconSize, iconTint) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconTintColor = iconTint
+            ?.let { ResColor(it) }
+            ?.getColor(context)
+            ?.let { Color(it) }
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = null,
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    iconSize: Size? = null,
     iconTint: IntColor? = null,
 ): IconPainterStateImage {
     val context = LocalContext.current
     return remember(icon, iconSize, iconTint) {
-        val iconDrawable = ResDrawable(icon).getDrawable(context)
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconTintColor = iconTint
+            ?.color
+            ?.let { Color(it) }
         IconPainterStateImage(
-            icon = iconDrawable.asEquitablePainter(icon),
+            icon = iconPainter,
             background = null,
-            iconSize = iconSize?.toSize(),
-            iconTint = iconTint?.let { Color(it.color) }
+            iconSize = iconSize,
+            iconTint = iconTintColor
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    @DrawableRes background: Int? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background
+            ?.let { ResDrawable(it) }
+            ?.getDrawable(context)
+            ?.asEquitablePainter(background)
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = null,
+            iconTint = null
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: IntColor? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background
+            ?.let { ColorPainter(Color(it.color)) }
+            ?.asEquitable()
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = null,
+            iconTint = null
+        )
+    }
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.IconPainterStateImageAndroidTest.testRememberIconPainterStateImageWithResIcon
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    @DrawableRes icon: Int,
+    background: EquitableDrawable? = null,
+): IconPainterStateImage {
+    val context = LocalContext.current
+    return remember(icon, background) {
+        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val backgroundPainter = background?.asEquitablePainter()
+        IconPainterStateImage(
+            icon = iconPainter,
+            background = backgroundPainter,
+            iconSize = null,
+            iconTint = null
         )
     }
 }

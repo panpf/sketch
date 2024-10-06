@@ -187,7 +187,7 @@ fun ColorEquitableDrawable(@ColorInt color: Int): EquitableDrawable {
  *
  * @see com.github.panpf.sketch.core.android.test.drawable.EquitableDrawableTest
  */
-open class EquitableDrawable internal constructor(
+open class EquitableDrawable constructor(
     drawable: Drawable,
     val equalityKey: Any,
 ) : DrawableWrapperCompat(drawable), Key {

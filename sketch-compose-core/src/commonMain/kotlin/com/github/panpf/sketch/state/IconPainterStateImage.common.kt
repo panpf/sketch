@@ -41,15 +41,13 @@ fun rememberIconPainterStateImage(
     background: EquitablePainter? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
-): IconPainterStateImage {
-    return remember(icon, background, iconSize, iconTint) {
-        IconPainterStateImage(
-            icon = icon,
-            background = background,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
+): IconPainterStateImage = remember(icon, background, iconSize, iconTint) {
+    IconPainterStateImage(
+        icon = icon,
+        background = background,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
 }
 
 /**
@@ -63,16 +61,54 @@ fun rememberIconPainterStateImage(
     background: Color? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
-): IconPainterStateImage {
-    return remember(icon, background, iconSize, iconTint) {
-        val backgroundPainter = background?.let { ColorPainter(it) }
-        IconPainterStateImage(
-            icon = icon,
-            background = backgroundPainter?.asEquitable(),
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
+): IconPainterStateImage = remember(icon, background, iconSize, iconTint) {
+    val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+    IconPainterStateImage(
+        icon = icon,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+}
+
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageTest.testRememberIconPainterStateImage
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    background: EquitablePainter? = null,
+    iconSize: Size? = null,
+): IconPainterStateImage = remember(icon, background, iconSize) {
+    IconPainterStateImage(
+        icon = icon,
+        background = background,
+        iconSize = iconSize,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageTest.testRememberIconPainterStateImage
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    background: Color? = null,
+    iconSize: Size? = null,
+): IconPainterStateImage = remember(icon, background, iconSize) {
+    val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+    IconPainterStateImage(
+        icon = icon,
+        background = backgroundPainter,
+        iconSize = iconSize,
+        iconTint = null
+    )
 }
 
 /**
@@ -85,15 +121,87 @@ fun rememberIconPainterStateImage(
     icon: EquitablePainter,
     iconSize: Size? = null,
     iconTint: Color? = null,
-): IconPainterStateImage {
-    return remember(icon, iconSize, iconTint) {
-        IconPainterStateImage(
-            icon = icon,
-            background = null,
-            iconSize = iconSize,
-            iconTint = iconTint
-        )
-    }
+): IconPainterStateImage = remember(icon, iconSize, iconTint) {
+    IconPainterStateImage(
+        icon = icon,
+        background = null,
+        iconSize = iconSize,
+        iconTint = iconTint
+    )
+}
+
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageTest.testRememberIconPainterStateImage
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    background: EquitablePainter? = null,
+): IconPainterStateImage = remember(icon, background) {
+    IconPainterStateImage(
+        icon = icon,
+        background = background,
+        iconSize = null,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageTest.testRememberIconPainterStateImage
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    background: Color? = null,
+): IconPainterStateImage = remember(icon, background) {
+    val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+    IconPainterStateImage(
+        icon = icon,
+        background = backgroundPainter,
+        iconSize = null,
+        iconTint = null
+    )
+}
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageTest.testRememberIconPainterStateImage
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+    iconSize: Size? = null,
+): IconPainterStateImage = remember(icon, iconSize) {
+    IconPainterStateImage(
+        icon = icon,
+        background = null,
+        iconSize = iconSize,
+        iconTint = null
+    )
+}
+
+
+/**
+ * Create a [IconPainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.state.IconPainterStateImageTest.testRememberIconPainterStateImage
+ */
+@Composable
+fun rememberIconPainterStateImage(
+    icon: EquitablePainter,
+): IconPainterStateImage = remember(icon) {
+    IconPainterStateImage(
+        icon = icon,
+        background = null,
+        iconSize = null,
+        iconTint = null
+    )
 }
 
 /**
