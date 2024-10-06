@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import com.github.panpf.sketch.painter.ResizeAnimatablePainter
 import com.github.panpf.sketch.painter.resize
-import com.github.panpf.sketch.test.utils.asAnimatable
+import com.github.panpf.sketch.test.utils.asAnimatablePainter
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toSize
 import kotlin.test.Test
@@ -24,7 +24,7 @@ class ResizePainterTest {
             assertTrue(this !is ResizeAnimatablePainter)
         }
 
-        ColorPainter(Color.Green).asAnimatable().resize(Size(100, 100).toSize()).apply {
+        ColorPainter(Color.Green).asAnimatablePainter().resize(Size(100, 100).toSize()).apply {
             assertTrue(this is ResizeAnimatablePainter)
         }
     }
