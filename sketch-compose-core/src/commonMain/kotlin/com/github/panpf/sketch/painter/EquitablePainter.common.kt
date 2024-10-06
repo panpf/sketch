@@ -93,7 +93,7 @@ fun BrushPainter.asEquitable(): EquitablePainter =
  *
  * Solve this problem with wrapper
  *
- * @see com.github.panpf.sketch.compose.core.common.test.painter.EquitablePainterTest.testEquitablePainter
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.EquitablePainterTest
  */
 @Stable
 open class EquitablePainter constructor(
@@ -117,51 +117,5 @@ open class EquitablePainter constructor(
 
     override fun toString(): String {
         return "EquitablePainter(painter=${painter.toLogString()}, equalityKey=$equalityKey)"
-    }
-}
-
-/**
- * Animatable version of EquitablePainter
- *
- * @see com.github.panpf.sketch.compose.core.common.test.painter.EquitablePainterTest.testEquitableAnimatablePainter
- */
-@Stable
-class EquitableAnimatablePainter constructor(
-    painter: Painter,
-    equalityKey: Any,
-) : EquitablePainter(painter, equalityKey), AnimatablePainter, Key {
-
-    override val key: String = "EquitableAnimatablePainter('${key(equalityKey)}')"
-
-    init {
-        check(painter is AnimatablePainter) { "The painter must be implement AnimatablePainter" }
-    }
-
-    override fun start() {
-        (painter as AnimatablePainter).start()
-    }
-
-    override fun stop() {
-        (painter as AnimatablePainter).stop()
-    }
-
-    override fun isRunning(): Boolean {
-        return (painter as AnimatablePainter).isRunning()
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as EquitableAnimatablePainter
-        if (equalityKey != other.equalityKey) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return equalityKey.hashCode()
-    }
-
-    override fun toString(): String {
-        return "EquitableAnimatablePainter(painter=${painter.toLogString()}, equalityKey=$equalityKey)"
     }
 }

@@ -9,13 +9,5 @@ class EquitablePainterTest {
         // TODO test
     }
 
-    @Test
-    fun testEquitablePainter() {
-        // TODO test
-    }
-
-    @Test
-    fun testEquitableAnimatablePainter() {
-        // TODO test
-    }
+    // TODO test
 }
