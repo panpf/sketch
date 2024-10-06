@@ -24,6 +24,8 @@ import com.github.panpf.sketch.painter.EquitablePainter
 import com.github.panpf.sketch.painter.rememberEquitablePainterResource
 import org.jetbrains.compose.resources.DrawableResource
 
+/* ********************************************* Painter icon ********************************************* */
+
 /**
  * Create a [IconAnimatablePainterStateImage] and remember it.
  *
@@ -47,11 +49,57 @@ fun rememberIconAnimatablePainterStateImage(
     }
 }
 
-// DrawableResource does not support animations, and it is impossible to implement the AnimatablePainter interface
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.state.IconAnimatablePainterStateImageComposeResourcesTest.testRememberIconAnimatablePainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconAnimatablePainterStateImage(
+    icon: EquitablePainter,
+    background: DrawableResource? = null,
+    iconSize: Size? = null,
+): IconAnimatablePainterStateImage {
+    val backgroundPainter = background?.let { rememberEquitablePainterResource(it) }
+    return remember(icon, background, iconSize) {
+        IconAnimatablePainterStateImage(
+            icon = icon,
+            background = backgroundPainter,
+            iconSize = iconSize,
+            iconTint = null
+        )
+    }
+}
+
+/**
+ * Create a [IconAnimatablePainterStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.compose.resources.common.test.state.IconAnimatablePainterStateImageComposeResourcesTest.testRememberIconAnimatablePainterStateImageWithPainterIcon
+ */
+@Composable
+fun rememberIconAnimatablePainterStateImage(
+    icon: EquitablePainter,
+    background: DrawableResource? = null,
+): IconAnimatablePainterStateImage {
+    val backgroundPainter = background?.let { rememberEquitablePainterResource(it) }
+    return remember(icon, background) {
+        IconAnimatablePainterStateImage(
+            icon = icon,
+            background = backgroundPainter,
+            iconSize = null,
+            iconTint = null
+        )
+    }
+}
+
+
+// DrawableResource does not support animations, and it is impossible to
+///* ********************************************* DrawableResource icon ********************************************* */
+//
 ///**
 // * Create a [IconAnimatablePainterStateImage] and remember it.
 // *
-// * @see com.github.panpf.sketch.compose.resources.common.test.state.IconAnimatablePainterStateImageComposeResourcesTest.testRememberIconAnimatablePainterStateImageWithPainterIcon
+// * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImageWithDrawableIcon
 // */
 //@Composable
 //fun rememberIconAnimatablePainterStateImage(
@@ -74,7 +122,7 @@ fun rememberIconAnimatablePainterStateImage(
 ///**
 // * Create a [IconAnimatablePainterStateImage] and remember it.
 // *
-// * @see com.github.panpf.sketch.compose.resources.common.test.state.IconAnimatablePainterStateImageComposeResourcesTest.testRememberIconAnimatablePainterStateImageWithPainterIcon
+// * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImageWithDrawableIcon
 // */
 //@Composable
 //fun rememberIconAnimatablePainterStateImage(
@@ -85,12 +133,165 @@ fun rememberIconAnimatablePainterStateImage(
 //): IconAnimatablePainterStateImage {
 //    val iconPainter = rememberEquitablePainterResource(icon)
 //    return remember(icon, background, iconSize, iconTint) {
-//        val backgroundPainter = background?.let { ColorPainter(it) }
+//        val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
 //        IconAnimatablePainterStateImage(
 //            icon = iconPainter,
-//            background = backgroundPainter?.asEquitable(),
+//            background = backgroundPainter,
 //            iconSize = iconSize,
 //            iconTint = iconTint
+//        )
+//    }
+//}
+//
+//
+///**
+// * Create a [IconAnimatablePainterStateImage] and remember it.
+// *
+// * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImageWithDrawableIcon
+// */
+//@Composable
+//fun rememberIconAnimatablePainterStateImage(
+//    icon: DrawableResource,
+//    background: EquitablePainter? = null,
+//    iconSize: Size? = null,
+//): IconAnimatablePainterStateImage {
+//    val iconPainter = rememberEquitablePainterResource(icon)
+//    return remember(icon, background, iconSize) {
+//        IconAnimatablePainterStateImage(
+//            icon = iconPainter,
+//            background = background,
+//            iconSize = iconSize,
+//            iconTint = null
+//        )
+//    }
+//}
+//
+///**
+// * Create a [IconAnimatablePainterStateImage] and remember it.
+// *
+// * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImageWithDrawableIcon
+// */
+//@Composable
+//fun rememberIconAnimatablePainterStateImage(
+//    icon: DrawableResource,
+//    background: Color? = null,
+//    iconSize: Size? = null,
+//): IconAnimatablePainterStateImage {
+//    val iconPainter = rememberEquitablePainterResource(icon)
+//    return remember(icon, background, iconSize) {
+//        val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+//        IconAnimatablePainterStateImage(
+//            icon = iconPainter,
+//            background = backgroundPainter,
+//            iconSize = iconSize,
+//            iconTint = null
+//        )
+//    }
+//}
+//
+///**
+// * Create a [IconAnimatablePainterStateImage] and remember it.
+// *
+// * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImageWithDrawableIcon
+// */
+//@Composable
+//fun rememberIconAnimatablePainterStateImage(
+//    icon: DrawableResource,
+//    iconSize: Size? = null,
+//    iconTint: Color? = null,
+//): IconAnimatablePainterStateImage {
+//    val iconPainter = rememberEquitablePainterResource(icon)
+//    return remember(icon, iconSize, iconTint) {
+//        IconAnimatablePainterStateImage(
+//            icon = iconPainter,
+//            background = null,
+//            iconSize = iconSize,
+//            iconTint = iconTint
+//        )
+//    }
+//}
+//
+//
+///**
+// * Create a [IconAnimatablePainterStateImage] and remember it.
+// *
+// * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImageWithDrawableIcon
+// */
+//@Composable
+//fun rememberIconAnimatablePainterStateImage(
+//    icon: DrawableResource,
+//    background: EquitablePainter? = null,
+//): IconAnimatablePainterStateImage {
+//    val iconPainter = rememberEquitablePainterResource(icon)
+//    return remember(icon, background) {
+//        IconAnimatablePainterStateImage(
+//            icon = iconPainter,
+//            background = background,
+//            iconSize = null,
+//            iconTint = null
+//        )
+//    }
+//}
+//
+///**
+// * Create a [IconAnimatablePainterStateImage] and remember it.
+// *
+// * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImageWithDrawableIcon
+// */
+//@Composable
+//fun rememberIconAnimatablePainterStateImage(
+//    icon: DrawableResource,
+//    background: Color? = null,
+//): IconAnimatablePainterStateImage {
+//    val iconPainter = rememberEquitablePainterResource(icon)
+//    return remember(icon, background) {
+//        val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
+//        IconAnimatablePainterStateImage(
+//            icon = iconPainter,
+//            background = backgroundPainter,
+//            iconSize = null,
+//            iconTint = null
+//        )
+//    }
+//}
+//
+///**
+// * Create a [IconAnimatablePainterStateImage] and remember it.
+// *
+// * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImageWithDrawableIcon
+// */
+//@Composable
+//fun rememberIconAnimatablePainterStateImage(
+//    icon: DrawableResource,
+//    iconSize: Size? = null,
+//): IconAnimatablePainterStateImage {
+//    val iconPainter = rememberEquitablePainterResource(icon)
+//    return remember(icon, iconSize) {
+//        IconAnimatablePainterStateImage(
+//            icon = iconPainter,
+//            background = null,
+//            iconSize = iconSize,
+//            iconTint = null
+//        )
+//    }
+//}
+//
+///**
+// * Create a [IconAnimatablePainterStateImage] and remember it.
+// *
+// * @see com.github.panpf.sketch.compose.core.android.test.painter.IconAnimatablePainterStateImageAndroidTest.testRememberIconAnimatablePainterStateImageWithDrawableIcon
+// */
+//@Composable
+//fun rememberIconAnimatablePainterStateImage(
+//    icon: DrawableResource,
+//): IconAnimatablePainterStateImage {
+//    val iconPainter = rememberEquitablePainterResource(icon)
+//    return remember(icon) {
+//        IconAnimatablePainterStateImage(
+//            icon = iconPainter,
+//            background = null,
+//            iconSize = null,
+//            iconTint = null
 //        )
 //    }
 //}
@@ -127,16 +328,39 @@ fun rememberIconAnimatablePainterStateImage(
 //@Composable
 //fun rememberIconAnimatablePainterStateImage(
 //    icon: DrawableResource,
+//    background: DrawableResource? = null,
 //    iconSize: Size? = null,
-//    iconTint: Color? = null,
 //): IconAnimatablePainterStateImage {
 //    val iconPainter = rememberEquitablePainterResource(icon)
-//    return remember(icon, iconSize, iconTint) {
+//    val backgroundPainter = background?.let { rememberEquitablePainterResource(it) }
+//    return remember(icon, background, iconSize) {
 //        IconAnimatablePainterStateImage(
 //            icon = iconPainter,
-//            background = null,
+//            background = backgroundPainter,
 //            iconSize = iconSize,
-//            iconTint = iconTint
+//            iconTint = null
+//        )
+//    }
+//}
+//
+///**
+// * Create a [IconAnimatablePainterStateImage] and remember it.
+// *
+// * @see com.github.panpf.sketch.compose.resources.common.test.state.IconAnimatablePainterStateImageComposeResourcesTest.testRememberIconAnimatablePainterStateImageWithPainterIcon
+// */
+//@Composable
+//fun rememberIconAnimatablePainterStateImage(
+//    icon: DrawableResource,
+//    background: DrawableResource? = null,
+//): IconAnimatablePainterStateImage {
+//    val iconPainter = rememberEquitablePainterResource(icon)
+//    val backgroundPainter = background?.let { rememberEquitablePainterResource(it) }
+//    return remember(icon, background) {
+//        IconAnimatablePainterStateImage(
+//            icon = iconPainter,
+//            background = backgroundPainter,
+//            iconSize = null,
+//            iconTint = null
 //        )
 //    }
 //}
