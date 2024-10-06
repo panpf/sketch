@@ -16,8 +16,8 @@ fun SizeColorPainter.asEquitable(): EquitablePainter =
     EquitablePainter(painter = this, equalityKey = this)
 
 class SizeColorPainter(val color: Color, val size: Size = Size.Unspecified) : Painter() {
-    private var alpha: Float = 1.0f
 
+    private var alpha: Float = 1.0f
     private var colorFilter: ColorFilter? = null
 
     /**

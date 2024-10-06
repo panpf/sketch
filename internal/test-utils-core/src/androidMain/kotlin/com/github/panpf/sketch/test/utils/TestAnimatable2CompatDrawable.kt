@@ -1,14 +1,33 @@
 package com.github.panpf.sketch.test.utils
 
+import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import com.github.panpf.sketch.drawable.EquitableAnimatableDrawable
+import com.github.panpf.sketch.drawable.EquitableDrawable
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.util.toLogString
 
-class TestAnimatable2CompatDrawable constructor(
+fun Drawable.asAnimatableDrawable(): Drawable {
+    return if (this is Animatable) {
+        this
+    } else {
+        TestAnimatable2CompatDrawable(this)
+    }
+}
+
+fun Drawable.asEquitableWithThis(): EquitableDrawable {
+    return if (this is Animatable) {
+        EquitableAnimatableDrawable(drawable = this, equalityKey = this)
+    } else {
+        EquitableDrawable(drawable = this, equalityKey = this)
+    }
+}
+
+class TestAnimatable2CompatDrawable(
     drawable: Drawable
 ) : DrawableWrapperCompat(drawable), Animatable2Compat, SketchDrawable {
 
