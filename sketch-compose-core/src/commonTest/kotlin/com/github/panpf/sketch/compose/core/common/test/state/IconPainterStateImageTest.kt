@@ -120,23 +120,6 @@ class IconPainterStateImageTest {
                         actual = this
                     )
                 }
-
-                rememberIconPainterStateImage(
-                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
-                    background = ColorPainter(Color.Green).asEquitable(),
-                    iconTint = Color.Blue
-                ).apply {
-                    assertEquals(
-                        expected = IconPainterStateImage(
-                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
-                            background = ColorPainter(Color.Green).asEquitable(),
-                            iconSize = null,
-                            iconTint = Color.Blue
-                        ),
-                        actual = this
-                    )
-                }
-
                 rememberIconPainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     background = Color.Green,
@@ -153,6 +136,21 @@ class IconPainterStateImageTest {
                     )
                 }
 
+                rememberIconPainterStateImage(
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
+                    background = ColorPainter(Color.Green).asEquitable(),
+                    iconTint = Color.Blue
+                ).apply {
+                    assertEquals(
+                        expected = IconPainterStateImage(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
+                            background = ColorPainter(Color.Green).asEquitable(),
+                            iconSize = null,
+                            iconTint = Color.Blue
+                        ),
+                        actual = this
+                    )
+                }
                 rememberIconPainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     background = Color.Green,

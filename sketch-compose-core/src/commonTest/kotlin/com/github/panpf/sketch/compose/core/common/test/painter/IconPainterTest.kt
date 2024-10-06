@@ -120,23 +120,6 @@ class IconPainterTest {
                         actual = this
                     )
                 }
-
-                rememberIconPainter(
-                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
-                    background = ColorPainter(Color.Green).asEquitable(),
-                    iconTint = Color.Blue
-                ).apply {
-                    assertEquals(
-                        expected = IconPainter(
-                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
-                            background = ColorPainter(Color.Green).asEquitable(),
-                            iconSize = null,
-                            iconTint = Color.Blue
-                        ),
-                        actual = this
-                    )
-                }
-
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     background = Color.Green,
@@ -153,6 +136,21 @@ class IconPainterTest {
                     )
                 }
 
+                rememberIconPainter(
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
+                    background = ColorPainter(Color.Green).asEquitable(),
+                    iconTint = Color.Blue
+                ).apply {
+                    assertEquals(
+                        expected = IconPainter(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
+                            background = ColorPainter(Color.Green).asEquitable(),
+                            iconSize = null,
+                            iconTint = Color.Blue
+                        ),
+                        actual = this
+                    )
+                }
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     background = Color.Green,

@@ -145,27 +145,6 @@ class IconAnimatablePainterTest {
                         actual = this
                     )
                 }
-
-                rememberIconAnimatablePainter(
-                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
-                        .asAnimatablePainter()
-                        .asEquitableWithThis(),
-                    background = ColorPainter(Color.Green).asEquitable(),
-                    iconTint = Color.Blue
-                ).apply {
-                    assertEquals(
-                        expected = IconAnimatablePainter(
-                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
-                                .asAnimatablePainter()
-                                .asEquitableWithThis(),
-                            background = ColorPainter(Color.Green).asEquitable(),
-                            iconSize = null,
-                            iconTint = Color.Blue
-                        ),
-                        actual = this
-                    )
-                }
-
                 rememberIconAnimatablePainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                         .asAnimatablePainter()
@@ -186,6 +165,25 @@ class IconAnimatablePainterTest {
                     )
                 }
 
+                rememberIconAnimatablePainter(
+                    icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                        .asAnimatablePainter()
+                        .asEquitableWithThis(),
+                    background = ColorPainter(Color.Green).asEquitable(),
+                    iconTint = Color.Blue
+                ).apply {
+                    assertEquals(
+                        expected = IconAnimatablePainter(
+                            icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
+                                .asAnimatablePainter()
+                                .asEquitableWithThis(),
+                            background = ColorPainter(Color.Green).asEquitable(),
+                            iconSize = null,
+                            iconTint = Color.Blue
+                        ),
+                        actual = this
+                    )
+                }
                 rememberIconAnimatablePainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f))
                         .asAnimatablePainter()
