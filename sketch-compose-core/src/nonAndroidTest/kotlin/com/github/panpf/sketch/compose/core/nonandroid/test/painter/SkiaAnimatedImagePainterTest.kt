@@ -107,14 +107,16 @@ class SkiaAnimatedImagePainterTest {
         assertEquals(false, animatedImagePainter.isRunning())
 
         animatedImagePainter.onRemembered()
-
-        animatedImagePainter.start()
         assertEquals(true, animatedImagePainter.isRunning())
 
         animatedImagePainter.stop()
         assertEquals(false, animatedImagePainter.isRunning())
 
+        animatedImagePainter.start()
+        assertEquals(true, animatedImagePainter.isRunning())
+
         animatedImagePainter.onForgotten()
+        assertEquals(false, animatedImagePainter.isRunning())
     }
 
     @Test
