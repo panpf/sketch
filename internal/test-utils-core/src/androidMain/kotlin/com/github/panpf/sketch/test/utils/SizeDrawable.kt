@@ -5,13 +5,12 @@ import android.graphics.drawable.Drawable
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCallback
-import com.github.panpf.sketch.drawable.EquitableDrawable
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.drawable.internal.AnimatableCallbackHelper
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toLogString
 
-fun EquitableDrawable.size(size: Size): SizeDrawable {
+fun Drawable.size(size: Size): SizeDrawable {
     return if (this is Animatable) {
         SizeAnimatableDrawable(this, size)
     } else {
@@ -20,7 +19,7 @@ fun EquitableDrawable.size(size: Size): SizeDrawable {
 }
 
 open class SizeDrawable(
-    drawable: EquitableDrawable,
+    drawable: Drawable,
     val size: Size
 ) : DrawableWrapperCompat(drawable), SketchDrawable {
 
@@ -53,7 +52,7 @@ open class SizeDrawable(
 }
 
 class SizeAnimatableDrawable(
-    drawable: EquitableDrawable,
+    drawable: Drawable,
     size: Size
 ) : SizeDrawable(drawable, size), Animatable2Compat {
 
