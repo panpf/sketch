@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.state
 
 import androidx.annotation.ColorRes
@@ -21,7 +23,6 @@ import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
-import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.drawable.ColorFetcherDrawable
 import com.github.panpf.sketch.drawable.DrawableFetcher
 import com.github.panpf.sketch.drawable.EquitableDrawable
@@ -34,65 +35,29 @@ import com.github.panpf.sketch.util.IntColor
 import com.github.panpf.sketch.util.ResColor
 import com.github.panpf.sketch.util.Size
 
-
-/* ********************************************* drawable icon ********************************************* */
+/* ********************************************* Drawable icon ********************************************* */
 
 /**
- * Creates an [IconAnimatableDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.createIconAnimatableDrawableStateImage
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithDrawableIcon
  */
 fun IconAnimatableDrawableStateImage(
     icon: EquitableDrawable,
     background: EquitableDrawable? = null,
     iconSize: Size? = null,
-    @ColorRes iconTint: Int,
+    @ColorRes iconTint: Int? = null,
 ): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
     icon = RealEquitableDrawable(icon),
     background = background?.let { RealEquitableDrawable(it) },
     iconSize = iconSize,
-    iconTint = ResColor(iconTint),
+    iconTint = iconTint?.let { ResColor(it) }
 )
 
 /**
- * Creates an [IconAnimatableDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.createIconAnimatableDrawableStateImage
- */
-fun IconAnimatableDrawableStateImage(
-    icon: EquitableDrawable,
-    @DrawableRes background: Int? = null,
-    iconSize: Size? = null,
-    @ColorRes iconTint: Int,
-): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
-    icon = RealEquitableDrawable(icon),
-    background = background?.let { ResDrawable(it) },
-    iconSize = iconSize,
-    iconTint = ResColor(iconTint),
-)
-
-/**
- * Creates an [IconAnimatableDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
- *
- * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.createIconAnimatableDrawableStateImage
- */
-fun IconAnimatableDrawableStateImage(
-    icon: EquitableDrawable,
-    background: IntColor? = null,
-    iconSize: Size? = null,
-    @ColorRes iconTint: Int,
-): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
-    icon = RealEquitableDrawable(icon),
-    background = background?.let { ColorFetcherDrawable(it) },
-    iconSize = iconSize,
-    iconTint = ResColor(iconTint),
-)
-
-
-/**
- * Creates an [IconAnimatableDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
- *
- * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.createIconAnimatableDrawableStateImage
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithDrawableIcon
  */
 fun IconAnimatableDrawableStateImage(
     icon: EquitableDrawable,
@@ -103,13 +68,30 @@ fun IconAnimatableDrawableStateImage(
     icon = RealEquitableDrawable(icon),
     background = background?.let { RealEquitableDrawable(it) },
     iconSize = iconSize,
-    iconTint = iconTint,
+    iconTint = iconTint
 )
 
 /**
- * Creates an [IconAnimatableDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.createIconAnimatableDrawableStateImage
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithDrawableIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    icon: EquitableDrawable,
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = RealEquitableDrawable(icon),
+    background = background?.let { ResDrawable(it) },
+    iconSize = iconSize,
+    iconTint = iconTint?.let { ResColor(it) }
+)
+
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithDrawableIcon
  */
 fun IconAnimatableDrawableStateImage(
     icon: EquitableDrawable,
@@ -120,13 +102,30 @@ fun IconAnimatableDrawableStateImage(
     icon = RealEquitableDrawable(icon),
     background = background?.let { ResDrawable(it) },
     iconSize = iconSize,
-    iconTint = iconTint,
+    iconTint = iconTint
 )
 
 /**
- * Creates an [IconAnimatableDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.createIconAnimatableDrawableStateImage
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithDrawableIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    icon: EquitableDrawable,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = RealEquitableDrawable(icon),
+    background = background?.let { ColorFetcherDrawable(it) },
+    iconSize = iconSize,
+    iconTint = iconTint?.let { ResColor(it) }
+)
+
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithDrawableIcon
  */
 fun IconAnimatableDrawableStateImage(
     icon: EquitableDrawable,
@@ -137,30 +136,77 @@ fun IconAnimatableDrawableStateImage(
     icon = RealEquitableDrawable(icon),
     background = background?.let { ColorFetcherDrawable(it) },
     iconSize = iconSize,
-    iconTint = iconTint,
+    iconTint = iconTint
 )
 
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithDrawableIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    icon: EquitableDrawable,
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = RealEquitableDrawable(icon),
+    background = background?.let { ResDrawable(it) },
+    iconSize = iconSize,
+    iconTint = null
+)
 
 /**
- * Creates an [IconAnimatableDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.createIconAnimatableDrawableStateImage
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithDrawableIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    icon: EquitableDrawable,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = RealEquitableDrawable(icon),
+    background = background?.let { ColorFetcherDrawable(it) },
+    iconSize = iconSize,
+    iconTint = null
+)
+
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithDrawableIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    icon: EquitableDrawable,
+    background: EquitableDrawable? = null,
+    iconSize: Size? = null,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = RealEquitableDrawable(icon),
+    background = background?.let { RealEquitableDrawable(it) },
+    iconSize = iconSize,
+    iconTint = null
+)
+
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithDrawableIcon
  */
 fun IconAnimatableDrawableStateImage(
     icon: EquitableDrawable,
     iconSize: Size? = null,
-    @ColorRes iconTint: Int,
+    @ColorRes iconTint: Int? = null,
 ): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
     icon = RealEquitableDrawable(icon),
     background = null,
     iconSize = iconSize,
-    iconTint = ResColor(iconTint),
+    iconTint = iconTint?.let { ResColor(it) }
 )
 
 /**
- * Creates an [IconAnimatableDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.createIconAnimatableDrawableStateImage
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithDrawableIcon
  */
 fun IconAnimatableDrawableStateImage(
     icon: EquitableDrawable,
@@ -170,68 +216,107 @@ fun IconAnimatableDrawableStateImage(
     icon = RealEquitableDrawable(icon),
     background = null,
     iconSize = iconSize,
-    iconTint = iconTint,
+    iconTint = iconTint
+)
+
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithDrawableIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    icon: EquitableDrawable,
+    @DrawableRes background: Int? = null,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = RealEquitableDrawable(icon),
+    background = background?.let { ResDrawable(it) },
+    iconSize = null,
+    iconTint = null
+)
+
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithDrawableIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    icon: EquitableDrawable,
+    background: IntColor? = null,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = RealEquitableDrawable(icon),
+    background = background?.let { ColorFetcherDrawable(it) },
+    iconSize = null,
+    iconTint = null
+)
+
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithDrawableIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    icon: EquitableDrawable,
+    background: EquitableDrawable? = null,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = RealEquitableDrawable(icon),
+    background = background?.let { RealEquitableDrawable(it) },
+    iconSize = null,
+    iconTint = null
+)
+
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithDrawableIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    icon: EquitableDrawable,
+    iconSize: Size? = null,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = RealEquitableDrawable(icon),
+    background = null,
+    iconSize = iconSize,
+    iconTint = null
+)
+
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithDrawableIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    icon: EquitableDrawable,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = RealEquitableDrawable(icon),
+    background = null,
+    iconSize = null,
+    iconTint = null
 )
 
 
 /* ********************************************* res icon ********************************************* */
 
 /**
- * Creates an [IconAnimatableDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.createIconAnimatableDrawableStateImage
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithResIcon
  */
 fun IconAnimatableDrawableStateImage(
     @DrawableRes icon: Int,
     background: EquitableDrawable? = null,
     iconSize: Size? = null,
-    @ColorRes iconTint: Int,
+    @ColorRes iconTint: Int? = null,
 ): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
     icon = ResDrawable(icon),
     background = background?.let { RealEquitableDrawable(it) },
     iconSize = iconSize,
-    iconTint = ResColor(iconTint),
+    iconTint = iconTint?.let { ResColor(it) }
 )
 
 /**
- * Creates an [IconAnimatableDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.createIconAnimatableDrawableStateImage
- */
-fun IconAnimatableDrawableStateImage(
-    @DrawableRes icon: Int,
-    @DrawableRes background: Int? = null,
-    iconSize: Size? = null,
-    @ColorRes iconTint: Int,
-): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
-    icon = ResDrawable(icon),
-    background = background?.let { ResDrawable(it) },
-    iconSize = iconSize,
-    iconTint = ResColor(iconTint),
-)
-
-/**
- * Creates an [IconAnimatableDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
- *
- * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.createIconAnimatableDrawableStateImage
- */
-fun IconAnimatableDrawableStateImage(
-    @DrawableRes icon: Int,
-    background: IntColor? = null,
-    iconSize: Size? = null,
-    @ColorRes iconTint: Int,
-): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
-    icon = ResDrawable(icon),
-    background = background?.let { ColorFetcherDrawable(it) },
-    iconSize = iconSize,
-    iconTint = ResColor(iconTint),
-)
-
-
-/**
- * Creates an [IconAnimatableDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
- *
- * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.createIconAnimatableDrawableStateImage
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithResIcon
  */
 fun IconAnimatableDrawableStateImage(
     @DrawableRes icon: Int,
@@ -242,13 +327,30 @@ fun IconAnimatableDrawableStateImage(
     icon = ResDrawable(icon),
     background = background?.let { RealEquitableDrawable(it) },
     iconSize = iconSize,
-    iconTint = iconTint,
+    iconTint = iconTint
 )
 
 /**
- * Creates an [IconAnimatableDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.createIconAnimatableDrawableStateImage
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithResIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    @DrawableRes icon: Int,
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = ResDrawable(icon),
+    background = background?.let { ResDrawable(it) },
+    iconSize = iconSize,
+    iconTint = iconTint?.let { ResColor(it) }
+)
+
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithResIcon
  */
 fun IconAnimatableDrawableStateImage(
     @DrawableRes icon: Int,
@@ -259,13 +361,30 @@ fun IconAnimatableDrawableStateImage(
     icon = ResDrawable(icon),
     background = background?.let { ResDrawable(it) },
     iconSize = iconSize,
-    iconTint = iconTint,
+    iconTint = iconTint
 )
 
 /**
- * Creates an [IconAnimatableDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.createIconAnimatableDrawableStateImage
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithResIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    @DrawableRes icon: Int,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+    @ColorRes iconTint: Int? = null,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = ResDrawable(icon),
+    background = background?.let { ColorFetcherDrawable(it) },
+    iconSize = iconSize,
+    iconTint = iconTint?.let { ResColor(it) }
+)
+
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithResIcon
  */
 fun IconAnimatableDrawableStateImage(
     @DrawableRes icon: Int,
@@ -276,30 +395,77 @@ fun IconAnimatableDrawableStateImage(
     icon = ResDrawable(icon),
     background = background?.let { ColorFetcherDrawable(it) },
     iconSize = iconSize,
-    iconTint = iconTint,
+    iconTint = iconTint
 )
 
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithResIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    @DrawableRes icon: Int,
+    @DrawableRes background: Int? = null,
+    iconSize: Size? = null,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = ResDrawable(icon),
+    background = background?.let { ResDrawable(it) },
+    iconSize = iconSize,
+    iconTint = null
+)
 
 /**
- * Creates an [IconAnimatableDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.createIconAnimatableDrawableStateImage
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithResIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    @DrawableRes icon: Int,
+    background: IntColor? = null,
+    iconSize: Size? = null,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = ResDrawable(icon),
+    background = background?.let { ColorFetcherDrawable(it) },
+    iconSize = iconSize,
+    iconTint = null
+)
+
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithResIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    @DrawableRes icon: Int,
+    background: EquitableDrawable? = null,
+    iconSize: Size? = null,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = ResDrawable(icon),
+    background = background?.let { RealEquitableDrawable(it) },
+    iconSize = iconSize,
+    iconTint = null
+)
+
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithResIcon
  */
 fun IconAnimatableDrawableStateImage(
     @DrawableRes icon: Int,
     iconSize: Size? = null,
-    @ColorRes iconTint: Int,
+    @ColorRes iconTint: Int? = null,
 ): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
     icon = ResDrawable(icon),
     background = null,
     iconSize = iconSize,
-    iconTint = ResColor(iconTint),
+    iconTint = iconTint?.let { ResColor(it) }
 )
 
 /**
- * Creates an [IconAnimatableDrawableStateImage] that combines the given icon and background into a drawable of no fixed size that can be used as a state diagram.
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
  *
- * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.createIconAnimatableDrawableStateImage
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithResIcon
  */
 fun IconAnimatableDrawableStateImage(
     @DrawableRes icon: Int,
@@ -309,9 +475,82 @@ fun IconAnimatableDrawableStateImage(
     icon = ResDrawable(icon),
     background = null,
     iconSize = iconSize,
-    iconTint = iconTint,
+    iconTint = iconTint
 )
 
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithResIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    @DrawableRes icon: Int,
+    @DrawableRes background: Int? = null,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = ResDrawable(icon),
+    background = background?.let { ResDrawable(it) },
+    iconSize = null,
+    iconTint = null
+)
+
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithResIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    @DrawableRes icon: Int,
+    background: IntColor? = null,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = ResDrawable(icon),
+    background = background?.let { ColorFetcherDrawable(it) },
+    iconSize = null,
+    iconTint = null
+)
+
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithResIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    @DrawableRes icon: Int,
+    background: EquitableDrawable? = null,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = ResDrawable(icon),
+    background = background?.let { RealEquitableDrawable(it) },
+    iconSize = null,
+    iconTint = null
+)
+
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithResIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    @DrawableRes icon: Int,
+    iconSize: Size? = null,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = ResDrawable(icon),
+    background = null,
+    iconSize = iconSize,
+    iconTint = null
+)
+
+/**
+ * Create a [IconAnimatableDrawableStateImage] and remember it.
+ *
+ * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest.testIconAnimatableDrawableStateImageWithResIcon
+ */
+fun IconAnimatableDrawableStateImage(
+    @DrawableRes icon: Int,
+): IconAnimatableDrawableStateImage = IconAnimatableDrawableStateImage(
+    icon = ResDrawable(icon),
+    background = null,
+    iconSize = null,
+    iconTint = null
+)
 
 /**
  * Combines the given icon and background into a drawable with no fixed size to use as a state drawable.
@@ -320,54 +559,26 @@ fun IconAnimatableDrawableStateImage(
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconAnimatableDrawableStateImageTest
  */
-data class IconAnimatableDrawableStateImage internal constructor(
+data class IconAnimatableDrawableStateImage constructor(
     val icon: DrawableFetcher,
-    val background: DrawableFetcher?,
-    val iconSize: Size?,
-    val iconTint: ColorFetcher?
+    val background: DrawableFetcher? = null,
+    val iconSize: Size? = null,
+    val iconTint: ColorFetcher? = null,
 ) : StateImage {
 
     override val key: String =
-        "IconAnimatableDrawableStateImage(icon=${icon.key},background=${background?.key},iconSize=$iconSize)"
+        "IconAnimatableDrawableStateImage(icon=${icon.key},background=${background?.key},iconSize=$iconSize,iconTint=${iconTint?.key})"
 
-    override fun getImage(
-        sketch: Sketch,
-        request: ImageRequest,
-        throwable: Throwable?
-    ): Image? {
-        return try {
-            val icon = icon.getDrawable(request.context).apply {
-                if (intrinsicWidth <= 0 || intrinsicHeight <= 0) {
-                    if (icon is ResDrawable) {
-                        val resources = icon.resources ?: sketch.context.resources
-                        val resId = icon.resId
-                        val resourceName = resources.getResourceName(resId)
-                        throw ImageInvalidException(
-                            "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0. resId=$resId, resName=$resourceName"
-                        )
-                    } else {
-                        throw ImageInvalidException(
-                            "Invalid drawable resource, intrinsicWidth or intrinsicHeight is less than or equal to 0."
-                        )
-                    }
-                }
-            }
-            val background = background?.getDrawable(request.context)
-            val iconTintColor = iconTint?.getColor(request.context)
-            IconAnimatableDrawable(
-                icon = icon,
-                background = background,
-                iconSize = iconSize,
-                iconTint = iconTintColor
-            )
-        } catch (e: Throwable) {
-            sketch.logger.w("IconAnimatableDrawableDrawable. getDrawable error. ${e.message}")
-            e.printStackTrace()
-            null
-        }?.asImage()
+    override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
+        return IconAnimatableDrawable(
+            icon = this.icon.getDrawable(request.context),
+            background = this.background?.getDrawable(request.context),
+            iconSize = iconSize,
+            iconTint = iconTint?.getColor(request.context)
+        ).asImage()
     }
 
     override fun toString(): String {
-        return "IconAnimatableDrawableStateImage(icon=$icon, background=$background, iconSize=$iconSize)"
+        return "IconAnimatableDrawableStateImage(icon=$icon, background=$background, iconSize=$iconSize, iconTint=$iconTint)"
     }
 }
