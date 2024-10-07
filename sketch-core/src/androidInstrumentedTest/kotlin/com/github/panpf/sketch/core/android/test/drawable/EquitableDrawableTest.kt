@@ -99,10 +99,7 @@ class EquitableDrawableTest {
                 drawable = context.resources.getDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)!!,
                 equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
             ),
-            actual = getEquitableDrawable(
-                com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
-                density, theme
-            )
+            actual = context.resources.getEquitableDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)
         )
     }
 
@@ -138,7 +135,6 @@ class EquitableDrawableTest {
             actual = context.resources.getEquitableDrawableForDensity(
                 resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
                 density = 2,
-                theme = theme
             )
         )
     }
