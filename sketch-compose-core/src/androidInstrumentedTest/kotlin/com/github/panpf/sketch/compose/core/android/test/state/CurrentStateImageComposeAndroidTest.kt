@@ -9,8 +9,8 @@ import androidx.compose.ui.test.runComposeUiTest
 import com.github.panpf.sketch.drawable.asEquitable
 import com.github.panpf.sketch.state.CurrentStateImage
 import com.github.panpf.sketch.state.IntColorDrawableStateImage
+import com.github.panpf.sketch.state.rememberColorDrawableStateImageWithInt
 import com.github.panpf.sketch.state.rememberCurrentStateImage
-import com.github.panpf.sketch.state.rememberIntColorDrawableStateImage
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -27,7 +27,7 @@ class CurrentStateImageComposeAndroidTest {
                     )
                 }
 
-                rememberCurrentStateImage(rememberIntColorDrawableStateImage(Color.RED)).apply {
+                rememberCurrentStateImage(rememberColorDrawableStateImageWithInt(Color.RED)).apply {
                     assertEquals(
                         expected = CurrentStateImage(IntColorDrawableStateImage(Color.RED)),
                         actual = this

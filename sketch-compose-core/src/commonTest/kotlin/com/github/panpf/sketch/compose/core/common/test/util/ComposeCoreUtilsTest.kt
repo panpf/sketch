@@ -2,6 +2,7 @@ package com.github.panpf.sketch.compose.core.common.test.util
 
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.colorspace.ColorSpaces
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ScaleFactor
@@ -18,9 +19,11 @@ import com.github.panpf.sketch.util.findLeafPainter
 import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.isEmpty
 import com.github.panpf.sketch.util.name
+import com.github.panpf.sketch.util.simpleName
 import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.toIntSize
 import com.github.panpf.sketch.util.toIntSizeOrNull
+import com.github.panpf.sketch.util.toLogString
 import com.github.panpf.sketch.util.toScale
 import com.github.panpf.sketch.util.toSize
 import com.github.panpf.sketch.util.toSketchSize
@@ -103,6 +106,14 @@ class ComposeCoreUtilsTest {
         assertEquals(expected = IntSize(1, 1), actual = Size(1f, 1f).toIntSizeOrNull())
         assertEquals(expected = IntSize(1, 1), actual = Size(1.4f, 1.4f).toIntSizeOrNull())
         assertEquals(expected = IntSize(2, 2), actual = Size(1.5f, 1.5f).toIntSizeOrNull())
+    }
+
+    @Test
+    fun testToLogString() {
+        assertEquals(expected = "Unspecified", actual = Size.Unspecified.toLogString())
+        assertEquals(expected = "0.0x0.0", actual = Size.Zero.toLogString())
+        assertEquals(expected = "-1.0x-1.0", actual = Size(-1f, -1f).toLogString())
+        assertEquals(expected = "1.5x1.5", actual = Size(1.5f, 1.5f).toLogString())
     }
 
     @Test
@@ -198,6 +209,30 @@ class ComposeCoreUtilsTest {
         CrossfadePainter(start = painter2, end = painter1).apply {
             assertSame(expected = painter1, actual = this.findLeafPainter())
         }
+    }
+
+    @Test
+    fun testSimpleName() {
+        assertEquals(expected = "Srgb", actual = ColorSpaces.Srgb.simpleName)
+        assertEquals(expected = "LinearSrgb", actual = ColorSpaces.LinearSrgb.simpleName)
+        assertEquals(expected = "ExtendedSrgb", actual = ColorSpaces.ExtendedSrgb.simpleName)
+        assertEquals(
+            expected = "LinearExtendedSrgb",
+            actual = ColorSpaces.LinearExtendedSrgb.simpleName
+        )
+        assertEquals(expected = "Bt709", actual = ColorSpaces.Bt709.simpleName)
+        assertEquals(expected = "Bt2020", actual = ColorSpaces.Bt2020.simpleName)
+        assertEquals(expected = "DciP3", actual = ColorSpaces.DciP3.simpleName)
+        assertEquals(expected = "DisplayP3", actual = ColorSpaces.DisplayP3.simpleName)
+        assertEquals(expected = "Ntsc1953", actual = ColorSpaces.Ntsc1953.simpleName)
+        assertEquals(expected = "SmpteC", actual = ColorSpaces.SmpteC.simpleName)
+        assertEquals(expected = "AdobeRgb", actual = ColorSpaces.AdobeRgb.simpleName)
+        assertEquals(expected = "ProPhotoRgb", actual = ColorSpaces.ProPhotoRgb.simpleName)
+        assertEquals(expected = "Aces", actual = ColorSpaces.Aces.simpleName)
+        assertEquals(expected = "Acescg", actual = ColorSpaces.Acescg.simpleName)
+        assertEquals(expected = "CieXyz", actual = ColorSpaces.CieXyz.simpleName)
+        assertEquals(expected = "CieLab", actual = ColorSpaces.CieLab.simpleName)
+        assertEquals(expected = "Oklab", actual = ColorSpaces.Oklab.simpleName)
     }
 
     @Test

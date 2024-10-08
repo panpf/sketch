@@ -26,7 +26,7 @@ import androidx.lifecycle.LifecycleOwner
  */
 class TestLifecycle : Lifecycle() {
 
-    private val owner = TestLifecycleOwner(this)
+    val owner = TestLifecycleOwner(this)
 
     val observers = mutableListOf<LifecycleEventObserver>()
 

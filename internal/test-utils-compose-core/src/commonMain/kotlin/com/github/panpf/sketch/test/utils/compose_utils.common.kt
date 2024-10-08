@@ -7,6 +7,8 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.github.panpf.sketch.Bitmap
+import com.github.panpf.sketch.ComposeBitmap
 import com.github.panpf.sketch.request.GlobalLifecycle
 
 @Composable
@@ -27,3 +29,5 @@ fun PreviewContainer(content: @Composable () -> Unit) =
 @Composable
 fun LifecycleContainer(content: @Composable () -> Unit) =
     CompositionLocalProvider(LocalLifecycleOwner provides GlobalLifecycle.owner, content = content)
+
+expect fun Bitmap.toComposeBitmap(): ComposeBitmap
