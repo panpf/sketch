@@ -212,8 +212,7 @@ class IconAnimatablePainter constructor(
     iconTint: Color? = null,
 ) : IconPainter(icon, background, iconSize, iconTint), AnimatablePainter {
 
-    private val animatablePainterIcon: AnimatablePainter?
-    private val animatablePainterBackground: AnimatablePainter?
+    private val animatablePainterIcon: AnimatablePainter
 
     init {
         require(icon is AnimatablePainter) {
@@ -223,22 +222,19 @@ class IconAnimatablePainter constructor(
             "background can't be Animatable"
         }
         @Suppress("USELESS_CAST")
-        animatablePainterIcon = icon as? AnimatablePainter
-        animatablePainterBackground = background as? AnimatablePainter
+        animatablePainterIcon = icon as AnimatablePainter
     }
 
     override fun start() {
-        animatablePainterIcon?.start()
-        animatablePainterBackground?.start()
+        animatablePainterIcon.start()
     }
 
     override fun stop() {
-        animatablePainterIcon?.stop()
-        animatablePainterBackground?.stop()
+        animatablePainterIcon.stop()
     }
 
     override fun isRunning(): Boolean {
-        return animatablePainterIcon?.isRunning() == true || animatablePainterBackground?.isRunning() == true
+        return animatablePainterIcon.isRunning()
     }
 
     override fun equals(other: Any?): Boolean {

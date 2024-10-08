@@ -32,42 +32,26 @@ import com.github.panpf.sketch.request.ImageRequest
  * @see com.github.panpf.sketch.compose.core.common.test.state.ColorPainterStateImageTest.testRememberColorPainterStateImage
  */
 @Composable
-fun rememberColorPainterStateImage(color: Long): ColorPainterStateImage =
-    remember(color) { ColorPainterStateImage(color) }
-
-/**
- * Create a [ColorPainterStateImage] instance and remember it
- *
- * @see com.github.panpf.sketch.compose.core.common.test.state.ColorPainterStateImageTest.testRememberColorPainterStateImage
- */
-@Composable
-fun rememberColorPainterStateImage(color: Int): ColorPainterStateImage =
-    remember(color) { ColorPainterStateImage(color) }
-
-/**
- * Create a [ColorPainterStateImage] instance and remember it
- *
- * @see com.github.panpf.sketch.compose.core.common.test.state.ColorPainterStateImageTest.testRememberColorPainterStateImage
- */
-@Composable
 fun rememberColorPainterStateImage(color: Color): ColorPainterStateImage =
     remember(color) { ColorPainterStateImage(color) }
 
 /**
- * Create a [ColorPainterStateImage] instance
+ * Create a [ColorPainterStateImage] instance and remember it
  *
- * @see com.github.panpf.sketch.compose.core.common.test.state.ColorPainterStateImageTest.testColorPainterStateImage
+ * @see com.github.panpf.sketch.compose.core.common.test.state.ColorPainterStateImageTest.testRememberColorPainterStateImage
  */
-fun ColorPainterStateImage(color: Int): ColorPainterStateImage =
-    ColorPainterStateImage(Color(color))
+@Composable
+fun rememberColorPainterStateImageWithLong(color: Long): ColorPainterStateImage =
+    remember(color) { ColorPainterStateImage(Color(color)) }
 
 /**
- * Create a [ColorPainterStateImage] instance
+ * Create a [ColorPainterStateImage] instance and remember it
  *
- * @see com.github.panpf.sketch.compose.core.common.test.state.ColorPainterStateImageTest.testColorPainterStateImage
+ * @see com.github.panpf.sketch.compose.core.common.test.state.ColorPainterStateImageTest.testRememberColorPainterStateImage
  */
-fun ColorPainterStateImage(color: Long): ColorPainterStateImage =
-    ColorPainterStateImage(Color(color))
+@Composable
+fun rememberColorPainterStateImageWithInt(color: Int): ColorPainterStateImage =
+    remember(color) { ColorPainterStateImage(Color(color)) }
 
 /**
  * StateImage implemented by ColorPainter

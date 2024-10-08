@@ -20,7 +20,10 @@ package com.github.panpf.sketch.util
 import com.github.panpf.sketch.util.Size as SketchSize
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.geometry.isUnspecified
+import androidx.compose.ui.graphics.colorspace.ColorSpace
+import androidx.compose.ui.graphics.colorspace.ColorSpaces
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ContentScale.Companion
@@ -94,6 +97,19 @@ internal fun Size.toIntSizeOrNull(): IntSize? = when {
 }
 
 /**
+ * Get log string
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testToLogString
+ */
+fun Size.toLogString(): String {
+    return if (this.isSpecified) {
+        "${width}x$height"
+    } else {
+        "Unspecified"
+    }
+}
+
+/**
  * Whether the [IntSize] is empty
  *
  * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testIntSizeIsEmpty
@@ -161,6 +177,33 @@ fun Painter.findDeepestPainter(): Painter {
         else -> painter
     }
 }
+
+/**
+ * Get the simple name of the [ColorSpace]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testSimpleName
+ */
+internal val ColorSpace.simpleName: String
+    get() = when (this) {
+        ColorSpaces.Srgb -> "Srgb"
+        ColorSpaces.LinearSrgb -> "LinearSrgb"
+        ColorSpaces.ExtendedSrgb -> "ExtendedSrgb"
+        ColorSpaces.LinearExtendedSrgb -> "LinearExtendedSrgb"
+        ColorSpaces.Bt709 -> "Bt709"
+        ColorSpaces.Bt2020 -> "Bt2020"
+        ColorSpaces.DciP3 -> "DciP3"
+        ColorSpaces.DisplayP3 -> "DisplayP3"
+        ColorSpaces.Ntsc1953 -> "Ntsc1953"
+        ColorSpaces.SmpteC -> "SmpteC"
+        ColorSpaces.AdobeRgb -> "AdobeRgb"
+        ColorSpaces.ProPhotoRgb -> "ProPhotoRgb"
+        ColorSpaces.Aces -> "Aces"
+        ColorSpaces.Acescg -> "Acescg"
+        ColorSpaces.CieXyz -> "CieXyz"
+        ColorSpaces.CieLab -> "CieLab"
+        ColorSpaces.Oklab -> "Oklab"
+        else -> name
+    }
 
 /**
  * Convert to the type specified by the generic, if this is null or cannot be converted return null

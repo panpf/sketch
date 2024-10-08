@@ -16,12 +16,12 @@
 
 package com.github.panpf.sketch.painter
 
-import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.VectorPainter
+import com.github.panpf.sketch.util.toLogString
 
 /**
  * Convert the painter to a log string
@@ -30,17 +30,9 @@ import androidx.compose.ui.graphics.vector.VectorPainter
  */
 fun Painter.toLogString(): String = when (this) {
     is SketchPainter -> toString()
-    is BitmapPainter -> "BitmapPainter(size=${toSizeString()})"
+    is BitmapPainter -> "BitmapPainter(size=${intrinsicSize.toLogString()})"
     is ColorPainter -> "ColorPainter(color=${color.toArgb()})"
-    is VectorPainter -> "VectorPainter(size=${toSizeString()})"
+    is VectorPainter -> "VectorPainter(size=${intrinsicSize.toLogString()})"
     is PainterWrapper -> "PainterWrapper(painter=${painter.toLogString()})"
     else -> toString()
 }
-
-/**
- * Convert the painter to a size string
- *
- * @see com.github.panpf.sketch.compose.core.common.test.painter.PaintersTest.testPainterToSizeString
- */
-internal fun Painter.toSizeString(): String =
-    if (intrinsicSize.isSpecified) "$intrinsicSize" else "unspecified"

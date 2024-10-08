@@ -36,20 +36,25 @@ class EquitableAnimatablePainter constructor(
 
     override val key: String = "EquitableAnimatablePainter('${key(equalityKey)}')"
 
+    private val animatablePainter: AnimatablePainter
+
     init {
-        check(painter is AnimatablePainter) { "The painter must be implement AnimatablePainter" }
+        check(painter is AnimatablePainter) {
+            "painter must be AnimatablePainter"
+        }
+        animatablePainter = painter
     }
 
     override fun start() {
-        (painter as AnimatablePainter).start()
+        animatablePainter.start()
     }
 
     override fun stop() {
-        (painter as AnimatablePainter).stop()
+        animatablePainter.stop()
     }
 
     override fun isRunning(): Boolean {
-        return (painter as AnimatablePainter).isRunning()
+        return animatablePainter.isRunning()
     }
 
     override fun equals(other: Any?): Boolean {

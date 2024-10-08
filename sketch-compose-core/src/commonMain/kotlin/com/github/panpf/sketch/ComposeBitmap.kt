@@ -16,9 +16,20 @@
 
 package com.github.panpf.sketch
 
+import com.github.panpf.sketch.util.simpleName
+import com.github.panpf.sketch.util.toHexString
+
 /**
  * Compose Bitmap
  *
- * @see com.github.panpf.sketch.compose.core.common.test.ComposeBitmapTest
+ * @see com.github.panpf.sketch.compose.core.common.test.ComposeBitmapTest.testComposeBitmap
  */
 typealias ComposeBitmap = androidx.compose.ui.graphics.ImageBitmap
+
+/**
+ * Convert [ComposeBitmap] to log string
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.ComposeBitmapTest.testComposeBitmapToLogString
+ */
+fun ComposeBitmap.toLogString(): String =
+    "ComposeBitmap@${toHexString()}(${width}x${height},$config,${colorSpace.simpleName})"

@@ -38,7 +38,7 @@ import com.github.panpf.sketch.util.Size
 /* ********************************************* Drawable icon ********************************************* */
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithDrawableIcon
  */
@@ -55,7 +55,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithDrawableIcon
  */
@@ -72,7 +72,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithDrawableIcon
  */
@@ -89,7 +89,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithDrawableIcon
  */
@@ -106,7 +106,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithDrawableIcon
  */
@@ -123,7 +123,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithDrawableIcon
  */
@@ -140,7 +140,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithDrawableIcon
  */
@@ -156,7 +156,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithDrawableIcon
  */
@@ -172,7 +172,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithDrawableIcon
  */
@@ -188,7 +188,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithDrawableIcon
  */
@@ -204,7 +204,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithDrawableIcon
  */
@@ -220,7 +220,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithDrawableIcon
  */
@@ -235,7 +235,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithDrawableIcon
  */
@@ -250,7 +250,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithDrawableIcon
  */
@@ -265,7 +265,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithDrawableIcon
  */
@@ -280,7 +280,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithDrawableIcon
  */
@@ -297,7 +297,7 @@ fun IconDrawableStateImage(
 /* ********************************************* res icon ********************************************* */
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithResIcon
  */
@@ -314,7 +314,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithResIcon
  */
@@ -331,7 +331,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithResIcon
  */
@@ -348,7 +348,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithResIcon
  */
@@ -365,7 +365,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithResIcon
  */
@@ -382,7 +382,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithResIcon
  */
@@ -399,7 +399,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithResIcon
  */
@@ -415,7 +415,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithResIcon
  */
@@ -431,7 +431,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithResIcon
  */
@@ -447,7 +447,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithResIcon
  */
@@ -463,7 +463,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithResIcon
  */
@@ -479,7 +479,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithResIcon
  */
@@ -494,7 +494,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithResIcon
  */
@@ -509,7 +509,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithResIcon
  */
@@ -524,7 +524,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithResIcon
  */
@@ -539,7 +539,7 @@ fun IconDrawableStateImage(
 )
 
 /**
- * Create a [IconDrawableStateImage] and remember it.
+ * Create a [IconDrawableStateImage].
  *
  * @see com.github.panpf.sketch.core.android.test.state.IconDrawableStateImageTest.testIconDrawableStateImageWithResIcon
  */

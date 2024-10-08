@@ -20,21 +20,51 @@ import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import com.github.panpf.sketch.util.ColorFetcher
+import com.github.panpf.sketch.util.IntColor
+import com.github.panpf.sketch.util.ResColor
 
 /**
  * Create a [ColorDrawableStateImage] that uses the specified color as the drawable
  *
- * @see com.github.panpf.sketch.compose.core.android.test.state.ColorDrawableStateImageComposeAndroidTest.testRememberIntColorDrawableStateImage
+ * @see com.github.panpf.sketch.compose.core.android.test.state.ColorDrawableStateImageComposeAndroidTest.testRememberColorDrawableStateImageWithInt
  */
 @Composable
-fun rememberIntColorDrawableStateImage(@ColorInt color: Int): ColorDrawableStateImage =
+fun rememberColorDrawableStateImageWithInt(@ColorInt color: Int): ColorDrawableStateImage =
     remember(color) { IntColorDrawableStateImage(color) }
 
 /**
  * Create a [ColorDrawableStateImage] that uses the specified color resource as the drawable
  *
- * @see com.github.panpf.sketch.compose.core.android.test.state.ColorDrawableStateImageComposeAndroidTest.testRememberResColorDrawableStateImage
+ * @see com.github.panpf.sketch.compose.core.android.test.state.ColorDrawableStateImageComposeAndroidTest.testRememberColorDrawableStateImageWithRes
  */
 @Composable
-fun rememberResColorDrawableStateImage(@ColorRes resId: Int): ColorDrawableStateImage =
+fun rememberColorDrawableStateImageWithRes(@ColorRes resId: Int): ColorDrawableStateImage =
     remember(resId) { ResColorDrawableStateImage(resId) }
+
+/**
+ * Create a [ColorDrawableStateImage] that uses the specified color as the drawable
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.ColorDrawableStateImageComposeAndroidTest.testRememberColorDrawableStateImage
+ */
+@Composable
+fun rememberColorDrawableStateImage(color: IntColor): ColorDrawableStateImage =
+    remember(color) { ColorDrawableStateImage(color) }
+
+/**
+ * Create a [ColorDrawableStateImage] that uses the specified color as the drawable
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.ColorDrawableStateImageComposeAndroidTest.testRememberColorDrawableStateImage
+ */
+@Composable
+fun rememberColorDrawableStateImage(color: ResColor): ColorDrawableStateImage =
+    remember(color) { ColorDrawableStateImage(color) }
+
+/**
+ * Create a [ColorDrawableStateImage] that uses the specified color as the drawable
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.state.ColorDrawableStateImageComposeAndroidTest.testRememberColorDrawableStateImage
+ */
+@Composable
+fun rememberColorDrawableStateImage(color: ColorFetcher): ColorDrawableStateImage =
+    remember(color) { ColorDrawableStateImage(color) }
