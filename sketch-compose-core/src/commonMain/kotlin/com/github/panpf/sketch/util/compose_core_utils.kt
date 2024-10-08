@@ -27,6 +27,7 @@ import androidx.compose.ui.layout.ContentScale.Companion
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.painter.CrossfadePainter
+import com.github.panpf.sketch.painter.PainterWrapper
 import com.github.panpf.sketch.resize.Scale
 import kotlin.math.roundToInt
 
@@ -65,7 +66,7 @@ internal val ContentScale.name: String
         ContentScale.Crop -> "Crop"
         ContentScale.Inside -> "Inside"
         ContentScale.None -> "None"
-        else -> "Unknown ContentScale: $this"
+        else -> this::class.simpleName ?: toString()
     }
 
 /**
@@ -81,7 +82,7 @@ internal val ContentScale.fitScale: Boolean
  *
  * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testSizeToIntSizeOrNull
  */
-internal fun Size.toIntSizeOrNull() = when {
+internal fun Size.toIntSizeOrNull(): IntSize? = when {
     isUnspecified -> null
 
     width >= 0.5 && height >= 0.5 && width.isFinite() && height.isFinite() -> IntSize(
@@ -137,16 +138,26 @@ internal fun Constraints.toIntSizeOrNull(): IntSize? = when {
 }
 
 /**
- * Find the leaf child [Painter] of the [Painter]
+ * Find the leaf [Painter] of the [Painter]
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testPainterFindLeafChildPainter
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testPainterFindLeafPainter
  */
-fun Painter.findLeafChildPainter(): Painter? {
+fun Painter.findLeafPainter(): Painter {
     return when (val painter = this) {
-        is CrossfadePainter -> {
-            painter.end?.findLeafChildPainter()
-        }
+        is CrossfadePainter -> painter.end?.findLeafPainter() ?: painter
+        else -> painter
+    }
+}
 
+/**
+ * Find the deepest [Painter] of the [Painter]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testPainterFindLeafPainter
+ */
+fun Painter.findDeepestPainter(): Painter {
+    return when (val painter = this) {
+        is CrossfadePainter -> painter.end?.findDeepestPainter() ?: painter
+        is PainterWrapper -> painter.painter.findDeepestPainter()
         else -> painter
     }
 }

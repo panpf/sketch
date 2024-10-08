@@ -41,8 +41,8 @@ import com.github.panpf.sketch.util.asOrNull
 abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget,
     LifecycleEventObserver, AttachObserver {
 
-    private var isStarted = false
-    private var isAttached = false
+    internal var isStarted = false
+    internal var isAttached = false
 
     override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) =
         updateImage(request, placeholder)

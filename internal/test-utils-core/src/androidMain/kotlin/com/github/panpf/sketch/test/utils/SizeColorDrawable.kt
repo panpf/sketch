@@ -1,7 +1,10 @@
 package com.github.panpf.sketch.test.utils
 
-import android.graphics.drawable.ColorDrawable
-import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
+import android.graphics.Canvas
+import android.graphics.ColorFilter
+import android.graphics.Paint
+import android.graphics.PixelFormat
+import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.drawable.EquitableDrawable
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.util.Size
@@ -14,10 +17,31 @@ import com.github.panpf.sketch.util.Size
 fun SizeColorDrawable.asEquitable(): EquitableDrawable =
     EquitableDrawable(drawable = this, equalityKey = this)
 
-open class SizeColorDrawable(
+open class SizeColorDrawable constructor(
     val color: Int,
     val size: Size
-) : DrawableWrapperCompat(ColorDrawable(color)), SketchDrawable {
+) : Drawable(), SketchDrawable {
+
+    private val mPaint = Paint().apply {
+        isAntiAlias = true
+        isDither = true
+    }
+
+    override fun draw(canvas: Canvas) {
+        canvas.drawRect(bounds, mPaint)
+    }
+
+    override fun setAlpha(alpha: Int) {
+        mPaint.alpha = alpha
+    }
+
+    override fun setColorFilter(colorFilter: ColorFilter?) {
+        mPaint.colorFilter = colorFilter
+    }
+
+    override fun getOpacity(): Int {
+        return PixelFormat.TRANSPARENT
+    }
 
     override fun getIntrinsicWidth(): Int {
         return size.width
