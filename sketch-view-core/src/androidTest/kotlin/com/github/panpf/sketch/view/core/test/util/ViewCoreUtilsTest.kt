@@ -2,19 +2,23 @@ package com.github.panpf.sketch.view.core.test.util
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.DrawableWrapper
 import android.graphics.drawable.LayerDrawable
+import android.os.Build
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
+import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.test.utils.asOrThrow
+import com.github.panpf.sketch.test.utils.SizeColorDrawable
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.calculateBounds
-import com.github.panpf.sketch.util.findLeafChildDrawable
+import com.github.panpf.sketch.util.findDeepestDrawable
+import com.github.panpf.sketch.util.findLeafDrawable
 import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.util.toHexString
@@ -29,6 +33,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
@@ -102,56 +107,57 @@ class ViewCoreUtilsTest {
     }
 
     @Test
-    fun testFindLeafChildDrawable() {
-        LayerDrawable(
-            arrayOf(
-                ColorDrawable(Color.BLUE),
-                ColorDrawable(Color.RED),
-                ColorDrawable(Color.GREEN)
-            )
-        ).findLeafChildDrawable().apply {
-            assertEquals(Color.GREEN, this!!.asOrThrow<ColorDrawable>().color)
+    fun testFindLeafDrawable() {
+        val painter1 = ColorDrawable(Color.WHITE)
+        val painter2 = SizeColorDrawable(Color.BLUE, Size(100, 100))
+
+        assertSame(expected = painter1, actual = painter1.findLeafDrawable())
+        assertSame(expected = painter2, actual = painter2.findLeafDrawable())
+
+        CrossfadeDrawable(start = painter1, end = painter2).apply {
+            assertSame(expected = painter2, actual = this.findLeafDrawable())
+        }
+        CrossfadeDrawable(start = painter2, end = painter1).apply {
+            assertSame(expected = painter1, actual = this.findLeafDrawable())
         }
 
-        LayerDrawable(
-            arrayOf(
-                ColorDrawable(Color.RED),
-                ColorDrawable(Color.GREEN),
-                ColorDrawable(Color.BLUE),
-            )
-        ).findLeafChildDrawable().apply {
-            assertEquals(Color.BLUE, this!!.asOrThrow<ColorDrawable>().color)
+        LayerDrawable(arrayOf(painter1, painter2)).apply {
+            assertSame(expected = painter2, actual = this.findLeafDrawable())
+        }
+        LayerDrawable(arrayOf(painter2, painter1)).apply {
+            assertSame(expected = painter1, actual = this.findLeafDrawable())
+        }
+    }
+
+    @Test
+    fun testFindDeepestDrawable() {
+        val painter1 = ColorDrawable(Color.WHITE)
+        val painter2 = SizeColorDrawable(Color.BLUE, Size(100, 100))
+
+        assertSame(expected = painter1, actual = painter1.findDeepestDrawable())
+        assertSame(expected = painter2, actual = painter2.findDeepestDrawable())
+
+        CrossfadeDrawable(start = painter1, end = painter2).apply {
+            assertSame(expected = painter2, actual = this.findDeepestDrawable())
+        }
+        CrossfadeDrawable(start = painter2, end = painter1).apply {
+            assertSame(expected = painter1, actual = this.findDeepestDrawable())
         }
 
-        LayerDrawable(arrayOf()).findLeafChildDrawable().apply {
-            assertEquals(null, this)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            object : DrawableWrapper(painter1) {}.apply {
+                assertSame(expected = painter1, actual = this.findDeepestDrawable())
+            }
+            object : DrawableWrapper(painter2) {}.apply {
+                assertSame(expected = painter2, actual = this.findDeepestDrawable())
+            }
         }
 
-
-        CrossfadeDrawable(
-            ColorDrawable(Color.BLUE),
-            ColorDrawable(Color.RED),
-        ).findLeafChildDrawable().apply {
-            assertEquals(Color.RED, this!!.asOrThrow<ColorDrawable>().color)
+        DrawableWrapperCompat(painter1).apply {
+            assertSame(expected = painter1, actual = this.findDeepestDrawable())
         }
-
-        CrossfadeDrawable(
-            ColorDrawable(Color.RED),
-            ColorDrawable(Color.GREEN),
-        ).findLeafChildDrawable().apply {
-            assertEquals(Color.GREEN, this!!.asOrThrow<ColorDrawable>().color)
-        }
-
-        CrossfadeDrawable(null, null).findLeafChildDrawable().apply {
-            assertEquals(null, this)
-        }
-
-        ColorDrawable(Color.GREEN).findLeafChildDrawable().apply {
-            assertEquals(Color.GREEN, this!!.asOrThrow<ColorDrawable>().color)
-        }
-
-        ColorDrawable(Color.RED).findLeafChildDrawable().apply {
-            assertEquals(Color.RED, this!!.asOrThrow<ColorDrawable>().color)
+        DrawableWrapperCompat(painter2).apply {
+            assertSame(expected = painter2, actual = this.findDeepestDrawable())
         }
     }
 

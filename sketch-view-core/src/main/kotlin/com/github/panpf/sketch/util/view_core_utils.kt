@@ -17,9 +17,12 @@
 package com.github.panpf.sketch.util
 
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.DrawableWrapper
 import android.graphics.drawable.LayerDrawable
+import android.os.Build
 import android.os.Looper
 import android.widget.ImageView.ScaleType
+import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import com.github.panpf.sketch.resize.Scale
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -64,23 +67,54 @@ internal val ScaleType.fitScale: Boolean
 
 
 /**
- * Find the last child [Drawable] from the specified Drawable
+ * Find the last [Drawable] of the [Drawable]
  *
- * @see com.github.panpf.sketch.view.core.test.util.ViewCoreUtilsTest.testFindLeafChildDrawable
+ * @see com.github.panpf.sketch.view.core.test.util.ViewCoreUtilsTest.testFindLeafDrawable
  */
-fun Drawable.findLeafChildDrawable(): Drawable? {
-    return when (val drawable = this) {
-        is com.github.panpf.sketch.drawable.CrossfadeDrawable -> {
-            drawable.end?.findLeafChildDrawable()
+fun Drawable.findLeafDrawable(): Drawable = when (val drawable = this) {
+    is com.github.panpf.sketch.drawable.CrossfadeDrawable -> {
+        drawable.end?.findLeafDrawable() ?: drawable
+    }
+
+    is LayerDrawable -> {
+        val layerCount = drawable.numberOfLayers
+        if (layerCount > 0) {
+            drawable.getDrawable(layerCount - 1).findLeafDrawable()
+        } else {
+            drawable
+        }
+    }
+
+    else -> drawable
+}
+
+/**
+ * Find the deepest [Drawable] of the [Drawable]
+ *
+ * @see com.github.panpf.sketch.view.core.test.util.ViewCoreUtilsTest.testFindDeepestDrawable
+ */
+fun Drawable.findDeepestDrawable(): Drawable {
+    val drawable = this
+    return when {
+        drawable is com.github.panpf.sketch.drawable.CrossfadeDrawable -> {
+            drawable.end?.findDeepestDrawable() ?: drawable
         }
 
-        is LayerDrawable -> {
+        drawable is LayerDrawable -> {
             val layerCount = drawable.numberOfLayers
             if (layerCount > 0) {
-                drawable.getDrawable(layerCount - 1).findLeafChildDrawable()
+                drawable.getDrawable(layerCount - 1).findDeepestDrawable()
             } else {
-                null
+                drawable
             }
+        }
+
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && drawable is DrawableWrapper -> {
+            drawable.drawable?.findDeepestDrawable() ?: drawable
+        }
+
+        drawable is DrawableWrapperCompat -> {
+            drawable.drawable?.findDeepestDrawable() ?: drawable
         }
 
         else -> drawable

@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.lifecycle.Lifecycle
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -14,12 +13,9 @@ import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.target.GenericViewTarget
+import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.util.fitScale
-import com.github.panpf.sketch.view.core.test.target.ViewTargetTest.TestImageViewTarget
-import com.github.panpf.tools4j.reflect.ktx.getFieldValue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
@@ -34,11 +30,54 @@ import kotlin.test.assertTrue
 class GenericViewTargetTest {
 
     @Test
+    fun testIsStarted() {
+        val context = getTestContext()
+        val imageView = ImageView(context)
+
+        TestGenericViewTarget(imageView).apply {
+            assertFalse(isStarted)
+
+            onStateChanged(GlobalLifecycle.owner, Lifecycle.Event.ON_START)
+            assertTrue(isStarted)
+
+            onStateChanged(GlobalLifecycle.owner, Lifecycle.Event.ON_STOP)
+            assertFalse(isStarted)
+        }
+    }
+
+    @Test
+    fun testIsAttached() {
+        val context = getTestContext()
+        val imageView = ImageView(context)
+
+        TestGenericViewTarget(imageView).apply {
+            assertFalse(isAttached)
+
+            onAttachedChanged(true)
+            assertTrue(isAttached)
+
+            onAttachedChanged(false)
+            assertFalse(isAttached)
+        }
+    }
+
+    @Test
+    fun testGetRequestManager() {
+        val context = getTestContext()
+        val imageView = ImageView(context)
+
+        assertSame(
+            expected = imageView.requestManager,
+            actual = TestGenericViewTarget(imageView).getRequestManager()
+        )
+    }
+
+    @Test
     fun testUpdateDrawable() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
         val imageView = ImageView(context)
-        val imageViewTarget = TestViewTarget(imageView)
+        val imageViewTarget = TestGenericViewTarget(imageView)
         assertNull(imageView.drawable)
         assertNull(imageViewTarget.drawable)
 
@@ -113,44 +152,12 @@ class GenericViewTargetTest {
     }
 
     @Test
-    fun testIsStarted() {
-        val context = getTestContext()
-        val imageView = ImageView(context)
-
-        TestViewTarget(imageView).apply {
-            assertFalse(getFieldValue<Boolean>("isStarted")!!)
-
-            onStateChanged(GlobalLifecycle.owner, Lifecycle.Event.ON_START)
-            assertTrue(getFieldValue<Boolean>("isStarted")!!)
-
-            onStateChanged(GlobalLifecycle.owner, Lifecycle.Event.ON_STOP)
-            assertFalse(getFieldValue<Boolean>("isStarted")!!)
-        }
-    }
-
-    @Test
-    fun testIsAttached() {
-        val context = getTestContext()
-        val imageView = ImageView(context)
-
-        TestViewTarget(imageView).apply {
-            assertFalse(getFieldValue<Boolean>("isAttached")!!)
-
-            onAttachedChanged(true)
-            assertTrue(getFieldValue<Boolean>("isAttached")!!)
-
-            onAttachedChanged(false)
-            assertFalse(getFieldValue<Boolean>("isAttached")!!)
-        }
-    }
-
-    @Test
-    fun testAnimatableDrawableAndLifecycle() {
+    fun testAnimatableDrawable() {
         val (context, sketch) = getTestContextAndSketch()
         val imageView = ImageView(context)
         val request = ImageRequest(context, null)
 
-        TestViewTarget(imageView).apply {
+        TestGenericViewTarget(imageView).apply {
             val drawable = ColorDrawable(Color.RED)
             onStart(sketch, request, drawable.asImage())
             onError(sketch, request, drawable.asImage())
@@ -163,46 +170,46 @@ class GenericViewTargetTest {
             onSuccess(sketch, request, drawable.asImage())
         }
 
-        TestViewTarget(imageView).apply {
-            assertFalse(getFieldValue<Boolean>("isStarted")!!)
-            assertFalse(getFieldValue<Boolean>("isAttached")!!)
+        TestGenericViewTarget(imageView).apply {
+            assertFalse(isStarted)
+            assertFalse(isAttached)
 
             val animatableDrawable = TestAnimatableColorDrawable(Color.RED)
             assertFalse(animatableDrawable.running)
 
             onSuccess(sketch, request, animatableDrawable.asImage())
-            assertFalse(getFieldValue<Boolean>("isStarted")!!)
-            assertFalse(getFieldValue<Boolean>("isAttached")!!)
+            assertFalse(isStarted)
+            assertFalse(isAttached)
             assertFalse(animatableDrawable.running)
 
             onStateChanged(GlobalLifecycle.owner, Lifecycle.Event.ON_START)
-            assertTrue(getFieldValue<Boolean>("isStarted")!!)
-            assertFalse(getFieldValue<Boolean>("isAttached")!!)
+            assertTrue(isStarted)
+            assertFalse(isAttached)
             assertFalse(animatableDrawable.running)
 
             onAttachedChanged(true)
-            assertTrue(getFieldValue<Boolean>("isStarted")!!)
-            assertTrue(getFieldValue<Boolean>("isAttached")!!)
+            assertTrue(isStarted)
+            assertTrue(isAttached)
             assertTrue(animatableDrawable.running)
 
             onStateChanged(GlobalLifecycle.owner, Lifecycle.Event.ON_STOP)
-            assertFalse(getFieldValue<Boolean>("isStarted")!!)
-            assertTrue(getFieldValue<Boolean>("isAttached")!!)
+            assertFalse(isStarted)
+            assertTrue(isAttached)
             assertFalse(animatableDrawable.running)
 
             onStateChanged(GlobalLifecycle.owner, Lifecycle.Event.ON_START)
-            assertTrue(getFieldValue<Boolean>("isStarted")!!)
-            assertTrue(getFieldValue<Boolean>("isAttached")!!)
+            assertTrue(isStarted)
+            assertTrue(isAttached)
             assertTrue(animatableDrawable.running)
 
             onAttachedChanged(false)
-            assertTrue(getFieldValue<Boolean>("isStarted")!!)
-            assertFalse(getFieldValue<Boolean>("isAttached")!!)
+            assertTrue(isStarted)
+            assertFalse(isAttached)
             assertFalse(animatableDrawable.running)
 
             onAttachedChanged(true)
-            assertTrue(getFieldValue<Boolean>("isStarted")!!)
-            assertTrue(getFieldValue<Boolean>("isAttached")!!)
+            assertTrue(isStarted)
+            assertTrue(isAttached)
             assertTrue(animatableDrawable.running)
 
             onSuccess(sketch, request, ColorDrawable(Color.RED).asImage())
@@ -210,34 +217,6 @@ class GenericViewTargetTest {
 
             onSuccess(sketch, request, animatableDrawable.asImage())
             assertTrue(animatableDrawable.running)
-        }
-    }
-
-    class TestViewTarget(override val view: ImageView) : GenericViewTarget<ImageView>(view) {
-
-        override var drawable: Drawable?
-            get() = view.drawable
-            set(value) {
-                view.setImageDrawable(value)
-            }
-
-        override val fitScale: Boolean
-            get() = view.scaleType.fitScale
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (javaClass != other?.javaClass) return false
-            other as TestImageViewTarget
-            if (view != other.view) return false
-            return true
-        }
-
-        override fun hashCode(): Int {
-            return view.hashCode()
-        }
-
-        override fun toString(): String {
-            return "TestViewTarget(view=$view)"
         }
     }
 

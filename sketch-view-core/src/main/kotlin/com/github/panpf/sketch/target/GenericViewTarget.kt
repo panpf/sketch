@@ -44,8 +44,9 @@ import com.github.panpf.sketch.util.asOrNull
 abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionViewTarget,
     LifecycleEventObserver, AttachObserver {
 
-    private var isStarted = false
-    private var isAttached = false
+    internal var isStarted = false
+    internal var isAttached = false
+
     private val requestManager = view.requestManager
 
     override fun getRequestManager(): RequestManager = requestManager

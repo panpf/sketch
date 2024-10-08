@@ -37,7 +37,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.TintAwareDrawable
 import androidx.core.graphics.withSave
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import com.github.panpf.sketch.transition.Transition
+import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
 import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.util.toLogString
@@ -65,9 +65,9 @@ class CrossfadeDrawable @JvmOverloads constructor(
     val start: Drawable?,
     val end: Drawable?,
     val fitScale: Boolean = true,
-    val durationMillis: Int = Transition.DEFAULT_DURATION,
-    val fadeStart: Boolean = true,
-    val preferExactIntrinsicSize: Boolean = false,
+    val durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
+    val fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
+    val preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
 ) : Drawable(), Animatable2Compat, Callback, SketchDrawable {
 
     companion object {
