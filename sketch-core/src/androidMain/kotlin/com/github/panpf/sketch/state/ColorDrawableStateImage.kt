@@ -80,6 +80,6 @@ data class ColorDrawableStateImage(val color: ColorFetcher) : StateImage {
     }
 
     override fun toString(): String {
-        return "ColorDrawableStateImage($color)"
+        return "ColorDrawableStateImage(color=$color)"
     }
 }

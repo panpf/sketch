@@ -68,6 +68,6 @@ data class ColorPainterStateImage(val color: Color) : StateImage {
     }
 
     override fun toString(): String {
-        return "ColorPainterStateImage(${color.value})"
+        return "ColorPainterStateImage(color=${color.value})"
     }
 }

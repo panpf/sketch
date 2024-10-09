@@ -29,7 +29,7 @@ import com.github.panpf.sketch.util.Size
  *
  * @see com.github.panpf.sketch.view.core.test.resize.ViewResizeOnDrawHelperTest
  */
-object ViewResizeOnDrawHelper : ResizeOnDrawHelper {
+data object ViewResizeOnDrawHelper : ResizeOnDrawHelper {
 
     override val key: String = "ViewResizeOnDrawHelper"
 
@@ -39,4 +39,6 @@ object ViewResizeOnDrawHelper : ResizeOnDrawHelper {
         val resizeDrawable = drawable.resize(size, scale)
         return resizeDrawable.asImage()
     }
+
+    override fun toString(): String = "ViewResizeOnDrawHelper"
 }
