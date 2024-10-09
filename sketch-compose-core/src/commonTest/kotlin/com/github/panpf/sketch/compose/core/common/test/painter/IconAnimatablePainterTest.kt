@@ -437,7 +437,7 @@ class IconAnimatablePainterTest {
     @Test
     fun testToString() {
         assertEquals(
-            expected = "IconAnimatablePainter(icon=EquitableAnimatablePainter(painter=PainterWrapper(painter=SizeColorPainter(color=Color(1.0, 0.0, 0.0, 1.0, sRGB IEC61966-2.1), size=Size(100.0, 100.0))), equalityKey=TestAnimatablePainter(drawable=SizeColorPainter(color=Color(1.0, 0.0, 0.0, 1.0, sRGB IEC61966-2.1), size=Size(100.0, 100.0)))), background=EquitablePainter(painter=ColorPainter(color=-7829368), equalityKey=18413117194201202688), iconSize=Size(69.0, 44.0), iconTint=Color(0.0, 0.0, 1.0, 1.0, sRGB IEC61966-2.1))",
+            expected = "IconAnimatablePainter(icon=EquitableAnimatablePainter(painter=PainterWrapper(painter=SizeColorPainter(color=18446462598732840960, size=Size(100.0, 100.0))), equalityKey=TestAnimatablePainter(drawable=SizeColorPainter(color=18446462598732840960, size=Size(100.0, 100.0)))), background=EquitablePainter(painter=ColorPainter(color=-7829368), equalityKey=18413117194201202688), iconSize=Size(69.0, 44.0), iconTint=Color(0.0, 0.0, 1.0, 1.0, sRGB IEC61966-2.1))",
             actual = IconAnimatablePainter(
                 icon = TestAnimatablePainter(
                     SizeColorPainter(Color.Red, Size(100f, 100f))

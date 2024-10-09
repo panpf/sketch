@@ -57,6 +57,6 @@ class SizeColorPainter(val color: Color, val size: Size = Size.Unspecified) : Pa
     }
 
     override fun toString(): String {
-        return "SizeColorPainter(color=$color, size=$size)"
+        return "SizeColorPainter(color=${color.value}, size=$size)"
     }
 }

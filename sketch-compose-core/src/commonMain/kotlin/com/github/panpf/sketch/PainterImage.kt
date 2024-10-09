@@ -57,7 +57,15 @@ data class PainterImage(
     override val height: Int =
         painter.intrinsicSize.takeIf { it.isSpecified }?.height?.roundToInt() ?: -1
 
-    override val byteCount: Long = 4L * width * height
+    override val byteCount: Long by lazy {
+        val width = width
+        val height = height
+        if (width > 0 && height > 0) {
+            4L * width * height
+        } else {
+            0L
+        }
+    }
 
     override fun checkValid(): Boolean = true
 
