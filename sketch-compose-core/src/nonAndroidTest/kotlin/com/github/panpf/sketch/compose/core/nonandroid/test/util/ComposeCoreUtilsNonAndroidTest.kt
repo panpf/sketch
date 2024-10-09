@@ -1,10 +1,10 @@
-package com.github.panpf.sketch.compose.core.nonandroid.test
+package com.github.panpf.sketch.compose.core.nonandroid.test.util
 
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
-import com.github.panpf.sketch.windowContainerSize
+import com.github.panpf.sketch.util.windowContainerSize
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

@@ -17,7 +17,7 @@
 
 package com.github.panpf.sketch.util
 
-import com.github.panpf.sketch.util.Size as SketchSize
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
@@ -33,6 +33,16 @@ import com.github.panpf.sketch.painter.CrossfadePainter
 import com.github.panpf.sketch.painter.PainterWrapper
 import com.github.panpf.sketch.resize.Scale
 import kotlin.math.roundToInt
+import com.github.panpf.sketch.util.Size as SketchSize
+
+/**
+ * Get window container size
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.util.AsyncImageStateAndroidTest.testWindowContainerSize
+ * @see com.github.panpf.sketch.compose.core.nonandroid.test.util.AsyncImageStateNonAndroidTest.testWindowContainerSize
+ */
+@Composable
+expect fun windowContainerSize(): IntSize
 
 /**
  * Convert [ContentScale] to [Scale]

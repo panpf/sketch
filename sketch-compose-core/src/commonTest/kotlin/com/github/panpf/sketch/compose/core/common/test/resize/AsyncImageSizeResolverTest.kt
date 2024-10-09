@@ -5,6 +5,7 @@ import com.github.panpf.sketch.resize.AsyncImageSizeResolver
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
+import com.github.panpf.sketch.util.toHexString
 import kotlinx.coroutines.async
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -17,7 +18,7 @@ class AsyncImageSizeResolverTest {
 
     @Test
     fun testSize() = runTest {
-        val sizeResolver = AsyncImageSizeResolver(null)
+        val sizeResolver = AsyncImageSizeResolver()
 
         var resultSize: Size? = null
         val job = async(ioCoroutineDispatcher()) {
@@ -43,31 +44,28 @@ class AsyncImageSizeResolverTest {
 
     @Test
     fun testKey() {
-        val sizeResolver = AsyncImageSizeResolver(null)
+        val sizeResolver = AsyncImageSizeResolver()
         assertEquals("AsyncImageSize", sizeResolver.key)
     }
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = AsyncImageSizeResolver(null)
-        val element11 = AsyncImageSizeResolver(null)
-        val element2 = AsyncImageSizeResolver(IntSize(101, 202))
+        val element1 = AsyncImageSizeResolver()
+        val element11 = AsyncImageSizeResolver()
 
         assertNotEquals(element1, element11)
-        assertNotEquals(element1, element2)
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
         assertNotEquals(element1.hashCode(), element11.hashCode())
-        assertNotEquals(element1.hashCode(), element2.hashCode())
     }
 
     @Test
     fun testToString() {
-        val sizeResolver = AsyncImageSizeResolver(null)
-        assertEquals("AsyncImageSizeResolver(size=null)", sizeResolver.toString())
-
-        val sizeResolver2 = AsyncImageSizeResolver(IntSize(101, 202))
-        assertEquals("AsyncImageSizeResolver(size=101x202)", sizeResolver2.toString())
+        val sizeResolver = AsyncImageSizeResolver()
+        assertEquals(
+            expected = "AsyncImageSizeResolver@${sizeResolver.toHexString()}",
+            actual = sizeResolver.toString()
+        )
     }
 }

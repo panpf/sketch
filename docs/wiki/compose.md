@@ -194,7 +194,7 @@ configured by [AsyncImageState]
 
 [AsyncImagePainter]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImagePainter.kt
 
-[AsyncImageState]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImageState.common.kt
+[AsyncImageState]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImageState.kt
 
 [SubcomposeAsyncImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/SubcomposeAsyncImage.kt
 

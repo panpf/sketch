@@ -64,7 +64,7 @@ fun AsyncImage(
     contentScale: ContentScale = ContentScale.Fit,
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null,
-    filterQuality: FilterQuality = DefaultFilterQuality,
+    filterQuality: FilterQuality = DefaultFilterQuality,    // TODO ComposeBitmap.asPainter(filterQuality: FilterQuality)
     clipToBounds: Boolean = true,
 ) = AsyncImage(
     request = ImageRequest(LocalPlatformContext.current, uri),

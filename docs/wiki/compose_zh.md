@@ -184,7 +184,7 @@ target() 方法，这会导致 App 崩溃，因为 Target 必须由 [AsyncImageS
 
 [AsyncImagePainter]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImagePainter.kt
 
-[AsyncImageState]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImageState.common.kt
+[AsyncImageState]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/AsyncImageState.kt
 
 [SubcomposeAsyncImage]: ../../sketch-compose-core/src/commonMain/kotlin/com/github/panpf/sketch/SubcomposeAsyncImage.kt
 

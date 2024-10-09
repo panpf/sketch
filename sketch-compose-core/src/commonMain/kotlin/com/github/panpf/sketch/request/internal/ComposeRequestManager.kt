@@ -16,28 +16,31 @@
 
 package com.github.panpf.sketch.request.internal
 
-import com.github.panpf.sketch.AsyncImageState
-
 /**
  * Compose version of the request manager
  *
  * @see com.github.panpf.sketch.compose.core.common.test.request.internal.ComposeRequestManagerTest
  */
-class ComposeRequestManager(
-    private val asyncImageState: AsyncImageState
-) : BaseRequestManager() {
+class ComposeRequestManager : BaseRequestManager() {
+
+    internal var rememberedCount: Int = 0
 
     fun onRemembered() {
         // AsyncImageState will always perform a request when it is remembered,
         // So there is no need to restart the request here
+        rememberedCount++
+        if (rememberedCount != 1) return
+        // ...
     }
 
     fun onForgotten() {
+        if (rememberedCount <= 0) return
+        rememberedCount = (rememberedCount - 1).coerceAtLeast(0)
+        if (rememberedCount != 0) return
+
         currentRequestDelegate?.dispose()
         callbackAttachedState()
     }
 
-    override fun isAttached(): Boolean {
-        return asyncImageState.isRemembered()
-    }
+    override fun isAttached(): Boolean = rememberedCount > 0
 }

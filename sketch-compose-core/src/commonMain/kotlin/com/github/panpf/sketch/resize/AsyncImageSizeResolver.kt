@@ -18,7 +18,7 @@ package com.github.panpf.sketch.resize
 
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.toLogString
+import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.toSketchSize
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.mapNotNull
  *
  * @see com.github.panpf.sketch.compose.core.common.test.resize.AsyncImageSizeResolverTest
  */
-class AsyncImageSizeResolver(size: IntSize?) : SizeResolver {
+class AsyncImageSizeResolver : SizeResolver {
 
     override val key: String = "AsyncImageSize"
 
@@ -38,7 +38,7 @@ class AsyncImageSizeResolver(size: IntSize?) : SizeResolver {
     // Previously, due to the use of snapshotFlow { size }, the response to changes in size was slow.
     // When using the combination of Image plus AsyncImagePainter, the placeholder is not ready when the component is displayed.
     // The user sees the process of the component going from blank to displaying the placeholder.
-    val sizeState: MutableStateFlow<IntSize?> = MutableStateFlow(size)
+    val sizeState: MutableStateFlow<IntSize?> = MutableStateFlow(null)
 
     override suspend fun size(): Size {
         return sizeState
@@ -55,6 +55,7 @@ class AsyncImageSizeResolver(size: IntSize?) : SizeResolver {
         return super.hashCode()
     }
 
-    override fun toString(): String =
-        "AsyncImageSizeResolver(size=${sizeState.value?.toLogString()})"
+    override fun toString(): String {
+        return "AsyncImageSizeResolver@${this.toHexString()}"
+    }
 }

@@ -11,7 +11,7 @@ import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.test.utils.TestLifecycle
-import com.github.panpf.sketch.windowContainerSize
+import com.github.panpf.sketch.util.windowContainerSize
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
