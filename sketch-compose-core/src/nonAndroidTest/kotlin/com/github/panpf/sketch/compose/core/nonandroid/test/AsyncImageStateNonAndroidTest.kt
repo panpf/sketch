@@ -4,7 +4,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
-import com.github.panpf.sketch.getWindowContainerSize
+import com.github.panpf.sketch.windowContainerSize
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -12,12 +12,12 @@ import kotlin.test.assertEquals
 class AsyncImageStateNonAndroidTest {
 
     @Test
-    fun testGetWindowContainerSize() {
+    fun testWindowContainerSize() {
         runComposeUiTest {
             setContent {
                 assertEquals(
                     expected = LocalWindowInfo.current.containerSize,
-                    actual = getWindowContainerSize()
+                    actual = windowContainerSize()
                 )
             }
         }

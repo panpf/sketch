@@ -23,7 +23,7 @@ class ComposeRequestManagerTest {
     @Test
     fun test() {
         val (context, sketch) = getTestContextAndSketch()
-        val asyncImageState = AsyncImageState(TestLifecycle(), false, IntSize(1000, 2000), null)
+        val asyncImageState = AsyncImageState(false, TestLifecycle(), IntSize(1000, 2000), null)
         val job = Job()
         val requestDelegate = ComposeRequestDelegate(
             sketch = sketch,

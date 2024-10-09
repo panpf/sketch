@@ -67,11 +67,11 @@ import kotlinx.coroutines.launch
 /**
  * Get window container size
  *
- * @see com.github.panpf.sketch.compose.core.android.test.AsyncImageStateAndroidTest.testGetWindowContainerSize
- * @see com.github.panpf.sketch.compose.core.nonandroid.test.AsyncImageStateNonAndroidTest.testGetWindowContainerSize
+ * @see com.github.panpf.sketch.compose.core.android.test.AsyncImageStateAndroidTest.testWindowContainerSize
+ * @see com.github.panpf.sketch.compose.core.nonandroid.test.AsyncImageStateNonAndroidTest.testWindowContainerSize
  */
 @Composable
-expect fun getWindowContainerSize(): IntSize
+expect fun windowContainerSize(): IntSize
 
 /**
  * Create and remember [AsyncImageState]
@@ -82,9 +82,9 @@ expect fun getWindowContainerSize(): IntSize
 fun rememberAsyncImageState(options: ImageOptions? = null): AsyncImageState {
     val inspectionMode = LocalInspectionMode.current
     val lifecycle = if (inspectionMode) GlobalLifecycle else LocalLifecycleOwner.current.lifecycle
-    val containerSize = getWindowContainerSize()
-    return remember(lifecycle, inspectionMode, containerSize, options) {
-        AsyncImageState(lifecycle, inspectionMode, containerSize, options)
+    val containerSize = windowContainerSize()
+    return remember(inspectionMode, lifecycle, containerSize, options) {
+        AsyncImageState(inspectionMode, lifecycle, containerSize, options)
     }
 }
 
@@ -97,10 +97,10 @@ fun rememberAsyncImageState(options: ImageOptions? = null): AsyncImageState {
 fun rememberAsyncImageState(optionsLazy: () -> ImageOptions): AsyncImageState {
     val inspectionMode = LocalInspectionMode.current
     val lifecycle = if (inspectionMode) GlobalLifecycle else LocalLifecycleOwner.current.lifecycle
-    val containerSize = getWindowContainerSize()
-    return remember(lifecycle, inspectionMode, containerSize) {
+    val containerSize = windowContainerSize()
+    return remember(inspectionMode, lifecycle, containerSize) {
         val options = optionsLazy.invoke()
-        AsyncImageState(lifecycle, inspectionMode, containerSize, options)
+        AsyncImageState(inspectionMode, lifecycle, containerSize, options)
     }
 }
 
@@ -111,8 +111,8 @@ fun rememberAsyncImageState(optionsLazy: () -> ImageOptions): AsyncImageState {
  */
 @Stable
 class AsyncImageState internal constructor(
-    val lifecycle: Lifecycle,
     val inspectionMode: Boolean,
+    val lifecycle: Lifecycle,
     val containerSize: IntSize,
     val options: ImageOptions?,
 ) : RememberObserver {

@@ -24,10 +24,10 @@ import androidx.compose.ui.unit.IntSize
 /**
  * Get window container size
  *
- * @see com.github.panpf.sketch.compose.core.nonandroid.test.AsyncImageStateNonAndroidTest.testGetWindowContainerSize
+ * @see com.github.panpf.sketch.compose.core.nonandroid.test.AsyncImageStateNonAndroidTest.testWindowContainerSize
  */
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-actual fun getWindowContainerSize(): IntSize {
+actual fun windowContainerSize(): IntSize {
     return LocalWindowInfo.current.containerSize
 }

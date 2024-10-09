@@ -136,8 +136,8 @@ class AsyncImagePainterTest {
     @Test
     fun testIntrinsicSize() {
         val asyncImageState = AsyncImageState(
-            lifecycle = TestLifecycle(),
             inspectionMode = false,
+            lifecycle = TestLifecycle(),
             containerSize = IntSize(1024, 768),
             options = null
         )
@@ -159,14 +159,14 @@ class AsyncImagePainterTest {
     @Test
     fun testEqualsAndHashCode() {
         val asyncImageState1 = AsyncImageState(
-            lifecycle = TestLifecycle(),
             inspectionMode = false,
+            lifecycle = TestLifecycle(),
             containerSize = IntSize(1024, 768),
             options = null
         )
         val asyncImageState2 = AsyncImageState(
-            lifecycle = TestLifecycle(),
             inspectionMode = false,
+            lifecycle = TestLifecycle(),
             containerSize = IntSize(1024, 768),
             options = null
         )
@@ -186,8 +186,8 @@ class AsyncImagePainterTest {
     @Test
     fun testToString() {
         val asyncImageState = AsyncImageState(
-            lifecycle = TestLifecycle(),
             inspectionMode = false,
+            lifecycle = TestLifecycle(),
             containerSize = IntSize(1024, 768),
             options = null
         )
