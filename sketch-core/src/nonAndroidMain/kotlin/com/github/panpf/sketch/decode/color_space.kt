@@ -12,7 +12,7 @@ fun ColorSpace.name(): String {
         ColorSpace.sRGB -> "sRGB"
         ColorSpace.sRGBLinear -> "sRGBLinear"
         ColorSpace.displayP3 -> "displayP3"
-        else -> throw IllegalArgumentException("Unsupported ColorSpace: $this")
+        else -> this.toString()
     }
 }
 
