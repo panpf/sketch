@@ -44,7 +44,7 @@ class AsyncImageSizeResolverTest {
     @Test
     fun testKey() {
         val sizeResolver = AsyncImageSizeResolver(null)
-        assertEquals("ComposeComponentSize", sizeResolver.key)
+        assertEquals("AsyncImageSize", sizeResolver.key)
     }
 
     @Test

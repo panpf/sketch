@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.mapNotNull
  */
 class AsyncImageSizeResolver(size: IntSize?) : SizeResolver {
 
-    override val key: String = "ComposeComponentSize"  // TODO change to AsyncImageSize
+    override val key: String = "AsyncImageSize"
 
     // MutableStateFlow must be used here
     // Previously, due to the use of snapshotFlow { size }, the response to changes in size was slow.
