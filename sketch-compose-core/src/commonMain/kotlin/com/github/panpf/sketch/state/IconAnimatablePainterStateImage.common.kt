@@ -221,7 +221,7 @@ data class IconAnimatablePainterStateImage(
         "IconAnimatablePainterStateImage(icon=${icon.key},background=${background?.key},iconSize=$iconSize,iconTint=$iconTint)"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
-        return IconPainter(
+        return IconAnimatablePainter(
             icon = icon,
             background = background,
             iconSize = iconSize,
