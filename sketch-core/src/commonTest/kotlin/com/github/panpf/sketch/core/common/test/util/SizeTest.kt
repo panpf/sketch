@@ -97,7 +97,7 @@ class SizeTest {
     }
 
     @Test
-    fun testEquals() {
+    fun testEquals() {  // TODO testEqualsAndHashCode
         val size1 = Size(13, 56)
         val size11 = Size(13, 56)
         val size2 = Size(684, 4234)

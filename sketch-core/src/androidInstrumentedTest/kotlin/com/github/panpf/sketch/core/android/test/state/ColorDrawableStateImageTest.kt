@@ -145,10 +145,10 @@ class ColorDrawableStateImageTest {
     @Test
     fun testToString() {
         IntColorDrawableStateImage(Color.RED).apply {
-            assertEquals("ColorDrawableStateImage(IntColor(${Color.RED}))", toString())
+            assertEquals("ColorDrawableStateImage(color=IntColor(${Color.RED}))", toString())
         }
         IntColorDrawableStateImage(Color.GREEN).apply {
-            assertEquals("ColorDrawableStateImage(IntColor(${Color.GREEN}))", toString())
+            assertEquals("ColorDrawableStateImage(color=IntColor(${Color.GREEN}))", toString())
         }
     }
 }

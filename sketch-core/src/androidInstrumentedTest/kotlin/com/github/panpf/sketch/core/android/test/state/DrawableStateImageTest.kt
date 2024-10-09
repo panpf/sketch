@@ -38,7 +38,6 @@ import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNotSame
 import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
@@ -86,11 +85,21 @@ class DrawableStateImageTest {
     }
 
     @Test
+    fun testKey() {
+        DrawableStateImage(ResDrawable(android.R.drawable.btn_radio)).apply {
+            assertEquals(
+                expected = "DrawableStateImage(ResDrawable(${android.R.drawable.btn_radio}))",
+                actual = key
+            )
+        }
+    }
+
+    @Test
     fun testGetImage() {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, ResourceImages.jpeg.uri)
 
-        DrawableStateImage(ColorEquitableDrawable(Color.BLUE)).apply {
+        DrawableStateImage(RealEquitableDrawable(ColorEquitableDrawable(Color.BLUE))).apply {
             assertEquals(
                 Color.BLUE,
                 getImage(sketch, request, null)!!
@@ -100,7 +109,7 @@ class DrawableStateImageTest {
             )
         }
 
-        DrawableStateImage(ColorEquitableDrawable(Color.GREEN)).apply {
+        DrawableStateImage(RealEquitableDrawable(ColorEquitableDrawable(Color.GREEN))).apply {
             assertEquals(
                 Color.GREEN,
                 getImage(sketch, request, null)!!
@@ -110,7 +119,7 @@ class DrawableStateImageTest {
             )
         }
 
-        DrawableStateImage(android.R.drawable.btn_radio).apply {
+        DrawableStateImage(ResDrawable(android.R.drawable.btn_radio)).apply {
             assertTrue(
                 getImage(sketch, request, null)
                     ?.asOrThrow<DrawableImage>()?.drawable is StateListDrawable
@@ -119,61 +128,26 @@ class DrawableStateImageTest {
     }
 
     @Test
-    fun testEquals() {
-        val stateImage1 = DrawableStateImage(android.R.drawable.btn_radio)
-        val stateImage11 = DrawableStateImage(android.R.drawable.btn_radio)
-
-        val stateImage2 = DrawableStateImage(android.R.drawable.btn_dialog)
-        val stateImage21 = DrawableStateImage(android.R.drawable.btn_dialog)
-
-        val stateImage3 = DrawableStateImage(android.R.drawable.btn_plus)
-        val stateImage31 = DrawableStateImage(android.R.drawable.btn_plus)
-
-        assertNotSame(stateImage1, stateImage11)
-        assertNotSame(stateImage2, stateImage21)
-        assertNotSame(stateImage3, stateImage31)
+    fun testEqualsAndHashCode() {
+        val stateImage1 = DrawableStateImage(ResDrawable(android.R.drawable.btn_radio))
+        val stateImage11 = DrawableStateImage(ResDrawable(android.R.drawable.btn_radio))
+        val stateImage2 = DrawableStateImage(ResDrawable(android.R.drawable.btn_dialog))
 
         assertEquals(stateImage1, stateImage11)
-        assertEquals(stateImage2, stateImage21)
-        assertEquals(stateImage3, stateImage31)
-
         assertNotEquals(stateImage1, stateImage2)
-        assertNotEquals(stateImage1, stateImage3)
-        assertNotEquals(stateImage2, stateImage3)
-    }
-
-    @Test
-    fun testHashCode() {
-        val stateImage1 = DrawableStateImage(android.R.drawable.btn_radio)
-        val stateImage11 = DrawableStateImage(android.R.drawable.btn_radio)
-
-        val stateImage2 = DrawableStateImage(android.R.drawable.btn_dialog)
-        val stateImage21 = DrawableStateImage(android.R.drawable.btn_dialog)
-
-        val stateImage3 = DrawableStateImage(android.R.drawable.btn_plus)
-        val stateImage31 = DrawableStateImage(android.R.drawable.btn_plus)
+        assertNotEquals(stateImage1, null as Any?)
+        assertNotEquals(stateImage1, Any())
 
         assertEquals(stateImage1.hashCode(), stateImage11.hashCode())
-        assertEquals(stateImage2.hashCode(), stateImage21.hashCode())
-        assertEquals(stateImage3.hashCode(), stateImage31.hashCode())
-
         assertNotEquals(stateImage1.hashCode(), stateImage2.hashCode())
-        assertNotEquals(stateImage1.hashCode(), stateImage3.hashCode())
-        assertNotEquals(stateImage2.hashCode(), stateImage3.hashCode())
     }
 
     @Test
     fun testToString() {
-        DrawableStateImage(android.R.drawable.btn_radio).apply {
+        DrawableStateImage(ResDrawable(android.R.drawable.btn_radio)).apply {
             assertEquals(
-                "DrawableStateImage(ResDrawable(${android.R.drawable.btn_radio}))",
-                toString()
-            )
-        }
-        DrawableStateImage(android.R.drawable.btn_dialog).apply {
-            assertEquals(
-                "DrawableStateImage(ResDrawable(${android.R.drawable.btn_dialog}))",
-                toString()
+                expected = "DrawableStateImage(drawable=ResDrawable(${android.R.drawable.btn_radio}))",
+                actual = toString()
             )
         }
     }
