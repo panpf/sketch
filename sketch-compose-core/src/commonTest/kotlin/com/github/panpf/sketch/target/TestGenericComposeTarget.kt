@@ -1,10 +1,17 @@
 package com.github.panpf.sketch.target
 
 import androidx.compose.ui.graphics.painter.Painter
+import com.github.panpf.sketch.request.internal.OneShotRequestManager
+import com.github.panpf.sketch.request.internal.RequestManager
 
 class TestGenericComposeTarget(override val fitScale: Boolean = true) : GenericComposeTarget() {
 
     override var painter: Painter? = null
+    private val requestManager = OneShotRequestManager()
+
+    override fun getRequestManager(): RequestManager {
+        return requestManager
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

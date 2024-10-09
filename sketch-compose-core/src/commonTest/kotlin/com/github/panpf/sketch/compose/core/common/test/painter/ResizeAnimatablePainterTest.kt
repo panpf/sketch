@@ -94,13 +94,13 @@ class ResizeAnimatablePainterTest {
     fun testToString() {
         val animatablePainter = TestAnimatablePainter(ColorPainter(Color.Green))
         ResizeAnimatablePainter(
-            animatablePainter,
-            Size(100f, 500f),
-            CENTER_CROP
+            painter = animatablePainter,
+            size = Size(100f, 500f),
+            scale = CENTER_CROP
         ).apply {
             assertEquals(
-                "ResizeAnimatablePainter(painter=${animatablePainter.toLogString()}, size=100x500, scale=CENTER_CROP)",
-                toString()
+                expected = "ResizeAnimatablePainter(painter=${animatablePainter.toLogString()}, size=100.0x500.0, scale=CENTER_CROP)",
+                actual = toString()
             )
         }
     }
