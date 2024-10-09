@@ -46,7 +46,7 @@ import com.github.panpf.sketch.util.toSketchRect
  * @see com.github.panpf.sketch.core.android.test.drawable.IconDrawableTest
  */
 open class IconDrawable constructor(
-    val icon: Drawable,
+    val icon: Drawable, // TODO change to EquitableDrawable
     val background: Drawable? = null,
     val iconSize: Size? = null,
     @ColorInt val iconTint: Int? = null

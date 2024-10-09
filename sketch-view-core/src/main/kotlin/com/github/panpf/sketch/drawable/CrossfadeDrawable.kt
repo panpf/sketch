@@ -376,12 +376,10 @@ class CrossfadeDrawable @JvmOverloads constructor(
     }
 
     override fun equals(other: Any?): Boolean {
-        // Because start will be released at the end of the transition, this can only be done
         return super.equals(other)
     }
 
     override fun hashCode(): Int {
-        // Because start will be released at the end of the transition, this can only be done
         return super.hashCode()
     }
 

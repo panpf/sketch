@@ -57,35 +57,6 @@ fun ColorPainter.asEquitable(): EquitablePainter =
 fun BrushPainter.asEquitable(): EquitablePainter =
     EquitablePainter(painter = this, equalityKey = this)
 
-///**
-// * Wrap a BitmapPainter into a Painter with equality
-// *
-// * @see com.github.panpf.sketch.compose.core.common.test.painter.EquitablePainterTest.testAsEquitable
-// */
-//fun BitmapPainter.asEquitable(): EquitablePainter =
-//    EquitablePainter(painter = this, equalityKey = this)
-//
-///**
-// * Wrap a SketchPainter into a Painter with equality
-// *
-// * @see com.github.panpf.sketch.compose.core.common.test.painter.EquitablePainterTest.testAsEquitable
-// */
-//fun SketchPainter.asEquitable(): EquitablePainter {
-//    return if (this is AnimatablePainter) {
-//        EquitableAnimatablePainter(painter = this as Painter, equalityKey = this)
-//    } else {
-//        EquitablePainter(painter = this as Painter, equalityKey = this)
-//    }
-//}
-//
-///**
-// * Wrap a SketchPainter into a Painter with equality
-// *
-// * @see com.github.panpf.sketch.compose.core.common.test.painter.EquitablePainterTest.testAsEquitable
-// */
-//fun AnimatablePainter.asEquitable(): EquitableAnimatablePainter =
-//    EquitableAnimatablePainter(painter = this as Painter, equalityKey = this)
-
 /**
  * The VectorPainter equals returned by two consecutive calls to painterResource() on the same vector drawable resource is false.
  *

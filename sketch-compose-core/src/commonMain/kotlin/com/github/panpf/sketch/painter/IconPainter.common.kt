@@ -237,7 +237,7 @@ open class IconPainter constructor(
                 "iconSize must be not empty"
             }
         } else {
-            require(!icon.intrinsicSize.isEmpty()) {
+            require(icon.intrinsicSize.isSpecified && !icon.intrinsicSize.isEmpty()) {
                 "When iconSize is not set, icon's size must be not empty"
             }
         }

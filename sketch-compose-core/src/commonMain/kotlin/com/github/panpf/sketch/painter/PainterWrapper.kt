@@ -24,6 +24,8 @@ import androidx.compose.ui.graphics.painter.Painter
 
 /**
  * PainterWrapper which delegates all calls to its wrapped [Painter].
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.PainterWrapperTest
  */
 open class PainterWrapper(val painter: Painter) : Painter() {
 

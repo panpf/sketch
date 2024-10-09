@@ -143,7 +143,7 @@ open class ResizePainter(
 
     override fun hashCode(): Int {
         var result = painter.hashCode()
-        result = 31 * result + size.hashCode()
+        result = 31 * result + size.toString().hashCode()
         result = 31 * result + scale.hashCode()
         return result
     }

@@ -39,7 +39,7 @@ class EquitableAnimatablePainter constructor(
     private val animatablePainter: AnimatablePainter
 
     init {
-        check(painter is AnimatablePainter) {
+        require(painter is AnimatablePainter) {
             "painter must be AnimatablePainter"
         }
         animatablePainter = painter

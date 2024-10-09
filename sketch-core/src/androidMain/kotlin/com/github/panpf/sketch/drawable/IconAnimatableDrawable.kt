@@ -20,7 +20,6 @@ package com.github.panpf.sketch.drawable
 
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.Drawable.Callback
 import androidx.annotation.ColorInt
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.drawable.internal.AnimatableCallbackHelper
@@ -39,7 +38,7 @@ class IconAnimatableDrawable constructor(
     iconSize: Size? = null,
     @ColorInt iconTint: Int? = null
 ) : IconDrawable(icon, background, iconSize, iconTint),
-    Callback,
+    Drawable.Callback,
     Animatable2Compat,
     SketchDrawable {
 
