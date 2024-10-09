@@ -22,13 +22,14 @@ package com.github.panpf.sketch.target
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.util.fitScale
 import java.lang.ref.WeakReference
 
 /**
- * A [Target] that handles setting images on an [ImageView].
+ * A [Target] that handles setting [Image] on an [ImageView].
  *
  * @see com.github.panpf.sketch.view.core.test.target.ImageViewTargetTest
  */
