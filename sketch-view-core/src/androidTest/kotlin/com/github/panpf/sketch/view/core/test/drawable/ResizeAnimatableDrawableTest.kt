@@ -58,6 +58,11 @@ import kotlin.test.assertTrue
 class ResizeAnimatableDrawableTest {
 
     @Test
+    fun testDraw() {
+        // TODO test: Screenshot test or draw to Bitmap, then compare Bitmap
+    }
+
+    @Test
     fun testCallback() = runTest {
         // Animatable2
         if (VERSION.SDK_INT >= VERSION_CODES.P) {
@@ -422,14 +427,13 @@ class ResizeAnimatableDrawableTest {
     @Test
     fun testToString() {
         val animatableDrawable = TestAnimatableDrawable(ColorDrawable(Color.GREEN))
-        val sketchAnimatableDrawable = AnimatableDrawable(animatableDrawable)
         ResizeAnimatableDrawable(
-            sketchAnimatableDrawable,
+            animatableDrawable,
             Size(100, 500),
             CENTER_CROP
         ).apply {
             assertEquals(
-                "ResizeAnimatableDrawable(drawable=${sketchAnimatableDrawable.toLogString()}, size=100x500, scale=CENTER_CROP)",
+                "ResizeAnimatableDrawable(drawable=${animatableDrawable.toLogString()}, size=100x500, scale=CENTER_CROP)",
                 toString()
             )
         }

@@ -80,6 +80,11 @@ class ResizeDrawableTest {
     }
 
     @Test
+    fun testDraw() {
+        // TODO test: Screenshot test or draw to Bitmap, then compare Bitmap
+    }
+
+    @Test
     fun testSetBounds() {
         val context = getTestContext()
         val resources = context.resources

@@ -34,10 +34,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.drawable.IconDrawable
 import com.github.panpf.sketch.drawable.asEquitable
+import com.github.panpf.sketch.test.utils.SizeColorDrawable
 import com.github.panpf.sketch.test.utils.SizeDrawable
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
+import com.github.panpf.sketch.test.utils.asEquitable
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.calculateInsideBounds
@@ -112,6 +115,23 @@ class IconDrawableTest {
         IconDrawable(
             icon = SizeDrawable(ColorDrawable(Color.GREEN), Size(100, 100)),
         )
+    }
+
+    @Test
+    fun testIntrinsicSize() {
+        IconDrawable(
+            icon = SizeColorDrawable(Color.RED, Size(101, 202)).asEquitable(),
+            background = null
+        ).apply {
+            assertEquals(expected = Size(-1, -1), actual = intrinsicSize)
+        }
+
+        IconDrawable(
+            icon = SizeColorDrawable(Color.RED, Size(101, 202)).asEquitable(),
+            background = SizeColorDrawable(Color.GRAY, Size(1000, 500)).asEquitable()
+        ).apply {
+            assertEquals(expected = Size(-1, -1), actual = intrinsicSize)
+        }
     }
 
     @Test
@@ -248,6 +268,8 @@ class IconDrawableTest {
             val canvas = Canvas(Bitmap.createBitmap(100, 100, ARGB_8888))
             draw(canvas)
         }
+
+        // TODO test: Screenshot test or draw to Bitmap, then compare Bitmap
     }
 
     @Test

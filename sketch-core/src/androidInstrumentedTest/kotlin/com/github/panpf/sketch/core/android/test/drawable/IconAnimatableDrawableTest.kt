@@ -27,14 +27,19 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.drawable.IconAnimatableDrawable
 import com.github.panpf.sketch.drawable.asEquitable
+import com.github.panpf.sketch.test.utils.SizeColorDrawable
 import com.github.panpf.sketch.test.utils.SizeDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatable2CompatDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatable2Drawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
+import com.github.panpf.sketch.test.utils.asAnimatableDrawable
+import com.github.panpf.sketch.test.utils.asEquitable
+import com.github.panpf.sketch.test.utils.asEquitableWithThis
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.runBlock
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
@@ -92,6 +97,25 @@ class IconAnimatableDrawableTest {
                 ),
                 background = TestAnimatableDrawable(ColorDrawable(Color.GREEN))
             )
+        }
+    }
+
+    @Test
+    fun testIntrinsicSize() {
+        IconAnimatableDrawable(
+            icon = SizeColorDrawable(Color.RED, Size(101, 202)).asAnimatableDrawable()
+                .asEquitableWithThis(),
+            background = null
+        ).apply {
+            assertEquals(expected = Size(-1, -1), actual = intrinsicSize)
+        }
+
+        IconAnimatableDrawable(
+            icon = SizeColorDrawable(Color.RED, Size(101, 202)).asAnimatableDrawable()
+                .asEquitableWithThis(),
+            background = SizeColorDrawable(Color.GRAY, Size(1000, 500)).asEquitable()
+        ).apply {
+            assertEquals(expected = Size(-1, -1), actual = intrinsicSize)
         }
     }
 

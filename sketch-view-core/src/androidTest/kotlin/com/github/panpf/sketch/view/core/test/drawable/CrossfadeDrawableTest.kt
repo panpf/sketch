@@ -17,28 +17,24 @@
 package com.github.panpf.sketch.view.core.test.drawable
 
 import android.content.res.ColorStateList
-import android.graphics.Bitmap
-import android.graphics.Bitmap.Config.ARGB_8888
-import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.BlendMode.CLEAR
-import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.PorterDuff.Mode.DST
 import android.graphics.PorterDuffColorFilter
 import android.graphics.Rect
-import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
+import com.github.panpf.sketch.test.utils.SizeColorDrawable
 import com.github.panpf.sketch.test.utils.TestNewMutateDrawable
 import com.github.panpf.sketch.test.utils.getDrawableCompat
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toLogString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
@@ -46,6 +42,7 @@ import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
 import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 import kotlin.test.assertSame
@@ -56,20 +53,19 @@ class CrossfadeDrawableTest {
 
     @Test
     fun testConstructor() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val resources = context.resources
-        val startDrawable = BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565))
-        val endDrawable = BitmapDrawable(resources, Bitmap.createBitmap(200, 100, RGB_565))
+        val startDrawable = SizeColorDrawable(Color.RED, Size(100, 200))
+        val endDrawable = SizeColorDrawable(Color.YELLOW, Size(200, 100))
 
-        CrossfadeDrawable(startDrawable, endDrawable).apply {
+        CrossfadeDrawable(start = startDrawable, end = endDrawable).apply {
             assertTrue(fitScale)
             assertEquals(200, durationMillis)
             assertTrue(fadeStart)
             assertFalse(preferExactIntrinsicSize)
         }
+
         CrossfadeDrawable(
-            startDrawable,
-            endDrawable,
+            start = startDrawable,
+            end = endDrawable,
             fitScale = false,
             durationMillis = 2000,
             fadeStart = false,
@@ -84,30 +80,116 @@ class CrossfadeDrawableTest {
 
     @Test
     fun testSize() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val resources = context.resources
-        val startDrawable =
-            BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565)).apply {
-                assertEquals(Size(100, 200), intrinsicSize)
-            }
-        val endDrawable = BitmapDrawable(resources, Bitmap.createBitmap(200, 100, RGB_565)).apply {
+        /*
+         * null
+         */
+        CrossfadeDrawable(null, null, preferExactIntrinsicSize = false).apply {
+            assertEquals(Size(-1, -1), intrinsicSize)
+        }
+        CrossfadeDrawable(null, null, preferExactIntrinsicSize = true).apply {
+            assertEquals(Size(-1, -1), intrinsicSize)
+        }
+
+        CrossfadeDrawable(
+            start = null,
+            end = SizeColorDrawable(Color.YELLOW, Size(200, 100)),
+            preferExactIntrinsicSize = false
+        ).apply {
             assertEquals(Size(200, 100), intrinsicSize)
         }
-        CrossfadeDrawable(startDrawable, endDrawable).apply {
+        CrossfadeDrawable(
+            start = null,
+            end = SizeColorDrawable(Color.YELLOW, Size(200, 100)),
+            preferExactIntrinsicSize = true
+        ).apply {
+            assertEquals(Size(200, 100), intrinsicSize)
+        }
+
+        CrossfadeDrawable(
+            start = SizeColorDrawable(Color.RED, Size(100, 200)),
+            end = null,
+            preferExactIntrinsicSize = false
+        ).apply {
+            assertEquals(Size(100, 200), intrinsicSize)
+        }
+        CrossfadeDrawable(
+            start = SizeColorDrawable(Color.RED, Size(100, 200)),
+            end = null,
+            preferExactIntrinsicSize = true
+        ).apply {
+            assertEquals(Size(100, 200), intrinsicSize)
+        }
+
+        /*
+         * Size(-1, -1)
+         */
+        CrossfadeDrawable(
+            start = SizeColorDrawable(Color.RED, Size(-1, -1)),
+            end = SizeColorDrawable(Color.YELLOW, Size(-1, -1)),
+            preferExactIntrinsicSize = false
+        ).apply {
+            assertEquals(Size(-1, -1), intrinsicSize)
+        }
+        CrossfadeDrawable(
+            start = SizeColorDrawable(Color.RED, Size(-1, -1)),
+            end = SizeColorDrawable(Color.YELLOW, Size(-1, -1)),
+            preferExactIntrinsicSize = true
+        ).apply {
+            assertEquals(Size(-1, -1), intrinsicSize)
+        }
+
+        CrossfadeDrawable(
+            start = SizeColorDrawable(Color.RED, Size(-1, -1)),
+            end = SizeColorDrawable(Color.YELLOW, Size(200, 100)),
+            preferExactIntrinsicSize = false
+        ).apply {
+            assertEquals(Size(-1, -1), intrinsicSize)
+        }
+        CrossfadeDrawable(
+            start = SizeColorDrawable(Color.RED, Size(-1, -1)),
+            end = SizeColorDrawable(Color.YELLOW, Size(200, 100)),
+            preferExactIntrinsicSize = true
+        ).apply {
+            assertEquals(Size(200, 100), intrinsicSize)
+        }
+
+        CrossfadeDrawable(
+            start = SizeColorDrawable(Color.RED, Size(100, 200)),
+            end = SizeColorDrawable(Color.YELLOW, Size(-1, -1)),
+            preferExactIntrinsicSize = false
+        ).apply {
+            assertEquals(Size(-1, -1), intrinsicSize)
+        }
+        CrossfadeDrawable(
+            start = SizeColorDrawable(Color.RED, Size(100, 200)),
+            end = SizeColorDrawable(Color.YELLOW, Size(-1, -1)),
+            preferExactIntrinsicSize = true
+        ).apply {
+            assertEquals(Size(100, 200), intrinsicSize)
+        }
+
+        CrossfadeDrawable(
+            start = SizeColorDrawable(Color.RED, Size(100, 200)),
+            end = SizeColorDrawable(Color.YELLOW, Size(200, 100)),
+            preferExactIntrinsicSize = false
+        ).apply {
+            assertEquals(Size(200, 200), intrinsicSize)
+        }
+        CrossfadeDrawable(
+            start = SizeColorDrawable(Color.RED, Size(100, 200)),
+            end = SizeColorDrawable(Color.YELLOW, Size(200, 100)),
+            preferExactIntrinsicSize = true
+        ).apply {
             assertEquals(Size(200, 200), intrinsicSize)
         }
     }
 
     @Test
     fun testBounds() {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val resources = context.resources
-
-        val startDrawable =
-            BitmapDrawable(resources, Bitmap.createBitmap(100, 200, RGB_565)).apply {
-                assertEquals(Rect(), bounds)
-            }
-        val endDrawable = BitmapDrawable(resources, Bitmap.createBitmap(200, 100, RGB_565)).apply {
+        val startDrawable = SizeColorDrawable(Color.RED, Size(100, 200)).apply {
+            assertEquals(Rect(), bounds)
+        }
+        val endDrawable = SizeColorDrawable(Color.YELLOW, Size(200, 100)).apply {
             assertEquals(Rect(), bounds)
         }
         val crossfadeDrawable = CrossfadeDrawable(startDrawable, endDrawable).apply {
@@ -118,6 +200,11 @@ class CrossfadeDrawableTest {
         assertEquals(Rect(50, 0, 150, 200), startDrawable.bounds)
         assertEquals(Rect(0, 50, 200, 150), endDrawable.bounds)
         assertEquals(Rect(0, 0, 200, 200), crossfadeDrawable.bounds)
+    }
+
+    @Test
+    fun testDraw() {
+        // TODO test: Screenshot test or draw to Bitmap, then compare Bitmap
     }
 
     @Test
@@ -227,7 +314,7 @@ class CrossfadeDrawableTest {
             }
 
             assertFalse(isRunning)
-            assertEquals(listOf<String>(), callbackAction)
+            assertEquals(listOf(), callbackAction)
 
             start()
             Thread.sleep(100)
@@ -297,22 +384,32 @@ class CrossfadeDrawableTest {
     }
 
     @Test
-    fun testDraw() {
-        val context = getTestContext()
+    fun testEqualsAndHashCode() {
+        val startDrawable = SizeColorDrawable(Color.RED, Size(100, 200))
+        val endDrawable = SizeColorDrawable(Color.YELLOW, Size(200, 100))
+        val endDrawable2 = SizeColorDrawable(Color.YELLOW, Size(300, 500))
 
-        CrossfadeDrawable(
-            context.getDrawableCompat(android.R.drawable.ic_input_add),
-            context.getDrawableCompat(android.R.drawable.ic_delete),
-        ).apply {
-            val canvas = Canvas(Bitmap.createBitmap(100, 100, ARGB_8888))
-            draw(canvas)
+        val element1 = CrossfadeDrawable(startDrawable, endDrawable)
+        val element11 = CrossfadeDrawable(startDrawable, endDrawable)
+        val element2 = CrossfadeDrawable(startDrawable, endDrawable2)
 
-            start()
-            draw(canvas)
+        assertNotEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
 
-            stop()
-            draw(canvas)
-            draw(canvas)
-        }
+        assertNotEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        val startDrawable = SizeColorDrawable(Color.RED, Size(100, 200))
+        val endDrawable = SizeColorDrawable(Color.YELLOW, Size(200, 100))
+        val crossfadeDrawable = CrossfadeDrawable(startDrawable, endDrawable)
+        assertEquals(
+            expected = "CrossfadeDrawable(start=${startDrawable.toLogString()}, end=${endDrawable.toLogString()}, fitScale=true, durationMillis=200, fadeStart=true, preferExactIntrinsicSize=false)",
+            actual = crossfadeDrawable.toString()
+        )
     }
 }

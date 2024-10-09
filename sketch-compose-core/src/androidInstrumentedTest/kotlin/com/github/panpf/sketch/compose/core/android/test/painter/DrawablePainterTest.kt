@@ -187,6 +187,11 @@ class DrawablePainterTest {
     }
 
     @Test
+    fun testDraw() {
+        // TODO test: Screenshot test or draw to Bitmap, then compare Bitmap
+    }
+
+    @Test
     fun testRememberObserver() {
         val drawable = ColorDrawable(TestColor.YELLOW)
         val drawablePainter = DrawablePainter(drawable)
