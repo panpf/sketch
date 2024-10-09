@@ -74,7 +74,7 @@ fun DrawableStateImage(@DrawableRes resId: Int): DrawableStateImage =
  * @see com.github.panpf.sketch.core.android.test.state.DrawableStateImageTest.testDrawableStateImage
  */
 data class DrawableStateImage(
-    val drawableFetcher: DrawableFetcher
+    val drawableFetcher: DrawableFetcher    // TODO EquitableDrawable
 ) : StateImage {
 
     override val key: String = "DrawableStateImage(${drawableFetcher.key})"
@@ -94,6 +94,6 @@ data class DrawableStateImage(
     }
 
     override fun toString(): String {
-        return "DrawableStateImage($drawableFetcher)"
+        return "DrawableStateImage(drawable=$drawableFetcher)"
     }
 }
