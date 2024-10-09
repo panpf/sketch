@@ -11,8 +11,8 @@ import com.github.panpf.sketch.drawable.EquitableDrawable
 import com.github.panpf.sketch.drawable.SketchDrawable
 import com.github.panpf.sketch.util.toLogString
 
-fun Drawable.asAnimatableDrawable(): Drawable {
-    return if (this is Animatable) {
+fun Drawable.asAnimatableDrawable(): TestAnimatable2CompatDrawable {
+    return if (this is TestAnimatable2CompatDrawable) {
         this
     } else {
         TestAnimatable2CompatDrawable(this)

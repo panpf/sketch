@@ -7,8 +7,8 @@ import com.github.panpf.sketch.painter.EquitablePainter
 import com.github.panpf.sketch.painter.PainterWrapper
 import com.github.panpf.sketch.painter.toLogString
 
-fun Painter.asAnimatablePainter(): Painter {
-    return if (this is AnimatablePainter) {
+fun Painter.asAnimatablePainter(): TestAnimatablePainter {
+    return if (this is TestAnimatablePainter) {
         this
     } else {
         TestAnimatablePainter(this)
