@@ -117,7 +117,7 @@ class AsyncImageState internal constructor(
     val options: ImageOptions?,
 ) : RememberObserver {
 
-    private val target = AsyncImageTarget(this)
+    internal val target = AsyncImageTarget(this)
     private val listener = AsyncImageListener(this)
     private val requestManager = ComposeRequestManager(this)
     private var sourceSize: IntSize? = null
