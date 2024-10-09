@@ -47,7 +47,7 @@ import com.github.panpf.sketch.request.ImageRequest
  * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
  *  destination.
  *
- *  @see com.github.panpf.sketch.compose.common.test.SingletonAsyncImageTest.testAsyncImage1
+ * @see com.github.panpf.sketch.compose.common.test.SingletonAsyncImageTest.testAsyncImage1
  */
 @Composable
 @NonRestartableComposable
@@ -96,7 +96,7 @@ fun AsyncImage(
  * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
  *  destination.
  *
- *  @see com.github.panpf.sketch.compose.common.test.SingletonAsyncImageTest.testAsyncImage2
+ * @see com.github.panpf.sketch.compose.common.test.SingletonAsyncImageTest.testAsyncImage2
  */
 @Composable
 @NonRestartableComposable

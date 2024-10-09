@@ -56,7 +56,7 @@ import kotlin.time.TimeSource
  *  be -1 if [start] **or** [end] return -1 for that dimension. This is useful for views that
  *  require an exact intrinsic size to scale the painter.
  *
- *  @see com.github.panpf.sketch.compose.core.common.test.painter.CrossfadePainterTest
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.CrossfadePainterTest
  */
 @Stable
 class CrossfadePainter constructor(
