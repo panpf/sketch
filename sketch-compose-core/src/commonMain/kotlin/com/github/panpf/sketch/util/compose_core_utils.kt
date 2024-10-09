@@ -118,6 +118,15 @@ fun Size.toLogString(): String {
 internal fun IntSize.isEmpty(): Boolean = width <= 0 || height <= 0
 
 /**
+ * Get log string
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testIntSizeToLogString
+ */
+internal fun IntSize.toLogString(): String {
+    return "${width}x$height"
+}
+
+/**
  * Convert [IntSize] to [SketchSize]
  *
  * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testIntSizeToSketchSize

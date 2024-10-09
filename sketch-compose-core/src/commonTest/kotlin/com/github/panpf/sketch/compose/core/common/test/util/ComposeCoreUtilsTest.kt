@@ -128,6 +128,13 @@ class ComposeCoreUtilsTest {
     }
 
     @Test
+    fun testIntSizeToLogString() {
+        assertEquals(expected = "0x0", actual = IntSize.Zero.toLogString())
+        assertEquals(expected = "-101x-202", actual = IntSize(-101, -202).toLogString())
+        assertEquals(expected = "202x101", actual = IntSize(202, 101).toLogString())
+    }
+
+    @Test
     fun testIntSizeToSketchSize() {
         assertEquals(
             expected = com.github.panpf.sketch.util.SketchSize(1, 1),

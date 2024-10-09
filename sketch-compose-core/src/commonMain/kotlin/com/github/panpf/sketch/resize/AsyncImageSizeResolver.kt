@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.internal
+package com.github.panpf.sketch.resize
 
 import androidx.compose.ui.unit.IntSize
-import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toLogString
 import com.github.panpf.sketch.util.toSketchSize
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.mapNotNull
 /**
  * Async image size resolver
  *
- * @see com.github.panpf.sketch.compose.core.common.test.internal.AsyncImageSizeResolverTest
+ * @see com.github.panpf.sketch.compose.core.common.test.resize.AsyncImageSizeResolverTest
  */
 class AsyncImageSizeResolver(size: IntSize?) : SizeResolver {
 
@@ -55,5 +55,6 @@ class AsyncImageSizeResolver(size: IntSize?) : SizeResolver {
         return super.hashCode()
     }
 
-    override fun toString(): String = "AsyncImageSizeResolver"
+    override fun toString(): String =
+        "AsyncImageSizeResolver(size=${sizeState.value?.toLogString()})"
 }

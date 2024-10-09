@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.IntSize
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.PainterState.Empty
 import com.github.panpf.sketch.PainterState.Loading
-import com.github.panpf.sketch.internal.AsyncImageSizeResolver
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
@@ -47,6 +46,7 @@ import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.internal.ComposeRequestManager
 import com.github.panpf.sketch.request.internal.RequestManager
+import com.github.panpf.sketch.resize.AsyncImageSizeResolver
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.target.GenericComposeTarget
