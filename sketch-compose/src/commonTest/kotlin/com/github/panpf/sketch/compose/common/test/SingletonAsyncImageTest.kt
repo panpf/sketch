@@ -52,7 +52,7 @@ class SingletonAsyncImageTest {
                 }
             }
 
-            // TODO Screenshot test
+            // TODO test: Screenshot test or draw to Bitmap, then compare Bitmap
         }
     }
 
@@ -91,7 +91,7 @@ class SingletonAsyncImageTest {
                 }
             }
 
-            // TODO Screenshot test
+            // TODO test: Screenshot test or draw to Bitmap, then compare Bitmap
         }
     }
 }

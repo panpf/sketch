@@ -51,7 +51,7 @@ class SectorProgressDrawableTest {
 
     @Test
     fun testDraw() {
-        // TODO test: Draw to Bitmap, then compare Bitmap
+        // TODO test: Screenshot test or draw to Bitmap, then compare Bitmap
     }
 
     @Test

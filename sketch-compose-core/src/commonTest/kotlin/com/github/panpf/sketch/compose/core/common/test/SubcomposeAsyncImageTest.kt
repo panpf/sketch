@@ -62,7 +62,7 @@ class SubcomposeAsyncImageTest {
                 }
             }
 
-            // TODO Screenshot test
+            // TODO test: Screenshot test or draw to Bitmap, then compare Bitmap
         }
     }
 
@@ -104,7 +104,7 @@ class SubcomposeAsyncImageTest {
                 }
             }
 
-            // TODO Screenshot test
+            // TODO test: Screenshot test or draw to Bitmap, then compare Bitmap
         }
     }
 
@@ -156,7 +156,7 @@ class SubcomposeAsyncImageTest {
                 }
             }
 
-            // TODO Screenshot test
+            // TODO test: Screenshot test or draw to Bitmap, then compare Bitmap
         }
     }
 
@@ -198,7 +198,7 @@ class SubcomposeAsyncImageTest {
                 }
             }
 
-            // TODO Screenshot test
+            // TODO test: Screenshot test or draw to Bitmap, then compare Bitmap
         }
     }
 }

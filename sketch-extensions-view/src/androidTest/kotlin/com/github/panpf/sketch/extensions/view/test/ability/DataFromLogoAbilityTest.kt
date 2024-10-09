@@ -46,6 +46,6 @@ class DataFromLogoAbilityTest {
 
     @Test
     fun test() {
-        // TODO test: Draw to Bitmap, then compare Bitmap
+        // TODO test: Screenshot test or draw to Bitmap, then compare Bitmap
     }
 }
