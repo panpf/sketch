@@ -143,8 +143,8 @@ class AsyncImagePainterTest {
         val asyncImageState = AsyncImageState(
             inspectionMode = false,
             lifecycle = TestLifecycle(),
-            containerSize = IntSize(1024, 768),
-            options = null
+            windowContainerSize = IntSize(1024, 768),
+            imageOptions = null
         )
         val asyncImagePainter = AsyncImagePainter(asyncImageState)
 
@@ -170,14 +170,14 @@ class AsyncImagePainterTest {
         val asyncImageState1 = AsyncImageState(
             inspectionMode = false,
             lifecycle = TestLifecycle(),
-            containerSize = IntSize(1024, 768),
-            options = null
+            windowContainerSize = IntSize(1024, 768),
+            imageOptions = null
         )
         val asyncImageState2 = AsyncImageState(
             inspectionMode = false,
             lifecycle = TestLifecycle(),
-            containerSize = IntSize(1024, 768),
-            options = null
+            windowContainerSize = IntSize(1024, 768),
+            imageOptions = null
         )
         val element1 = AsyncImagePainter(asyncImageState1)
         val element11 = AsyncImagePainter(asyncImageState1)
@@ -197,8 +197,8 @@ class AsyncImagePainterTest {
         val asyncImageState = AsyncImageState(
             inspectionMode = false,
             lifecycle = TestLifecycle(),
-            containerSize = IntSize(1024, 768),
-            options = null
+            windowContainerSize = IntSize(1024, 768),
+            imageOptions = null
         )
         val element = AsyncImagePainter(asyncImageState)
         assertEquals(

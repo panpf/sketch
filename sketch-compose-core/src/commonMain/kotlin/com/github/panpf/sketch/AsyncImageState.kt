@@ -59,9 +59,9 @@ import kotlinx.coroutines.launch
 fun rememberAsyncImageState(options: ImageOptions? = null): AsyncImageState {
     val inspectionMode = LocalInspectionMode.current
     val lifecycle = if (inspectionMode) GlobalLifecycle else LocalLifecycleOwner.current.lifecycle
-    val containerSize = windowContainerSize()
-    return remember(inspectionMode, lifecycle, containerSize, options) {
-        AsyncImageState(inspectionMode, lifecycle, containerSize, options)
+    val windowContainerSize = windowContainerSize()
+    return remember(inspectionMode, lifecycle, windowContainerSize, options) {
+        AsyncImageState(inspectionMode, lifecycle, windowContainerSize, options)
     }
 }
 
@@ -74,10 +74,10 @@ fun rememberAsyncImageState(options: ImageOptions? = null): AsyncImageState {
 fun rememberAsyncImageState(optionsLazy: () -> ImageOptions): AsyncImageState {
     val inspectionMode = LocalInspectionMode.current
     val lifecycle = if (inspectionMode) GlobalLifecycle else LocalLifecycleOwner.current.lifecycle
-    val containerSize = windowContainerSize()
-    return remember(inspectionMode, lifecycle, containerSize) {
+    val windowContainerSize = windowContainerSize()
+    return remember(inspectionMode, lifecycle, windowContainerSize) {
         val options = optionsLazy.invoke()
-        AsyncImageState(inspectionMode, lifecycle, containerSize, options)
+        AsyncImageState(inspectionMode, lifecycle, windowContainerSize, options)
     }
 }
 
@@ -90,8 +90,8 @@ fun rememberAsyncImageState(optionsLazy: () -> ImageOptions): AsyncImageState {
 class AsyncImageState internal constructor(
     val inspectionMode: Boolean,
     val lifecycle: Lifecycle,
-    val containerSize: IntSize,
-    val options: ImageOptions?,
+    val windowContainerSize: IntSize,
+    val imageOptions: ImageOptions?,
 ) : RememberObserver {
 
     private var lastRequest: ImageRequest? = null
@@ -99,7 +99,7 @@ class AsyncImageState internal constructor(
     private var coroutineScope: CoroutineScope? = null
     private var rememberedCount: Int = 0
 
-    internal val target = AsyncImageTarget(lifecycle, options, containerSize)
+    internal val target = AsyncImageTarget(lifecycle, imageOptions, windowContainerSize)
 
     var sketch: Sketch? by mutableStateOf(null)
         internal set
@@ -173,7 +173,7 @@ class AsyncImageState internal constructor(
                 val globalImageOptions = sketch.globalImageOptions
                 val newDefaultOptions = request.defaultOptions?.merged(globalImageOptions)
                 val updatedRequest = request.newRequest {
-                    merge(options)
+                    merge(imageOptions)
                     defaultOptions(newDefaultOptions)
                 }
                 val placeholderImage = updatedRequest.placeholder

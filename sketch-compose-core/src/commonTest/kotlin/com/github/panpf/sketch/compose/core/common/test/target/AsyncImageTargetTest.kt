@@ -31,7 +31,7 @@ class AsyncImageTargetTest {
     fun testConstructor() {
         AsyncImageTarget(
             lifecycle = TestLifecycle(),
-            options = ImageOptions(),
+            imageOptions = ImageOptions(),
             windowContainerSize = IntSize(1080, 720),
         )
         assertFailsWith(IllegalArgumentException::class) {
@@ -45,7 +45,7 @@ class AsyncImageTargetTest {
         val request = ImageRequest(context, "http://sample.com/sample.jpeg")
         val target = AsyncImageTarget(
             lifecycle = TestLifecycle(),
-            options = ImageOptions(),
+            imageOptions = ImageOptions(),
             windowContainerSize = IntSize(1080, 720),
         )
         assertEquals(expected = null, actual = target.painterState.value)
@@ -103,7 +103,7 @@ class AsyncImageTargetTest {
     fun testPreviewPainter() {
         val target = AsyncImageTarget(
             lifecycle = TestLifecycle(),
-            options = ImageOptions(),
+            imageOptions = ImageOptions(),
             windowContainerSize = IntSize(1080, 720),
         )
         assertEquals(expected = null, actual = target.painterState.value)
@@ -125,7 +125,7 @@ class AsyncImageTargetTest {
     fun testContentScale() {
         val target = AsyncImageTarget(
             lifecycle = TestLifecycle(),
-            options = ImageOptions(),
+            imageOptions = ImageOptions(),
             windowContainerSize = IntSize(1080, 720),
         )
         assertEquals(expected = null, actual = target.contentScaleMutableState.value)
@@ -203,7 +203,7 @@ class AsyncImageTargetTest {
         val windowContainerSize = IntSize(1080, 720)
         val target = AsyncImageTarget(
             lifecycle = TestLifecycle(),
-            options = ImageOptions(),
+            imageOptions = ImageOptions(),
             windowContainerSize = windowContainerSize,
         )
         assertEquals(expected = null, actual = target.sizeState.value)
@@ -251,7 +251,7 @@ class AsyncImageTargetTest {
     fun testRequestManagerAndRemembered() {
         val target = AsyncImageTarget(
             lifecycle = TestLifecycle(),
-            options = ImageOptions(),
+            imageOptions = ImageOptions(),
             windowContainerSize = IntSize(1080, 720),
         )
         assertSame(expected = target.getRequestManager(), actual = target.getRequestManager())
@@ -277,7 +277,7 @@ class AsyncImageTargetTest {
     fun testListenerAndProgressListener() {
         val target = AsyncImageTarget(
             lifecycle = TestLifecycle(),
-            options = ImageOptions(),
+            imageOptions = ImageOptions(),
             windowContainerSize = IntSize(1080, 720),
         )
         assertSame(expected = target.getListener(), actual = target.getListener())
@@ -289,7 +289,7 @@ class AsyncImageTargetTest {
         val lifecycle = TestLifecycle()
         val target = AsyncImageTarget(
             lifecycle = lifecycle,
-            options = ImageOptions(),
+            imageOptions = ImageOptions(),
             windowContainerSize = IntSize(1080, 720),
         )
         assertEquals(
@@ -303,7 +303,7 @@ class AsyncImageTargetTest {
         val lifecycle = TestLifecycle()
         val target = AsyncImageTarget(
             lifecycle = lifecycle,
-            options = ImageOptions(),
+            imageOptions = ImageOptions(),
             windowContainerSize = IntSize(1080, 720),
         )
         assertSame(
@@ -317,7 +317,7 @@ class AsyncImageTargetTest {
         val lifecycle = TestLifecycle()
         val target = AsyncImageTarget(
             lifecycle = lifecycle,
-            options = ImageOptions(),
+            imageOptions = ImageOptions(),
             windowContainerSize = IntSize(1080, 720),
         )
         assertEquals(expected = null, actual = target.getScaleDecider())
@@ -348,7 +348,7 @@ class AsyncImageTargetTest {
     fun testImageOptions() {
         val target1 = AsyncImageTarget(
             lifecycle = TestLifecycle(),
-            options = null,
+            imageOptions = null,
             windowContainerSize = IntSize(1080, 720),
         )
         assertEquals(
@@ -358,7 +358,7 @@ class AsyncImageTargetTest {
 
         val target2 = AsyncImageTarget(
             lifecycle = TestLifecycle(),
-            options = ImageOptions(),
+            imageOptions = ImageOptions(),
             windowContainerSize = IntSize(1080, 720),
         )
         assertEquals(
@@ -373,7 +373,7 @@ class AsyncImageTargetTest {
         val request = ImageRequest(context, "http://sample.com/sample.jpeg")
         val target = AsyncImageTarget(
             lifecycle = TestLifecycle(),
-            options = ImageOptions(),
+            imageOptions = ImageOptions(),
             windowContainerSize = IntSize(1080, 720),
         )
 
@@ -416,27 +416,27 @@ class AsyncImageTargetTest {
         val lifecycle2 = TestLifecycle()
         val element1 = AsyncImageTarget(
             lifecycle = lifecycle1,
-            options = ImageOptions(),
+            imageOptions = ImageOptions(),
             windowContainerSize = IntSize(1080, 720),
         )
         val element11 = AsyncImageTarget(
             lifecycle = lifecycle1,
-            options = ImageOptions(),
+            imageOptions = ImageOptions(),
             windowContainerSize = IntSize(1080, 720),
         )
         val element2 = AsyncImageTarget(
             lifecycle = lifecycle2,
-            options = ImageOptions(),
+            imageOptions = ImageOptions(),
             windowContainerSize = IntSize(1080, 720),
         )
         val element3 = AsyncImageTarget(
             lifecycle = lifecycle1,
-            options = ImageOptions { size(101, 202) },
+            imageOptions = ImageOptions { size(101, 202) },
             windowContainerSize = IntSize(1080, 720),
         )
         val element4 = AsyncImageTarget(
             lifecycle = lifecycle1,
-            options = ImageOptions(),
+            imageOptions = ImageOptions(),
             windowContainerSize = IntSize(720, 1080),
         )
 
@@ -464,7 +464,7 @@ class AsyncImageTargetTest {
         val options = ImageOptions()
         val target = AsyncImageTarget(
             lifecycle = lifecycle,
-            options = options,
+            imageOptions = options,
             windowContainerSize = IntSize(1080, 720),
         )
         assertEquals(

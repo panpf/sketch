@@ -26,24 +26,30 @@ class AsyncImageStateTest {
                     rememberAsyncImageState().apply {
                         assertEquals(expected = testLifecycle, actual = lifecycle)
                         assertEquals(expected = false, actual = inspectionMode)
-                        assertEquals(expected = windowContainerSize(), actual = containerSize)
-                        assertEquals(expected = null, actual = options)
+                        assertEquals(expected = windowContainerSize(), actual = windowContainerSize)
+                        assertEquals(expected = null, actual = imageOptions)
                     }
 
                     CompositionLocalProvider(LocalInspectionMode provides true) {
                         rememberAsyncImageState().apply {
                             assertEquals(expected = GlobalLifecycle, actual = lifecycle)
                             assertEquals(expected = true, actual = inspectionMode)
-                            assertEquals(expected = windowContainerSize(), actual = containerSize)
-                            assertEquals(expected = null, actual = options)
+                            assertEquals(
+                                expected = windowContainerSize(),
+                                actual = windowContainerSize
+                            )
+                            assertEquals(expected = null, actual = imageOptions)
                         }
                     }
 
                     rememberAsyncImageState(ImageOptions { size(101, 202) }).apply {
                         assertEquals(expected = testLifecycle, actual = lifecycle)
                         assertEquals(expected = false, actual = inspectionMode)
-                        assertEquals(expected = windowContainerSize(), actual = containerSize)
-                        assertEquals(expected = ImageOptions { size(101, 202) }, actual = options)
+                        assertEquals(expected = windowContainerSize(), actual = windowContainerSize)
+                        assertEquals(
+                            expected = ImageOptions { size(101, 202) },
+                            actual = imageOptions
+                        )
                     }
 
                     rememberAsyncImageState {
@@ -51,8 +57,11 @@ class AsyncImageStateTest {
                     }.apply {
                         assertEquals(expected = testLifecycle, actual = lifecycle)
                         assertEquals(expected = false, actual = inspectionMode)
-                        assertEquals(expected = windowContainerSize(), actual = containerSize)
-                        assertEquals(expected = ImageOptions { size(202, 101) }, actual = options)
+                        assertEquals(expected = windowContainerSize(), actual = windowContainerSize)
+                        assertEquals(
+                            expected = ImageOptions { size(202, 101) },
+                            actual = imageOptions
+                        )
                     }
                 }
             }
