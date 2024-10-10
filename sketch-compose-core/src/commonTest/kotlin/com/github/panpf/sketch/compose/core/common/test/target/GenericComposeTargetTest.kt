@@ -51,11 +51,11 @@ class GenericComposeTargetTest {
     }
 
     @Test
-    fun testUpdateDrawable() = runTest {
+    fun testUpdatePainter() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val imageViewTarget = TestGenericComposeTarget()
-        assertNull(imageViewTarget.painter)
+        val composeTarget = TestGenericComposeTarget()
+        assertNull(composeTarget.painter)
 
         /*
          * disallow null image
@@ -63,31 +63,31 @@ class GenericComposeTargetTest {
         val request = ImageRequest(context, ResourceImages.jpeg.uri)
         val painter1 = createBitmap(100, 100).asImage().asPainter()
         withContext(Dispatchers.Main) {
-            imageViewTarget.onStart(sketch, request, painter1.asImage())
+            composeTarget.onStart(sketch, request, painter1.asImage())
         }
-        assertSame(painter1, imageViewTarget.painter)
+        assertSame(painter1, composeTarget.painter)
 
         withContext(Dispatchers.Main) {
-            imageViewTarget.onStart(sketch, request, null)
+            composeTarget.onStart(sketch, request, null)
         }
-        assertSame(painter1, imageViewTarget.painter)
+        assertSame(painter1, composeTarget.painter)
 
         val painter2 = createBitmap(100, 100).asImage().asPainter()
         withContext(Dispatchers.Main) {
-            imageViewTarget.onSuccess(sketch, request, painter2.asImage())
+            composeTarget.onSuccess(sketch, request, painter2.asImage())
         }
-        assertSame(painter2, imageViewTarget.painter)
+        assertSame(painter2, composeTarget.painter)
 
         val painter3 = createBitmap(100, 100).asImage().asPainter()
         withContext(Dispatchers.Main) {
-            imageViewTarget.onError(sketch, request, painter3.asImage())
+            composeTarget.onError(sketch, request, painter3.asImage())
         }
-        assertSame(painter3, imageViewTarget.painter)
+        assertSame(painter3, composeTarget.painter)
 
         withContext(Dispatchers.Main) {
-            imageViewTarget.onError(sketch, request, null)
+            composeTarget.onError(sketch, request, null)
         }
-        assertSame(painter3, imageViewTarget.painter)
+        assertSame(painter3, composeTarget.painter)
 
         /*
          * allow null image
@@ -97,29 +97,29 @@ class GenericComposeTargetTest {
         }
         val painter4 = createBitmap(100, 100).asImage().asPainter()
         withContext(Dispatchers.Main) {
-            imageViewTarget.onStart(sketch, allowNullImageRequest, painter4.asImage())
+            composeTarget.onStart(sketch, allowNullImageRequest, painter4.asImage())
         }
-        assertSame(painter4, imageViewTarget.painter)
+        assertSame(painter4, composeTarget.painter)
 
         withContext(Dispatchers.Main) {
-            imageViewTarget.onStart(sketch, allowNullImageRequest, null)
+            composeTarget.onStart(sketch, allowNullImageRequest, null)
         }
-        assertNull(imageViewTarget.painter)
+        assertNull(composeTarget.painter)
 
         val painter5 = createBitmap(100, 100).asImage().asPainter()
         withContext(Dispatchers.Main) {
-            imageViewTarget.onError(sketch, allowNullImageRequest, painter5.asImage())
+            composeTarget.onError(sketch, allowNullImageRequest, painter5.asImage())
         }
-        assertSame(painter5, imageViewTarget.painter)
+        assertSame(painter5, composeTarget.painter)
 
         withContext(Dispatchers.Main) {
-            imageViewTarget.onError(sketch, allowNullImageRequest, null)
+            composeTarget.onError(sketch, allowNullImageRequest, null)
         }
-        assertNull(imageViewTarget.painter)
+        assertNull(composeTarget.painter)
     }
 
     @Test
-    fun testAnimatableDrawable() {
+    fun testAnimatablePainter() {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, null)
 

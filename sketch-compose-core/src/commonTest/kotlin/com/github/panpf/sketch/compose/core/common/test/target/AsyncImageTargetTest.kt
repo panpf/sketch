@@ -1,11 +1,13 @@
 package com.github.panpf.sketch.compose.core.common.test.target
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.PainterState
 import com.github.panpf.sketch.asImage
+import com.github.panpf.sketch.painter.ComposeBitmapPainter
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LifecycleResolver
@@ -15,6 +17,8 @@ import com.github.panpf.sketch.target.AsyncImageTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.RememberedPainter
 import com.github.panpf.sketch.test.utils.TestLifecycle
+import com.github.panpf.sketch.test.utils.asOrThrow
+import com.github.panpf.sketch.test.utils.createBitmapImage
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -163,6 +167,35 @@ class AsyncImageTargetTest {
             actual = target.contentScaleMutableState.value
         )
         assertEquals(expected = false, actual = target.fitScale)
+    }
+
+    @Test
+    fun testFilterQuality() {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, "http://sample.com/sample.jpeg")
+        val target = AsyncImageTarget(
+            lifecycle = TestLifecycle(),
+            imageOptions = ImageOptions(),
+            windowContainerSize = IntSize(1080, 720),
+        )
+        assertEquals(expected = FilterQuality.Low, actual = target.filterQuality)
+        assertEquals(expected = null, actual = target.filterQualityMutableState.value)
+        target.onSuccess(sketch, request, createBitmapImage(101, 202)).apply {
+            assertEquals(
+                expected = FilterQuality.Low,
+                actual = target.painter!!.asOrThrow<ComposeBitmapPainter>().filterQuality
+            )
+        }
+
+        target.filterQualityMutableState.value = FilterQuality.High
+        assertEquals(expected = FilterQuality.High, actual = target.filterQuality)
+        assertEquals(expected = FilterQuality.High, actual = target.filterQualityMutableState.value)
+        target.onSuccess(sketch, request, createBitmapImage(101, 202)).apply {
+            assertEquals(
+                expected = FilterQuality.High,
+                actual = target.painter!!.asOrThrow<ComposeBitmapPainter>().filterQuality
+            )
+        }
     }
 
     @Test
