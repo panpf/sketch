@@ -14,6 +14,8 @@
   bug。 [#209](https://github.com/panpf/sketch/issues/209)
 * fix: 修复 RingProgressDrawable, SectorProgressDrawable, RingProgressPainter, SectorProgressPainter
   的 equals 方法未按预期执行的 bug。 [#210](https://github.com/panpf/sketch/issues/210)
+* fix: 修复 AsyncImage 的 filterQuality 参数无效的
+  bug。 [#211](https://github.com/panpf/sketch/issues/211)
 * remove: 移除 ComposeBitmapImage
 * remove: 删除 Image.getPixels()
 * change: 现在非安卓平台上内存缓存中缓存的是 SkiaBitmapImage，不再是 ComposeBitmapImage

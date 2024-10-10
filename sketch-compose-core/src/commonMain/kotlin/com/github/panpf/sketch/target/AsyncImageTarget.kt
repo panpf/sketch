@@ -20,6 +20,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntSize
@@ -65,6 +66,7 @@ class AsyncImageTarget(
     private val painterStateMutableState: MutableState<PainterState> = mutableStateOf(Empty)
 
     val contentScaleMutableState: MutableState<ContentScale?> = mutableStateOf(null)
+    val filterQualityMutableState: MutableState<FilterQuality?> = mutableStateOf(null)
 
     val sizeState: State<IntSize?> = sizeMutableState
     val painterState: State<Painter?> = painterMutableState
@@ -78,6 +80,9 @@ class AsyncImageTarget(
 
     override val fitScale: Boolean
         get() = contentScaleMutableState.value?.fitScale ?: true
+
+    override val filterQuality: FilterQuality
+        get() = filterQualityMutableState.value ?: super.filterQuality
 
     init {
         require(!windowContainerSize.isEmpty()) {

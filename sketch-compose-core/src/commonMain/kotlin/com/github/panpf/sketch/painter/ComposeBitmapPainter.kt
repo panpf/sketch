@@ -18,6 +18,7 @@ package com.github.panpf.sketch.painter
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.IntSize
@@ -29,7 +30,8 @@ import com.github.panpf.sketch.toLogString
  *
  * @see com.github.panpf.sketch.compose.core.common.test.painter.ComposeBitmapPainterTest.testComposeBitmapAsPainter
  */
-fun ComposeBitmap.asPainter(): Painter = ComposeBitmapPainter(this)
+fun ComposeBitmap.asPainter(filterQuality: FilterQuality = DrawScope.DefaultFilterQuality): Painter =
+    ComposeBitmapPainter(this, filterQuality)
 
 /**
  * [ComposeBitmap] painter
@@ -37,27 +39,34 @@ fun ComposeBitmap.asPainter(): Painter = ComposeBitmapPainter(this)
  * @see com.github.panpf.sketch.compose.core.common.test.painter.ComposeBitmapPainterTest
  */
 @Stable
-class ComposeBitmapPainter(val bitmap: ComposeBitmap) : Painter(), SketchPainter {
+class ComposeBitmapPainter(
+    val bitmap: ComposeBitmap,
+    val filterQuality: FilterQuality = DrawScope.DefaultFilterQuality
+) : Painter(), SketchPainter {
 
     override val intrinsicSize = Size(bitmap.width.toFloat(), bitmap.height.toFloat())
 
     override fun DrawScope.onDraw() {
         val intSize = IntSize(size.width.toInt(), size.height.toInt())
-        drawImage(bitmap, dstSize = intSize)
+        drawImage(bitmap, dstSize = intSize, filterQuality = filterQuality)
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as ComposeBitmapPainter
-        return bitmap == other.bitmap
+        if (bitmap != other.bitmap) return false
+        if (filterQuality != other.filterQuality) return false
+        return true
     }
 
     override fun hashCode(): Int {
-        return bitmap.hashCode()
+        var result = bitmap.hashCode()
+        result = 31 * result + filterQuality.hashCode()
+        return result
     }
 
     override fun toString(): String {
-        return "ComposeBitmapPainter(bitmap=${bitmap.toLogString()})"
+        return "ComposeBitmapPainter(bitmap=${bitmap.toLogString()}, filterQuality=$filterQuality)"
     }
 }

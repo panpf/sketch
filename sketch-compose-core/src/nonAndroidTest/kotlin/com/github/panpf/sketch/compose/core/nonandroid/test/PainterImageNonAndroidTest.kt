@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.compose.core.nonandroid.test
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.painter.ColorPainter
 import com.github.panpf.sketch.SkiaAnimatedImage
 import com.github.panpf.sketch.SkiaBitmap
@@ -11,6 +12,7 @@ import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.painter.ComposeBitmapPainter
 import com.github.panpf.sketch.painter.SkiaAnimatedImagePainter
 import com.github.panpf.sketch.test.utils.FakeImage
+import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.SketchSize
 import okio.buffer
@@ -21,7 +23,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
-import kotlin.test.assertTrue
 
 class PainterImageNonAndroidTest {
 
@@ -35,8 +36,14 @@ class PainterImageNonAndroidTest {
         )
 
         val bitmap = SkiaBitmap(100, 100)
-        assertTrue(
-            actual = bitmap.asImage().asPainter() is ComposeBitmapPainter
+        assertEquals(
+            expected = FilterQuality.Low,
+            actual = bitmap.asImage().asPainter().asOrThrow<ComposeBitmapPainter>().filterQuality
+        )
+        assertEquals(
+            expected = FilterQuality.High,
+            actual = bitmap.asImage().asPainter(FilterQuality.High)
+                .asOrThrow<ComposeBitmapPainter>().filterQuality
         )
 
         val context = getTestContext()

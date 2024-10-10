@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch
 
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.asComposeImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.painter.SkiaAnimatedImagePainter
@@ -26,9 +27,9 @@ import com.github.panpf.sketch.painter.asPainter
  *
  * @see com.github.panpf.sketch.compose.core.nonandroid.test.PainterImageNonAndroidTest.testImageAsPainter
  */
-actual fun Image.asPainter(): Painter = when (this) {
+actual fun Image.asPainter(filterQuality: FilterQuality): Painter = when (this) {
     is PainterImage -> painter
-    is BitmapImage -> bitmap.asComposeImageBitmap().asPainter()
+    is BitmapImage -> bitmap.asComposeImageBitmap().asPainter(filterQuality)
     is SkiaAnimatedImage -> SkiaAnimatedImagePainter(this)
     else -> throw IllegalArgumentException("Not supported conversion to Painter from Image '$this'")
 }

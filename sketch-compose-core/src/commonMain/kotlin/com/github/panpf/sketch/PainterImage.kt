@@ -18,6 +18,8 @@ package com.github.panpf.sketch
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.isSpecified
+import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.painter.AnimatablePainter
 import com.github.panpf.sketch.painter.toLogString
@@ -38,7 +40,7 @@ fun Painter.asImage(shareable: Boolean = this !is AnimatablePainter): PainterIma
  * @see com.github.panpf.sketch.compose.core.android.test.PainterImageAndroidTest.testImageAsPainter
  * @see com.github.panpf.sketch.compose.core.nonandroid.test.PainterImageNonAndroidTest.testImageAsPainter
  */
-expect fun Image.asPainter(): Painter
+expect fun Image.asPainter(filterQuality: FilterQuality = DrawScope.DefaultFilterQuality): Painter
 
 /**
  * Painter image

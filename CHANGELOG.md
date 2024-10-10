@@ -17,6 +17,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * fix: Fixed the bug that the equals method of RingProgressDrawable, SectorProgressDrawable,
   RingProgressPainter, SectorProgressPainter did not execute as
   expected. [#210](https://github.com/panpf/sketch/issues/210)
+* fix: Fix the bug that the filterQuality parameter of AsyncImage is
+  invalid. [#211](https://github.com/panpf/sketch/issues/211)
 * remove: Remove ComposeBitmapImage
 * remove: Remove Image.getPixels()
 * change: SkiaBitmapImage is now cached in the memory cache on non-Android platforms, not

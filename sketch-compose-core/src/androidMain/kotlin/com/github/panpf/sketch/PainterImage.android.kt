@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch
 
+import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.painter.asPainter
@@ -25,9 +26,9 @@ import com.github.panpf.sketch.painter.asPainter
  *
  * @see com.github.panpf.sketch.compose.core.android.test.PainterImageAndroidTest.testImageAsPainter
  */
-actual fun Image.asPainter(): Painter = when (this) {
+actual fun Image.asPainter(filterQuality: FilterQuality): Painter = when (this) {
     is PainterImage -> painter
-    is BitmapImage -> bitmap.asImageBitmap().asPainter()
+    is BitmapImage -> bitmap.asImageBitmap().asPainter(filterQuality)
     is DrawableImage -> drawable.asPainter()
     else -> throw IllegalArgumentException("Not supported conversion to Painter from Image '$this'")
 }

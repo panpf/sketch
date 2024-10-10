@@ -16,6 +16,8 @@
 
 package com.github.panpf.sketch.target
 
+import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.lifecycle.Lifecycle.Event
 import androidx.lifecycle.LifecycleEventObserver
@@ -43,6 +45,8 @@ abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget,
 
     internal var isStarted = false
     internal var isAttached = false
+
+    open val filterQuality: FilterQuality = DrawScope.DefaultFilterQuality
 
     override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) =
         updateImage(request, placeholder)
@@ -81,7 +85,7 @@ abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget,
         // It makes it easier to implement crossfade animation between old and new drawables.
         // com.github.panpf.sketch.sample.ui.gallery.PhotoPagerComposeFragment#PagerBgImage() is an example.
         if (image != null || request.allowNullImage == true) {
-            val newPainter = image?.asPainter()
+            val newPainter = image?.asPainter(filterQuality)
             updatePainter(newPainter)
         }
     }
