@@ -90,10 +90,12 @@ abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget,
         val oldPainter = painter
         if (newPainter !== oldPainter) {
             oldPainter.asOrNull<AnimatablePainter>()?.stop()
-            painter = newPainter
+            setPainter(newPainter)
             updateAnimation()
         }
     }
+
+    protected abstract fun setPainter(painter: Painter?)
 
     /** Start/stop the current [AnimatablePainter]'s animation based on the current lifecycle state. */
     @Suppress("MemberVisibilityCanBePrivate")

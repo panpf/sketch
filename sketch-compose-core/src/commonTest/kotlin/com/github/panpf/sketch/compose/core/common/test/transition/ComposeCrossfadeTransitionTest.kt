@@ -87,7 +87,7 @@ class ComposeCrossfadeTransitionTest {
 
         // success
         withContext(Dispatchers.Main) {
-            imageViewTarget.painter = ColorPainter(Color.Green)
+            imageViewTarget.onSuccess(sketch, request, ColorPainter(Color.Green).asImage())
         }
         assertEquals(Color.Green, (imageViewTarget.painter as ColorPainter).color)
         val resultBitmap = createBitmap(100, 200)
@@ -110,7 +110,7 @@ class ComposeCrossfadeTransitionTest {
 
         // error
         withContext(Dispatchers.Main) {
-            imageViewTarget.painter = ColorPainter(Color.Green)
+            imageViewTarget.onSuccess(sketch, request, ColorPainter(Color.Green).asImage())
         }
         assertEquals(Color.Green, (imageViewTarget.painter as ColorPainter).color)
         val error = ImageResult.Error(
@@ -125,7 +125,7 @@ class ComposeCrossfadeTransitionTest {
 
         // start end same
         withContext(Dispatchers.Main) {
-            imageViewTarget.painter = ColorPainter(Color.Green)
+            imageViewTarget.onSuccess(sketch, request, ColorPainter(Color.Green).asImage())
         }
         assertTrue(imageViewTarget.painter!! is ColorPainter)
         ComposeCrossfadeTransition(

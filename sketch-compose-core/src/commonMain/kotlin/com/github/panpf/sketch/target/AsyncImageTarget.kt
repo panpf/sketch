@@ -66,15 +66,8 @@ class AsyncImageTarget(
     var sizeMutableState: MutableState<IntSize?> = mutableStateOf(null)
 
     override var painter: Painter?
+    override val painter: Painter?
         get() = painterMutableState.value
-        set(newPainter) {
-            val oldPainter = painterMutableState.value
-            if (newPainter !== oldPainter) {
-                (oldPainter as? RememberObserver)?.onForgotten()
-                painterMutableState.value = newPainter
-                (newPainter as? RememberObserver)?.onRemembered()
-            }
-        }
 
     override val fitScale: Boolean
         get() = contentScaleMutableState.value?.fitScale ?: true
@@ -90,6 +83,14 @@ class AsyncImageTarget(
         val limitSize = IntSize(
             if (size.width > 0) size.width else containerSize.width,
             if (size.height > 0) size.height else containerSize.height
+    override fun setPainter(painter: Painter?) {
+        val oldPainter = painterMutableState.value
+        if (painter !== oldPainter) {
+            (oldPainter as? RememberObserver)?.onForgotten()
+            painterMutableState.value = painter
+            (painter as? RememberObserver)?.onRemembered()
+        }
+    }
         )
         this.sourceSize = size
         this.sizeMutableState.value = limitSize

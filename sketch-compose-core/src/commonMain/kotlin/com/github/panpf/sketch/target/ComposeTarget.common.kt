@@ -41,7 +41,7 @@ interface ComposeTarget : Target {
     /**
      * The component's current [Painter].
      */
-    var painter: Painter?
+    val painter: Painter?
 
     override val currentImage: Image?
         get() = painter?.asImage()

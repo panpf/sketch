@@ -6,8 +6,16 @@ import com.github.panpf.sketch.request.internal.RequestManager
 
 class TestGenericComposeTarget(override val fitScale: Boolean = true) : GenericComposeTarget() {
 
-    override var painter: Painter? = null
+    private var _painter: Painter? = null
+
     private val requestManager = OneShotRequestManager()
+
+    override val painter: Painter?
+        get() = _painter
+
+    override fun setPainter(painter: Painter?) {
+        this._painter = painter
+    }
 
     override fun getRequestManager(): RequestManager {
         return requestManager

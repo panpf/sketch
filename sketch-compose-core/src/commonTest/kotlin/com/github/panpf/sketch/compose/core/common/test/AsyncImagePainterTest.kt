@@ -10,9 +10,12 @@ import androidx.compose.ui.test.runComposeUiTest
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.AsyncImagePainter
 import com.github.panpf.sketch.AsyncImageState
+import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.rememberAsyncImagePainter
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.LifecycleContainer
 import com.github.panpf.sketch.test.utils.SizeColorPainter
 import com.github.panpf.sketch.test.utils.TestLifecycle
@@ -135,6 +138,8 @@ class AsyncImagePainterTest {
 
     @Test
     fun testIntrinsicSize() {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, "http://sample.com/sample.jpeg")
         val asyncImageState = AsyncImageState(
             inspectionMode = false,
             lifecycle = TestLifecycle(),
@@ -146,7 +151,11 @@ class AsyncImagePainterTest {
         assertEquals(null, asyncImageState.target.painter)
         assertEquals(Size.Unspecified, asyncImagePainter.intrinsicSize)
 
-        asyncImageState.target.painter = SizeColorPainter(Color.Red, Size(101f, 202f))
+        asyncImageState.target.onSuccess(
+            sketch = sketch,
+            request = request,
+            result = SizeColorPainter(Color.Red, Size(101f, 202f)).asImage()
+        )
         assertEquals(SizeColorPainter(Color.Red, Size(101f, 202f)), asyncImageState.target.painter)
         assertEquals(Size(101f, 202f), asyncImagePainter.intrinsicSize)
     }
