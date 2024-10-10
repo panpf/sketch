@@ -3,7 +3,12 @@
 package com.github.panpf.sketch.compose.core.common.test
 
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.RememberObserver
+import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -11,24 +16,31 @@ import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.AsyncImageState
+import com.github.panpf.sketch.PainterState
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.painter.ComposeBitmapPainter
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LifecycleResolver
+import com.github.panpf.sketch.request.LoadState
+import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestLifecycle
 import com.github.panpf.sketch.test.utils.asOrThrow
+import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.createBitmapImage
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.windowContainerSize
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 class AsyncImageStateTest {
 
@@ -88,7 +100,7 @@ class AsyncImageStateTest {
         AsyncImageState(true, TestLifecycle(), IntSize(1080, 720), ImageOptions())
 
         AsyncImageState(
-            inspectionMode = true,
+            inspectionMode = false,
             lifecycle = TestLifecycle(),
             windowContainerSize = IntSize(1080, 720),
             imageOptions = ImageOptions()
@@ -99,7 +111,7 @@ class AsyncImageStateTest {
     fun testLifecycle() {
         val lifecycle = TestLifecycle()
         val asyncImageState = AsyncImageState(
-            inspectionMode = true,
+            inspectionMode = false,
             lifecycle = lifecycle,
             windowContainerSize = IntSize(1080, 720),
             imageOptions = ImageOptions()
@@ -113,7 +125,7 @@ class AsyncImageStateTest {
     @Test
     fun testImageOptions() {
         val asyncImageState1 = AsyncImageState(
-            inspectionMode = true,
+            inspectionMode = false,
             lifecycle = TestLifecycle(),
             windowContainerSize = IntSize(1080, 720),
             imageOptions = null
@@ -124,7 +136,7 @@ class AsyncImageStateTest {
         )
 
         val asyncImageState2 = AsyncImageState(
-            inspectionMode = true,
+            inspectionMode = false,
             lifecycle = TestLifecycle(),
             windowContainerSize = IntSize(1080, 720),
             imageOptions = ImageOptions()
@@ -138,7 +150,7 @@ class AsyncImageStateTest {
     @Test
     fun testContentScale() {
         val asyncImageState = AsyncImageState(
-            inspectionMode = true,
+            inspectionMode = false,
             lifecycle = TestLifecycle(),
             windowContainerSize = IntSize(1080, 720),
             imageOptions = ImageOptions()
@@ -274,7 +286,7 @@ class AsyncImageStateTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "http://sample.com/sample.jpeg")
         val asyncImageState = AsyncImageState(
-            inspectionMode = true,
+            inspectionMode = false,
             lifecycle = TestLifecycle(),
             windowContainerSize = IntSize(1080, 720),
             imageOptions = ImageOptions()
@@ -306,7 +318,7 @@ class AsyncImageStateTest {
     fun testSize() {
         val windowContainerSize = IntSize(1080, 720)
         val asyncImageState = AsyncImageState(
-            inspectionMode = true,
+            inspectionMode = false,
             lifecycle = TestLifecycle(),
             windowContainerSize = IntSize(1080, 720),
             imageOptions = ImageOptions()
@@ -371,16 +383,105 @@ class AsyncImageStateTest {
 
     @Test
     fun testRemembered() {
-        // TODO test
+        val asyncImageState = AsyncImageState(
+            inspectionMode = false,
+            lifecycle = TestLifecycle(),
+            windowContainerSize = IntSize(1080, 720),
+            imageOptions = ImageOptions()
+        )
+        @Suppress("USELESS_IS_CHECK")
+        assertTrue(actual = asyncImageState is RememberObserver)
+
+        val requestManager = asyncImageState.target.getRequestManager()
+        assertEquals(expected = 0, actual = asyncImageState.rememberedCounter.count)
+        assertEquals(expected = 0, actual = requestManager.rememberedCounter.count)
+        assertEquals(expected = null, actual = asyncImageState.coroutineScope)
+
+        asyncImageState.onRemembered()
+        assertEquals(expected = 1, actual = asyncImageState.rememberedCounter.count)
+        assertEquals(expected = 1, actual = requestManager.rememberedCounter.count)
+        assertNotEquals(illegal = null, actual = asyncImageState.coroutineScope)
+
+        asyncImageState.onRemembered()
+        assertEquals(expected = 2, actual = asyncImageState.rememberedCounter.count)
+        assertEquals(expected = 1, actual = requestManager.rememberedCounter.count)
+        assertNotEquals(illegal = null, actual = asyncImageState.coroutineScope)
+
+        asyncImageState.onRemembered()
+        assertEquals(expected = 3, actual = asyncImageState.rememberedCounter.count)
+        assertEquals(expected = 1, actual = requestManager.rememberedCounter.count)
+        assertNotEquals(illegal = null, actual = asyncImageState.coroutineScope)
+
+        asyncImageState.onAbandoned()
+        assertEquals(expected = 2, actual = asyncImageState.rememberedCounter.count)
+        assertEquals(expected = 1, actual = requestManager.rememberedCounter.count)
+        assertNotEquals(illegal = null, actual = asyncImageState.coroutineScope)
+
+        asyncImageState.onForgotten()
+        assertEquals(expected = 1, actual = asyncImageState.rememberedCounter.count)
+        assertEquals(expected = 1, actual = requestManager.rememberedCounter.count)
+        assertNotEquals(illegal = null, actual = asyncImageState.coroutineScope)
+
+        asyncImageState.onForgotten()
+        assertEquals(expected = 0, actual = asyncImageState.rememberedCounter.count)
+        assertEquals(expected = 0, actual = requestManager.rememberedCounter.count)
+        assertEquals(expected = null, actual = asyncImageState.coroutineScope)
     }
 
     @Test
     fun testPreview() {
-        // TODO test
+        val (context, sketch) = getTestContextAndSketch()
+        val asyncImageState = AsyncImageState(
+            inspectionMode = true,
+            lifecycle = TestLifecycle(),
+            windowContainerSize = IntSize(1080, 720),
+            imageOptions = ImageOptions()
+        )
+
+        val request = ImageRequest(context, ResourceImages.jpeg.uri) {
+            size(Size.Origin)
+        }
+        val request2 = ImageRequest(context, ResourceImages.jpeg.uri) {
+            size(Size.Origin)
+            placeholder(Color.Red)
+        }
+        assertNotEquals(illegal = request, actual = request2)
+
+        runComposeUiTest {
+            setContent {
+                remember { asyncImageState }
+                asyncImageState.sketch = sketch
+                asyncImageState.request = request
+                asyncImageState.contentScale = ContentScale.Fit
+                asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
+            }
+            waitForIdle()
+
+            assertEquals(expected = null, actual = asyncImageState.painter)
+            assertEquals(
+                expected = PainterState.Loading(null),
+                actual = asyncImageState.painterState
+            )
+            assertEquals(expected = LoadState.Started(request), actual = asyncImageState.loadState)
+
+            asyncImageState.request = request2
+            block(1000)
+            assertEquals(expected = ColorPainter(Color.Red), actual = asyncImageState.painter)
+            assertEquals(
+                expected = PainterState.Loading(ColorPainter(Color.Red)),
+                actual = asyncImageState.painterState
+            )
+            assertEquals(expected = LoadState.Started(request2), actual = asyncImageState.loadState)
+        }
     }
 
     @Test
     fun testLoad() {
+        // TODO test
+    }
+
+    @Test
+    fun testCheckRequest() {
         // TODO test
     }
 
