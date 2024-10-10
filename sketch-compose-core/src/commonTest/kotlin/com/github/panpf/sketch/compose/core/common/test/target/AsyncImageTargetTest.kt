@@ -104,7 +104,7 @@ class AsyncImageTargetTest {
         )
         assertEquals(expected = null, actual = target.painterState.value)
         assertEquals(expected = null, actual = target.painter)
-        assertEquals(expected = PainterState.Empty, actual = target.painterStateState.value)
+        assertEquals(expected = null, actual = target.painterStateState.value)
 
         val previewPainter = ColorPainter(Color.Red)
 
@@ -346,7 +346,7 @@ class AsyncImageTargetTest {
 
         assertEquals(expected = null, actual = target.painter)
         assertEquals(expected = null, actual = target.painterState.value)
-        assertEquals(expected = PainterState.Empty, actual = target.painterStateState.value)
+        assertEquals(expected = null, actual = target.painterStateState.value)
 
         val painter1 = ColorPainter(Color.Red)
         val painter2 = ColorPainter(Color.Green)

@@ -33,7 +33,6 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQuality
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import com.github.panpf.sketch.PainterState.Empty
 import com.github.panpf.sketch.PainterState.Error
 import com.github.panpf.sketch.PainterState.Loading
 import com.github.panpf.sketch.PainterState.Success
@@ -376,7 +375,7 @@ private fun contentOf(
                     draw = false
                 }
 
-                is Empty -> {} // Skipped if rendering on the main thread.
+                else -> {} // Skipped if rendering on the main thread.
             }
             if (draw) SubcomposeAsyncImageContent(clipToBounds = clipToBounds)
         }

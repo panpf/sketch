@@ -28,7 +28,6 @@ import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.PainterState
-import com.github.panpf.sketch.PainterState.Empty
 import com.github.panpf.sketch.PainterState.Loading
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageOptions
@@ -63,14 +62,14 @@ class AsyncImageTarget(
 
     private val sizeMutableState: MutableState<IntSize?> = mutableStateOf(null)
     private val painterMutableState: MutableState<Painter?> = mutableStateOf(null)
-    private val painterStateMutableState: MutableState<PainterState> = mutableStateOf(Empty)
+    private val painterStateMutableState: MutableState<PainterState?> = mutableStateOf(null)
 
     val contentScaleMutableState: MutableState<ContentScale?> = mutableStateOf(null)
     val filterQualityMutableState: MutableState<FilterQuality?> = mutableStateOf(null)
 
     val sizeState: State<IntSize?> = sizeMutableState
     val painterState: State<Painter?> = painterMutableState
-    val painterStateState: State<PainterState> = painterStateMutableState
+    val painterStateState: State<PainterState?> = painterStateMutableState
     val loadStateState: State<LoadState?> = listener.loadStateState
     val resultState: State<ImageResult?> = listener.resultState
     val progressState: State<Progress?> = listener.progressState

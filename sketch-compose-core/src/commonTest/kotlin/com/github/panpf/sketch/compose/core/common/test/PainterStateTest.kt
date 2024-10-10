@@ -11,11 +11,6 @@ import kotlin.test.assertEquals
 class PainterStateTest {
 
     @Test
-    fun testEmpty() {
-        assertEquals(null, PainterState.Empty.painter)
-    }
-
-    @Test
     fun testLoading() {
         assertEquals(null, PainterState.Loading(null).painter)
         assertEquals(
@@ -49,6 +44,5 @@ class PainterStateTest {
             actual = PainterState.Success(ColorPainter(Color.Red)).name
         )
         assertEquals(expected = "Error", actual = PainterState.Error(null).name)
-        assertEquals(expected = "Empty", actual = PainterState.Empty.name)
     }
 }

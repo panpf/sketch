@@ -38,6 +38,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
   to StateImage
 * change: ErrorImageState is refactored into ConditionStateImage, and ConditionStateImage can be
   used in placeholder and fallback
+* change: Remove PainterState.Empty
 * improve: Improve IconDrawable, support fixed-size background and restrict icons to have fixed
   sizes or specify iconSize
 * improve: Improve IconPainter, support fixed-size background and restrict icons to have fixed

@@ -112,7 +112,7 @@ class AsyncImageState internal constructor(
 
     val size: IntSize? by target.sizeState
     val painter: Painter? by target.painterState
-    val painterState: PainterState by target.painterStateState
+    val painterState: PainterState? by target.painterStateState
     val result: ImageResult? by target.resultState
     val loadState: LoadState? by target.loadStateState
     val progress: Progress? by target.progressState
