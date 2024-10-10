@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.request.internal
+package com.github.panpf.sketch.target.internal
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.request.ImageRequest
@@ -26,7 +27,6 @@ import com.github.panpf.sketch.request.ImageResult.Success
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.LoadState.Canceled
-import com.github.panpf.sketch.request.LoadState.Started
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.util.toHexString
@@ -34,18 +34,22 @@ import com.github.panpf.sketch.util.toHexString
 /**
  * [AsyncImage] listener
  *
- * @see com.github.panpf.sketch.compose.core.common.test.request.internal.AsyncImageListenerTest
+ * @see com.github.panpf.sketch.compose.core.common.test.target.internal.AsyncImageListenerTest
  */
 class AsyncImageListener : Listener, ProgressListener {
 
-    var loadStateMutableState: MutableState<LoadState?> = mutableStateOf(null)
-    var resultMutableState: MutableState<ImageResult?> = mutableStateOf(null)
-    var progressMutableState: MutableState<Progress?> = mutableStateOf(null)
+    private val loadStateMutableState: MutableState<LoadState?> = mutableStateOf(null)
+    private val resultMutableState: MutableState<ImageResult?> = mutableStateOf(null)
+    private val progressMutableState: MutableState<Progress?> = mutableStateOf(null)
+
+    val loadStateState: State<LoadState?> = loadStateMutableState
+    val resultState: State<ImageResult?> = resultMutableState
+    val progressState: State<Progress?> = progressMutableState
 
     override fun onStart(request: ImageRequest) {
         resultMutableState.value = null
         progressMutableState.value = null
-        loadStateMutableState.value = Started(request)
+        loadStateMutableState.value = LoadState.Started(request)
     }
 
     override fun onSuccess(request: ImageRequest, result: Success) {

@@ -31,14 +31,12 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.IntSize
 import androidx.lifecycle.Lifecycle
-import com.github.panpf.sketch.PainterState.Loading
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.Progress
-import com.github.panpf.sketch.request.internal.AsyncImageListener
 import com.github.panpf.sketch.target.AsyncImageTarget
 import com.github.panpf.sketch.util.difference
 import com.github.panpf.sketch.util.toHexString
@@ -96,13 +94,12 @@ class AsyncImageState internal constructor(
     val options: ImageOptions?,
 ) : RememberObserver {
 
-    private val listener = AsyncImageListener()
     private var lastRequest: ImageRequest? = null
     private var loadImageJob: Job? = null
     private var coroutineScope: CoroutineScope? = null
     private var rememberedCount: Int = 0
 
-    internal val target = AsyncImageTarget(lifecycle, options, containerSize, listener)
+    internal val target = AsyncImageTarget(lifecycle, options, containerSize)
 
     var sketch: Sketch? by mutableStateOf(null)
         internal set
@@ -113,15 +110,15 @@ class AsyncImageState internal constructor(
     var filterQuality = DrawScope.DefaultFilterQuality
         internal set
 
-    val painter: Painter? by target.painterMutableState
-    val painterState: PainterState by target.painterStateMutableState
-    val result: ImageResult? by listener.resultMutableState
-    val loadState: LoadState? by listener.loadStateMutableState
-    val progress: Progress? by listener.progressMutableState
-    val size: IntSize? by target.sizeMutableState
+    val size: IntSize? by target.sizeState
+    val painter: Painter? by target.painterState
+    val painterState: PainterState by target.painterStateState
+    val result: ImageResult? by target.resultState
+    val loadState: LoadState? by target.loadStateState
+    val progress: Progress? by target.progressState
 
-    fun setSize(size: IntSize): Boolean {
-        return target.updateSize(size)
+    fun setSize(size: IntSize) {
+        target.setSize(size)
     }
 
     /**
@@ -181,9 +178,8 @@ class AsyncImageState internal constructor(
                 }
                 val placeholderImage = updatedRequest.placeholder
                     ?.getImage(sketch, updatedRequest, null)
-                val painter1 = placeholderImage?.asPainter()
-                target.painterStateMutableState.value = Loading(painter1)
-                target.painterMutableState.value = painter1
+                val previewPainter = placeholderImage?.asPainter()
+                target.setPreviewPainter(previewPainter)
             }
         }
     }
