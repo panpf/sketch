@@ -101,6 +101,10 @@ class AsyncImageState internal constructor(
     internal var coroutineScope: CoroutineScope? = null
     internal val rememberedCounter: RememberedCounter = RememberedCounter()
 
+    /*
+     * The default values for sketch, request, contentScale, and filterQuality are all null.
+     * This ensures that a load image request will only be triggered after they are all initialized.
+     */
     var sketch: Sketch? by mutableStateOf(null)
         internal set
     var request: ImageRequest? by mutableStateOf(null)
@@ -131,84 +135,50 @@ class AsyncImageState internal constructor(
         val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
         this.coroutineScope = coroutineScope
 
-        target.onRemembered()
-
-        if (inspectionMode) {
-            loadPreviewImage(coroutineScope)
-        } else {
-            launchImageLoadTask(coroutineScope)
-        }
+        this.target.onRemembered()
+        launchLoadImageTask(coroutineScope)
     }
 
     override fun onAbandoned() = onForgotten()
     override fun onForgotten() {
         if (!rememberedCounter.forget()) return
 
-        val coroutineScope = this.coroutineScope ?: return
         cancelLoadImageJob()
-        coroutineScope.cancel()
-        this.coroutineScope = null
-
         target.onForgotten()
+
+        coroutineScope?.cancel()
+        coroutineScope = null
     }
 
-    private fun loadPreviewImage(coroutineScope: CoroutineScope) {
+    private fun launchLoadImageTask(coroutineScope: CoroutineScope) {
         coroutineScope.launch {
             combine(
                 flows = listOf(
-                    snapshotFlow { request }.filterNotNull(),
                     snapshotFlow { sketch }.filterNotNull(),
-                ),
-                transform = { it }
-            ).collect {
-                val request = (it[0] as ImageRequest).apply { validateRequest(this) }
-                val sketch = it[1] as Sketch
-                val globalImageOptions = sketch.globalImageOptions
-                val newDefaultOptions = request.defaultOptions?.merged(globalImageOptions)
-                val updatedRequest = request.newRequest {
-                    merge(imageOptions)
-                    defaultOptions(newDefaultOptions)
-                }
-                val placeholderImage = updatedRequest.placeholder
-                    ?.getImage(sketch, updatedRequest, null)
-                val previewPainter = placeholderImage?.asPainter()
-                target.setPreviewPainter(previewPainter)
-            }
-        }
-    }
-
-    private fun launchImageLoadTask(coroutineScope: CoroutineScope) {
-        coroutineScope.launch {
-            combine(
-                flows = listOf(
                     snapshotFlow { request }.filterNotNull(),
-                    snapshotFlow { sketch }.filterNotNull(),
                     snapshotFlow { contentScale }.filterNotNull(),
                     snapshotFlow { filterQuality }.filterNotNull(),
                 ),
                 transform = { it }
             ).collect {
-                val request = (it[0] as ImageRequest).apply { validateRequest(this) }
-                val sketch = it[1] as Sketch
+                val sketch = it[0] as Sketch
+                val request = it[1] as ImageRequest
                 val contentScale = it[2] as ContentScale
                 val filterQuality = it[3] as FilterQuality
-                val lastRequest = this@AsyncImageState.lastRequest
-                if (lastRequest != null) {
-                    if (lastRequest.key == request.key) {
-                        if (lastRequest != request) {
-                            val diffImageRequest = lastRequest.difference(request)
-                            throw IllegalArgumentException("ImageRequest key is the same but the content is different: $diffImageRequest.")
-                        }
-                    }
-                }
+                checkRequest(request, this@AsyncImageState.lastRequest)
                 this@AsyncImageState.lastRequest = request
-                cancelLoadImageJob()
-                loadImage(sketch, request, contentScale, filterQuality)
+
+                if (inspectionMode) {
+                    loadPreviewImage(sketch, request, contentScale, filterQuality)
+                } else {
+                    cancelLoadImageJob()
+                    loadImage(sketch, request, contentScale, filterQuality)
+                }
             }
         }
     }
 
-    private fun validateRequest(request: ImageRequest) {
+    private fun checkRequest(request: ImageRequest, lastRequest: ImageRequest?) {
         /*
          * Why are listener, progressListener, and target not allowed?
          * Because they are usually created directly when used, this will cause the equals result to be false when ImageRequest is repeatedly created in compose.
@@ -223,8 +193,45 @@ class AsyncImageState internal constructor(
         require(request.target == null) {
             "target is not supported in compose"
         }
+
+        /*
+         * The keys of the two ImageRequests are equal but the equals are not equal.
+         * This is because the custom attributes set to the ImageRequest do not implement the equals method,
+         * resulting in the equals of each created ImageRequest being unequal,
+         * which eventually triggers reorganization and reduces performance,
+         * so an exception must be thrown to remind the developer to solve problems
+         */
+        if (lastRequest != null && lastRequest.key == request.key && lastRequest != request) {
+            val diffImageRequest = lastRequest.difference(request)
+            throw IllegalArgumentException("ImageRequest key is the same but the content is different: $diffImageRequest.")
+        }
     }
 
+    /**
+     * Note: The target uses contentScale and filterQuality,
+     *  so you must wait for them to be initialized before loading the image.
+     */
+    private fun loadPreviewImage(
+        sketch: Sketch,
+        request: ImageRequest,
+        @Suppress("UNUSED_PARAMETER") contentScale: ContentScale,
+        @Suppress("UNUSED_PARAMETER") filterQuality: FilterQuality,
+    ) {
+        val globalImageOptions = sketch.globalImageOptions
+        val newDefaultOptions = request.defaultOptions?.merged(globalImageOptions)
+        val updatedRequest = request.newRequest {
+            merge(imageOptions)
+            defaultOptions(newDefaultOptions)
+        }
+        val placeholderImage = updatedRequest.placeholder
+            ?.getImage(sketch, updatedRequest, null)
+        target.setPreviewImage(sketch, request, placeholderImage)
+    }
+
+    /**
+     * Note: The target uses contentScale and filterQuality,
+     *  so you must wait for them to be initialized before loading the image.
+     */
     private fun loadImage(
         sketch: Sketch,
         request: ImageRequest,

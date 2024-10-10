@@ -11,6 +11,7 @@ import com.github.panpf.sketch.painter.ComposeBitmapPainter
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LifecycleResolver
+import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.target.AsyncImageTarget
@@ -100,7 +101,9 @@ class AsyncImageTargetTest {
     }
 
     @Test
-    fun testPreviewPainter() {
+    fun testPreviewImage() {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, "http://sample.com/sample.jpeg")
         val target = AsyncImageTarget(
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
@@ -109,15 +112,20 @@ class AsyncImageTargetTest {
         assertEquals(expected = null, actual = target.painterState.value)
         assertEquals(expected = null, actual = target.painter)
         assertEquals(expected = null, actual = target.painterStateState.value)
+        assertEquals(expected = null, actual = target.loadStateState.value)
 
         val previewPainter = ColorPainter(Color.Red)
 
-        target.setPreviewPainter(previewPainter)
+        target.setPreviewImage(sketch, request, previewPainter.asImage())
         assertEquals(expected = previewPainter, actual = target.painterState.value)
         assertEquals(expected = previewPainter, actual = target.painter)
         assertEquals(
             expected = PainterState.Loading(previewPainter),
             actual = target.painterStateState.value
+        )
+        assertEquals(
+            expected = LoadState.Started(request),
+            actual = target.loadStateState.value
         )
     }
 

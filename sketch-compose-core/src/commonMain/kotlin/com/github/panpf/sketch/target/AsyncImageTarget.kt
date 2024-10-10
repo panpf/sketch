@@ -98,9 +98,9 @@ class AsyncImageTarget(
         }
     }
 
-    fun setPreviewPainter(painter: Painter?) {
-        painterStateMutableState.value = Loading(painter)
-        painterMutableState.value = painter
+    fun setPreviewImage(sketch: Sketch, request: ImageRequest, image: Image?) {
+        onStart(sketch, request, placeholder = image)
+        listener.onStart(request)
     }
 
     fun setSize(size: IntSize) {
