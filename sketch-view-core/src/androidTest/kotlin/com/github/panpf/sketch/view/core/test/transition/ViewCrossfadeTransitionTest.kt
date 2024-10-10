@@ -111,7 +111,7 @@ class ViewCrossfadeTransitionTest {
 
         // success
         withContext(Dispatchers.Main) {
-            imageViewTarget.drawable = ColorDrawable(Color.GREEN)
+            imageViewTarget.onSuccess(sketch, request, ColorDrawable(Color.GREEN).asImage())
         }
         assertEquals(Color.GREEN, (imageView.drawable as ColorDrawable).color)
         assertEquals(Color.GREEN, (imageViewTarget.drawable as ColorDrawable).color)
@@ -135,7 +135,7 @@ class ViewCrossfadeTransitionTest {
 
         // error
         withContext(Dispatchers.Main) {
-            imageViewTarget.drawable = ColorDrawable(Color.GREEN)
+            imageViewTarget.onSuccess(sketch, request, ColorDrawable(Color.GREEN).asImage())
         }
         assertEquals(Color.GREEN, (imageView.drawable as ColorDrawable).color)
         assertEquals(Color.GREEN, (imageViewTarget.drawable as ColorDrawable).color)
@@ -151,7 +151,7 @@ class ViewCrossfadeTransitionTest {
 
         // start end same
         withContext(Dispatchers.Main) {
-            imageViewTarget.drawable = ColorDrawable(Color.GREEN)
+            imageViewTarget.onSuccess(sketch, request, ColorDrawable(Color.GREEN).asImage())
         }
         assertTrue(imageViewTarget.drawable!! is ColorDrawable)
         ViewCrossfadeTransition(

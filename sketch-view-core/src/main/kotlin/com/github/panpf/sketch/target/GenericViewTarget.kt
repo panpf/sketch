@@ -100,10 +100,12 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
         val oldDrawable = drawable
         if (newDrawable !== oldDrawable) {
             oldDrawable.asOrNull<Animatable>()?.stop()
-            this.drawable = newDrawable
+            setDrawable(newDrawable)
             updateAnimation()
         }
     }
+
+    protected abstract fun setDrawable(drawable: Drawable?)
 
     /** Start/stop the current [Drawable]'s animation based on the current lifecycle state. */
     @Suppress("MemberVisibilityCanBePrivate")

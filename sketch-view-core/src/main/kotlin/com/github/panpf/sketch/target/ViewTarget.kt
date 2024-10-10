@@ -61,7 +61,7 @@ interface ViewTarget<T : View> : Target {
     /**
      * Th e [view]'s current [Drawable].
      */
-    var drawable: Drawable?
+    val drawable: Drawable?
 
     override val currentImage: Image?
         get() = drawable?.asImage()

@@ -42,14 +42,15 @@ open class ImageViewTarget constructor(
     override val view: ImageView?
         get() = viewReference.get()
 
-    override var drawable: Drawable?
+    override val drawable: Drawable?
         get() = view?.drawable
-        set(value) {
-            view?.setImageDrawable(value)
-        }
 
     override val fitScale: Boolean
         get() = view?.scaleType?.fitScale ?: true
+
+    override fun setDrawable(drawable: Drawable?) {
+        view?.setImageDrawable(drawable)
+    }
 
     override fun getScaleDecider(): ScaleDecider? =
         view?.scaleType?.toScale()?.let { ScaleDecider(it) }
