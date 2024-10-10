@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.LayoutDirection.Ltr
 import androidx.compose.ui.unit.LayoutDirection.Rtl
 import com.github.panpf.sketch.drawable.EquitableDrawable
+import com.github.panpf.sketch.util.RememberedCounter
 import com.github.panpf.sketch.util.toLogString
 import kotlin.math.roundToInt
 
@@ -118,13 +119,7 @@ open class DrawablePainter(
         }
     }
 
-    /*
-     * Why do you need to remember to count?
-     *
-     * Because when RememberObserver is passed as a parameter of the Composable function, the onRemembered method
-     * will be called when the Composable function is executed for the first time, causing it to be remembered multiple times.
-     */
-    internal var rememberedCount = 0
+    internal val rememberedCounter: RememberedCounter = RememberedCounter()
 
     override val intrinsicSize: Size get() = drawableIntrinsicSize
 
@@ -136,8 +131,7 @@ open class DrawablePainter(
     }
 
     override fun onRemembered() {
-        rememberedCount++
-        if (rememberedCount != 1) return
+        if (!rememberedCounter.remember()) return
         onFirstRemembered()
     }
 
@@ -148,9 +142,7 @@ open class DrawablePainter(
 
     override fun onAbandoned() = onForgotten()
     override fun onForgotten() {
-        if (rememberedCount <= 0) return
-        rememberedCount--
-        if (rememberedCount != 0) return
+        if (!rememberedCounter.forget()) return
         onLastRemembered()
     }
 

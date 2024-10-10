@@ -25,42 +25,42 @@ class ComposeRequestManagerTest {
                 )
             )
         }
-        assertEquals(0, requestManager.rememberedCount)
+        assertEquals(0, requestManager.rememberedCounter.count)
         assertEquals(false, requestManager.isAttached())
         assertEquals(true, job.isActive)
 
         requestManager.onRemembered()
-        assertEquals(1, requestManager.rememberedCount)
+        assertEquals(1, requestManager.rememberedCounter.count)
         assertEquals(true, requestManager.isAttached())
         assertEquals(true, job.isActive)
 
         requestManager.onRemembered()
-        assertEquals(2, requestManager.rememberedCount)
+        assertEquals(2, requestManager.rememberedCounter.count)
         assertEquals(true, requestManager.isAttached())
         assertEquals(true, job.isActive)
 
         requestManager.onRemembered()
-        assertEquals(3, requestManager.rememberedCount)
+        assertEquals(3, requestManager.rememberedCounter.count)
         assertEquals(true, requestManager.isAttached())
         assertEquals(true, job.isActive)
 
         requestManager.onForgotten()
-        assertEquals(2, requestManager.rememberedCount)
+        assertEquals(2, requestManager.rememberedCounter.count)
         assertEquals(true, requestManager.isAttached())
         assertEquals(true, job.isActive)
 
         requestManager.onForgotten()
-        assertEquals(1, requestManager.rememberedCount)
+        assertEquals(1, requestManager.rememberedCounter.count)
         assertEquals(true, requestManager.isAttached())
         assertEquals(true, job.isActive)
 
         requestManager.onForgotten()
-        assertEquals(0, requestManager.rememberedCount)
+        assertEquals(0, requestManager.rememberedCounter.count)
         assertEquals(false, requestManager.isAttached())
         assertEquals(false, job.isActive)
 
         requestManager.onForgotten()
-        assertEquals(0, requestManager.rememberedCount)
+        assertEquals(0, requestManager.rememberedCounter.count)
         assertEquals(false, requestManager.isAttached())
         assertEquals(false, job.isActive)
     }

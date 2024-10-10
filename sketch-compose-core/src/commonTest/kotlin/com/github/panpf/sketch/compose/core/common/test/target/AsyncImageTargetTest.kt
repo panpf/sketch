@@ -59,44 +59,44 @@ class AsyncImageTargetTest {
         target.onSuccess(sketch, request, painter1.asImage())
         assertSame(expected = painter1, actual = target.painterState.value)
         assertSame(expected = painter1, actual = target.painter)
-        assertEquals(expected = 0, actual = painter2.rememberedCount)
-        assertEquals(expected = 0, actual = painter4.rememberedCount)
+        assertEquals(expected = 0, actual = painter2.rememberedCounter.count)
+        assertEquals(expected = 0, actual = painter4.rememberedCounter.count)
 
         target.onSuccess(sketch, request, painter2.asImage())
         assertSame(expected = painter2, actual = target.painterState.value)
         assertSame(expected = painter2, actual = target.painter)
-        assertEquals(expected = 1, actual = painter2.rememberedCount)
-        assertEquals(expected = 0, actual = painter4.rememberedCount)
+        assertEquals(expected = 1, actual = painter2.rememberedCounter.count)
+        assertEquals(expected = 0, actual = painter4.rememberedCounter.count)
 
         target.onSuccess(sketch, request, painter3.asImage())
         assertSame(expected = painter3, actual = target.painterState.value)
         assertSame(expected = painter3, actual = target.painter)
-        assertEquals(expected = 0, actual = painter2.rememberedCount)
-        assertEquals(expected = 0, actual = painter4.rememberedCount)
+        assertEquals(expected = 0, actual = painter2.rememberedCounter.count)
+        assertEquals(expected = 0, actual = painter4.rememberedCounter.count)
 
         target.onSuccess(sketch, request, painter4.asImage())
         assertSame(expected = painter4, actual = target.painterState.value)
         assertSame(expected = painter4, actual = target.painter)
-        assertEquals(expected = 0, actual = painter2.rememberedCount)
-        assertEquals(expected = 1, actual = painter4.rememberedCount)
+        assertEquals(expected = 0, actual = painter2.rememberedCounter.count)
+        assertEquals(expected = 1, actual = painter4.rememberedCounter.count)
 
         target.onForgotten()
         assertSame(expected = painter4, actual = target.painterState.value)
         assertSame(expected = painter4, actual = target.painter)
-        assertEquals(expected = 0, actual = painter2.rememberedCount)
-        assertEquals(expected = 0, actual = painter4.rememberedCount)
+        assertEquals(expected = 0, actual = painter2.rememberedCounter.count)
+        assertEquals(expected = 0, actual = painter4.rememberedCounter.count)
 
         target.onRemembered()
         assertSame(expected = painter4, actual = target.painterState.value)
         assertSame(expected = painter4, actual = target.painter)
-        assertEquals(expected = 0, actual = painter2.rememberedCount)
-        assertEquals(expected = 1, actual = painter4.rememberedCount)
+        assertEquals(expected = 0, actual = painter2.rememberedCounter.count)
+        assertEquals(expected = 1, actual = painter4.rememberedCounter.count)
 
         target.onForgotten()
         assertSame(expected = painter4, actual = target.painterState.value)
         assertSame(expected = painter4, actual = target.painter)
-        assertEquals(expected = 0, actual = painter2.rememberedCount)
-        assertEquals(expected = 0, actual = painter4.rememberedCount)
+        assertEquals(expected = 0, actual = painter2.rememberedCounter.count)
+        assertEquals(expected = 0, actual = painter4.rememberedCounter.count)
     }
 
     @Test
@@ -255,22 +255,22 @@ class AsyncImageTargetTest {
             windowContainerSize = IntSize(1080, 720),
         )
         assertSame(expected = target.getRequestManager(), actual = target.getRequestManager())
-        assertEquals(expected = 0, actual = target.getRequestManager().rememberedCount)
+        assertEquals(expected = 0, actual = target.getRequestManager().rememberedCounter.count)
 
         target.onRemembered()
-        assertEquals(expected = 1, actual = target.getRequestManager().rememberedCount)
+        assertEquals(expected = 1, actual = target.getRequestManager().rememberedCounter.count)
 
         target.onRemembered()
-        assertEquals(expected = 2, actual = target.getRequestManager().rememberedCount)
+        assertEquals(expected = 2, actual = target.getRequestManager().rememberedCounter.count)
 
         target.onForgotten()
-        assertEquals(expected = 1, actual = target.getRequestManager().rememberedCount)
+        assertEquals(expected = 1, actual = target.getRequestManager().rememberedCounter.count)
 
         target.onForgotten()
-        assertEquals(expected = 0, actual = target.getRequestManager().rememberedCount)
+        assertEquals(expected = 0, actual = target.getRequestManager().rememberedCounter.count)
 
         target.onForgotten()
-        assertEquals(expected = 0, actual = target.getRequestManager().rememberedCount)
+        assertEquals(expected = 0, actual = target.getRequestManager().rememberedCounter.count)
     }
 
     @Test

@@ -195,42 +195,42 @@ class DrawablePainterTest {
     fun testRememberObserver() {
         val drawable = ColorDrawable(TestColor.YELLOW)
         val drawablePainter = DrawablePainter(drawable)
-        assertEquals(0, drawablePainter.rememberedCount)
+        assertEquals(0, drawablePainter.rememberedCounter.count)
         assertNull(drawable.callback)
         assertTrue(drawable.isVisible)
 
         drawablePainter.onRemembered()
-        assertEquals(1, drawablePainter.rememberedCount)
+        assertEquals(1, drawablePainter.rememberedCounter.count)
         assertNotNull(drawable.callback)
         assertTrue(drawable.isVisible)
 
         drawablePainter.onRemembered()
-        assertEquals(2, drawablePainter.rememberedCount)
+        assertEquals(2, drawablePainter.rememberedCounter.count)
         assertNotNull(drawable.callback)
         assertTrue(drawable.isVisible)
 
         drawablePainter.onForgotten()
-        assertEquals(1, drawablePainter.rememberedCount)
+        assertEquals(1, drawablePainter.rememberedCounter.count)
         assertNotNull(drawable.callback)
         assertTrue(drawable.isVisible)
 
         drawablePainter.onRemembered()
-        assertEquals(2, drawablePainter.rememberedCount)
+        assertEquals(2, drawablePainter.rememberedCounter.count)
         assertNotNull(drawable.callback)
         assertTrue(drawable.isVisible)
 
         drawablePainter.onAbandoned()
-        assertEquals(1, drawablePainter.rememberedCount)
+        assertEquals(1, drawablePainter.rememberedCounter.count)
         assertNotNull(drawable.callback)
         assertTrue(drawable.isVisible)
 
         drawablePainter.onForgotten()
-        assertEquals(0, drawablePainter.rememberedCount)
+        assertEquals(0, drawablePainter.rememberedCounter.count)
         assertNull(drawable.callback)
         assertFalse(drawable.isVisible)
 
         drawablePainter.onForgotten()
-        assertEquals(0, drawablePainter.rememberedCount)
+        assertEquals(0, drawablePainter.rememberedCounter.count)
         assertNull(drawable.callback)
         assertFalse(drawable.isVisible)
     }

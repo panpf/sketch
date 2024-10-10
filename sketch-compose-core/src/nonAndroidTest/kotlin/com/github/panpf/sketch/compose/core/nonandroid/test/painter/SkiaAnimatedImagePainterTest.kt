@@ -56,35 +56,35 @@ class SkiaAnimatedImagePainterTest {
         val animatedImage = SkiaAnimatedImage(codec1)
         val animatedImagePainter = SkiaAnimatedImagePainter(animatedImage)
 
-        assertEquals(expected = 0, actual = animatedImagePainter.rememberedCount)
+        assertEquals(expected = 0, actual = animatedImagePainter.rememberedCounter.count)
         assertEquals(expected = null, actual = animatedImagePainter.coroutineScope?.isActive)
 
         animatedImagePainter.onRemembered()
-        assertEquals(expected = 1, actual = animatedImagePainter.rememberedCount)
+        assertEquals(expected = 1, actual = animatedImagePainter.rememberedCounter.count)
         assertEquals(expected = true, actual = animatedImagePainter.coroutineScope?.isActive)
 
         animatedImagePainter.onRemembered()
-        assertEquals(expected = 2, actual = animatedImagePainter.rememberedCount)
+        assertEquals(expected = 2, actual = animatedImagePainter.rememberedCounter.count)
         assertEquals(expected = true, actual = animatedImagePainter.coroutineScope?.isActive)
 
         animatedImagePainter.onRemembered()
-        assertEquals(expected = 3, actual = animatedImagePainter.rememberedCount)
+        assertEquals(expected = 3, actual = animatedImagePainter.rememberedCounter.count)
         assertEquals(expected = true, actual = animatedImagePainter.coroutineScope?.isActive)
 
         animatedImagePainter.onAbandoned()
-        assertEquals(expected = 2, actual = animatedImagePainter.rememberedCount)
+        assertEquals(expected = 2, actual = animatedImagePainter.rememberedCounter.count)
         assertEquals(expected = true, actual = animatedImagePainter.coroutineScope?.isActive)
 
         animatedImagePainter.onForgotten()
-        assertEquals(expected = 1, actual = animatedImagePainter.rememberedCount)
+        assertEquals(expected = 1, actual = animatedImagePainter.rememberedCounter.count)
         assertEquals(expected = true, actual = animatedImagePainter.coroutineScope?.isActive)
 
         animatedImagePainter.onForgotten()
-        assertEquals(expected = 0, actual = animatedImagePainter.rememberedCount)
+        assertEquals(expected = 0, actual = animatedImagePainter.rememberedCounter.count)
         assertEquals(expected = null, actual = animatedImagePainter.coroutineScope?.isActive)
 
         animatedImagePainter.onForgotten()
-        assertEquals(expected = 0, actual = animatedImagePainter.rememberedCount)
+        assertEquals(expected = 0, actual = animatedImagePainter.rememberedCounter.count)
         assertEquals(expected = null, actual = animatedImagePainter.coroutineScope?.isActive)
     }
 

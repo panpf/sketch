@@ -38,6 +38,7 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.target.AsyncImageTarget
+import com.github.panpf.sketch.util.RememberedCounter
 import com.github.panpf.sketch.util.difference
 import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.windowContainerSize
@@ -94,12 +95,11 @@ class AsyncImageState internal constructor(
     val imageOptions: ImageOptions?,
 ) : RememberObserver {
 
-    private var lastRequest: ImageRequest? = null
-    private var loadImageJob: Job? = null
-    private var coroutineScope: CoroutineScope? = null
-    private var rememberedCount: Int = 0
-
     internal val target = AsyncImageTarget(lifecycle, imageOptions, windowContainerSize)
+    internal var lastRequest: ImageRequest? = null
+    internal var loadImageJob: Job? = null
+    internal var coroutineScope: CoroutineScope? = null
+    internal val rememberedCounter: RememberedCounter = RememberedCounter()
 
     var sketch: Sketch? by mutableStateOf(null)
         internal set
@@ -123,13 +123,10 @@ class AsyncImageState internal constructor(
 
     /**
      * Note: When using AsyncImageState externally,
-     * do not actively call its onRemembered method because this will destroy the rememberedCount count.
+     * do not actively call its onRemembered method because this will destroy the remembered count.
      */
     override fun onRemembered() {
-        // Since AsyncImageState is annotated with @Stable, onRemembered will be executed multiple times,
-        // but we only need execute it once
-        rememberedCount++
-        if (rememberedCount != 1) return
+        if (!rememberedCounter.remember()) return
 
         val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
         this.coroutineScope = coroutineScope
@@ -145,11 +142,7 @@ class AsyncImageState internal constructor(
 
     override fun onAbandoned() = onForgotten()
     override fun onForgotten() {
-        // Since AsyncImageState is annotated with @Stable, onForgotten will be executed multiple times,
-        // but we only need execute it once
-        if (rememberedCount <= 0) return
-        rememberedCount = (rememberedCount - 1).coerceAtLeast(0)
-        if (rememberedCount != 0) return
+        if (!rememberedCounter.forget()) return
 
         val coroutineScope = this.coroutineScope ?: return
         cancelLoadImageJob()

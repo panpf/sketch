@@ -3,23 +3,19 @@ package com.github.panpf.sketch.test.utils
 import androidx.compose.runtime.RememberObserver
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.painter.PainterWrapper
+import com.github.panpf.sketch.util.RememberedCounter
 
 class RememberedPainter(painter: Painter) : PainterWrapper(painter), RememberObserver {
 
-    var rememberedCount: Int = 0
-        private set
+    val rememberedCounter: RememberedCounter = RememberedCounter()
 
     override fun onRemembered() {
-        rememberedCount++
+        if (!rememberedCounter.remember()) return
     }
 
+    override fun onAbandoned() = onForgotten()
     override fun onForgotten() {
-        if (rememberedCount <= 0) return
-        rememberedCount = (rememberedCount - 1).coerceAtLeast(0)
-    }
-
-    override fun onAbandoned() {
-        onForgotten()
+        if (!rememberedCounter.forget()) return
     }
 
     override fun equals(other: Any?): Boolean {

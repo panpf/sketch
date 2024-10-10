@@ -51,13 +51,13 @@ class DrawableAnimatablePainter(
     }
 
     override fun start() {
-        if (rememberedCount > 0) {
+        if (rememberedCounter.isRemembered) {
             animatable.start()
         }
     }
 
     override fun stop() {
-        if (rememberedCount > 0) {
+        if (rememberedCounter.isRemembered) {
             animatable.stop()
         }
     }

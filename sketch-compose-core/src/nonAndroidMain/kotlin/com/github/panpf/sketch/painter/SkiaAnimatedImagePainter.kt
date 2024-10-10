@@ -36,6 +36,7 @@ import com.github.panpf.sketch.ComposeBitmap
 import com.github.panpf.sketch.SkiaAnimatedImage
 import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.SkiaImageInfo
+import com.github.panpf.sketch.util.RememberedCounter
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -63,13 +64,7 @@ class SkiaAnimatedImagePainter constructor(
     private val filterQuality: FilterQuality = DefaultFilterQuality,
 ) : Painter(), AnimatablePainter, RememberObserver {
 
-    /*
-     * Why do you need to remember to count?
-     *
-     * Because when RememberObserver is passed as a parameter of the Composable function, the onRemembered method
-     * will be called when the Composable function is executed for the first time, causing it to be remembered multiple times.
-     */
-    internal var rememberedCount = 0
+    internal val rememberedCounter: RememberedCounter = RememberedCounter()
     private val codec = animatedImage.codec
     var coroutineScope: CoroutineScope? = null
     private var alpha: Float = 1.0f
@@ -155,28 +150,17 @@ class SkiaAnimatedImagePainter constructor(
     }
 
     /**
-     * Note: Do not actively call its onRemembered method because this will destroy the rememberedCount count.
+     * Note: Do not actively call its onRemembered method because this will destroy the remembered count.
      */
     override fun onRemembered() {
-        rememberedCount++
-        if (rememberedCount != 1) return
-        onFirstRemembered()
-    }
-
-    private fun onFirstRemembered() {
+        if (!rememberedCounter.remember()) return
         coroutineScope = CoroutineScope(Dispatchers.Main)
         startAnimation()
     }
 
     override fun onAbandoned() = onForgotten()
     override fun onForgotten() {
-        if (rememberedCount <= 0) return
-        rememberedCount--
-        if (rememberedCount != 0) return
-        onLastRemembered()
-    }
-
-    private fun onLastRemembered() {
+        if (!rememberedCounter.forget()) return
         stopAnimation()
         coroutineScope?.cancel()
         coroutineScope = null
@@ -213,13 +197,13 @@ class SkiaAnimatedImagePainter constructor(
     }
 
     override fun start() {
-        if (rememberedCount > 0) {
+        if (rememberedCounter.isRemembered) {
             startAnimation()
         }
     }
 
     override fun stop() {
-        if (rememberedCount > 0) {
+        if (rememberedCounter.isRemembered) {
             stopAnimation()
         }
     }

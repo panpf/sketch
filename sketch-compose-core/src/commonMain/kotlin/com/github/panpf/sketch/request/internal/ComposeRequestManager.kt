@@ -16,6 +16,8 @@
 
 package com.github.panpf.sketch.request.internal
 
+import com.github.panpf.sketch.util.RememberedCounter
+
 /**
  * Compose version of the request manager
  *
@@ -23,24 +25,18 @@ package com.github.panpf.sketch.request.internal
  */
 class ComposeRequestManager : BaseRequestManager() {
 
-    internal var rememberedCount: Int = 0
+    internal val rememberedCounter: RememberedCounter = RememberedCounter()
 
     fun onRemembered() {
-        // AsyncImageState will always perform a request when it is remembered,
-        // So there is no need to restart the request here
-        rememberedCount++
-        if (rememberedCount != 1) return
-        // ...
+        if (!rememberedCounter.remember()) return
     }
 
     fun onForgotten() {
-        if (rememberedCount <= 0) return
-        rememberedCount = (rememberedCount - 1).coerceAtLeast(0)
-        if (rememberedCount != 0) return
+        if (!rememberedCounter.forget()) return
 
         currentRequestDelegate?.dispose()
         callbackAttachedState()
     }
 
-    override fun isAttached(): Boolean = rememberedCount > 0
+    override fun isAttached(): Boolean = rememberedCounter.isRemembered
 }
