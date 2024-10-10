@@ -37,7 +37,7 @@ import com.github.panpf.sketch.request.name
 /**
  * Display a dataFrom logo in the upper right corner of the component.
  *
- * @see com.github.panpf.sketch.extensions.compose.common.test.ability.DataFromLogoModifierTest.testModifier
+ * @see com.github.panpf.sketch.extensions.compose.common.test.ability.DataFromLogoModifierTest
  */
 fun Modifier.dataFromLogo(state: AsyncImageState, size: Dp = DATA_FROM_DEFAULT_SIZE.dp): Modifier {
     return this.then(DataFromLogoElement(state, size))
@@ -46,7 +46,7 @@ fun Modifier.dataFromLogo(state: AsyncImageState, size: Dp = DATA_FROM_DEFAULT_S
 /**
  * DataFromLogo Modifier Element
  *
- * @see com.github.panpf.sketch.extensions.compose.common.test.ability.DataFromLogoModifierTest.testElement
+ * @see com.github.panpf.sketch.extensions.compose.common.test.ability.DataFromLogoModifierTest
  */
 internal data class DataFromLogoElement(
     val state: AsyncImageState,
