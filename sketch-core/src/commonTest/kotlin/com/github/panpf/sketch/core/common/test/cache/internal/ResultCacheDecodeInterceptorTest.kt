@@ -270,6 +270,15 @@ class ResultCacheDecodeInterceptorTest {
             return Result.success(newDecodeResult)
         }
 
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            return other != null && this::class == other::class
+        }
+
+        override fun hashCode(): Int {
+            return this::class.hashCode()
+        }
+
         override fun toString(): String {
             return "ExtrasTestDecodeInterceptor(sortWeight=$sortWeight)"
         }

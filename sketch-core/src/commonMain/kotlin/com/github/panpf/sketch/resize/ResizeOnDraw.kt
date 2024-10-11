@@ -47,4 +47,10 @@ fun Image.resizeOnDraw(request: ImageRequest, size: Size?): Image {
 interface ResizeOnDrawHelper : Key {
 
     fun resize(request: ImageRequest, size: Size, image: Image): Image
+
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
 }

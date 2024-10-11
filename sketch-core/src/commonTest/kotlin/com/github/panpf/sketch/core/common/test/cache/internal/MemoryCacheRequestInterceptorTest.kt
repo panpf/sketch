@@ -37,8 +37,8 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.TestCountTarget
+import com.github.panpf.sketch.test.utils.TestMemoryCacheRequestIntercept
 import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.test.utils.createCacheValue
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -206,25 +206,7 @@ class MemoryCacheRequestInterceptorTest {
         assertEquals(expected = 0, actual = memoryCache.size)
 
         runTest {
-            var endRequestInterceptorExecuteCount = 0
-            val endRequestInterceptor = object : RequestInterceptor {
-                override val key: String = "endRequestInterceptor"
-                override val sortWeight: Int = 100
-
-                override suspend fun intercept(chain: Chain): Result<ImageData> {
-                    endRequestInterceptorExecuteCount++
-                    return Result.success(
-                        ImageData(
-                            image = FakeImage(100, 100),
-                            imageInfo = ImageInfo(100, 100, "image/png"),
-                            resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
-                            dataFrom = DataFrom.LOCAL,
-                            transformeds = null,
-                            extras = null
-                        )
-                    )
-                }
-            }
+            val endRequestInterceptor = TestMemoryCacheRequestIntercept()
             val request = ImageRequest(context, ResourceImages.jpeg.uri)
             val requestContext = request.toRequestContext(sketch)
             repeat(10) {
@@ -239,7 +221,7 @@ class MemoryCacheRequestInterceptorTest {
                 }
             }
 
-            assertEquals(expected = 1, actual = endRequestInterceptorExecuteCount)
+            assertEquals(expected = 1, actual = endRequestInterceptor.executeCount)
         }
 
         assertEquals(expected = 100 * 100 * 4L, actual = memoryCache.size)
@@ -300,5 +282,16 @@ class MemoryCacheRequestInterceptorTest {
                 extras = null
             )
         }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            return other != null && this::class == other::class
+        }
+
+        override fun hashCode(): Int {
+            return this::class.hashCode()
+        }
+
+        override fun toString(): String = "FakeRequestInterceptor(sortWeight=$sortWeight)"
     }
 }

@@ -52,6 +52,12 @@ interface DecodeInterceptor : NullableKey {
     @WorkerThread
     suspend fun intercept(chain: Chain): Result<DecodeResult>
 
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
+
     /**
      * The chain of interceptors to execute
      */

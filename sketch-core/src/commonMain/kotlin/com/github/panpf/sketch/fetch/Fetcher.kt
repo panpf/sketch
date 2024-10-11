@@ -42,12 +42,18 @@ fun interface Fetcher {
      * that is, the equals() and hashCode() methods of instances created with the same
      * construction parameters return consistent results. This is important in Compose
      */
-    fun interface Factory {
+    interface Factory {
 
         /**
          * If the current [Factory]'s [Fetcher] can extract data from the current [ImageRequest],
          * create a [Fetcher] and return it, otherwise return null
          */
         fun create(requestContext: RequestContext): Fetcher?
+
+        override fun equals(other: Any?): Boolean
+
+        override fun hashCode(): Int
+
+        override fun toString(): String
     }
 }

@@ -59,7 +59,7 @@ class TestResizeOnDrawTarget(override val currentImage: Image? = null) : Target 
     ): RequestDelegate = OneShotRequestDelegate(sketch, initialRequest, this, job)
 
     override fun getResizeOnDrawHelper(): ResizeOnDrawHelper {
-        return TestResizeOnDrawHelper()
+        return TestResizeOnDrawHelper
     }
 
     override fun equals(other: Any?): Boolean {

@@ -60,5 +60,11 @@ interface Decoder {
          * create a [Decoder] and return it, otherwise return null
          */
         fun create(requestContext: RequestContext, fetchResult: FetchResult): Decoder?
+
+        override fun equals(other: Any?): Boolean
+
+        override fun hashCode(): Int
+
+        override fun toString(): String
     }
 }

@@ -49,6 +49,12 @@ interface RequestInterceptor : NullableKey {
     @MainThread
     suspend fun intercept(chain: Chain): Result<ImageData>
 
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
+
     /**
      * A chain is a series of interceptors that are called in order.
      */

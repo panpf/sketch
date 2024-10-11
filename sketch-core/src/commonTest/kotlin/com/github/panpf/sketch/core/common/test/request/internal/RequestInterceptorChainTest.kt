@@ -91,6 +91,15 @@ class RequestInterceptorChainTest {
             return chain.proceed(chain.request)
         }
 
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            return other != null && this::class == other::class
+        }
+
+        override fun hashCode(): Int {
+            return this::class.hashCode()
+        }
+
         override fun toString(): String {
             return "TestRequestInterceptor1(sortWeight=$sortWeight)"
         }
@@ -106,6 +115,15 @@ class RequestInterceptorChainTest {
         override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
             historyList.add("TestRequestInterceptor2")
             return chain.proceed(chain.request)
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            return other != null && this::class == other::class
+        }
+
+        override fun hashCode(): Int {
+            return this::class.hashCode()
         }
 
         override fun toString(): String {
@@ -132,6 +150,15 @@ class RequestInterceptorChainTest {
                     extras = null,
                 )
             )
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            return other != null && this::class == other::class
+        }
+
+        override fun hashCode(): Int {
+            return this::class.hashCode()
         }
 
         override fun toString(): String {

@@ -104,6 +104,15 @@ class DecodeInterceptorChainTest {
             return chain.proceed()
         }
 
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            return other != null && this::class == other::class
+        }
+
+        override fun hashCode(): Int {
+            return this::class.hashCode()
+        }
+
         override fun toString(): String {
             return "TestDecodeInterceptor1(sortWeight=$sortWeight)"
         }
@@ -119,6 +128,15 @@ class DecodeInterceptorChainTest {
         override suspend fun intercept(chain: Chain): Result<DecodeResult> {
             historyList.add("TestDecodeInterceptor2")
             return chain.proceed()
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            return other != null && this::class == other::class
+        }
+
+        override fun hashCode(): Int {
+            return this::class.hashCode()
         }
 
         override fun toString(): String {
@@ -145,6 +163,15 @@ class DecodeInterceptorChainTest {
                     extras = null,
                 )
             )
+        }
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            return other != null && this::class == other::class
+        }
+
+        override fun hashCode(): Int {
+            return this::class.hashCode()
         }
 
         override fun toString(): String {
