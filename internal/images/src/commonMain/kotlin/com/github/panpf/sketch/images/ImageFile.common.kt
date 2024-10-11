@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.images
 
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
 
@@ -12,6 +13,9 @@ open class ImageFile constructor(
     val animated: Boolean = false,
     val exifOrientation: Int = ExifOrientation.UNDEFINED,
 ) {
+
+    val imageInfo = ImageInfo(size, mimeType)
+
     override fun toString(): String {
         return "ImageFile(uri='$uri', name='$name', size=$size, exifOrientation=$exifOrientation)"
     }

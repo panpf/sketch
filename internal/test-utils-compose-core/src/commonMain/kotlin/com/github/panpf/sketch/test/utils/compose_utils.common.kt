@@ -31,3 +31,7 @@ fun LifecycleContainer(content: @Composable () -> Unit) =
     CompositionLocalProvider(LocalLifecycleOwner provides GlobalLifecycle.owner, content = content)
 
 expect fun Bitmap.toComposeBitmap(): ComposeBitmap
+
+typealias ComposeSize = androidx.compose.ui.geometry.Size
+
+fun ComposeSize(width: Float, height: Float) = androidx.compose.ui.geometry.Size(width, height)
