@@ -335,6 +335,6 @@ open class IconPainter constructor(
     }
 
     override fun toString(): String {
-        return "IconPainter(icon=${icon}, background=${background}, iconSize=$iconSize, iconTint=$iconTint)"
+        return "IconPainter(icon=${icon}, background=${background}, iconSize=$iconSize, iconTint=${iconTint?.value})"
     }
 }

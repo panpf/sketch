@@ -361,7 +361,7 @@ class IconPainterTest {
     @Test
     fun testToString() {
         assertEquals(
-            expected = "IconPainter(icon=EquitablePainter(painter=SizeColorPainter(color=18446462598732840960, size=Size(100.0, 100.0)), equalityKey=SizeColorPainter(color=18446462598732840960, size=Size(100.0, 100.0))), background=EquitablePainter(painter=ColorPainter(color=-7829368), equalityKey=18413117194201202688), iconSize=Size(69.0, 44.0), iconTint=Color(0.0, 0.0, 1.0, 1.0, sRGB IEC61966-2.1))",
+            expected = "IconPainter(icon=EquitablePainter(painter=SizeColorPainter(color=18446462598732840960, size=Size(100.0, 100.0)), equalityKey=SizeColorPainter(color=18446462598732840960, size=Size(100.0, 100.0))), background=EquitablePainter(painter=ColorPainter(color=-7829368), equalityKey=18413117194201202688), iconSize=Size(69.0, 44.0), iconTint=18374687574888284160)",
             actual = IconPainter(
                 icon = SizeColorPainter(
                     Color.Red,

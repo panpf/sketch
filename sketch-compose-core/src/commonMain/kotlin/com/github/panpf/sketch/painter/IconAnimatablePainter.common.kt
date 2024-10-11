@@ -258,6 +258,6 @@ class IconAnimatablePainter constructor(
     }
 
     override fun toString(): String {
-        return "IconAnimatablePainter(icon=${icon}, background=${background}, iconSize=$iconSize, iconTint=$iconTint)"  // TODO ${iconTint.value}
+        return "IconAnimatablePainter(icon=${icon}, background=${background}, iconSize=$iconSize, iconTint=${iconTint?.value})"
     }
 }
