@@ -7,7 +7,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
@@ -195,26 +194,16 @@ class HttpHeadersTest {
             add("key2", "value2")
         }.build()
 
-        assertNotSame(element1, element11)
-        assertNotSame(element1, element2)
-        assertNotSame(element1, element3)
-        assertNotSame(element2, element11)
-        assertNotSame(element2, element3)
-
-        assertEquals(element1, element1)
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
         assertNotEquals(element1, element3)
-        assertNotEquals(element2, element11)
         assertNotEquals(element2, element3)
         assertNotEquals(element1, null as HttpHeaders?)
         assertNotEquals(element1, Any())
 
-        assertEquals(element1.hashCode(), element1.hashCode())
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
         assertNotEquals(element1.hashCode(), element3.hashCode())
-        assertNotEquals(element2.hashCode(), element11.hashCode())
         assertNotEquals(element2.hashCode(), element3.hashCode())
     }
 

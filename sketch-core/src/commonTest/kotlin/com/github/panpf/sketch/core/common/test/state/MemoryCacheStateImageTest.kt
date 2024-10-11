@@ -36,7 +36,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -120,26 +119,11 @@ class MemoryCacheStateImageTest {
         val element4 = MemoryCacheStateImage(null, FakeStateImage(FakeImage(SketchSize(400, 400))))
         val element5 = MemoryCacheStateImage("key1", null)
 
-        assertNotSame(element1, element11)
-        assertNotSame(element1, element2)
-        assertNotSame(element1, element3)
-        assertNotSame(element1, element4)
-        assertNotSame(element1, element5)
-        assertNotSame(element2, element11)
-        assertNotSame(element2, element3)
-        assertNotSame(element2, element4)
-        assertNotSame(element2, element5)
-        assertNotSame(element3, element4)
-        assertNotSame(element3, element5)
-        assertNotSame(element4, element5)
-
-        assertEquals(element1, element1)
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
         assertNotEquals(element1, element3)
         assertNotEquals(element1, element4)
         assertNotEquals(element1, element5)
-        assertNotEquals(element2, element11)
         assertNotEquals(element2, element3)
         assertNotEquals(element2, element4)
         assertNotEquals(element2, element5)
@@ -149,13 +133,11 @@ class MemoryCacheStateImageTest {
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
-        assertEquals(element1.hashCode(), element1.hashCode())
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
         assertNotEquals(element1.hashCode(), element3.hashCode())
         assertNotEquals(element1.hashCode(), element4.hashCode())
         assertNotEquals(element1.hashCode(), element5.hashCode())
-        assertNotEquals(element2.hashCode(), element11.hashCode())
         assertNotEquals(element2.hashCode(), element3.hashCode())
         assertNotEquals(element2.hashCode(), element4.hashCode())
         assertNotEquals(element2.hashCode(), element5.hashCode())

@@ -163,20 +163,16 @@ class DrawableImageTest {
         val element2 = element1.copy(drawable = BitmapDrawable(null, AndroidBitmap(200, 200)))
         val element3 = element1.copy(shareable = false)
 
-        assertEquals(element1, element1)
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
         assertNotEquals(element1, element3)
-        assertNotEquals(element2, element11)
         assertNotEquals(element2, element3)
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
-        assertEquals(element1.hashCode(), element1.hashCode())
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
         assertNotEquals(element1.hashCode(), element3.hashCode())
-        assertNotEquals(element2.hashCode(), element11.hashCode())
         assertNotEquals(element2.hashCode(), element3.hashCode())
     }
 

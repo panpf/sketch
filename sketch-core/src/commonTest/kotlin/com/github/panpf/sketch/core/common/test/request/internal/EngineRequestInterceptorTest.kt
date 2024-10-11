@@ -31,7 +31,6 @@ import kotlinx.coroutines.withContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNotSame
 
 class EngineRequestInterceptorTest {
 
@@ -71,21 +70,14 @@ class EngineRequestInterceptorTest {
         val element11 = EngineRequestInterceptor()
         val element2 = EngineRequestInterceptor()
 
-        assertNotSame(element1, element11)
-        assertNotSame(element1, element2)
-        assertNotSame(element2, element11)
-
-        assertEquals(element1, element1)
         assertEquals(element1, element11)
         assertEquals(element1, element2)
         assertEquals(element2, element11)
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
-        assertEquals(element1.hashCode(), element1.hashCode())
         assertEquals(element1.hashCode(), element11.hashCode())
         assertEquals(element1.hashCode(), element2.hashCode())
-        assertEquals(element2.hashCode(), element11.hashCode())
     }
 
     @Test

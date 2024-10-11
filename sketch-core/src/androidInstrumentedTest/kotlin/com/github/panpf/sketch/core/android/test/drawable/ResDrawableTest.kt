@@ -78,7 +78,6 @@ class ResDrawableTest {
         val element3 = ResDrawable(android.R.drawable.ic_delete, resources = context.resources)
         val element4 = ResDrawable(android.R.drawable.ic_delete, packageName = context.packageName)
 
-        assertEquals(element1, element1)
         assertNotEquals(element1, element2)
         assertNotEquals(element1, element3)
         assertNotEquals(element1, element4)

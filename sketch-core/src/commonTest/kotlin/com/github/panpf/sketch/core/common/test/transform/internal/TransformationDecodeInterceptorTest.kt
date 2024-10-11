@@ -207,21 +207,15 @@ class TransformationDecodeInterceptorTest {
     }
 
     @Test
-    fun testEquals() {
+    fun testEqualsAndHashCode() {
         val ele1 = TransformationDecodeInterceptor()
-        val ele2 = TransformationDecodeInterceptor()
-        assertEquals(ele1, ele1)
-        assertEquals(ele1, ele2)
+        val ele11 = TransformationDecodeInterceptor()
+
+        assertEquals(ele1, ele11)
         assertNotEquals(ele1, Any())
         assertNotEquals(ele1, null as Any?)
-    }
 
-    @Test
-    fun testHashCode() {
-        val ele1 = TransformationDecodeInterceptor()
-        val ele2 = TransformationDecodeInterceptor()
-        assertEquals(ele1.hashCode(), ele2.hashCode())
-        assertNotEquals(ele1.hashCode(), Any().hashCode())
+        assertEquals(ele1.hashCode(), ele11.hashCode())
     }
 
     @Test

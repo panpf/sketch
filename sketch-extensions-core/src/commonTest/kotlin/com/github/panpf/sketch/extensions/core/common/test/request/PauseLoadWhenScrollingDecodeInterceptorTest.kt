@@ -47,7 +47,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNotSame
 import kotlin.test.assertTrue
 
 class PauseLoadWhenScrollingDecodeInterceptorTest {
@@ -182,16 +181,12 @@ class PauseLoadWhenScrollingDecodeInterceptorTest {
         val element11 = PauseLoadWhenScrollingDecodeInterceptor().apply { enabled = false }
         val element2 = PauseLoadWhenScrollingDecodeInterceptor(30)
 
-        assertNotSame(element1, element11)
-        assertNotSame(element1, element2)
 
-        assertEquals(element1, element1)
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
         assertNotEquals(element1, null as PauseLoadWhenScrollingDecodeInterceptor?)
         assertNotEquals(element1, Any())
 
-        assertEquals(element1.hashCode(), element1.hashCode())
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
     }

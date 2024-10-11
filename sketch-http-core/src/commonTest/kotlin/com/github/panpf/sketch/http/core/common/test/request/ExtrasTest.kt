@@ -10,7 +10,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
@@ -278,61 +277,19 @@ class ExtrasTest {
         val extras2 = Extras.Builder().apply {
             set("key1", "value1")
         }.build()
-        val extras21 = Extras.Builder().apply {
-            set("key1", "value1")
-        }.build()
-
         val extras3 = Extras.Builder().apply {
             set("key1", "value1")
             set("key2", "value2")
         }.build()
-        val extras31 = Extras.Builder().apply {
-            set("key1", "value1")
-            set("key2", "value2")
-        }.build()
 
-        assertNotSame(extras1, extras11)
-        assertNotSame(extras2, extras21)
-        assertNotSame(extras3, extras31)
-
-        assertEquals(extras1, extras1)
         assertEquals(extras1, extras11)
-        assertEquals(extras2, extras21)
-        assertEquals(extras3, extras31)
-
         assertNotEquals(extras1, extras2)
         assertNotEquals(extras1, extras3)
         assertNotEquals(extras2, extras3)
-
         assertNotEquals(extras2, Any())
         assertNotEquals(extras2, null as Extras?)
-    }
-
-    @Test
-    fun testHashCode() {
-        val extras1 = Extras.Builder().build()
-        val extras11 = Extras.Builder().build()
-
-        val extras2 = Extras.Builder().apply {
-            set("key1", "value1")
-        }.build()
-        val extras21 = Extras.Builder().apply {
-            set("key1", "value1")
-        }.build()
-
-        val extras3 = Extras.Builder().apply {
-            set("key1", "value1")
-            set("key2", "value2")
-        }.build()
-        val extras31 = Extras.Builder().apply {
-            set("key1", "value1")
-            set("key2", "value2")
-        }.build()
 
         assertEquals(extras1.hashCode(), extras11.hashCode())
-        assertEquals(extras2.hashCode(), extras21.hashCode())
-        assertEquals(extras3.hashCode(), extras31.hashCode())
-
         assertNotEquals(extras1.hashCode(), extras2.hashCode())
         assertNotEquals(extras1.hashCode(), extras3.hashCode())
         assertNotEquals(extras2.hashCode(), extras3.hashCode())

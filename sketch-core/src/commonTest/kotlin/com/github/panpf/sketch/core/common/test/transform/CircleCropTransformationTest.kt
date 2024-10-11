@@ -101,47 +101,20 @@ class CircleCropTransformationTest {
     }
 
     @Test
-    fun testEquals() {
+    fun testEqualsAndHashCode() {
         val transformation1 = CircleCropTransformation(Scale.START_CROP)
         val transformation11 = CircleCropTransformation(Scale.START_CROP)
-
         val transformation2 = CircleCropTransformation(Scale.CENTER_CROP)
-        val transformation21 = CircleCropTransformation(Scale.CENTER_CROP)
-
         val transformation3 = CircleCropTransformation(Scale.END_CROP)
-        val transformation31 = CircleCropTransformation(Scale.END_CROP)
-
-        assertNotSame(transformation1, transformation11)
-        assertNotSame(transformation2, transformation21)
-        assertNotSame(transformation3, transformation31)
 
         assertEquals(transformation1, transformation11)
-        assertEquals(transformation2, transformation21)
-        assertEquals(transformation3, transformation31)
-
         assertNotEquals(transformation1, transformation2)
         assertNotEquals(transformation1, transformation3)
         assertNotEquals(transformation2, transformation3)
-
         assertNotEquals(transformation2, null as Any?)
         assertNotEquals(transformation2, Any())
-    }
-
-    @Test
-    fun testHashCode() {
-        val transformation1 = CircleCropTransformation(Scale.START_CROP)
-        val transformation11 = CircleCropTransformation(Scale.START_CROP)
-
-        val transformation2 = CircleCropTransformation(Scale.CENTER_CROP)
-        val transformation21 = CircleCropTransformation(Scale.CENTER_CROP)
-
-        val transformation3 = CircleCropTransformation(Scale.END_CROP)
-        val transformation31 = CircleCropTransformation(Scale.END_CROP)
 
         assertEquals(transformation1.hashCode(), transformation11.hashCode())
-        assertEquals(transformation2.hashCode(), transformation21.hashCode())
-        assertEquals(transformation3.hashCode(), transformation31.hashCode())
-
         assertNotEquals(transformation1.hashCode(), transformation2.hashCode())
         assertNotEquals(transformation1.hashCode(), transformation3.hashCode())
         assertNotEquals(transformation2.hashCode(), transformation3.hashCode())

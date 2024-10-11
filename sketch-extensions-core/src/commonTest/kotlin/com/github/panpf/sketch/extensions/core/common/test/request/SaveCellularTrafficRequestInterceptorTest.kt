@@ -46,7 +46,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNotSame
 import kotlin.test.assertTrue
 
 class SaveCellularTrafficRequestInterceptorTest {
@@ -315,16 +314,12 @@ class SaveCellularTrafficRequestInterceptorTest {
         val element11 = SaveCellularTrafficRequestInterceptor().apply { enabled = false }
         val element2 = SaveCellularTrafficRequestInterceptor(30)
 
-        assertNotSame(element1, element11)
-        assertNotSame(element1, element2)
 
-        assertEquals(element1, element1)
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
         assertNotEquals(element1, null as SaveCellularTrafficRequestInterceptor?)
         assertNotEquals(element1, Any())
 
-        assertEquals(element1.hashCode(), element1.hashCode())
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
     }

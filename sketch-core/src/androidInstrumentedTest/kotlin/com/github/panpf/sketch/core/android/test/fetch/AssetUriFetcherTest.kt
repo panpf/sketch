@@ -194,12 +194,10 @@ class AssetUriFetcherTest {
         val element1 = AssetUriFetcher.Factory()
         val element11 = AssetUriFetcher.Factory()
 
-        assertEquals(element1, element1)
         assertEquals(element1, element11)
         assertNotEquals(element1, Any())
         assertNotEquals(element1, null as Any?)
 
-        assertEquals(element1.hashCode(), element1.hashCode())
         assertEquals(element1.hashCode(), element11.hashCode())
     }
 

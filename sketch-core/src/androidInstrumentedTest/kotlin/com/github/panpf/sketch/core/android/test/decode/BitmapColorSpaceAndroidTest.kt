@@ -28,7 +28,6 @@ import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNotSame
 
 @RunWith(AndroidJUnit4::class)
 class BitmapColorSpaceAndroidTest {
@@ -59,21 +58,13 @@ class BitmapColorSpaceAndroidTest {
             assertEquals(ColorSpace.get(ColorSpace.Named.DISPLAY_P3), colorSpace)
         }
 
-        assertNotSame(element1, element11)
-        assertNotSame(element1, element2)
-        assertNotSame(element2, element11)
-
-        assertEquals(element1, element1)
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
-        assertNotEquals(element2, element11)
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
-        assertEquals(element1.hashCode(), element1.hashCode())
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
-        assertNotEquals(element2.hashCode(), element11.hashCode())
     }
 
     @Test
@@ -144,20 +135,12 @@ class BitmapColorSpaceAndroidTest {
         val element11 = FixedColorSpace(ColorSpace.Named.LINEAR_SRGB)
         val element2 = FixedColorSpace(ColorSpace.Named.DISPLAY_P3)
 
-        assertNotSame(element1, element11)
-        assertNotSame(element1, element2)
-        assertNotSame(element2, element11)
-
-        assertEquals(element1, element1)
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
-        assertNotEquals(element2, element11)
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
-        assertEquals(element1.hashCode(), element1.hashCode())
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
-        assertNotEquals(element2.hashCode(), element11.hashCode())
     }
 }

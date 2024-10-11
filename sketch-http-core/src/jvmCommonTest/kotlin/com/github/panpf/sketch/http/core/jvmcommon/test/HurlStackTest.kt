@@ -14,7 +14,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 
 class HurlStackTest {
@@ -149,15 +148,6 @@ class HurlStackTest {
             addHeaders("addHeader1" to "addValue1")
         }.build()
 
-        assertNotSame(element1, element11)
-        assertNotSame(element1, element2)
-        assertNotSame(element1, element3)
-        assertNotSame(element1, element4)
-        assertNotSame(element1, element5)
-        assertNotSame(element1, element6)
-        assertNotSame(element2, element3)
-
-        assertEquals(element1, element1)
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
         assertNotEquals(element1, element3)
@@ -168,7 +158,6 @@ class HurlStackTest {
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
-        assertEquals(element1.hashCode(), element1.hashCode())
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
         assertNotEquals(element1.hashCode(), element3.hashCode())

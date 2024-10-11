@@ -161,33 +161,18 @@ class BlurTransformationTest {
         val element3 = BlurTransformation(20, TestColor.BLACK, TestColor.BLUE)
         val element4 = BlurTransformation(20, TestColor.BLACK, TestColor.WHITE)
 
-        assertNotSame(element1, element11)
-        assertNotSame(element1, element2)
-        assertNotSame(element1, element3)
-        assertNotSame(element1, element4)
-        assertNotSame(element11, element2)
-        assertNotSame(element11, element3)
-        assertNotSame(element11, element4)
-        assertNotSame(element2, element3)
-        assertNotSame(element2, element4)
-        assertNotSame(element3, element4)
-
-        assertEquals(element1, element1)
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
         assertNotEquals(element1, element3)
         assertNotEquals(element1, element4)
-        assertNotEquals(element2, element11)
         assertNotEquals(element2, element3)
         assertNotEquals(element2, element4)
         assertNotEquals(element3, element4)
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
-        assertEquals(element1.hashCode(), element1.hashCode())
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
-        assertNotEquals(element2.hashCode(), element11.hashCode())
         assertNotEquals(element2.hashCode(), element3.hashCode())
     }
 

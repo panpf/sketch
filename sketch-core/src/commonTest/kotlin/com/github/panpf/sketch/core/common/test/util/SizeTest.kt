@@ -28,7 +28,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNotSame
 import kotlin.test.assertTrue
 
 class SizeTest {
@@ -97,31 +96,15 @@ class SizeTest {
     }
 
     @Test
-    fun testEquals() {  // TODO testEqualsAndHashCode
+    fun testEqualsAndHashCode() {
         val size1 = Size(13, 56)
         val size11 = Size(13, 56)
         val size2 = Size(684, 4234)
-        val size21 = Size(684, 4234)
-
-        assertNotSame(size1, size11)
-        assertNotSame(size2, size21)
 
         assertEquals(size1, size11)
-        assertEquals(size2, size21)
-
         assertNotEquals(size1, size2)
-    }
-
-    @Test
-    fun testHashCode() {
-        val size1 = Size(13, 56)
-        val size11 = Size(13, 56)
-        val size2 = Size(684, 4234)
-        val size21 = Size(684, 4234)
 
         assertEquals(size1.hashCode(), size11.hashCode())
-        assertEquals(size2.hashCode(), size21.hashCode())
-
         assertNotEquals(size1.hashCode(), size2.hashCode())
     }
 

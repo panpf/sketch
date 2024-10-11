@@ -94,7 +94,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
@@ -1686,21 +1685,13 @@ class ImageRequestTest {
         val element11 = ImageRequest(context, ResourceImages.jpeg.uri)
         val element2 = ImageRequest(context, ResourceImages.png.uri)
 
-        assertNotSame(element1, element11)
-        assertNotSame(element1, element2)
-        assertNotSame(element2, element11)
-
-        assertEquals(element1, element1)
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
-        assertNotEquals(element2, element11)
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
-        assertEquals(element1.hashCode(), element1.hashCode())
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
-        assertNotEquals(element2.hashCode(), element11.hashCode())
 
         val scopeActions = listOfNotNull<ScopeAction<ImageRequest.Builder>>(
             ScopeAction {

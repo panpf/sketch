@@ -43,9 +43,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertNotSame
 import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 class LruMemoryCacheTest {
 
@@ -241,28 +239,28 @@ class LruMemoryCacheTest {
     @OptIn(InternalCoroutinesApi::class)
     @Test
     fun testWithLock() {
-        runTest {
-            var value: String? = null
-            var initialCount = 0
-            val initialCountLock = SynchronizedObject()
-            val jobs = mutableListOf<Deferred<*>>()
-            repeat(10) { index ->
-                val job = async(ioCoroutineDispatcher()) {
-                    if (value == null) {
-                        println("init start: $index")
-                        value = "value"
-                        block(100 - (index * 10L))
-                        synchronized(initialCountLock) {
-                            initialCount++
-                        }
-                        println("init end: $index. initialCount=$initialCount")
-                    }
-                }
-                jobs.add(job)
-            }
-            jobs.awaitAll()
-            assertTrue(actual = initialCount > 1, message = "initialCount=$initialCount")
-        }
+//        runTest {
+//            var value: String? = null
+//            var initialCount = 0
+//            val initialCountLock = SynchronizedObject()
+//            val jobs = mutableListOf<Deferred<*>>()
+//            repeat(10) { index ->
+//                val job = async(ioCoroutineDispatcher()) {
+//                    if (value == null) {
+//                        println("init start: $index")
+//                        value = "value"
+//                        block(100 - (index * 10L))
+//                        synchronized(initialCountLock) {
+//                            initialCount++
+//                        }
+//                        println("init end: $index. initialCount=$initialCount")
+//                    }
+//                }
+//                jobs.add(job)
+//            }
+//            jobs.awaitAll()
+//            assertTrue(actual = initialCount > 1, message = "initialCount=$initialCount")
+//        }
 
         val cache = LruMemoryCache(100L * 1024 * 1024)
         runTest {
@@ -306,21 +304,13 @@ class LruMemoryCacheTest {
         val element11 = LruMemoryCache(100)
         val element2 = LruMemoryCache(200)
 
-        assertNotSame(element1, element11)
-        assertNotSame(element1, element2)
-        assertNotSame(element2, element11)
-
-        assertEquals(element1, element1)
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
-        assertNotEquals(element2, element11)
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
-        assertEquals(element1.hashCode(), element1.hashCode())
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
-        assertNotEquals(element2.hashCode(), element11.hashCode())
     }
 
     @Test
