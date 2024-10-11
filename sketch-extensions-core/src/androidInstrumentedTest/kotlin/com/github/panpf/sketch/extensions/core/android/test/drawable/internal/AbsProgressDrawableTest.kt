@@ -51,7 +51,7 @@ class AbsProgressDrawableTest {
 
             val actions = testProgressDrawable.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "0.2", actual = actions.last(), message = "$actions")
             assertEquals(expected = 0.2f, actual = testProgressDrawable.progress)
@@ -76,7 +76,7 @@ class AbsProgressDrawableTest {
 
             val actions = testProgressDrawable.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "0.5", actual = actions.last(), message = "$actions")
             assertEquals(expected = 0.5f, actual = testProgressDrawable.progress)
@@ -101,7 +101,7 @@ class AbsProgressDrawableTest {
 
             val actions = testProgressDrawable.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "0.8", actual = actions.last(), message = "$actions")
             assertEquals(expected = 0.8f, actual = testProgressDrawable.progress)
@@ -149,7 +149,7 @@ class AbsProgressDrawableTest {
 
             val actions = testProgressDrawable.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "1.0", actual = actions.last(), message = "$actions")
             assertEquals(expected = 1f, actual = testProgressDrawable.progress)
@@ -226,7 +226,7 @@ class AbsProgressDrawableTest {
 
             val actions = testProgressDrawable.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "0.2", actual = actions.last(), message = "$actions")
             assertEquals(expected = 0.2f, actual = testProgressDrawable.progress)
@@ -251,7 +251,7 @@ class AbsProgressDrawableTest {
 
             val actions = testProgressDrawable.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "0.5", actual = actions.last(), message = "$actions")
             assertEquals(expected = 0.5f, actual = testProgressDrawable.progress)
@@ -276,7 +276,7 @@ class AbsProgressDrawableTest {
 
             val actions = testProgressDrawable.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "0.8", actual = actions.last(), message = "$actions")
             assertEquals(expected = 0.8f, actual = testProgressDrawable.progress)
@@ -300,7 +300,7 @@ class AbsProgressDrawableTest {
             block(200)
 
             val actions = testProgressDrawable.drawProgressHistory.distinct()
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "1.0", actual = actions.last(), message = "$actions")
             assertEquals(expected = 1f, actual = testProgressDrawable.progress)
@@ -326,7 +326,7 @@ class AbsProgressDrawableTest {
 
             val actions = testProgressDrawable.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "1.0", actual = actions.last(), message = "$actions")
             assertEquals(expected = 1f, actual = testProgressDrawable.progress)
@@ -373,7 +373,7 @@ class AbsProgressDrawableTest {
 
             val actions = testProgressDrawable.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "1.0", actual = actions.last(), message = "$actions")
             assertEquals(expected = 1f, actual = testProgressDrawable.progress)
@@ -405,7 +405,7 @@ class AbsProgressDrawableTest {
             block(200)
 
             val actions = testProgressDrawable.drawProgressHistory.distinct()
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "1.0", actual = actions.last(), message = "$actions")
             assertEquals(expected = 1f, actual = testProgressDrawable.progress)

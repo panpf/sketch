@@ -7,11 +7,12 @@ import com.github.panpf.sketch.util.fitScale
 
 class TestGenericViewTarget(override val view: ImageView) : GenericViewTarget<ImageView>(view) {
 
-    override var drawable: Drawable?
+    override fun setDrawable(drawable: Drawable?) {
+        view.setImageDrawable(drawable)
+    }
+
+    override val drawable: Drawable?
         get() = view.drawable
-        set(value) {
-            view.setImageDrawable(value)
-        }
 
     override val fitScale: Boolean
         get() = view.scaleType.fitScale
