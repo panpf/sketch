@@ -61,12 +61,21 @@ import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeStateImage
 import com.github.panpf.sketch.test.utils.FakeTransition
 import com.github.panpf.sketch.test.utils.ScopeAction
+import com.github.panpf.sketch.test.utils.TestComponentsTarget
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
+import com.github.panpf.sketch.test.utils.TestDecodeInterceptor2
 import com.github.panpf.sketch.test.utils.TestDecoder
+import com.github.panpf.sketch.test.utils.TestDecoder2
 import com.github.panpf.sketch.test.utils.TestFetcher
+import com.github.panpf.sketch.test.utils.TestFetcher2
+import com.github.panpf.sketch.test.utils.TestImageOptionsTarget
 import com.github.panpf.sketch.test.utils.TestLifecycle
+import com.github.panpf.sketch.test.utils.TestLifecycleTarget
 import com.github.panpf.sketch.test.utils.TestListenerTarget
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
+import com.github.panpf.sketch.test.utils.TestRequestInterceptor2
+import com.github.panpf.sketch.test.utils.TestScaleResolverTarget
+import com.github.panpf.sketch.test.utils.TestSizeResolverTarget
 import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.target
@@ -298,6 +307,7 @@ class ImageRequestTest {
                 expected = LifecycleResolver(GlobalLifecycle),
                 actual = this.lifecycleResolver
             )
+            assertNull(target)
         }
 
         ImageRequest(context1, uri) {
@@ -307,6 +317,7 @@ class ImageRequestTest {
                 expected = LifecycleResolver(testLifecycle),
                 actual = this.lifecycleResolver
             )
+            assertNull(target)
         }
 
         ImageRequest(context1, uri) {
@@ -316,6 +327,19 @@ class ImageRequestTest {
                 expected = LifecycleResolver(testLifecycle2),
                 actual = this.lifecycleResolver
             )
+            assertNull(target)
+        }
+
+        val testLifecycle3 = TestLifecycle()
+        val testLifecycleTarget = TestLifecycleTarget(testLifecycle3)
+        ImageRequest(context1, uri) {
+            target(testLifecycleTarget)
+        }.apply {
+            assertEquals(
+                expected = LifecycleResolver(testLifecycle3),
+                actual = this.lifecycleResolver
+            )
+            assertSame(expected = testLifecycleTarget, actual = target)
         }
     }
 
@@ -359,6 +383,24 @@ class ImageRequestTest {
             defaultOptions(options)
         }.apply {
             assertSame(options, defaultOptions)
+        }
+
+        ImageRequest(context1, uri) {
+            memoryCachePolicy(DISABLED)
+        }.apply {
+            assertEquals(DISABLED, memoryCachePolicy)
+            assertEquals(ENABLED, resultCachePolicy)
+        }
+
+        ImageRequest(context1, uri) {
+            memoryCachePolicy(DISABLED)
+            target(TestImageOptionsTarget(ImageOptions() {
+                memoryCachePolicy(READ_ONLY)
+                resultCachePolicy(WRITE_ONLY)
+            }))
+        }.apply {
+            assertEquals(DISABLED, memoryCachePolicy)
+            assertEquals(WRITE_ONLY, resultCachePolicy)
         }
     }
 
@@ -841,6 +883,20 @@ class ImageRequestTest {
                 assertNull(definedOptions.sizeResolver)
                 assertEquals(SizeResolver(context1.screenSize()), sizeResolver)
             }
+
+            size(null)
+            target(TestSizeResolverTarget(Size(101, 202)))
+            build().apply {
+                assertNull(definedOptions.sizeResolver)
+                assertEquals(SizeResolver(Size(101, 202)), sizeResolver)
+            }
+
+            size(Size(1000, 1000))
+            target(TestSizeResolverTarget(Size(101, 202)))
+            build().apply {
+                assertEquals(SizeResolver(Size(1000, 1000)), definedOptions.sizeResolver)
+                assertEquals(SizeResolver(Size(1000, 1000)), sizeResolver)
+            }
         }
     }
 
@@ -937,6 +993,18 @@ class ImageRequestTest {
             scale(null)
             build().apply {
                 assertEquals(FixedScaleDecider(CENTER_CROP), scaleDecider)
+            }
+
+            scale(null)
+            target(TestScaleResolverTarget(FILL))
+            build().apply {
+                assertEquals(FixedScaleDecider(FILL), scaleDecider)
+            }
+
+            scale(END_CROP)
+            target(TestScaleResolverTarget(FILL))
+            build().apply {
+                assertEquals(FixedScaleDecider(END_CROP), scaleDecider)
             }
         }
     }
@@ -1545,6 +1613,35 @@ class ImageRequestTest {
                 ComponentRegistry.Builder().apply {
                     addRequestInterceptor(TestRequestInterceptor())
                     addDecodeInterceptor(TestDecodeInterceptor())
+                }.build(),
+                componentRegistry
+            )
+        }
+
+        ImageRequest(context, ResourceImages.jpeg.uri) {
+            components {
+                addFetcher(TestFetcher.Factory())
+                addDecoder(TestDecoder.Factory())
+                addRequestInterceptor(TestRequestInterceptor())
+                addDecodeInterceptor(TestDecodeInterceptor())
+            }
+            target(TestComponentsTarget(ComponentRegistry {
+                addFetcher(TestFetcher2.Factory())
+                addDecoder(TestDecoder2.Factory())
+                addRequestInterceptor(TestRequestInterceptor2())
+                addDecodeInterceptor(TestDecodeInterceptor2())
+            }))
+        }.apply {
+            assertEquals(
+                ComponentRegistry.Builder().apply {
+                    addFetcher(TestFetcher.Factory())
+                    addDecoder(TestDecoder.Factory())
+                    addRequestInterceptor(TestRequestInterceptor())
+                    addDecodeInterceptor(TestDecodeInterceptor())
+                    addFetcher(TestFetcher2.Factory())
+                    addDecoder(TestDecoder2.Factory())
+                    addRequestInterceptor(TestRequestInterceptor2())
+                    addDecodeInterceptor(TestDecodeInterceptor2())
                 }.build(),
                 componentRegistry
             )

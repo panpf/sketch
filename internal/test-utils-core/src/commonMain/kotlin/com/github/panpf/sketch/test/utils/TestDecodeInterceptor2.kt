@@ -39,6 +39,6 @@ class TestDecodeInterceptor2 : DecodeInterceptor {
     }
 
     override fun toString(): String {
-        return "Test2DecodeInterceptor(sortWeight=$sortWeight)"
+        return "TestDecodeInterceptor2(sortWeight=$sortWeight)"
     }
 }

@@ -349,7 +349,7 @@ class ComponentRegistryTest {
                         "fetcherFactoryList=[HttpUriFetcher]," +
                         "decoderFactoryList=[TestDecoder]," +
                         "requestInterceptorList=[EngineRequestInterceptor(sortWeight=100)]," +
-                        "decodeInterceptorList=[Test2DecodeInterceptor(sortWeight=0)]" +
+                        "decodeInterceptorList=[TestDecodeInterceptor2(sortWeight=0)]" +
                         ")",
                 toString()
             )
@@ -362,7 +362,7 @@ class ComponentRegistryTest {
                         "fetcherFactoryList=[TestFetcher,HttpUriFetcher]," +
                         "decoderFactoryList=[TestDecoder,TestDecoder]," +
                         "requestInterceptorList=[TestRequestInterceptor(sortWeight=0),EngineRequestInterceptor(sortWeight=100)]," +
-                        "decodeInterceptorList=[TestDecodeInterceptor(sortWeight=0),Test2DecodeInterceptor(sortWeight=0)]" +
+                        "decodeInterceptorList=[TestDecodeInterceptor(sortWeight=0),TestDecodeInterceptor2(sortWeight=0)]" +
                         ")",
                 toString()
             )

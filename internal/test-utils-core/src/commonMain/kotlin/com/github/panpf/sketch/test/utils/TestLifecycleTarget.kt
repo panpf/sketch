@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2024 panpf <panpfpanpf@outlook.com>
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,30 +16,29 @@
 
 package com.github.panpf.sketch.test.utils
 
-import com.github.panpf.sketch.request.ImageData
-import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.RequestInterceptor.Chain
+import androidx.lifecycle.Lifecycle
+import com.github.panpf.sketch.request.LifecycleResolver
+import com.github.panpf.sketch.target.Target
 
-class TestRequestInterceptor2 : RequestInterceptor {
+class TestLifecycleTarget(val lifecycle: Lifecycle) : Target {
 
-    override val key: String = "TestRequestInterceptor2"
-
-    override val sortWeight: Int = 0
-
-    override suspend fun intercept(chain: Chain): Result<ImageData> {
-        return chain.proceed(chain.request)
+    override fun getLifecycleResolver(): LifecycleResolver {
+        return LifecycleResolver(lifecycle)
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        return other != null && this::class == other::class
+        if (other == null || this::class != other::class) return false
+        other as TestLifecycleTarget
+        if (lifecycle != other.lifecycle) return false
+        return true
     }
 
     override fun hashCode(): Int {
-        return this::class.hashCode()
+        return lifecycle.hashCode()
     }
 
     override fun toString(): String {
-        return "TestRequestInterceptor2(sortWeight=$sortWeight)"
+        return "TestLifecycleTarget(lifecycle=$lifecycle)"
     }
 }
