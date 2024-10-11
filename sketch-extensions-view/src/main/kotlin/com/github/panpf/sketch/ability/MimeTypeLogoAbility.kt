@@ -19,8 +19,9 @@ package com.github.panpf.sketch.ability
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import com.github.panpf.sketch.drawable.DrawableFetcher
-import com.github.panpf.sketch.drawable.RealDrawable
-import com.github.panpf.sketch.drawable.ResDrawable
+import com.github.panpf.sketch.drawable.RealDrawableFetcher
+import com.github.panpf.sketch.drawable.ResDrawableFetcher
+import com.github.panpf.sketch.drawable.asEquitable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -39,8 +40,10 @@ fun ViewAbilityContainer.showMimeTypeLogoWithDrawable(
     removeMimeTypeLogo()
     addViewAbility(
         MimeTypeLogoAbility(
-            mimeTypeIconMap.mapValues { RealDrawable(it.value) },
-            margin
+            mimeTypeIconMap = mimeTypeIconMap.mapValues {
+                RealDrawableFetcher(it.value.asEquitable(it.value))
+            },
+            margin = margin
         )
     )
 }
@@ -57,7 +60,7 @@ fun ViewAbilityContainer.showMimeTypeLogoWithRes(
     removeMimeTypeLogo()
     addViewAbility(
         MimeTypeLogoAbility(
-            mimeTypeIconMap.mapValues { ResDrawable(it.value) },
+            mimeTypeIconMap.mapValues { ResDrawableFetcher(it.value) },
             margin
         )
     )

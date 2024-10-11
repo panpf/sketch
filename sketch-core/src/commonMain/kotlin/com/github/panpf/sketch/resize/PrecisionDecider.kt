@@ -56,15 +56,13 @@ interface PrecisionDecider : Key {
  */
 data class FixedPrecisionDecider(private val precision: Precision) : PrecisionDecider {
 
-    override val key: String by lazy { "Fixed($precision)" }
+    override val key: String = "Fixed($precision)"
 
     override fun get(imageSize: Size, targetSize: Size): Precision {
         return precision
     }
 
-    override fun toString(): String {
-        return "FixedPrecisionDecider($precision)"
-    }
+    override fun toString(): String = "FixedPrecisionDecider($precision)"
 }
 
 
@@ -81,14 +79,16 @@ data class LongImagePrecisionDecider constructor(
     val longImageDecider: LongImageDecider = LongImageDecider(),
 ) : PrecisionDecider {
 
-    override val key: String by lazy { "LongImage($longImage,$otherImage,${longImageDecider.key})" }
+    override val key: String = "LongImage($longImage,$otherImage,${longImageDecider.key})"
 
     override fun get(imageSize: Size, targetSize: Size): Precision {
         val isLongImage = longImageDecider.isLongImage(imageSize, targetSize)
         return if (isLongImage) longImage else otherImage
     }
 
-    override fun toString(): String {
-        return "LongImagePrecisionDecider(longImage=$longImage, otherImage=$otherImage, longImageDecider=$longImageDecider)"
-    }
+    override fun toString(): String = "LongImagePrecisionDecider(" +
+            "longImage=$longImage, " +
+            "otherImage=$otherImage, " +
+            "longImageDecider=$longImageDecider" +
+            ")"
 }

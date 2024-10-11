@@ -13,7 +13,7 @@ class ApkIconDrawableFetcherTest {
     @Test
     fun testKey() {
         assertEquals(
-            expected = "ApkIconDrawableFetcher('/sdcard/sample.apk')",
+            expected = "ApkIconDrawableFetcher(file='/sdcard/sample.apk')",
             actual = ApkIconDrawableFetcher(File("/sdcard/sample.apk")).key
         )
     }
@@ -43,7 +43,7 @@ class ApkIconDrawableFetcherTest {
     @Test
     fun testToString() {
         assertEquals(
-            expected = "ApkIconDrawableFetcher('/sdcard/sample.apk')",
+            expected = "ApkIconDrawableFetcher(file='/sdcard/sample.apk')",
             actual = ApkIconDrawableFetcher(File("/sdcard/sample.apk")).toString()
         )
     }

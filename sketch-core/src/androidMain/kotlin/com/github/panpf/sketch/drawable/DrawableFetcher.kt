@@ -37,23 +37,29 @@ import com.github.panpf.sketch.util.getXmlDrawableCompat
 interface DrawableFetcher : Key {
 
     fun getDrawable(context: Context): Drawable
+
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
 }
 
 /**
  * Get Drawable from resource
  *
- * @see com.github.panpf.sketch.core.android.test.drawable.ResDrawableTest
+ * @see com.github.panpf.sketch.core.android.test.drawable.ResDrawableFetcherTest
  */
-class ResDrawable constructor(
+class ResDrawableFetcher constructor(
     @DrawableRes val resId: Int,
     val resources: Resources? = null,
     val packageName: String? = null,
 ) : DrawableFetcher {
 
     override val key: String = if (packageName != null && resources != null) {
-        "ResDrawable(resId=$resId,resources=$resources,packageName=$packageName)"
+        "ResDrawableFetcher(resId=$resId,resources=$resources,packageName=$packageName)"
     } else {
-        "ResDrawable($resId)"
+        "ResDrawableFetcher(resId=$resId)"
     }
 
     @SuppressLint("ResourceType")
@@ -70,7 +76,7 @@ class ResDrawable constructor(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
-        other as ResDrawable
+        other as ResDrawableFetcher
         if (resId != other.resId) return false
         if (resources != other.resources) return false
         if (packageName != other.packageName) return false
@@ -86,51 +92,21 @@ class ResDrawable constructor(
 
     override fun toString(): String {
         return if (packageName != null && resources != null) {
-            "ResDrawable(resId=$resId, resources=$resources, packageName=$packageName)"
+            "ResDrawableFetcher(resId=$resId, resources=$resources, packageName=$packageName)"
         } else {
-            "ResDrawable($resId)"
+            "ResDrawableFetcher(resId=$resId)"
         }
-    }
-}
-
-/**
- * Get Drawable from real Drawable
- *
- * @see com.github.panpf.sketch.core.android.test.drawable.RealDrawableTest
- */
-class RealDrawable constructor(val drawable: Drawable) : DrawableFetcher {
-
-    override val key: String = "RealDrawable($drawable)"
-
-    override fun getDrawable(context: Context): Drawable {
-        return drawable
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as RealDrawable
-        if (drawable != other.drawable) return false
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return drawable.hashCode()
-    }
-
-    override fun toString(): String {
-        return "RealDrawable($drawable)"
     }
 }
 
 /**
  * Get Drawable from real EquitableDrawable
  *
- * @see com.github.panpf.sketch.core.android.test.drawable.RealEquitableDrawableTest
+ * @see com.github.panpf.sketch.core.android.test.drawable.RealDrawableFetcherTest
  */
-class RealEquitableDrawable constructor(val drawable: EquitableDrawable) : DrawableFetcher {
+class RealDrawableFetcher constructor(val drawable: EquitableDrawable) : DrawableFetcher {
 
-    override val key: String = "RealEquitableDrawable(${drawable.key})"
+    override val key: String = "RealDrawableFetcher(drawable=${drawable.key})"
 
     override fun getDrawable(context: Context): Drawable {
         return drawable
@@ -139,7 +115,7 @@ class RealEquitableDrawable constructor(val drawable: EquitableDrawable) : Drawa
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
-        other as RealEquitableDrawable
+        other as RealDrawableFetcher
         if (drawable != other.drawable) return false
         return true
     }
@@ -149,18 +125,18 @@ class RealEquitableDrawable constructor(val drawable: EquitableDrawable) : Drawa
     }
 
     override fun toString(): String {
-        return "RealEquitableDrawable($drawable)"
+        return "RealDrawableFetcher(drawable=$drawable)"
     }
 }
 
 /**
  * Get Drawable from real Color
  *
- * @see com.github.panpf.sketch.core.android.test.drawable.RealColorDrawableTest
+ * @see com.github.panpf.sketch.core.android.test.drawable.RealColorDrawableFetcherTest
  */
-class RealColorDrawable constructor(@ColorInt val color: Int) : DrawableFetcher {
+class RealColorDrawableFetcher constructor(@ColorInt val color: Int) : DrawableFetcher {
 
-    override val key: String = "RealColorDrawable($color)"
+    override val key: String = "RealColorDrawableFetcher(color=$color)"
 
     override fun getDrawable(context: Context): Drawable {
         return ColorDrawable(color)
@@ -169,7 +145,7 @@ class RealColorDrawable constructor(@ColorInt val color: Int) : DrawableFetcher 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
-        other as RealColorDrawable
+        other as RealColorDrawableFetcher
         if (color != other.color) return false
         return true
     }
@@ -179,18 +155,18 @@ class RealColorDrawable constructor(@ColorInt val color: Int) : DrawableFetcher 
     }
 
     override fun toString(): String {
-        return "RealColorDrawable($color)"
+        return "RealColorDrawableFetcher(color=$color)"
     }
 }
 
 /**
  * Get Drawable from ColorFetcher
  *
- * @see com.github.panpf.sketch.core.android.test.drawable.ColorFetcherDrawableTest
+ * @see com.github.panpf.sketch.core.android.test.drawable.ColorFetcherDrawableFetcherTest
  */
-class ColorFetcherDrawable constructor(val color: ColorFetcher) : DrawableFetcher {
+class ColorFetcherDrawableFetcher constructor(val color: ColorFetcher) : DrawableFetcher {
 
-    override val key: String = "ColorFetcherDrawable(${color.key})"
+    override val key: String = "ColorFetcherDrawableFetcher(color=${color.key})"
 
     override fun getDrawable(context: Context): Drawable {
         return ColorDrawable(color.getColor(context))
@@ -199,7 +175,7 @@ class ColorFetcherDrawable constructor(val color: ColorFetcher) : DrawableFetche
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
-        other as ColorFetcherDrawable
+        other as ColorFetcherDrawableFetcher
         if (color != other.color) return false
         return true
     }
@@ -209,18 +185,18 @@ class ColorFetcherDrawable constructor(val color: ColorFetcher) : DrawableFetche
     }
 
     override fun toString(): String {
-        return "ColorFetcherDrawable($color)"
+        return "ColorFetcherDrawableFetcher(color=$color)"
     }
 }
 
 /**
  * Get Drawable from resource color
  *
- * @see com.github.panpf.sketch.core.android.test.drawable.ResColorDrawableTest
+ * @see com.github.panpf.sketch.core.android.test.drawable.ResColorDrawableFetcherTest
  */
-class ResColorDrawable constructor(@ColorRes val resId: Int) : DrawableFetcher {
+class ResColorDrawableFetcher constructor(@ColorRes val resId: Int) : DrawableFetcher {
 
-    override val key: String = "ResColorDrawable($resId)"
+    override val key: String = "ResColorDrawableFetcher(resId=$resId)"
 
     override fun getDrawable(context: Context): Drawable {
         return context.resources.getDrawableCompat(resId, null)
@@ -229,7 +205,7 @@ class ResColorDrawable constructor(@ColorRes val resId: Int) : DrawableFetcher {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
-        other as ResColorDrawable
+        other as ResColorDrawableFetcher
         if (resId != other.resId) return false
         return true
     }
@@ -239,6 +215,6 @@ class ResColorDrawable constructor(@ColorRes val resId: Int) : DrawableFetcher {
     }
 
     override fun toString(): String {
-        return "ResColorDrawable($resId)"
+        return "ResColorDrawableFetcher(resId=$resId)"
     }
 }

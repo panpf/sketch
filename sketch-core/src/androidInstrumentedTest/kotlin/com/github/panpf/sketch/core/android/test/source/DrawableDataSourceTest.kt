@@ -4,7 +4,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.VectorDrawable
 import android.os.Build.VERSION
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import com.github.panpf.sketch.drawable.ResDrawable
+import com.github.panpf.sketch.drawable.ResDrawableFetcher
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -23,7 +23,7 @@ class DrawableDataSourceTest {
 
         DrawableDataSource(
             context = context,
-            drawableFetcher = ResDrawable(android.R.drawable.ic_delete),
+            drawableFetcher = ResDrawableFetcher(android.R.drawable.ic_delete),
             dataFrom = DataFrom.LOCAL,
         ).apply {
             assertTrue(this.drawable is BitmapDrawable)
@@ -32,7 +32,7 @@ class DrawableDataSourceTest {
 
         DrawableDataSource(
             context = context,
-            drawableFetcher = ResDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy),
+            drawableFetcher = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy),
             dataFrom = DataFrom.MEMORY,
         ).apply {
             if (VERSION.SDK_INT >= 24) {
@@ -49,10 +49,10 @@ class DrawableDataSourceTest {
         val context = getTestContext()
         DrawableDataSource(
             context = context,
-            drawableFetcher = ResDrawable(android.R.drawable.ic_delete),
+            drawableFetcher = ResDrawableFetcher(android.R.drawable.ic_delete),
             dataFrom = DataFrom.LOCAL,
         ).apply {
-            assertEquals(ResDrawable(android.R.drawable.ic_delete).key, this.key)
+            assertEquals(ResDrawableFetcher(android.R.drawable.ic_delete).key, this.key)
         }
     }
 
@@ -62,7 +62,7 @@ class DrawableDataSourceTest {
         assertFailsWith(UnsupportedOperationException::class) {
             DrawableDataSource(
                 context = context,
-                drawableFetcher = ResDrawable(android.R.drawable.ic_delete),
+                drawableFetcher = ResDrawableFetcher(android.R.drawable.ic_delete),
                 dataFrom = DataFrom.LOCAL,
             ).openSource()
         }
@@ -74,7 +74,7 @@ class DrawableDataSourceTest {
         assertFailsWith(UnsupportedOperationException::class) {
             DrawableDataSource(
                 context = context,
-                drawableFetcher = ResDrawable(android.R.drawable.ic_delete),
+                drawableFetcher = ResDrawableFetcher(android.R.drawable.ic_delete),
                 dataFrom = DataFrom.LOCAL,
             ).getFile(sketch)
         }
@@ -85,22 +85,22 @@ class DrawableDataSourceTest {
         val context = getTestContext()
         val element1 = DrawableDataSource(
             context = context,
-            drawableFetcher = ResDrawable(android.R.drawable.ic_delete),
+            drawableFetcher = ResDrawableFetcher(android.R.drawable.ic_delete),
             dataFrom = DataFrom.LOCAL,
         )
         val element11 = DrawableDataSource(
             context = context,
-            drawableFetcher = ResDrawable(android.R.drawable.ic_delete),
+            drawableFetcher = ResDrawableFetcher(android.R.drawable.ic_delete),
             dataFrom = DataFrom.LOCAL,
         )
         val element2 = DrawableDataSource(
             context = context,
-            drawableFetcher = ResDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy),
+            drawableFetcher = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy),
             dataFrom = DataFrom.LOCAL,
         )
         val element3 = DrawableDataSource(
             context = context,
-            drawableFetcher = ResDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy),
+            drawableFetcher = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy),
             dataFrom = DataFrom.MEMORY,
         )
 
@@ -122,7 +122,7 @@ class DrawableDataSourceTest {
 
         DrawableDataSource(
             context = context,
-            drawableFetcher = ResDrawable(android.R.drawable.ic_delete),
+            drawableFetcher = ResDrawableFetcher(android.R.drawable.ic_delete),
             dataFrom = DataFrom.LOCAL,
         ).apply {
             assertEquals(

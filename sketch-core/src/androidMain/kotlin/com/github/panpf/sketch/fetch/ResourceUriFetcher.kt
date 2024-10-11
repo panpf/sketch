@@ -24,7 +24,7 @@ import android.content.pm.PackageManager.NameNotFoundException
 import android.content.res.Resources
 import android.util.TypedValue
 import androidx.annotation.WorkerThread
-import com.github.panpf.sketch.drawable.ResDrawable
+import com.github.panpf.sketch.drawable.ResDrawableFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataFrom
@@ -151,7 +151,7 @@ class ResourceUriFetcher constructor(
             DrawableDataSource(
                 context = context,
                 dataFrom = DataFrom.LOCAL,
-                drawableFetcher = ResDrawable(resId, resources, packageName)
+                drawableFetcher = ResDrawableFetcher(resId, resources, packageName)
             )
         }
         FetchResult(dataSource, mimeType)

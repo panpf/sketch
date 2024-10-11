@@ -18,7 +18,7 @@ package com.github.panpf.sketch.core.android.test.drawable
 
 import android.graphics.drawable.BitmapDrawable
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.drawable.ResDrawable
+import com.github.panpf.sketch.drawable.ResDrawableFetcher
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.getDrawableCompat
@@ -29,18 +29,18 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertSame
 
 @RunWith(AndroidJUnit4::class)
-class ResDrawableTest {
+class ResDrawableFetcherTest {
 
     @Test
     fun testKey() {
         val context = getTestContext()
         assertEquals(
-            expected = "ResDrawable(${android.R.drawable.ic_delete})",
-            actual = ResDrawable(android.R.drawable.ic_delete).key
+            expected = "ResDrawableFetcher(resId=${android.R.drawable.ic_delete})",
+            actual = ResDrawableFetcher(android.R.drawable.ic_delete).key
         )
         assertEquals(
-            expected = "ResDrawable(resId=${android.R.drawable.ic_delete},resources=${context.resources},packageName=${context.packageName})",
-            actual = ResDrawable(
+            expected = "ResDrawableFetcher(resId=${android.R.drawable.ic_delete},resources=${context.resources},packageName=${context.packageName})",
+            actual = ResDrawableFetcher(
                 android.R.drawable.ic_delete,
                 context.resources,
                 context.packageName
@@ -52,7 +52,7 @@ class ResDrawableTest {
     fun testGetDrawable() {
         val context = getTestContext()
 
-        ResDrawable(android.R.drawable.ic_delete).apply {
+        ResDrawableFetcher(android.R.drawable.ic_delete).apply {
             assertSame(
                 context.getDrawableCompat(android.R.drawable.ic_delete)
                     .asOrThrow<BitmapDrawable>().bitmap,
@@ -60,7 +60,7 @@ class ResDrawableTest {
             )
         }
 
-        ResDrawable(android.R.drawable.ic_lock_lock).apply {
+        ResDrawableFetcher(android.R.drawable.ic_lock_lock).apply {
             assertSame(
                 context.getDrawableCompat(android.R.drawable.ic_lock_lock)
                     .asOrThrow<BitmapDrawable>().bitmap,
@@ -72,12 +72,15 @@ class ResDrawableTest {
     @Test
     fun testEqualsAndHashCode() {
         val context = getTestContext()
-        val element1 = ResDrawable(android.R.drawable.ic_delete)
-        val element11 = ResDrawable(android.R.drawable.ic_delete)
-        val element2 = ResDrawable(android.R.drawable.ic_lock_lock)
-        val element3 = ResDrawable(android.R.drawable.ic_delete, resources = context.resources)
-        val element4 = ResDrawable(android.R.drawable.ic_delete, packageName = context.packageName)
+        val element1 = ResDrawableFetcher(android.R.drawable.ic_delete)
+        val element11 = ResDrawableFetcher(android.R.drawable.ic_delete)
+        val element2 = ResDrawableFetcher(android.R.drawable.ic_lock_lock)
+        val element3 =
+            ResDrawableFetcher(android.R.drawable.ic_delete, resources = context.resources)
+        val element4 =
+            ResDrawableFetcher(android.R.drawable.ic_delete, packageName = context.packageName)
 
+        assertEquals(element1, element11)
         assertNotEquals(element1, element2)
         assertNotEquals(element1, element3)
         assertNotEquals(element1, element4)
@@ -100,12 +103,12 @@ class ResDrawableTest {
     fun testToString() {
         val context = getTestContext()
         assertEquals(
-            expected = "ResDrawable(${android.R.drawable.ic_delete})",
-            actual = ResDrawable(android.R.drawable.ic_delete).toString()
+            expected = "ResDrawableFetcher(resId=${android.R.drawable.ic_delete})",
+            actual = ResDrawableFetcher(android.R.drawable.ic_delete).toString()
         )
         assertEquals(
-            expected = "ResDrawable(resId=${android.R.drawable.ic_delete}, resources=${context.resources}, packageName=${context.packageName})",
-            actual = ResDrawable(
+            expected = "ResDrawableFetcher(resId=${android.R.drawable.ic_delete}, resources=${context.resources}, packageName=${context.packageName})",
+            actual = ResDrawableFetcher(
                 android.R.drawable.ic_delete,
                 context.resources,
                 context.packageName

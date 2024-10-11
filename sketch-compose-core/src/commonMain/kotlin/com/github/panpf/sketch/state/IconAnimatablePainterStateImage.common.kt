@@ -217,8 +217,12 @@ data class IconAnimatablePainterStateImage(
     val iconTint: Color? = null,
 ) : StateImage {
 
-    override val key: String =
-        "IconAnimatablePainterStateImage(icon=${icon.key},background=${background?.key},iconSize=$iconSize,iconTint=${iconTint?.value})"
+    override val key: String = "IconAnimatablePainterStateImage(" +
+            "icon=${icon.key}," +
+            "background=${background?.key}," +
+            "iconSize=$iconSize," +
+            "iconTint=${iconTint?.value}" +
+            ")"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
         return IconAnimatablePainter(
@@ -250,7 +254,10 @@ data class IconAnimatablePainterStateImage(
         return result
     }
 
-    override fun toString(): String {
-        return "IconAnimatablePainterStateImage(icon=$icon, background=$background, iconSize=$iconSize, iconTint=${iconTint?.value})"
-    }
+    override fun toString(): String = "IconAnimatablePainterStateImage(" +
+            "icon=$icon, " +
+            "background=$background, " +
+            "iconSize=$iconSize, " +
+            "iconTint=${iconTint?.value}" +
+            ")"
 }

@@ -55,7 +55,5 @@ class AsyncImageSizeResolver : SizeResolver {
         return super.hashCode()
     }
 
-    override fun toString(): String {
-        return "AsyncImageSizeResolver@${this.toHexString()}"
-    }
+    override fun toString(): String = "AsyncImageSizeResolver@${this.toHexString()}"
 }

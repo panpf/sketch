@@ -79,9 +79,8 @@ internal class RealViewSizeResolver<T : View>(
         return result
     }
 
-    override fun toString(): String {
-        return "ViewSizeResolver(view=$viewKey, subtractPadding=$subtractPadding)"
-    }
+    override fun toString(): String =
+        "ViewSizeResolver(view=$viewKey, subtractPadding=$subtractPadding)"
 }
 
 /**

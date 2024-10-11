@@ -61,7 +61,7 @@ fun rememberColorPainterStateImageWithInt(color: Int): ColorPainterStateImage =
 @Stable
 data class ColorPainterStateImage(val color: Color) : StateImage {
 
-    override val key: String = "ColorPainterStateImage(${color.value})"
+    override val key: String = "ColorPainterStateImage(color=${color.value})"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
         return ColorPainter(color).asImage()

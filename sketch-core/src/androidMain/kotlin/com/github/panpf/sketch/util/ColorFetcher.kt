@@ -25,41 +25,48 @@ import androidx.core.content.res.ResourcesCompat
  * For getting the color
  */
 interface ColorFetcher : Key {
+
     fun getColor(context: Context): Int
+
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
 }
 
 /**
  * Get color from int
  *
- * @see com.github.panpf.sketch.core.android.test.util.ColorFetcherTest.testResColor
+ * @see com.github.panpf.sketch.core.android.test.util.ColorFetcherTest.testIntColorFetcher
  */
-class IntColor(@ColorInt val color: Int) : ColorFetcher {
+class IntColorFetcher(@ColorInt val color: Int) : ColorFetcher {
 
-    override val key: String = "IntColor($color)"
+    override val key: String = "IntColorFetcher(color=$color)"
 
     override fun getColor(context: Context): Int = color
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
-        other as IntColor
+        other as IntColorFetcher
         if (color != other.color) return false
         return true
     }
 
     override fun hashCode(): Int = color
 
-    override fun toString(): String = "IntColor($color)"
+    override fun toString(): String = "IntColorFetcher(color=$color)"
 }
 
 /**
  * Get color from resource
  *
- * @see com.github.panpf.sketch.core.android.test.util.ColorFetcherTest.testResColor
+ * @see com.github.panpf.sketch.core.android.test.util.ColorFetcherTest.testResColorFetcher
  */
-class ResColor(@ColorRes val resId: Int) : ColorFetcher {
+class ResColorFetcher(@ColorRes val resId: Int) : ColorFetcher {
 
-    override val key: String = "ResColor($resId)"
+    override val key: String = "ResColorFetcher(resId=$resId)"
 
     override fun getColor(context: Context): Int =
         ResourcesCompat.getColor(context.resources, resId, null)
@@ -67,12 +74,12 @@ class ResColor(@ColorRes val resId: Int) : ColorFetcher {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
-        other as ResColor
+        other as ResColorFetcher
         if (resId != other.resId) return false
         return true
     }
 
     override fun hashCode(): Int = resId
 
-    override fun toString(): String = "ResColor($resId)"
+    override fun toString(): String = "ResColorFetcher(resId=$resId)"
 }

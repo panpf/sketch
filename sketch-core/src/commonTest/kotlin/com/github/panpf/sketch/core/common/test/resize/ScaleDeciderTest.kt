@@ -68,10 +68,10 @@ class ScaleDeciderTest {
     @Test
     fun testFixedScaleDeciderToString() {
         FixedScaleDecider(START_CROP).apply {
-            assertEquals("FixedScaleDecider(START_CROP)", toString())
+            assertEquals("FixedScaleDecider(scale=START_CROP)", toString())
         }
         FixedScaleDecider(END_CROP).apply {
-            assertEquals("FixedScaleDecider(END_CROP)", toString())
+            assertEquals("FixedScaleDecider(scale=END_CROP)", toString())
         }
     }
 

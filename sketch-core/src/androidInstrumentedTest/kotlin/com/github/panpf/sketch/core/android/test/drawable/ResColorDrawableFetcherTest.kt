@@ -1,27 +1,27 @@
 package com.github.panpf.sketch.core.android.test.drawable
 
 import android.graphics.drawable.ColorDrawable
-import com.github.panpf.sketch.drawable.ResColorDrawable
+import com.github.panpf.sketch.drawable.ResColorDrawableFetcher
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
-class ResColorDrawableTest {
+class ResColorDrawableFetcherTest {
 
     @Test
     fun testKey() {
         assertEquals(
-            expected = "ResColorDrawable(${com.github.panpf.sketch.test.utils.core.R.color.colorPrimary})",
-            actual = ResColorDrawable(com.github.panpf.sketch.test.utils.core.R.color.colorPrimary).key
+            expected = "ResColorDrawableFetcher(resId=${com.github.panpf.sketch.test.utils.core.R.color.colorPrimary})",
+            actual = ResColorDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.color.colorPrimary).key
         )
     }
 
     @Test
     fun testGetDrawable() {
         val context = getTestContext()
-        ResColorDrawable(com.github.panpf.sketch.test.utils.core.R.color.colorPrimary).apply {
+        ResColorDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.color.colorPrimary).apply {
             assertEquals(
                 expected = context.resources.getColor(com.github.panpf.sketch.test.utils.core.R.color.colorPrimary),
                 actual = getDrawable(context).asOrThrow<ColorDrawable>().color
@@ -32,10 +32,11 @@ class ResColorDrawableTest {
     @Test
     fun testEqualsAndHashCode() {
         val element1 =
-            ResColorDrawable(com.github.panpf.sketch.test.utils.core.R.color.colorPrimary)
+            ResColorDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.color.colorPrimary)
         val element11 =
-            ResColorDrawable(com.github.panpf.sketch.test.utils.core.R.color.colorPrimary)
-        val element2 = ResColorDrawable(com.github.panpf.sketch.test.utils.core.R.color.colorAccent)
+            ResColorDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.color.colorPrimary)
+        val element2 =
+            ResColorDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.color.colorAccent)
 
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
@@ -49,8 +50,8 @@ class ResColorDrawableTest {
     @Test
     fun testToString() {
         assertEquals(
-            expected = "ResColorDrawable(${com.github.panpf.sketch.test.utils.core.R.color.colorPrimary})",
-            actual = ResColorDrawable(com.github.panpf.sketch.test.utils.core.R.color.colorPrimary).toString()
+            expected = "ResColorDrawableFetcher(resId=${com.github.panpf.sketch.test.utils.core.R.color.colorPrimary})",
+            actual = ResColorDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.color.colorPrimary).toString()
         )
     }
 }

@@ -51,15 +51,11 @@ data class DepthHolder(val depth: Depth, val from: String? = null) : Key {
         val Default = DepthHolder(Depth.NETWORK)
     }
 
-    override val key: String by lazy {
-        if (from != null) {
-            "DepthHolder(depth=$depth,from='$from')"
-        } else {
-            "DepthHolder($depth)"
-        }
+    override val key: String = if (from != null) {
+        "DepthHolder(depth=$depth,from='$from')"
+    } else {
+        "DepthHolder($depth)"
     }
 
-    override fun toString(): String {
-        return "DepthHolder(depth=$depth, from='$from')"
-    }
+    override fun toString(): String = "DepthHolder(depth=$depth, from='$from')"
 }

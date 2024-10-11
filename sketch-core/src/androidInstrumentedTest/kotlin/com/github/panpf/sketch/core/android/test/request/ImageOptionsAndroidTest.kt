@@ -22,8 +22,8 @@ import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.util.IntColor
-import com.github.panpf.sketch.util.ResColor
+import com.github.panpf.sketch.util.IntColorFetcher
+import com.github.panpf.sketch.util.ResColorFetcher
 import com.github.panpf.sketch.util.screenSize
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -80,18 +80,18 @@ class ImageOptionsAndroidTest {
                 )
             }
 
-            placeholder(IntColor(TestColor.RED))
+            placeholder(IntColorFetcher(TestColor.RED))
             build().apply {
                 assertEquals(
-                    ColorDrawableStateImage(IntColor(TestColor.RED)),
+                    ColorDrawableStateImage(IntColorFetcher(TestColor.RED)),
                     placeholder
                 )
             }
 
-            placeholder(ResColor(android.R.drawable.ic_lock_lock))
+            placeholder(ResColorFetcher(android.R.drawable.ic_lock_lock))
             build().apply {
                 assertEquals(
-                    ColorDrawableStateImage(ResColor(android.R.drawable.ic_lock_lock)),
+                    ColorDrawableStateImage(ResColorFetcher(android.R.drawable.ic_lock_lock)),
                     placeholder
                 )
             }
@@ -128,18 +128,18 @@ class ImageOptionsAndroidTest {
                 )
             }
 
-            fallback(IntColor(TestColor.RED))
+            fallback(IntColorFetcher(TestColor.RED))
             build().apply {
                 assertEquals(
-                    ColorDrawableStateImage(IntColor(TestColor.RED)),
+                    ColorDrawableStateImage(IntColorFetcher(TestColor.RED)),
                     fallback
                 )
             }
 
-            fallback(ResColor(android.R.drawable.ic_lock_lock))
+            fallback(ResColorFetcher(android.R.drawable.ic_lock_lock))
             build().apply {
                 assertEquals(
-                    ColorDrawableStateImage(ResColor(android.R.drawable.ic_lock_lock)),
+                    ColorDrawableStateImage(ResColorFetcher(android.R.drawable.ic_lock_lock)),
                     fallback
                 )
             }
@@ -174,18 +174,18 @@ class ImageOptionsAndroidTest {
                 )
             }
 
-            error(IntColor(TestColor.RED))
+            error(IntColorFetcher(TestColor.RED))
             build().apply {
                 assertEquals(
-                    ColorDrawableStateImage(IntColor(TestColor.RED)),
+                    ColorDrawableStateImage(IntColorFetcher(TestColor.RED)),
                     error
                 )
             }
 
-            error(ResColor(android.R.drawable.ic_lock_lock))
+            error(ResColorFetcher(android.R.drawable.ic_lock_lock))
             build().apply {
                 assertEquals(
-                    ColorDrawableStateImage(ResColor(android.R.drawable.ic_lock_lock)),
+                    ColorDrawableStateImage(ResColorFetcher(android.R.drawable.ic_lock_lock)),
                     error
                 )
             }

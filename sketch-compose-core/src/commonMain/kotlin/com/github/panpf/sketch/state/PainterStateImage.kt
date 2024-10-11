@@ -42,7 +42,7 @@ fun rememberPainterStateImage(painter: EquitablePainter): PainterStateImage =
 @Stable
 data class PainterStateImage(val painter: EquitablePainter) : StateImage {
 
-    override val key: String = "PainterStateImage(${painter.key})"
+    override val key: String = "PainterStateImage(painter=${painter.key})"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
         return painter.asImage()

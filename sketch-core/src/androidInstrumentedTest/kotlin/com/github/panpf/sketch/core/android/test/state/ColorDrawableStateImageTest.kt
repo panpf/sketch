@@ -27,8 +27,8 @@ import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.state.ResColorDrawableStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestColor
-import com.github.panpf.sketch.util.IntColor
-import com.github.panpf.sketch.util.ResColor
+import com.github.panpf.sketch.util.IntColorFetcher
+import com.github.panpf.sketch.util.ResColorFetcher
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
 import org.junit.runner.RunWith
@@ -42,7 +42,7 @@ class ColorDrawableStateImageTest {
     @Test
     fun testIntColorDrawableStateImage() {
         assertEquals(
-            expected = ColorDrawableStateImage(IntColor(TestColor.RED)),
+            expected = ColorDrawableStateImage(IntColorFetcher(TestColor.RED)),
             actual = IntColorDrawableStateImage(TestColor.RED)
         )
     }
@@ -50,7 +50,7 @@ class ColorDrawableStateImageTest {
     @Test
     fun testResColorDrawableStateImage() {
         assertEquals(
-            expected = ColorDrawableStateImage(ResColor(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)),
+            expected = ColorDrawableStateImage(ResColorFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)),
             actual = ResColorDrawableStateImage(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
         )
     }
@@ -58,23 +58,23 @@ class ColorDrawableStateImageTest {
     @Test
     fun testColorDrawableStateImageIntColor() {
         assertEquals(
-            expected = ColorDrawableStateImage(IntColor(TestColor.RED)),
-            actual = ColorDrawableStateImage(IntColor(TestColor.RED))
+            expected = ColorDrawableStateImage(IntColorFetcher(TestColor.RED)),
+            actual = ColorDrawableStateImage(IntColorFetcher(TestColor.RED))
         )
     }
 
     @Test
     fun testColorDrawableStateImageResColor() {
         assertEquals(
-            expected = ColorDrawableStateImage(ResColor(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)),
-            actual = ColorDrawableStateImage(ResColor(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated))
+            expected = ColorDrawableStateImage(ResColorFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)),
+            actual = ColorDrawableStateImage(ResColorFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated))
         )
     }
 
     @Test
     fun testKey() {
         IntColorDrawableStateImage(Color.RED).apply {
-            assertEquals("ColorDrawableStateImage(${IntColor(Color.RED).key})", key)
+            assertEquals("ColorDrawableStateImage(color=${IntColorFetcher(Color.RED).key})", key)
         }
     }
 
@@ -134,10 +134,16 @@ class ColorDrawableStateImageTest {
     @Test
     fun testToString() {
         IntColorDrawableStateImage(Color.RED).apply {
-            assertEquals("ColorDrawableStateImage(color=IntColor(${Color.RED}))", toString())
+            assertEquals(
+                "ColorDrawableStateImage(color=IntColorFetcher(color=${Color.RED}))",
+                toString()
+            )
         }
         IntColorDrawableStateImage(Color.GREEN).apply {
-            assertEquals("ColorDrawableStateImage(color=IntColor(${Color.GREEN}))", toString())
+            assertEquals(
+                "ColorDrawableStateImage(color=IntColorFetcher(color=${Color.GREEN}))",
+                toString()
+            )
         }
     }
 }

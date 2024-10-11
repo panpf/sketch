@@ -24,11 +24,11 @@ import android.graphics.drawable.ColorDrawable
 import androidx.core.content.res.ResourcesCompat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.DrawableImage
-import com.github.panpf.sketch.drawable.ColorFetcherDrawable
+import com.github.panpf.sketch.drawable.ColorFetcherDrawableFetcher
 import com.github.panpf.sketch.drawable.IconDrawable
-import com.github.panpf.sketch.drawable.RealColorDrawable
-import com.github.panpf.sketch.drawable.RealEquitableDrawable
-import com.github.panpf.sketch.drawable.ResDrawable
+import com.github.panpf.sketch.drawable.RealColorDrawableFetcher
+import com.github.panpf.sketch.drawable.RealDrawableFetcher
+import com.github.panpf.sketch.drawable.ResDrawableFetcher
 import com.github.panpf.sketch.drawable.asEquitable
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
@@ -38,8 +38,8 @@ import com.github.panpf.sketch.test.utils.SizeColorDrawable
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.asEquitable
 import com.github.panpf.sketch.test.utils.size
-import com.github.panpf.sketch.util.IntColor
-import com.github.panpf.sketch.util.ResColor
+import com.github.panpf.sketch.util.IntColorFetcher
+import com.github.panpf.sketch.util.ResColorFetcher
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchSize
 import com.github.panpf.sketch.util.asOrThrow
@@ -63,7 +63,7 @@ class IconDrawableStateImageTest {
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     background = null,
                     iconSize = null,
                     iconTint = null
@@ -82,10 +82,10 @@ class IconDrawableStateImageTest {
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     background = ColorDrawable(Color.GREEN)
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = null,
                     iconTint = null
                 ),
@@ -100,8 +100,8 @@ class IconDrawableStateImageTest {
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
-                    background = ResDrawable(android.R.color.darker_gray),
+                        .let { RealDrawableFetcher(it) },
+                    background = ResDrawableFetcher(android.R.color.darker_gray),
                     iconSize = null,
                     iconTint = null
                 ),
@@ -110,14 +110,14 @@ class IconDrawableStateImageTest {
         }
         IconDrawableStateImage(
             icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
-            background = IntColor(Color.YELLOW),
+            background = IntColorFetcher(Color.YELLOW),
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
-                    background = ColorFetcherDrawable(IntColor(Color.YELLOW)),
+                        .let { RealDrawableFetcher(it) },
+                    background = ColorFetcherDrawableFetcher(IntColorFetcher(Color.YELLOW)),
                     iconSize = null,
                     iconTint = null
                 ),
@@ -132,9 +132,9 @@ class IconDrawableStateImageTest {
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     background = ColorDrawable(Color.YELLOW).asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = null,
                     iconTint = null
                 ),
@@ -151,7 +151,7 @@ class IconDrawableStateImageTest {
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     background = null,
                     iconSize = Size(101, 202),
                     iconTint = null
@@ -169,26 +169,26 @@ class IconDrawableStateImageTest {
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     background = null,
                     iconSize = null,
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
         }
         IconDrawableStateImage(
             icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
-            iconTint = IntColor(Color.CYAN)
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     background = null,
                     iconSize = null,
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
@@ -205,10 +205,10 @@ class IconDrawableStateImageTest {
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     background = ColorDrawable(Color.GREEN)
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = Size(101, 202),
                     iconTint = null
                 ),
@@ -224,8 +224,8 @@ class IconDrawableStateImageTest {
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
-                    background = ResDrawable(android.R.color.darker_gray),
+                        .let { RealDrawableFetcher(it) },
+                    background = ResDrawableFetcher(android.R.color.darker_gray),
                     iconSize = Size(101, 202),
                     iconTint = null
                 ),
@@ -234,15 +234,15 @@ class IconDrawableStateImageTest {
         }
         IconDrawableStateImage(
             icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
-            background = IntColor(Color.YELLOW),
+            background = IntColorFetcher(Color.YELLOW),
             iconSize = Size(101, 202),
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
-                    background = ColorFetcherDrawable(IntColor(Color.YELLOW)),
+                        .let { RealDrawableFetcher(it) },
+                    background = ColorFetcherDrawableFetcher(IntColorFetcher(Color.YELLOW)),
                     iconSize = Size(101, 202),
                     iconTint = null
                 ),
@@ -258,9 +258,9 @@ class IconDrawableStateImageTest {
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     background = ColorDrawable(Color.YELLOW).asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = Size(101, 202),
                     iconTint = null
                 ),
@@ -278,12 +278,12 @@ class IconDrawableStateImageTest {
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     background = ColorDrawable(Color.GREEN)
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = null,
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
@@ -291,18 +291,18 @@ class IconDrawableStateImageTest {
         IconDrawableStateImage(
             icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
             background = ColorDrawable(Color.GREEN).asEquitable(),
-            iconTint = IntColor(Color.CYAN)
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     background = ColorDrawable(Color.GREEN)
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = null,
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
@@ -318,10 +318,10 @@ class IconDrawableStateImageTest {
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
-                    background = ResDrawable(android.R.color.darker_gray),
+                        .let { RealDrawableFetcher(it) },
+                    background = ResDrawableFetcher(android.R.color.darker_gray),
                     iconSize = null,
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
@@ -329,52 +329,52 @@ class IconDrawableStateImageTest {
         IconDrawableStateImage(
             icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
             background = android.R.color.darker_gray,
-            iconTint = IntColor(Color.CYAN)
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
-                    background = ResDrawable(android.R.color.darker_gray),
+                        .let { RealDrawableFetcher(it) },
+                    background = ResDrawableFetcher(android.R.color.darker_gray),
                     iconSize = null,
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
         }
 
-        // background: IntColor, iconTine
+        // background: IntColorFetcher, iconTine
         IconDrawableStateImage(
             icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
-            background = IntColor(Color.YELLOW),
+            background = IntColorFetcher(Color.YELLOW),
             iconTint = android.R.color.holo_purple
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
-                    background = ColorFetcherDrawable(IntColor(Color.YELLOW)),
+                        .let { RealDrawableFetcher(it) },
+                    background = ColorFetcherDrawableFetcher(IntColorFetcher(Color.YELLOW)),
                     iconSize = null,
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
         }
         IconDrawableStateImage(
             icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
-            background = IntColor(Color.YELLOW),
-            iconTint = IntColor(Color.CYAN)
+            background = IntColorFetcher(Color.YELLOW),
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
-                    background = ColorFetcherDrawable(IntColor(Color.YELLOW)),
+                        .let { RealDrawableFetcher(it) },
+                    background = ColorFetcherDrawableFetcher(IntColorFetcher(Color.YELLOW)),
                     iconSize = null,
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
@@ -390,11 +390,11 @@ class IconDrawableStateImageTest {
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     background = ColorDrawable(Color.YELLOW).asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = null,
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
@@ -402,17 +402,17 @@ class IconDrawableStateImageTest {
         IconDrawableStateImage(
             icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
             background = ColorDrawable(Color.YELLOW).asEquitable(),
-            iconTint = IntColor(Color.CYAN)
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     background = ColorDrawable(Color.YELLOW).asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = null,
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
@@ -428,10 +428,10 @@ class IconDrawableStateImageTest {
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     background = null,
                     iconSize = Size(101, 202),
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
@@ -439,16 +439,16 @@ class IconDrawableStateImageTest {
         IconDrawableStateImage(
             icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
             iconSize = Size(101, 202),
-            iconTint = IntColor(Color.CYAN)
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     background = null,
                     iconSize = Size(101, 202),
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
@@ -466,12 +466,12 @@ class IconDrawableStateImageTest {
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     background = ColorDrawable(Color.GREEN)
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = Size(101, 202),
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
@@ -480,18 +480,18 @@ class IconDrawableStateImageTest {
             icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
             background = ColorDrawable(Color.GREEN).asEquitable(),
             iconSize = Size(101, 202),
-            iconTint = IntColor(Color.CYAN)
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     background = ColorDrawable(Color.GREEN)
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = Size(101, 202),
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
@@ -508,10 +508,10 @@ class IconDrawableStateImageTest {
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
-                    background = ResDrawable(android.R.color.darker_gray),
+                        .let { RealDrawableFetcher(it) },
+                    background = ResDrawableFetcher(android.R.color.darker_gray),
                     iconSize = Size(101, 202),
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
@@ -520,25 +520,25 @@ class IconDrawableStateImageTest {
             icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
             background = android.R.color.darker_gray,
             iconSize = Size(101, 202),
-            iconTint = IntColor(Color.CYAN)
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
-                    background = ResDrawable(android.R.color.darker_gray),
+                        .let { RealDrawableFetcher(it) },
+                    background = ResDrawableFetcher(android.R.color.darker_gray),
                     iconSize = Size(101, 202),
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
         }
 
-        // background: IntColor
+        // background: IntColorFetcher
         IconDrawableStateImage(
             icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
-            background = IntColor(Color.YELLOW),
+            background = IntColorFetcher(Color.YELLOW),
             iconSize = Size(101, 202),
             iconTint = android.R.color.holo_purple
         ).apply {
@@ -546,28 +546,28 @@ class IconDrawableStateImageTest {
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
-                    background = ColorFetcherDrawable(IntColor(Color.YELLOW)),
+                        .let { RealDrawableFetcher(it) },
+                    background = ColorFetcherDrawableFetcher(IntColorFetcher(Color.YELLOW)),
                     iconSize = Size(101, 202),
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
         }
         IconDrawableStateImage(
             icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
-            background = IntColor(Color.YELLOW),
+            background = IntColorFetcher(Color.YELLOW),
             iconSize = Size(101, 202),
-            iconTint = IntColor(Color.CYAN)
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
-                    background = ColorFetcherDrawable(IntColor(Color.YELLOW)),
+                        .let { RealDrawableFetcher(it) },
+                    background = ColorFetcherDrawableFetcher(IntColorFetcher(Color.YELLOW)),
                     iconSize = Size(101, 202),
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
@@ -584,11 +584,11 @@ class IconDrawableStateImageTest {
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     background = ColorDrawable(Color.YELLOW).asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = Size(101, 202),
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
@@ -597,17 +597,17 @@ class IconDrawableStateImageTest {
             icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
             background = ColorDrawable(Color.YELLOW).asEquitable(),
             iconSize = Size(101, 202),
-            iconTint = IntColor(Color.CYAN)
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100))
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     background = ColorDrawable(Color.YELLOW).asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = Size(101, 202),
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
@@ -622,7 +622,7 @@ class IconDrawableStateImageTest {
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
                     background = null,
                     iconSize = null,
                     iconTint = null
@@ -639,10 +639,10 @@ class IconDrawableStateImageTest {
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
                     background = ColorDrawable(Color.GREEN)
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = null,
                     iconTint = null
                 ),
@@ -655,8 +655,8 @@ class IconDrawableStateImageTest {
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
-                    background = ResDrawable(android.R.color.darker_gray),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
+                    background = ResDrawableFetcher(android.R.color.darker_gray),
                     iconSize = null,
                     iconTint = null
                 ),
@@ -665,12 +665,12 @@ class IconDrawableStateImageTest {
         }
         IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
-            background = IntColor(Color.YELLOW),
+            background = IntColorFetcher(Color.YELLOW),
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
-                    background = ColorFetcherDrawable(IntColor(Color.YELLOW)),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
+                    background = ColorFetcherDrawableFetcher(IntColorFetcher(Color.YELLOW)),
                     iconSize = null,
                     iconTint = null
                 ),
@@ -683,9 +683,9 @@ class IconDrawableStateImageTest {
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
                     background = ColorDrawable(Color.YELLOW).asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = null,
                     iconTint = null
                 ),
@@ -700,7 +700,7 @@ class IconDrawableStateImageTest {
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
                     background = null,
                     iconSize = Size(101, 202),
                     iconTint = null
@@ -716,24 +716,24 @@ class IconDrawableStateImageTest {
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
                     background = null,
                     iconSize = null,
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
         }
         IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
-            iconTint = IntColor(Color.CYAN)
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
                     background = null,
                     iconSize = null,
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
@@ -748,10 +748,10 @@ class IconDrawableStateImageTest {
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
                     background = ColorDrawable(Color.GREEN)
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = Size(101, 202),
                     iconTint = null
                 ),
@@ -765,8 +765,8 @@ class IconDrawableStateImageTest {
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
-                    background = ResDrawable(android.R.color.darker_gray),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
+                    background = ResDrawableFetcher(android.R.color.darker_gray),
                     iconSize = Size(101, 202),
                     iconTint = null
                 ),
@@ -775,13 +775,13 @@ class IconDrawableStateImageTest {
         }
         IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
-            background = IntColor(Color.YELLOW),
+            background = IntColorFetcher(Color.YELLOW),
             iconSize = Size(101, 202),
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
-                    background = ColorFetcherDrawable(IntColor(Color.YELLOW)),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
+                    background = ColorFetcherDrawableFetcher(IntColorFetcher(Color.YELLOW)),
                     iconSize = Size(101, 202),
                     iconTint = null
                 ),
@@ -795,9 +795,9 @@ class IconDrawableStateImageTest {
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
                     background = ColorDrawable(Color.YELLOW).asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = Size(101, 202),
                     iconTint = null
                 ),
@@ -813,12 +813,12 @@ class IconDrawableStateImageTest {
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
                     background = ColorDrawable(Color.GREEN)
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = null,
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
@@ -826,16 +826,16 @@ class IconDrawableStateImageTest {
         IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
             background = ColorDrawable(Color.GREEN).asEquitable(),
-            iconTint = IntColor(Color.CYAN)
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
                     background = ColorDrawable(Color.GREEN)
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = null,
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
@@ -849,10 +849,10 @@ class IconDrawableStateImageTest {
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
-                    background = ResDrawable(android.R.color.darker_gray),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
+                    background = ResDrawableFetcher(android.R.color.darker_gray),
                     iconSize = null,
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
@@ -860,46 +860,46 @@ class IconDrawableStateImageTest {
         IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
             background = android.R.color.darker_gray,
-            iconTint = IntColor(Color.CYAN)
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
-                    background = ResDrawable(android.R.color.darker_gray),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
+                    background = ResDrawableFetcher(android.R.color.darker_gray),
                     iconSize = null,
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
         }
 
-        // background: IntColor, iconTine
+        // background: IntColorFetcher, iconTine
         IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
-            background = IntColor(Color.YELLOW),
+            background = IntColorFetcher(Color.YELLOW),
             iconTint = android.R.color.holo_purple
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
-                    background = ColorFetcherDrawable(IntColor(Color.YELLOW)),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
+                    background = ColorFetcherDrawableFetcher(IntColorFetcher(Color.YELLOW)),
                     iconSize = null,
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
         }
         IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
-            background = IntColor(Color.YELLOW),
-            iconTint = IntColor(Color.CYAN)
+            background = IntColorFetcher(Color.YELLOW),
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
-                    background = ColorFetcherDrawable(IntColor(Color.YELLOW)),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
+                    background = ColorFetcherDrawableFetcher(IntColorFetcher(Color.YELLOW)),
                     iconSize = null,
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
@@ -913,11 +913,11 @@ class IconDrawableStateImageTest {
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
                     background = ColorDrawable(Color.YELLOW).asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = null,
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
@@ -925,15 +925,15 @@ class IconDrawableStateImageTest {
         IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
             background = ColorDrawable(Color.YELLOW).asEquitable(),
-            iconTint = IntColor(Color.CYAN)
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
                     background = ColorDrawable(Color.YELLOW).asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = null,
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
@@ -947,10 +947,10 @@ class IconDrawableStateImageTest {
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
                     background = null,
                     iconSize = Size(101, 202),
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
@@ -958,14 +958,14 @@ class IconDrawableStateImageTest {
         IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
             iconSize = Size(101, 202),
-            iconTint = IntColor(Color.CYAN)
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
                     background = null,
                     iconSize = Size(101, 202),
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
@@ -981,12 +981,12 @@ class IconDrawableStateImageTest {
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
                     background = ColorDrawable(Color.GREEN)
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = Size(101, 202),
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
@@ -995,16 +995,16 @@ class IconDrawableStateImageTest {
             icon = android.R.drawable.ic_delete,
             background = ColorDrawable(Color.GREEN).asEquitable(),
             iconSize = Size(101, 202),
-            iconTint = IntColor(Color.CYAN)
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
                     background = ColorDrawable(Color.GREEN)
                         .asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = Size(101, 202),
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
@@ -1019,10 +1019,10 @@ class IconDrawableStateImageTest {
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
-                    background = ResDrawable(android.R.color.darker_gray),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
+                    background = ResDrawableFetcher(android.R.color.darker_gray),
                     iconSize = Size(101, 202),
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
@@ -1031,48 +1031,48 @@ class IconDrawableStateImageTest {
             icon = android.R.drawable.ic_delete,
             background = android.R.color.darker_gray,
             iconSize = Size(101, 202),
-            iconTint = IntColor(Color.CYAN)
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
-                    background = ResDrawable(android.R.color.darker_gray),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
+                    background = ResDrawableFetcher(android.R.color.darker_gray),
                     iconSize = Size(101, 202),
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
         }
 
-        // background: IntColor
+        // background: IntColorFetcher
         IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
-            background = IntColor(Color.YELLOW),
+            background = IntColorFetcher(Color.YELLOW),
             iconSize = Size(101, 202),
             iconTint = android.R.color.holo_purple
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
-                    background = ColorFetcherDrawable(IntColor(Color.YELLOW)),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
+                    background = ColorFetcherDrawableFetcher(IntColorFetcher(Color.YELLOW)),
                     iconSize = Size(101, 202),
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
         }
         IconDrawableStateImage(
             icon = android.R.drawable.ic_delete,
-            background = IntColor(Color.YELLOW),
+            background = IntColorFetcher(Color.YELLOW),
             iconSize = Size(101, 202),
-            iconTint = IntColor(Color.CYAN)
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
-                    background = ColorFetcherDrawable(IntColor(Color.YELLOW)),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
+                    background = ColorFetcherDrawableFetcher(IntColorFetcher(Color.YELLOW)),
                     iconSize = Size(101, 202),
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
@@ -1087,11 +1087,11 @@ class IconDrawableStateImageTest {
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
                     background = ColorDrawable(Color.YELLOW).asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = Size(101, 202),
-                    iconTint = ResColor(android.R.color.holo_purple)
+                    iconTint = ResColorFetcher(android.R.color.holo_purple)
                 ),
                 actual = this
             )
@@ -1100,15 +1100,15 @@ class IconDrawableStateImageTest {
             icon = android.R.drawable.ic_delete,
             background = ColorDrawable(Color.YELLOW).asEquitable(),
             iconSize = Size(101, 202),
-            iconTint = IntColor(Color.CYAN)
+            iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconDrawableStateImage(
-                    icon = ResDrawable(android.R.drawable.ic_delete),
+                    icon = ResDrawableFetcher(android.R.drawable.ic_delete),
                     background = ColorDrawable(Color.YELLOW).asEquitable()
-                        .let { RealEquitableDrawable(it) },
+                        .let { RealDrawableFetcher(it) },
                     iconSize = Size(101, 202),
-                    iconTint = IntColor(Color.CYAN)
+                    iconTint = IntColorFetcher(Color.CYAN)
                 ),
                 actual = this
             )
@@ -1117,15 +1117,15 @@ class IconDrawableStateImageTest {
 
     @Test
     fun testKey() {
-        val iconDrawable = ResDrawable(android.R.drawable.ic_delete)
+        val iconDrawable = ResDrawableFetcher(android.R.drawable.ic_delete)
         IconDrawableStateImage(
             icon = iconDrawable,
-            background = RealColorDrawable(Color.GRAY),
+            background = RealColorDrawableFetcher(Color.GRAY),
             iconSize = Size(44, 67),
-            iconTint = IntColor(Color.BLUE)
+            iconTint = IntColorFetcher(Color.BLUE)
         ).apply {
             assertEquals(
-                expected = "IconDrawableStateImage(icon=${iconDrawable},background=RealColorDrawable(-7829368),iconSize=44x67,iconTint=IntColor(-16776961))",
+                expected = "IconDrawableStateImage(icon=${iconDrawable.key},background=RealColorDrawableFetcher(color=-7829368),iconSize=44x67,iconTint=IntColorFetcher(color=-16776961))",
                 actual = key
             )
         }
@@ -1153,7 +1153,7 @@ class IconDrawableStateImageTest {
             icon = iconDrawable,
             background = backgroundDrawable,
             iconSize = Size(40, 40),
-            iconTint = IntColor(Color.YELLOW)
+            iconTint = IntColorFetcher(Color.YELLOW)
         ).getImage(sketch, request, null).asOrThrow<DrawableImage>()
             .drawable.asOrThrow<IconDrawable>().apply {
                 assertEquals(iconDrawable, icon)
@@ -1182,13 +1182,14 @@ class IconDrawableStateImageTest {
     @Test
     fun testEqualsAndHashCode() {
         val element1 = IconDrawableStateImage(
-            icon = ResDrawable(android.R.drawable.ic_delete),
+            icon = ResDrawableFetcher(android.R.drawable.ic_delete),
         )
         val element11 = element1.copy()
-        val element2 = element1.copy(icon = ResDrawable(android.R.drawable.btn_star))
-        val element3 = element1.copy(background = ResDrawable(android.R.drawable.ic_lock_lock))
+        val element2 = element1.copy(icon = ResDrawableFetcher(android.R.drawable.btn_star))
+        val element3 =
+            element1.copy(background = ResDrawableFetcher(android.R.drawable.ic_lock_lock))
         val element4 = element1.copy(iconSize = Size(100, 100))
-        val element5 = element1.copy(iconTint = IntColor(Color.GREEN))
+        val element5 = element1.copy(iconTint = IntColorFetcher(Color.GREEN))
 
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
@@ -1219,15 +1220,15 @@ class IconDrawableStateImageTest {
 
     @Test
     fun testToString() {
-        val iconDrawable = ResDrawable(android.R.drawable.ic_delete)
+        val iconDrawable = ResDrawableFetcher(android.R.drawable.ic_delete)
         IconDrawableStateImage(
             icon = iconDrawable,
-            background = RealColorDrawable(Color.GRAY),
+            background = RealColorDrawableFetcher(Color.GRAY),
             iconSize = Size(44, 67),
-            iconTint = IntColor(Color.BLUE)
+            iconTint = IntColorFetcher(Color.BLUE)
         ).apply {
             assertEquals(
-                expected = "IconDrawableStateImage(icon=${iconDrawable}, background=RealColorDrawable(-7829368), iconSize=44x67, iconTint=IntColor(-16776961))",
+                expected = "IconDrawableStateImage(icon=$iconDrawable, background=RealColorDrawableFetcher(color=-7829368), iconSize=44x67, iconTint=IntColorFetcher(color=-16776961))",
                 actual = toString()
             )
         }

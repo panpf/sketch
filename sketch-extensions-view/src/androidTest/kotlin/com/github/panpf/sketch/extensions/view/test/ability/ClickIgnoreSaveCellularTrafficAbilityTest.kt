@@ -38,7 +38,7 @@ import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
-import com.github.panpf.sketch.util.IntColor
+import com.github.panpf.sketch.util.IntColorFetcher
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Dispatchers
@@ -99,8 +99,8 @@ class ClickIgnoreSaveCellularTrafficAbilityTest {
                     memoryCachePolicy(CachePolicy.DISABLED)
                     resultCachePolicy(CachePolicy.DISABLED)
                     downloadCachePolicy(CachePolicy.DISABLED)
-                    error(ConditionStateImage(ColorDrawableStateImage(IntColor(Color.RED))) {
-                        saveCellularTrafficError(ColorDrawableStateImage(IntColor(Color.YELLOW)))
+                    error(ConditionStateImage(ColorDrawableStateImage(IntColorFetcher(Color.RED))) {
+                        saveCellularTrafficError(ColorDrawableStateImage(IntColorFetcher(Color.YELLOW)))
                     })
                     target(imageView)
                 }.execute(sketch)

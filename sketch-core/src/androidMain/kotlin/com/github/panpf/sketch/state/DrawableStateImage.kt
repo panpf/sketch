@@ -24,8 +24,8 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.drawable.DrawableFetcher
 import com.github.panpf.sketch.drawable.EquitableDrawable
-import com.github.panpf.sketch.drawable.RealEquitableDrawable
-import com.github.panpf.sketch.drawable.ResDrawable
+import com.github.panpf.sketch.drawable.RealDrawableFetcher
+import com.github.panpf.sketch.drawable.ResDrawableFetcher
 import com.github.panpf.sketch.drawable.asEquitable
 import com.github.panpf.sketch.request.ImageRequest
 
@@ -42,7 +42,7 @@ fun EquitableDrawable.asStateImage(): DrawableStateImage = DrawableStateImage(th
  * @see com.github.panpf.sketch.core.android.test.state.DrawableStateImageTest.testAsStateImage
  */
 fun Drawable.asStateImage(equalityKey: Any): DrawableStateImage =
-    DrawableStateImage(RealEquitableDrawable(this.asEquitable(equalityKey)))
+    DrawableStateImage(RealDrawableFetcher(this.asEquitable(equalityKey)))
 
 /**
  * [ColorDrawable] as [StateImage]
@@ -50,7 +50,7 @@ fun Drawable.asStateImage(equalityKey: Any): DrawableStateImage =
  * @see com.github.panpf.sketch.core.android.test.state.DrawableStateImageTest.testAsStateImage
  */
 fun ColorDrawable.asStateImage(): DrawableStateImage =
-    DrawableStateImage(RealEquitableDrawable(this.asEquitable()))
+    DrawableStateImage(RealDrawableFetcher(this.asEquitable()))
 
 /**
  * Create a [DrawableStateImage] with [EquitableDrawable]
@@ -58,7 +58,7 @@ fun ColorDrawable.asStateImage(): DrawableStateImage =
  * @see com.github.panpf.sketch.core.android.test.state.DrawableStateImageTest.testDrawableStateImage
  */
 fun DrawableStateImage(drawable: EquitableDrawable): DrawableStateImage =
-    DrawableStateImage(RealEquitableDrawable(drawable))
+    DrawableStateImage(RealDrawableFetcher(drawable))
 
 /**
  * Create a [DrawableStateImage] with resource drawable
@@ -66,7 +66,7 @@ fun DrawableStateImage(drawable: EquitableDrawable): DrawableStateImage =
  * @see com.github.panpf.sketch.core.android.test.state.DrawableStateImageTest.testDrawableStateImage
  */
 fun DrawableStateImage(@DrawableRes resId: Int): DrawableStateImage =
-    DrawableStateImage(ResDrawable(resId))
+    DrawableStateImage(ResDrawableFetcher(resId))
 
 /**
  * Use [Drawable] as the state [Drawable]
@@ -74,10 +74,10 @@ fun DrawableStateImage(@DrawableRes resId: Int): DrawableStateImage =
  * @see com.github.panpf.sketch.core.android.test.state.DrawableStateImageTest.testDrawableStateImage
  */
 data class DrawableStateImage(
-    val drawableFetcher: DrawableFetcher    // TODO EquitableDrawable
+    val drawableFetcher: DrawableFetcher
 ) : StateImage {
 
-    override val key: String = "DrawableStateImage(${drawableFetcher.key})"
+    override val key: String = "DrawableStateImage(drawable=${drawableFetcher.key})"
 
     override fun getImage(
         sketch: Sketch,

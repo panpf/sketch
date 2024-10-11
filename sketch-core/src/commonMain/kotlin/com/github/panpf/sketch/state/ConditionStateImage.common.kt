@@ -43,14 +43,13 @@ data class ConditionStateImage(
     val stateList: List<Pair<Condition, StateImage>>
 ) : StateImage {
 
-    override val key: String =
-        "ConditionStateImage(${
-            stateList.joinToString(
-                prefix = "[",
-                postfix = "]",
-                separator = ",",
-                transform = { it.first.toString() + ":" + it.second.key })
-        })"
+    override val key: String = "ConditionStateImage(${
+        stateList.joinToString(
+            prefix = "[",
+            postfix = "]",
+            separator = ",",
+            transform = { it.first.toString() + ":" + it.second.key })
+    })"
 
     override fun getImage(
         sketch: Sketch,
@@ -60,15 +59,13 @@ data class ConditionStateImage(
         .find { it.first.accept(request, throwable) }
         ?.second?.getImage(sketch, request, throwable)
 
-    override fun toString(): String {
-        return "ConditionStateImage(${
-            stateList.joinToString(
-                prefix = "[",
-                postfix = "]",
-                separator = ", ",
-                transform = { it.first.toString() + ":" + it.second.key })
-        })"
-    }
+    override fun toString(): String = "ConditionStateImage(${
+        stateList.joinToString(
+            prefix = "[",
+            postfix = "]",
+            separator = ", ",
+            transform = { it.first.toString() + ":" + it.second.key })
+    })"
 
     class Builder constructor(private val defaultImage: StateImage) {
 

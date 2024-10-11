@@ -25,10 +25,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.platform.LocalContext
 import com.github.panpf.sketch.drawable.EquitableDrawable
-import com.github.panpf.sketch.drawable.ResDrawable
+import com.github.panpf.sketch.drawable.ResDrawableFetcher
 import com.github.panpf.sketch.state.asEquitablePainter
-import com.github.panpf.sketch.util.IntColor
-import com.github.panpf.sketch.util.ResColor
+import com.github.panpf.sketch.util.IntColorFetcher
+import com.github.panpf.sketch.util.ResColorFetcher
 
 /* ********************************************* Painter icon ********************************************* */
 
@@ -47,7 +47,7 @@ fun rememberIconPainter(
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
         val iconTintColor = iconTint
-            ?.let { ResColor(it) }
+            ?.let { ResColorFetcher(it) }
             ?.getColor(context)
             ?.let { Color(it) }
         IconPainter(
@@ -69,7 +69,7 @@ fun rememberIconPainter(
     icon: EquitablePainter,
     background: EquitablePainter? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconPainter {
     return remember(icon, background, iconSize, iconTint) {
         val iconTintColor = iconTint
@@ -100,7 +100,7 @@ fun rememberIconPainter(
     return remember(icon, background, iconSize, iconTint) {
         val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
         val iconTintColor = iconTint
-            ?.let { ResColor(it) }
+            ?.let { ResColorFetcher(it) }
             ?.getColor(context)
             ?.let { Color(it) }
         IconPainter(
@@ -122,7 +122,7 @@ fun rememberIconPainter(
     icon: EquitablePainter,
     background: Color? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconPainter {
     return remember(icon, background, iconSize, iconTint) {
         val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
@@ -153,7 +153,7 @@ fun rememberIconPainter(
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
         val backgroundPainter = background
-            ?.let { ResDrawable(it) }
+            ?.let { ResDrawableFetcher(it) }
             ?.getDrawable(context)
             ?.asEquitablePainter(background)
         IconPainter(
@@ -180,11 +180,11 @@ fun rememberIconPainter(
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
         val backgroundPainter = background
-            ?.let { ResDrawable(it) }
+            ?.let { ResDrawableFetcher(it) }
             ?.getDrawable(context)
             ?.asEquitablePainter(background)
         val iconTintColor = iconTint
-            ?.let { ResColor(it) }
+            ?.let { ResColorFetcher(it) }
             ?.getColor(context)
             ?.let { Color(it) }
         IconPainter(
@@ -206,12 +206,12 @@ fun rememberIconPainter(
     icon: EquitablePainter,
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
         val backgroundPainter = background
-            ?.let { ResDrawable(it) }
+            ?.let { ResDrawableFetcher(it) }
             ?.getDrawable(context)
             ?.asEquitablePainter(background)
         val iconTintColor = iconTint
@@ -234,7 +234,7 @@ fun rememberIconPainter(
 @Composable
 fun rememberIconPainter(
     icon: EquitablePainter,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter = remember(icon, background, iconSize, iconTint) {
@@ -257,7 +257,7 @@ fun rememberIconPainter(
 @Composable
 fun rememberIconPainter(
     icon: EquitablePainter,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int? = null,
 ): IconPainter {
@@ -267,7 +267,7 @@ fun rememberIconPainter(
             ?.let { ColorPainter(Color(it.color)) }
             ?.asEquitable()
         val iconTintColor = iconTint
-            ?.let { ResColor(it) }
+            ?.let { ResColorFetcher(it) }
             ?.getColor(context)
             ?.let { Color(it) }
         IconPainter(
@@ -287,9 +287,9 @@ fun rememberIconPainter(
 @Composable
 fun rememberIconPainter(
     icon: EquitablePainter,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconPainter = remember(icon, background, iconSize, iconTint) {
     val backgroundPainter = background
         ?.let { ColorPainter(Color(it.color)) }
@@ -342,7 +342,7 @@ fun rememberIconPainter(
     return remember(icon, background, iconSize, iconTint) {
         val backgroundPainter = background?.asEquitablePainter()
         val iconTintColor = iconTint
-            ?.let { ResColor(it) }
+            ?.let { ResColorFetcher(it) }
             ?.getColor(context)
             ?.let { Color(it) }
         IconPainter(
@@ -364,7 +364,7 @@ fun rememberIconPainter(
     icon: EquitablePainter,
     background: EquitableDrawable? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconPainter = remember(icon, background, iconSize, iconTint) {
     val backgroundPainter = background?.asEquitablePainter()
     val iconTintColor = iconTint?.color?.let { Color(it) }
@@ -390,7 +390,7 @@ fun rememberIconPainter(
     val context = LocalContext.current
     return remember(icon, background, iconSize) {
         val backgroundPainter = background
-            ?.let { ResDrawable(it) }
+            ?.let { ResDrawableFetcher(it) }
             ?.getDrawable(context)
             ?.asEquitablePainter(background)
         IconPainter(
@@ -410,7 +410,7 @@ fun rememberIconPainter(
 @Composable
 fun rememberIconPainter(
     icon: EquitablePainter,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
     iconSize: Size? = null,
 ): IconPainter = remember(icon, background, iconSize) {
     val backgroundPainter = background
@@ -458,7 +458,7 @@ fun rememberIconPainter(
     val context = LocalContext.current
     return remember(icon, iconSize, iconTint) {
         val iconTintColor = iconTint
-            ?.let { ResColor(it) }
+            ?.let { ResColorFetcher(it) }
             ?.getColor(context)
             ?.let { Color(it) }
         IconPainter(
@@ -479,7 +479,7 @@ fun rememberIconPainter(
 fun rememberIconPainter(
     icon: EquitablePainter,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconPainter = remember(icon, iconSize, iconTint) {
     val iconTintColor = iconTint
         ?.color
@@ -505,7 +505,7 @@ fun rememberIconPainter(
     val context = LocalContext.current
     return remember(icon, background) {
         val backgroundPainter = background
-            ?.let { ResDrawable(it) }
+            ?.let { ResDrawableFetcher(it) }
             ?.getDrawable(context)
             ?.asEquitablePainter(background)
         IconPainter(
@@ -525,7 +525,7 @@ fun rememberIconPainter(
 @Composable
 fun rememberIconPainter(
     icon: EquitablePainter,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
 ): IconPainter = remember(icon, background) {
     val backgroundPainter = background
         ?.let { ColorPainter(Color(it.color)) }
@@ -758,7 +758,7 @@ fun rememberIconPainter(
     return remember(icon, background, iconSize, iconTint) {
         val iconPainter = icon.asEquitablePainter()
         val iconTintColor = iconTint
-            ?.let { ResColor(it) }
+            ?.let { ResColorFetcher(it) }
             ?.getColor(context)
             ?.let { Color(it) }
         IconPainter(
@@ -780,7 +780,7 @@ fun rememberIconPainter(
     icon: EquitableDrawable,
     background: EquitablePainter? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconPainter {
     return remember(icon, background, iconSize, iconTint) {
         val iconPainter = icon.asEquitablePainter()
@@ -813,7 +813,7 @@ fun rememberIconPainter(
         val iconPainter = icon.asEquitablePainter()
         val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
         val iconTintColor = iconTint
-            ?.let { ResColor(it) }
+            ?.let { ResColorFetcher(it) }
             ?.getColor(context)
             ?.let { Color(it) }
         IconPainter(
@@ -835,7 +835,7 @@ fun rememberIconPainter(
     icon: EquitableDrawable,
     background: Color? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconPainter {
     return remember(icon, background, iconSize, iconTint) {
         val iconPainter = icon.asEquitablePainter()
@@ -868,7 +868,7 @@ fun rememberIconPainter(
     return remember(icon, background, iconSize, iconTint) {
         val iconPainter = icon.asEquitablePainter()
         val backgroundPainter = background
-            ?.let { ResDrawable(it) }
+            ?.let { ResDrawableFetcher(it) }
             ?.getDrawable(context)
             ?.asEquitablePainter(background)
         IconPainter(
@@ -896,11 +896,11 @@ fun rememberIconPainter(
     return remember(icon, background, iconSize, iconTint) {
         val iconPainter = icon.asEquitablePainter()
         val backgroundPainter = background
-            ?.let { ResDrawable(it) }
+            ?.let { ResDrawableFetcher(it) }
             ?.getDrawable(context)
             ?.asEquitablePainter(background)
         val iconTintColor = iconTint
-            ?.let { ResColor(it) }
+            ?.let { ResColorFetcher(it) }
             ?.getColor(context)
             ?.let { Color(it) }
         IconPainter(
@@ -922,13 +922,13 @@ fun rememberIconPainter(
     icon: EquitableDrawable,
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
         val iconPainter = icon.asEquitablePainter()
         val backgroundPainter = background
-            ?.let { ResDrawable(it) }
+            ?.let { ResDrawableFetcher(it) }
             ?.getDrawable(context)
             ?.asEquitablePainter(background)
         val iconTintColor = iconTint
@@ -951,7 +951,7 @@ fun rememberIconPainter(
 @Composable
 fun rememberIconPainter(
     icon: EquitableDrawable,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter = remember(icon, background, iconSize, iconTint) {
@@ -975,7 +975,7 @@ fun rememberIconPainter(
 @Composable
 fun rememberIconPainter(
     icon: EquitableDrawable,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int? = null,
 ): IconPainter {
@@ -986,7 +986,7 @@ fun rememberIconPainter(
             ?.let { ColorPainter(Color(it.color)) }
             ?.asEquitable()
         val iconTintColor = iconTint
-            ?.let { ResColor(it) }
+            ?.let { ResColorFetcher(it) }
             ?.getColor(context)
             ?.let { Color(it) }
         IconPainter(
@@ -1006,9 +1006,9 @@ fun rememberIconPainter(
 @Composable
 fun rememberIconPainter(
     icon: EquitableDrawable,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconPainter = remember(icon, background, iconSize, iconTint) {
     val iconPainter = icon.asEquitablePainter()
     val backgroundPainter = background
@@ -1064,7 +1064,7 @@ fun rememberIconPainter(
         val iconPainter = icon.asEquitablePainter()
         val backgroundPainter = background?.asEquitablePainter()
         val iconTintColor = iconTint
-            ?.let { ResColor(it) }
+            ?.let { ResColorFetcher(it) }
             ?.getColor(context)
             ?.let { Color(it) }
         IconPainter(
@@ -1086,7 +1086,7 @@ fun rememberIconPainter(
     icon: EquitableDrawable,
     background: EquitableDrawable? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconPainter = remember(icon, background, iconSize, iconTint) {
     val iconPainter = icon.asEquitablePainter()
     val backgroundPainter = background?.asEquitablePainter()
@@ -1114,7 +1114,7 @@ fun rememberIconPainter(
     return remember(icon, background, iconSize) {
         val iconPainter = icon.asEquitablePainter()
         val backgroundPainter = background
-            ?.let { ResDrawable(it) }
+            ?.let { ResDrawableFetcher(it) }
             ?.getDrawable(context)
             ?.asEquitablePainter(background)
         IconPainter(
@@ -1134,7 +1134,7 @@ fun rememberIconPainter(
 @Composable
 fun rememberIconPainter(
     icon: EquitableDrawable,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
     iconSize: Size? = null,
 ): IconPainter = remember(icon, background, iconSize) {
     val iconPainter = icon.asEquitablePainter()
@@ -1185,7 +1185,7 @@ fun rememberIconPainter(
     return remember(icon, iconSize, iconTint) {
         val iconPainter = icon.asEquitablePainter()
         val iconTintColor = iconTint
-            ?.let { ResColor(it) }
+            ?.let { ResColorFetcher(it) }
             ?.getColor(context)
             ?.let { Color(it) }
         IconPainter(
@@ -1206,7 +1206,7 @@ fun rememberIconPainter(
 fun rememberIconPainter(
     icon: EquitableDrawable,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconPainter = remember(icon, iconSize, iconTint) {
     val iconPainter = icon.asEquitablePainter()
     val iconTintColor = iconTint
@@ -1234,7 +1234,7 @@ fun rememberIconPainter(
     return remember(icon, background) {
         val iconPainter = icon.asEquitablePainter()
         val backgroundPainter = background
-            ?.let { ResDrawable(it) }
+            ?.let { ResDrawableFetcher(it) }
             ?.getDrawable(context)
             ?.asEquitablePainter(background)
         IconPainter(
@@ -1254,7 +1254,7 @@ fun rememberIconPainter(
 @Composable
 fun rememberIconPainter(
     icon: EquitableDrawable,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
 ): IconPainter = remember(icon, background) {
     val iconPainter = icon.asEquitablePainter()
     val backgroundPainter = background
@@ -1305,7 +1305,7 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         IconPainter(
             icon = iconPainter,
             background = background,
@@ -1329,7 +1329,7 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
         IconPainter(
             icon = iconPainter,
@@ -1354,7 +1354,7 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         IconPainter(
             icon = iconPainter,
             background = background,
@@ -1377,7 +1377,7 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
         IconPainter(
             icon = iconPainter,
@@ -1401,7 +1401,7 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, iconSize, iconTint) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         IconPainter(
             icon = iconPainter,
             background = null,
@@ -1424,7 +1424,7 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         IconPainter(
             icon = iconPainter,
             background = background,
@@ -1446,7 +1446,7 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
         IconPainter(
             icon = iconPainter,
@@ -1469,7 +1469,7 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, iconSize) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         IconPainter(
             icon = iconPainter,
             background = null,
@@ -1490,7 +1490,7 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         IconPainter(
             icon = iconPainter,
             background = null,
@@ -1514,9 +1514,9 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val iconTintColor = iconTint
-            ?.let { ResColor(it) }
+            ?.let { ResColorFetcher(it) }
             ?.getColor(context)
             ?.let { Color(it) }
         IconPainter(
@@ -1538,11 +1538,11 @@ fun rememberIconPainter(
     @DrawableRes icon: Int,
     background: EquitablePainter? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val iconTintColor = iconTint
             ?.color
             ?.let { Color(it) }
@@ -1569,10 +1569,10 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
         val iconTintColor = iconTint
-            ?.let { ResColor(it) }
+            ?.let { ResColorFetcher(it) }
             ?.getColor(context)
             ?.let { Color(it) }
         IconPainter(
@@ -1594,11 +1594,11 @@ fun rememberIconPainter(
     @DrawableRes icon: Int,
     background: Color? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background?.let { ColorPainter(it) }?.asEquitable()
         val iconTintColor = iconTint
             ?.color
@@ -1626,9 +1626,9 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background
-            ?.let { ResDrawable(it) }
+            ?.let { ResDrawableFetcher(it) }
             ?.getDrawable(context)
             ?.asEquitablePainter(background)
         IconPainter(
@@ -1654,13 +1654,13 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background
-            ?.let { ResDrawable(it) }
+            ?.let { ResDrawableFetcher(it) }
             ?.getDrawable(context)
             ?.asEquitablePainter(background)
         val iconTintColor = iconTint
-            ?.let { ResColor(it) }
+            ?.let { ResColorFetcher(it) }
             ?.getColor(context)
             ?.let { Color(it) }
         IconPainter(
@@ -1682,13 +1682,13 @@ fun rememberIconPainter(
     @DrawableRes icon: Int,
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background
-            ?.let { ResDrawable(it) }
+            ?.let { ResDrawableFetcher(it) }
             ?.getDrawable(context)
             ?.asEquitablePainter(background)
         val iconTintColor = iconTint
@@ -1711,13 +1711,13 @@ fun rememberIconPainter(
 @Composable
 fun rememberIconPainter(
     @DrawableRes icon: Int,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
     iconSize: Size? = null,
     iconTint: Color? = null,
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background
             ?.let { ColorPainter(Color(it.color)) }
             ?.asEquitable()
@@ -1738,18 +1738,18 @@ fun rememberIconPainter(
 @Composable
 fun rememberIconPainter(
     @DrawableRes icon: Int,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int? = null,
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background
             ?.let { ColorPainter(Color(it.color)) }
             ?.asEquitable()
         val iconTintColor = iconTint
-            ?.let { ResColor(it) }
+            ?.let { ResColorFetcher(it) }
             ?.getColor(context)
             ?.let { Color(it) }
         IconPainter(
@@ -1769,13 +1769,13 @@ fun rememberIconPainter(
 @Composable
 fun rememberIconPainter(
     @DrawableRes icon: Int,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background
             ?.let { ColorPainter(Color(it.color)) }
             ?.asEquitable()
@@ -1805,7 +1805,7 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background?.asEquitablePainter()
         IconPainter(
             icon = iconPainter,
@@ -1830,10 +1830,10 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background?.asEquitablePainter()
         val iconTintColor = iconTint
-            ?.let { ResColor(it) }
+            ?.let { ResColorFetcher(it) }
             ?.getColor(context)
             ?.let { Color(it) }
         IconPainter(
@@ -1855,11 +1855,11 @@ fun rememberIconPainter(
     @DrawableRes icon: Int,
     background: EquitableDrawable? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize, iconTint) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background?.asEquitablePainter()
         val iconTintColor = iconTint?.color?.let { Color(it) }
         IconPainter(
@@ -1884,9 +1884,9 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background
-            ?.let { ResDrawable(it) }
+            ?.let { ResDrawableFetcher(it) }
             ?.getDrawable(context)
             ?.asEquitablePainter(background)
         IconPainter(
@@ -1906,12 +1906,12 @@ fun rememberIconPainter(
 @Composable
 fun rememberIconPainter(
     @DrawableRes icon: Int,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
     iconSize: Size? = null,
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background
             ?.let { ColorPainter(Color(it.color)) }
             ?.asEquitable()
@@ -1937,7 +1937,7 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background, iconSize) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background?.asEquitablePainter()
         IconPainter(
             icon = iconPainter,
@@ -1961,9 +1961,9 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, iconSize, iconTint) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val iconTintColor = iconTint
-            ?.let { ResColor(it) }
+            ?.let { ResColorFetcher(it) }
             ?.getColor(context)
             ?.let { Color(it) }
         IconPainter(
@@ -1984,11 +1984,11 @@ fun rememberIconPainter(
 fun rememberIconPainter(
     @DrawableRes icon: Int,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, iconSize, iconTint) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val iconTintColor = iconTint
             ?.color
             ?.let { Color(it) }
@@ -2013,9 +2013,9 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background
-            ?.let { ResDrawable(it) }
+            ?.let { ResDrawableFetcher(it) }
             ?.getDrawable(context)
             ?.asEquitablePainter(background)
         IconPainter(
@@ -2035,11 +2035,11 @@ fun rememberIconPainter(
 @Composable
 fun rememberIconPainter(
     @DrawableRes icon: Int,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background
             ?.let { ColorPainter(Color(it.color)) }
             ?.asEquitable()
@@ -2064,7 +2064,7 @@ fun rememberIconPainter(
 ): IconPainter {
     val context = LocalContext.current
     return remember(icon, background) {
-        val iconPainter = ResDrawable(icon).getDrawable(context).asEquitablePainter(icon)
+        val iconPainter = ResDrawableFetcher(icon).getDrawable(context).asEquitablePainter(icon)
         val backgroundPainter = background?.asEquitablePainter()
         IconPainter(
             icon = iconPainter,

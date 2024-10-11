@@ -19,8 +19,8 @@ import com.github.panpf.sketch.test.utils.SizeColorDrawable
 import com.github.panpf.sketch.test.utils.SizeColorPainter
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.asEquitable
-import com.github.panpf.sketch.util.IntColor
-import com.github.panpf.sketch.util.ResColor
+import com.github.panpf.sketch.util.IntColorFetcher
+import com.github.panpf.sketch.util.ResColorFetcher
 import com.github.panpf.sketch.util.SketchSize
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -97,7 +97,7 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -165,7 +165,7 @@ class IconPainterAndroidTest {
                             icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                             background = null,
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -174,7 +174,7 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -241,7 +241,7 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                 ).apply {
                     assertEquals(
@@ -297,7 +297,7 @@ class IconPainterAndroidTest {
                             icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -307,7 +307,7 @@ class IconPainterAndroidTest {
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     background = ColorPainter(Color.Green).asEquitable(),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -346,7 +346,7 @@ class IconPainterAndroidTest {
                             icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -356,7 +356,7 @@ class IconPainterAndroidTest {
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     background = Color.Green,
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -397,7 +397,7 @@ class IconPainterAndroidTest {
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -407,7 +407,7 @@ class IconPainterAndroidTest {
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     background = android.R.color.darker_gray,
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -421,10 +421,10 @@ class IconPainterAndroidTest {
                     )
                 }
 
-                // background: IntColor, iconTine
+                // background: IntColorFetcher, iconTine
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconTint = Color.Blue
                 ).apply {
                     assertEquals(
@@ -439,7 +439,7 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconTint = android.R.color.holo_purple
                 ).apply {
                     assertEquals(
@@ -447,7 +447,7 @@ class IconPainterAndroidTest {
                             icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -456,8 +456,8 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
-                    background = IntColor(android.graphics.Color.YELLOW),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -498,7 +498,7 @@ class IconPainterAndroidTest {
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -508,7 +508,7 @@ class IconPainterAndroidTest {
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -548,7 +548,7 @@ class IconPainterAndroidTest {
                             icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                             background = null,
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -558,7 +558,7 @@ class IconPainterAndroidTest {
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -604,7 +604,7 @@ class IconPainterAndroidTest {
                             icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -615,7 +615,7 @@ class IconPainterAndroidTest {
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     background = ColorPainter(Color.Green).asEquitable(),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -656,7 +656,7 @@ class IconPainterAndroidTest {
                             icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -667,7 +667,7 @@ class IconPainterAndroidTest {
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     background = Color.Green,
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -710,7 +710,7 @@ class IconPainterAndroidTest {
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -721,7 +721,7 @@ class IconPainterAndroidTest {
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     background = android.R.color.darker_gray,
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -735,10 +735,10 @@ class IconPainterAndroidTest {
                     )
                 }
 
-                // background: IntColor
+                // background: IntColorFetcher
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                     iconTint = Color.Blue
                 ).apply {
@@ -754,7 +754,7 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                     iconTint = android.R.color.holo_purple
                 ).apply {
@@ -763,7 +763,7 @@ class IconPainterAndroidTest {
                             icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -772,9 +772,9 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -817,7 +817,7 @@ class IconPainterAndroidTest {
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -828,7 +828,7 @@ class IconPainterAndroidTest {
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asEquitable(),
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -927,7 +927,7 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -1010,7 +1010,7 @@ class IconPainterAndroidTest {
                             ).asEquitable().asEquitablePainter(),
                             background = null,
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1019,7 +1019,7 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -1098,7 +1098,7 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                 ).apply {
                     assertEquals(
@@ -1166,7 +1166,7 @@ class IconPainterAndroidTest {
                             ).asEquitable().asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1176,7 +1176,7 @@ class IconPainterAndroidTest {
                 rememberIconPainter(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
                     background = ColorPainter(Color.Green).asEquitable(),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -1224,7 +1224,7 @@ class IconPainterAndroidTest {
                             ).asEquitable().asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1234,7 +1234,7 @@ class IconPainterAndroidTest {
                 rememberIconPainter(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
                     background = Color.Green,
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -1284,7 +1284,7 @@ class IconPainterAndroidTest {
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1294,7 +1294,7 @@ class IconPainterAndroidTest {
                 rememberIconPainter(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
                     background = android.R.color.darker_gray,
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -1311,10 +1311,10 @@ class IconPainterAndroidTest {
                     )
                 }
 
-                // background: IntColor, iconTine
+                // background: IntColorFetcher, iconTine
                 rememberIconPainter(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconTint = Color.Blue
                 ).apply {
                     assertEquals(
@@ -1332,7 +1332,7 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconTint = android.R.color.holo_purple
                 ).apply {
                     assertEquals(
@@ -1343,7 +1343,7 @@ class IconPainterAndroidTest {
                             ).asEquitable().asEquitablePainter(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1352,8 +1352,8 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
-                    background = IntColor(android.graphics.Color.YELLOW),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -1403,7 +1403,7 @@ class IconPainterAndroidTest {
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1413,7 +1413,7 @@ class IconPainterAndroidTest {
                 rememberIconPainter(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -1462,7 +1462,7 @@ class IconPainterAndroidTest {
                             ).asEquitable().asEquitablePainter(),
                             background = null,
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1472,7 +1472,7 @@ class IconPainterAndroidTest {
                 rememberIconPainter(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -1527,7 +1527,7 @@ class IconPainterAndroidTest {
                             ).asEquitable().asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1538,7 +1538,7 @@ class IconPainterAndroidTest {
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
                     background = ColorPainter(Color.Green).asEquitable(),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -1588,7 +1588,7 @@ class IconPainterAndroidTest {
                             ).asEquitable().asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1599,7 +1599,7 @@ class IconPainterAndroidTest {
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
                     background = Color.Green,
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -1651,7 +1651,7 @@ class IconPainterAndroidTest {
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1662,7 +1662,7 @@ class IconPainterAndroidTest {
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
                     background = android.R.color.darker_gray,
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -1679,10 +1679,10 @@ class IconPainterAndroidTest {
                     )
                 }
 
-                // background: IntColor
+                // background: IntColorFetcher
                 rememberIconPainter(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                     iconTint = Color.Blue
                 ).apply {
@@ -1701,7 +1701,7 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                     iconTint = android.R.color.holo_purple
                 ).apply {
@@ -1713,7 +1713,7 @@ class IconPainterAndroidTest {
                             ).asEquitable().asEquitablePainter(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1722,9 +1722,9 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -1776,7 +1776,7 @@ class IconPainterAndroidTest {
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1787,7 +1787,7 @@ class IconPainterAndroidTest {
                     icon = SizeColorDrawable(TestColor.GRAY, SketchSize(100, 100)).asEquitable(),
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -1885,7 +1885,7 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = android.R.drawable.ic_delete,
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -1963,7 +1963,7 @@ class IconPainterAndroidTest {
                                 .asEquitablePainter(),
                             background = null,
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1972,7 +1972,7 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = android.R.drawable.ic_delete,
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -2047,7 +2047,7 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = android.R.drawable.ic_delete,
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                 ).apply {
                     assertEquals(
@@ -2111,7 +2111,7 @@ class IconPainterAndroidTest {
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2121,7 +2121,7 @@ class IconPainterAndroidTest {
                 rememberIconPainter(
                     icon = android.R.drawable.ic_delete,
                     background = ColorPainter(Color.Green).asEquitable(),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -2166,7 +2166,7 @@ class IconPainterAndroidTest {
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2176,7 +2176,7 @@ class IconPainterAndroidTest {
                 rememberIconPainter(
                     icon = android.R.drawable.ic_delete,
                     background = Color.Green,
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -2223,7 +2223,7 @@ class IconPainterAndroidTest {
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2233,7 +2233,7 @@ class IconPainterAndroidTest {
                 rememberIconPainter(
                     icon = android.R.drawable.ic_delete,
                     background = android.R.color.darker_gray,
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -2249,10 +2249,10 @@ class IconPainterAndroidTest {
                     )
                 }
 
-                // background: IntColor, iconTine
+                // background: IntColorFetcher, iconTine
                 rememberIconPainter(
                     icon = android.R.drawable.ic_delete,
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconTint = Color.Blue
                 ).apply {
                     assertEquals(
@@ -2269,7 +2269,7 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = android.R.drawable.ic_delete,
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconTint = android.R.color.holo_purple
                 ).apply {
                     assertEquals(
@@ -2279,7 +2279,7 @@ class IconPainterAndroidTest {
                                 .asEquitablePainter(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2288,8 +2288,8 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = android.R.drawable.ic_delete,
-                    background = IntColor(android.graphics.Color.YELLOW),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -2336,7 +2336,7 @@ class IconPainterAndroidTest {
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2346,7 +2346,7 @@ class IconPainterAndroidTest {
                 rememberIconPainter(
                     icon = android.R.drawable.ic_delete,
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -2392,7 +2392,7 @@ class IconPainterAndroidTest {
                                 .asEquitablePainter(),
                             background = null,
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2402,7 +2402,7 @@ class IconPainterAndroidTest {
                 rememberIconPainter(
                     icon = android.R.drawable.ic_delete,
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -2454,7 +2454,7 @@ class IconPainterAndroidTest {
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2465,7 +2465,7 @@ class IconPainterAndroidTest {
                     icon = android.R.drawable.ic_delete,
                     background = ColorPainter(Color.Green).asEquitable(),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -2512,7 +2512,7 @@ class IconPainterAndroidTest {
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2523,7 +2523,7 @@ class IconPainterAndroidTest {
                     icon = android.R.drawable.ic_delete,
                     background = Color.Green,
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -2572,7 +2572,7 @@ class IconPainterAndroidTest {
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2583,7 +2583,7 @@ class IconPainterAndroidTest {
                     icon = android.R.drawable.ic_delete,
                     background = android.R.color.darker_gray,
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -2599,10 +2599,10 @@ class IconPainterAndroidTest {
                     )
                 }
 
-                // background: IntColor
+                // background: IntColorFetcher
                 rememberIconPainter(
                     icon = android.R.drawable.ic_delete,
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                     iconTint = Color.Blue
                 ).apply {
@@ -2620,7 +2620,7 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = android.R.drawable.ic_delete,
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                     iconTint = android.R.color.holo_purple
                 ).apply {
@@ -2631,7 +2631,7 @@ class IconPainterAndroidTest {
                                 .asEquitablePainter(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2640,9 +2640,9 @@ class IconPainterAndroidTest {
                 }
                 rememberIconPainter(
                     icon = android.R.drawable.ic_delete,
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(
@@ -2691,7 +2691,7 @@ class IconPainterAndroidTest {
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2702,7 +2702,7 @@ class IconPainterAndroidTest {
                     icon = android.R.drawable.ic_delete,
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconPainter(

@@ -19,8 +19,8 @@ package com.github.panpf.sketch.state
 import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.drawable.EquitableDrawable
 import com.github.panpf.sketch.state.ConditionStateImage.Condition
-import com.github.panpf.sketch.util.IntColor
-import com.github.panpf.sketch.util.ResColor
+import com.github.panpf.sketch.util.IntColorFetcher
+import com.github.panpf.sketch.util.ResColorFetcher
 
 /**
  * Create an ConditionStateImage
@@ -52,7 +52,7 @@ fun ConditionStateImage(
  * @see com.github.panpf.sketch.core.android.test.state.ConditionStateImageAndroidTest.testConditionStateImage
  */
 fun ConditionStateImage(
-    defaultColor: IntColor,
+    defaultColor: IntColorFetcher,
     conditionBlock: ConditionStateImage.Builder.() -> Unit
 ): ConditionStateImage = ConditionStateImage.Builder(ColorDrawableStateImage(defaultColor)).apply {
     conditionBlock.invoke(this)
@@ -64,7 +64,7 @@ fun ConditionStateImage(
  * @see com.github.panpf.sketch.core.android.test.state.ConditionStateImageAndroidTest.testConditionStateImage
  */
 fun ConditionStateImage(
-    defaultColor: ResColor,
+    defaultColor: ResColorFetcher,
     conditionBlock: ConditionStateImage.Builder.() -> Unit
 ): ConditionStateImage = ConditionStateImage.Builder(ColorDrawableStateImage(defaultColor)).apply {
     conditionBlock.invoke(this)
@@ -102,7 +102,7 @@ fun ConditionStateImage.Builder.addState(
  */
 fun ConditionStateImage.Builder.addState(
     condition: Condition,
-    color: IntColor
+    color: IntColorFetcher
 ): ConditionStateImage.Builder = apply {
     addState(condition, ColorDrawableStateImage(color))
 }
@@ -114,7 +114,7 @@ fun ConditionStateImage.Builder.addState(
  */
 fun ConditionStateImage.Builder.addState(
     condition: Condition,
-    color: ResColor
+    color: ResColorFetcher
 ): ConditionStateImage.Builder = apply {
     addState(condition, ColorDrawableStateImage(color))
 }

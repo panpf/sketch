@@ -9,8 +9,8 @@ import com.github.panpf.sketch.state.DrawableStateImage
 import com.github.panpf.sketch.state.addState
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.UriInvalidCondition
-import com.github.panpf.sketch.util.IntColor
-import com.github.panpf.sketch.util.ResColor
+import com.github.panpf.sketch.util.IntColorFetcher
+import com.github.panpf.sketch.util.ResColorFetcher
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -62,46 +62,46 @@ class ConditionStateImageAndroidTest {
             )
         }
 
-        ConditionStateImage(IntColor(TestColor.RED)) {
+        ConditionStateImage(IntColorFetcher(TestColor.RED)) {
         }.apply {
             assertEquals(1, stateList.size)
             assertEquals(
-                expected = ColorDrawableStateImage(IntColor(TestColor.RED)),
+                expected = ColorDrawableStateImage(IntColorFetcher(TestColor.RED)),
                 actual = stateList.find { it.first == DefaultCondition }?.second
             )
         }
-        ConditionStateImage(IntColor(TestColor.RED)) {
-            addState(UriInvalidCondition, IntColor(TestColor.GREEN))
+        ConditionStateImage(IntColorFetcher(TestColor.RED)) {
+            addState(UriInvalidCondition, IntColorFetcher(TestColor.GREEN))
         }.apply {
             assertEquals(2, stateList.size)
             assertEquals(
-                expected = ColorDrawableStateImage(IntColor(TestColor.RED)),
+                expected = ColorDrawableStateImage(IntColorFetcher(TestColor.RED)),
                 actual = stateList.find { it.first == DefaultCondition }?.second
             )
             assertEquals(
-                expected = ColorDrawableStateImage(IntColor(TestColor.GREEN)),
+                expected = ColorDrawableStateImage(IntColorFetcher(TestColor.GREEN)),
                 actual = stateList.find { it.first == UriInvalidCondition }?.second
             )
         }
 
-        ConditionStateImage(ResColor(android.R.color.holo_purple)) {
+        ConditionStateImage(ResColorFetcher(android.R.color.holo_purple)) {
         }.apply {
             assertEquals(1, stateList.size)
             assertEquals(
-                expected = ColorDrawableStateImage(ResColor(android.R.color.holo_purple)),
+                expected = ColorDrawableStateImage(ResColorFetcher(android.R.color.holo_purple)),
                 actual = stateList.find { it.first == DefaultCondition }?.second
             )
         }
-        ConditionStateImage(ResColor(android.R.color.holo_purple)) {
-            addState(UriInvalidCondition, ResColor(android.R.color.holo_orange_light))
+        ConditionStateImage(ResColorFetcher(android.R.color.holo_purple)) {
+            addState(UriInvalidCondition, ResColorFetcher(android.R.color.holo_orange_light))
         }.apply {
             assertEquals(2, stateList.size)
             assertEquals(
-                expected = ColorDrawableStateImage(ResColor(android.R.color.holo_purple)),
+                expected = ColorDrawableStateImage(ResColorFetcher(android.R.color.holo_purple)),
                 actual = stateList.find { it.first == DefaultCondition }?.second
             )
             assertEquals(
-                expected = ColorDrawableStateImage(ResColor(android.R.color.holo_orange_light)),
+                expected = ColorDrawableStateImage(ResColorFetcher(android.R.color.holo_orange_light)),
                 actual = stateList.find { it.first == UriInvalidCondition }?.second
             )
         }
@@ -151,14 +151,17 @@ class ConditionStateImageAndroidTest {
             expected = ConditionStateImage(
                 defaultImage = DrawableStateImage(ColorDrawable(TestColor.RED).asEquitable())
             ) {
-                addState(UriInvalidCondition, ColorDrawableStateImage(IntColor(TestColor.RED)))
+                addState(
+                    UriInvalidCondition,
+                    ColorDrawableStateImage(IntColorFetcher(TestColor.RED))
+                )
             },
             actual = ConditionStateImage(
                 defaultImage = DrawableStateImage(ColorDrawable(TestColor.RED).asEquitable())
             ) {
                 addState(
                     condition = UriInvalidCondition,
-                    color = IntColor(TestColor.RED)
+                    color = IntColorFetcher(TestColor.RED)
                 )
             }
         )
@@ -169,7 +172,7 @@ class ConditionStateImageAndroidTest {
             ) {
                 addState(
                     UriInvalidCondition,
-                    ColorDrawableStateImage(ResColor(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated))
+                    ColorDrawableStateImage(ResColorFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated))
                 )
             },
             actual = ConditionStateImage(
@@ -177,7 +180,7 @@ class ConditionStateImageAndroidTest {
             ) {
                 addState(
                     condition = UriInvalidCondition,
-                    color = ResColor(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                    color = ResColorFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
                 )
             }
         )

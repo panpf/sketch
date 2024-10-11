@@ -3,8 +3,8 @@ package com.github.panpf.sketch.core.android.test.util
 import android.graphics.Color
 import androidx.core.content.res.ResourcesCompat
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.util.IntColor
-import com.github.panpf.sketch.util.ResColor
+import com.github.panpf.sketch.util.IntColorFetcher
+import com.github.panpf.sketch.util.ResColorFetcher
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -12,23 +12,23 @@ import kotlin.test.assertNotEquals
 class ColorFetcherTest {
 
     @Test
-    fun testIntColor() {
+    fun testIntColorFetcher() {
         val context = getTestContext()
 
-        IntColor(Color.RED).apply {
+        IntColorFetcher(Color.RED).apply {
             assertEquals(Color.RED, color)
             assertEquals(Color.RED, getColor(context))
         }
 
-        IntColor(Color.GREEN).apply {
+        IntColorFetcher(Color.GREEN).apply {
             assertEquals(Color.GREEN, color)
             assertEquals(Color.GREEN, getColor(context))
         }
 
-        val element1 = IntColor(Color.RED)
-        val element11 = IntColor(Color.RED)
-        val element2 = IntColor(Color.GREEN)
-        val element3 = IntColor(Color.BLUE)
+        val element1 = IntColorFetcher(Color.RED)
+        val element11 = IntColorFetcher(Color.RED)
+        val element2 = IntColorFetcher(Color.GREEN)
+        val element3 = IntColorFetcher(Color.BLUE)
 
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
@@ -42,26 +42,26 @@ class ColorFetcherTest {
         assertNotEquals(element1.hashCode(), element3.hashCode())
         assertNotEquals(element2.hashCode(), element3.hashCode())
 
-        IntColor(Color.RED).apply {
-            assertEquals("IntColor(${Color.RED})", toString())
+        IntColorFetcher(Color.RED).apply {
+            assertEquals("IntColorFetcher(color=${Color.RED})", key)
         }
-        IntColor(Color.GREEN).apply {
-            assertEquals("IntColor(${Color.GREEN})", toString())
+        IntColorFetcher(Color.GREEN).apply {
+            assertEquals("IntColorFetcher(color=${Color.GREEN})", toString())
         }
     }
 
     @Test
-    fun testResColor() {
+    fun testResColorFetcher() {
         val context = getTestContext()
 
-        ResColor(android.R.color.background_dark).apply {
+        ResColorFetcher(android.R.color.background_dark).apply {
             assertEquals(android.R.color.background_dark, resId)
             assertEquals(
                 ResourcesCompat.getColor(context.resources, android.R.color.background_dark, null),
                 getColor(context)
             )
         }
-        ResColor(android.R.color.background_light).apply {
+        ResColorFetcher(android.R.color.background_light).apply {
             assertEquals(android.R.color.background_light, resId)
             assertEquals(
                 ResourcesCompat.getColor(context.resources, android.R.color.background_light, null),
@@ -69,10 +69,10 @@ class ColorFetcherTest {
             )
         }
 
-        val element1 = ResColor(android.R.color.background_dark)
-        val element11 = ResColor(android.R.color.background_dark)
-        val element2 = ResColor(android.R.color.background_light)
-        val element3 = ResColor(android.R.color.darker_gray)
+        val element1 = ResColorFetcher(android.R.color.background_dark)
+        val element11 = ResColorFetcher(android.R.color.background_dark)
+        val element2 = ResColorFetcher(android.R.color.background_light)
+        val element3 = ResColorFetcher(android.R.color.darker_gray)
 
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
@@ -86,11 +86,11 @@ class ColorFetcherTest {
         assertNotEquals(element1.hashCode(), element3.hashCode())
         assertNotEquals(element2.hashCode(), element3.hashCode())
 
-        ResColor(android.R.color.background_dark).apply {
-            assertEquals("ResColor(${android.R.color.background_dark})", toString())
+        ResColorFetcher(android.R.color.background_dark).apply {
+            assertEquals("ResColorFetcher(resId=${android.R.color.background_dark})", key)
         }
-        ResColor(android.R.color.background_light).apply {
-            assertEquals("ResColor(${android.R.color.background_light})", toString())
+        ResColorFetcher(android.R.color.background_light).apply {
+            assertEquals("ResColorFetcher(resId=${android.R.color.background_light})", toString())
         }
     }
 }

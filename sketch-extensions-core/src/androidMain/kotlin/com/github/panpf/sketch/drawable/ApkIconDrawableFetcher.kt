@@ -29,7 +29,7 @@ import java.io.IOException
  */
 class ApkIconDrawableFetcher(private val file: File) : DrawableFetcher {
 
-    override val key: String = "ApkIconDrawableFetcher('$file')"
+    override val key: String = "ApkIconDrawableFetcher(file='$file')"
 
     override fun getDrawable(context: Context): Drawable {
         val packageManager = context.packageManager
@@ -54,6 +54,6 @@ class ApkIconDrawableFetcher(private val file: File) : DrawableFetcher {
     }
 
     override fun toString(): String {
-        return "ApkIconDrawableFetcher('$file')"
+        return "ApkIconDrawableFetcher(file='$file')"
     }
 }

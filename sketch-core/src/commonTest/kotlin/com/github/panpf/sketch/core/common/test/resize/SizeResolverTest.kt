@@ -67,12 +67,16 @@ class SizeResolverTest {
     }
 
     @Test
+    fun testFixedSizeResolverKey() {
+        FixedSizeResolver(Size(100, 200)).apply {
+            assertEquals("Fixed(100x200)", key)
+        }
+    }
+
+    @Test
     fun testFixedSizeResolverToString() {
         FixedSizeResolver(Size(100, 200)).apply {
-            assertEquals("FixedSizeResolver(100x200)", toString())
-        }
-        FixedSizeResolver(Size(200, 100)).apply {
-            assertEquals("FixedSizeResolver(200x100)", toString())
+            assertEquals("FixedSizeResolver(size=100x200)", toString())
         }
     }
 }

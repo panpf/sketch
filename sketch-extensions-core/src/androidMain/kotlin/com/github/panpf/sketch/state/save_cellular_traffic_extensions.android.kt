@@ -18,8 +18,8 @@ package com.github.panpf.sketch.state
 
 import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.drawable.EquitableDrawable
-import com.github.panpf.sketch.util.IntColor
-import com.github.panpf.sketch.util.ResColor
+import com.github.panpf.sketch.util.IntColorFetcher
+import com.github.panpf.sketch.util.ResColorFetcher
 
 
 /**
@@ -50,7 +50,7 @@ fun ConditionStateImage.Builder.saveCellularTrafficError(
  * @see com.github.panpf.sketch.extensions.core.android.test.state.SaveCellularTrafficExtensionsAndroidTest.testSaveCellularTrafficError
  */
 fun ConditionStateImage.Builder.saveCellularTrafficError(
-    color: IntColor
+    color: IntColorFetcher
 ): ConditionStateImage.Builder = apply {
     addState(SaveCellularTrafficCondition, ColorDrawableStateImage(color))
 }
@@ -61,7 +61,7 @@ fun ConditionStateImage.Builder.saveCellularTrafficError(
  * @see com.github.panpf.sketch.extensions.core.android.test.state.SaveCellularTrafficExtensionsAndroidTest.testSaveCellularTrafficError
  */
 fun ConditionStateImage.Builder.saveCellularTrafficError(
-    color: ResColor
+    color: ResColorFetcher
 ): ConditionStateImage.Builder = apply {
     addState(SaveCellularTrafficCondition, ColorDrawableStateImage(color))
 }

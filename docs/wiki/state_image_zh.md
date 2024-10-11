@@ -41,7 +41,7 @@ ImageRequest(context, "https://example.com/image.jpg") {
   placeholder(context.getEquitableDrawable(R.drawable.placeholder))
   placeholder(IntColorDrawableStateImage(Color.Gray))
   placeholder(DrawableStateImage(R.drawable.placeholder))
-  placeholder(IconDrawableStateImage(icon = R.drawable.placeholder, background = IntColor(Color.GRAY)))
+  placeholder(IconDrawableStateImage(icon = R.drawable.placeholder, background = IntColorFetcher(Color.GRAY)))
   placeholder(ConditionStateImage(defaultResId = R.drawable.error){
     addState(condition = MyCondition, resId = R.drawable.mystate)
   })
@@ -50,7 +50,7 @@ ImageRequest(context, "https://example.com/image.jpg") {
   fallback(context.getEquitableDrawable(R.drawable.fallback))
   fallback(IntColorDrawableStateImage(Color.RED))
   fallback(DrawableStateImage(R.drawable.fallback))
-  fallback(IconDrawableStateImage(icon = R.drawable.fallback, background = IntColor(Color.RED)))
+  fallback(IconDrawableStateImage(icon = R.drawable.fallback, background = IntColorFetcher(Color.RED)))
   fallback(ConditionStateImage(defaultResId = R.drawable.error) {
     addState(condition = MyCondition, resId = R.drawable.mystate)
   })
@@ -59,7 +59,7 @@ ImageRequest(context, "https://example.com/image.jpg") {
   error(context.getEquitableDrawable(R.drawable.error))
   error(IntColorDrawableStateImage(Color.RED))
   error(DrawableStateImage(R.drawable.error))
-  error(IconDrawableStateImage(icon = R.drawable.error, background = IntColor(Color.RED)))
+  error(IconDrawableStateImage(icon = R.drawable.error, background = IntColorFetcher(Color.RED)))
   error(ConditionStateImage(defaultResId = R.drawable.error) {
     addState(condition = MyCondition, resId = R.drawable.mystate)
   })

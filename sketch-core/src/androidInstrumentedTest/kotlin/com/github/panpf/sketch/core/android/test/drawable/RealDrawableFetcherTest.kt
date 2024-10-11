@@ -2,7 +2,7 @@ package com.github.panpf.sketch.core.android.test.drawable
 
 import android.graphics.drawable.ColorDrawable
 import com.github.panpf.sketch.drawable.EquitableDrawable
-import com.github.panpf.sketch.drawable.RealEquitableDrawable
+import com.github.panpf.sketch.drawable.RealDrawableFetcher
 import com.github.panpf.sketch.drawable.asEquitable
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.asOrThrow
@@ -11,20 +11,20 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
-class RealEquitableDrawableTest {
+class RealDrawableFetcherTest {
 
     @Test
     fun testKey() {
         assertEquals(
-            expected = "RealEquitableDrawable(${ColorDrawable(TestColor.RED).asEquitable().key})",
-            actual = RealEquitableDrawable(ColorDrawable(TestColor.RED).asEquitable()).key
+            expected = "RealDrawableFetcher(drawable=${ColorDrawable(TestColor.RED).asEquitable().key})",
+            actual = RealDrawableFetcher(ColorDrawable(TestColor.RED).asEquitable()).key
         )
     }
 
     @Test
     fun testGetDrawable() {
         val context = getTestContext()
-        RealEquitableDrawable(ColorDrawable(TestColor.RED).asEquitable()).apply {
+        RealDrawableFetcher(ColorDrawable(TestColor.RED).asEquitable()).apply {
             assertEquals(
                 expected = TestColor.RED,
                 actual = getDrawable(context)
@@ -36,9 +36,9 @@ class RealEquitableDrawableTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = RealEquitableDrawable(ColorDrawable(TestColor.RED).asEquitable())
-        val element11 = RealEquitableDrawable(ColorDrawable(TestColor.RED).asEquitable())
-        val element2 = RealEquitableDrawable(ColorDrawable(TestColor.BLUE).asEquitable())
+        val element1 = RealDrawableFetcher(ColorDrawable(TestColor.RED).asEquitable())
+        val element11 = RealDrawableFetcher(ColorDrawable(TestColor.RED).asEquitable())
+        val element2 = RealDrawableFetcher(ColorDrawable(TestColor.BLUE).asEquitable())
 
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
@@ -52,8 +52,8 @@ class RealEquitableDrawableTest {
     @Test
     fun testToString() {
         assertEquals(
-            expected = "RealEquitableDrawable(${ColorDrawable(TestColor.RED).asEquitable()})",
-            actual = RealEquitableDrawable(ColorDrawable(TestColor.RED).asEquitable()).toString()
+            expected = "RealDrawableFetcher(drawable=${ColorDrawable(TestColor.RED).asEquitable()})",
+            actual = RealDrawableFetcher(ColorDrawable(TestColor.RED).asEquitable()).toString()
         )
     }
 }

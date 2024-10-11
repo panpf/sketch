@@ -23,8 +23,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.drawable.ColorEquitableDrawable
 import com.github.panpf.sketch.drawable.EquitableDrawable
-import com.github.panpf.sketch.drawable.RealEquitableDrawable
-import com.github.panpf.sketch.drawable.ResDrawable
+import com.github.panpf.sketch.drawable.RealDrawableFetcher
+import com.github.panpf.sketch.drawable.ResDrawableFetcher
 import com.github.panpf.sketch.drawable.asEquitable
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
@@ -51,7 +51,7 @@ class DrawableStateImageTest {
         )
         assertEquals(
             expected = DrawableStateImage(
-                RealEquitableDrawable(
+                RealDrawableFetcher(
                     ColorDrawable(TestColor.RED).asEquitable(101)
                 )
             ),
@@ -59,7 +59,7 @@ class DrawableStateImageTest {
         )
         assertEquals(
             expected = DrawableStateImage(
-                RealEquitableDrawable(
+                RealDrawableFetcher(
                     ColorDrawable(TestColor.RED).asEquitable()
                 )
             ),
@@ -71,14 +71,14 @@ class DrawableStateImageTest {
     fun testDrawableStateImage() {
         assertEquals(
             expected = DrawableStateImage(
-                RealEquitableDrawable(ColorDrawable(TestColor.RED).asEquitable())
+                RealDrawableFetcher(ColorDrawable(TestColor.RED).asEquitable())
             ),
             actual = DrawableStateImage(ColorDrawable(TestColor.RED).asEquitable())
         )
 
         assertEquals(
             expected = DrawableStateImage(
-                ResDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
             ),
             actual = DrawableStateImage(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
         )
@@ -86,9 +86,9 @@ class DrawableStateImageTest {
 
     @Test
     fun testKey() {
-        DrawableStateImage(ResDrawable(android.R.drawable.btn_radio)).apply {
+        DrawableStateImage(ResDrawableFetcher(android.R.drawable.btn_radio)).apply {
             assertEquals(
-                expected = "DrawableStateImage(ResDrawable(${android.R.drawable.btn_radio}))",
+                expected = "DrawableStateImage(drawable=ResDrawableFetcher(resId=${android.R.drawable.btn_radio}))",
                 actual = key
             )
         }
@@ -99,7 +99,7 @@ class DrawableStateImageTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, ResourceImages.jpeg.uri)
 
-        DrawableStateImage(RealEquitableDrawable(ColorEquitableDrawable(Color.BLUE))).apply {
+        DrawableStateImage(RealDrawableFetcher(ColorEquitableDrawable(Color.BLUE))).apply {
             assertEquals(
                 Color.BLUE,
                 getImage(sketch, request, null)!!
@@ -109,7 +109,7 @@ class DrawableStateImageTest {
             )
         }
 
-        DrawableStateImage(RealEquitableDrawable(ColorEquitableDrawable(Color.GREEN))).apply {
+        DrawableStateImage(RealDrawableFetcher(ColorEquitableDrawable(Color.GREEN))).apply {
             assertEquals(
                 Color.GREEN,
                 getImage(sketch, request, null)!!
@@ -119,7 +119,7 @@ class DrawableStateImageTest {
             )
         }
 
-        DrawableStateImage(ResDrawable(android.R.drawable.btn_radio)).apply {
+        DrawableStateImage(ResDrawableFetcher(android.R.drawable.btn_radio)).apply {
             assertTrue(
                 getImage(sketch, request, null)
                     ?.asOrThrow<DrawableImage>()?.drawable is StateListDrawable
@@ -129,9 +129,9 @@ class DrawableStateImageTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val stateImage1 = DrawableStateImage(ResDrawable(android.R.drawable.btn_radio))
-        val stateImage11 = DrawableStateImage(ResDrawable(android.R.drawable.btn_radio))
-        val stateImage2 = DrawableStateImage(ResDrawable(android.R.drawable.btn_dialog))
+        val stateImage1 = DrawableStateImage(ResDrawableFetcher(android.R.drawable.btn_radio))
+        val stateImage11 = DrawableStateImage(ResDrawableFetcher(android.R.drawable.btn_radio))
+        val stateImage2 = DrawableStateImage(ResDrawableFetcher(android.R.drawable.btn_dialog))
 
         assertEquals(stateImage1, stateImage11)
         assertNotEquals(stateImage1, stateImage2)
@@ -144,9 +144,9 @@ class DrawableStateImageTest {
 
     @Test
     fun testToString() {
-        DrawableStateImage(ResDrawable(android.R.drawable.btn_radio)).apply {
+        DrawableStateImage(ResDrawableFetcher(android.R.drawable.btn_radio)).apply {
             assertEquals(
-                expected = "DrawableStateImage(drawable=ResDrawable(${android.R.drawable.btn_radio}))",
+                expected = "DrawableStateImage(drawable=ResDrawableFetcher(resId=${android.R.drawable.btn_radio}))",
                 actual = toString()
             )
         }

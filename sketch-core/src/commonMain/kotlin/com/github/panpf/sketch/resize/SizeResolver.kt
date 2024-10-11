@@ -67,9 +67,9 @@ data class FixedSizeResolver constructor(private val size: Size) : SizeResolver 
 
     constructor(width: Int, height: Int) : this(Size(width, height))
 
-    override val key: String by lazy { "Fixed($size)" }
+    override val key: String = "Fixed($size)"
 
     override suspend fun size(): Size = size
 
-    override fun toString(): String = "FixedSizeResolver($size)"
+    override fun toString(): String = "FixedSizeResolver(size=$size)"
 }

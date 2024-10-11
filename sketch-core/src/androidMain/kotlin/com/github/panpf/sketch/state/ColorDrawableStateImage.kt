@@ -27,8 +27,8 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.ColorFetcher
-import com.github.panpf.sketch.util.IntColor
-import com.github.panpf.sketch.util.ResColor
+import com.github.panpf.sketch.util.IntColorFetcher
+import com.github.panpf.sketch.util.ResColorFetcher
 
 /**
  * Use color as the [StateImage]
@@ -36,7 +36,7 @@ import com.github.panpf.sketch.util.ResColor
  * @see com.github.panpf.sketch.core.android.test.state.ColorDrawableStateImageTest.testIntColorDrawableStateImage
  */
 fun IntColorDrawableStateImage(@ColorInt color: Int): ColorDrawableStateImage =
-    ColorDrawableStateImage(IntColor(color))
+    ColorDrawableStateImage(IntColorFetcher(color))
 
 /**
  * Use color as the [StateImage]
@@ -44,14 +44,14 @@ fun IntColorDrawableStateImage(@ColorInt color: Int): ColorDrawableStateImage =
  * @see com.github.panpf.sketch.core.android.test.state.ColorDrawableStateImageTest.testResColorDrawableStateImage
  */
 fun ResColorDrawableStateImage(@ColorRes resId: Int): ColorDrawableStateImage =
-    ColorDrawableStateImage(ResColor(resId))
+    ColorDrawableStateImage(ResColorFetcher(resId))
 
 /**
  * Use color as the [StateImage]
  *
  * @see com.github.panpf.sketch.core.android.test.state.ColorDrawableStateImageTest.testColorDrawableStateImageIntColor
  */
-fun ColorDrawableStateImage(color: IntColor): ColorDrawableStateImage =
+fun ColorDrawableStateImage(color: IntColorFetcher): ColorDrawableStateImage =
     ColorDrawableStateImage(color as ColorFetcher)
 
 /**
@@ -59,7 +59,7 @@ fun ColorDrawableStateImage(color: IntColor): ColorDrawableStateImage =
  *
  * @see com.github.panpf.sketch.core.android.test.state.ColorDrawableStateImageTest.testColorDrawableStateImageResColor
  */
-fun ColorDrawableStateImage(color: ResColor): ColorDrawableStateImage =
+fun ColorDrawableStateImage(color: ResColorFetcher): ColorDrawableStateImage =
     ColorDrawableStateImage(color as ColorFetcher)
 
 /**
@@ -69,7 +69,7 @@ fun ColorDrawableStateImage(color: ResColor): ColorDrawableStateImage =
  */
 data class ColorDrawableStateImage(val color: ColorFetcher) : StateImage {
 
-    override val key: String = "ColorDrawableStateImage(${color.key})"
+    override val key: String = "ColorDrawableStateImage(color=${color.key})"
 
     override fun getImage(
         sketch: Sketch,

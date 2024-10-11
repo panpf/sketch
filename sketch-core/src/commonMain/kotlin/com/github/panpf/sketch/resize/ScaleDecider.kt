@@ -57,15 +57,13 @@ interface ScaleDecider : Key {
  */
 data class FixedScaleDecider(private val scale: Scale) : ScaleDecider {
 
-    override val key: String by lazy { "Fixed($scale)" }
+    override val key: String = "Fixed($scale)"
 
     override fun get(imageSize: Size, targetSize: Size): Scale {
         return scale
     }
 
-    override fun toString(): String {
-        return "FixedScaleDecider($scale)"
-    }
+    override fun toString(): String = "FixedScaleDecider(scale=$scale)"
 }
 
 
@@ -80,14 +78,16 @@ data class LongImageScaleDecider constructor(
     val longImageDecider: LongImageDecider = LongImageDecider(),
 ) : ScaleDecider {
 
-    override val key: String by lazy { "LongImage($longImage,$otherImage,${longImageDecider.key})" }
+    override val key: String = "LongImage($longImage,$otherImage,${longImageDecider.key})"
 
     override fun get(imageSize: Size, targetSize: Size): Scale {
         val isLongImage = longImageDecider.isLongImage(imageSize, targetSize)
         return if (isLongImage) longImage else otherImage
     }
 
-    override fun toString(): String {
-        return "LongImageScaleDecider(longImage=$longImage, otherImage=$otherImage, longImageDecider=$longImageDecider)"
-    }
+    override fun toString(): String = "LongImageScaleDecider(" +
+            "longImage=$longImage, " +
+            "otherImage=$otherImage, " +
+            "longImageDecider=$longImageDecider" +
+            ")"
 }

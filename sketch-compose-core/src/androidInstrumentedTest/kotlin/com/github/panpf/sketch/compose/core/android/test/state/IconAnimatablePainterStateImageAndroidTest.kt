@@ -21,8 +21,8 @@ import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.asAnimatableDrawable
 import com.github.panpf.sketch.test.utils.asAnimatablePainter
 import com.github.panpf.sketch.test.utils.asEquitableWithThis
-import com.github.panpf.sketch.util.IntColor
-import com.github.panpf.sketch.util.ResColor
+import com.github.panpf.sketch.util.IntColorFetcher
+import com.github.panpf.sketch.util.ResColorFetcher
 import com.github.panpf.sketch.util.SketchSize
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -116,7 +116,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asAnimatablePainter()
                         .asEquitableWithThis(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -203,7 +203,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             ).asAnimatablePainter().asEquitableWithThis(),
                             background = null,
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -213,7 +213,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asAnimatablePainter()
                         .asEquitableWithThis(),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -296,7 +296,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asAnimatablePainter()
                         .asEquitableWithThis(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                 ).apply {
                     assertEquals(
@@ -367,7 +367,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             ).asAnimatablePainter().asEquitableWithThis(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -378,7 +378,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asAnimatablePainter()
                         .asEquitableWithThis(),
                     background = ColorPainter(Color.Green).asEquitable(),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -428,7 +428,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             ).asAnimatablePainter().asEquitableWithThis(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -439,7 +439,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asAnimatablePainter()
                         .asEquitableWithThis(),
                     background = Color.Green,
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -491,7 +491,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -502,7 +502,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asAnimatablePainter()
                         .asEquitableWithThis(),
                     background = android.R.color.darker_gray,
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -519,11 +519,11 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
 
-                // background: IntColor, iconTine
+                // background: IntColorFetcher, iconTine
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asAnimatablePainter()
                         .asEquitableWithThis(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconTint = Color.Blue
                 ).apply {
                     assertEquals(
@@ -542,7 +542,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asAnimatablePainter()
                         .asEquitableWithThis(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconTint = android.R.color.holo_purple
                 ).apply {
                     assertEquals(
@@ -553,7 +553,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             ).asAnimatablePainter().asEquitableWithThis(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -563,8 +563,8 @@ class IconAnimatablePainterStateImageAndroidTest {
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asAnimatablePainter()
                         .asEquitableWithThis(),
-                    background = IntColor(android.graphics.Color.YELLOW),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -616,7 +616,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -627,7 +627,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asAnimatablePainter()
                         .asEquitableWithThis(),
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -678,7 +678,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             ).asAnimatablePainter().asEquitableWithThis(),
                             background = null,
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -689,7 +689,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asAnimatablePainter()
                         .asEquitableWithThis(),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -746,7 +746,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             ).asAnimatablePainter().asEquitableWithThis(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -758,7 +758,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                         .asEquitableWithThis(),
                     background = ColorPainter(Color.Green).asEquitable(),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -810,7 +810,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             ).asAnimatablePainter().asEquitableWithThis(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -822,7 +822,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                         .asEquitableWithThis(),
                     background = Color.Green,
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -876,7 +876,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -888,7 +888,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                         .asEquitableWithThis(),
                     background = android.R.color.darker_gray,
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -905,11 +905,11 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
 
-                // background: IntColor
+                // background: IntColorFetcher
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asAnimatablePainter()
                         .asEquitableWithThis(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                     iconTint = Color.Blue
                 ).apply {
@@ -929,7 +929,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asAnimatablePainter()
                         .asEquitableWithThis(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                     iconTint = android.R.color.holo_purple
                 ).apply {
@@ -941,7 +941,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             ).asAnimatablePainter().asEquitableWithThis(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -951,9 +951,9 @@ class IconAnimatablePainterStateImageAndroidTest {
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorPainter(Color.Gray, Size(100f, 100f)).asAnimatablePainter()
                         .asEquitableWithThis(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -1007,7 +1007,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1019,7 +1019,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                         .asEquitableWithThis(),
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -1136,7 +1136,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                         TestColor.GRAY,
                         SketchSize(100, 100)
                     ).asAnimatableDrawable().asEquitableWithThis(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -1231,7 +1231,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             ).asAnimatableDrawable().asEquitableWithThis().asEquitablePainter(),
                             background = null,
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1243,7 +1243,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                         TestColor.GRAY,
                         SketchSize(100, 100)
                     ).asAnimatableDrawable().asEquitableWithThis(),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -1334,7 +1334,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                         TestColor.GRAY,
                         SketchSize(100, 100)
                     ).asAnimatableDrawable().asEquitableWithThis(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                 ).apply {
                     assertEquals(
@@ -1411,7 +1411,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             ).asAnimatableDrawable().asEquitableWithThis().asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1424,7 +1424,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                         SketchSize(100, 100)
                     ).asAnimatableDrawable().asEquitableWithThis(),
                     background = ColorPainter(Color.Green).asEquitable(),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -1478,7 +1478,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             ).asAnimatableDrawable().asEquitableWithThis().asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1491,7 +1491,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                         SketchSize(100, 100)
                     ).asAnimatableDrawable().asEquitableWithThis(),
                     background = Color.Green,
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -1547,7 +1547,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1560,7 +1560,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                         SketchSize(100, 100)
                     ).asAnimatableDrawable().asEquitableWithThis(),
                     background = android.R.color.darker_gray,
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -1577,13 +1577,13 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
 
-                // background: IntColor, iconTine
+                // background: IntColorFetcher, iconTine
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorDrawable(
                         TestColor.GRAY,
                         SketchSize(100, 100)
                     ).asAnimatableDrawable().asEquitableWithThis(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconTint = Color.Blue
                 ).apply {
                     assertEquals(
@@ -1604,7 +1604,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                         TestColor.GRAY,
                         SketchSize(100, 100)
                     ).asAnimatableDrawable().asEquitableWithThis(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconTint = android.R.color.holo_purple
                 ).apply {
                     assertEquals(
@@ -1615,7 +1615,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             ).asAnimatableDrawable().asEquitableWithThis().asEquitablePainter(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1627,8 +1627,8 @@ class IconAnimatablePainterStateImageAndroidTest {
                         TestColor.GRAY,
                         SketchSize(100, 100)
                     ).asAnimatableDrawable().asEquitableWithThis(),
-                    background = IntColor(android.graphics.Color.YELLOW),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -1684,7 +1684,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1697,7 +1697,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                         SketchSize(100, 100)
                     ).asAnimatableDrawable().asEquitableWithThis(),
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -1752,7 +1752,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             ).asAnimatableDrawable().asEquitableWithThis().asEquitablePainter(),
                             background = null,
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1765,7 +1765,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                         SketchSize(100, 100)
                     ).asAnimatableDrawable().asEquitableWithThis(),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -1826,7 +1826,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             ).asAnimatableDrawable().asEquitableWithThis().asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1840,7 +1840,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     ).asAnimatableDrawable().asEquitableWithThis(),
                     background = ColorPainter(Color.Green).asEquitable(),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -1896,7 +1896,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             ).asAnimatableDrawable().asEquitableWithThis().asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1910,7 +1910,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     ).asAnimatableDrawable().asEquitableWithThis(),
                     background = Color.Green,
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -1968,7 +1968,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -1982,7 +1982,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     ).asAnimatableDrawable().asEquitableWithThis(),
                     background = android.R.color.darker_gray,
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -1999,13 +1999,13 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
 
-                // background: IntColor
+                // background: IntColorFetcher
                 rememberIconAnimatablePainterStateImage(
                     icon = SizeColorDrawable(
                         TestColor.GRAY,
                         SketchSize(100, 100)
                     ).asAnimatableDrawable().asEquitableWithThis(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                     iconTint = Color.Blue
                 ).apply {
@@ -2027,7 +2027,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                         TestColor.GRAY,
                         SketchSize(100, 100)
                     ).asAnimatableDrawable().asEquitableWithThis(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                     iconTint = android.R.color.holo_purple
                 ).apply {
@@ -2039,7 +2039,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             ).asAnimatableDrawable().asEquitableWithThis().asEquitablePainter(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2051,9 +2051,9 @@ class IconAnimatablePainterStateImageAndroidTest {
                         TestColor.GRAY,
                         SketchSize(100, 100)
                     ).asAnimatableDrawable().asEquitableWithThis(),
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -2111,7 +2111,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2125,7 +2125,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     ).asAnimatableDrawable().asEquitableWithThis(),
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -2223,7 +2223,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                 }
                 rememberIconAnimatablePainterStateImage(
                     icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -2301,7 +2301,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                                 .asEquitablePainter(),
                             background = null,
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2310,7 +2310,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                 }
                 rememberIconAnimatablePainterStateImage(
                     icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -2385,7 +2385,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                 }
                 rememberIconAnimatablePainterStateImage(
                     icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                 ).apply {
                     assertEquals(
@@ -2449,7 +2449,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2459,7 +2459,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                 rememberIconAnimatablePainterStateImage(
                     icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
                     background = ColorPainter(Color.Green).asEquitable(),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -2504,7 +2504,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2514,7 +2514,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                 rememberIconAnimatablePainterStateImage(
                     icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
                     background = Color.Green,
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -2561,7 +2561,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2571,7 +2571,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                 rememberIconAnimatablePainterStateImage(
                     icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
                     background = android.R.color.darker_gray,
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -2587,10 +2587,10 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
 
-                // background: IntColor, iconTine
+                // background: IntColorFetcher, iconTine
                 rememberIconAnimatablePainterStateImage(
                     icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconTint = Color.Blue
                 ).apply {
                     assertEquals(
@@ -2607,7 +2607,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                 }
                 rememberIconAnimatablePainterStateImage(
                     icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconTint = android.R.color.holo_purple
                 ).apply {
                     assertEquals(
@@ -2617,7 +2617,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                                 .asEquitablePainter(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2626,8 +2626,8 @@ class IconAnimatablePainterStateImageAndroidTest {
                 }
                 rememberIconAnimatablePainterStateImage(
                     icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
-                    background = IntColor(android.graphics.Color.YELLOW),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -2674,7 +2674,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
                             iconSize = null,
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2684,7 +2684,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                 rememberIconAnimatablePainterStateImage(
                     icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -2730,7 +2730,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                                 .asEquitablePainter(),
                             background = null,
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2740,7 +2740,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                 rememberIconAnimatablePainterStateImage(
                     icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -2792,7 +2792,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2803,7 +2803,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
                     background = ColorPainter(Color.Green).asEquitable(),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -2850,7 +2850,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2861,7 +2861,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
                     background = Color.Green,
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -2910,7 +2910,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2921,7 +2921,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
                     background = android.R.color.darker_gray,
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -2937,10 +2937,10 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
 
-                // background: IntColor
+                // background: IntColorFetcher
                 rememberIconAnimatablePainterStateImage(
                     icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                     iconTint = Color.Blue
                 ).apply {
@@ -2958,7 +2958,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                 }
                 rememberIconAnimatablePainterStateImage(
                     icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                     iconTint = android.R.color.holo_purple
                 ).apply {
@@ -2969,7 +2969,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                                 .asEquitablePainter(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -2978,9 +2978,9 @@ class IconAnimatablePainterStateImageAndroidTest {
                 }
                 rememberIconAnimatablePainterStateImage(
                     icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
-                    background = IntColor(android.graphics.Color.YELLOW),
+                    background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
@@ -3029,7 +3029,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
                             iconSize = Size(101f, 202f),
-                            iconTint = ResColor(android.R.color.holo_purple)
+                            iconTint = ResColorFetcher(android.R.color.holo_purple)
                                 .getColor(LocalContext.current)
                                 .let { Color(it) }
                         ),
@@ -3040,7 +3040,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
                     iconSize = Size(101f, 202f),
-                    iconTint = IntColor(android.graphics.Color.CYAN)
+                    iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(

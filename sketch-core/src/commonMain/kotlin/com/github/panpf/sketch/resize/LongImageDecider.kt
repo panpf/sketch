@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.resize
 
 import com.github.panpf.sketch.util.Key
@@ -52,7 +54,7 @@ open class DefaultLongImageDecider constructor(
     val notSameDirectionMultiple: Float = 5.0f,
 ) : LongImageDecider {
 
-    override val key: String by lazy { "Default($sameDirectionMultiple,$notSameDirectionMultiple)" }
+    override val key: String = "Default($sameDirectionMultiple,$notSameDirectionMultiple)"
 
     /**
      * Determine whether it is a long image given the image size and target size
@@ -97,7 +99,8 @@ open class DefaultLongImageDecider constructor(
         return result
     }
 
-    override fun toString(): String {
-        return "DefaultLongImageDecider(sameDirectionMultiple=$sameDirectionMultiple, notSameDirectionMultiple=$notSameDirectionMultiple)"
-    }
+    override fun toString(): String = "DefaultLongImageDecider(" +
+            "sameDirectionMultiple=$sameDirectionMultiple, " +
+            "notSameDirectionMultiple=$notSameDirectionMultiple" +
+            ")"
 }

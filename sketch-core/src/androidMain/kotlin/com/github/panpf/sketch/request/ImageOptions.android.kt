@@ -28,8 +28,8 @@ import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.drawable.EquitableDrawable
 import com.github.panpf.sketch.state.ColorDrawableStateImage
 import com.github.panpf.sketch.state.DrawableStateImage
-import com.github.panpf.sketch.util.IntColor
-import com.github.panpf.sketch.util.ResColor
+import com.github.panpf.sketch.util.IntColorFetcher
+import com.github.panpf.sketch.util.ResColorFetcher
 
 /**
  * Use the screen size as the resize size
@@ -64,7 +64,7 @@ fun ImageOptions.Builder.placeholder(@DrawableRes resId: Int): ImageOptions.Buil
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testPlaceholder
  */
-fun ImageOptions.Builder.placeholder(color: IntColor): ImageOptions.Builder =
+fun ImageOptions.Builder.placeholder(color: IntColorFetcher): ImageOptions.Builder =
     placeholder(ColorDrawableStateImage(color))
 
 /**
@@ -72,7 +72,7 @@ fun ImageOptions.Builder.placeholder(color: IntColor): ImageOptions.Builder =
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testPlaceholder
  */
-fun ImageOptions.Builder.placeholder(color: ResColor): ImageOptions.Builder =
+fun ImageOptions.Builder.placeholder(color: ResColorFetcher): ImageOptions.Builder =
     placeholder(ColorDrawableStateImage(color))
 
 
@@ -97,7 +97,7 @@ fun ImageOptions.Builder.fallback(@DrawableRes resId: Int): ImageOptions.Builder
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testFallback
  */
-fun ImageOptions.Builder.fallback(color: IntColor): ImageOptions.Builder =
+fun ImageOptions.Builder.fallback(color: IntColorFetcher): ImageOptions.Builder =
     fallback(ColorDrawableStateImage(color))
 
 /**
@@ -105,7 +105,7 @@ fun ImageOptions.Builder.fallback(color: IntColor): ImageOptions.Builder =
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testFallback
  */
-fun ImageOptions.Builder.fallback(color: ResColor): ImageOptions.Builder =
+fun ImageOptions.Builder.fallback(color: ResColorFetcher): ImageOptions.Builder =
     fallback(ColorDrawableStateImage(color))
 
 
@@ -137,7 +137,7 @@ fun ImageOptions.Builder.error(@DrawableRes resId: Int): ImageOptions.Builder =
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testError
  */
 fun ImageOptions.Builder.error(
-    color: IntColor,
+    color: IntColorFetcher,
 ): ImageOptions.Builder = error(ColorDrawableStateImage(color))
 
 /**
@@ -148,7 +148,7 @@ fun ImageOptions.Builder.error(
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testError
  */
 fun ImageOptions.Builder.error(
-    color: ResColor,
+    color: ResColorFetcher,
 ): ImageOptions.Builder = error(ColorDrawableStateImage(color))
 
 

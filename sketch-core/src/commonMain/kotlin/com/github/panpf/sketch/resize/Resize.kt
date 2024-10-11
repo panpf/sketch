@@ -59,9 +59,7 @@ data class Resize constructor(
     constructor(width: Int, height: Int, scale: Scale)
             : this(width, height, Precision.LESS_PIXELS, scale)
 
-    override val key: String by lazy {
-        "Resize(${size},${precision},${scale})"
-    }
+    override val key: String = "Resize(${size},${precision},${scale})"
 
     /**
      * Calculate the precision according to the original image, and then decide whether to crop the image according to the precision
@@ -203,7 +201,5 @@ data class Resize constructor(
         }
     }
 
-    override fun toString(): String {
-        return "Resize(size=${size}, precision=${precision}, scale=${scale})"
-    }
+    override fun toString(): String = "Resize(size=${size}, precision=${precision}, scale=${scale})"
 }

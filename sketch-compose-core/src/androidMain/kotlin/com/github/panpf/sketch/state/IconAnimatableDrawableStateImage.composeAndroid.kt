@@ -20,12 +20,12 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.github.panpf.sketch.drawable.ColorFetcherDrawable
+import com.github.panpf.sketch.drawable.ColorFetcherDrawableFetcher
 import com.github.panpf.sketch.drawable.EquitableDrawable
-import com.github.panpf.sketch.drawable.RealEquitableDrawable
-import com.github.panpf.sketch.drawable.ResDrawable
-import com.github.panpf.sketch.util.IntColor
-import com.github.panpf.sketch.util.ResColor
+import com.github.panpf.sketch.drawable.RealDrawableFetcher
+import com.github.panpf.sketch.drawable.ResDrawableFetcher
+import com.github.panpf.sketch.util.IntColorFetcher
+import com.github.panpf.sketch.util.ResColorFetcher
 import com.github.panpf.sketch.util.Size
 
 /* ********************************************* Drawable icon ********************************************* */
@@ -43,10 +43,10 @@ fun rememberIconAnimatableDrawableStateImage(
     @ColorRes iconTint: Int? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background, iconSize, iconTint) {
     IconAnimatableDrawableStateImage(
-        icon = RealEquitableDrawable(icon),
-        background = background?.let { RealEquitableDrawable(it) },
+        icon = RealDrawableFetcher(icon),
+        background = background?.let { RealDrawableFetcher(it) },
         iconSize = iconSize,
-        iconTint = iconTint?.let { ResColor(it) }
+        iconTint = iconTint?.let { ResColorFetcher(it) }
     )
 }
 
@@ -60,11 +60,11 @@ fun rememberIconAnimatableDrawableStateImage(
     icon: EquitableDrawable,
     background: EquitableDrawable? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background, iconSize, iconTint) {
     IconAnimatableDrawableStateImage(
-        icon = RealEquitableDrawable(icon),
-        background = background?.let { RealEquitableDrawable(it) },
+        icon = RealDrawableFetcher(icon),
+        background = background?.let { RealDrawableFetcher(it) },
         iconSize = iconSize,
         iconTint = iconTint
     )
@@ -83,10 +83,10 @@ fun rememberIconAnimatableDrawableStateImage(
     @ColorRes iconTint: Int? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background, iconSize, iconTint) {
     IconAnimatableDrawableStateImage(
-        icon = RealEquitableDrawable(icon),
-        background = background?.let { ResDrawable(it) },
+        icon = RealDrawableFetcher(icon),
+        background = background?.let { ResDrawableFetcher(it) },
         iconSize = iconSize,
-        iconTint = iconTint?.let { ResColor(it) }
+        iconTint = iconTint?.let { ResColorFetcher(it) }
     )
 }
 
@@ -100,11 +100,11 @@ fun rememberIconAnimatableDrawableStateImage(
     icon: EquitableDrawable,
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background, iconSize, iconTint) {
     IconAnimatableDrawableStateImage(
-        icon = RealEquitableDrawable(icon),
-        background = background?.let { ResDrawable(it) },
+        icon = RealDrawableFetcher(icon),
+        background = background?.let { ResDrawableFetcher(it) },
         iconSize = iconSize,
         iconTint = iconTint
     )
@@ -118,15 +118,15 @@ fun rememberIconAnimatableDrawableStateImage(
 @Composable
 fun rememberIconAnimatableDrawableStateImage(
     icon: EquitableDrawable,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background, iconSize, iconTint) {
     IconAnimatableDrawableStateImage(
-        icon = RealEquitableDrawable(icon),
-        background = background?.let { ColorFetcherDrawable(it) },
+        icon = RealDrawableFetcher(icon),
+        background = background?.let { ColorFetcherDrawableFetcher(it) },
         iconSize = iconSize,
-        iconTint = iconTint?.let { ResColor(it) }
+        iconTint = iconTint?.let { ResColorFetcher(it) }
     )
 }
 
@@ -138,13 +138,13 @@ fun rememberIconAnimatableDrawableStateImage(
 @Composable
 fun rememberIconAnimatableDrawableStateImage(
     icon: EquitableDrawable,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background, iconSize, iconTint) {
     IconAnimatableDrawableStateImage(
-        icon = RealEquitableDrawable(icon),
-        background = background?.let { ColorFetcherDrawable(it) },
+        icon = RealDrawableFetcher(icon),
+        background = background?.let { ColorFetcherDrawableFetcher(it) },
         iconSize = iconSize,
         iconTint = iconTint
     )
@@ -162,8 +162,8 @@ fun rememberIconAnimatableDrawableStateImage(
     iconSize: Size? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background, iconSize) {
     IconAnimatableDrawableStateImage(
-        icon = RealEquitableDrawable(icon),
-        background = background?.let { ResDrawable(it) },
+        icon = RealDrawableFetcher(icon),
+        background = background?.let { ResDrawableFetcher(it) },
         iconSize = iconSize,
         iconTint = null
     )
@@ -177,12 +177,12 @@ fun rememberIconAnimatableDrawableStateImage(
 @Composable
 fun rememberIconAnimatableDrawableStateImage(
     icon: EquitableDrawable,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
     iconSize: Size? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background, iconSize) {
     IconAnimatableDrawableStateImage(
-        icon = RealEquitableDrawable(icon),
-        background = background?.let { ColorFetcherDrawable(it) },
+        icon = RealDrawableFetcher(icon),
+        background = background?.let { ColorFetcherDrawableFetcher(it) },
         iconSize = iconSize,
         iconTint = null
     )
@@ -200,8 +200,8 @@ fun rememberIconAnimatableDrawableStateImage(
     iconSize: Size? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background, iconSize) {
     IconAnimatableDrawableStateImage(
-        icon = RealEquitableDrawable(icon),
-        background = background?.let { RealEquitableDrawable(it) },
+        icon = RealDrawableFetcher(icon),
+        background = background?.let { RealDrawableFetcher(it) },
         iconSize = iconSize,
         iconTint = null
     )
@@ -219,10 +219,10 @@ fun rememberIconAnimatableDrawableStateImage(
     @ColorRes iconTint: Int? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, iconSize, iconTint) {
     IconAnimatableDrawableStateImage(
-        icon = RealEquitableDrawable(icon),
+        icon = RealDrawableFetcher(icon),
         background = null,
         iconSize = iconSize,
-        iconTint = iconTint?.let { ResColor(it) }
+        iconTint = iconTint?.let { ResColorFetcher(it) }
     )
 }
 
@@ -235,10 +235,10 @@ fun rememberIconAnimatableDrawableStateImage(
 fun rememberIconAnimatableDrawableStateImage(
     icon: EquitableDrawable,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, iconSize, iconTint) {
     IconAnimatableDrawableStateImage(
-        icon = RealEquitableDrawable(icon),
+        icon = RealDrawableFetcher(icon),
         background = null,
         iconSize = iconSize,
         iconTint = iconTint
@@ -256,8 +256,8 @@ fun rememberIconAnimatableDrawableStateImage(
     @DrawableRes background: Int? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background) {
     IconAnimatableDrawableStateImage(
-        icon = RealEquitableDrawable(icon),
-        background = background?.let { ResDrawable(it) },
+        icon = RealDrawableFetcher(icon),
+        background = background?.let { ResDrawableFetcher(it) },
         iconSize = null,
         iconTint = null
     )
@@ -271,11 +271,11 @@ fun rememberIconAnimatableDrawableStateImage(
 @Composable
 fun rememberIconAnimatableDrawableStateImage(
     icon: EquitableDrawable,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background) {
     IconAnimatableDrawableStateImage(
-        icon = RealEquitableDrawable(icon),
-        background = background?.let { ColorFetcherDrawable(it) },
+        icon = RealDrawableFetcher(icon),
+        background = background?.let { ColorFetcherDrawableFetcher(it) },
         iconSize = null,
         iconTint = null
     )
@@ -292,8 +292,8 @@ fun rememberIconAnimatableDrawableStateImage(
     background: EquitableDrawable? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background) {
     IconAnimatableDrawableStateImage(
-        icon = RealEquitableDrawable(icon),
-        background = background?.let { RealEquitableDrawable(it) },
+        icon = RealDrawableFetcher(icon),
+        background = background?.let { RealDrawableFetcher(it) },
         iconSize = null,
         iconTint = null
     )
@@ -310,7 +310,7 @@ fun rememberIconAnimatableDrawableStateImage(
     iconSize: Size? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, iconSize) {
     IconAnimatableDrawableStateImage(
-        icon = RealEquitableDrawable(icon),
+        icon = RealDrawableFetcher(icon),
         background = null,
         iconSize = iconSize,
         iconTint = null
@@ -327,7 +327,7 @@ fun rememberIconAnimatableDrawableStateImage(
     icon: EquitableDrawable,
 ): IconAnimatableDrawableStateImage = remember(icon) {
     IconAnimatableDrawableStateImage(
-        icon = RealEquitableDrawable(icon),
+        icon = RealDrawableFetcher(icon),
         background = null,
         iconSize = null,
         iconTint = null
@@ -350,10 +350,10 @@ fun rememberIconAnimatableDrawableStateImage(
     @ColorRes iconTint: Int? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background, iconSize, iconTint) {
     IconAnimatableDrawableStateImage(
-        icon = ResDrawable(icon),
-        background = background?.let { RealEquitableDrawable(it) },
+        icon = ResDrawableFetcher(icon),
+        background = background?.let { RealDrawableFetcher(it) },
         iconSize = iconSize,
-        iconTint = iconTint?.let { ResColor(it) }
+        iconTint = iconTint?.let { ResColorFetcher(it) }
     )
 }
 
@@ -367,11 +367,11 @@ fun rememberIconAnimatableDrawableStateImage(
     @DrawableRes icon: Int,
     background: EquitableDrawable? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background, iconSize, iconTint) {
     IconAnimatableDrawableStateImage(
-        icon = ResDrawable(icon),
-        background = background?.let { RealEquitableDrawable(it) },
+        icon = ResDrawableFetcher(icon),
+        background = background?.let { RealDrawableFetcher(it) },
         iconSize = iconSize,
         iconTint = iconTint
     )
@@ -390,10 +390,10 @@ fun rememberIconAnimatableDrawableStateImage(
     @ColorRes iconTint: Int? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background, iconSize, iconTint) {
     IconAnimatableDrawableStateImage(
-        icon = ResDrawable(icon),
-        background = background?.let { ResDrawable(it) },
+        icon = ResDrawableFetcher(icon),
+        background = background?.let { ResDrawableFetcher(it) },
         iconSize = iconSize,
-        iconTint = iconTint?.let { ResColor(it) }
+        iconTint = iconTint?.let { ResColorFetcher(it) }
     )
 }
 
@@ -407,11 +407,11 @@ fun rememberIconAnimatableDrawableStateImage(
     @DrawableRes icon: Int,
     @DrawableRes background: Int? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background, iconSize, iconTint) {
     IconAnimatableDrawableStateImage(
-        icon = ResDrawable(icon),
-        background = background?.let { ResDrawable(it) },
+        icon = ResDrawableFetcher(icon),
+        background = background?.let { ResDrawableFetcher(it) },
         iconSize = iconSize,
         iconTint = iconTint
     )
@@ -425,15 +425,15 @@ fun rememberIconAnimatableDrawableStateImage(
 @Composable
 fun rememberIconAnimatableDrawableStateImage(
     @DrawableRes icon: Int,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
     iconSize: Size? = null,
     @ColorRes iconTint: Int? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background, iconSize, iconTint) {
     IconAnimatableDrawableStateImage(
-        icon = ResDrawable(icon),
-        background = background?.let { ColorFetcherDrawable(it) },
+        icon = ResDrawableFetcher(icon),
+        background = background?.let { ColorFetcherDrawableFetcher(it) },
         iconSize = iconSize,
-        iconTint = iconTint?.let { ResColor(it) }
+        iconTint = iconTint?.let { ResColorFetcher(it) }
     )
 }
 
@@ -445,13 +445,13 @@ fun rememberIconAnimatableDrawableStateImage(
 @Composable
 fun rememberIconAnimatableDrawableStateImage(
     @DrawableRes icon: Int,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background, iconSize, iconTint) {
     IconAnimatableDrawableStateImage(
-        icon = ResDrawable(icon),
-        background = background?.let { ColorFetcherDrawable(it) },
+        icon = ResDrawableFetcher(icon),
+        background = background?.let { ColorFetcherDrawableFetcher(it) },
         iconSize = iconSize,
         iconTint = iconTint
     )
@@ -469,8 +469,8 @@ fun rememberIconAnimatableDrawableStateImage(
     iconSize: Size? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background, iconSize) {
     IconAnimatableDrawableStateImage(
-        icon = ResDrawable(icon),
-        background = background?.let { ResDrawable(it) },
+        icon = ResDrawableFetcher(icon),
+        background = background?.let { ResDrawableFetcher(it) },
         iconSize = iconSize,
         iconTint = null
     )
@@ -484,12 +484,12 @@ fun rememberIconAnimatableDrawableStateImage(
 @Composable
 fun rememberIconAnimatableDrawableStateImage(
     @DrawableRes icon: Int,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
     iconSize: Size? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background, iconSize) {
     IconAnimatableDrawableStateImage(
-        icon = ResDrawable(icon),
-        background = background?.let { ColorFetcherDrawable(it) },
+        icon = ResDrawableFetcher(icon),
+        background = background?.let { ColorFetcherDrawableFetcher(it) },
         iconSize = iconSize,
         iconTint = null
     )
@@ -507,8 +507,8 @@ fun rememberIconAnimatableDrawableStateImage(
     iconSize: Size? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background, iconSize) {
     IconAnimatableDrawableStateImage(
-        icon = ResDrawable(icon),
-        background = background?.let { RealEquitableDrawable(it) },
+        icon = ResDrawableFetcher(icon),
+        background = background?.let { RealDrawableFetcher(it) },
         iconSize = iconSize,
         iconTint = null
     )
@@ -526,10 +526,10 @@ fun rememberIconAnimatableDrawableStateImage(
     @ColorRes iconTint: Int? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, iconSize, iconTint) {
     IconAnimatableDrawableStateImage(
-        icon = ResDrawable(icon),
+        icon = ResDrawableFetcher(icon),
         background = null,
         iconSize = iconSize,
-        iconTint = iconTint?.let { ResColor(it) }
+        iconTint = iconTint?.let { ResColorFetcher(it) }
     )
 }
 
@@ -542,10 +542,10 @@ fun rememberIconAnimatableDrawableStateImage(
 fun rememberIconAnimatableDrawableStateImage(
     @DrawableRes icon: Int,
     iconSize: Size? = null,
-    iconTint: IntColor? = null,
+    iconTint: IntColorFetcher? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, iconSize, iconTint) {
     IconAnimatableDrawableStateImage(
-        icon = ResDrawable(icon),
+        icon = ResDrawableFetcher(icon),
         background = null,
         iconSize = iconSize,
         iconTint = iconTint
@@ -563,8 +563,8 @@ fun rememberIconAnimatableDrawableStateImage(
     @DrawableRes background: Int? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background) {
     IconAnimatableDrawableStateImage(
-        icon = ResDrawable(icon),
-        background = background?.let { ResDrawable(it) },
+        icon = ResDrawableFetcher(icon),
+        background = background?.let { ResDrawableFetcher(it) },
         iconSize = null,
         iconTint = null
     )
@@ -578,11 +578,11 @@ fun rememberIconAnimatableDrawableStateImage(
 @Composable
 fun rememberIconAnimatableDrawableStateImage(
     @DrawableRes icon: Int,
-    background: IntColor? = null,
+    background: IntColorFetcher? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background) {
     IconAnimatableDrawableStateImage(
-        icon = ResDrawable(icon),
-        background = background?.let { ColorFetcherDrawable(it) },
+        icon = ResDrawableFetcher(icon),
+        background = background?.let { ColorFetcherDrawableFetcher(it) },
         iconSize = null,
         iconTint = null
     )
@@ -599,8 +599,8 @@ fun rememberIconAnimatableDrawableStateImage(
     background: EquitableDrawable? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, background) {
     IconAnimatableDrawableStateImage(
-        icon = ResDrawable(icon),
-        background = background?.let { RealEquitableDrawable(it) },
+        icon = ResDrawableFetcher(icon),
+        background = background?.let { RealDrawableFetcher(it) },
         iconSize = null,
         iconTint = null
     )
@@ -617,7 +617,7 @@ fun rememberIconAnimatableDrawableStateImage(
     iconSize: Size? = null,
 ): IconAnimatableDrawableStateImage = remember(icon, iconSize) {
     IconAnimatableDrawableStateImage(
-        icon = ResDrawable(icon),
+        icon = ResDrawableFetcher(icon),
         background = null,
         iconSize = iconSize,
         iconTint = null
@@ -634,7 +634,7 @@ fun rememberIconAnimatableDrawableStateImage(
     @DrawableRes icon: Int,
 ): IconAnimatableDrawableStateImage = remember(icon) {
     IconAnimatableDrawableStateImage(
-        icon = ResDrawable(icon),
+        icon = ResDrawableFetcher(icon),
         background = null,
         iconSize = null,
         iconTint = null

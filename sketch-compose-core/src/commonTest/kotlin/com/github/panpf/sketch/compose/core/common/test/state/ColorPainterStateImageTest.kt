@@ -66,7 +66,7 @@ class ColorPainterStateImageTest {
     @Test
     fun testKey() {
         assertEquals(
-            expected = "ColorPainterStateImage(${Color.Red.value})",
+            expected = "ColorPainterStateImage(color=${Color.Red.value})",
             actual = ColorPainterStateImage(Color.Red).key
         )
     }
