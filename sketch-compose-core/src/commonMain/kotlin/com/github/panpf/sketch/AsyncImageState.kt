@@ -42,6 +42,7 @@ import com.github.panpf.sketch.util.RememberedCounter
 import com.github.panpf.sketch.util.difference
 import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.windowContainerSize
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -114,6 +115,8 @@ class AsyncImageState internal constructor(
     var filterQuality: FilterQuality? by target.filterQualityMutableState
         internal set
 
+    var coroutineExceptionHandler: CoroutineExceptionHandler? = null
+
     val size: IntSize? by target.sizeState
     val painter: Painter? by target.painterState
     val painterState: PainterState? by target.painterStateState
@@ -132,7 +135,16 @@ class AsyncImageState internal constructor(
     override fun onRemembered() {
         if (!rememberedCounter.remember()) return
 
-        val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+        val exceptionHandler = CoroutineExceptionHandler { coroutineContext, throwable ->
+            val coroutineExceptionHandler = coroutineExceptionHandler
+            if (coroutineExceptionHandler != null) {
+                coroutineExceptionHandler.handleException(coroutineContext, throwable)
+            } else {
+                throw throwable
+            }
+        }
+        val coroutineScope =
+            CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate + exceptionHandler)
         this.coroutineScope = coroutineScope
 
         this.target.onRemembered()
@@ -202,8 +214,8 @@ class AsyncImageState internal constructor(
          * so an exception must be thrown to remind the developer to solve problems
          */
         if (lastRequest != null && lastRequest.key == request.key && lastRequest != request) {
-            val diffImageRequest = lastRequest.difference(request)
-            throw IllegalArgumentException("ImageRequest key is the same but the content is different: $diffImageRequest.")
+            val differenceInfo = lastRequest.difference(request)
+            throw IllegalArgumentException("Compared with the previous ImageRequest key is the same but the content is different. $differenceInfo.")
         }
     }
 
