@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.painter.BrushPainter
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.util.Key
-import com.github.panpf.sketch.util.key
 import kotlin.jvm.JvmName
 
 /**
@@ -70,9 +69,9 @@ fun BrushPainter.asEquitable(): EquitablePainter =
 open class EquitablePainter constructor(
     painter: Painter,
     val equalityKey: Any,
-) : PainterWrapper(painter), Key {
+) : PainterWrapper(painter), SketchPainter, Key {
 
-    override val key: String = "EquitablePainter('${key(equalityKey)}')"
+    override val key: String = painter.key(equalityKey)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

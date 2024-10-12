@@ -63,8 +63,13 @@ class SaveCellularTrafficExtensionsTest {
             assertFalse(accept(request, null))
 
             assertEquals(
-                "SaveCellularTrafficCondition",
-                toString()
+                expected = "SaveCellularTraffic",
+                actual = key
+            )
+
+            assertEquals(
+                expected = "SaveCellularTrafficCondition",
+                actual = toString()
             )
         }
     }

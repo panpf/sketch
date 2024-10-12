@@ -48,12 +48,12 @@ class CurrentStateImageTest {
     @Test
     fun testKey() {
         CurrentStateImage().apply {
-            assertEquals("CurrentStateImage(defaultImage=null)", key)
+            assertEquals("Current(null)", key)
         }
 
         val stateImage = FakeStateImage()
         CurrentStateImage(stateImage).apply {
-            assertEquals("CurrentStateImage(defaultImage=${stateImage.key})", key)
+            assertEquals("Current(${stateImage.key})", key)
         }
     }
 

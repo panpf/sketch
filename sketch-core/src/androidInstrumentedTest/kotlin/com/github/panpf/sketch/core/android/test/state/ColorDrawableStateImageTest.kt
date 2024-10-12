@@ -74,7 +74,7 @@ class ColorDrawableStateImageTest {
     @Test
     fun testKey() {
         IntColorDrawableStateImage(Color.RED).apply {
-            assertEquals("ColorDrawableStateImage(color=${IntColorFetcher(Color.RED).key})", key)
+            assertEquals("ColorDrawable(${IntColorFetcher(Color.RED).key})", key)
         }
     }
 

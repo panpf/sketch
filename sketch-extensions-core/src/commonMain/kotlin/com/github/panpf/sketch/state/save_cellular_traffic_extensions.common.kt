@@ -38,10 +38,10 @@ fun ConditionStateImage.Builder.saveCellularTrafficError(
  */
 data object SaveCellularTrafficCondition : ConditionStateImage.Condition {
 
+    override val key: String = "SaveCellularTraffic"
+
     override fun accept(request: ImageRequest, throwable: Throwable?): Boolean =
         isCausedBySaveCellularTraffic(request, throwable)
 
-    override fun toString(): String {
-        return "SaveCellularTrafficCondition"
-    }
+    override fun toString(): String = "SaveCellularTrafficCondition"
 }

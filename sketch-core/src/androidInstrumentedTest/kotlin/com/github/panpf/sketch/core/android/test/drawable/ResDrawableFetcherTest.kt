@@ -35,11 +35,11 @@ class ResDrawableFetcherTest {
     fun testKey() {
         val context = getTestContext()
         assertEquals(
-            expected = "ResDrawableFetcher(resId=${android.R.drawable.ic_delete})",
+            expected = "ResDrawable(${android.R.drawable.ic_delete})",
             actual = ResDrawableFetcher(android.R.drawable.ic_delete).key
         )
         assertEquals(
-            expected = "ResDrawableFetcher(resId=${android.R.drawable.ic_delete},resources=${context.resources},packageName=${context.packageName})",
+            expected = "ResDrawable(${android.R.drawable.ic_delete},${context.resources},${context.packageName})",
             actual = ResDrawableFetcher(
                 android.R.drawable.ic_delete,
                 context.resources,

@@ -347,7 +347,7 @@ class ScaledAnimatedImageDrawableTest {
             )
         ) as AnimatedImageDrawable
         assertEquals(
-            "ScaledAnimatedImageDrawable(drawable=AnimatedImageDrawable(480x480), fitScale=true)",
+            "ScaledAnimatedImageDrawable(drawable=AnimatedImageDrawable(size=480x480), fitScale=true)",
             com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable(animatedImageDrawable)
                 .toString()
         )

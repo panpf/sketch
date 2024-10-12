@@ -1125,7 +1125,7 @@ class IconDrawableStateImageTest {
             iconTint = IntColorFetcher(Color.BLUE)
         ).apply {
             assertEquals(
-                expected = "IconDrawableStateImage(icon=${iconDrawable.key},background=RealColorDrawableFetcher(color=-7829368),iconSize=44x67,iconTint=IntColorFetcher(color=-16776961))",
+                expected = "IconDrawable(${iconDrawable.key},RealColorDrawable(-7829368),44x67,IntColor(-16776961))",
                 actual = key
             )
         }

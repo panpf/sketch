@@ -30,8 +30,7 @@ data class MemoryCacheStateImage(
     val defaultImage: StateImage? = null
 ) : StateImage {
 
-    override val key: String =
-        "MemoryCacheStateImage(cacheKey='$cacheKey',defaultImage=${defaultImage?.key})"
+    override val key: String = "MemoryCache('$cacheKey',${defaultImage?.key})"
 
     override fun getImage(
         sketch: Sketch,
@@ -43,7 +42,6 @@ data class MemoryCacheStateImage(
         return cachedValue?.image ?: defaultImage?.getImage(sketch, request, throwable)
     }
 
-    override fun toString(): String {
-        return "MemoryCacheStateImage(cacheKey='$cacheKey', defaultImage=$defaultImage)"
-    }
+    override fun toString(): String =
+        "MemoryCacheStateImage(cacheKey='$cacheKey', defaultImage=$defaultImage)"
 }

@@ -435,7 +435,7 @@ class IconAnimatableDrawableTest {
             TestAnimatableDrawable(SizeDrawable(ColorDrawable(TestColor.RED), Size(100, 100)))
         val background = ColorDrawable(TestColor.GRAY)
         assertEquals(
-            expected = "IconAnimatableDrawable(icon=TestAnimatableDrawable(drawable=SizeDrawable(drawable=ColorDrawable(-65536), size=100x100)), background=ColorDrawable(-7829368), iconSize=69x44, iconTint=-16776961)",
+            expected = "IconAnimatableDrawable(icon=TestAnimatableDrawable(drawable=SizeDrawable(drawable=ColorDrawable(color=-65536), size=100x100)), background=ColorDrawable(color=-7829368), iconSize=69x44, iconTint=-16776961)",
             actual = IconAnimatableDrawable(
                 icon = drawable,
                 background = background,

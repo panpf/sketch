@@ -36,7 +36,7 @@ open class EquitableAnimatableDrawable constructor(
     equalityKey: Any,
 ) : EquitableDrawable(drawable, equalityKey), Animatable2Compat, Key {
 
-    override val key: String = "EquitableAnimatableDrawable('${key(equalityKey)}')"
+    override val key: String = drawable.key(equalityKey)
 
     internal var callbackHelper: AnimatableCallbackHelper? = null
 

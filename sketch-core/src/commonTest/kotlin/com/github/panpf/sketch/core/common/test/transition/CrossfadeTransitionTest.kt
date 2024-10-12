@@ -134,6 +134,31 @@ class CrossfadeTransitionTest {
     }
 
     @Test
+    fun testFactoryKey() {
+        val element1 = CrossfadeTransition.Factory()
+        val element2 = CrossfadeTransition.Factory(preferExactIntrinsicSize = true)
+        val element3 = CrossfadeTransition.Factory(alwaysUse = true)
+        val element4 = CrossfadeTransition.Factory(fadeStart = false)
+
+        assertEquals(
+            "Crossfade(200,true,false,false)",
+            element1.key
+        )
+        assertEquals(
+            "Crossfade(200,true,true,false)",
+            element2.key
+        )
+        assertEquals(
+            "Crossfade(200,true,false,true)",
+            element3.key
+        )
+        assertEquals(
+            "Crossfade(200,false,false,false)",
+            element4.key
+        )
+    }
+
+    @Test
     fun testFactoryToString() {
         val element1 = CrossfadeTransition.Factory()
         val element2 = CrossfadeTransition.Factory(preferExactIntrinsicSize = true)

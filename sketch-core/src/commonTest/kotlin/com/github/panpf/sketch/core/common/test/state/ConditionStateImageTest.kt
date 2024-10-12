@@ -61,8 +61,8 @@ class ConditionStateImageTest {
         val stateImage = FakeStateImage()
         ConditionStateImage(stateImage) {}.apply {
             assertEquals(
-                "ConditionStateImage([DefaultCondition:${stateImage.key}])",
-                key
+                expected = "Condition([Default:Fake(FakeImage(size=100x100))])",
+                actual = key
             )
         }
 
@@ -72,8 +72,8 @@ class ConditionStateImageTest {
             addState(UriInvalidCondition, stateImage3)
         }.apply {
             assertEquals(
-                "ConditionStateImage([UriInvalidCondition:${stateImage3.key},DefaultCondition:${stateImage2.key}])",
-                key
+                expected = "Condition([UriInvalid:Fake(FakeImage(size=300x300)),Default:Fake(FakeImage(size=200x200))])",
+                actual = key
             )
         }
     }
@@ -127,8 +127,8 @@ class ConditionStateImageTest {
         val stateImage = FakeStateImage()
         ConditionStateImage(stateImage) {}.apply {
             assertEquals(
-                "ConditionStateImage([DefaultCondition:${stateImage.key}])",
-                toString()
+                expected = "ConditionStateImage([DefaultCondition:FakeStateImage(image=FakeImage(size=100x100))])",
+                actual = toString()
             )
         }
 
@@ -138,8 +138,8 @@ class ConditionStateImageTest {
             addState(UriInvalidCondition, stateImage3)
         }.apply {
             assertEquals(
-                "ConditionStateImage([UriInvalidCondition:${stateImage3.key}, DefaultCondition:${stateImage2.key}])",
-                toString()
+                expected = "ConditionStateImage([UriInvalidCondition:FakeStateImage(image=FakeImage(size=300x300)), DefaultCondition:FakeStateImage(image=FakeImage(size=200x200))])",
+                actual = toString()
             )
         }
     }

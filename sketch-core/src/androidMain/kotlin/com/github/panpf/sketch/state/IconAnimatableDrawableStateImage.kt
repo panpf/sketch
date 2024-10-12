@@ -566,12 +566,8 @@ data class IconAnimatableDrawableStateImage constructor(
     val iconTint: ColorFetcher? = null,
 ) : StateImage {
 
-    override val key: String = "IconAnimatableDrawableStateImage(" +
-            "icon=${icon.key}," +
-            "background=${background?.key}," +
-            "iconSize=$iconSize," +
-            "iconTint=${iconTint?.key}" +
-            ")"
+    override val key: String =
+        "IconAnimatableDrawable(${icon.key},${background?.key},$iconSize,${iconTint?.key})"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
         return IconAnimatableDrawable(

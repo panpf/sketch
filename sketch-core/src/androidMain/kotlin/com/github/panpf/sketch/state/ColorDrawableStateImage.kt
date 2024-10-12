@@ -69,7 +69,7 @@ fun ColorDrawableStateImage(color: ResColorFetcher): ColorDrawableStateImage =
  */
 data class ColorDrawableStateImage(val color: ColorFetcher) : StateImage {
 
-    override val key: String = "ColorDrawableStateImage(color=${color.key})"
+    override val key: String = "ColorDrawable(${color.key})"
 
     override fun getImage(
         sketch: Sketch,
@@ -79,7 +79,5 @@ data class ColorDrawableStateImage(val color: ColorFetcher) : StateImage {
         return ColorDrawable(color.getColor(request.context)).asImage()
     }
 
-    override fun toString(): String {
-        return "ColorDrawableStateImage(color=$color)"
-    }
+    override fun toString(): String = "ColorDrawableStateImage(color=$color)"
 }

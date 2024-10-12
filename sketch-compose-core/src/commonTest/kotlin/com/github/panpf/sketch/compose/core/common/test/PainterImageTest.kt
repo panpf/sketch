@@ -142,7 +142,7 @@ class PainterImageTest {
     fun testToString() {
         PainterImage(SizeColorPainter(color = Color.Red, Size(101f, 202f))).apply {
             assertEquals(
-                expected = "PainterImage(painter=SizeColorPainter(color=18446462598732840960, size=Size(101.0, 202.0)), shareable=true)",
+                expected = "PainterImage(painter=SizeColorPainter(color=-65536, size=101.0x202.0), shareable=true)",
                 actual = toString()
             )
         }

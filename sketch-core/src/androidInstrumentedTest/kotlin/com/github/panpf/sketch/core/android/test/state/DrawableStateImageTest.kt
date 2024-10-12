@@ -88,7 +88,7 @@ class DrawableStateImageTest {
     fun testKey() {
         DrawableStateImage(ResDrawableFetcher(android.R.drawable.btn_radio)).apply {
             assertEquals(
-                expected = "DrawableStateImage(drawable=ResDrawableFetcher(resId=${android.R.drawable.btn_radio}))",
+                expected = "Drawable(ResDrawable(${android.R.drawable.btn_radio}))",
                 actual = key
             )
         }

@@ -28,7 +28,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.ColorStateListDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.DrawableWrapper
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.TransitionDrawable
 import android.graphics.drawable.VectorDrawable
@@ -38,7 +37,6 @@ import android.util.Xml
 import androidx.annotation.DrawableRes
 import androidx.annotation.XmlRes
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.component1
 import androidx.core.graphics.component2
@@ -149,23 +147,123 @@ internal fun Drawable.toBitmap(
 /**
  * Get the string applicable to the log
  *
+ * @see com.github.panpf.sketch.core.android.test.util.DrawablesTest.testKey
+ */
+fun Drawable.key(equalityKey: Any? = null): String {
+    if (this is Key) {
+        return key
+    }
+    if (this is NullableKey && key != null) {
+        val key = key
+        if (key != null) {
+            return key
+        }
+    }
+    if (this is BitmapDrawable) {
+        return if (equalityKey != null) {
+            "BitmapDrawable:$equalityKey"
+        } else {
+            "BitmapDrawable(${bitmap.toLogString()})"
+        }
+    }
+    if (this is RoundedBitmapDrawable) {
+        return if (equalityKey != null) {
+            "RoundedBitmapDrawable:$equalityKey"
+        } else {
+            val cornerRadiusString = cornerRadius.format(2)
+            "RoundedBitmapDrawable(${bitmap?.toLogString()},$cornerRadiusString)"
+        }
+    }
+    if (VERSION.SDK_INT >= VERSION_CODES.P && this is AnimatedImageDrawable) {
+        return if (equalityKey != null) {
+            "AnimatedImageDrawable:$equalityKey"
+        } else {
+            "AnimatedImageDrawable(${toSizeString()})"
+        }
+    }
+    if (this is AnimatedVectorDrawableCompat) {
+        return if (equalityKey != null) {
+            "AnimatedVectorDrawableCompat:$equalityKey"
+        } else {
+            "AnimatedVectorDrawableCompat(${toSizeString()})"
+        }
+    }
+    if (this is AnimatedVectorDrawable) {
+        return if (equalityKey != null) {
+            "AnimatedVectorDrawable:$equalityKey"
+        } else {
+            "AnimatedVectorDrawable(${toSizeString()})"
+        }
+    }
+    if (this is TransitionDrawable) {
+        return if (equalityKey != null) {
+            "TransitionDrawable:$equalityKey"
+        } else {
+            "TransitionDrawable(${toSizeString()})"
+        }
+    }
+    if (this is ColorDrawable) {
+        return "ColorDrawable(${color})"
+    }
+    if (VERSION.SDK_INT >= VERSION_CODES.Q && this is ColorStateListDrawable) {
+        return if (equalityKey != null) {
+            "ColorStateListDrawable:$equalityKey"
+        } else {
+            "ColorStateListDrawable(${toSizeString()})"
+        }
+    }
+    if (this is VectorDrawableCompat) {
+        return if (equalityKey != null) {
+            "VectorDrawableCompat:$equalityKey"
+        } else {
+            "VectorDrawableCompat(${toSizeString()})"
+        }
+    }
+    if (this is VectorDrawable) {
+        return if (equalityKey != null) {
+            "VectorDrawable:$equalityKey"
+        } else {
+            "VectorDrawable(${toSizeString()})"
+        }
+    }
+    if (this is GradientDrawable) {
+        return if (equalityKey != null) {
+            "GradientDrawable:$equalityKey"
+        } else {
+            "GradientDrawable(${toSizeString()})"
+        }
+    }
+    return if (equalityKey != null) {
+        "${this}:$equalityKey"
+    } else {
+        this.toString()
+    }
+}
+
+/**
+ * Get the string applicable to the log
+ *
  * @see com.github.panpf.sketch.core.android.test.util.DrawablesTest.testToLogString
  */
 fun Drawable.toLogString(): String = when {
     this is SketchDrawable -> toString()
-    this is BitmapDrawable -> "BitmapDrawable(${bitmap.toLogString()})"
-    this is RoundedBitmapDrawable -> "RoundedBitmapDrawable(drawable=${bitmap?.toLogString()})"
-    VERSION.SDK_INT >= VERSION_CODES.P && this is AnimatedImageDrawable -> "AnimatedImageDrawable(${toSizeString()})"
-    this is AnimatedVectorDrawableCompat -> "AnimatedVectorDrawableCompat(${toSizeString()})"
-    VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && this is AnimatedVectorDrawable -> "AnimatedVectorDrawable(${toSizeString()})"
-    this is TransitionDrawable -> "TransitionDrawable(${toSizeString()})"
-    this is ColorDrawable -> "ColorDrawable(${color})"
-    VERSION.SDK_INT >= VERSION_CODES.Q && this is ColorStateListDrawable -> "ColorStateListDrawable(${toSizeString()})"
-    this is VectorDrawableCompat -> "VectorDrawableCompat(${toSizeString()})"
-    VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP && this is VectorDrawable -> "VectorDrawable(${toSizeString()})"
-    this is GradientDrawable -> "GradientDrawable(${toSizeString()})"
-    VERSION.SDK_INT >= VERSION_CODES.M && this is DrawableWrapper -> "DrawableWrapper(drawable=${drawable?.toLogString()})"
-    this is DrawableWrapperCompat -> "DrawableWrapperCompat(drawable=${drawable?.toLogString()})"
+    this is BitmapDrawable -> "BitmapDrawable(bitmap=${bitmap.toLogString()})"
+    this is RoundedBitmapDrawable -> {
+        val cornerRadiusString = cornerRadius.format(2)
+        "RoundedBitmapDrawable(drawable=${bitmap?.toLogString()}, cornerRadius=$cornerRadiusString)"
+    }
+
+    VERSION.SDK_INT >= VERSION_CODES.P && this is AnimatedImageDrawable -> "AnimatedImageDrawable(size=${toSizeString()})"
+    this is AnimatedVectorDrawableCompat -> "AnimatedVectorDrawableCompat(size=${toSizeString()})"
+    this is AnimatedVectorDrawable -> "AnimatedVectorDrawable(size=${toSizeString()})"
+    this is TransitionDrawable -> "TransitionDrawable(size=${toSizeString()})"
+    this is ColorDrawable -> "ColorDrawable(color=${color})"
+    VERSION.SDK_INT >= VERSION_CODES.Q && this is ColorStateListDrawable -> "ColorStateListDrawable(size=${toSizeString()})"
+    this is VectorDrawableCompat -> "VectorDrawableCompat(size=${toSizeString()})"
+    this is VectorDrawable -> "VectorDrawable(size=${toSizeString()})"
+    this is GradientDrawable -> "GradientDrawable(size=${toSizeString()})"
+//    VERSION.SDK_INT >= VERSION_CODES.M && this is DrawableWrapper -> "DrawableWrapper(drawable=${drawable?.toLogString()})"
+//    this is DrawableWrapperCompat -> "DrawableWrapperCompat(drawable=${drawable?.toLogString()})"
     else -> toString()
 }
 

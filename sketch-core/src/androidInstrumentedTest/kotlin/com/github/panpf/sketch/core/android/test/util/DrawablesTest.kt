@@ -17,6 +17,7 @@
 package com.github.panpf.sketch.core.android.test.util
 
 import android.content.res.Resources
+import android.graphics.Color
 import android.graphics.ColorSpace
 import android.graphics.ImageDecoder
 import android.graphics.Rect
@@ -46,6 +47,8 @@ import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.utils.TestColor
+import com.github.panpf.sketch.test.utils.TestKeyDrawable
+import com.github.panpf.sketch.test.utils.TestNullableKeyDrawable
 import com.github.panpf.sketch.test.utils.colorSpaceNameCompat
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.getTestContext
@@ -53,6 +56,7 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.sketch.util.getXmlDrawableCompat
+import com.github.panpf.sketch.util.key
 import com.github.panpf.sketch.util.toBitmap
 import com.github.panpf.sketch.util.toLogString
 import com.github.panpf.sketch.util.toSizeString
@@ -194,6 +198,236 @@ class DrawablesTest {
     }
 
     @Test
+    fun testKey() {
+        val context = getTestContext()
+
+        TestKeyDrawable(ColorDrawable(Color.GRAY), key = "testKey1").apply {
+            assertEquals(
+                expected = "testKey1",
+                actual = key(equalityKey = null)
+            )
+            assertEquals(
+                expected = "testKey1",
+                actual = key(equalityKey = "equalityKey1")
+            )
+        }
+
+        TestNullableKeyDrawable(ColorDrawable(Color.GRAY), key = null).apply {
+            assertEquals(
+                expected = "TestNullableKeyDrawable(drawable=ColorDrawable(color=-7829368))",
+                actual = key(equalityKey = null)
+            )
+            assertEquals(
+                expected = "TestNullableKeyDrawable(drawable=ColorDrawable(color=-7829368)):equalityKey1",
+                actual = key(equalityKey = "equalityKey1")
+            )
+        }
+        TestNullableKeyDrawable(ColorDrawable(Color.GRAY), "testKey1").apply {
+            assertEquals(
+                expected = "testKey1",
+                actual = key(equalityKey = null)
+            )
+            assertEquals(
+                expected = "testKey1",
+                actual = key(equalityKey = "equalityKey1")
+            )
+        }
+
+        context.getDrawableCompat(android.R.drawable.ic_delete).asOrThrow<BitmapDrawable>().apply {
+            assertEquals(
+                expected = "BitmapDrawable(${bitmap.toLogString()})",
+                actual = key(equalityKey = null)
+            )
+            assertEquals(
+                expected = "BitmapDrawable:equalityKey1",
+                actual = key(equalityKey = "equalityKey1")
+            )
+        }
+
+        RoundedBitmapDrawableFactory.create(context.resources, AndroidBitmap(100, 100)).apply {
+            assertEquals(
+                expected = "RoundedBitmapDrawable(${bitmap?.toLogString()},0.0)",
+                actual = key(equalityKey = null)
+            )
+            assertEquals(
+                expected = "RoundedBitmapDrawable:equalityKey1",
+                actual = key(equalityKey = "equalityKey1")
+            )
+        }
+
+        if (VERSION.SDK_INT >= VERSION_CODES.P) {
+            val bytes = ResourceImages.animGif.toDataSource(context).openSource()
+                .buffer()
+                .use { it.readByteArray() }
+            ImageDecoder.decodeDrawable(ImageDecoder.createSource(ByteBuffer.wrap(bytes)))
+                .asOrThrow<AnimatedImageDrawable>().apply {
+                    assertEquals(
+                        expected = "AnimatedImageDrawable(${toSizeString()})",
+                        actual = key(equalityKey = null)
+                    )
+                    assertEquals(
+                        expected = "AnimatedImageDrawable:equalityKey1",
+                        actual = key(equalityKey = "equalityKey1")
+                    )
+                }
+        }
+
+        if (VERSION.SDK_INT <= VERSION_CODES.M) {
+            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                .asOrThrow<AnimatedVectorDrawableCompat>().apply {
+                    assertEquals(
+                        expected = "AnimatedVectorDrawableCompat(${toSizeString()})",
+                        actual = key(equalityKey = null)
+                    )
+                    assertEquals(
+                        expected = "AnimatedVectorDrawableCompat:equalityKey1",
+                        actual = key(equalityKey = "equalityKey1")
+                    )
+                }
+        }
+
+        context.getDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)!!
+            .asOrThrow<AnimatedVectorDrawable>().apply {
+                assertEquals(
+                    expected = "AnimatedVectorDrawable(${toSizeString()})",
+                    actual = key(equalityKey = null)
+                )
+                assertEquals(
+                    expected = "AnimatedVectorDrawable:equalityKey1",
+                    actual = key(equalityKey = "equalityKey1")
+                )
+            }
+
+        TransitionDrawable(
+            /* layers = */ arrayOf(
+                context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.test),
+                context.getDrawableCompat(android.R.drawable.ic_delete)
+            )
+        ).apply {
+            assertEquals(
+                expected = "TransitionDrawable(${toSizeString()})",
+                actual = key(equalityKey = null)
+            )
+            assertEquals(
+                expected = "TransitionDrawable:equalityKey1",
+                actual = key(equalityKey = "equalityKey1")
+            )
+        }
+
+        ColorDrawable(TestColor.RED).apply {
+            assertEquals(
+                expected = "ColorDrawable(${color})",
+                actual = key(equalityKey = null)
+            )
+            assertEquals(
+                expected = "ColorDrawable(${color})",
+                actual = key(equalityKey = "equalityKey1")
+            )
+        }
+
+        if (VERSION.SDK_INT >= VERSION_CODES.Q) {
+            ColorStateListDrawable().apply {
+                assertEquals(
+                    expected = "ColorStateListDrawable(${toSizeString()})",
+                    actual = key(equalityKey = null)
+                )
+                assertEquals(
+                    expected = "ColorStateListDrawable:equalityKey1",
+                    actual = key(equalityKey = "equalityKey1")
+                )
+            }
+        }
+
+        if (VERSION.SDK_INT <= VERSION_CODES.M) {
+            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)
+                .asOrThrow<VectorDrawableCompat>().apply {
+                    assertEquals(
+                        expected = "VectorDrawableCompat(${toSizeString()})",
+                        actual = key(equalityKey = null)
+                    )
+                    assertEquals(
+                        expected = "VectorDrawableCompat:equalityKey1",
+                        actual = key(equalityKey = "equalityKey1")
+                    )
+                }
+        }
+
+        context.getDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)!!
+            .asOrThrow<VectorDrawable>().apply {
+                assertEquals(
+                    expected = "VectorDrawable(${toSizeString()})",
+                    actual = key(equalityKey = null)
+                )
+                assertEquals(
+                    expected = "VectorDrawable:equalityKey1",
+                    actual = key(equalityKey = "equalityKey1")
+                )
+            }
+
+        GradientDrawable().apply {
+            assertEquals(
+                expected = "GradientDrawable(${toSizeString()})",
+                actual = key(equalityKey = null)
+            )
+            assertEquals(
+                expected = "GradientDrawable:equalityKey1",
+                actual = key(equalityKey = "equalityKey1")
+            )
+        }
+
+        if (VERSION.SDK_INT >= VERSION_CODES.M) {
+            object : DrawableWrapper(
+                context.getDrawableCompat(android.R.drawable.ic_delete)
+            ) {}.apply {
+                assertEquals(
+                    expected = this.toString(),
+                    actual = key(equalityKey = null)
+                )
+                assertEquals(
+                    expected = "${this}:equalityKey1",
+                    actual = key(equalityKey = "equalityKey1")
+                )
+            }
+        }
+
+        object : DrawableWrapperCompat(
+            context.getDrawableCompat(android.R.drawable.ic_delete)
+        ) {}.apply {
+            assertEquals(
+                expected = this.toString(),
+                actual = key(equalityKey = null)
+            )
+            assertEquals(
+                expected = "${this}:equalityKey1",
+                actual = key(equalityKey = "equalityKey1")
+            )
+        }
+
+        ResizeDrawable(
+            drawable = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.test),
+            size = Size(100, 100),
+            scale = Scale.CENTER_CROP
+        ).apply {
+            assertEquals(
+                expected = "ResizeDrawable(drawable=${drawable!!.toLogString()}, size=100x100, scale=CENTER_CROP)",
+                actual = key()
+            )
+        }
+
+        LayerDrawable(
+            /* layers = */ arrayOf(
+                context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.test),
+                context.getDrawableCompat(android.R.drawable.ic_delete)
+            )
+        ).apply {
+            assertEquals(
+                expected = toString(),
+                actual = key()
+            )
+        }
+    }
+
+    @Test
     fun testToLogString() {
         val context = getTestContext()
         ResizeDrawable(
@@ -209,14 +443,14 @@ class DrawablesTest {
 
         context.getDrawableCompat(android.R.drawable.ic_delete).asOrThrow<BitmapDrawable>().apply {
             assertEquals(
-                expected = "BitmapDrawable(${bitmap.toLogString()})",
+                expected = "BitmapDrawable(bitmap=${bitmap.toLogString()})",
                 actual = toLogString()
             )
         }
 
         RoundedBitmapDrawableFactory.create(context.resources, AndroidBitmap(100, 100)).apply {
             assertEquals(
-                expected = "RoundedBitmapDrawable(drawable=${bitmap?.toLogString()})",
+                expected = "RoundedBitmapDrawable(drawable=${bitmap?.toLogString()}, cornerRadius=0.0)",
                 actual = toLogString()
             )
         }
@@ -228,7 +462,7 @@ class DrawablesTest {
             ImageDecoder.decodeDrawable(ImageDecoder.createSource(ByteBuffer.wrap(bytes)))
                 .asOrThrow<AnimatedImageDrawable>().apply {
                     assertEquals(
-                        expected = "AnimatedImageDrawable(${toSizeString()})",
+                        expected = "AnimatedImageDrawable(size=${toSizeString()})",
                         actual = toLogString()
                     )
                 }
@@ -238,7 +472,7 @@ class DrawablesTest {
             context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
                 .asOrThrow<AnimatedVectorDrawableCompat>().apply {
                     assertEquals(
-                        expected = "AnimatedVectorDrawableCompat(${toSizeString()})",
+                        expected = "AnimatedVectorDrawableCompat(size=${toSizeString()})",
                         actual = toLogString()
                     )
                 }
@@ -247,7 +481,7 @@ class DrawablesTest {
         context.getDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)!!
             .asOrThrow<AnimatedVectorDrawable>().apply {
                 assertEquals(
-                    expected = "AnimatedVectorDrawable(${toSizeString()})",
+                    expected = "AnimatedVectorDrawable(size=${toSizeString()})",
                     actual = toLogString()
                 )
             }
@@ -259,14 +493,14 @@ class DrawablesTest {
             )
         ).apply {
             assertEquals(
-                expected = "TransitionDrawable(${toSizeString()})",
+                expected = "TransitionDrawable(size=${toSizeString()})",
                 actual = toLogString()
             )
         }
 
         ColorDrawable(TestColor.RED).apply {
             assertEquals(
-                expected = "ColorDrawable(${color})",
+                expected = "ColorDrawable(color=${color})",
                 actual = toLogString()
             )
         }
@@ -274,7 +508,7 @@ class DrawablesTest {
         if (VERSION.SDK_INT >= VERSION_CODES.Q) {
             ColorStateListDrawable().apply {
                 assertEquals(
-                    expected = "ColorStateListDrawable(${toSizeString()})",
+                    expected = "ColorStateListDrawable(size=${toSizeString()})",
                     actual = toLogString()
                 )
             }
@@ -284,7 +518,7 @@ class DrawablesTest {
             context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)
                 .asOrThrow<VectorDrawableCompat>().apply {
                     assertEquals(
-                        expected = "VectorDrawableCompat(${toSizeString()})",
+                        expected = "VectorDrawableCompat(size=${toSizeString()})",
                         actual = toLogString()
                     )
                 }
@@ -293,14 +527,14 @@ class DrawablesTest {
         context.getDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)!!
             .asOrThrow<VectorDrawable>().apply {
                 assertEquals(
-                    expected = "VectorDrawable(${toSizeString()})",
+                    expected = "VectorDrawable(size=${toSizeString()})",
                     actual = toLogString()
                 )
             }
 
         GradientDrawable().apply {
             assertEquals(
-                expected = "GradientDrawable(${toSizeString()})",
+                expected = "GradientDrawable(size=${toSizeString()})",
                 actual = toLogString()
             )
         }
@@ -310,7 +544,7 @@ class DrawablesTest {
                 context.getDrawableCompat(android.R.drawable.ic_delete)
             ) {}.apply {
                 assertEquals(
-                    expected = "DrawableWrapper(drawable=${drawable?.toLogString()})",
+                    expected = this.toString(),
                     actual = toLogString()
                 )
             }
@@ -320,7 +554,7 @@ class DrawablesTest {
             context.getDrawableCompat(android.R.drawable.ic_delete)
         ) {}.apply {
             assertEquals(
-                expected = "DrawableWrapperCompat(drawable=${drawable?.toLogString()})",
+                expected = this.toString(),
                 actual = toLogString()
             )
         }

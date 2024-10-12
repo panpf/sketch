@@ -13,7 +13,7 @@ class AppIconDrawableFetcherTest {
     @Test
     fun testKey() {
         assertEquals(
-            expected = "AppIconDrawableFetcher(packageName='com.github.panpf.sketch.sample',versionCode=1101)",
+            expected = "AppIconDrawable('com.github.panpf.sketch.sample',1101)",
             actual = AppIconDrawableFetcher("com.github.panpf.sketch.sample", 1101).key
         )
     }

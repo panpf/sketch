@@ -50,14 +50,14 @@ class MemoryCacheStateImageTest {
 
         MemoryCacheStateImage(null, null).apply {
             assertEquals(
-                "MemoryCacheStateImage(cacheKey='null',defaultImage=null)",
-                key
+                expected = "MemoryCache('null',null)",
+                actual = key
             )
         }
         MemoryCacheStateImage(memoryCacheKey, stateImage).apply {
             assertEquals(
-                "MemoryCacheStateImage(cacheKey='$memoryCacheKey',defaultImage=$stateImage)",
-                key
+                expected = "MemoryCache('$memoryCacheKey',${stateImage.key})",
+                actual = key
             )
         }
     }

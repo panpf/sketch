@@ -16,7 +16,7 @@ class ColorFetcherDrawableFetcherTest {
     @Test
     fun testKey() {
         assertEquals(
-            expected = "ColorFetcherDrawableFetcher(color=${IntColorFetcher(TestColor.RED).key})",
+            expected = "ColorFetcherDrawable(${IntColorFetcher(TestColor.RED).key})",
             actual = ColorFetcherDrawableFetcher(IntColorFetcher(TestColor.RED)).key
         )
     }

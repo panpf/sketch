@@ -196,7 +196,7 @@ open class EquitableDrawable constructor(
         return super.getDrawable()!!
     }
 
-    override val key: String = "EquitableDrawable('${key(equalityKey)}')"
+    override val key: String = drawable.key(equalityKey)
 
     override fun setDrawable(drawable: Drawable?) {
         checkNotNull(drawable)

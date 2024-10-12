@@ -21,6 +21,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.toArgb
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
@@ -61,13 +62,11 @@ fun rememberColorPainterStateImageWithInt(color: Int): ColorPainterStateImage =
 @Stable
 data class ColorPainterStateImage(val color: Color) : StateImage {
 
-    override val key: String = "ColorPainterStateImage(color=${color.value})"
+    override val key: String = "ColorPainter(${color.toArgb()})"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
         return ColorPainter(color).asImage()
     }
 
-    override fun toString(): String {
-        return "ColorPainterStateImage(color=${color.value})"
-    }
+    override fun toString(): String = "ColorPainterStateImage(color=${color.toArgb()})"
 }

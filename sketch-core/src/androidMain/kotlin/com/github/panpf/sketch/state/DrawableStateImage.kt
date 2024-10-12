@@ -77,7 +77,7 @@ data class DrawableStateImage(
     val drawableFetcher: DrawableFetcher
 ) : StateImage {
 
-    override val key: String = "DrawableStateImage(drawable=${drawableFetcher.key})"
+    override val key: String = "Drawable(${drawableFetcher.key})"
 
     override fun getImage(
         sketch: Sketch,
@@ -93,7 +93,5 @@ data class DrawableStateImage(
         }?.asImage()
     }
 
-    override fun toString(): String {
-        return "DrawableStateImage(drawable=$drawableFetcher)"
-    }
+    override fun toString(): String = "DrawableStateImage(drawable=$drawableFetcher)"
 }

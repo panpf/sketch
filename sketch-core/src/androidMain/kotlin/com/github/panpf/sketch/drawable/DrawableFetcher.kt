@@ -57,9 +57,9 @@ class ResDrawableFetcher constructor(
 ) : DrawableFetcher {
 
     override val key: String = if (packageName != null && resources != null) {
-        "ResDrawableFetcher(resId=$resId,resources=$resources,packageName=$packageName)"
+        "ResDrawable($resId,$resources,$packageName)"
     } else {
-        "ResDrawableFetcher(resId=$resId)"
+        "ResDrawable($resId)"
     }
 
     @SuppressLint("ResourceType")
@@ -106,7 +106,7 @@ class ResDrawableFetcher constructor(
  */
 class RealDrawableFetcher constructor(val drawable: EquitableDrawable) : DrawableFetcher {
 
-    override val key: String = "RealDrawableFetcher(drawable=${drawable.key})"
+    override val key: String = "RealDrawable(${drawable.key})"
 
     override fun getDrawable(context: Context): Drawable {
         return drawable
@@ -124,9 +124,7 @@ class RealDrawableFetcher constructor(val drawable: EquitableDrawable) : Drawabl
         return drawable.hashCode()
     }
 
-    override fun toString(): String {
-        return "RealDrawableFetcher(drawable=$drawable)"
-    }
+    override fun toString(): String = "RealDrawableFetcher(drawable=$drawable)"
 }
 
 /**
@@ -136,7 +134,7 @@ class RealDrawableFetcher constructor(val drawable: EquitableDrawable) : Drawabl
  */
 class RealColorDrawableFetcher constructor(@ColorInt val color: Int) : DrawableFetcher {
 
-    override val key: String = "RealColorDrawableFetcher(color=$color)"
+    override val key: String = "RealColorDrawable($color)"
 
     override fun getDrawable(context: Context): Drawable {
         return ColorDrawable(color)
@@ -154,9 +152,7 @@ class RealColorDrawableFetcher constructor(@ColorInt val color: Int) : DrawableF
         return color.hashCode()
     }
 
-    override fun toString(): String {
-        return "RealColorDrawableFetcher(color=$color)"
-    }
+    override fun toString(): String = "RealColorDrawableFetcher(color=$color)"
 }
 
 /**
@@ -166,7 +162,7 @@ class RealColorDrawableFetcher constructor(@ColorInt val color: Int) : DrawableF
  */
 class ColorFetcherDrawableFetcher constructor(val color: ColorFetcher) : DrawableFetcher {
 
-    override val key: String = "ColorFetcherDrawableFetcher(color=${color.key})"
+    override val key: String = "ColorFetcherDrawable(${color.key})"
 
     override fun getDrawable(context: Context): Drawable {
         return ColorDrawable(color.getColor(context))
@@ -184,9 +180,7 @@ class ColorFetcherDrawableFetcher constructor(val color: ColorFetcher) : Drawabl
         return color.hashCode()
     }
 
-    override fun toString(): String {
-        return "ColorFetcherDrawableFetcher(color=$color)"
-    }
+    override fun toString(): String = "ColorFetcherDrawableFetcher(color=$color)"
 }
 
 /**
@@ -196,7 +190,7 @@ class ColorFetcherDrawableFetcher constructor(val color: ColorFetcher) : Drawabl
  */
 class ResColorDrawableFetcher constructor(@ColorRes val resId: Int) : DrawableFetcher {
 
-    override val key: String = "ResColorDrawableFetcher(resId=$resId)"
+    override val key: String = "ResColorDrawable($resId)"
 
     override fun getDrawable(context: Context): Drawable {
         return context.resources.getDrawableCompat(resId, null)
@@ -214,7 +208,5 @@ class ResColorDrawableFetcher constructor(@ColorRes val resId: Int) : DrawableFe
         return resId.hashCode()
     }
 
-    override fun toString(): String {
-        return "ResColorDrawableFetcher(resId=$resId)"
-    }
+    override fun toString(): String = "ResColorDrawableFetcher(resId=$resId)"
 }

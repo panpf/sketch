@@ -280,6 +280,31 @@ class ViewCrossfadeTransitionTest {
     }
 
     @Test
+    fun testFactoryKey() {
+        val element1 = ViewCrossfadeTransition.Factory()
+        val element2 = ViewCrossfadeTransition.Factory(preferExactIntrinsicSize = true)
+        val element3 = ViewCrossfadeTransition.Factory(alwaysUse = true)
+        val element4 = ViewCrossfadeTransition.Factory(fadeStart = false)
+
+        assertEquals(
+            "ViewCrossfade(200,true,false,false)",
+            element1.key
+        )
+        assertEquals(
+            "ViewCrossfade(200,true,true,false)",
+            element2.key
+        )
+        assertEquals(
+            "ViewCrossfade(200,true,false,true)",
+            element3.key
+        )
+        assertEquals(
+            "ViewCrossfade(200,false,false,false)",
+            element4.key
+        )
+    }
+
+    @Test
     fun testFactoryToString() {
         val element1 = ViewCrossfadeTransition.Factory()
         val element2 = ViewCrossfadeTransition.Factory(preferExactIntrinsicSize = true)

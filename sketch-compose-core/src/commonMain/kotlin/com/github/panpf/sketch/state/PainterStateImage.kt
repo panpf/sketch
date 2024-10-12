@@ -23,6 +23,7 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.painter.EquitablePainter
+import com.github.panpf.sketch.painter.toLogString
 import com.github.panpf.sketch.request.ImageRequest
 
 /**
@@ -42,13 +43,13 @@ fun rememberPainterStateImage(painter: EquitablePainter): PainterStateImage =
 @Stable
 data class PainterStateImage(val painter: EquitablePainter) : StateImage {
 
-    override val key: String = "PainterStateImage(painter=${painter.key})"
+    override val key: String = "Painter(${painter.key})"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
         return painter.asImage()
     }
 
     override fun toString(): String {
-        return "PainterStateImage(painter=$painter)"
+        return "PainterStateImage(painter=${painter.toLogString()})"
     }
 }

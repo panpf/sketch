@@ -30,11 +30,14 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.toArgb
+import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.calculateCropBounds
 import com.github.panpf.sketch.util.calculateInsideBounds
 import com.github.panpf.sketch.util.size
 import com.github.panpf.sketch.util.toIntSizeOrNull
+import com.github.panpf.sketch.util.toLogString
 import com.github.panpf.sketch.util.toSize
 import com.github.panpf.sketch.util.toSketchSize
 
@@ -224,7 +227,10 @@ open class IconPainter constructor(
     val background: EquitablePainter? = null,
     val iconSize: Size? = null,
     val iconTint: Color? = null,
-) : Painter(), RememberObserver, SketchPainter {
+) : Painter(), RememberObserver, SketchPainter, Key {
+
+    override val key: String =
+        "IconPainter(${icon.key},${background?.key},${iconSize?.toLogString()},${iconTint?.toArgb()})"
 
     private var alpha: Float = 1.0f
     private var colorFilter: ColorFilter? = null
@@ -335,6 +341,6 @@ open class IconPainter constructor(
     }
 
     override fun toString(): String {
-        return "IconPainter(icon=${icon}, background=${background}, iconSize=$iconSize, iconTint=${iconTint?.value})"
+        return "IconPainter(icon=${icon}, background=${background}, iconSize=${iconSize?.toLogString()}, iconTint=${iconTint?.toArgb()})"
     }
 }

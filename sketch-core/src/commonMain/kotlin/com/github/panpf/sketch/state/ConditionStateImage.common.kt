@@ -21,6 +21,7 @@ package com.github.panpf.sketch.state
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.Key
 
 /**
  * Create an ConditionStateImage
@@ -43,13 +44,12 @@ data class ConditionStateImage(
     val stateList: List<Pair<Condition, StateImage>>
 ) : StateImage {
 
-    override val key: String = "ConditionStateImage(${
-        stateList.joinToString(
-            prefix = "[",
-            postfix = "]",
-            separator = ",",
-            transform = { it.first.toString() + ":" + it.second.key })
-    })"
+    override val key: String by lazy {
+        val states = stateList.joinToString(prefix = "[", postfix = "]", separator = ",") {
+            it.first.key + ":" + it.second.key
+        }
+        "Condition($states)"
+    }
 
     override fun getImage(
         sketch: Sketch,
@@ -59,13 +59,12 @@ data class ConditionStateImage(
         .find { it.first.accept(request, throwable) }
         ?.second?.getImage(sketch, request, throwable)
 
-    override fun toString(): String = "ConditionStateImage(${
-        stateList.joinToString(
-            prefix = "[",
-            postfix = "]",
-            separator = ", ",
-            transform = { it.first.toString() + ":" + it.second.key })
-    })"
+    override fun toString(): String {
+        val states = stateList.joinToString(prefix = "[", postfix = "]", separator = ", ") {
+            it.first.toString() + ":" + it.second.toString()
+        }
+        return "ConditionStateImage($states)"
+    }
 
     class Builder constructor(private val defaultImage: StateImage) {
 
@@ -81,16 +80,26 @@ data class ConditionStateImage(
         }
     }
 
-    interface Condition {
+    interface Condition : Key {
 
         fun accept(
             request: ImageRequest,
             throwable: Throwable?
         ): Boolean
+
+        override fun equals(other: Any?): Boolean
+
+        override fun hashCode(): Int
+
+        override fun toString(): String
     }
 
     data object DefaultCondition : Condition {
 
+        override val key: String = "Default"
+
         override fun accept(request: ImageRequest, throwable: Throwable?): Boolean = true
+
+        override fun toString(): String = "DefaultCondition"
     }
 }

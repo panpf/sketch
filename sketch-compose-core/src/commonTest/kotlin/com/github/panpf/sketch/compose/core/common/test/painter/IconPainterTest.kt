@@ -359,9 +359,25 @@ class IconPainterTest {
     }
 
     @Test
+    fun testKey() {
+        assertEquals(
+            expected = "IconPainter(SizeColorPainter(color=-65536, size=100.0x100.0):SizeColorPainter(color=-65536, size=100.0x100.0),ColorPainter(-7829368),69.0x44.0,-16776961)",
+            actual = IconPainter(
+                icon = SizeColorPainter(
+                    Color.Red,
+                    Size(100f, 100f)
+                ).asEquitable(),
+                background = ColorPainter(Color.Gray).asEquitable(),
+                iconSize = Size(69f, 44f),
+                iconTint = Color.Blue
+            ).key
+        )
+    }
+
+    @Test
     fun testToString() {
         assertEquals(
-            expected = "IconPainter(icon=EquitablePainter(painter=SizeColorPainter(color=18446462598732840960, size=Size(100.0, 100.0)), equalityKey=SizeColorPainter(color=18446462598732840960, size=Size(100.0, 100.0))), background=EquitablePainter(painter=ColorPainter(color=-7829368), equalityKey=18413117194201202688), iconSize=Size(69.0, 44.0), iconTint=18374687574888284160)",
+            expected = "IconPainter(icon=EquitablePainter(painter=SizeColorPainter(color=-65536, size=100.0x100.0), equalityKey=SizeColorPainter(color=-65536, size=100.0x100.0)), background=EquitablePainter(painter=ColorPainter(color=-7829368), equalityKey=18413117194201202688), iconSize=69.0x44.0, iconTint=-16776961)",
             actual = IconPainter(
                 icon = SizeColorPainter(
                     Color.Red,

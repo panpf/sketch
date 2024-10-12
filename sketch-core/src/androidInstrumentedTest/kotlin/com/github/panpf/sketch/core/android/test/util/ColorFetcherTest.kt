@@ -43,7 +43,7 @@ class ColorFetcherTest {
         assertNotEquals(element2.hashCode(), element3.hashCode())
 
         IntColorFetcher(Color.RED).apply {
-            assertEquals("IntColorFetcher(color=${Color.RED})", key)
+            assertEquals("IntColor(${Color.RED})", key)
         }
         IntColorFetcher(Color.GREEN).apply {
             assertEquals("IntColorFetcher(color=${Color.GREEN})", toString())
@@ -87,7 +87,7 @@ class ColorFetcherTest {
         assertNotEquals(element2.hashCode(), element3.hashCode())
 
         ResColorFetcher(android.R.color.background_dark).apply {
-            assertEquals("ResColorFetcher(resId=${android.R.color.background_dark})", key)
+            assertEquals("ResColor(${android.R.color.background_dark})", key)
         }
         ResColorFetcher(android.R.color.background_light).apply {
             assertEquals("ResColorFetcher(resId=${android.R.color.background_light})", toString())

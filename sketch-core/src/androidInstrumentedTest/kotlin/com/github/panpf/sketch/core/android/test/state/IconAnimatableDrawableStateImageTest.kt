@@ -1219,7 +1219,7 @@ class IconAnimatableDrawableStateImageTest {
             iconTint = intTintColor
         ).apply {
             assertEquals(
-                expected = "IconAnimatableDrawableStateImage(icon=${iconDrawable.key},background=${backgroundDrawable.key},iconSize=44x67,iconTint=${intTintColor.key})",
+                expected = "IconAnimatableDrawable(${iconDrawable.key},${backgroundDrawable.key},44x67,${intTintColor.key})",
                 actual = key
             )
         }

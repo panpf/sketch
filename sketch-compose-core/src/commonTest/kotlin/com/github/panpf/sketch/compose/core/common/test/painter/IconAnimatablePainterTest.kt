@@ -435,9 +435,24 @@ class IconAnimatablePainterTest {
     }
 
     @Test
+    fun testKey() {
+        assertEquals(
+            expected = "IconAnimatablePainter(TestAnimatablePainter(painter=SizeColorPainter(color=-65536, size=100.0x100.0)):TestAnimatablePainter(painter=SizeColorPainter(color=-65536, size=100.0x100.0)),ColorPainter(-7829368),69.0x44.0,-16776961)",
+            actual = IconAnimatablePainter(
+                icon = TestAnimatablePainter(
+                    SizeColorPainter(Color.Red, Size(100f, 100f))
+                ).asEquitableWithThis(),
+                background = ColorPainter(Color.Gray).asEquitable(),
+                iconSize = Size(69f, 44f),
+                iconTint = Color.Blue
+            ).key
+        )
+    }
+
+    @Test
     fun testToString() {
         assertEquals(
-            expected = "IconAnimatablePainter(icon=EquitableAnimatablePainter(painter=PainterWrapper(painter=SizeColorPainter(color=18446462598732840960, size=Size(100.0, 100.0))), equalityKey=TestAnimatablePainter(drawable=SizeColorPainter(color=18446462598732840960, size=Size(100.0, 100.0)))), background=EquitablePainter(painter=ColorPainter(color=-7829368), equalityKey=18413117194201202688), iconSize=Size(69.0, 44.0), iconTint=18374687574888284160)",
+            expected = "IconAnimatablePainter(icon=EquitableAnimatablePainter(painter=TestAnimatablePainter(painter=SizeColorPainter(color=-65536, size=100.0x100.0)), equalityKey=TestAnimatablePainter(painter=SizeColorPainter(color=-65536, size=100.0x100.0))), background=EquitablePainter(painter=ColorPainter(color=-7829368), equalityKey=18413117194201202688), iconSize=69.0x44.0, iconTint=-16776961)",
             actual = IconAnimatablePainter(
                 icon = TestAnimatablePainter(
                     SizeColorPainter(Color.Red, Size(100f, 100f))

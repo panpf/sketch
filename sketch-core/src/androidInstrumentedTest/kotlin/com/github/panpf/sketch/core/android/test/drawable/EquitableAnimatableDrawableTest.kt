@@ -35,7 +35,7 @@ class EquitableAnimatableDrawableTest {
     @Test
     fun testKey() {
         assertEquals(
-            expected = "EquitableAnimatableDrawable('${key(TestColor.RED)}')",
+            expected = TestAnimatableDrawable(ColorDrawable(TestColor.RED)).key(TestColor.RED),
             actual = EquitableAnimatableDrawable(
                 drawable = TestAnimatableDrawable(ColorDrawable(TestColor.RED)),
                 equalityKey = TestColor.RED

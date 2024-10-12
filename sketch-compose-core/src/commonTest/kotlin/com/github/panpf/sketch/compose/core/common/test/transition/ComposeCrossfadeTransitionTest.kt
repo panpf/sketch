@@ -253,6 +253,31 @@ class ComposeCrossfadeTransitionTest {
     }
 
     @Test
+    fun testFactoryKey() {
+        val element1 = ComposeCrossfadeTransition.Factory()
+        val element2 = ComposeCrossfadeTransition.Factory(preferExactIntrinsicSize = true)
+        val element3 = ComposeCrossfadeTransition.Factory(alwaysUse = true)
+        val element4 = ComposeCrossfadeTransition.Factory(fadeStart = false)
+
+        assertEquals(
+            "ComposeCrossfade(200,true,false,false)",
+            element1.key
+        )
+        assertEquals(
+            "ComposeCrossfade(200,true,true,false)",
+            element2.key
+        )
+        assertEquals(
+            "ComposeCrossfade(200,true,false,true)",
+            element3.key
+        )
+        assertEquals(
+            "ComposeCrossfade(200,false,false,false)",
+            element4.key
+        )
+    }
+
+    @Test
     fun testFactoryToString() {
         val element1 = ComposeCrossfadeTransition.Factory()
         val element2 = ComposeCrossfadeTransition.Factory(preferExactIntrinsicSize = true)

@@ -29,7 +29,7 @@ data class CurrentStateImage(
     val defaultImage: StateImage? = null
 ) : StateImage {
 
-    override val key: String = "CurrentStateImage(defaultImage=${defaultImage?.key})"
+    override val key: String = "Current(${defaultImage?.key})"
 
     override fun getImage(
         sketch: Sketch,

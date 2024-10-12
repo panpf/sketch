@@ -5,7 +5,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.toArgb
 import com.github.panpf.sketch.painter.EquitablePainter
+import com.github.panpf.sketch.util.toLogString
 
 /**
  * Wrap a ColorPainter into a Painter with equality
@@ -57,6 +59,6 @@ class SizeColorPainter(val color: Color, val size: Size = Size.Unspecified) : Pa
     }
 
     override fun toString(): String {
-        return "SizeColorPainter(color=${color.value}, size=$size)"
+        return "SizeColorPainter(color=${color.toArgb()}, size=${size.toLogString()})"
     }
 }

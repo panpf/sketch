@@ -32,8 +32,7 @@ class AppIconDrawableFetcher(
     private val versionCode: Int,
 ) : DrawableFetcher {
 
-    override val key: String =
-        "AppIconDrawableFetcher(packageName='$packageName',versionCode=$versionCode)"
+    override val key: String = "AppIconDrawable('$packageName',$versionCode)"
 
     override fun getDrawable(context: Context): Drawable {
         val packageManager = context.packageManager
@@ -65,7 +64,6 @@ class AppIconDrawableFetcher(
         return result
     }
 
-    override fun toString(): String {
-        return "AppIconDrawableFetcher(packageName='$packageName', versionCode=$versionCode)"
-    }
+    override fun toString(): String =
+        "AppIconDrawableFetcher(packageName='$packageName', versionCode=$versionCode)"
 }

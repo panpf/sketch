@@ -21,7 +21,6 @@ package com.github.panpf.sketch.painter
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.util.Key
-import com.github.panpf.sketch.util.key
 
 /**
  * Animatable version of EquitablePainter
@@ -34,7 +33,7 @@ class EquitableAnimatablePainter constructor(
     equalityKey: Any,
 ) : EquitablePainter(painter, equalityKey), AnimatablePainter, Key {
 
-    override val key: String = "EquitableAnimatablePainter('${key(equalityKey)}')"
+    override val key: String = painter.key(equalityKey)
 
     private val animatablePainter: AnimatablePainter
 

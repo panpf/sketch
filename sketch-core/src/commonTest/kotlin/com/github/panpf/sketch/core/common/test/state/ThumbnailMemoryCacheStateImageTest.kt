@@ -52,21 +52,21 @@ class ThumbnailMemoryCacheStateImageTest {
         val defaultImage = FakeStateImage()
         ThumbnailMemoryCacheStateImage(uri, defaultImage).apply {
             assertEquals(
-                "ThumbnailMemoryCacheStateImage(uri='$uri',defaultImage=$defaultImage)",
-                key
+                expected = "ThumbnailMemoryCache('$uri',${defaultImage.key})",
+                actual = key
             )
         }
         val defaultImage1 = FakeStateImage(FakeImage(SketchSize(200, 200)))
         ThumbnailMemoryCacheStateImage(uri, defaultImage1).apply {
             assertEquals(
-                "ThumbnailMemoryCacheStateImage(uri='$uri',defaultImage=$defaultImage1)",
-                key
+                expected = "ThumbnailMemoryCache('$uri',${defaultImage1.key})",
+                actual = key
             )
         }
         ThumbnailMemoryCacheStateImage(null, null).apply {
             assertEquals(
-                "ThumbnailMemoryCacheStateImage(uri='null',defaultImage=null)",
-                key
+                expected = "ThumbnailMemoryCache(null,null)",
+                actual = key
             )
         }
     }
@@ -408,7 +408,7 @@ class ThumbnailMemoryCacheStateImageTest {
         }
         ThumbnailMemoryCacheStateImage(null, null).apply {
             assertEquals(
-                "ThumbnailMemoryCacheStateImage(uri='null', defaultImage=null)",
+                "ThumbnailMemoryCacheStateImage(uri=null, defaultImage=null)",
                 toString()
             )
         }

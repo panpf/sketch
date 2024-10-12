@@ -42,7 +42,7 @@ interface ColorFetcher : Key {
  */
 class IntColorFetcher(@ColorInt val color: Int) : ColorFetcher {
 
-    override val key: String = "IntColorFetcher(color=$color)"
+    override val key: String = "IntColor($color)"
 
     override fun getColor(context: Context): Int = color
 
@@ -66,7 +66,7 @@ class IntColorFetcher(@ColorInt val color: Int) : ColorFetcher {
  */
 class ResColorFetcher(@ColorRes val resId: Int) : ColorFetcher {
 
-    override val key: String = "ResColorFetcher(resId=$resId)"
+    override val key: String = "ResColor($resId)"
 
     override fun getColor(context: Context): Int =
         ResourcesCompat.getColor(context.resources, resId, null)

@@ -867,7 +867,7 @@ class IconDrawableTest {
     @Test
     fun testToString() {
         assertEquals(
-            expected = "IconDrawable(icon=SizeDrawable(drawable=ColorDrawable(-65536), size=100x100), background=ColorDrawable(-7829368), iconSize=69x44, iconTint=-16776961)",
+            expected = "IconDrawable(icon=SizeDrawable(drawable=ColorDrawable(color=-65536), size=100x100), background=ColorDrawable(color=-7829368), iconSize=69x44, iconTint=-16776961)",
             actual = IconDrawable(
                 icon = SizeDrawable(ColorDrawable(TestColor.RED), Size(100, 100)),
                 background = ColorDrawable(TestColor.GRAY),

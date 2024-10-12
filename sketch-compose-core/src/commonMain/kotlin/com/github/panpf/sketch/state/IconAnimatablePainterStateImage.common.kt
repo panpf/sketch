@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.toArgb
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
@@ -29,6 +30,7 @@ import com.github.panpf.sketch.painter.EquitablePainter
 import com.github.panpf.sketch.painter.IconAnimatablePainter
 import com.github.panpf.sketch.painter.asEquitable
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.toLogString
 
 /**
  * Create a [IconAnimatablePainterStateImage] and remember it.
@@ -217,12 +219,8 @@ data class IconAnimatablePainterStateImage(
     val iconTint: Color? = null,
 ) : StateImage {
 
-    override val key: String = "IconAnimatablePainterStateImage(" +
-            "icon=${icon.key}," +
-            "background=${background?.key}," +
-            "iconSize=$iconSize," +
-            "iconTint=${iconTint?.value}" +
-            ")"
+    override val key: String =
+        "IconAnimatablePainter(${icon.key},${background?.key},${iconSize?.toLogString()},${iconTint?.toArgb()})"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image {
         return IconAnimatablePainter(
@@ -257,7 +255,7 @@ data class IconAnimatablePainterStateImage(
     override fun toString(): String = "IconAnimatablePainterStateImage(" +
             "icon=$icon, " +
             "background=$background, " +
-            "iconSize=$iconSize, " +
-            "iconTint=${iconTint?.value}" +
+            "iconSize=${iconSize?.toLogString()}, " +
+            "iconTint=${iconTint?.toArgb()}" +
             ")"
 }

@@ -24,6 +24,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.toArgb
+import com.github.panpf.sketch.util.toLogString
 
 /**
  * Create a [IconAnimatablePainter] and remember it.
@@ -214,6 +216,9 @@ class IconAnimatablePainter constructor(
 
     private val animatablePainterIcon: AnimatablePainter
 
+    override val key: String =
+        "IconAnimatablePainter(${icon.key},${background?.key},${iconSize?.toLogString()},${iconTint?.toArgb()})"
+
     init {
         require(icon is AnimatablePainter) {
             "icon must be AnimatablePainter"
@@ -258,6 +263,6 @@ class IconAnimatablePainter constructor(
     }
 
     override fun toString(): String {
-        return "IconAnimatablePainter(icon=${icon}, background=${background}, iconSize=$iconSize, iconTint=${iconTint?.value})"
+        return "IconAnimatablePainter(icon=${icon}, background=${background}, iconSize=${iconSize?.toLogString()}, iconTint=${iconTint?.toArgb()})"
     }
 }

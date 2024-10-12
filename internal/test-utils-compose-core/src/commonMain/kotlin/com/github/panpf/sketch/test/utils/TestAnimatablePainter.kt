@@ -52,6 +52,6 @@ class TestAnimatablePainter(painter: Painter) : PainterWrapper(painter), Animata
     }
 
     override fun toString(): String {
-        return "TestAnimatablePainter(drawable=${painter.toLogString()})"
+        return "TestAnimatablePainter(painter=${painter.toLogString()})"
     }
 }

@@ -38,7 +38,7 @@ data class ThumbnailMemoryCacheStateImage(
 ) : StateImage {
 
     override val key: String =
-        "ThumbnailMemoryCacheStateImage(uri='$uri',defaultImage=${defaultImage?.key})"
+        "ThumbnailMemoryCache(${uri?.let { "'${it}'" }},${defaultImage?.key})"
 
     override fun getImage(
         sketch: Sketch,
@@ -88,7 +88,6 @@ data class ThumbnailMemoryCacheStateImage(
         return targetCachedValue?.image ?: defaultImage?.getImage(sketch, request, throwable)
     }
 
-    override fun toString(): String {
-        return "ThumbnailMemoryCacheStateImage(uri='$uri', defaultImage=$defaultImage)"
-    }
+    override fun toString(): String =
+        "ThumbnailMemoryCacheStateImage(uri=${uri?.let { "'${it}'" }}, defaultImage=$defaultImage)"
 }

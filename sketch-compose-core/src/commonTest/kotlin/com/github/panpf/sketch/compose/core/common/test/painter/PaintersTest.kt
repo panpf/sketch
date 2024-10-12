@@ -10,7 +10,10 @@ import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
 import com.github.panpf.sketch.painter.ComposeBitmapPainter
 import com.github.panpf.sketch.painter.PainterWrapper
+import com.github.panpf.sketch.painter.key
 import com.github.panpf.sketch.painter.toLogString
+import com.github.panpf.sketch.test.utils.TestKeyPainter
+import com.github.panpf.sketch.test.utils.TestNullableKeyPainter
 import com.github.panpf.sketch.test.utils.compose.core.resources.Res
 import com.github.panpf.sketch.test.utils.compose.core.resources.ic_image_outline
 import com.github.panpf.sketch.test.utils.createBitmap
@@ -21,6 +24,100 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class PaintersTest {
+
+    @Test
+    fun testPainterKey() {
+        TestKeyPainter(ColorPainter(Color.Gray), key = "testKey1").apply {
+            assertEquals(
+                expected = "testKey1",
+                actual = key(equalityKey = null)
+            )
+            assertEquals(
+                expected = "testKey1",
+                actual = key(equalityKey = "equalityKey1")
+            )
+        }
+
+        TestNullableKeyPainter(ColorPainter(Color.Gray), key = null).apply {
+            assertEquals(
+                expected = "TestNullableKeyPainter(painter=ColorPainter(color=-7829368))",
+                actual = key(equalityKey = null)
+            )
+            assertEquals(
+                expected = "TestNullableKeyPainter(painter=ColorPainter(color=-7829368)):equalityKey1",
+                actual = key(equalityKey = "equalityKey1")
+            )
+        }
+        TestNullableKeyPainter(ColorPainter(Color.Gray), "testKey1").apply {
+            assertEquals(
+                expected = "testKey1",
+                actual = key(equalityKey = null)
+            )
+            assertEquals(
+                expected = "testKey1",
+                actual = key(equalityKey = "equalityKey1")
+            )
+        }
+
+        BitmapPainter(createBitmap(101, 202).toComposeBitmap()).apply {
+            assertEquals(
+                expected = "BitmapPainter(101.0x202.0)",
+                actual = key(equalityKey = null)
+            )
+            assertEquals(
+                expected = "BitmapPainter:equalityKey1",
+                actual = key(equalityKey = "equalityKey1")
+            )
+        }
+
+        ColorPainter(Color.Blue).apply {
+            assertEquals(
+                expected = "ColorPainter(${color.toArgb()})",
+                actual = key(equalityKey = null)
+            )
+            assertEquals(
+                expected = "ColorPainter(${color.toArgb()})",
+                actual = key(equalityKey = "equalityKey1")
+            )
+        }
+
+        runComposeUiTest {
+            setContent {
+                painterResource(Res.drawable.ic_image_outline).apply {
+                    assertEquals(
+                        expected = "VectorPainter(${intrinsicSize.toLogString()})",
+                        actual = key(equalityKey = null)
+                    )
+                    assertEquals(
+                        expected = "VectorPainter:equalityKey1",
+                        actual = key(equalityKey = "equalityKey1")
+                    )
+                }
+            }
+        }
+
+        ComposeBitmapPainter(createBitmap(101, 202).toComposeBitmap()).apply {
+            assertEquals(
+                expected = toString(),
+                actual = key(equalityKey = null)
+            )
+            assertEquals(
+                expected = "${toString()}:equalityKey1",
+                actual = key(equalityKey = "equalityKey1")
+            )
+        }
+
+        PainterWrapper(ColorPainter(Color.Red)).apply {
+            assertEquals(
+                expected = toString(),
+                actual = key(equalityKey = null)
+            )
+            assertEquals(
+                expected = "${toString()}:equalityKey1",
+                actual = key(equalityKey = "equalityKey1")
+            )
+        }
+    }
 
     @Test
     fun testPainterToLogString() {

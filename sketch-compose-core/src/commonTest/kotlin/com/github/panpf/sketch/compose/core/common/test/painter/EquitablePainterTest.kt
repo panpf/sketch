@@ -11,10 +11,10 @@ import androidx.compose.ui.test.runComposeUiTest
 import com.github.panpf.sketch.painter.EquitableAnimatablePainter
 import com.github.panpf.sketch.painter.EquitablePainter
 import com.github.panpf.sketch.painter.asEquitable
+import com.github.panpf.sketch.painter.key
 import com.github.panpf.sketch.painter.toLogString
 import com.github.panpf.sketch.test.utils.TestAnimatablePainter
 import com.github.panpf.sketch.test.utils.TestColor
-import com.github.panpf.sketch.util.key
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -71,7 +71,7 @@ class EquitablePainterTest {
     @Test
     fun testKey() {
         assertEquals(
-            expected = "EquitablePainter('${key(Color.Red)}')",
+            expected = ColorPainter(Color.Red).key(Color.Red),
             actual = EquitablePainter(
                 painter = ColorPainter(Color.Red),
                 equalityKey = Color.Red

@@ -13,7 +13,7 @@ class ResColorDrawableFetcherTest {
     @Test
     fun testKey() {
         assertEquals(
-            expected = "ResColorDrawableFetcher(resId=${com.github.panpf.sketch.test.utils.core.R.color.colorPrimary})",
+            expected = "ResColorDrawable(${com.github.panpf.sketch.test.utils.core.R.color.colorPrimary})",
             actual = ResColorDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.color.colorPrimary).key
         )
     }

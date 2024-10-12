@@ -47,11 +47,8 @@ class CrossfadeTransition(
         val alwaysUse: Boolean = DEFAULT_ALWAYS_USE,
     ) : Transition.Factory {
 
-        override val key: String = "CrossfadeTransition.Factory(" +
-                "durationMillis=$durationMillis," +
-                "fadeStart=$fadeStart," +
-                "preferExactIntrinsicSize=$preferExactIntrinsicSize," +
-                "alwaysUse=$alwaysUse)"
+        override val key: String =
+            "Crossfade($durationMillis,$fadeStart,$preferExactIntrinsicSize,$alwaysUse)"
 
         init {
             require(durationMillis > 0) { "durationMillis must be > 0." }

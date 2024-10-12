@@ -253,7 +253,7 @@ class DrawablePainterTest {
     @Test
     fun testToString() {
         assertEquals(
-            expected = "DrawablePainter(drawable=ColorDrawable(-7829368))",
+            expected = "DrawablePainter(drawable=ColorDrawable(color=-7829368))",
             actual = DrawablePainter(ColorDrawable(TestColor.GRAY)).toString()
         )
     }

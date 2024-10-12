@@ -21,7 +21,48 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.VectorPainter
+import com.github.panpf.sketch.util.Key
+import com.github.panpf.sketch.util.NullableKey
 import com.github.panpf.sketch.util.toLogString
+
+/**
+ * Convert the painter to a log string
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.PaintersTest.testPainterKey
+ */
+fun Painter.key(equalityKey: Any? = null): String {
+    if (this is Key) {
+        return key
+    }
+    if (this is NullableKey && key != null) {
+        val key = key
+        if (key != null) {
+            return key
+        }
+    }
+    if (this is BitmapPainter) {
+        return if (equalityKey != null) {
+            "BitmapPainter:$equalityKey"
+        } else {
+            "BitmapPainter(${intrinsicSize.toLogString()})"
+        }
+    }
+    if (this is ColorPainter) {
+        return "ColorPainter(${color.toArgb()})"
+    }
+    if (this is VectorPainter) {
+        return if (equalityKey != null) {
+            "VectorPainter:$equalityKey"
+        } else {
+            "VectorPainter(${intrinsicSize.toLogString()})"
+        }
+    }
+    return if (equalityKey != null) {
+        "${this}:$equalityKey"
+    } else {
+        this.toString()
+    }
+}
 
 /**
  * Convert the painter to a log string
@@ -33,6 +74,6 @@ fun Painter.toLogString(): String = when (this) {
     is BitmapPainter -> "BitmapPainter(size=${intrinsicSize.toLogString()})"
     is ColorPainter -> "ColorPainter(color=${color.toArgb()})"
     is VectorPainter -> "VectorPainter(size=${intrinsicSize.toLogString()})"
-    is PainterWrapper -> "PainterWrapper(painter=${painter.toLogString()})"
+//    is PainterWrapper -> "PainterWrapper(painter=${painter.toLogString()})"
     else -> toString()
 }

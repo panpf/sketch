@@ -3,11 +3,11 @@ package com.github.panpf.sketch.compose.core.common.test.painter
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import com.github.panpf.sketch.painter.EquitableAnimatablePainter
+import com.github.panpf.sketch.painter.key
 import com.github.panpf.sketch.painter.toLogString
 import com.github.panpf.sketch.test.utils.TestAnimatablePainter
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.block
-import com.github.panpf.sketch.util.key
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,7 +21,7 @@ class EquitableAnimatablePainterTest {
     @Test
     fun testKey() {
         assertEquals(
-            expected = "EquitableAnimatablePainter('${key(Color.Red)}')",
+            expected = TestAnimatablePainter(ColorPainter(Color.Red)).key(Color.Red),
             actual = EquitableAnimatablePainter(
                 painter = TestAnimatablePainter(ColorPainter(Color.Red)),
                 equalityKey = Color.Red

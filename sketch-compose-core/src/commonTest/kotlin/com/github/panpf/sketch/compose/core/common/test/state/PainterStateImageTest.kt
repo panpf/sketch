@@ -37,7 +37,7 @@ class PainterStateImageTest {
     fun testKey() {
         PainterStateImage(ColorPainter(Color.Red).asEquitable()).apply {
             assertEquals(
-                expected = "PainterStateImage(painter=EquitablePainter('18446462598732840960'))",
+                expected = "Painter(ColorPainter(-65536))",
                 actual = key
             )
         }
