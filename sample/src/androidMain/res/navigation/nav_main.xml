@@ -275,6 +275,11 @@
             app:argType="string"
             app:nullable="true" />
         <argument
+            android:name="resizeInfo"
+            android:defaultValue="null"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
             android:name="dataFromInfo"
             android:defaultValue="null"
             app:argType="string"

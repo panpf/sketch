@@ -32,6 +32,8 @@ class ImageFormatTest {
         assertEquals("image/bmp", ImageFormat.BMP.mimeType)
         assertEquals("image/heic", ImageFormat.HEIC.mimeType)
         assertEquals("image/heif", ImageFormat.HEIF.mimeType)
+        assertEquals("image/avif", ImageFormat.AVIF.mimeType)
+        assertEquals("image/svg+xml", ImageFormat.SVG.mimeType)
     }
 
     @Test
@@ -50,6 +52,10 @@ class ImageFormatTest {
         assertEquals(ImageFormat.HEIC, ImageFormat.parseMimeType("IMAGE/HEIC"))
         assertEquals(ImageFormat.HEIF, ImageFormat.parseMimeType("image/heif"))
         assertEquals(ImageFormat.HEIF, ImageFormat.parseMimeType("IMAGE/HEIF"))
+        assertEquals(ImageFormat.AVIF, ImageFormat.parseMimeType("image/avif"))
+        assertEquals(ImageFormat.AVIF, ImageFormat.parseMimeType("IMAGE/AVIF"))
+        assertEquals(ImageFormat.SVG, ImageFormat.parseMimeType("image/svg+xml"))
+        assertEquals(ImageFormat.SVG, ImageFormat.parseMimeType("image/SVG+XML"))
         assertNull(ImageFormat.parseMimeType("image/jpeg1"))
         assertNull(ImageFormat.parseMimeType("IMAGE/JPEG1"))
     }
@@ -58,7 +64,7 @@ class ImageFormatTest {
     fun testValues() {
         @Suppress("EnumValuesSoftDeprecate")
         assertEquals(
-            expected = "JPEG, PNG, WEBP, GIF, BMP, HEIC, HEIF",
+            expected = "JPEG, PNG, WEBP, GIF, BMP, HEIC, HEIF, AVIF, SVG",
             actual = ImageFormat.values().joinToString()
         )
     }

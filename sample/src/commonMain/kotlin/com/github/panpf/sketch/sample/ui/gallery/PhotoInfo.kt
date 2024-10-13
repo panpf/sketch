@@ -45,6 +45,9 @@ fun PhotoInfo(imageResult: ImageResult?) {
             val resultImageInfo = imageResult.image.toFormattedString()
             PhotoInfoItem("Result Image: ", resultImageInfo)
 
+            val resize = imageResult.resize
+            PhotoInfoItem("Resize: ", resize.toString())
+
             val dataFromInfo = imageResult.dataFrom.name
             PhotoInfoItem("Data From: ", dataFromInfo)
 

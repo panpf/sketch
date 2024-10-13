@@ -206,7 +206,7 @@ fun DataSource.decode(
 ): Bitmap = openSource().buffer().inputStream().use {
     val options = config?.toBitmapOptions()
     val bitmap = BitmapFactory.decodeStream(it, null, options)
-        ?: throw ImageInvalidException("Invalid image. decode return null")
+        ?: throw ImageInvalidException("decode return null")
     val exifOrientationHelper1 =
         exifOrientationHelper ?: ExifOrientationHelper(readExifOrientation())
     val correctedImage = exifOrientationHelper1.applyToBitmap(bitmap) ?: bitmap
@@ -242,7 +242,7 @@ fun DataSource.decodeRegion(
     val bitmapOptions = config?.toBitmapOptions()
     val regionBitmap = try {
         regionDecoder.decodeRegion(originalRegion.toAndroidRect(), bitmapOptions)
-            ?: throw ImageInvalidException("Invalid image. decode return null")
+            ?: throw ImageInvalidException("decode return null")
     } finally {
         regionDecoder.recycle()
     }
@@ -256,9 +256,22 @@ fun DataSource.decodeRegion(
  * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testSupportBitmapRegionDecoder
  */
 @SuppressLint("ObsoleteSdkInt")
-fun ImageFormat.supportBitmapRegionDecoder(animated: Boolean = false): Boolean =
-    this == ImageFormat.JPEG
-            || this == ImageFormat.PNG
-            || (this == ImageFormat.WEBP && (!animated || VERSION.SDK_INT >= VERSION_CODES.O))
-            || (this == ImageFormat.HEIC && VERSION.SDK_INT >= VERSION_CODES.O_MR1)
-            || (this == ImageFormat.HEIF && VERSION.SDK_INT >= VERSION_CODES.O_MR1)
+fun supportBitmapRegionDecoder(mimeType: String, animated: Boolean = false): Boolean {
+    require(mimeType.startsWith("image/"))
+    return when (mimeType) {
+        ImageFormat.JPEG.mimeType -> true
+        ImageFormat.PNG.mimeType -> true
+        ImageFormat.WEBP.mimeType -> !animated || VERSION.SDK_INT >= VERSION_CODES.O
+        ImageFormat.GIF.mimeType -> false
+        ImageFormat.BMP.mimeType -> false
+        ImageFormat.SVG.mimeType -> false
+        ImageFormat.HEIC.mimeType -> VERSION.SDK_INT >= VERSION_CODES.O_MR1
+        ImageFormat.HEIF.mimeType -> VERSION.SDK_INT >= VERSION_CODES.O_MR1
+        // For the AVIF format, BitmapFactory starts to support it from API 31.
+        // But BitmapRegionDecoder still does not support it until API 35.
+        // At present, it can only be assumed that API 36 starts to support it.
+        ImageFormat.AVIF.mimeType -> VERSION.SDK_INT > 35
+        // Other formats are supported by default, In order to prevent BitmapRegionDecoder from supporting new formats in the future, our failure to adapt will result in unavailability.
+        else -> true
+    }
+}

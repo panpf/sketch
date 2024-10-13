@@ -29,7 +29,7 @@ object ResourceImages {
     val heic: ResourceImageFile = ResourceImageFile(
         resourceName = "sample.heic",
         name = "HEIC",
-        size = Size(750, 932),
+        size = Size(750, 931),
         mimeType = "image/heif"
     )
     val jpeg: ResourceImageFile = ResourceImageFile(
@@ -56,7 +56,13 @@ object ResourceImages {
         size = Size(1080, 1344),
         mimeType = "image/webp"
     )
-    val statics = arrayOf(jpeg, png, webp, bmp, svg, heic)
+    val avif: ResourceImageFile = ResourceImageFile(
+        resourceName = "sample.avif",
+        name = "AVIF",
+        size = Size(1204, 800),
+        mimeType = "image/avif"
+    )
+    val statics = arrayOf(jpeg, png, webp, bmp, svg, heic, avif)
 
 //    val formatBmp: ResourceImageFile = ResourceImageFile(
 //        resourceName = "format.bmp",

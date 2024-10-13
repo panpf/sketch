@@ -1017,6 +1017,9 @@ class DecodesNonAndroidTest {
         assertFailsWith(IllegalArgumentException::class) {
             ResourceImages.heic.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
         }
+        assertFailsWith(IllegalArgumentException::class) {
+            ResourceImages.avif.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
+        }
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
             actual = ResourceImages.clockExifFlipHorizontal.toDataSource(context)
@@ -1108,6 +1111,9 @@ class DecodesNonAndroidTest {
         }
         assertFailsWith(IllegalArgumentException::class) {
             ResourceImages.heic.toDataSource(context).readImageInfo()
+        }
+        assertFailsWith(IllegalArgumentException::class) {
+            ResourceImages.avif.toDataSource(context).readImageInfo()
         }
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",

@@ -75,6 +75,7 @@ class MyListImageView @JvmOverloads constructor(
             "image/svg+xml" to newLogoDrawable("SVG"),
             "image/heic" to newLogoDrawable("HEIC"),
             "image/heif" to newLogoDrawable("HEIF"),
+            "image/avif" to newLogoDrawable("AVIF"),
             "video/mp4" to newLogoDrawable("MP4"),
         )
     }

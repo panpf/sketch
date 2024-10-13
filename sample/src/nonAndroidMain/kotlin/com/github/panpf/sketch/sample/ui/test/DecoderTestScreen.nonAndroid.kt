@@ -12,6 +12,7 @@ actual suspend fun buildDecoderTestItems(
     add(DecoderTestItem(name = "BMP", imageUri = ResourceImages.bmp.uri))
     add(DecoderTestItem(name = "SVG", imageUri = ResourceImages.svg.uri))
     add(DecoderTestItem(name = "HEIC", imageUri = ResourceImages.heic.uri))
+    add(DecoderTestItem(name = "AVIF", imageUri = ResourceImages.avif.uri))
     add(DecoderTestItem(name = "GIF", imageUri = ResourceImages.animGif.uri))
     add(DecoderTestItem(name = "ANIM_WEBP", imageUri = ResourceImages.animWebp.uri))
     add(DecoderTestItem(name = "ANIM_HEIF", imageUri = ResourceImages.animHeif.uri))

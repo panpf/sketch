@@ -47,11 +47,11 @@ class BitmapFactoryDecodeHelper(
 
     private val exifOrientation: Int by lazy { dataSource.readExifOrientation() }
     private val exifOrientationHelper by lazy { ExifOrientationHelper(exifOrientation) }
-    override val supportRegion: Boolean by lazy {
-        ImageFormat.parseMimeType(imageInfo.mimeType)?.supportBitmapRegionDecoder() == true
-    }
     override val imageInfo: ImageInfo by lazy {
         dataSource.readImageInfo(exifOrientationHelper)
+    }
+    override val supportRegion: Boolean by lazy {
+        supportBitmapRegionDecoder(imageInfo.mimeType)
     }
 
     override fun decode(sampleSize: Int): Image {

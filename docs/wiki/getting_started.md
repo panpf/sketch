@@ -105,6 +105,7 @@ component is destroyed.
 | bmp           | _                                           |
 | webp          | _                                           |
 | heif          | _                                           |
+| avif          | _                                           |
 | svg           | sketch-svg                                  |
 | gif           | sketch-animated<br>sketch-animated-koralgif |
 | Animated webp | sketch-animated                             |

@@ -29,7 +29,6 @@ import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
-import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.calculateSampleSizeForRegion
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
@@ -1176,18 +1175,16 @@ class DecodesAndroidTest {
             ResourceImages.svg.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
         }
         if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
-            assertEquals(
-                expected = "ImageInfo(750x932,'image/heif')",
-                actual = ResourceImages.heic.toDataSource(context)
-                    .readImageInfoWithIgnoreExifOrientation()
-                    .toShortString()
-            )
-            assertEquals(
-                expected = "ImageInfo(256x144,'image/heif')",
-                actual = ResourceImages.animHeif.toDataSource(context)
-                    .readImageInfoWithIgnoreExifOrientation()
-                    .toShortString()
-            )
+            ResourceImages.heic.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
+                .apply {
+                    assertSizeEquals(ResourceImages.heic.size, size, Size(1, 1))
+                    assertEquals(expected = "image/heif", actual = mimeType)
+                }
+            ResourceImages.animHeif.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
+                .apply {
+                    assertSizeEquals(ResourceImages.animHeif.size, size, Size(1, 1))
+                    assertEquals(expected = "image/heif", actual = mimeType)
+                }
         } else {
             assertFailsWith(ImageInvalidException::class) {
                 ResourceImages.heic.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
@@ -1195,6 +1192,17 @@ class DecodesAndroidTest {
             assertFailsWith(ImageInvalidException::class) {
                 ResourceImages.animHeif.toDataSource(context)
                     .readImageInfoWithIgnoreExifOrientation()
+            }
+        }
+        if (VERSION.SDK_INT >= VERSION_CODES.S) {
+            ResourceImages.avif.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
+                .apply {
+                    assertSizeEquals(ResourceImages.avif.size, size, Size(1, 1))
+                    assertEquals(expected = "image/avif", actual = mimeType)
+                }
+        } else {
+            assertFailsWith(ImageInvalidException::class) {
+                ResourceImages.avif.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
             }
         }
         assertEquals(
@@ -1284,21 +1292,30 @@ class DecodesAndroidTest {
             ResourceImages.svg.toDataSource(context).readImageInfo()
         }
         if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
-            assertEquals(
-                expected = "ImageInfo(750x932,'image/heif')",
-                actual = ResourceImages.heic.toDataSource(context).readImageInfo().toShortString()
-            )
-            assertEquals(
-                expected = "ImageInfo(256x144,'image/heif')",
-                actual = ResourceImages.animHeif.toDataSource(context).readImageInfo()
-                    .toShortString()
-            )
+            ResourceImages.heic.toDataSource(context).readImageInfo().apply {
+                assertSizeEquals(ResourceImages.heic.size, size, Size(1, 1))
+                assertEquals(expected = "image/heif", actual = mimeType)
+            }
+            ResourceImages.animHeif.toDataSource(context).readImageInfo().apply {
+                assertSizeEquals(ResourceImages.animHeif.size, size, Size(1, 1))
+                assertEquals(expected = "image/heif", actual = mimeType)
+            }
         } else {
             assertFailsWith(ImageInvalidException::class) {
                 ResourceImages.heic.toDataSource(context).readImageInfo()
             }
             assertFailsWith(ImageInvalidException::class) {
                 ResourceImages.animHeif.toDataSource(context).readImageInfo()
+            }
+        }
+        if (VERSION.SDK_INT >= VERSION_CODES.S) {
+            ResourceImages.avif.toDataSource(context).readImageInfo().apply {
+                assertSizeEquals(ResourceImages.avif.size, size, Size(1, 1))
+                assertEquals(expected = "image/avif", actual = mimeType)
+            }
+        } else {
+            assertFailsWith(ImageInvalidException::class) {
+                ResourceImages.avif.toDataSource(context).readImageInfo()
             }
         }
         assertEquals(
@@ -1790,6 +1807,7 @@ class DecodesAndroidTest {
             ResourceImages.bmp,
             ResourceImages.webp,
             ResourceImages.heic,
+            ResourceImages.avif,
             ResourceImages.svg,
             ResourceImages.animGif,
             ResourceImages.animWebp,
@@ -1808,12 +1826,23 @@ class DecodesAndroidTest {
             val result = runCatching {
                 dataSource.decodeRegion(srcRect = (imageFile.size / 2f).toRect())
             }
-            val imageFormat = imageFile.mimeType.let { ImageFormat.parseMimeType(it) }
             assertEquals(
-                expected = imageFormat?.supportBitmapRegionDecoder(imageFile.animated) == true,
+                expected = supportBitmapRegionDecoder(imageFile.mimeType, imageFile.animated),
                 actual = result.isSuccess,
                 message = "imageFile=${imageFile.uri}, failure: '${result.exceptionOrNull()}'"
             )
+        }
+
+        assertEquals(
+            expected = true,
+            actual = supportBitmapRegionDecoder("image/fake", animated = true)
+        )
+        assertEquals(
+            expected = true,
+            actual = supportBitmapRegionDecoder("image/fake", animated = false)
+        )
+        assertFailsWith(IllegalArgumentException::class) {
+            supportBitmapRegionDecoder("video/mp4")
         }
     }
 }

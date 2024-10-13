@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("RedundantConstructorKeyword")
+
 package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.util.SketchException
@@ -21,4 +23,4 @@ import com.github.panpf.sketch.util.SketchException
 /**
  * Image invalid exception
  */
-class ImageInvalidException(message: String) : SketchException(message, null)
+class ImageInvalidException constructor(message: String) : SketchException(message, null)

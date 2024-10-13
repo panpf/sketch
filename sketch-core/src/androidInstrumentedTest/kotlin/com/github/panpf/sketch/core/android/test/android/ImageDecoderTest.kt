@@ -21,6 +21,8 @@ import kotlin.test.assertTrue
 @RunWith(AndroidJUnit4::class)
 class ImageDecoderTest {
 
+    // TODO test format
+
     @Test
     fun testMutable() {
         if (VERSION.SDK_INT < 28) return

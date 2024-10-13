@@ -121,6 +121,14 @@ actual suspend fun buildDecoderTestItems(
     )
     add(
         DecoderTestItem(
+            name = "AVIF",
+            imageUri = ResourceImages.avif.uri,
+            minAPI = VERSION_CODES.S,
+            currentApi = VERSION.SDK_INT,
+        )
+    )
+    add(
+        DecoderTestItem(
             name = "GIF_KORAL",
             imageUri = ResourceImages.animGif.uri,
             imageDecoder = GifDrawableDecoder.Factory()

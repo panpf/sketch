@@ -224,7 +224,7 @@ private fun Size.checkAreaLimit(targetSize: Size): Boolean {
  */
 fun checkImageSize(imageSize: Size) {
     if (imageSize.isEmpty) {
-        throw ImageInvalidException("Invalid image. width or height is 0. $imageSize")
+        throw ImageInvalidException("Invalid image size. size=$imageSize")
     }
 }
 

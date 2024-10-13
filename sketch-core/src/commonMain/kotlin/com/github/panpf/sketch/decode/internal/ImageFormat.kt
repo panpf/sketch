@@ -29,6 +29,8 @@ enum class ImageFormat(val mimeType: String) {
     BMP("image/bmp"),
     HEIC("image/heic"),
     HEIF("image/heif"),
+    AVIF("image/avif"),
+    SVG("image/svg+xml"),
     ;
 
     fun matched(mimeType: String?): Boolean = this.mimeType.equals(mimeType, ignoreCase = true)
@@ -42,6 +44,8 @@ enum class ImageFormat(val mimeType: String) {
             BMP.matched(mimeType) -> BMP
             HEIC.matched(mimeType) -> HEIC
             HEIF.matched(mimeType) -> HEIF
+            AVIF.matched(mimeType) -> AVIF
+            SVG.matched(mimeType) -> SVG
             else -> null
         }
     }

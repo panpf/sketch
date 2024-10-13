@@ -18,6 +18,8 @@ import kotlin.test.assertTrue
 @RunWith(AndroidJUnit4::class)
 class BitmapFactoryTest {
 
+    // TODO test format
+
     @Test
     fun testMutable() {
         val context = getTestContext()

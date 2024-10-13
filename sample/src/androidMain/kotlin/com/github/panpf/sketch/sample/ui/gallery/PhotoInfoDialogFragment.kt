@@ -47,6 +47,9 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
             createItem(binding, "Result Image: ", args.resultImageInfo.orEmpty())
                 .apply { binding.contentLayout.addView(this) }
 
+            createItem(binding, "Resize: ", args.resizeInfo.orEmpty())
+                .apply { binding.contentLayout.addView(this) }
+
             createItem(binding, "Data From: ", args.dataFromInfo.orEmpty())
                 .apply { binding.contentLayout.addView(this) }
 
@@ -84,11 +87,12 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
             var sourceImageInfo: String? = null
             var resultImageInfo: String? = null
             var dataFromInfo: String? = null
+            var resizeInfo: String? = null
             var transformedInfo: String? = null
             var throwableString: String? = null
             if (imageResult is ImageResult.Success) {
                 sourceImageInfo = imageResult.imageInfo.run {
-                    "${width}x${height}, ${mimeType}"
+                    "${width}x${height}, $mimeType"
                 }
 
                 optionsInfo = imageResult.cacheKey
@@ -99,6 +103,8 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
                     .joinToString(separator = "\n")
 
                 resultImageInfo = imageResult.image.toFormattedString()
+
+                resizeInfo = imageResult.resize.toString()
 
                 dataFromInfo = imageResult.dataFrom.name
 
@@ -115,6 +121,7 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
                 sourceImageInfo = sourceImageInfo,
                 resultImageInfo = resultImageInfo,
                 optionsInfo = optionsInfo,
+                resizeInfo = resizeInfo,
                 dataFromInfo = dataFromInfo,
                 transformedInfo = transformedInfo,
                 throwableString = throwableString

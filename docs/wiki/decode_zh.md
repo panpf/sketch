@@ -15,6 +15,7 @@
 | bmp      | [BitmapFactoryDecoder]                     | -                        | ✅          | ❌               | ❌               | ❌               |
 | bmp      | [SkiaDecoder]                              | -                        | ❌          | ✅               | ✅               | ✅               |
 | heif     | [BitmapFactoryDecoder]                     | -                        | ✅ (API 28) | ❌               | ❌               | ❌               |
+| avif     | [BitmapFactoryDecoder]                     | -                        | ✅ (API 31) | ❌               | ❌               | ❌               |
 | gif      | [GifAnimatedDecoder]                       | sketch-animated          | ✅ (API 28) | ❌               | ❌               | ❌               |
 | gif      | [GifDrawableDecoder]                       | sketch-animated-koralgif | ✅          | ❌               | ❌               | ❌               |
 | gif      | [GifMovieDecoder]<br/>(不支持 resize)         | sketch-animated          | ✅          | ❌               | ❌               | ❌               |

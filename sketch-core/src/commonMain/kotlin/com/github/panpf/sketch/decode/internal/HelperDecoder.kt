@@ -16,12 +16,14 @@
 
 package com.github.panpf.sketch.decode.internal
 
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.isSmallerSizeMode
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.DataSource
@@ -68,45 +70,27 @@ open class HelperDecoder(
         try {
             val imageInfo = decodeHelper.imageInfo
             val resize = requestContext.computeResize(imageInfo.size)
-            val transformeds = mutableListOf<String>()
-            val smallerSizeMode = resize.precision.isSmallerSizeMode()
-            val image = if (resize.shouldClip(imageInfo.size) && decodeHelper.supportRegion) {
-                val resizeMapping = resize.calculateMapping(imageSize = imageInfo.size)
-                val regionSize = resizeMapping.srcRect.size
-                val targetSize = resizeMapping.dstRect.size
-                val sampleSize = calculateSampleSizeForRegion(
-                    regionSize = regionSize,
-                    targetSize = targetSize,
-                    smallerSizeMode = smallerSizeMode,
-                    mimeType = imageInfo.mimeType,
-                    imageSize = imageInfo.size
-                )
-                if (sampleSize > 1) {
-                    transformeds.add(createInSampledTransformed(sampleSize))
+            val (image, transformeds) = if (resize.shouldClip(imageInfo.size) && decodeHelper.supportRegion) {
+                try {
+                    decodeRegion(decodeHelper, resize)
+                } catch (e: Throwable) {
+                    if (e !is UnsupportedOperationException) {
+                        requestContext.sketch.logger.w("Decode region failed. '${requestContext.request.key}'")
+                    }
+                    decodeFull(decodeHelper, resize)
                 }
-                transformeds.add(createSubsamplingTransformed(resizeMapping.srcRect))
-                decodeHelper.decodeRegion(resizeMapping.srcRect, sampleSize)
             } else {
-                val sampleSize = calculateSampleSize(
-                    imageSize = imageInfo.size,
-                    targetSize = resize.size,
-                    smallerSizeMode = smallerSizeMode,
-                    mimeType = imageInfo.mimeType
-                )
-                if (sampleSize > 1) {
-                    transformeds.add(0, createInSampledTransformed(sampleSize))
-                }
-                decodeHelper.decode(sampleSize)
+                decodeFull(decodeHelper, resize)
             }
             if (image.size.isEmpty) {
-                throw ImageInvalidException("Invalid image size. size=${image.width}x${image.height}")
+                throw ImageInvalidException("Invalid image size. size=${image.size}")
             }
             val decodeResult = DecodeResult(
                 image = image,
                 imageInfo = imageInfo,
                 dataFrom = dataSource.dataFrom,
                 resize = resize,
-                transformeds = transformeds.takeIf { it.isNotEmpty() }?.toList(),
+                transformeds = transformeds,
                 extras = null,
             )
             val resizeResult = decodeResult.resize(resize)
@@ -114,5 +98,46 @@ open class HelperDecoder(
         } finally {
             decodeHelper.close()
         }
+    }
+
+    private fun decodeFull(decodeHelper: DecodeHelper, resize: Resize): Pair<Image, List<String>?> {
+        val smallerSizeMode = resize.precision.isSmallerSizeMode()
+        val sampleSize = calculateSampleSize(
+            imageSize = imageInfo.size,
+            targetSize = resize.size,
+            smallerSizeMode = smallerSizeMode,
+            mimeType = imageInfo.mimeType
+        )
+        val image = decodeHelper.decode(sampleSize)
+        val transformeds = if (sampleSize > 1) {
+            mutableListOf(createInSampledTransformed(sampleSize)).toList()
+        } else {
+            null
+        }
+        return Pair(image, transformeds)
+    }
+
+    private fun decodeRegion(
+        decodeHelper: DecodeHelper,
+        resize: Resize
+    ): Pair<Image, List<String>?> {
+        val smallerSizeMode = resize.precision.isSmallerSizeMode()
+        val resizeMapping = resize.calculateMapping(imageSize = imageInfo.size)
+        val regionSize = resizeMapping.srcRect.size
+        val targetSize = resizeMapping.dstRect.size
+        val sampleSize = calculateSampleSizeForRegion(
+            regionSize = regionSize,
+            targetSize = targetSize,
+            smallerSizeMode = smallerSizeMode,
+            mimeType = imageInfo.mimeType,
+            imageSize = imageInfo.size
+        )
+        val transformeds = mutableListOf<String>()
+        val image = decodeHelper.decodeRegion(resizeMapping.srcRect, sampleSize)
+        if (sampleSize > 1) {
+            transformeds.add(createInSampledTransformed(sampleSize))
+        }
+        transformeds.add(createSubsamplingTransformed(resizeMapping.srcRect))
+        return Pair(image, transformeds.toList())
     }
 }

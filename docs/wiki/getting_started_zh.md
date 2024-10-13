@@ -100,6 +100,7 @@ context.sketch.enqueue(request)
 | bmp     | _                                           |
 | webp    | _                                           |
 | heif    | _                                           |
+| avif    | _                                           |
 | svg     | sketch-svg                                  |
 | gif     | sketch-animated<br>sketch-animated-koralgif |
 | webp 动图 | sketch-animated                             |

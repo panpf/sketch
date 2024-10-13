@@ -23,6 +23,7 @@ fun rememberMimeTypeLogoMap(): Map<String, Painter> {
     val svgTextPainter = rememberTextPainter("SVG", textStyle, paddingValues, background)
     val heicTextPainter = rememberTextPainter("HEIC", textStyle, paddingValues, background)
     val heifTextPainter = rememberTextPainter("HEIF", textStyle, paddingValues, background)
+    val avifTextPainter = rememberTextPainter("AVIF", textStyle, paddingValues, background)
     val mp4TextPainter = rememberTextPainter("MP4", textStyle, paddingValues, background)
     return remember(
         gifTextPainter,
@@ -43,6 +44,7 @@ fun rememberMimeTypeLogoMap(): Map<String, Painter> {
             "image/svg+xml" to svgTextPainter,
             "image/heic" to heicTextPainter,
             "image/heif" to heifTextPainter,
+            "image/avif" to avifTextPainter,
             "video/mp4" to mp4TextPainter,
         )
     }

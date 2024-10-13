@@ -41,7 +41,7 @@ interface DecodeHelper : Closeable {
     /**
      * Whether the region decoding is supported
      */
-    val supportRegion: Boolean  // TODO No longer rely on this property, always try to decodeRegion
+    val supportRegion: Boolean
 
     /**
      * Decode the entire image
