@@ -19,7 +19,11 @@ package com.github.panpf.sketch.util
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-// TODO remove
+/**
+ * Alias of [Size]
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.SizeTest.testSketchSize
+ */
 typealias SketchSize = Size
 
 /**

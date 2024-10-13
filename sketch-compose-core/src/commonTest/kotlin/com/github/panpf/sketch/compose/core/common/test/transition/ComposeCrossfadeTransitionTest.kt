@@ -5,8 +5,8 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.painter.ComposeBitmapPainter
 import com.github.panpf.sketch.painter.CrossfadePainter
+import com.github.panpf.sketch.painter.ImageBitmapPainter
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.resize.Precision
@@ -103,7 +103,7 @@ class ComposeCrossfadeTransitionTest {
         ComposeCrossfadeTransition(sketch, request, imageViewTarget, success).transition()
         (imageViewTarget.painter as CrossfadePainter).apply {
             assertEquals(Color.Green, (start as ColorPainter).color)
-            assertTrue(end is ComposeBitmapPainter, message = "end is $end")
+            assertTrue(end is ImageBitmapPainter, message = "end is $end")
             assertTrue(fitScale)
         }
 

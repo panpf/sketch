@@ -16,9 +16,8 @@
 
 package com.github.panpf.sketch.util
 
-import com.github.panpf.sketch.SkiaBitmap
-import com.github.panpf.sketch.SkiaImage
-import com.github.panpf.sketch.SkiaImageInfo
+import com.github.panpf.sketch.Bitmap
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.decode.name
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Resize
@@ -32,6 +31,7 @@ import org.jetbrains.skia.ColorAlphaType
 import org.jetbrains.skia.ColorInfo
 import org.jetbrains.skia.ColorType
 import org.jetbrains.skia.Image
+import org.jetbrains.skia.ImageInfo
 import org.jetbrains.skia.Paint
 import org.jetbrains.skia.RRect
 import org.jetbrains.skia.impl.use
@@ -44,7 +44,7 @@ import kotlin.math.min
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testToLogString
  */
-fun SkiaBitmap.toLogString(): String =
+fun Bitmap.toLogString(): String =
     "Bitmap@${toHexString()}(${width}x${height},${colorType},${colorSpace?.name()})"
 
 /**
@@ -52,7 +52,7 @@ fun SkiaBitmap.toLogString(): String =
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testToLogString
  */
-fun SkiaBitmap.toInfoString(): String =
+fun Bitmap.toInfoString(): String =
     "Bitmap(width=${width}, height=${height}, colorType=${colorType}, colorSpace=${colorSpace?.name()})"
 
 /**
@@ -60,7 +60,7 @@ fun SkiaBitmap.toInfoString(): String =
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testToLogString
  */
-fun SkiaBitmap.toShortInfoString(): String =
+fun Bitmap.toShortInfoString(): String =
     "Bitmap(${width}x${height},${colorType},${colorSpace?.name()})"
 
 
@@ -69,14 +69,14 @@ fun SkiaBitmap.toShortInfoString(): String =
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testMutableCopy
  */
-actual fun SkiaBitmap.mutableCopy(): SkiaBitmap = copyWith()
+actual fun Bitmap.mutableCopy(): Bitmap = copyWith()
 
 /**
  * Get a mutable copy of the bitmap, if it is already mutable, return itself
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testMutableCopyOrSelf
  */
-actual fun SkiaBitmap.mutableCopyOrSelf(): SkiaBitmap {
+actual fun Bitmap.mutableCopyOrSelf(): Bitmap {
     return if (isImmutable) copyWith() else this
 }
 
@@ -85,11 +85,11 @@ actual fun SkiaBitmap.mutableCopyOrSelf(): SkiaBitmap {
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testCopyWith
  */
-fun SkiaBitmap.copyWith(colorInfo: ColorInfo = imageInfo.colorInfo): SkiaBitmap {
+fun Bitmap.copyWith(colorInfo: ColorInfo = imageInfo.colorInfo): Bitmap {
     val inputBitmap = this
-    val outBitmap = SkiaBitmap(inputBitmap.imageInfo.withColorInfo(colorInfo))
+    val outBitmap = createBitmap(inputBitmap.imageInfo.withColorInfo(colorInfo))
     val canvas = Canvas(outBitmap)
-    SkiaImage.makeFromBitmap(inputBitmap).use { sourceImage ->
+    Image.makeFromBitmap(inputBitmap).use { sourceImage ->
         canvas.drawImage(
             image = sourceImage,
             left = 0f,
@@ -106,7 +106,7 @@ fun SkiaBitmap.copyWith(colorInfo: ColorInfo = imageInfo.colorInfo): SkiaBitmap 
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testHasAlphaPixels
  */
-actual fun SkiaBitmap.hasAlphaPixels(): Boolean {
+actual fun Bitmap.hasAlphaPixels(): Boolean {
     val height = this.height
     val width = this.width
     var hasAlpha = false
@@ -127,22 +127,22 @@ actual fun SkiaBitmap.hasAlphaPixels(): Boolean {
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testReadIntPixels
  */
-actual fun SkiaBitmap.readIntPixels(
+actual fun Bitmap.readIntPixels(
     x: Int, y: Int, width: Int, height: Int
 ): IntArray {
     val inputBitmap = this
     val rgbaBitmap = if (inputBitmap.colorType == ColorType.RGBA_8888) {
         inputBitmap
     } else {
-        SkiaBitmap(inputBitmap.imageInfo.withColorType(ColorType.RGBA_8888)).also { rgbaBitmap ->
-            SkiaImage.makeFromBitmap(inputBitmap).use { inputImage ->
+        createBitmap(inputBitmap.imageInfo.withColorType(ColorType.RGBA_8888)).also { rgbaBitmap ->
+            Image.makeFromBitmap(inputBitmap).use { inputImage ->
                 Canvas(rgbaBitmap).drawImageRect(
                     image = inputImage,
-                    src = SkiaRect.makeWH(
+                    src = org.jetbrains.skia.Rect.makeWH(
                         w = inputBitmap.width.toFloat(),
                         h = inputBitmap.height.toFloat()
                     ),
-                    dst = SkiaRect.makeWH(
+                    dst = org.jetbrains.skia.Rect.makeWH(
                         w = rgbaBitmap.width.toFloat(),
                         h = rgbaBitmap.height.toFloat()
                     ),
@@ -154,7 +154,7 @@ actual fun SkiaBitmap.readIntPixels(
         }
     }
 
-    val imageInfo = SkiaImageInfo(rgbaBitmap.colorInfo, width, height)
+    val imageInfo = ImageInfo(rgbaBitmap.colorInfo, width, height)
     val dstRowBytes = width * rgbaBitmap.bytesPerPixel
     val rgbaBytePixels = rgbaBitmap
         .readPixels(dstInfo = imageInfo, dstRowBytes = dstRowBytes, srcX = x, srcY = y)!!
@@ -175,7 +175,7 @@ actual fun SkiaBitmap.readIntPixels(
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testInstallIntPixels
  */
-actual fun SkiaBitmap.installIntPixels(intPixels: IntArray) {
+actual fun Bitmap.installIntPixels(intPixels: IntArray) {
     val outBitmap = this
 
     val rgbaBytePixels = ByteArray(intPixels.size * 4)
@@ -190,14 +190,20 @@ actual fun SkiaBitmap.installIntPixels(intPixels: IntArray) {
         rgbaBytePixels[i * 4 + 2] = b.toByte()
         rgbaBytePixels[i * 4 + 3] = a.toByte()
     }
-    val rgbaBitmap = SkiaBitmap(outBitmap.imageInfo.withColorType(ColorType.RGBA_8888))
+    val rgbaBitmap = createBitmap(outBitmap.imageInfo.withColorType(ColorType.RGBA_8888))
     rgbaBitmap.installPixels(rgbaBytePixels)
 
     Image.makeFromBitmap(rgbaBitmap).use { rgbaImage ->
         Canvas(outBitmap).drawImageRect(
             image = rgbaImage,
-            src = SkiaRect.makeWH(rgbaBitmap.width.toFloat(), rgbaBitmap.height.toFloat()),
-            dst = SkiaRect.makeWH(outBitmap.width.toFloat(), outBitmap.height.toFloat()),
+            src = org.jetbrains.skia.Rect.makeWH(
+                rgbaBitmap.width.toFloat(),
+                rgbaBitmap.height.toFloat()
+            ),
+            dst = org.jetbrains.skia.Rect.makeWH(
+                outBitmap.width.toFloat(),
+                outBitmap.height.toFloat()
+            ),
             paint = Paint().apply {
                 isAntiAlias = true
             },
@@ -210,7 +216,7 @@ actual fun SkiaBitmap.installIntPixels(intPixels: IntArray) {
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testReadIntPixel
  */
-actual fun SkiaBitmap.readIntPixel(x: Int, y: Int): Int {
+actual fun Bitmap.readIntPixel(x: Int, y: Int): Int {
     return readIntPixels(x, y, 1, 1).first()
 }
 
@@ -221,18 +227,18 @@ actual fun SkiaBitmap.readIntPixel(x: Int, y: Int): Int {
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBackground
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBackground2
  */
-actual fun SkiaBitmap.background(color: Int): SkiaBitmap {
+actual fun Bitmap.background(color: Int): Bitmap {
     val inputBitmap = this
-    val outBitmap = SkiaBitmap(inputBitmap.imageInfo)
+    val outBitmap = createBitmap(inputBitmap.imageInfo)
     val canvas = Canvas(outBitmap)
     canvas.drawRect(
-        r = SkiaRect(0f, 0f, outBitmap.width.toFloat(), outBitmap.height.toFloat()),
+        r = org.jetbrains.skia.Rect(0f, 0f, outBitmap.width.toFloat(), outBitmap.height.toFloat()),
         paint = Paint().apply {
             isAntiAlias = true
             this.color = color
         }
     )
-    val sourceImage = SkiaImage.makeFromBitmap(inputBitmap)
+    val sourceImage = Image.makeFromBitmap(inputBitmap)
     try {
         canvas.drawImage(image = sourceImage, left = 0f, top = 0f)
     } finally {
@@ -246,7 +252,7 @@ actual fun SkiaBitmap.background(color: Int): SkiaBitmap {
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBlur
  */
-actual fun SkiaBitmap.blur(radius: Int, firstReuseSelf: Boolean): SkiaBitmap {
+actual fun Bitmap.blur(radius: Int, firstReuseSelf: Boolean): Bitmap {
     val inputBitmap = this
     val outBitmap =
         if (firstReuseSelf) inputBitmap.mutableCopyOrSelf() else inputBitmap.mutableCopy()
@@ -263,7 +269,7 @@ actual fun SkiaBitmap.blur(radius: Int, firstReuseSelf: Boolean): SkiaBitmap {
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testCircleCrop
  */
-actual fun SkiaBitmap.circleCrop(scale: Scale): SkiaBitmap {
+actual fun Bitmap.circleCrop(scale: Scale): Bitmap {
     val inputBitmap = this
     val newSize = min(inputBitmap.width, inputBitmap.height)
     var newColorType: ColorType = inputBitmap.colorType
@@ -275,7 +281,7 @@ actual fun SkiaBitmap.circleCrop(scale: Scale): SkiaBitmap {
     if (newColorAlphaType == ColorAlphaType.UNKNOWN || newColorAlphaType == ColorAlphaType.OPAQUE) {
         newColorAlphaType = ColorAlphaType.PREMUL
     }
-    val newImageInfo = SkiaImageInfo(
+    val newImageInfo = ImageInfo(
         colorInfo = ColorInfo(
             colorType = newColorType,
             alphaType = newColorAlphaType,
@@ -284,7 +290,7 @@ actual fun SkiaBitmap.circleCrop(scale: Scale): SkiaBitmap {
         width = newSize,
         height = newSize
     )
-    val outBitmap = SkiaBitmap(newImageInfo)
+    val outBitmap = createBitmap(newImageInfo)
     val canvas = Canvas(outBitmap)
     canvas.drawCircle(
         x = outBitmap.width / 2f,
@@ -295,7 +301,7 @@ actual fun SkiaBitmap.circleCrop(scale: Scale): SkiaBitmap {
             color = Color.BLACK
         }
     )
-    val skiaImage = SkiaImage.makeFromBitmap(inputBitmap)
+    val skiaImage = Image.makeFromBitmap(inputBitmap)
     try {
         val resizeMapping = Resize(Size(newSize, newSize), SAME_ASPECT_RATIO, scale)
             .calculateMapping(Size(inputBitmap.width, inputBitmap.height))
@@ -319,16 +325,16 @@ actual fun SkiaBitmap.circleCrop(scale: Scale): SkiaBitmap {
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testFlip
  */
-actual fun SkiaBitmap.flip(horizontal: Boolean): SkiaBitmap {
+actual fun Bitmap.flip(horizontal: Boolean): Bitmap {
     val inputBitmap = this
-    val outBitmap = SkiaBitmap(inputBitmap.imageInfo)
+    val outBitmap = createBitmap(inputBitmap.imageInfo)
     val canvas = Canvas(outBitmap)
     val x = if (horizontal) outBitmap.width.toFloat() else 0f
     val y = if (!horizontal) outBitmap.height.toFloat() else 0f
     canvas.save()
     canvas.translate(x, y)
     canvas.scale(if (horizontal) -1f else 1f, if (!horizontal) -1f else 1f)
-    val sourceImage = SkiaImage.makeFromBitmap(inputBitmap)
+    val sourceImage = Image.makeFromBitmap(inputBitmap)
     try {
         canvas.drawImage(image = sourceImage, left = 0f, top = 0f)
     } finally {
@@ -343,17 +349,17 @@ actual fun SkiaBitmap.flip(horizontal: Boolean): SkiaBitmap {
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testMapping
  */
-actual fun SkiaBitmap.mapping(mapping: ResizeMapping): SkiaBitmap {
+actual fun Bitmap.mapping(mapping: ResizeMapping): Bitmap {
     val inputBitmap = this
     val newWidth = mapping.newSize.width
     val newHeight = mapping.newSize.height
     val newImageInfo = inputBitmap.imageInfo.withWidthHeight(newWidth, newHeight)
-    val outBitmap = SkiaBitmap(newImageInfo)
+    val outBitmap = createBitmap(newImageInfo)
     val canvas = Canvas(outBitmap)
     val paint = Paint().apply {
         isAntiAlias = true
     }
-    val sourceImage = SkiaImage.makeFromBitmap(inputBitmap)
+    val sourceImage = Image.makeFromBitmap(inputBitmap)
     try {
         canvas.drawImageRect(
             image = sourceImage,
@@ -372,7 +378,7 @@ actual fun SkiaBitmap.mapping(mapping: ResizeMapping): SkiaBitmap {
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testMask
  */
-actual fun SkiaBitmap.mask(maskColor: Int, firstReuseSelf: Boolean): SkiaBitmap {
+actual fun Bitmap.mask(maskColor: Int, firstReuseSelf: Boolean): Bitmap {
     val inputBitmap = this
     val outBitmap =
         if (firstReuseSelf) inputBitmap.mutableCopyOrSelf() else inputBitmap.mutableCopy()
@@ -383,7 +389,7 @@ actual fun SkiaBitmap.mask(maskColor: Int, firstReuseSelf: Boolean): SkiaBitmap 
         blendMode = BlendMode.SRC_ATOP
     }
     canvas.drawRect(
-        r = SkiaRect(0f, 0f, width.toFloat(), height.toFloat()),
+        r = org.jetbrains.skia.Rect(0f, 0f, width.toFloat(), height.toFloat()),
         paint = paint
     )
     return outBitmap
@@ -394,7 +400,7 @@ actual fun SkiaBitmap.mask(maskColor: Int, firstReuseSelf: Boolean): SkiaBitmap 
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testRotate
  */
-actual fun SkiaBitmap.rotate(angle: Int): SkiaBitmap {
+actual fun Bitmap.rotate(angle: Int): Bitmap {
     val inputBitmap = this
     val inputSize = Size(inputBitmap.width, inputBitmap.height)
     val finalAngle = (angle % 360).let { if (it < 0) 360 + it else it }
@@ -410,7 +416,7 @@ actual fun SkiaBitmap.rotate(angle: Int): SkiaBitmap {
     if (newColorAlphaType == ColorAlphaType.UNKNOWN || newColorAlphaType == ColorAlphaType.OPAQUE) {
         newColorAlphaType = ColorAlphaType.PREMUL
     }
-    val newImageInfo = SkiaImageInfo(
+    val newImageInfo = ImageInfo(
         colorInfo = ColorInfo(
             colorType = newColorType,
             alphaType = newColorAlphaType,
@@ -419,7 +425,7 @@ actual fun SkiaBitmap.rotate(angle: Int): SkiaBitmap {
         width = newSize.width,
         height = newSize.height
     )
-    val outBitmap = SkiaBitmap(newImageInfo)
+    val outBitmap = createBitmap(newImageInfo)
 
     val canvas = Canvas(outBitmap)
     canvas.translate(
@@ -431,7 +437,7 @@ actual fun SkiaBitmap.rotate(angle: Int): SkiaBitmap {
         x = inputSize.width / 2f,
         y = inputSize.height / 2f,
     )
-    val skiaImage = SkiaImage.makeFromBitmap(inputBitmap)
+    val skiaImage = Image.makeFromBitmap(inputBitmap)
     try {
         canvas.drawImage(skiaImage, 0f, 0f)
     } finally {
@@ -445,7 +451,7 @@ actual fun SkiaBitmap.rotate(angle: Int): SkiaBitmap {
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testRoundedCorners
  */
-actual fun SkiaBitmap.roundedCorners(radiusArray: FloatArray): SkiaBitmap {
+actual fun Bitmap.roundedCorners(radiusArray: FloatArray): Bitmap {
     val inputBitmap = this
     var newColorType: ColorType = inputBitmap.colorType
     var newColorAlphaType: ColorAlphaType = inputBitmap.alphaType
@@ -456,7 +462,7 @@ actual fun SkiaBitmap.roundedCorners(radiusArray: FloatArray): SkiaBitmap {
     if (newColorAlphaType == ColorAlphaType.UNKNOWN || newColorAlphaType == ColorAlphaType.OPAQUE) {
         newColorAlphaType = ColorAlphaType.PREMUL
     }
-    val newImageInfo = SkiaImageInfo(
+    val newImageInfo = ImageInfo(
         colorInfo = ColorInfo(
             colorType = newColorType,
             alphaType = newColorAlphaType,
@@ -465,7 +471,7 @@ actual fun SkiaBitmap.roundedCorners(radiusArray: FloatArray): SkiaBitmap {
         width = inputBitmap.width,
         height = inputBitmap.height
     )
-    val outBitmap = SkiaBitmap(newImageInfo)
+    val outBitmap = createBitmap(newImageInfo)
     val canvas = Canvas(outBitmap)
     canvas.drawRRect(
         r = RRect.makeComplexLTRB(0f, 0f, width.toFloat(), height.toFloat(), radiusArray),
@@ -474,12 +480,18 @@ actual fun SkiaBitmap.roundedCorners(radiusArray: FloatArray): SkiaBitmap {
             color = Color.BLACK
         }
     )
-    val sourceImage = SkiaImage.makeFromBitmap(inputBitmap)
+    val sourceImage = Image.makeFromBitmap(inputBitmap)
     try {
         canvas.drawImageRect(
             image = sourceImage,
-            src = SkiaRect.makeWH(inputBitmap.width.toFloat(), inputBitmap.height.toFloat()),
-            dst = SkiaRect.makeWH(outBitmap.width.toFloat(), outBitmap.height.toFloat()),
+            src = org.jetbrains.skia.Rect.makeWH(
+                inputBitmap.width.toFloat(),
+                inputBitmap.height.toFloat()
+            ),
+            dst = org.jetbrains.skia.Rect.makeWH(
+                outBitmap.width.toFloat(),
+                outBitmap.height.toFloat()
+            ),
             paint = Paint().apply {
                 isAntiAlias = true
                 blendMode = SRC_IN
@@ -496,22 +508,28 @@ actual fun SkiaBitmap.roundedCorners(radiusArray: FloatArray): SkiaBitmap {
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testScale
  */
-actual fun SkiaBitmap.scale(scaleFactor: Float): SkiaBitmap {
+actual fun Bitmap.scale(scaleFactor: Float): Bitmap {
     val inputBitmap = this
     val scaledWidth = ceil(width * scaleFactor).toInt()
     val scaledHeight = ceil(height * scaleFactor).toInt()
     val newImageInfo = inputBitmap.imageInfo.withWidthHeight(scaledWidth, scaledHeight)
-    val outBitmap = SkiaBitmap(newImageInfo)
+    val outBitmap = createBitmap(newImageInfo)
     val canvas = Canvas(outBitmap)
     val paint = Paint().apply {
         isAntiAlias = true
     }
-    val sourceImage = SkiaImage.makeFromBitmap(inputBitmap)
+    val sourceImage = Image.makeFromBitmap(inputBitmap)
     try {
         canvas.drawImageRect(
             image = sourceImage,
-            src = SkiaRect.makeWH(inputBitmap.width.toFloat(), sourceImage.height.toFloat()),
-            dst = SkiaRect.makeWH(outBitmap.width.toFloat(), outBitmap.height.toFloat()),
+            src = org.jetbrains.skia.Rect.makeWH(
+                inputBitmap.width.toFloat(),
+                sourceImage.height.toFloat()
+            ),
+            dst = org.jetbrains.skia.Rect.makeWH(
+                outBitmap.width.toFloat(),
+                outBitmap.height.toFloat()
+            ),
             paint = paint,
         )
     } finally {
@@ -525,15 +543,25 @@ actual fun SkiaBitmap.scale(scaleFactor: Float): SkiaBitmap {
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testThumbnail
  */
-actual fun SkiaBitmap.thumbnail(width: Int, height: Int): SkiaBitmap {
+actual fun Bitmap.thumbnail(width: Int, height: Int): Bitmap {
     val inputBitmap = this
-    val outputBitmap = SkiaBitmap(inputBitmap.imageInfo.withWidthHeight(width, height))
+    val outputBitmap = createBitmap(inputBitmap.imageInfo.withWidthHeight(width, height))
     val canvas = Canvas(outputBitmap)
-    SkiaImage.makeFromBitmap(inputBitmap).use { skiaImage ->
+    Image.makeFromBitmap(inputBitmap).use { skiaImage ->
         canvas.drawImageRect(
             image = skiaImage,
-            src = SkiaRect(0f, 0f, inputBitmap.width.toFloat(), inputBitmap.height.toFloat()),
-            dst = SkiaRect(0f, 0f, outputBitmap.width.toFloat(), outputBitmap.height.toFloat()),
+            src = org.jetbrains.skia.Rect(
+                0f,
+                0f,
+                inputBitmap.width.toFloat(),
+                inputBitmap.height.toFloat()
+            ),
+            dst = org.jetbrains.skia.Rect(
+                0f,
+                0f,
+                outputBitmap.width.toFloat(),
+                outputBitmap.height.toFloat()
+            ),
         )
     }
     return outputBitmap

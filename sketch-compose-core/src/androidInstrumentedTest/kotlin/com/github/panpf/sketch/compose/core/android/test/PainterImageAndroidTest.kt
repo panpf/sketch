@@ -7,12 +7,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.ColorPainter
-import com.github.panpf.sketch.AndroidBitmap
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.asPainter
-import com.github.panpf.sketch.painter.ComposeBitmapPainter
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.painter.DrawableAnimatablePainter
 import com.github.panpf.sketch.painter.DrawablePainter
+import com.github.panpf.sketch.painter.ImageBitmapPainter
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
 import com.github.panpf.sketch.test.utils.TestColor
@@ -35,15 +35,15 @@ class PainterImageAndroidTest {
             actual = colorPainter.asImage().asPainter()
         )
 
-        val bitmap = AndroidBitmap(100, 100)
+        val bitmap = createBitmap(100, 100)
         assertEquals(
             expected = FilterQuality.Low,
-            actual = bitmap.asImage().asPainter().asOrThrow<ComposeBitmapPainter>().filterQuality
+            actual = bitmap.asImage().asPainter().asOrThrow<ImageBitmapPainter>().filterQuality
         )
         assertEquals(
             expected = FilterQuality.High,
             actual = bitmap.asImage().asPainter(FilterQuality.High)
-                .asOrThrow<ComposeBitmapPainter>().filterQuality
+                .asOrThrow<ImageBitmapPainter>().filterQuality
         )
 
         val animatableDrawable = TestAnimatableDrawable(ColorDrawable(TestColor.RED))

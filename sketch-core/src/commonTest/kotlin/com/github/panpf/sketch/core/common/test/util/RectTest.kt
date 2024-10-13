@@ -2,6 +2,7 @@ package com.github.panpf.sketch.core.common.test.util
 
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.SketchRect
 import com.github.panpf.sketch.util.flip
 import com.github.panpf.sketch.util.rotateInSpace
 import com.github.panpf.sketch.util.size
@@ -10,6 +11,14 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class RectTest {
+
+    @Test
+    fun testSketchRect() {
+        assertEquals(
+            expected = Rect::class,
+            actual = SketchRect::class
+        )
+    }
 
     @Test
     fun testFlip() {

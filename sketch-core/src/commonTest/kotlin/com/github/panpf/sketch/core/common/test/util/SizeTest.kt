@@ -17,6 +17,7 @@
 package com.github.panpf.sketch.core.common.test.util
 
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.SketchSize
 import com.github.panpf.sketch.util.coerceAtLeast
 import com.github.panpf.sketch.util.coerceAtMost
 import com.github.panpf.sketch.util.div
@@ -31,6 +32,14 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 class SizeTest {
+
+    @Test
+    fun testSketchSize() {
+        assertEquals(
+            expected = Size::class,
+            actual = SketchSize::class
+        )
+    }
 
     @Test
     fun testWidthHeight() {

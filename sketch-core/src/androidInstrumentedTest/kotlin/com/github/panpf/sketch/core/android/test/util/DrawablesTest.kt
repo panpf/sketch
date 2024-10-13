@@ -38,9 +38,9 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import com.github.panpf.sketch.AndroidBitmap
 import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.colorType
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.drawable.ResizeDrawable
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
@@ -244,7 +244,7 @@ class DrawablesTest {
             )
         }
 
-        RoundedBitmapDrawableFactory.create(context.resources, AndroidBitmap(100, 100)).apply {
+        RoundedBitmapDrawableFactory.create(context.resources, createBitmap(100, 100)).apply {
             assertEquals(
                 expected = "RoundedBitmapDrawable(${bitmap?.toLogString()},0.0)",
                 actual = key(equalityKey = null)
@@ -448,7 +448,7 @@ class DrawablesTest {
             )
         }
 
-        RoundedBitmapDrawableFactory.create(context.resources, AndroidBitmap(100, 100)).apply {
+        RoundedBitmapDrawableFactory.create(context.resources, createBitmap(100, 100)).apply {
             assertEquals(
                 expected = "RoundedBitmapDrawable(drawable=${bitmap?.toLogString()}, cornerRadius=0.0)",
                 actual = toLogString()

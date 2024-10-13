@@ -19,6 +19,13 @@ package com.github.panpf.sketch
 import com.github.panpf.sketch.util.Size
 
 /**
+ * Alias of [Image]
+ *
+ * @see com.github.panpf.sketch.core.common.test.ImageTest.testSketchImage
+ */
+typealias SketchImage = Image
+
+/**
  * Size of the image
  *
  * @see com.github.panpf.sketch.core.common.test.ImageTest.testSize

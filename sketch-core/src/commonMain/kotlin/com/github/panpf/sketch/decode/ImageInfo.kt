@@ -19,6 +19,13 @@ package com.github.panpf.sketch.decode
 import com.github.panpf.sketch.util.Size
 
 /**
+ * Alias of [ImageInfo]
+ *
+ * @see com.github.panpf.sketch.core.common.test.decode.ImageInfoTest.testSketchImageInfo
+ */
+typealias SketchImageInfo = ImageInfo
+
+/**
  * Image information
  *
  * @see com.github.panpf.sketch.core.common.test.decode.ImageInfoTest

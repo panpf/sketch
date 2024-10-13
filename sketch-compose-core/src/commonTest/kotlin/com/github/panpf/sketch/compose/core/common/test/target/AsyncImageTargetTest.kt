@@ -7,7 +7,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.PainterState
 import com.github.panpf.sketch.asImage
-import com.github.panpf.sketch.painter.ComposeBitmapPainter
+import com.github.panpf.sketch.painter.ImageBitmapPainter
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LifecycleResolver
@@ -191,7 +191,7 @@ class AsyncImageTargetTest {
         target.onSuccess(sketch, request, createBitmapImage(101, 202)).apply {
             assertEquals(
                 expected = FilterQuality.Low,
-                actual = target.painter!!.asOrThrow<ComposeBitmapPainter>().filterQuality
+                actual = target.painter!!.asOrThrow<ImageBitmapPainter>().filterQuality
             )
         }
 
@@ -201,7 +201,7 @@ class AsyncImageTargetTest {
         target.onSuccess(sketch, request, createBitmapImage(101, 202)).apply {
             assertEquals(
                 expected = FilterQuality.High,
-                actual = target.painter!!.asOrThrow<ComposeBitmapPainter>().filterQuality
+                actual = target.painter!!.asOrThrow<ImageBitmapPainter>().filterQuality
             )
         }
     }

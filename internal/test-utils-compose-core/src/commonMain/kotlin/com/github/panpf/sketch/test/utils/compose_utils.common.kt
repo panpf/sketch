@@ -2,13 +2,13 @@ package com.github.panpf.sketch.test.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.Bitmap
-import com.github.panpf.sketch.ComposeBitmap
 import com.github.panpf.sketch.request.GlobalLifecycle
 
 @Composable
@@ -30,8 +30,6 @@ fun PreviewContainer(content: @Composable () -> Unit) =
 fun LifecycleContainer(content: @Composable () -> Unit) =
     CompositionLocalProvider(LocalLifecycleOwner provides GlobalLifecycle.owner, content = content)
 
-expect fun Bitmap.toComposeBitmap(): ComposeBitmap
-
-typealias ComposeSize = androidx.compose.ui.geometry.Size
+expect fun Bitmap.toComposeBitmap(): ImageBitmap
 
 fun ComposeSize(width: Float, height: Float) = androidx.compose.ui.geometry.Size(width, height)

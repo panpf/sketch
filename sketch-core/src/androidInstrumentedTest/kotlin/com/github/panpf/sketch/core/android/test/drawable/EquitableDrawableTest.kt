@@ -5,7 +5,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.core.content.res.ResourcesCompat
-import com.github.panpf.sketch.AndroidBitmap
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.drawable.ColorEquitableDrawable
 import com.github.panpf.sketch.drawable.EquitableDrawable
 import com.github.panpf.sketch.drawable.asEquitable
@@ -163,10 +163,10 @@ class EquitableDrawableTest {
     fun testDrawableAsEquitable() {
         assertEquals(
             expected = EquitableDrawable(
-                drawable = BitmapDrawable(null, AndroidBitmap(100, 100)),
+                drawable = BitmapDrawable(null, createBitmap(100, 100)),
                 equalityKey = 100
             ),
-            actual = BitmapDrawable(null, AndroidBitmap(100, 100)).asEquitable(100)
+            actual = BitmapDrawable(null, createBitmap(100, 100)).asEquitable(100)
         )
     }
 

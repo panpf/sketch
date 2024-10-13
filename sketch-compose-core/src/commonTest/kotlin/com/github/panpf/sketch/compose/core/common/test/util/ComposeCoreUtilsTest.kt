@@ -13,6 +13,8 @@ import com.github.panpf.sketch.painter.PainterWrapper
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.test.utils.SizeColorPainter
 import com.github.panpf.sketch.test.utils.TestContentScale
+import com.github.panpf.sketch.test.utils.createBitmap
+import com.github.panpf.sketch.test.utils.toComposeBitmap
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.findDeepestPainter
 import com.github.panpf.sketch.util.findLeafPainter
@@ -281,6 +283,15 @@ class ComposeCoreUtilsTest {
         assertEquals(
             expected = any.hashCode().toString(16),
             actual = any.toHexString()
+        )
+    }
+
+    @Test
+    fun testImageBitmapToLogString() {
+        val composeBitmap = createBitmap(101, 202).toComposeBitmap()
+        assertEquals(
+            expected = "ImageBitmap@${composeBitmap.toHexString()}(101x202,Argb8888,Srgb)",
+            actual = composeBitmap.toLogString()
         )
     }
 }

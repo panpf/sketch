@@ -19,28 +19,28 @@ package com.github.panpf.sketch.painter
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.IntSize
-import com.github.panpf.sketch.ComposeBitmap
-import com.github.panpf.sketch.toLogString
+import com.github.panpf.sketch.util.toLogString
 
 /**
- * [ComposeBitmap] converted to [ComposeBitmapPainter]
+ * [ImageBitmap] converted to [ImageBitmapPainter]
  *
- * @see com.github.panpf.sketch.compose.core.common.test.painter.ComposeBitmapPainterTest.testComposeBitmapAsPainter
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.ImageBitmapPainterTest.testAsPainter
  */
-fun ComposeBitmap.asPainter(filterQuality: FilterQuality = DrawScope.DefaultFilterQuality): Painter =
-    ComposeBitmapPainter(this, filterQuality)
+fun ImageBitmap.asPainter(filterQuality: FilterQuality = DrawScope.DefaultFilterQuality): Painter =
+    ImageBitmapPainter(this, filterQuality)
 
 /**
- * [ComposeBitmap] painter
+ * [ImageBitmap] painter
  *
- * @see com.github.panpf.sketch.compose.core.common.test.painter.ComposeBitmapPainterTest
+ * @see com.github.panpf.sketch.compose.core.common.test.painter.ImageBitmapPainterTest
  */
 @Stable
-class ComposeBitmapPainter(
-    val bitmap: ComposeBitmap,
+class ImageBitmapPainter(
+    val bitmap: ImageBitmap,
     val filterQuality: FilterQuality = DrawScope.DefaultFilterQuality
 ) : Painter(), SketchPainter {
 
@@ -54,7 +54,7 @@ class ComposeBitmapPainter(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
-        other as ComposeBitmapPainter
+        other as ImageBitmapPainter
         if (bitmap != other.bitmap) return false
         if (filterQuality != other.filterQuality) return false
         return true
@@ -67,6 +67,6 @@ class ComposeBitmapPainter(
     }
 
     override fun toString(): String {
-        return "ComposeBitmapPainter(bitmap=${bitmap.toLogString()}, filterQuality=$filterQuality)"
+        return "ImageBitmapPainter(bitmap=${bitmap.toLogString()}, filterQuality=$filterQuality)"
     }
 }

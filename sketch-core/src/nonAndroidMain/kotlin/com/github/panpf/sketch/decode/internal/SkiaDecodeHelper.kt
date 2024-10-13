@@ -18,7 +18,6 @@
 
 package com.github.panpf.sketch.decode.internal
 
-import com.github.panpf.sketch.SkiaImage
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
@@ -29,6 +28,7 @@ import okio.buffer
 import okio.use
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
+import org.jetbrains.skia.Image
 import org.jetbrains.skia.impl.use
 
 /**
@@ -54,8 +54,8 @@ class SkiaDecodeHelper constructor(
         dataSource.openSource().buffer().use { it.readByteArray() }
     }
     private val skiaImage by lazy {
-        // SkiaImage.makeFromEncoded(bytes) will parse exif orientation and does not support closing
-        SkiaImage.makeFromEncoded(bytes)
+        // Image.makeFromEncoded(bytes) will parse exif orientation and does not support closing
+        Image.makeFromEncoded(bytes)
     }
 
     override val imageInfo: ImageInfo by lazy {
@@ -65,7 +65,7 @@ class SkiaDecodeHelper constructor(
     }
     override val supportRegion: Boolean = true
 
-    override fun decode(sampleSize: Int): com.github.panpf.sketch.Image {
+    override fun decode(sampleSize: Int): com.github.panpf.sketch.SketchImage {
         val decodeConfig = DecodeConfig(request, imageInfo.mimeType, skiaImage.isOpaque).apply {
             this.sampleSize = sampleSize
         }
@@ -73,7 +73,7 @@ class SkiaDecodeHelper constructor(
         return skiaBitmap.asImage()
     }
 
-    override fun decodeRegion(region: Rect, sampleSize: Int): com.github.panpf.sketch.Image {
+    override fun decodeRegion(region: Rect, sampleSize: Int): com.github.panpf.sketch.SketchImage {
         val decodeConfig = DecodeConfig(request, imageInfo.mimeType, skiaImage.isOpaque).apply {
             this.sampleSize = sampleSize
         }

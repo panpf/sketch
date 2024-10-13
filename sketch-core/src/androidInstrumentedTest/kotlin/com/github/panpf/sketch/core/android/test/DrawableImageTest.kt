@@ -5,10 +5,10 @@ import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import com.github.panpf.sketch.AndroidBitmap
 import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.asDrawable
 import com.github.panpf.sketch.asImage
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.test.utils.ByteCountProviderDrawableWrapper
@@ -59,7 +59,7 @@ class DrawableImageTest {
             actual = bitmapDrawable.asImage().asDrawable()
         )
 
-        AndroidBitmap(100, 100).asImage().asDrawable().also { drawable ->
+        createBitmap(100, 100).asImage().asDrawable().also { drawable ->
             assertTrue(actual = drawable is BitmapDrawable, message = "drawable=$drawable")
         }
 
@@ -138,7 +138,7 @@ class DrawableImageTest {
     fun testValid() {
         val context = getTestContext()
 
-        val bitmap = AndroidBitmap(100, 100)
+        val bitmap = createBitmap(100, 100)
         val drawable = BitmapDrawable(null, bitmap)
         val drawableImage = DrawableImage(drawable)
 
@@ -158,9 +158,9 @@ class DrawableImageTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = DrawableImage(BitmapDrawable(null, AndroidBitmap(100, 100)))
+        val element1 = DrawableImage(BitmapDrawable(null, createBitmap(100, 100)))
         val element11 = element1.copy()
-        val element2 = element1.copy(drawable = BitmapDrawable(null, AndroidBitmap(200, 200)))
+        val element2 = element1.copy(drawable = BitmapDrawable(null, createBitmap(200, 200)))
         val element3 = element1.copy(shareable = false)
 
         assertEquals(element1, element11)
@@ -178,7 +178,7 @@ class DrawableImageTest {
 
     @Test
     fun testToString() {
-        val drawable = BitmapDrawable(null, AndroidBitmap(100, 100))
+        val drawable = BitmapDrawable(null, createBitmap(100, 100))
         assertEquals(
             expected = "DrawableImage(drawable=${drawable.toLogString()}, shareable=true)",
             actual = DrawableImage(drawable).toString(),

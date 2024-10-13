@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asComposeImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQuality
@@ -32,10 +33,9 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.toSize
-import com.github.panpf.sketch.ComposeBitmap
-import com.github.panpf.sketch.SkiaAnimatedImage
-import com.github.panpf.sketch.SkiaBitmap
-import com.github.panpf.sketch.SkiaImageInfo
+import com.github.panpf.sketch.AnimatedImage
+import com.github.panpf.sketch.Bitmap
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.util.RememberedCounter
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -49,16 +49,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Color
+import org.jetbrains.skia.ImageInfo
 import kotlin.math.roundToInt
 import kotlin.time.measureTime
 
 /**
- * Painter for drawing [SkiaAnimatedImage]
+ * Painter for drawing [AnimatedImage]
  *
- * @see com.github.panpf.sketch.compose.core.nonandroid.test.painter.SkiaAnimatedImagePainterTest
+ * @see com.github.panpf.sketch.compose.core.nonandroid.test.painter.AnimatedImagePainterTest
  */
-class SkiaAnimatedImagePainter constructor(
-    private val animatedImage: SkiaAnimatedImage,
+class AnimatedImagePainter constructor(
+    private val animatedImage: AnimatedImage,
     private val srcOffset: IntOffset = IntOffset.Zero,
     private val srcSize: IntSize = IntSize(animatedImage.width, animatedImage.height),
     private val filterQuality: FilterQuality = DefaultFilterQuality,
@@ -71,7 +72,7 @@ class SkiaAnimatedImagePainter constructor(
     private var colorFilter: ColorFilter? = null
     private var invalidateTick by mutableIntStateOf(0)
     private var loadFirstFrameJob: Job? = null
-    private var composeBitmap: ComposeBitmap? = null
+    private var composeBitmap: ImageBitmap? = null
     private var animatedPlayer = AnimatedPlayer(
         codec = codec,
         imageInfo = animatedImage.imageInfo,
@@ -121,7 +122,7 @@ class SkiaAnimatedImagePainter constructor(
         loadFirstFrameJob = GlobalScope.launch(Dispatchers.Main) {
             val bitmapResult = withContext(ioCoroutineDispatcher()) {
                 runCatching {
-                    SkiaBitmap(animatedImage.imageInfo).apply {
+                    createBitmap(animatedImage.imageInfo).apply {
                         codec.readPixels(this@apply, 0)
                     }
                 }
@@ -213,7 +214,7 @@ class SkiaAnimatedImagePainter constructor(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
-        other as SkiaAnimatedImagePainter
+        other as AnimatedImagePainter
         if (animatedImage != other.animatedImage) return false
         if (srcOffset != other.srcOffset) return false
         if (srcSize != other.srcSize) return false
@@ -232,7 +233,7 @@ class SkiaAnimatedImagePainter constructor(
     }
 
     override fun toString(): String {
-        return "SkiaAnimatedImagePainter(" +
+        return "AnimatedImagePainter(" +
                 "animatedImage=$animatedImage, " +
                 "srcOffset=$srcOffset, " +
                 "srcSize=$srcSize, " +
@@ -241,15 +242,15 @@ class SkiaAnimatedImagePainter constructor(
 
     private class AnimatedPlayer(
         private val codec: Codec,
-        private val imageInfo: SkiaImageInfo,
+        private val imageInfo: ImageInfo,
         private val repeatCount: Int,
         private val cacheDecodeTimeoutFrame: Boolean,
-        private val onFrame: (ComposeBitmap) -> Unit,
+        private val onFrame: (ImageBitmap) -> Unit,
         private val onRepeatEnd: () -> Unit,
     ) {
 
         private val frameInfos = codec.framesInfo
-        private var frameCaches: MutableMap<Int, SkiaBitmap>? = null
+        private var frameCaches: MutableMap<Int, Bitmap>? = null
         private val nextFrameChannel = Channel<Frame>()
         private val renderChannel = Channel<Frame>()
         private val decodeChannel = Channel<Frame>()
@@ -268,7 +269,7 @@ class SkiaAnimatedImagePainter constructor(
                 return
             }
             if (codec.frameCount <= 0) {
-                val blackBitmap = SkiaBitmap(imageInfo).apply {
+                val blackBitmap = createBitmap(imageInfo).apply {
                     erase(Color.BLACK)
                 }
                 onFrame(blackBitmap.asComposeImageBitmap())
@@ -334,10 +335,10 @@ class SkiaAnimatedImagePainter constructor(
                                 decodeElapsedTime.inWholeMilliseconds > lastFrameDuration
                             if (needCache) {
                                 val byteArray = frame.frameBitmap.bitmap.readPixels()
-                                val bitmap = SkiaBitmap(imageInfo)
+                                val bitmap = createBitmap(imageInfo)
                                 bitmap.installPixels(byteArray)
                                 val frameCaches =
-                                    frameCaches ?: mutableMapOf<Int, SkiaBitmap>().apply {
+                                    frameCaches ?: mutableMapOf<Int, Bitmap>().apply {
                                         this@AnimatedPlayer.frameCaches = this
                                     }
                                 frameCaches[frame.index] = bitmap
@@ -376,7 +377,7 @@ class SkiaAnimatedImagePainter constructor(
             return last?.copy(index = nextFrameIndex)
                 ?: Frame(
                     index = nextFrameIndex,
-                    frameBitmap = FrameBitmap(SkiaBitmap(imageInfo))
+                    frameBitmap = FrameBitmap(createBitmap(imageInfo))
                 )
         }
 
@@ -388,8 +389,8 @@ class SkiaAnimatedImagePainter constructor(
             }
         }
 
-        private class FrameBitmap(val bitmap: SkiaBitmap) {
-            val composeBitmap: ComposeBitmap = bitmap.asComposeImageBitmap()
+        private class FrameBitmap(val bitmap: Bitmap) {
+            val composeBitmap: ImageBitmap = bitmap.asComposeImageBitmap()
         }
 
         private data class Frame(val index: Int, val frameBitmap: FrameBitmap)

@@ -3,8 +3,7 @@ package com.github.panpf.sketch.core.nonandroid.test.decode.internal
 import com.github.panpf.sketch.Bitmap
 import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.SkiaBitmap
-import com.github.panpf.sketch.SkiaImage
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.decode.internal.SkiaDecodeHelper
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForRegion
@@ -29,6 +28,7 @@ import com.github.panpf.sketch.util.toSkiaRect
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.ColorSpace
 import org.jetbrains.skia.ColorType
+import org.jetbrains.skia.Image
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -211,32 +211,32 @@ class SkiaDecodeHelperTest {
         }
 
         // Merge four pictures
-        val mergedBitmap = SkiaBitmap(
+        val mergedBitmap = createBitmap(
             width = imageInfo.width,
             height = imageInfo.height,
             colorType = topLeftBitmap.colorType
         ).apply {
             val canvas = Canvas(this)
             canvas.drawImageRect(
-                /* bitmap = */ SkiaImage.makeFromBitmap(topLeftBitmap),
+                /* bitmap = */ Image.makeFromBitmap(topLeftBitmap),
                 /* src = */ topLeftBitmap.size.toRect().toSkiaRect(),
                 /* dst = */ topLeftRect.toSkiaRect(),
                 /* paint = */ null
             )
             canvas.drawImageRect(
-                /* bitmap = */  SkiaImage.makeFromBitmap(topRightBitmap),
+                /* bitmap = */  Image.makeFromBitmap(topRightBitmap),
                 /* src = */ topRightBitmap.size.toRect().toSkiaRect(),
                 /* dst = */ topRightRect.toSkiaRect(),
                 /* paint = */ null
             )
             canvas.drawImageRect(
-                /* bitmap = */  SkiaImage.makeFromBitmap(bottomLeftBitmap),
+                /* bitmap = */  Image.makeFromBitmap(bottomLeftBitmap),
                 /* src = */ bottomLeftBitmap.size.toRect().toSkiaRect(),
                 /* dst = */ bottomLeftRect.toSkiaRect(),
                 /* paint = */ null
             )
             canvas.drawImageRect(
-                /* bitmap = */  SkiaImage.makeFromBitmap(bottomRightBitmap),
+                /* bitmap = */  Image.makeFromBitmap(bottomRightBitmap),
                 /* src = */ bottomRightBitmap.size.toRect().toSkiaRect(),
                 /* dst = */ bottomRightRect.toSkiaRect(),
                 /* paint = */ null

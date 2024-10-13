@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
-import com.github.panpf.sketch.painter.ComposeBitmapPainter
+import com.github.panpf.sketch.painter.ImageBitmapPainter
 import com.github.panpf.sketch.painter.PainterWrapper
 import com.github.panpf.sketch.painter.key
 import com.github.panpf.sketch.painter.toLogString
@@ -96,7 +96,7 @@ class PaintersTest {
             }
         }
 
-        ComposeBitmapPainter(createBitmap(101, 202).toComposeBitmap()).apply {
+        ImageBitmapPainter(createBitmap(101, 202).toComposeBitmap()).apply {
             assertEquals(
                 expected = toString(),
                 actual = key(equalityKey = null)
@@ -121,7 +121,7 @@ class PaintersTest {
 
     @Test
     fun testPainterToLogString() {
-        val sketchPainter = ComposeBitmapPainter(createBitmap(101, 202).toComposeBitmap())
+        val sketchPainter = ImageBitmapPainter(createBitmap(101, 202).toComposeBitmap())
         assertEquals(
             expected = sketchPainter.toString(),
             actual = sketchPainter.toLogString()

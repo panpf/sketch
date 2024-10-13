@@ -39,6 +39,9 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * change: ErrorImageState is refactored into ConditionStateImage, and ConditionStateImage can be
   used in placeholder and fallback
 * change: Remove PainterState.Empty
+* change: Removed AndroidBitmap, SkiBitmap, SkiaImageInfo, SkiaImage, SkiaRect, and renamed
+  ComposeImagePainter to ImageBitmapPainter, SkiaAnimatedImage renamed to AnimatedImage,
+  SkiaAnimatedImagePainter renamed to AnimatedImagePainter
 * improve: Improve IconDrawable, support fixed-size background and restrict icons to have fixed
   sizes or specify iconSize
 * improve: Improve IconPainter, support fixed-size background and restrict icons to have fixed

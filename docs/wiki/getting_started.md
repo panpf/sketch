@@ -371,7 +371,7 @@ when (image) {
     is PainterImage -> {
         val painter: Painter = image.painter
     }
-    is SkiaAnimatedImage -> {
+     is AnimatedImage -> {
         val codec: Codec = image.codec
     }
 }

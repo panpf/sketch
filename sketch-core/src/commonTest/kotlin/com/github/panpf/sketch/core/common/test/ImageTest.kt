@@ -8,6 +8,14 @@ import kotlin.test.assertEquals
 class ImageTest {
 
     @Test
+    fun testSketchImage() {
+        assertEquals(
+            expected = com.github.panpf.sketch.Image::class,
+            actual = com.github.panpf.sketch.SketchImage::class
+        )
+    }
+
+    @Test
     fun testSize() {
         assertEquals(
             expected = Size(101, 202),

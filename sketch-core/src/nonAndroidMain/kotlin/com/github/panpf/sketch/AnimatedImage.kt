@@ -20,15 +20,16 @@ package com.github.panpf.sketch
 
 import com.github.panpf.sketch.util.toLogString
 import org.jetbrains.skia.Codec
+import org.jetbrains.skia.ImageInfo
 
 /**
- * Skia animated [Codec] [Image]
+ * Animated [Codec] [Image]
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.SkiaAnimatedImageTest
+ * @see com.github.panpf.sketch.core.nonandroid.test.AnimatedImageTest
  */
-data class SkiaAnimatedImage constructor(
+data class AnimatedImage constructor(
     val codec: Codec,
-    val imageInfo: SkiaImageInfo = codec.imageInfo,
+    val imageInfo: ImageInfo = codec.imageInfo,
     val repeatCount: Int? = null,
     val cacheDecodeTimeoutFrame: Boolean = false,
     val animationStartCallback: (() -> Unit)? = null,
@@ -46,5 +47,5 @@ data class SkiaAnimatedImage constructor(
     override fun checkValid(): Boolean = true
 
     override fun toString(): String =
-        "SkiaAnimatedImage(image=${codec.toLogString()}, shareable=$shareable)"
+        "AnimatedImage(image=${codec.toLogString()}, shareable=$shareable)"
 }

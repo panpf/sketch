@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
-import com.github.panpf.sketch.AndroidBitmap
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.drawable.asEquitable
 import com.github.panpf.sketch.painter.DrawableAnimatablePainter
 import com.github.panpf.sketch.painter.DrawablePainter
@@ -54,7 +54,7 @@ class DrawablePainterTest {
                     )
                 }
 
-                val bitmap = remember { AndroidBitmap(100, 100) }
+                val bitmap = remember { createBitmap(100, 100) }
                 rememberDrawablePainter(BitmapDrawable(null, bitmap).asEquitable(bitmap)).apply {
                     assertEquals(
                         expected = DrawablePainter(
@@ -111,7 +111,7 @@ class DrawablePainterTest {
                 )
             }
 
-        BitmapDrawable(null, AndroidBitmap(100, 100)).asPainter().apply {
+        BitmapDrawable(null, createBitmap(100, 100)).asPainter().apply {
             assertTrue(
                 actual = this is BitmapPainter,
                 message = "Expected: BitmapPainter, actual: $this"

@@ -45,8 +45,8 @@ import androidx.core.graphics.component4
 import androidx.core.graphics.drawable.RoundedBitmapDrawable
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import com.github.panpf.sketch.AndroidBitmap
 import com.github.panpf.sketch.ColorType
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.drawable.SketchDrawable
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
@@ -123,7 +123,7 @@ internal fun Drawable.toBitmap(
     setBounds(0, 0, targetWidth, targetHeight)
 
     val bitmap: Bitmap = if (VERSION.SDK_INT >= VERSION_CODES.O && colorSpace != null) {
-        AndroidBitmap(
+        createBitmap(
             width = targetWidth,
             height = targetHeight,
             config = colorType.safeToSoftware(),
@@ -131,7 +131,7 @@ internal fun Drawable.toBitmap(
             colorSpace = colorSpace
         )
     } else {
-        AndroidBitmap(
+        createBitmap(
             width = targetWidth,
             height = targetHeight,
             config = colorType.safeToSoftware()

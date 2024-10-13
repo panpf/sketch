@@ -37,7 +37,7 @@ class ToFormatStringTest {
                 AndroidDrawableImage(
                     drawable=ResizeDrawable(
                         drawable=BitmapDrawable(
-                            AndroidBitmap@a3a8b76(
+                            Bitmap@a3a8b76(
                                 233x350,
                                 ARGB_8888,
                                 SRGB
@@ -49,7 +49,7 @@ class ToFormatStringTest {
                     shareable=true
                 )
             """.trimIndent(),
-            actual = "AndroidDrawableImage(drawable=ResizeDrawable(drawable=BitmapDrawable(AndroidBitmap@a3a8b76(233x350,ARGB_8888,SRGB)), size=690x690, scale=CENTER_CROP), shareable=true)"
+            actual = "AndroidDrawableImage(drawable=ResizeDrawable(drawable=BitmapDrawable(Bitmap@a3a8b76(233x350,ARGB_8888,SRGB)), size=690x690, scale=CENTER_CROP), shareable=true)"
                 .toFormattedString()
         )
     }

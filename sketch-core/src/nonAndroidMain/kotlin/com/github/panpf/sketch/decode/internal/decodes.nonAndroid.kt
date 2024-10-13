@@ -16,9 +16,8 @@
 
 package com.github.panpf.sketch.decode.internal
 
-import com.github.panpf.sketch.SkiaBitmap
-import com.github.panpf.sketch.SkiaImage
-import com.github.panpf.sketch.SkiaImageInfo
+import com.github.panpf.sketch.Bitmap
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.source.DataSource
@@ -30,6 +29,7 @@ import okio.use
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
+import org.jetbrains.skia.Image
 import org.jetbrains.skia.Rect
 import org.jetbrains.skia.impl.use
 import kotlin.math.ceil
@@ -104,7 +104,7 @@ actual fun DataSource.readImageInfoWithIgnoreExifOrientation(): ImageInfo {
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testReadImageInfo
  */
-fun readImageInfo(codec: Codec, skiaImage: SkiaImage): ImageInfo {
+fun readImageInfo(codec: Codec, skiaImage: Image): ImageInfo {
     val imageSize = Size(width = skiaImage.width, height = skiaImage.height)
     val mimeType = "image/${codec.encodedImageFormat.name.lowercase()}"
     return ImageInfo(size = imageSize, mimeType = mimeType)
@@ -119,7 +119,7 @@ fun readImageInfo(codec: Codec, skiaImage: SkiaImage): ImageInfo {
 actual fun DataSource.readImageInfo(): ImageInfo {
     val bytes = openSource().buffer().use { it.readByteArray() }
     return Codec.makeFromData(Data.makeFromBytes(bytes)).use { codec ->
-        SkiaImage.makeFromEncoded(bytes).use { skiaImage ->
+        Image.makeFromEncoded(bytes).use { skiaImage ->
             readImageInfo(codec, skiaImage)
         }
     }
@@ -131,7 +131,7 @@ actual fun DataSource.readImageInfo(): ImageInfo {
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testDecode
  */
-internal fun SkiaImage.decode(config: DecodeConfig? = null): SkiaBitmap {
+internal fun Image.decode(config: DecodeConfig? = null): Bitmap {
     val sampleSize = config?.sampleSize ?: 1
     val bitmapSize = calculateSampledBitmapSize(
         imageSize = Size(width, height),
@@ -139,14 +139,14 @@ internal fun SkiaImage.decode(config: DecodeConfig? = null): SkiaBitmap {
     )
     val newColorType = config?.colorType ?: colorType
     val newColorSpace = config?.colorSpace ?: colorSpace
-    val newImageInfo = SkiaImageInfo(
+    val newImageInfo = org.jetbrains.skia.ImageInfo(
         width = bitmapSize.width,
         height = bitmapSize.height,
         colorType = newColorType,
         alphaType = alphaType,
         colorSpace = newColorSpace
     )
-    val bitmap = SkiaBitmap(newImageInfo)
+    val bitmap = createBitmap(newImageInfo)
     val canvas = Canvas(bitmap)
     canvas.drawImageRect(
         image = this,
@@ -161,10 +161,10 @@ internal fun SkiaImage.decode(config: DecodeConfig? = null): SkiaBitmap {
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testDecodeRegion
  */
-internal fun SkiaImage.decodeRegion(
+internal fun Image.decodeRegion(
     srcRect: SketchRect,
     config: DecodeConfig? = null
-): SkiaBitmap {
+): Bitmap {
     if (srcRect.isEmpty) {
         throw IllegalArgumentException("srcRect is empty. $srcRect")
     }
@@ -175,14 +175,14 @@ internal fun SkiaImage.decodeRegion(
     )
     val newColorType = config?.colorType ?: colorType
     val newColorSpace = config?.colorSpace ?: colorSpace
-    val newImageInfo = SkiaImageInfo(
+    val newImageInfo = org.jetbrains.skia.ImageInfo(
         width = bitmapSize.width,
         height = bitmapSize.height,
         colorType = newColorType,
         alphaType = alphaType,
         colorSpace = newColorSpace
     )
-    val bitmap = SkiaBitmap(newImageInfo)
+    val bitmap = createBitmap(newImageInfo)
     val canvas = Canvas(bitmap)
     canvas.drawImageRect(
         image = this,

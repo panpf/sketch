@@ -12,7 +12,7 @@ import org.jetbrains.skia.Data
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class SkiaAnimatedImagesTest {
+class AnimatedImagesTest {
 
     @Test
     fun testCodecToLogString() {

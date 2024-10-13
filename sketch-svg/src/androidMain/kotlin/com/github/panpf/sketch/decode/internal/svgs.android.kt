@@ -23,8 +23,8 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.caverock.androidsvg.RenderOptions
 import com.caverock.androidsvg.SVG
-import com.github.panpf.sketch.AndroidBitmap
 import com.github.panpf.sketch.asImage
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
@@ -108,7 +108,7 @@ internal actual fun DataSource.decodeSvg(
     val decodeConfig = DecodeConfig(requestContext.request, PNG.mimeType, isOpaque = false)
     val bitmapConfig = decodeConfig.colorType.safeToSoftware()
     val bitmap = if (VERSION.SDK_INT >= VERSION_CODES.O) {
-        AndroidBitmap(
+        createBitmap(
             width = bitmapSize.width,
             height = bitmapSize.height,
             config = bitmapConfig,
@@ -116,7 +116,7 @@ internal actual fun DataSource.decodeSvg(
             colorSpace = decodeConfig.colorSpace ?: ColorSpace.get(ColorSpace.Named.SRGB),
         )
     } else {
-        AndroidBitmap(
+        createBitmap(
             width = bitmapSize.width,
             height = bitmapSize.height,
             config = bitmapConfig,

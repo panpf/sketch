@@ -2,7 +2,10 @@ package com.github.panpf.sketch.core.android.test
 
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
-import com.github.panpf.sketch.AndroidBitmap
+import android.graphics.ColorSpace
+import com.github.panpf.sketch.ColorType
+import com.github.panpf.sketch.colorType
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.isImmutable
 import com.github.panpf.sketch.size
@@ -17,7 +20,7 @@ import kotlin.test.assertTrue
 class BitmapAndroidTest {
 
     @Test
-    fun testBitmap() {
+    fun testBitmapTypealias() {
         assertEquals(
             expected = android.graphics.Bitmap::class,
             actual = com.github.panpf.sketch.Bitmap::class
@@ -26,26 +29,26 @@ class BitmapAndroidTest {
 
     @Test
     fun testWidth() {
-        assertEquals(expected = 100, actual = AndroidBitmap(100, 200).width)
-        assertEquals(expected = 200, actual = AndroidBitmap(200, 100).width)
+        assertEquals(expected = 100, actual = createBitmap(100, 200).width)
+        assertEquals(expected = 200, actual = createBitmap(200, 100).width)
     }
 
     @Test
     fun testHeight() {
-        assertEquals(expected = 200, actual = AndroidBitmap(100, 200).height)
-        assertEquals(expected = 100, actual = AndroidBitmap(200, 100).height)
+        assertEquals(expected = 200, actual = createBitmap(100, 200).height)
+        assertEquals(expected = 100, actual = createBitmap(200, 100).height)
     }
 
     @Test
     fun testSize() {
-        assertEquals(expected = Size(100, 200), actual = AndroidBitmap(100, 200).size)
-        assertEquals(expected = Size(200, 100), actual = AndroidBitmap(200, 100).size)
+        assertEquals(expected = Size(100, 200), actual = createBitmap(100, 200).size)
+        assertEquals(expected = Size(200, 100), actual = createBitmap(200, 100).size)
     }
 
     @Test
     fun testByteCount() {
-        assertEquals(expected = 80000, actual = AndroidBitmap(100, 200, ARGB_8888).byteCount)
-        assertEquals(expected = 40000, actual = AndroidBitmap(200, 100, RGB_565).byteCount)
+        assertEquals(expected = 80000, actual = createBitmap(100, 200, ARGB_8888).byteCount)
+        assertEquals(expected = 40000, actual = createBitmap(200, 100, RGB_565).byteCount)
     }
 
     @Test
@@ -58,5 +61,62 @@ class BitmapAndroidTest {
     fun testIsImmutable() {
         assertFalse(ResourceImages.jpeg.decode().bitmap.copyWith(isMutable = true).isImmutable)
         assertTrue(ResourceImages.jpeg.decode().bitmap.isImmutable)
+    }
+
+    @Test
+    fun testCreateBitmap() {
+        createBitmap(width = 100, height = 200).apply {
+            assertEquals(expected = 100, actual = width)
+            assertEquals(expected = 200, actual = height)
+            assertEquals(expected = ColorType.ARGB_8888, actual = config)
+            assertEquals(expected = true, actual = hasAlpha())
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                assertEquals(expected = ColorSpace.get(ColorSpace.Named.SRGB), actual = colorSpace)
+            }
+        }
+        createBitmap(width = 100, height = 200, config = ColorType.RGB_565).apply {
+            assertEquals(expected = 100, actual = width)
+            assertEquals(expected = 200, actual = height)
+            assertEquals(expected = ColorType.RGB_565, actual = config)
+            assertEquals(expected = false, actual = hasAlpha())
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                assertEquals(expected = ColorSpace.get(ColorSpace.Named.SRGB), actual = colorSpace)
+            }
+        }
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            createBitmap(
+                width = 100,
+                height = 200,
+                config = ColorType.ARGB_8888,
+                hasAlpha = false,
+                colorSpace = ColorSpace.get(ColorSpace.Named.DISPLAY_P3)
+            ).apply {
+                assertEquals(expected = 100, actual = width)
+                assertEquals(expected = 200, actual = height)
+                assertEquals(expected = ColorType.ARGB_8888, actual = config)
+                assertEquals(expected = false, actual = hasAlpha())
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    assertEquals(
+                        expected = ColorSpace.get(ColorSpace.Named.DISPLAY_P3),
+                        actual = colorSpace
+                    )
+                }
+            }
+        }
+    }
+
+    @Test
+    fun testColorType() {
+        assertEquals(
+            expected = android.graphics.Bitmap.Config::class,
+            actual = ColorType::class
+        )
+
+        createBitmap(100, 200).apply {
+            assertEquals(
+                expected = android.graphics.Bitmap.Config.ARGB_8888,
+                actual = this.colorType
+            )
+        }
     }
 }

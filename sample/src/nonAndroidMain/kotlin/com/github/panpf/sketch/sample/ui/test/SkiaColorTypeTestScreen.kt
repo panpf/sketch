@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ComposableImageRequest
@@ -108,7 +108,7 @@ class SkiaColorTypeTestScreen : BaseScreen() {
         override fun transform(requestContext: RequestContext, input: Image): TransformResult {
             val inputBitmap = (input as BitmapImage).bitmap
             val intPixels = inputBitmap.readIntPixels()
-            val newSkiaBitmap = SkiaBitmap(inputBitmap.imageInfo)
+            val newSkiaBitmap = createBitmap(inputBitmap.imageInfo)
             newSkiaBitmap.installIntPixels(intPixels)
             return TransformResult(
                 image = input.copy(bitmap = newSkiaBitmap),

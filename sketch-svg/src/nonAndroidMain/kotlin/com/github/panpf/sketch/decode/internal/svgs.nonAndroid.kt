@@ -16,9 +16,8 @@
 
 package com.github.panpf.sketch.decode.internal
 
-import com.github.panpf.sketch.SkiaBitmap
-import com.github.panpf.sketch.SkiaImageInfo
 import com.github.panpf.sketch.asImage
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
@@ -130,8 +129,8 @@ internal actual fun DataSource.decodeSvg(
     )
     val newColorType = decodeConfig.colorType ?: ColorType.RGBA_8888
     val newColorSpace = decodeConfig.colorSpace ?: ColorSpace.sRGB
-    val bitmap = SkiaBitmap(
-        SkiaImageInfo(
+    val bitmap = createBitmap(
+        org.jetbrains.skia.ImageInfo(
             width = bitmapSize.width,
             height = bitmapSize.height,
             colorType = newColorType,

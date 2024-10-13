@@ -7,11 +7,11 @@ import android.graphics.Canvas
 import android.graphics.ColorSpace
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import com.github.panpf.sketch.AndroidBitmap
 import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.colorType
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecodeHelper
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
@@ -264,7 +264,7 @@ class BitmapFactoryDecodeHelperTest {
         }
 
         // Merge four pictures
-        val mergedBitmap = AndroidBitmap(
+        val mergedBitmap = createBitmap(
             width = imageInfo.width,
             height = imageInfo.height,
             config = topLeftBitmap.colorType.safeToSoftware()

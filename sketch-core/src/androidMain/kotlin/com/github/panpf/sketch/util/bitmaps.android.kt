@@ -16,7 +16,6 @@
 
 package com.github.panpf.sketch.util
 
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorSpace
@@ -32,7 +31,7 @@ import android.media.ThumbnailUtils
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
-import com.github.panpf.sketch.AndroidBitmap
+import com.github.panpf.sketch.Bitmap
 import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Resize
@@ -110,7 +109,7 @@ val ColorSpace.simpleName: String
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testConfigOrNull
  */
 @Suppress("USELESS_ELVIS")
-val AndroidBitmap.configOrNull: ColorType?
+val Bitmap.configOrNull: ColorType?
     get() = config ?: null
 
 /**
@@ -119,7 +118,7 @@ val AndroidBitmap.configOrNull: ColorType?
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testSafeConfig
  */
 @Suppress("USELESS_ELVIS")
-val AndroidBitmap.safeConfig: ColorType
+val Bitmap.safeConfig: ColorType
     get() = config ?: ColorType.ARGB_8888
 
 
@@ -128,7 +127,7 @@ val AndroidBitmap.safeConfig: ColorType
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testToLogString
  */
-fun AndroidBitmap.toLogString(): String =
+fun Bitmap.toLogString(): String =
     if (VERSION.SDK_INT >= VERSION_CODES.O) {
         "Bitmap@${toHexString()}(${width}x${height},$configOrNull,${colorSpace?.simpleName})"
     } else {
@@ -140,7 +139,7 @@ fun AndroidBitmap.toLogString(): String =
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testToInfoString
  */
-fun AndroidBitmap.toInfoString(): String =
+fun Bitmap.toInfoString(): String =
     if (VERSION.SDK_INT >= VERSION_CODES.O) {
         "Bitmap(width=${width}, height=${height}, config=$configOrNull, colorSpace=${colorSpace?.simpleName})"
     } else {
@@ -152,7 +151,7 @@ fun AndroidBitmap.toInfoString(): String =
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testToShortInfoString
  */
-fun AndroidBitmap.toShortInfoString(): String =
+fun Bitmap.toShortInfoString(): String =
     if (VERSION.SDK_INT >= VERSION_CODES.O) {
         "Bitmap(${width}x${height},$configOrNull,${colorSpace?.simpleName})"
     } else {
@@ -165,7 +164,7 @@ fun AndroidBitmap.toShortInfoString(): String =
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testMutableCopy
  */
-actual fun AndroidBitmap.mutableCopy(): AndroidBitmap {
+actual fun Bitmap.mutableCopy(): Bitmap {
     return this.copyWith(config = config, isMutable = true)
 }
 
@@ -174,7 +173,7 @@ actual fun AndroidBitmap.mutableCopy(): AndroidBitmap {
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testMutableCopyOrSelf
  */
-actual fun AndroidBitmap.mutableCopyOrSelf(): AndroidBitmap {
+actual fun Bitmap.mutableCopyOrSelf(): Bitmap {
     return if (!isMutable) this.copyWith(config = config, isMutable = true) else this
 }
 
@@ -183,10 +182,10 @@ actual fun AndroidBitmap.mutableCopyOrSelf(): AndroidBitmap {
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testCopyWith
  */
-fun AndroidBitmap.copyWith(
+fun Bitmap.copyWith(
     config: ColorType = safeConfig,
     isMutable: Boolean = isMutable()
-): AndroidBitmap {
+): Bitmap {
     return this.copy(/* config = */ config, /* isMutable = */ isMutable)
 }
 
@@ -196,7 +195,7 @@ fun AndroidBitmap.copyWith(
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testHasAlphaPixels
  */
-actual fun AndroidBitmap.hasAlphaPixels(): Boolean {
+actual fun Bitmap.hasAlphaPixels(): Boolean {
     val height = this.height
     val width = this.width
     var hasAlpha = false
@@ -217,7 +216,7 @@ actual fun AndroidBitmap.hasAlphaPixels(): Boolean {
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testReadIntPixels
  */
-actual fun AndroidBitmap.readIntPixels(
+actual fun Bitmap.readIntPixels(
     x: Int, y: Int, width: Int, height: Int
 ): IntArray {
     val pixels = IntArray(width * height)
@@ -238,7 +237,7 @@ actual fun AndroidBitmap.readIntPixels(
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testInstallIntPixels
  */
-actual fun AndroidBitmap.installIntPixels(intPixels: IntArray) {
+actual fun Bitmap.installIntPixels(intPixels: IntArray) {
     setPixels(
         /* pixels = */ intPixels,
         /* offset = */ 0,
@@ -255,7 +254,7 @@ actual fun AndroidBitmap.installIntPixels(intPixels: IntArray) {
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testReadIntPixel
  */
-actual fun AndroidBitmap.readIntPixel(x: Int, y: Int): Int = getPixel(x, y)
+actual fun Bitmap.readIntPixel(x: Int, y: Int): Int = getPixel(x, y)
 
 
 /**
@@ -264,9 +263,9 @@ actual fun AndroidBitmap.readIntPixel(x: Int, y: Int): Int = getPixel(x, y)
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testBackground
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testBackground2
  */
-actual fun AndroidBitmap.background(color: Int): AndroidBitmap {
+actual fun Bitmap.background(color: Int): Bitmap {
     val inputBitmap = this
-    val bitmap = AndroidBitmap.createBitmap(
+    val bitmap = Bitmap.createBitmap(
         /* width = */ inputBitmap.width,
         /* height = */ inputBitmap.height,
         /* config = */ inputBitmap.safeConfig.safeToSoftware(),
@@ -282,7 +281,7 @@ actual fun AndroidBitmap.background(color: Int): AndroidBitmap {
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testBlur
  */
-actual fun AndroidBitmap.blur(radius: Int, firstReuseSelf: Boolean): AndroidBitmap {
+actual fun Bitmap.blur(radius: Int, firstReuseSelf: Boolean): Bitmap {
     val inputBitmap = this
     val outBitmap =
         if (firstReuseSelf) inputBitmap.mutableCopyOrSelf() else inputBitmap.mutableCopy()
@@ -316,7 +315,7 @@ actual fun AndroidBitmap.blur(radius: Int, firstReuseSelf: Boolean): AndroidBitm
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testCircleCrop
  */
-actual fun AndroidBitmap.circleCrop(scale: Scale): AndroidBitmap {
+actual fun Bitmap.circleCrop(scale: Scale): Bitmap {
     val inputBitmap = this
     val newSize = min(inputBitmap.width, inputBitmap.height)
     var newConfig = inputBitmap.safeConfig.safeToSoftware()
@@ -324,7 +323,7 @@ actual fun AndroidBitmap.circleCrop(scale: Scale): AndroidBitmap {
         // Circle cropped require support alpha
         newConfig = ColorType.ARGB_8888
     }
-    val outBitmap = AndroidBitmap.createBitmap(
+    val outBitmap = Bitmap.createBitmap(
         /* width = */ newSize,
         /* height = */ newSize,
         /* config = */ newConfig,
@@ -362,7 +361,7 @@ actual fun AndroidBitmap.circleCrop(scale: Scale): AndroidBitmap {
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testFlip
  */
-actual fun AndroidBitmap.flip(horizontal: Boolean): AndroidBitmap {
+actual fun Bitmap.flip(horizontal: Boolean): Bitmap {
     val inputBitmap = this
     val matrix = Matrix()
     if (horizontal) {
@@ -386,9 +385,9 @@ actual fun AndroidBitmap.flip(horizontal: Boolean): AndroidBitmap {
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testMapping
  */
-actual fun AndroidBitmap.mapping(mapping: ResizeMapping): AndroidBitmap {
+actual fun Bitmap.mapping(mapping: ResizeMapping): Bitmap {
     val inputBitmap = this
-    val outBitmap = AndroidBitmap.createBitmap(
+    val outBitmap = Bitmap.createBitmap(
         /* width = */ mapping.newSize.width,
         /* height = */ mapping.newSize.height,
         /* config = */ inputBitmap.safeConfig.safeToSoftware(),
@@ -408,7 +407,7 @@ actual fun AndroidBitmap.mapping(mapping: ResizeMapping): AndroidBitmap {
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testMask
  */
-actual fun AndroidBitmap.mask(maskColor: Int, firstReuseSelf: Boolean): AndroidBitmap {
+actual fun Bitmap.mask(maskColor: Int, firstReuseSelf: Boolean): Bitmap {
     val inputBitmap = this
     val outBitmap =
         if (firstReuseSelf) inputBitmap.mutableCopyOrSelf() else inputBitmap.mutableCopy()
@@ -432,7 +431,7 @@ actual fun AndroidBitmap.mask(maskColor: Int, firstReuseSelf: Boolean): AndroidB
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testRotate
  */
-actual fun AndroidBitmap.rotate(angle: Int): AndroidBitmap {
+actual fun Bitmap.rotate(angle: Int): Bitmap {
     val finalAngle = (angle % 360).let { if (it < 0) 360 + it else it }
     val inputBitmap = this
     val matrix = Matrix().apply {
@@ -454,7 +453,7 @@ actual fun AndroidBitmap.rotate(angle: Int): AndroidBitmap {
         // Non-positive angle require support alpha
         newConfig = ColorType.ARGB_8888
     }
-    val outBitmap = AndroidBitmap.createBitmap(
+    val outBitmap = Bitmap.createBitmap(
         /* width = */ newWidth,
         /* height = */ newHeight,
         /* config = */ newConfig,
@@ -474,14 +473,14 @@ actual fun AndroidBitmap.rotate(angle: Int): AndroidBitmap {
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testRoundedCorners
  */
-actual fun AndroidBitmap.roundedCorners(radiusArray: FloatArray): AndroidBitmap {
+actual fun Bitmap.roundedCorners(radiusArray: FloatArray): Bitmap {
     val inputBitmap = this
     var newConfig = inputBitmap.safeConfig.safeToSoftware()
     if (newConfig == ColorType.RGB_565) {
         // Rounded corners require support alpha
         newConfig = ColorType.ARGB_8888
     }
-    val newBitmap = AndroidBitmap.createBitmap(
+    val newBitmap = Bitmap.createBitmap(
         /* width = */ inputBitmap.width,
         /* height = */ inputBitmap.height,
         /* config = */ newConfig,
@@ -515,11 +514,11 @@ actual fun AndroidBitmap.roundedCorners(radiusArray: FloatArray): AndroidBitmap 
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testScale
  */
-actual fun AndroidBitmap.scale(scaleFactor: Float): AndroidBitmap {
+actual fun Bitmap.scale(scaleFactor: Float): Bitmap {
     val scaledWidth = ceil(width * scaleFactor).toInt()
     val scaledHeight = ceil(height * scaleFactor).toInt()
     val newConfig = this.safeConfig.safeToSoftware()
-    val newBitmap = AndroidBitmap.createBitmap(
+    val newBitmap = Bitmap.createBitmap(
         /* width = */ scaledWidth,
         /* height = */ scaledHeight,
         /* config = */ newConfig,
@@ -537,7 +536,7 @@ actual fun AndroidBitmap.scale(scaleFactor: Float): AndroidBitmap {
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testThumbnail
  */
-actual fun AndroidBitmap.thumbnail(width: Int, height: Int): AndroidBitmap {
+actual fun Bitmap.thumbnail(width: Int, height: Int): Bitmap {
     val outputBitmap = ThumbnailUtils.extractThumbnail(this, width, height)
     return outputBitmap
 }

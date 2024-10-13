@@ -2,7 +2,7 @@
 
 package com.github.panpf.sketch.core.nonandroid.test.util
 
-import com.github.panpf.sketch.SkiaBitmap
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.isMutable
@@ -271,7 +271,7 @@ class BitmapsNonAndroidTest {
         @Suppress("EnumValuesSoftDeprecate")
         ColorType.values().filter { it != ColorType.UNKNOWN }.forEach { colorType ->
             val jpegBitmap = ResourceImages.jpeg.decode(BitmapColorType(colorType)).bitmap
-            val newJpegBitmap = SkiaBitmap(jpegBitmap.imageInfo)
+            val newJpegBitmap = createBitmap(jpegBitmap.imageInfo)
             if (jpegBitmap.produceFingerPrint() == "ffffffffffffffff") {
                 assertTrue(
                     actual = jpegBitmap.similarity(newJpegBitmap) == 0,
@@ -297,7 +297,7 @@ class BitmapsNonAndroidTest {
             )
 
             val pngBitmap = ResourceImages.png.decode(BitmapColorType(colorType)).bitmap
-            val newPngBitmap = SkiaBitmap(pngBitmap.imageInfo)
+            val newPngBitmap = createBitmap(pngBitmap.imageInfo)
             if (pngBitmap.produceFingerPrint() == "ffffffffffffffff") {
                 assertTrue(
                     actual = pngBitmap.similarity(newPngBitmap) == 0,
@@ -469,7 +469,7 @@ class BitmapsNonAndroidTest {
             }
             assertEquals(expected = jpegIntPixels.toList(), actual = piecedIntPexels.toList())
 
-            val newJpegBitmap = SkiaBitmap(jpegBitmap.imageInfo)
+            val newJpegBitmap = createBitmap(jpegBitmap.imageInfo)
             newJpegBitmap.installIntPixels(piecedIntPexels)
             assertTrue(actual = jpegBitmap.similarity(newJpegBitmap) == 0)
         }
@@ -480,7 +480,7 @@ class BitmapsNonAndroidTest {
         @Suppress("EnumValuesSoftDeprecate")
         ColorType.values().filter { it != ColorType.UNKNOWN }.forEach { colorType ->
             val jpegBitmap = ResourceImages.jpeg.decode(BitmapColorType(colorType)).bitmap
-            val newJpegBitmap = SkiaBitmap(jpegBitmap.imageInfo)
+            val newJpegBitmap = createBitmap(jpegBitmap.imageInfo)
             if (jpegBitmap.produceFingerPrint() == "ffffffffffffffff") {
                 assertTrue(
                     actual = jpegBitmap.similarity(newJpegBitmap) == 0,
@@ -506,7 +506,7 @@ class BitmapsNonAndroidTest {
             )
 
             val pngBitmap = ResourceImages.png.decode(BitmapColorType(colorType)).bitmap
-            val newPngBitmap = SkiaBitmap(pngBitmap.imageInfo)
+            val newPngBitmap = createBitmap(pngBitmap.imageInfo)
             if (pngBitmap.produceFingerPrint() == "ffffffffffffffff") {
                 assertTrue(
                     actual = pngBitmap.similarity(newPngBitmap) == 0,

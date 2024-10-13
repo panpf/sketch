@@ -17,8 +17,7 @@
 package com.github.panpf.sketch.cache
 
 import com.github.panpf.sketch.BitmapImage
-import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.SkiaImage
+import com.github.panpf.sketch.SketchImage
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
@@ -29,6 +28,7 @@ import okio.BufferedSink
 import okio.buffer
 import okio.use
 import org.jetbrains.skia.EncodedImageFormat
+import org.jetbrains.skia.Image
 import org.jetbrains.skia.impl.use
 
 /**
@@ -45,13 +45,13 @@ actual fun createImageSerializer(): ImageSerializer = SkiaBitmapImageSerializer
  */
 object SkiaBitmapImageSerializer : ImageSerializer {
 
-    override fun supportImage(image: Image): Boolean {
+    override fun supportImage(image: SketchImage): Boolean {
         return image is BitmapImage
     }
 
-    override fun compress(image: Image, sink: BufferedSink) {
+    override fun compress(image: SketchImage, sink: BufferedSink) {
         require(image is BitmapImage) { "Unsupported image type: ${image::class}" }
-        val encodedData = SkiaImage.makeFromBitmap(image.bitmap).use {
+        val encodedData = Image.makeFromBitmap(image.bitmap).use {
             it.encodeToData(format = EncodedImageFormat.PNG, quality = 100)
         }
         encodedData?.use {
@@ -63,9 +63,9 @@ object SkiaBitmapImageSerializer : ImageSerializer {
         requestContext: RequestContext,
         imageInfo: ImageInfo,
         dataSource: DataSource
-    ): Image {
+    ): SketchImage {
         val bytes = dataSource.openSource().buffer().use { it.readByteArray() }
-        val skiaBitmap = SkiaImage.makeFromEncoded(bytes).use {
+        val skiaBitmap = Image.makeFromEncoded(bytes).use {
             val decodeConfig = DecodeConfig(
                 request = requestContext.request,
                 mimeType = imageInfo.mimeType,

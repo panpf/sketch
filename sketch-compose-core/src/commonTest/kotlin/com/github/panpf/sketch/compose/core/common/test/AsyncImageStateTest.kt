@@ -24,7 +24,7 @@ import com.github.panpf.sketch.PainterImage
 import com.github.panpf.sketch.PainterState
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.painter.ComposeBitmapPainter
+import com.github.panpf.sketch.painter.ImageBitmapPainter
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
@@ -322,7 +322,7 @@ class AsyncImageStateTest {
         target.onSuccess(sketch, request, createBitmapImage(101, 202)).apply {
             assertEquals(
                 expected = FilterQuality.Low,
-                actual = asyncImageState.painter!!.asOrThrow<ComposeBitmapPainter>().filterQuality
+                actual = asyncImageState.painter!!.asOrThrow<ImageBitmapPainter>().filterQuality
             )
         }
 
@@ -333,7 +333,7 @@ class AsyncImageStateTest {
         target.onSuccess(sketch, request, createBitmapImage(101, 202)).apply {
             assertEquals(
                 expected = FilterQuality.High,
-                actual = asyncImageState.painter!!.asOrThrow<ComposeBitmapPainter>().filterQuality
+                actual = asyncImageState.painter!!.asOrThrow<ImageBitmapPainter>().filterQuality
             )
         }
     }
@@ -665,7 +665,7 @@ class AsyncImageStateTest {
             block(2000)
 
             asyncImageState.painter!!.apply {
-                assertTrue(actual = this is ComposeBitmapPainter, message = "painter=$this")
+                assertTrue(actual = this is ImageBitmapPainter, message = "painter=$this")
                 assertEquals(expected = (resourceImage.size / 2f).toSize(), actual = intrinsicSize)
                 assertEquals(expected = FilterQuality.Low, actual = filterQuality)
             }
@@ -692,7 +692,7 @@ class AsyncImageStateTest {
             asyncImageState.request = request1
             block(2000)
             asyncImageState.painter!!.apply {
-                assertTrue(actual = this is ComposeBitmapPainter, message = "painter=$this")
+                assertTrue(actual = this is ImageBitmapPainter, message = "painter=$this")
                 assertEquals(expected = resourceImage.size.toSize(), actual = intrinsicSize)
                 assertEquals(expected = FilterQuality.Low, actual = filterQuality)
             }
@@ -707,7 +707,7 @@ class AsyncImageStateTest {
             asyncImageState.request = request2
             block(2000)
             asyncImageState.painter!!.apply {
-                assertTrue(actual = this is ComposeBitmapPainter, message = "painter=$this")
+                assertTrue(actual = this is ImageBitmapPainter, message = "painter=$this")
                 assertEquals(expected = ComposeSize(300f, 300f), actual = intrinsicSize)
                 assertEquals(expected = FilterQuality.Low, actual = filterQuality)
             }
@@ -722,7 +722,7 @@ class AsyncImageStateTest {
             asyncImageState.contentScale = ContentScale.FillBounds
             block(2000)
             asyncImageState.painter!!.apply {
-                assertTrue(actual = this is ComposeBitmapPainter, message = "painter=$this")
+                assertTrue(actual = this is ImageBitmapPainter, message = "painter=$this")
                 assertEquals(expected = ComposeSize(300f, 300f), actual = intrinsicSize)
                 assertEquals(expected = FilterQuality.Low, actual = filterQuality)
             }
@@ -737,7 +737,7 @@ class AsyncImageStateTest {
             asyncImageState.filterQuality = FilterQuality.High
             block(2000)
             asyncImageState.painter!!.apply {
-                assertTrue(actual = this is ComposeBitmapPainter, message = "painter=$this")
+                assertTrue(actual = this is ImageBitmapPainter, message = "painter=$this")
                 assertEquals(expected = ComposeSize(300f, 300f), actual = intrinsicSize)
                 assertEquals(expected = FilterQuality.High, actual = filterQuality)
             }
@@ -914,7 +914,7 @@ class AsyncImageStateTest {
             assertEquals(expected = null, actual = painterHistory[0])
             assertEquals(expected = ColorPainter(Color.Gray), actual = painterHistory[1])
             assertTrue(
-                actual = painterHistory[2] is ComposeBitmapPainter,
+                actual = painterHistory[2] is ImageBitmapPainter,
                 message = "painter=${painterHistory[2]}"
             )
 
@@ -929,7 +929,7 @@ class AsyncImageStateTest {
                 actual = painterStateHistory[1]
             )
             assertTrue(
-                actual = painterStateHistory[2]?.asOrThrow<PainterState.Success>()?.painter is ComposeBitmapPainter,
+                actual = painterStateHistory[2]?.asOrThrow<PainterState.Success>()?.painter is ImageBitmapPainter,
                 message = "painter=${painterStateHistory[2]}"
             )
 

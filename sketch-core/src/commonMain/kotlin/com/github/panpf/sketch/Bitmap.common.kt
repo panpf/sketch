@@ -21,10 +21,10 @@ package com.github.panpf.sketch
 import com.github.panpf.sketch.util.Size
 
 /**
- * Bitmap, which is a typealias of platform Bitmap
+ * Bitmap, which is a alias of platform Bitmap
  *
- * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testBitmap
- * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testBitmap
+ * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testBitmapTypealias
+ * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testBitmapTypealias
  */
 expect class Bitmap
 

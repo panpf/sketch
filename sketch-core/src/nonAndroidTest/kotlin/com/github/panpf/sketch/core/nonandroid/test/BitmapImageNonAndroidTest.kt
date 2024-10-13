@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.core.nonandroid.test
 
 import com.github.panpf.sketch.BitmapImage
-import com.github.panpf.sketch.SkiaBitmap
 import com.github.panpf.sketch.asImage
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.util.toLogString
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -15,7 +15,7 @@ class BitmapImageNonAndroidTest {
 
     @Test
     fun testAsImage() {
-        val sourceBitmap = SkiaBitmap(100, 100)
+        val sourceBitmap = createBitmap(100, 100)
         sourceBitmap.asImage().apply {
             assertSame(expected = sourceBitmap, actual = bitmap)
             assertTrue(actual = shareable)
@@ -28,7 +28,7 @@ class BitmapImageNonAndroidTest {
 
     @Test
     fun testConstructor() {
-        val bitmap = SkiaBitmap(100, 100)
+        val bitmap = createBitmap(100, 100)
         BitmapImage(bitmap).apply {
             assertSame(expected = bitmap, actual = bitmap)
             assertTrue(actual = shareable)
@@ -41,11 +41,11 @@ class BitmapImageNonAndroidTest {
 
     @Test
     fun testWidthHeight() {
-        BitmapImage(SkiaBitmap(100, 200)).apply {
+        BitmapImage(createBitmap(100, 200)).apply {
             assertEquals(expected = 100, actual = width)
             assertEquals(expected = 200, actual = height)
         }
-        BitmapImage(SkiaBitmap(200, 100)).apply {
+        BitmapImage(createBitmap(200, 100)).apply {
             assertEquals(expected = 200, actual = width)
             assertEquals(expected = 100, actual = height)
         }
@@ -53,17 +53,17 @@ class BitmapImageNonAndroidTest {
 
     @Test
     fun testByteCount() {
-        BitmapImage(SkiaBitmap(100, 200)).apply {
+        BitmapImage(createBitmap(100, 200)).apply {
             assertEquals(expected = 100 * 200 * 4L, actual = byteCount)
         }
-        BitmapImage(SkiaBitmap(200, 300)).apply {
+        BitmapImage(createBitmap(200, 300)).apply {
             assertEquals(expected = 200 * 300 * 4L, actual = byteCount)
         }
     }
 
     @Test
     fun testCheckValid() {
-        BitmapImage(SkiaBitmap(100, 200)).apply {
+        BitmapImage(createBitmap(100, 200)).apply {
             assertTrue(actual = checkValid())
             assertTrue(actual = checkValid())
             assertTrue(actual = checkValid())
@@ -72,9 +72,9 @@ class BitmapImageNonAndroidTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = BitmapImage(SkiaBitmap(100, 200))
+        val element1 = BitmapImage(createBitmap(100, 200))
         val element11 = element1.copy()
-        val element2 = element1.copy(SkiaBitmap(200, 100))
+        val element2 = element1.copy(createBitmap(200, 100))
         val element3 = element1.copy(shareable = false)
 
         assertEquals(element1, element11)
@@ -92,7 +92,7 @@ class BitmapImageNonAndroidTest {
 
     @Test
     fun testToString() {
-        val bitmap = SkiaBitmap(100, 200)
+        val bitmap = createBitmap(100, 200)
         assertEquals(
             expected = "BitmapImage(bitmap=${bitmap.toLogString()}, shareable=true)",
             actual = BitmapImage(bitmap).toString()

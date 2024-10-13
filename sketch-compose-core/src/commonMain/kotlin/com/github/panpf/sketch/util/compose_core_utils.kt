@@ -22,6 +22,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.geometry.isUnspecified
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.colorspace.ColorSpace
 import androidx.compose.ui.graphics.colorspace.ColorSpaces
 import androidx.compose.ui.graphics.painter.Painter
@@ -239,3 +240,11 @@ internal inline fun <reified R> Any?.asOrNull(): R? {
  * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testToHexString
  */
 internal fun Any.toHexString(): String = this.hashCode().toString(16)
+
+/**
+ * Convert [ImageBitmap] to log string
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testImageBitmapToLogString
+ */
+fun ImageBitmap.toLogString(): String =
+    "ImageBitmap@${toHexString()}(${width}x${height},$config,${colorSpace.simpleName})"

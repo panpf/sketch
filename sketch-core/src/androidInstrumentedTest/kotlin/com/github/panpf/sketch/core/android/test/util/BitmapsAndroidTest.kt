@@ -22,8 +22,8 @@ import android.graphics.ColorSpace
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.AndroidBitmap
 import com.github.panpf.sketch.ColorType
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.internal.decode
@@ -241,7 +241,7 @@ class BitmapsAndroidTest {
     fun testConfigOrNull() {
         assertEquals(
             expected = Bitmap.Config.ARGB_8888,
-            actual = AndroidBitmap(100, 100).configOrNull
+            actual = createBitmap(100, 100).configOrNull
         )
         // Unable to create Bitmap with null config
     }
@@ -658,7 +658,7 @@ class BitmapsAndroidTest {
             .forEach { colorType ->
                 val jpegBitmap = ResourceImages.jpeg.decode(BitmapColorType(colorType)).bitmap
                 val newJpegBitmap =
-                    AndroidBitmap(jpegBitmap.width, jpegBitmap.height, jpegBitmap.config)
+                    createBitmap(jpegBitmap.width, jpegBitmap.height, jpegBitmap.config)
                 if (jpegBitmap.produceFingerPrint() == "ffffffffffffffff") {
                     assertTrue(
                         actual = jpegBitmap.similarity(newJpegBitmap) == 0,
@@ -685,7 +685,7 @@ class BitmapsAndroidTest {
 
                 val pngBitmap = ResourceImages.png.decode(BitmapColorType(colorType)).bitmap
                 val newPngBitmap =
-                    AndroidBitmap(pngBitmap.width, pngBitmap.height, pngBitmap.config)
+                    createBitmap(pngBitmap.width, pngBitmap.height, pngBitmap.config)
                 if (pngBitmap.produceFingerPrint() == "ffffffffffffffff") {
                     assertTrue(
                         actual = pngBitmap.similarity(newPngBitmap) == 0,
@@ -860,7 +860,7 @@ class BitmapsAndroidTest {
                 assertEquals(expected = jpegIntPixels.toList(), actual = piecedIntPexels.toList())
 
                 val newJpegBitmap =
-                    AndroidBitmap(jpegBitmap.width, jpegBitmap.height, jpegBitmap.config)
+                    createBitmap(jpegBitmap.width, jpegBitmap.height, jpegBitmap.config)
                 newJpegBitmap.installIntPixels(piecedIntPexels)
                 assertTrue(actual = jpegBitmap.similarity(newJpegBitmap) == 0)
             }
@@ -874,7 +874,7 @@ class BitmapsAndroidTest {
             .forEach { colorType ->
                 val jpegBitmap = ResourceImages.jpeg.decode(BitmapColorType(colorType)).bitmap
                 val newJpegBitmap =
-                    AndroidBitmap(jpegBitmap.width, jpegBitmap.height, jpegBitmap.config)
+                    createBitmap(jpegBitmap.width, jpegBitmap.height, jpegBitmap.config)
                 if (jpegBitmap.produceFingerPrint() == "ffffffffffffffff") {
                     assertTrue(
                         actual = jpegBitmap.similarity(newJpegBitmap) == 0,
@@ -901,7 +901,7 @@ class BitmapsAndroidTest {
 
                 val pngBitmap = ResourceImages.png.decode(BitmapColorType(colorType)).bitmap
                 val newPngBitmap =
-                    AndroidBitmap(pngBitmap.width, pngBitmap.height, pngBitmap.config)
+                    createBitmap(pngBitmap.width, pngBitmap.height, pngBitmap.config)
                 if (pngBitmap.produceFingerPrint() == "ffffffffffffffff") {
                     assertTrue(
                         actual = pngBitmap.similarity(newPngBitmap) == 0,

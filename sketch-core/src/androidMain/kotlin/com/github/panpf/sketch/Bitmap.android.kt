@@ -18,10 +18,15 @@
 
 package com.github.panpf.sketch
 
+import android.graphics.ColorSpace
+import android.os.Build
+import androidx.annotation.RequiresApi
+import com.github.panpf.sketch.util.configOrNull
+
 /**
- * Bitmap, which is a typealias of [android.graphics.Bitmap]
+ * Bitmap, which is a alias of [android.graphics.Bitmap]
  *
- * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testBitmap
+ * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testBitmapTypealias
  */
 actual typealias Bitmap = android.graphics.Bitmap
 
@@ -68,3 +73,44 @@ actual val Bitmap.isMutable: Boolean
  */
 actual val Bitmap.isImmutable: Boolean
     get() = !this.isMutable
+
+
+/**
+ * Added an alias [ColorType] to Bitmap.Config
+ *
+ * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testColorType
+ */
+typealias ColorType = android.graphics.Bitmap.Config
+
+/**
+ * Get the [ColorType] of the bitmap
+ *
+ * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testColorType
+ */
+val Bitmap.colorType: ColorType?
+    get() = configOrNull
+
+/**
+ * Create a new [Bitmap] with the specified width, height, and [ColorType] and allocate memory
+ *
+ * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testCreateBitmap
+ */
+fun createBitmap(
+    width: Int,
+    height: Int,
+    config: ColorType = ColorType.ARGB_8888
+): Bitmap = Bitmap.createBitmap(width, height, config)
+
+/**
+ * Create a new [Bitmap] with the specified width, height, and [ColorType] and allocate memory
+ *
+ * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testCreateBitmap
+ */
+@RequiresApi(Build.VERSION_CODES.O)
+fun createBitmap(
+    width: Int,
+    height: Int,
+    config: ColorType = ColorType.ARGB_8888,
+    hasAlpha: Boolean,
+    colorSpace: ColorSpace
+): Bitmap = Bitmap.createBitmap(width, height, config, hasAlpha, colorSpace)

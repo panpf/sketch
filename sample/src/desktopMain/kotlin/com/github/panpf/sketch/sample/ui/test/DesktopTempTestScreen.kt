@@ -11,11 +11,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.github.panpf.sketch.AnimatedImage
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.SingletonSketch
-import com.github.panpf.sketch.SkiaAnimatedImage
 import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.painter.SkiaAnimatedImagePainter
+import com.github.panpf.sketch.painter.AnimatedImagePainter
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.animationEndCallback
@@ -71,7 +71,7 @@ class DesktopTempTestScreen : BaseScreen() {
 //                    modifier = Modifier.size(200.dp).background(Color.Cyan)
 //                )
 
-                var animatedPainter by remember { mutableStateOf<SkiaAnimatedImagePainter?>(null) }
+                var animatedPainter by remember { mutableStateOf<AnimatedImagePainter?>(null) }
                 val context = LocalPlatformContext.current
                 LaunchedEffect(Unit) {
                     withContext(ioCoroutineDispatcher()) {
@@ -84,14 +84,14 @@ class DesktopTempTestScreen : BaseScreen() {
                             .use { it.readByteArray() }
 
                         val data = Data.makeFromBytes(bytes)
-                        val image = SkiaAnimatedImage(
+                        val image = AnimatedImage(
                             codec = Codec.makeFromData(data),
                             repeatCount = null,
                             cacheDecodeTimeoutFrame = true,
                             animationStartCallback = request.animationStartCallback,
                             animationEndCallback = request.animationEndCallback
                         )
-                        animatedPainter = SkiaAnimatedImagePainter(
+                        animatedPainter = AnimatedImagePainter(
                             animatedImage = image,
                         )
                     }

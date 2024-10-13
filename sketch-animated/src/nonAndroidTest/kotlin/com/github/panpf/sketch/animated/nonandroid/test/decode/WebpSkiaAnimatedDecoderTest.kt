@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.animated.nonandroid.test.decode
 
+import com.github.panpf.sketch.AnimatedImage
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.SkiaAnimatedImage
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.WebpSkiaAnimatedDecoder
 import com.github.panpf.sketch.decode.supportSkiaAnimatedWebp
@@ -116,7 +116,7 @@ class WebpSkiaAnimatedDecoderTest {
             assertEquals(expected = Size(width = 480, height = 270), actual = image.size)
             assertEquals(expected = LOCAL, actual = this.dataFrom)
             assertEquals(expected = null, actual = this.transformeds)
-            assertEquals(expected = null, actual = image.asOrThrow<SkiaAnimatedImage>().repeatCount)
+            assertEquals(expected = null, actual = image.asOrThrow<AnimatedImage>().repeatCount)
         }
 
         ImageRequest(context, ResourceImages.animWebp.uri) {
@@ -127,7 +127,7 @@ class WebpSkiaAnimatedDecoderTest {
             assertEquals(expected = Size(width = 480, height = 270), actual = image.size)
             assertEquals(expected = LOCAL, actual = this.dataFrom)
             assertEquals(expected = null, actual = this.transformeds)
-            assertEquals(expected = 3, actual = image.asOrThrow<SkiaAnimatedImage>().repeatCount)
+            assertEquals(expected = 3, actual = image.asOrThrow<AnimatedImage>().repeatCount)
         }
     }
 

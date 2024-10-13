@@ -18,10 +18,16 @@
 
 package com.github.panpf.sketch
 
+import org.jetbrains.skia.ColorAlphaType
+import org.jetbrains.skia.ColorInfo
+import org.jetbrains.skia.ColorSpace
+import org.jetbrains.skia.ColorType
+import org.jetbrains.skia.ImageInfo
+
 /**
- * Bitmap, which is a typealias of [org.jetbrains.skia.Bitmap]
+ * Bitmap, which is a alias of [org.jetbrains.skia.Bitmap]
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testBitmap
+ * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testBitmapTypealias
  */
 actual typealias Bitmap = org.jetbrains.skia.Bitmap
 
@@ -67,3 +73,25 @@ actual val Bitmap.isMutable: Boolean
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 actual val Bitmap.isImmutable: Boolean
     get() = this.isImmutable
+
+/**
+ * Create a new [Bitmap] with the specified [ImageInfo] and allocate memory
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testCreateBitmap
+ */
+fun createBitmap(imageInfo: ImageInfo): Bitmap = Bitmap()
+    .apply { allocPixels(imageInfo) }
+
+/**
+ * Create a new [Bitmap] with the specified width, height, and [ColorInfo] and allocate memory
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testCreateBitmap
+ */
+fun createBitmap(
+    width: Int,
+    height: Int,
+    colorType: ColorType = ColorType.N32,
+    alphaType: ColorAlphaType = ColorAlphaType.PREMUL,
+    colorSpace: ColorSpace = ColorSpace.sRGB,
+): Bitmap = Bitmap()
+    .apply { allocPixels(ImageInfo(width, height, colorType, alphaType, colorSpace)) }

@@ -2,26 +2,26 @@ package com.github.panpf.sketch.compose.core.common.test.painter
 
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.FilterQuality
-import com.github.panpf.sketch.painter.ComposeBitmapPainter
+import com.github.panpf.sketch.painter.ImageBitmapPainter
 import com.github.panpf.sketch.painter.asPainter
 import com.github.panpf.sketch.test.utils.createBitmap
 import com.github.panpf.sketch.test.utils.toComposeBitmap
-import com.github.panpf.sketch.toLogString
+import com.github.panpf.sketch.util.toLogString
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
-class ComposeBitmapPainterTest {
+class ImageBitmapPainterTest {
 
     @Test
-    fun testComposeBitmapAsPainter() {
+    fun testAsPainter() {
         val composeBitmap = createBitmap(100, 100).toComposeBitmap()
         assertEquals(
-            expected = ComposeBitmapPainter(composeBitmap),
+            expected = ImageBitmapPainter(composeBitmap),
             actual = composeBitmap.asPainter()
         )
         assertEquals(
-            expected = ComposeBitmapPainter(composeBitmap, FilterQuality.High),
+            expected = ImageBitmapPainter(composeBitmap, FilterQuality.High),
             actual = composeBitmap.asPainter(FilterQuality.High)
         )
     }
@@ -29,10 +29,10 @@ class ComposeBitmapPainterTest {
     @Test
     fun testIntrinsicSize() {
         val composeBitmap = createBitmap(101, 202).toComposeBitmap()
-        val composeBitmapPainter = ComposeBitmapPainter(composeBitmap)
+        val imageBitmapPainter = ImageBitmapPainter(composeBitmap)
         assertEquals(
             expected = Size(101f, 202f),
-            actual = composeBitmapPainter.intrinsicSize
+            actual = imageBitmapPainter.intrinsicSize
         )
     }
 
@@ -45,10 +45,10 @@ class ComposeBitmapPainterTest {
     fun testEqualsAndHashCode() {
         val composeBitmap1 = createBitmap(101, 202).toComposeBitmap()
         val composeBitmap2 = createBitmap(101, 202).toComposeBitmap()
-        val element1 = ComposeBitmapPainter(composeBitmap1)
-        val element11 = ComposeBitmapPainter(composeBitmap1)
-        val element2 = ComposeBitmapPainter(composeBitmap2)
-        val element3 = ComposeBitmapPainter(composeBitmap2, FilterQuality.High)
+        val element1 = ImageBitmapPainter(composeBitmap1)
+        val element11 = ImageBitmapPainter(composeBitmap1)
+        val element2 = ImageBitmapPainter(composeBitmap2)
+        val element3 = ImageBitmapPainter(composeBitmap2, FilterQuality.High)
 
         assertEquals(expected = element1, actual = element11)
         assertNotEquals(illegal = element1, actual = element2)
@@ -66,9 +66,9 @@ class ComposeBitmapPainterTest {
     @Test
     fun testToString() {
         val composeBitmap = createBitmap(101, 202).toComposeBitmap()
-        val element = ComposeBitmapPainter(composeBitmap)
+        val element = ImageBitmapPainter(composeBitmap)
         assertEquals(
-            expected = "ComposeBitmapPainter(bitmap=${composeBitmap.toLogString()}, filterQuality=Low)",
+            expected = "ImageBitmapPainter(bitmap=${composeBitmap.toLogString()}, filterQuality=Low)",
             actual = element.toString()
         )
     }

@@ -21,9 +21,9 @@ import android.graphics.Canvas
 import android.graphics.ColorSpace
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import com.github.panpf.sketch.AndroidBitmap
 import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.colorType
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
@@ -1584,7 +1584,7 @@ class DecodesAndroidTest {
         }
 
         // Merge four pictures
-        val mergedBitmap = AndroidBitmap(
+        val mergedBitmap = createBitmap(
             width = imageInfo.width,
             height = imageInfo.height,
             config = topLeftBitmap.colorType.safeToSoftware()

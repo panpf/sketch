@@ -54,7 +54,7 @@ interface AnimatablePainter {
 fun AnimatablePainter.startWithLifecycle() {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val animatablePainter =
-        remember(this) { this } // SkiaAnimatedImagePainter needs to trigger onRemembered
+        remember(this) { this } // AnimatedImagePainter needs to trigger onRemembered
     DisposableEffect(animatablePainter) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_START) {

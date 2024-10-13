@@ -20,6 +20,13 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
+ * Alias of [Rect]
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.RectTest.testSketchRect
+ */
+typealias SketchRect = Rect
+
+/**
  * Rect holds four integer coordinates for a rectangle. The rectangle is
  * represented by the coordinates of its 4 edges (left, top, right bottom).
  * These fields can be accessed directly. Use width() and height() to retrieve

@@ -26,6 +26,14 @@ import kotlin.test.assertNotSame
 class ImageInfoTest {
 
     @Test
+    fun testSketchImageInfo() {
+        assertEquals(
+            expected = ImageInfo::class,
+            actual = com.github.panpf.sketch.decode.SketchImageInfo::class
+        )
+    }
+
+    @Test
     fun testConstructor() {
         ImageInfo(57, 34, "image/jpeg").apply {
             assertEquals(57, width)

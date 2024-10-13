@@ -3,14 +3,14 @@ package com.github.panpf.sketch.compose.core.nonandroid.test
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.painter.ColorPainter
-import com.github.panpf.sketch.SkiaAnimatedImage
-import com.github.panpf.sketch.SkiaBitmap
+import com.github.panpf.sketch.AnimatedImage
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.asPainter
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
-import com.github.panpf.sketch.painter.ComposeBitmapPainter
-import com.github.panpf.sketch.painter.SkiaAnimatedImagePainter
+import com.github.panpf.sketch.painter.AnimatedImagePainter
+import com.github.panpf.sketch.painter.ImageBitmapPainter
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
@@ -35,15 +35,15 @@ class PainterImageNonAndroidTest {
             actual = colorPainter.asImage().asPainter()
         )
 
-        val bitmap = SkiaBitmap(100, 100)
+        val bitmap = createBitmap(100, 100)
         assertEquals(
             expected = FilterQuality.Low,
-            actual = bitmap.asImage().asPainter().asOrThrow<ComposeBitmapPainter>().filterQuality
+            actual = bitmap.asImage().asPainter().asOrThrow<ImageBitmapPainter>().filterQuality
         )
         assertEquals(
             expected = FilterQuality.High,
             actual = bitmap.asImage().asPainter(FilterQuality.High)
-                .asOrThrow<ComposeBitmapPainter>().filterQuality
+                .asOrThrow<ImageBitmapPainter>().filterQuality
         )
 
         val context = getTestContext()
@@ -51,10 +51,10 @@ class PainterImageNonAndroidTest {
             .openSource().buffer().use { it.readByteArray() }
             .let { Data.makeFromBytes(it) }
             .let { Codec.makeFromData(it) }
-        val skiaAnimatedImage = SkiaAnimatedImage(codec)
+        val animatedImage = AnimatedImage(codec)
         assertEquals(
-            expected = SkiaAnimatedImagePainter(skiaAnimatedImage),
-            actual = skiaAnimatedImage.asPainter()
+            expected = AnimatedImagePainter(animatedImage),
+            actual = animatedImage.asPainter()
         )
 
         assertFailsWith(IllegalArgumentException::class) {

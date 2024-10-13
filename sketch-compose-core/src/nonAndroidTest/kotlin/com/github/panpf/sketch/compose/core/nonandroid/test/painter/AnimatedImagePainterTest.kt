@@ -5,10 +5,10 @@ import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQ
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.toSize
-import com.github.panpf.sketch.SkiaAnimatedImage
+import com.github.panpf.sketch.AnimatedImage
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
-import com.github.panpf.sketch.painter.SkiaAnimatedImagePainter
+import com.github.panpf.sketch.painter.AnimatedImagePainter
 import com.github.panpf.sketch.test.utils.getTestContext
 import kotlinx.coroutines.isActive
 import okio.buffer
@@ -19,7 +19,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
-class SkiaAnimatedImagePainterTest {
+class AnimatedImagePainterTest {
 
     @Test
     fun testIntrinsicSize() {
@@ -28,14 +28,14 @@ class SkiaAnimatedImagePainterTest {
             .openSource().buffer().use { it.readByteArray() }
             .let { Data.makeFromBytes(it) }
             .let { Codec.makeFromData(it) }
-        val animatedImage = SkiaAnimatedImage(codec1)
-        SkiaAnimatedImagePainter(animatedImage).apply {
+        val animatedImage = AnimatedImage(codec1)
+        AnimatedImagePainter(animatedImage).apply {
             assertEquals(
                 expected = IntSize(animatedImage.width, animatedImage.height).toSize(),
                 actual = intrinsicSize
             )
         }
-        SkiaAnimatedImagePainter(
+        AnimatedImagePainter(
             animatedImage,
             srcSize = IntSize(100, 100)
         ).apply {
@@ -53,8 +53,8 @@ class SkiaAnimatedImagePainterTest {
             .openSource().buffer().use { it.readByteArray() }
             .let { Data.makeFromBytes(it) }
             .let { Codec.makeFromData(it) }
-        val animatedImage = SkiaAnimatedImage(codec1)
-        val animatedImagePainter = SkiaAnimatedImagePainter(animatedImage)
+        val animatedImage = AnimatedImage(codec1)
+        val animatedImagePainter = AnimatedImagePainter(animatedImage)
 
         assertEquals(expected = 0, actual = animatedImagePainter.rememberedCounter.count)
         assertEquals(expected = null, actual = animatedImagePainter.coroutineScope?.isActive)
@@ -95,8 +95,8 @@ class SkiaAnimatedImagePainterTest {
             .openSource().buffer().use { it.readByteArray() }
             .let { Data.makeFromBytes(it) }
             .let { Codec.makeFromData(it) }
-        val animatedImage = SkiaAnimatedImage(codec1)
-        val animatedImagePainter = SkiaAnimatedImagePainter(animatedImage)
+        val animatedImage = AnimatedImage(codec1)
+        val animatedImagePainter = AnimatedImagePainter(animatedImage)
 
         assertEquals(false, animatedImagePainter.isRunning())
 
@@ -135,14 +135,14 @@ class SkiaAnimatedImagePainterTest {
             .openSource().buffer().use { it.readByteArray() }
             .let { Data.makeFromBytes(it) }
             .let { Codec.makeFromData(it) }
-        val animatedImage1 = SkiaAnimatedImage(codec1)
-        val animatedImage2 = SkiaAnimatedImage(codec2)
-        val element1 = SkiaAnimatedImagePainter(animatedImage1)
-        val element11 = SkiaAnimatedImagePainter(animatedImage1)
-        val element2 = SkiaAnimatedImagePainter(animatedImage2)
-        val element3 = SkiaAnimatedImagePainter(animatedImage1, srcOffset = IntOffset(2, 2))
-        val element4 = SkiaAnimatedImagePainter(animatedImage1, srcSize = IntSize(100, 100))
-        val element5 = SkiaAnimatedImagePainter(animatedImage1, filterQuality = FilterQuality.High)
+        val animatedImage1 = AnimatedImage(codec1)
+        val animatedImage2 = AnimatedImage(codec2)
+        val element1 = AnimatedImagePainter(animatedImage1)
+        val element11 = AnimatedImagePainter(animatedImage1)
+        val element2 = AnimatedImagePainter(animatedImage2)
+        val element3 = AnimatedImagePainter(animatedImage1, srcOffset = IntOffset(2, 2))
+        val element4 = AnimatedImagePainter(animatedImage1, srcSize = IntSize(100, 100))
+        val element5 = AnimatedImagePainter(animatedImage1, filterQuality = FilterQuality.High)
 
         assertEquals(expected = element1, actual = element11)
         assertNotEquals(illegal = element1, actual = element2)
@@ -178,10 +178,10 @@ class SkiaAnimatedImagePainterTest {
             .openSource().buffer().use { it.readByteArray() }
             .let { Data.makeFromBytes(it) }
             .let { Codec.makeFromData(it) }
-        val animatedImage = SkiaAnimatedImage(codec)
-        val animatedImagePainter = SkiaAnimatedImagePainter(animatedImage)
+        val animatedImage = AnimatedImage(codec)
+        val animatedImagePainter = AnimatedImagePainter(animatedImage)
         assertEquals(
-            expected = "SkiaAnimatedImagePainter(animatedImage=$animatedImage, srcOffset=${IntOffset.Zero}, srcSize=${
+            expected = "AnimatedImagePainter(animatedImage=$animatedImage, srcOffset=${IntOffset.Zero}, srcSize=${
                 IntSize(
                     animatedImage.width,
                     animatedImage.height
