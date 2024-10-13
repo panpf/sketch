@@ -113,9 +113,12 @@ internal actual fun DataSource.decodeSvg(
         unit = SVGLengthUnit.PERCENTAGE,
     )
 
-    val targetSize = requestContext.size
-    val targetScale =
-        computeScaleMultiplierWithOneSide(sourceSize = imageSize, targetSize = targetSize)
+    val imageInfo = ImageInfo(size = imageSize, mimeType = MIME_TYPE)
+    val resize = requestContext.computeResize(imageInfo.size)
+    val targetScale = computeScaleMultiplierWithOneSide(
+        sourceSize = imageSize,
+        targetSize = resize.size
+    )
     val bitmapSize = imageSize.times(targetScale)
     svg.setContainerSize(bitmapSize.width.toFloat(), bitmapSize.height.toFloat())
 
@@ -146,10 +149,8 @@ internal actual fun DataSource.decodeSvg(
     // TODO SVGDOM not support css. https://github.com/JetBrains/compose-multiplatform/issues/1217
     svg.render(canvas)
 
-    val imageInfo = ImageInfo(size = imageSize, mimeType = MIME_TYPE)
     val transformeds: List<String>? = if (targetScale != 1f)
         listOf(createScaledTransformed(targetScale)) else null
-    val resize = requestContext.computeResize(imageInfo.size)
     val decodeResult = DecodeResult(
         image = bitmap.asImage(),
         imageInfo = imageInfo,

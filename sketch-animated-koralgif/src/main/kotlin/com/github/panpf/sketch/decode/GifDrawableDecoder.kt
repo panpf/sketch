@@ -116,11 +116,10 @@ class GifDrawableDecoder(
     @WorkerThread
     override fun decode(): DecodeResult {
         val imageInfo = imageInfo
-        val size = requestContext.size
         val resize = requestContext.computeResize(imageInfo.size)
         val inSampleSize = calculateSampleSize(
             imageSize = imageInfo.size,
-            targetSize = size,
+            targetSize = resize.size,
             smallerSizeMode = resize.precision.isSmallerSizeMode(),
         )
         gifInfoHandleHelper.setOptions(GifOptions().apply {

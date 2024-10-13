@@ -38,6 +38,7 @@ import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.repeatCount
+import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.isSmallerSizeMode
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.ByteArrayDataSource
@@ -127,6 +128,7 @@ open class ImageDecoderAnimatedDecoder(
         }
 
         var imageInfo: ImageInfo? = null
+        var resize: Resize? = null
         var inSampleSize = 1
         var imageDecoder: ImageDecoder? = null
         val request = requestContext.request
@@ -138,15 +140,12 @@ open class ImageDecoderAnimatedDecoder(
                     height = info.size.height,
                     mimeType = info.mimeType,
                 ).apply { checkImageInfo(this) }
-                val size = requestContext.size
-                val precision = request.precisionDecider.get(
-                    imageSize = Size(info.size.width, info.size.height),
-                    targetSize = size,
-                )
+                val imageSize = Size(info.size.width, info.size.height)
+                resize = requestContext.computeResize(imageSize)
                 inSampleSize = calculateSampleSize(
-                    imageSize = Size(info.size.width, info.size.height),
-                    targetSize = size,
-                    smallerSizeMode = precision.isSmallerSizeMode()
+                    imageSize = imageSize,
+                    targetSize = resize!!.size,
+                    smallerSizeMode = resize!!.precision.isSmallerSizeMode()
                 )
                 decoder.setTargetSampleSize(inSampleSize)
 
@@ -185,12 +184,11 @@ open class ImageDecoderAnimatedDecoder(
                     }
                 }
             }
-        val resize = requestContext.computeResize(imageInfo!!.size)
         return DecodeResult(
             image = animatableDrawable.asImage(),
             imageInfo = imageInfo!!,
             dataFrom = dataSource.dataFrom,
-            resize = resize,
+            resize = resize!!,
             transformeds = transformeds,
             extras = null,
         )

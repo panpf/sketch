@@ -71,11 +71,11 @@ open class DrawableDecoder(
         val drawable = dataSource.drawable
 
         val imageInfo = imageInfo
-        val targetSize = requestContext.size
+        val resize = requestContext.computeResize(imageInfo.size)
         var transformeds: List<String>? = null
         val scale: Float = computeScaleMultiplierWithOneSide(
             sourceSize = imageInfo.size,
-            targetSize = targetSize
+            targetSize = resize.size
         )
         if (scale != 1f) {
             transformeds = listOf(createScaledTransformed(scale))
@@ -91,7 +91,6 @@ open class DrawableDecoder(
             colorSpace = decodeConfig.colorSpace,
             targetSize = bitmapSize
         )
-        val resize = requestContext.computeResize(imageInfo.size)
         val decodeResult = DecodeResult(
             image = bitmap.asImage(),
             imageInfo = imageInfo,

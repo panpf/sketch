@@ -98,9 +98,12 @@ internal actual fun DataSource.decodeSvg(
     svg.setDocumentWidth("100%")
     svg.setDocumentHeight("100%")
 
-    val targetSize = requestContext.size
-    val targetScale =
-        computeScaleMultiplierWithOneSide(sourceSize = imageSize, targetSize = targetSize)
+    val imageInfo = ImageInfo(size = imageSize, mimeType = SvgDecoder.MIME_TYPE)
+    val resize = requestContext.computeResize(imageInfo.size)
+    val targetScale = computeScaleMultiplierWithOneSide(
+        sourceSize = imageSize,
+        targetSize = resize.size
+    )
     val bitmapSize = imageSize.times(targetScale)
     val decodeConfig = DecodeConfig(requestContext.request, PNG.mimeType, isOpaque = false)
     val bitmapConfig = decodeConfig.colorType.safeToSoftware()
@@ -131,10 +134,8 @@ internal actual fun DataSource.decodeSvg(
     }
     svg.renderToCanvas(canvas, renderOptions)
 
-    val imageInfo = ImageInfo(size = imageSize, mimeType = SvgDecoder.MIME_TYPE)
     val transformeds: List<String>? = if (targetScale != 1f)
         listOf(createScaledTransformed(targetScale)) else null
-    val resize = requestContext.computeResize(imageInfo.size)
     val decodeResult = DecodeResult(
         image = bitmap.asImage(),
         imageInfo = imageInfo,
