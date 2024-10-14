@@ -3,7 +3,6 @@ package com.github.panpf.sketch.sample.ui
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -50,8 +50,6 @@ actual fun VerHomeHeader() {
         ) {
             DarkModeSwitch()
 
-            Spacer(Modifier.size(10.dp))
-
             IconButton(
                 onClick = {
                     appSettings.composePage.value = false
@@ -59,7 +57,9 @@ actual fun VerHomeHeader() {
             ) {
                 Icon(
                     painter = painterResource(id = com.github.panpf.sketch.sample.R.drawable.ic_android),
+                    tint = NavigationRailItemDefaults.colors().unselectedIconColor,
                     contentDescription = "Android Page",
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }

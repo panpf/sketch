@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.sample.ui.theme
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.IconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationRailItemDefaults
@@ -9,6 +10,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.sample.DarkMode
 import com.github.panpf.sketch.sample.appSettings
@@ -46,6 +48,7 @@ fun DarkModeSwitch(modifier: Modifier = Modifier) {
             painter = painterResource(icon),
             contentDescription = "Dark mode",
             tint = NavigationRailItemDefaults.colors().unselectedIconColor,
+            modifier = Modifier.size(20.dp)
         )
     }
 }
