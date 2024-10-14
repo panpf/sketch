@@ -29,9 +29,9 @@ import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.cacheDecodeTimeoutFrame
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.source.DataSource
+import kotlinx.atomicfu.locks.SynchronizedObject
+import kotlinx.atomicfu.locks.synchronized
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.internal.SynchronizedObject
-import kotlinx.coroutines.internal.synchronized
 import okio.buffer
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
