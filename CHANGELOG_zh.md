@@ -45,6 +45,7 @@
 * new: 非安卓平台现在也支持 ColorSpace 了
 * new: DrawableDecoder 支持 colorSpace
 * new: 新增 'Drawable.asStateImage(Any)' 和 'ColorDrawable.asStateImage()' 扩展函数
+* new: animatedTransformation 现在支持非 Android 平台
 
 # 4.0.0-alpha08
 

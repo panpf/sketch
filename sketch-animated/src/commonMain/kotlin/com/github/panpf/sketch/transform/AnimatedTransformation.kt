@@ -16,9 +16,6 @@
 
 package com.github.panpf.sketch.transform
 
-import android.graphics.Canvas
-import android.graphics.PostProcessor
-import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.util.Key
 
 /**
@@ -27,19 +24,16 @@ import com.github.panpf.sketch.util.Key
 interface AnimatedTransformation : Key {
 
     /**
-     * Apply the transformation to the [canvas].
+     * Apply the transformation to the Canvas.
      *
-     * @param canvas The [Canvas] to draw on.
+     * @param canvas Canvas may be 'androidx.compose.ui.graphicsCanvas' or 'android.graphicsCanvas'.
      * @return The opacity of the image after drawing.
      */
-    fun transform(canvas: Canvas): PixelOpacity
-}
+    fun transform(canvas: Any): PixelOpacity
 
-/**
- * Convert this [AnimatedTransformation] to a [PostProcessor].
- *
- * @see com.github.panpf.sketch.animated.android.test.transform.AnimatedTransformationTest.testAsPostProcessor
- */
-@RequiresApi(28)
-internal fun AnimatedTransformation.asPostProcessor() =
-    PostProcessor { canvas -> transform(canvas).flag }
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
+}

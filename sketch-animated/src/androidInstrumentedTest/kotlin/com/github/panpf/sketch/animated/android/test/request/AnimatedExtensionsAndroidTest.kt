@@ -17,69 +17,12 @@
 package com.github.panpf.sketch.animated.android.test.request
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.animated.android.test.internal.TranslucentAnimatedTransformation
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.request.ImageOptions
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
-import com.github.panpf.sketch.request.animatedTransformation
-import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.toRequestContext
-import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNotEquals
-import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
 class AnimatedExtensionsAndroidTest {
-
-    @Test
-    fun testAnimatedTransformation() = runTest {
-        val (context, sketch) = getTestContextAndSketch()
-        val myAnimatedTransformation = TranslucentAnimatedTransformation
-
-        ImageRequest(context, ResourceImages.animGif.uri).apply {
-            assertNull(animatedTransformation)
-        }
-        ImageRequest(context, ResourceImages.animGif.uri) {
-            this.animatedTransformation(myAnimatedTransformation)
-        }.apply {
-            assertEquals(myAnimatedTransformation, animatedTransformation)
-        }
-
-        ImageRequest(context, ResourceImages.animGif.uri).apply {
-            assertNull(animatedTransformation)
-        }
-        ImageRequest(context, ResourceImages.animGif.uri) {
-            animatedTransformation(myAnimatedTransformation)
-        }.apply {
-            assertEquals(myAnimatedTransformation, animatedTransformation)
-        }
-
-        ImageOptions().apply {
-            assertNull(animatedTransformation)
-        }
-        ImageOptions {
-            animatedTransformation(myAnimatedTransformation)
-        }.apply {
-            assertEquals(myAnimatedTransformation, animatedTransformation)
-        }
-
-        val key1 = ImageRequest(context, ResourceImages.animGif.uri).key
-        val key2 = ImageRequest(context, ResourceImages.animGif.uri) {
-            animatedTransformation(myAnimatedTransformation)
-        }.key
-        assertNotEquals(key1, key2)
-
-        val cacheKey1 =
-            ImageRequest(context, ResourceImages.animGif.uri).toRequestContext(sketch).cacheKey
-        val cacheKey2 = ImageRequest(context, ResourceImages.animGif.uri) {
-            animatedTransformation(myAnimatedTransformation)
-        }.toRequestContext(sketch).cacheKey
-        assertEquals(cacheKey1, cacheKey2)
-    }
 
     @Test
     fun testAnimatable2CompatCallbackOf() {

@@ -19,12 +19,13 @@ import androidx.fragment.app.Fragment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat.AnimationCallback
-import com.github.panpf.sketch.animated.android.test.internal.TranslucentAnimatedTransformation
 import com.github.panpf.sketch.drawable.MovieDrawable
 import com.github.panpf.sketch.images.ResourceImageFile
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.block
+import com.github.panpf.sketch.transform.AnimatedTransformation
+import com.github.panpf.sketch.transform.PixelOpacity
 import com.github.panpf.tools4a.test.ktx.getFragmentSync
 import com.github.panpf.tools4a.test.ktx.launchFragmentInContainer
 import kotlinx.coroutines.Dispatchers
@@ -187,6 +188,14 @@ class MovieDrawableTest {
                 LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT).apply {
                     addView(imageView)
                 }
+        }
+    }
+
+    private data object TranslucentAnimatedTransformation : AnimatedTransformation {
+        override val key: String = "TranslucentAnimatedTransformation"
+
+        override fun transform(canvas: Any): PixelOpacity {
+            return PixelOpacity.TRANSLUCENT
         }
     }
 }

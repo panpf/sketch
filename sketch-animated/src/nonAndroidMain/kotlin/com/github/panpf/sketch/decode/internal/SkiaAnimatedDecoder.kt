@@ -24,11 +24,13 @@ import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.cacheDecodeTimeoutFrame
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.transform.AnimatedTransformation
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -101,12 +103,13 @@ open class SkiaAnimatedDecoder(
             alphaType = codec.imageInfo.colorAlphaType,
             colorSpace = newColorSpace
         )
-        // TODO Support animatedTransformation
+        val animatedTransformation = request.animatedTransformation
         val animatedImage = AnimatedImage(
             codec = codec,
             imageInfo = skiaImageInfo,
             repeatCount = repeatCount,
             cacheDecodeTimeoutFrame = cacheDecodeTimeoutFrame,
+            animatedTransformation = animatedTransformation?.asProcessor(),
             animationStartCallback = request.animationStartCallback,
             animationEndCallback = request.animationEndCallback
         )
@@ -119,5 +122,11 @@ open class SkiaAnimatedDecoder(
             transformeds = null,
             extras = null,
         )
+    }
+
+    private fun AnimatedTransformation.asProcessor(): (Any) -> Unit {
+        return { canvas ->
+            this@asProcessor.transform(canvas)
+        }
     }
 }

@@ -56,6 +56,7 @@ fun TestPage() {
             TestItem("IconPainter", IconPainterTestScreen()),
             TestItem("Preview", PreviewTestScreen()),
             TestItem("Temp", TempTestScreen()),
+            // TODO Animated related parameter testing
         ).plus(platformTestScreens())
     }
     val gridState = rememberLazyGridState()

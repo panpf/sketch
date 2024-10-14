@@ -1,7 +1,13 @@
+@file:OptIn(ExperimentalTestApi::class)
+
 package com.github.panpf.sketch.compose.core.nonandroid.test.painter
 
+import androidx.compose.foundation.Image
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQuality
+import androidx.compose.ui.test.ExperimentalTestApi
+import androidx.compose.ui.test.runComposeUiTest
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.toSize
@@ -9,6 +15,7 @@ import com.github.panpf.sketch.AnimatedImage
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.painter.AnimatedImagePainter
+import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.getTestContext
 import kotlinx.coroutines.isActive
 import okio.buffer
@@ -17,7 +24,9 @@ import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 class AnimatedImagePainterTest {
 
@@ -117,6 +126,30 @@ class AnimatedImagePainterTest {
 
         animatedImagePainter.onForgotten()
         assertEquals(false, animatedImagePainter.isRunning())
+    }
+
+    @Test
+    fun testAnimatedTransformation() {
+        val context = getTestContext()
+        val codec1 = ResourceImages.animGif.toDataSource(context)
+            .openSource().buffer().use { it.readByteArray() }
+            .let { Data.makeFromBytes(it) }
+            .let { Codec.makeFromData(it) }
+        var animatedTransformationCalled = false
+        val animatedImage = AnimatedImage(codec1, animatedTransformation = {
+            animatedTransformationCalled = true
+        })
+        val animatedImagePainter = AnimatedImagePainter(animatedImage)
+        assertFalse(animatedTransformationCalled)
+        runComposeUiTest {
+            setContent {
+                remember { animatedImagePainter }
+                Image(painter = animatedImagePainter, contentDescription = "")
+            }
+            waitForIdle()
+            block(100)
+            assertTrue(animatedTransformationCalled)
+        }
     }
 
     @Test

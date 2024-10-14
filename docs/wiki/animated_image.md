@@ -90,8 +90,12 @@ ImageRequest(context, "https://www.example.com/image.gif") {
     }
 
     // [Only Android] Modify each frame of the animation as it is drawn 
-    animatedTransformation { canvas: Canvas ->
-        // ...
+    animatedTransformation { canvas: Any ->
+        if (canvas is androidx.compose.ui.graphics.Canvas) {
+            // ...
+        } else if (canvas is android.graphics.Canvas) {
+            // ...
+        }
     }
 }
 ```

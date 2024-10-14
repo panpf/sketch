@@ -279,10 +279,10 @@ class GifDrawableDecoderTest {
         )
     }
 
-    object TranslucentAnimatedTransformation : AnimatedTransformation {
+    private data object TranslucentAnimatedTransformation : AnimatedTransformation {
         override val key: String = "TranslucentAnimatedTransformation"
 
-        override fun transform(canvas: Canvas): PixelOpacity {
+        override fun transform(canvas: Any): PixelOpacity {
             return PixelOpacity.TRANSLUCENT
         }
     }

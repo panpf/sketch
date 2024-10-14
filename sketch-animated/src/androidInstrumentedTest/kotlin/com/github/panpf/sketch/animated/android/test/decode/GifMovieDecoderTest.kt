@@ -19,7 +19,6 @@ package com.github.panpf.sketch.animated.android.test.decode
 import android.os.Build
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.animated.android.test.internal.TranslucentAnimatedTransformation
 import com.github.panpf.sketch.decode.GifMovieDecoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.supportMovieGif
@@ -40,6 +39,8 @@ import com.github.panpf.sketch.test.utils.createDecoderOrNull
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.getDrawableOrThrow
 import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.transform.AnimatedTransformation
+import com.github.panpf.sketch.transform.PixelOpacity
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
@@ -279,5 +280,13 @@ class GifMovieDecoderTest {
             expected = "GifMovieDecoder",
             actual = GifMovieDecoder.Factory().toString()
         )
+    }
+
+    private data object TranslucentAnimatedTransformation : AnimatedTransformation {
+        override val key: String = "TranslucentAnimatedTransformation"
+
+        override fun transform(canvas: Any): PixelOpacity {
+            return PixelOpacity.TRANSLUCENT
+        }
     }
 }

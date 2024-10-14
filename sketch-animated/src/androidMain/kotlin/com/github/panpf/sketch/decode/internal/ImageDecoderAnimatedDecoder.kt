@@ -19,6 +19,8 @@
 package com.github.panpf.sketch.decode.internal
 
 import android.graphics.ImageDecoder
+import android.graphics.PixelFormat
+import android.graphics.PostProcessor
 import android.graphics.drawable.AnimatedImageDrawable
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -46,7 +48,11 @@ import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.source.getFileOrNull
-import com.github.panpf.sketch.transform.asPostProcessor
+import com.github.panpf.sketch.transform.AnimatedTransformation
+import com.github.panpf.sketch.transform.PixelOpacity
+import com.github.panpf.sketch.transform.PixelOpacity.OPAQUE
+import com.github.panpf.sketch.transform.PixelOpacity.TRANSLUCENT
+import com.github.panpf.sketch.transform.PixelOpacity.UNCHANGED
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -193,4 +199,14 @@ open class ImageDecoderAnimatedDecoder(
             extras = null,
         )
     }
+
+    private fun AnimatedTransformation.asPostProcessor() =
+        PostProcessor { canvas -> transform(canvas).flag }
+
+    private val PixelOpacity.flag: Int
+        get() = when (this) {
+            UNCHANGED -> PixelFormat.UNKNOWN
+            TRANSLUCENT -> PixelFormat.TRANSLUCENT
+            OPAQUE -> PixelFormat.OPAQUE
+        }
 }

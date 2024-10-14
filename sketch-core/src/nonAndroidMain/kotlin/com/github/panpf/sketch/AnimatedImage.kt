@@ -32,6 +32,7 @@ data class AnimatedImage constructor(
     val imageInfo: ImageInfo = codec.imageInfo,
     val repeatCount: Int? = null,
     val cacheDecodeTimeoutFrame: Boolean = false,
+    val animatedTransformation: ((Any) -> Unit)? = null,
     val animationStartCallback: (() -> Unit)? = null,
     val animationEndCallback: (() -> Unit)? = null,
 ) : Image {

@@ -16,12 +16,10 @@
 
 package com.github.panpf.sketch.transform
 
-import android.graphics.PixelFormat
-
 /**
  * Represents the opacity of an image's pixels after applying an [AnimatedTransformation].
  *
- * @see com.github.panpf.sketch.animated.android.test.transform.PixelOpacityTest.testPixelOpacity
+ * @see com.github.panpf.sketch.animated.common.test.transform.PixelOpacityTest.testPixelOpacity
  */
 enum class PixelOpacity {
 
@@ -43,15 +41,3 @@ enum class PixelOpacity {
      */
     OPAQUE
 }
-
-/**
- * Returns the [PixelFormat] flag that corresponds to this [PixelOpacity].
- *
- * @see com.github.panpf.sketch.animated.android.test.transform.PixelOpacityTest.testFlag
- */
-val PixelOpacity.flag: Int
-    get() = when (this) {
-        PixelOpacity.UNCHANGED -> PixelFormat.UNKNOWN
-        PixelOpacity.TRANSLUCENT -> PixelFormat.TRANSLUCENT
-        PixelOpacity.OPAQUE -> PixelFormat.OPAQUE
-    }

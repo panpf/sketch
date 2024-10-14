@@ -23,12 +23,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.asComposeImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQuality
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
@@ -73,6 +76,7 @@ class AnimatedImagePainter constructor(
     private var invalidateTick by mutableIntStateOf(0)
     private var loadFirstFrameJob: Job? = null
     private var composeBitmap: ImageBitmap? = null
+    private val paint = Paint()
     private var animatedPlayer = AnimatedPlayer(
         codec = codec,
         imageInfo = animatedImage.imageInfo,
@@ -101,16 +105,23 @@ class AnimatedImagePainter constructor(
                 this@onDraw.size.width.roundToInt(),
                 this@onDraw.size.height.roundToInt()
             )
-            drawImage(
-                image = composeBitmap,
-                srcOffset = srcOffset,
-                srcSize = srcSize,
-                dstOffset = IntOffset.Zero,
-                dstSize = dstSize,
-                alpha = alpha,
-                colorFilter = colorFilter,
-                filterQuality = filterQuality
-            )
+            drawIntoCanvas {
+                val canvas: Canvas = it
+                animatedImage.animatedTransformation?.invoke(canvas)
+
+                paint.colorFilter = colorFilter
+                paint.alpha = alpha
+                paint.filterQuality = filterQuality
+
+                it.drawImageRect(
+                    image = composeBitmap,
+                    srcOffset = srcOffset,
+                    srcSize = srcSize,
+                    dstOffset = IntOffset.Zero,
+                    dstSize = dstSize,
+                    paint = paint,
+                )
+            }
         } else if (!animatedPlayer.running && loadFirstFrameJob == null) {
             loadFirstFrame()
         }

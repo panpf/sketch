@@ -8,6 +8,7 @@ import com.github.panpf.sketch.decode.supportSkiaGif
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.onAnimationEnd
 import com.github.panpf.sketch.request.onAnimationStart
@@ -20,6 +21,8 @@ import com.github.panpf.sketch.test.utils.createDecoderOrDefault
 import com.github.panpf.sketch.test.utils.createDecoderOrNull
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.transform.AnimatedTransformation
+import com.github.panpf.sketch.transform.PixelOpacity
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.test.runTest
 import org.jetbrains.skia.ColorSpace
@@ -111,12 +114,25 @@ class GifSkiaAnimatedDecoderTest {
             colorSpace(ColorSpace.sRGB)
             onAnimationEnd { }
             onAnimationStart { }
+            animatedTransformation(TranslucentAnimatedTransformation)
         }.decode(sketch, factory).apply {
             assertEquals(expected = ImageInfo(480, 480, "image/gif"), actual = this.imageInfo)
             assertEquals(expected = Size(480, 480), actual = image.size)
             assertEquals(expected = LOCAL, actual = this.dataFrom)
             assertEquals(expected = null, actual = this.transformeds)
             assertEquals(expected = null, actual = image.asOrThrow<AnimatedImage>().repeatCount)
+            assertNotEquals(
+                illegal = null,
+                actual = image.asOrThrow<AnimatedImage>().animatedTransformation
+            )
+            assertNotEquals(
+                illegal = null,
+                actual = image.asOrThrow<AnimatedImage>().animationStartCallback
+            )
+            assertNotEquals(
+                illegal = null,
+                actual = image.asOrThrow<AnimatedImage>().animationEndCallback
+            )
         }
 
         ImageRequest(context, ResourceImages.animGif.uri) {
@@ -128,6 +144,18 @@ class GifSkiaAnimatedDecoderTest {
             assertEquals(expected = LOCAL, actual = this.dataFrom)
             assertEquals(expected = null, actual = this.transformeds)
             assertEquals(expected = 3, actual = image.asOrThrow<AnimatedImage>().repeatCount)
+            assertEquals(
+                expected = null,
+                actual = image.asOrThrow<AnimatedImage>().animatedTransformation
+            )
+            assertEquals(
+                expected = null,
+                actual = image.asOrThrow<AnimatedImage>().animationStartCallback
+            )
+            assertEquals(
+                expected = null,
+                actual = image.asOrThrow<AnimatedImage>().animationEndCallback
+            )
         }
     }
 
@@ -243,5 +271,13 @@ class GifSkiaAnimatedDecoderTest {
             expected = "GifSkiaAnimatedDecoder",
             actual = GifSkiaAnimatedDecoder.Factory().toString()
         )
+    }
+
+    private data object TranslucentAnimatedTransformation : AnimatedTransformation {
+        override val key: String = "TranslucentAnimatedTransformation"
+
+        override fun transform(canvas: Any): PixelOpacity {
+            return PixelOpacity.TRANSLUCENT
+        }
     }
 }

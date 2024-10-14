@@ -19,68 +19,6 @@ package com.github.panpf.sketch.request
 
 import android.graphics.drawable.Drawable
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-import com.github.panpf.sketch.transform.AnimatedTransformation
-
-
-/**
- * Set the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
- *
- * Default: `null`
- *
- * @see com.github.panpf.sketch.animated.android.test.request.AnimatedExtensionsAndroidTest.testAnimatedTransformation
- */
-fun ImageRequest.Builder.animatedTransformation(
-    animatedTransformation: AnimatedTransformation?
-): ImageRequest.Builder = apply {
-    if (animatedTransformation != null) {
-        setExtra(
-            key = ANIMATED_TRANSFORMATION_KEY,
-            value = animatedTransformation,
-            cacheKey = null,
-            requestKey = animatedTransformation.key
-        )
-    } else {
-        removeExtra(ANIMATED_TRANSFORMATION_KEY)
-    }
-}
-
-/**
- * Get the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
- *
- * @see com.github.panpf.sketch.animated.android.test.request.AnimatedExtensionsAndroidTest.testAnimatedTransformation
- */
-val ImageRequest.animatedTransformation: AnimatedTransformation?
-    get() = extras?.value(ANIMATED_TRANSFORMATION_KEY)
-
-/**
- * Set the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
- *
- * Default: `null`
- *
- * @see com.github.panpf.sketch.animated.android.test.request.AnimatedExtensionsAndroidTest.testAnimatedTransformation
- */
-fun ImageOptions.Builder.animatedTransformation(
-    animatedTransformation: AnimatedTransformation?
-): ImageOptions.Builder = apply {
-    if (animatedTransformation != null) {
-        setExtra(
-            key = ANIMATED_TRANSFORMATION_KEY,
-            value = animatedTransformation,
-            cacheKey = null,
-            requestKey = animatedTransformation.key
-        )
-    } else {
-        removeExtra(ANIMATED_TRANSFORMATION_KEY)
-    }
-}
-
-/**
- * Get the [AnimatedTransformation] that will be applied to the result if it is an animated [Drawable].
- *
- * @see com.github.panpf.sketch.animated.android.test.request.AnimatedExtensionsAndroidTest.testAnimatedTransformation
- */
-val ImageOptions.animatedTransformation: AnimatedTransformation?
-    get() = extras?.value(ANIMATED_TRANSFORMATION_KEY)
 
 /**
  * Wrap onStart and onEnd into [Animatable2Compat.AnimationCallback]

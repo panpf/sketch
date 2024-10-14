@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.animated.android.test.transform
+package com.github.panpf.sketch.animated.common.test.transform
 
-import android.graphics.PixelFormat
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.transform.PixelOpacity
-import com.github.panpf.sketch.transform.flag
-import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@RunWith(AndroidJUnit4::class)
 class PixelOpacityTest {
 
     @Test
@@ -34,12 +29,5 @@ class PixelOpacityTest {
             expected = "UNCHANGED, TRANSLUCENT, OPAQUE",
             actual = PixelOpacity.values().joinToString()
         )
-    }
-
-    @Test
-    fun testFlag() {
-        assertEquals(PixelFormat.OPAQUE, PixelOpacity.OPAQUE.flag)
-        assertEquals(PixelFormat.UNKNOWN, PixelOpacity.UNCHANGED.flag)
-        assertEquals(PixelFormat.TRANSLUCENT, PixelOpacity.TRANSLUCENT.flag)
     }
 }

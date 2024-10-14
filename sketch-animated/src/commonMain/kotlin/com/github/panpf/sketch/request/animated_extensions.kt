@@ -17,6 +17,8 @@
 
 package com.github.panpf.sketch.request
 
+import com.github.panpf.sketch.transform.AnimatedTransformation
+
 /** Pass this to [repeatCount] to repeat infinitely. */
 const val ANIMATION_REPEAT_INFINITE = -1
 const val ANIMATION_REPEAT_COUNT_KEY = "sketch#animation_repeat_count"
@@ -173,3 +175,64 @@ fun ImageOptions.Builder.onAnimationEnd(callback: (() -> Unit)?): ImageOptions.B
  */
 val ImageOptions.animationEndCallback: (() -> Unit)?
     get() = extras?.value(ANIMATION_END_CALLBACK_KEY)
+
+
+/**
+ * Set the [AnimatedTransformation] that will be applied to the result if it is an animated Image.
+ *
+ * Default: `null`
+ *
+ * @see com.github.panpf.sketch.animated.common.test.request.AnimatedExtensionsTest.testAnimatedTransformation
+ */
+fun ImageRequest.Builder.animatedTransformation(
+    animatedTransformation: AnimatedTransformation?
+): ImageRequest.Builder = apply {
+    if (animatedTransformation != null) {
+        setExtra(
+            key = ANIMATED_TRANSFORMATION_KEY,
+            value = animatedTransformation,
+            cacheKey = null,
+            requestKey = animatedTransformation.key
+        )
+    } else {
+        removeExtra(ANIMATED_TRANSFORMATION_KEY)
+    }
+}
+
+/**
+ * Get the [AnimatedTransformation] that will be applied to the result if it is an animated Image.
+ *
+ * @see com.github.panpf.sketch.animated.common.test.request.AnimatedExtensionsTest.testAnimatedTransformation
+ */
+val ImageRequest.animatedTransformation: AnimatedTransformation?
+    get() = extras?.value(ANIMATED_TRANSFORMATION_KEY)
+
+/**
+ * Set the [AnimatedTransformation] that will be applied to the result if it is an animated Image.
+ *
+ * Default: `null`
+ *
+ * @see com.github.panpf.sketch.animated.common.test.request.AnimatedExtensionsTest.testAnimatedTransformation
+ */
+fun ImageOptions.Builder.animatedTransformation(
+    animatedTransformation: AnimatedTransformation?
+): ImageOptions.Builder = apply {
+    if (animatedTransformation != null) {
+        setExtra(
+            key = ANIMATED_TRANSFORMATION_KEY,
+            value = animatedTransformation,
+            cacheKey = null,
+            requestKey = animatedTransformation.key
+        )
+    } else {
+        removeExtra(ANIMATED_TRANSFORMATION_KEY)
+    }
+}
+
+/**
+ * Get the [AnimatedTransformation] that will be applied to the result if it is an animated Image.
+ *
+ * @see com.github.panpf.sketch.animated.common.test.request.AnimatedExtensionsTest.testAnimatedTransformation
+ */
+val ImageOptions.animatedTransformation: AnimatedTransformation?
+    get() = extras?.value(ANIMATED_TRANSFORMATION_KEY)

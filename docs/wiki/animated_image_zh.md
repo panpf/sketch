@@ -70,6 +70,8 @@ ImageRequest(context, "https://www.example.com/image.gif") {
 [ImageRequest] 和 [ImageOptions] 都提供了相关方法用于动图相关配置，如下：
 
 ```kotlin
+import kotlin.coroutines.jvm.internal.CompletedContinuation.context
+
 ImageRequest(context, "https://www.example.com/image.gif") {
     // 禁用动图，只解码动图的第一帧
     disallowAnimatedImage()
@@ -85,9 +87,13 @@ ImageRequest(context, "https://www.example.com/image.gif") {
         // ...
     }
 
-    // [Only Android] 对动图的每一帧在绘制时进行修改 
-    animatedTransformation { canvas: Canvas ->
-        // ...
+    // 对动图的每一帧在绘制时进行修改 
+    animatedTransformation { canvas: Any ->
+        if (canvas is androidx.compose.ui.graphics.Canvas) {
+            // ...
+        } else if (canvas is android.graphics.Canvas) {
+            // ...
+        }
     }
 }
 ```
