@@ -79,9 +79,7 @@ expect fun Bitmap.readIntPixel(x: Int, y: Int): Int
  * Add a background color to the current Bitmap
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testBackground
- * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testBackground2
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBackground
- * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBackground2
  */
 expect fun Bitmap.background(color: Int): Bitmap
 

@@ -21,6 +21,7 @@ package com.github.panpf.sketch
 import android.graphics.ColorSpace
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.configOrNull
 
 /**
@@ -114,3 +115,40 @@ fun createBitmap(
     hasAlpha: Boolean,
     colorSpace: ColorSpace
 ): Bitmap = Bitmap.createBitmap(width, height, config, hasAlpha, colorSpace)
+
+/**
+ * Create a blank Bitmap based on the width, height, transparency, and color type of the original Bitmap
+ *
+ * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testCreateEmptyBitmapWith
+ */
+fun Bitmap.createEmptyBitmapWith(
+    width: Int = this.width,
+    height: Int = this.height,
+    colorType: ColorType = this.colorType ?: ColorType.ARGB_8888,
+    hasAlpha: Boolean = this.hasAlpha(),
+): Bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    Bitmap.createBitmap(
+        /* width = */ width,
+        /* height = */ height,
+        /* config = */ colorType,
+        /* hasAlpha = */ hasAlpha,
+        /* colorSpace = */ this.colorSpace ?: ColorSpace.get(ColorSpace.Named.SRGB)
+    )
+} else {
+    Bitmap.createBitmap(
+        /* width = */ width,
+        /* height = */ height,
+        /* config = */ colorType,
+    )
+}
+
+/**
+ * Create a blank Bitmap based on the width, height, transparency, and color type of the original Bitmap
+ *
+ * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testCreateEmptyBitmapWith
+ */
+fun Bitmap.createEmptyBitmapWith(
+    size: Size = this.size,
+    colorType: ColorType = this.colorType ?: ColorType.ARGB_8888,
+    hasAlpha: Boolean = this.hasAlpha(),
+): Bitmap = createEmptyBitmapWith(size.width, size.height, colorType, hasAlpha)

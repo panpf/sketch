@@ -33,6 +33,7 @@ import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.Bitmap
 import com.github.panpf.sketch.ColorType
+import com.github.panpf.sketch.createEmptyBitmapWith
 import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.ResizeMapping
@@ -261,11 +262,10 @@ actual fun Bitmap.readIntPixel(x: Int, y: Int): Int = getPixel(x, y)
  * Add a background color to the current Bitmap
  *
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testBackground
- * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testBackground2
  */
 actual fun Bitmap.background(color: Int): Bitmap {
     val inputBitmap = this
-    val bitmap = Bitmap.createBitmap(
+    val bitmap = inputBitmap.createEmptyBitmapWith(
         /* width = */ inputBitmap.width,
         /* height = */ inputBitmap.height,
         /* config = */ inputBitmap.safeConfig.safeToSoftware(),
@@ -283,8 +283,8 @@ actual fun Bitmap.background(color: Int): Bitmap {
  */
 actual fun Bitmap.blur(radius: Int, firstReuseSelf: Boolean): Bitmap {
     val inputBitmap = this
-    val outBitmap =
-        if (firstReuseSelf) inputBitmap.mutableCopyOrSelf() else inputBitmap.mutableCopy()
+    val outBitmap = if (firstReuseSelf)
+        inputBitmap.mutableCopyOrSelf() else inputBitmap.mutableCopy()
     val imageWidth = outBitmap.width
     val imageHeight = outBitmap.height
     val pixels = IntArray(imageWidth * imageHeight)
@@ -323,10 +323,11 @@ actual fun Bitmap.circleCrop(scale: Scale): Bitmap {
         // Circle cropped require support alpha
         newConfig = ColorType.ARGB_8888
     }
-    val outBitmap = Bitmap.createBitmap(
-        /* width = */ newSize,
-        /* height = */ newSize,
-        /* config = */ newConfig,
+    val outBitmap = inputBitmap.createEmptyBitmapWith(
+        width = newSize,
+        height = newSize,
+        colorType = newConfig,
+        hasAlpha = true
     )
     val paint = Paint().apply {
         isAntiAlias = true
@@ -387,12 +388,11 @@ actual fun Bitmap.flip(horizontal: Boolean): Bitmap {
  */
 actual fun Bitmap.mapping(mapping: ResizeMapping): Bitmap {
     val inputBitmap = this
-    val outBitmap = Bitmap.createBitmap(
-        /* width = */ mapping.newSize.width,
-        /* height = */ mapping.newSize.height,
-        /* config = */ inputBitmap.safeConfig.safeToSoftware(),
+    val newConfig = inputBitmap.safeConfig.safeToSoftware()
+    val outBitmap = inputBitmap.createEmptyBitmapWith(
+        size = mapping.newSize,
+        colorType = newConfig
     )
-    // TODO keep ColorSpace
     Canvas(outBitmap).drawBitmap(
         /* bitmap = */ inputBitmap,
         /* src = */ mapping.srcRect.toAndroidRect(),
@@ -409,8 +409,8 @@ actual fun Bitmap.mapping(mapping: ResizeMapping): Bitmap {
  */
 actual fun Bitmap.mask(maskColor: Int, firstReuseSelf: Boolean): Bitmap {
     val inputBitmap = this
-    val outBitmap =
-        if (firstReuseSelf) inputBitmap.mutableCopyOrSelf() else inputBitmap.mutableCopy()
+    val outBitmap = if (firstReuseSelf)
+        inputBitmap.mutableCopyOrSelf() else inputBitmap.mutableCopy()
     val canvas = Canvas(outBitmap)
     val paint = Paint().apply {
         color = maskColor
@@ -453,10 +453,11 @@ actual fun Bitmap.rotate(angle: Int): Bitmap {
         // Non-positive angle require support alpha
         newConfig = ColorType.ARGB_8888
     }
-    val outBitmap = Bitmap.createBitmap(
-        /* width = */ newWidth,
-        /* height = */ newHeight,
-        /* config = */ newConfig,
+    val outBitmap = inputBitmap.createEmptyBitmapWith(
+        width = newWidth,
+        height = newHeight,
+        colorType = newConfig,
+        hasAlpha = true
     )
 
     matrix.postTranslate(-newRect.left, -newRect.top)
@@ -480,16 +481,17 @@ actual fun Bitmap.roundedCorners(radiusArray: FloatArray): Bitmap {
         // Rounded corners require support alpha
         newConfig = ColorType.ARGB_8888
     }
-    val newBitmap = Bitmap.createBitmap(
-        /* width = */ inputBitmap.width,
-        /* height = */ inputBitmap.height,
-        /* config = */ newConfig,
+    val outBitmap = inputBitmap.createEmptyBitmapWith(
+        width = inputBitmap.width,
+        height = inputBitmap.height,
+        colorType = newConfig,
+        hasAlpha = true
     )
     val paint = Paint().apply {
         isAntiAlias = true
         color = Color.BLACK
     }
-    val canvas = Canvas(newBitmap).apply {
+    val canvas = Canvas(outBitmap).apply {
         drawARGB(0, 0, 0, 0)
     }
     val path = Path().apply {
@@ -506,7 +508,7 @@ actual fun Bitmap.roundedCorners(radiusArray: FloatArray): Bitmap {
     paint.xfermode = PorterDuffXfermode(SRC_IN)
     val rect = Rect(0, 0, inputBitmap.width, inputBitmap.height)
     canvas.drawBitmap(inputBitmap, rect, rect, paint)
-    return newBitmap
+    return outBitmap
 }
 
 /**
@@ -518,17 +520,17 @@ actual fun Bitmap.scale(scaleFactor: Float): Bitmap {
     val scaledWidth = ceil(width * scaleFactor).toInt()
     val scaledHeight = ceil(height * scaleFactor).toInt()
     val newConfig = this.safeConfig.safeToSoftware()
-    val newBitmap = Bitmap.createBitmap(
-        /* width = */ scaledWidth,
-        /* height = */ scaledHeight,
-        /* config = */ newConfig,
+    val outputBitmap = this.createEmptyBitmapWith(
+        width = scaledWidth,
+        height = scaledHeight,
+        colorType = newConfig,
     )
-    val canvas = Canvas(newBitmap)
+    val canvas = Canvas(outputBitmap)
     val matrix = Matrix().apply {
         postScale(scaleFactor, scaleFactor)
     }
     canvas.drawBitmap(this, matrix, null)
-    return newBitmap
+    return outputBitmap
 }
 
 /**

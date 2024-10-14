@@ -20,6 +20,7 @@ import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.hammingDistance
 import com.github.panpf.sketch.test.utils.produceFingerPrint
+import com.github.panpf.sketch.test.utils.runBlock
 import com.github.panpf.sketch.test.utils.similarity
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
@@ -44,6 +45,8 @@ import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.toInfoString
 import com.github.panpf.sketch.util.toLogString
 import com.github.panpf.sketch.util.toShortInfoString
+import kotlinx.coroutines.test.runTest
+import org.jetbrains.skia.Color
 import org.jetbrains.skia.ColorAlphaType
 import org.jetbrains.skia.ColorSpace
 import org.jetbrains.skia.ColorType
@@ -591,110 +594,126 @@ class BitmapsNonAndroidTest {
 
     @Test
     @Suppress("UNUSED_VARIABLE")
-    fun testBackground() {
-        val sourceBitmapFinger: String
-        val sourceBitmapCorners: List<Int>
-        val sourceBitmap = ResourceImages.jpeg.decode().bitmap.apply {
-            assertEquals(
-                expected = "Bitmap(1291x1936,RGBA_8888,sRGB)",
-                actual = toShortInfoString()
-            )
-            sourceBitmapFinger = this.produceFingerPrint()
-            sourceBitmapCorners = corners()
+    fun testBackground() = runTest {
+        runBlock {
+            val sourceBitmapFinger: String
+            val sourceBitmapCorners: List<Int>
+            val sourceBitmap = ResourceImages.jpeg.decode().bitmap.apply {
+                assertEquals(
+                    expected = "Bitmap(1291x1936,RGBA_8888,sRGB)",
+                    actual = toShortInfoString()
+                )
+                sourceBitmapFinger = this.produceFingerPrint()
+                sourceBitmapCorners = corners()
+            }
+
+            val redBgBitmapFinger: String
+            val redBgBitmapCorners: List<Int>
+            val redBgBitmap = sourceBitmap.background(TestColor.RED).apply {
+                assertEquals(
+                    expected = "Bitmap(1291x1936,RGBA_8888,sRGB)",
+                    actual = toShortInfoString()
+                )
+                redBgBitmapFinger = this.produceFingerPrint()
+                redBgBitmapCorners = corners()
+            }
+
+            val blueBgBitmapFinger: String
+            val blueBgBitmapCorners: List<Int>
+            val blueBgBitmap = sourceBitmap.background(TestColor.BLUE).apply {
+                assertEquals(
+                    expected = "Bitmap(1291x1936,RGBA_8888,sRGB)",
+                    actual = toShortInfoString()
+                )
+                blueBgBitmapFinger = this.produceFingerPrint()
+                blueBgBitmapCorners = corners()
+            }
+
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = sourceBitmapCorners)
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = redBgBitmapCorners)
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = blueBgBitmapCorners)
+
+            assertEquals(expected = sourceBitmapCorners, actual = redBgBitmapCorners)
+            assertEquals(expected = sourceBitmapCorners, actual = blueBgBitmapCorners)
+            assertEquals(expected = redBgBitmapCorners, actual = blueBgBitmapCorners)
+
+            // Fingerprints ignore color, so it's all the same
+            assertEquals(expected = sourceBitmapFinger, actual = redBgBitmapFinger)
+            assertEquals(expected = sourceBitmapFinger, actual = blueBgBitmapFinger)
+            assertEquals(expected = redBgBitmapFinger, actual = blueBgBitmapFinger)
         }
 
-        val redBgBitmapFinger: String
-        val redBgBitmapCorners: List<Int>
-        val redBgBitmap = sourceBitmap.background(TestColor.RED).apply {
-            assertEquals(
-                expected = "Bitmap(1291x1936,RGBA_8888,sRGB)",
-                actual = toShortInfoString()
+        runBlock {
+            val sourceBitmapFinger: String
+            val sourceBitmapCorners: List<Int>
+            val sourceBitmap = ResourceImages.png.decode().bitmap.apply {
+                assertEquals(
+                    expected = "Bitmap(750x719,RGBA_8888,sRGB)",
+                    actual = toShortInfoString()
+                )
+                sourceBitmapFinger = this.produceFingerPrint()
+                sourceBitmapCorners = corners()
+            }
+
+            val redBgBitmapFinger: String
+            val redBgBitmapCorners: List<Int>
+            val redBgBitmap = sourceBitmap.background(TestColor.RED).apply {
+                assertEquals(
+                    expected = "Bitmap(750x719,RGBA_8888,sRGB)",
+                    actual = toShortInfoString()
+                )
+                redBgBitmapFinger = this.produceFingerPrint()
+                redBgBitmapCorners = corners()
+            }
+
+            val blueBgBitmapFinger: String
+            val blueBgBitmapCorners: List<Int>
+            val blueBgBitmap = sourceBitmap.background(TestColor.BLUE).apply {
+                assertEquals(
+                    expected = "Bitmap(750x719,RGBA_8888,sRGB)",
+                    actual = toShortInfoString()
+                )
+                blueBgBitmapFinger = this.produceFingerPrint()
+                blueBgBitmapCorners = corners()
+            }
+
+            assertEquals(expected = listOf(0, 0, 0, 0), actual = sourceBitmapCorners)
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = redBgBitmapCorners)
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = blueBgBitmapCorners)
+
+            assertNotEquals(illegal = sourceBitmapCorners, actual = redBgBitmapCorners)
+            assertNotEquals(illegal = sourceBitmapCorners, actual = blueBgBitmapCorners)
+            assertNotEquals(illegal = redBgBitmapCorners, actual = blueBgBitmapCorners)
+
+            assertTrue(
+                actual = hammingDistance(sourceBitmapFinger, redBgBitmapFinger) < 5,
+                message = hammingDistance(sourceBitmapFinger, redBgBitmapFinger).toString()
             )
-            redBgBitmapFinger = this.produceFingerPrint()
-            redBgBitmapCorners = corners()
+            assertTrue(
+                actual = hammingDistance(sourceBitmapFinger, blueBgBitmapFinger) < 5,
+                message = hammingDistance(sourceBitmapFinger, blueBgBitmapFinger).toString()
+            )
+            assertTrue(
+                actual = hammingDistance(redBgBitmapFinger, blueBgBitmapFinger) < 5,
+                message = hammingDistance(redBgBitmapFinger, blueBgBitmapFinger).toString()
+            )
         }
 
-        val blueBgBitmapFinger: String
-        val blueBgBitmapCorners: List<Int>
-        val blueBgBitmap = sourceBitmap.background(TestColor.BLUE).apply {
+        // colorType, colorSpace
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ColorType.RGB_565),
+            colorSpace = "displayP3"
+        ).bitmap.apply {
             assertEquals(
-                expected = "Bitmap(1291x1936,RGBA_8888,sRGB)",
+                expected = "Bitmap(1291x1936,RGB_565,displayP3)",
                 actual = toShortInfoString()
             )
-            blueBgBitmapFinger = this.produceFingerPrint()
-            blueBgBitmapCorners = corners()
-        }
-
-        assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = sourceBitmapCorners)
-        assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = redBgBitmapCorners)
-        assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = blueBgBitmapCorners)
-
-        assertEquals(expected = sourceBitmapCorners, actual = redBgBitmapCorners)
-        assertEquals(expected = sourceBitmapCorners, actual = blueBgBitmapCorners)
-        assertEquals(expected = redBgBitmapCorners, actual = blueBgBitmapCorners)
-
-        // Fingerprints ignore color, so it's all the same
-        assertEquals(expected = sourceBitmapFinger, actual = redBgBitmapFinger)
-        assertEquals(expected = sourceBitmapFinger, actual = blueBgBitmapFinger)
-        assertEquals(expected = redBgBitmapFinger, actual = blueBgBitmapFinger)
-    }
-
-    @Test
-    @Suppress("UNUSED_VARIABLE")
-    fun testBackground2() {
-        val sourceBitmapFinger: String
-        val sourceBitmapCorners: List<Int>
-        val sourceBitmap = ResourceImages.png.decode().bitmap.apply {
+        }.background(Color.RED).apply {
             assertEquals(
-                expected = "Bitmap(750x719,RGBA_8888,sRGB)",
+                expected = "Bitmap(1291x1936,RGB_565,displayP3)",
                 actual = toShortInfoString()
             )
-            sourceBitmapFinger = this.produceFingerPrint()
-            sourceBitmapCorners = corners()
         }
-
-        val redBgBitmapFinger: String
-        val redBgBitmapCorners: List<Int>
-        val redBgBitmap = sourceBitmap.background(TestColor.RED).apply {
-            assertEquals(
-                expected = "Bitmap(750x719,RGBA_8888,sRGB)",
-                actual = toShortInfoString()
-            )
-            redBgBitmapFinger = this.produceFingerPrint()
-            redBgBitmapCorners = corners()
-        }
-
-        val blueBgBitmapFinger: String
-        val blueBgBitmapCorners: List<Int>
-        val blueBgBitmap = sourceBitmap.background(TestColor.BLUE).apply {
-            assertEquals(
-                expected = "Bitmap(750x719,RGBA_8888,sRGB)",
-                actual = toShortInfoString()
-            )
-            blueBgBitmapFinger = this.produceFingerPrint()
-            blueBgBitmapCorners = corners()
-        }
-
-        assertEquals(expected = listOf(0, 0, 0, 0), actual = sourceBitmapCorners)
-        assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = redBgBitmapCorners)
-        assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = blueBgBitmapCorners)
-
-        assertNotEquals(illegal = sourceBitmapCorners, actual = redBgBitmapCorners)
-        assertNotEquals(illegal = sourceBitmapCorners, actual = blueBgBitmapCorners)
-        assertNotEquals(illegal = redBgBitmapCorners, actual = blueBgBitmapCorners)
-
-        assertTrue(
-            actual = hammingDistance(sourceBitmapFinger, redBgBitmapFinger) < 5,
-            message = hammingDistance(sourceBitmapFinger, redBgBitmapFinger).toString()
-        )
-        assertTrue(
-            actual = hammingDistance(sourceBitmapFinger, blueBgBitmapFinger) < 5,
-            message = hammingDistance(sourceBitmapFinger, blueBgBitmapFinger).toString()
-        )
-        assertTrue(
-            actual = hammingDistance(redBgBitmapFinger, blueBgBitmapFinger) < 5,
-            message = hammingDistance(redBgBitmapFinger, blueBgBitmapFinger).toString()
-        )
     }
 
     @Test
@@ -774,6 +793,32 @@ class BitmapsNonAndroidTest {
         assertTrue(blur2ImmutableBitmap.isMutable)
         assertNotSame(immutableBitmap, blur1ImmutableBitmap)
         assertNotSame(immutableBitmap, blur2ImmutableBitmap)
+
+        // colorType, colorSpace
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ColorType.RGB_565),
+            colorSpace = "displayP3"
+        ).bitmap.mutableCopy().apply {
+            assertTrue(isMutable)
+            assertEquals(
+                expected = "Bitmap(1291x1936,RGB_565,displayP3)",
+                actual = toShortInfoString()
+            )
+        }.also {
+            it.blur(20, firstReuseSelf = true).apply {
+                assertEquals(
+                    expected = "Bitmap(1291x1936,RGB_565,displayP3)",
+                    actual = toShortInfoString()
+                )
+            }
+
+            it.blur(20, firstReuseSelf = false).apply {
+                assertEquals(
+                    expected = "Bitmap(1291x1936,RGB_565,displayP3)",
+                    actual = toShortInfoString()
+                )
+            }
+        }
     }
 
     @Test
@@ -860,29 +905,21 @@ class BitmapsNonAndroidTest {
             message = hammingDistance(centerCropBitmapFinger, endCropBitmapFinger).toString()
         )
 
-
-        ResourceImages.jpeg.decode().bitmap.apply {
-            assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
-            assertEquals(expected = ColorAlphaType.OPAQUE, actual = alphaType)
-            assertTrue(actual = isOpaque)
+        // colorType, colorSpace
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ColorType.RGB_565),
+            colorSpace = "displayP3"
+        ).bitmap.apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,RGB_565,displayP3)",
+                actual = toShortInfoString()
+            )
             assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
         }.circleCrop(Scale.CENTER_CROP).apply {
-            assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
-            assertEquals(expected = ColorAlphaType.PREMUL, actual = alphaType)
-            assertFalse(actual = isOpaque)
-            assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
-        }
-
-        val bitmapColorType = BitmapColorType(ColorType.RGB_565)
-        ResourceImages.jpeg.decode(bitmapColorType).bitmap.apply {
-            assertEquals(expected = ColorType.RGB_565, actual = colorType)
-            assertEquals(expected = ColorAlphaType.OPAQUE, actual = alphaType)
-            assertTrue(actual = isOpaque)
-            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
-        }.circleCrop(Scale.CENTER_CROP).apply {
-            assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
-            assertEquals(expected = ColorAlphaType.PREMUL, actual = alphaType)
-            assertFalse(actual = isOpaque)
+            assertEquals(
+                expected = "Bitmap(1291x1291,RGBA_8888,displayP3)",
+                actual = toShortInfoString()
+            )
             assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
         }
     }
@@ -970,6 +1007,22 @@ class BitmapsNonAndroidTest {
                 verFlippedBitmap.cornerA,
             )
         )
+
+        // colorType, colorSpace
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ColorType.RGB_565),
+            colorSpace = "displayP3"
+        ).bitmap.apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,RGB_565,displayP3)",
+                actual = toShortInfoString()
+            )
+        }.flip(horizontal = true).apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,RGB_565,displayP3)",
+                actual = toShortInfoString()
+            )
+        }
     }
 
     @Test
@@ -1096,6 +1149,31 @@ class BitmapsNonAndroidTest {
             actual = hammingDistance(resize3BitmapFinger, resize4BitmapFinger) >= 5,
             message = hammingDistance(resize3BitmapFinger, resize4BitmapFinger).toString()
         )
+
+        // colorType, colorSpace
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ColorType.RGB_565),
+            colorSpace = "displayP3"
+        ).bitmap.apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,RGB_565,displayP3)",
+                actual = toShortInfoString()
+            )
+        }.let {
+            it.mapping(
+                mapping = Resize(
+                    width = 300,
+                    height = 300,
+                    precision = Precision.EXACTLY,
+                    scale = Scale.CENTER_CROP
+                ).calculateMapping(it.size)
+            )
+        }.apply {
+            assertEquals(
+                expected = "Bitmap(300x300,RGB_565,displayP3)",
+                actual = toShortInfoString()
+            )
+        }
     }
 
     @Test
@@ -1164,6 +1242,32 @@ class BitmapsNonAndroidTest {
         assertTrue(mask2ImmutableBitmap.isMutable)
         assertNotSame(immutableBitmap, mask1ImmutableBitmap)
         assertNotSame(immutableBitmap, mask2ImmutableBitmap)
+
+        // colorType, colorSpace
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ColorType.RGB_565),
+            colorSpace = "displayP3"
+        ).bitmap.mutableCopy().apply {
+            assertTrue(isMutable)
+            assertEquals(
+                expected = "Bitmap(1291x1936,RGB_565,displayP3)",
+                actual = toShortInfoString()
+            )
+        }.also {
+            it.mask(Color.withA(Color.RED, 100), firstReuseSelf = true).apply {
+                assertEquals(
+                    expected = "Bitmap(1291x1936,RGB_565,displayP3)",
+                    actual = toShortInfoString()
+                )
+            }
+
+            it.mask(Color.withA(Color.RED, 100), firstReuseSelf = false).apply {
+                assertEquals(
+                    expected = "Bitmap(1291x1936,RGB_565,displayP3)",
+                    actual = toShortInfoString()
+                )
+            }
+        }
     }
 
     @Test
@@ -1279,30 +1383,32 @@ class BitmapsNonAndroidTest {
             message = hammingDistance(rotate270BitmapFinger, rotate360BitmapFinger).toString()
         )
 
-
-        ResourceImages.jpeg.decode().bitmap.apply {
-            assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
-            assertEquals(expected = ColorAlphaType.OPAQUE, actual = alphaType)
-            assertTrue(actual = isOpaque)
+        // colorType, colorSpace
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ColorType.RGB_565),
+            colorSpace = "displayP3"
+        ).bitmap.apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,RGB_565,displayP3)",
+                actual = toShortInfoString()
+            )
             assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
-        }.rotate(130).apply {
-            assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
-            assertEquals(expected = ColorAlphaType.PREMUL, actual = alphaType)
-            assertFalse(actual = isOpaque)
-            assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
-        }
+        }.also {
+            it.rotate(90).apply {
+                assertEquals(
+                    expected = "Bitmap(1936x1291,RGB_565,displayP3)",
+                    actual = toShortInfoString()
+                )
+                assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
+            }
 
-        val bitmapColorType = BitmapColorType(ColorType.RGB_565)
-        ResourceImages.jpeg.decode(bitmapColorType).bitmap.apply {
-            assertEquals(expected = ColorType.RGB_565, actual = colorType)
-            assertEquals(expected = ColorAlphaType.OPAQUE, actual = alphaType)
-            assertTrue(actual = isOpaque)
-            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
-        }.rotate(130).apply {
-            assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
-            assertEquals(expected = ColorAlphaType.PREMUL, actual = alphaType)
-            assertFalse(actual = isOpaque)
-            assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
+            it.rotate(130).apply {
+                assertEquals(
+                    expected = "Bitmap(2312x2233,RGBA_8888,displayP3)",
+                    actual = toShortInfoString()
+                )
+                assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
+            }
         }
     }
 
@@ -1368,28 +1474,21 @@ class BitmapsNonAndroidTest {
             actual = bigRoundedCorneredBitmapFinger
         )
 
-        ResourceImages.jpeg.decode().bitmap.apply {
-            assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
-            assertEquals(expected = ColorAlphaType.OPAQUE, actual = alphaType)
-            assertTrue(actual = isOpaque)
+        // colorType, colorSpace
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ColorType.RGB_565),
+            colorSpace = "displayP3"
+        ).bitmap.apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,RGB_565,displayP3)",
+                actual = toShortInfoString()
+            )
             assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
         }.roundedCorners(floatArrayOf(20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f)).apply {
-            assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
-            assertEquals(expected = ColorAlphaType.PREMUL, actual = alphaType)
-            assertFalse(actual = isOpaque)
-            assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
-        }
-
-        val bitmapColorType = BitmapColorType(ColorType.RGB_565)
-        ResourceImages.jpeg.decode(bitmapColorType).bitmap.apply {
-            assertEquals(expected = ColorType.RGB_565, actual = colorType)
-            assertEquals(expected = ColorAlphaType.OPAQUE, actual = alphaType)
-            assertTrue(actual = isOpaque)
-            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
-        }.roundedCorners(floatArrayOf(20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f)).apply {
-            assertEquals(expected = ColorType.RGBA_8888, actual = colorType)
-            assertEquals(expected = ColorAlphaType.PREMUL, actual = alphaType)
-            assertFalse(actual = isOpaque)
+            assertEquals(
+                expected = "Bitmap(1291x1936,RGBA_8888,displayP3)",
+                actual = toShortInfoString()
+            )
             assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
         }
     }
@@ -1404,6 +1503,22 @@ class BitmapsNonAndroidTest {
         }
         bitmap.scale(0.5f).apply {
             assertEquals("Bitmap(646x968,RGBA_8888,sRGB)", toShortInfoString())
+        }
+
+        // colorType, colorSpace
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ColorType.RGB_565),
+            colorSpace = "displayP3"
+        ).bitmap.apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,RGB_565,displayP3)",
+                actual = toShortInfoString()
+            )
+        }.scale(1.5f).apply {
+            assertEquals(
+                "Bitmap(1937x2904,RGB_565,displayP3)",
+                toShortInfoString()
+            )
         }
     }
 
@@ -1422,5 +1537,21 @@ class BitmapsNonAndroidTest {
             )
         }
         assertEquals(expected = 1, actual = bitmap.similarity(thumbnailBitmap))
+
+        // colorType, colorSpace
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ColorType.RGB_565),
+            colorSpace = "displayP3"
+        ).bitmap.apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,RGB_565,displayP3)",
+                actual = toShortInfoString()
+            )
+        }.thumbnail(100, 100).apply {
+            assertEquals(
+                "Bitmap(100x100,RGB_565,displayP3)",
+                toShortInfoString()
+            )
+        }
     }
 }

@@ -1,11 +1,14 @@
 package com.github.panpf.sketch.core.android.test
 
+import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.ColorSpace
+import android.os.Build
 import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.colorType
 import com.github.panpf.sketch.createBitmap
+import com.github.panpf.sketch.createEmptyBitmapWith
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.isImmutable
 import com.github.panpf.sketch.size
@@ -117,6 +120,117 @@ class BitmapAndroidTest {
                 expected = android.graphics.Bitmap.Config.ARGB_8888,
                 actual = this.colorType
             )
+        }
+    }
+
+    @Test
+    fun testCreateEmptyBitmapWith() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Bitmap.createBitmap(
+                /* width = */ 101,
+                /* height = */ 202,
+                /* config = */ Bitmap.Config.ARGB_8888,
+                /* hasAlpha = */ true,
+                /* colorSpace = */ ColorSpace.get(ColorSpace.Named.SRGB)
+            ).apply {
+                assertEquals(expected = 101, actual = width)
+                assertEquals(expected = 202, actual = height)
+                assertEquals(expected = ColorType.ARGB_8888, actual = config)
+                assertEquals(expected = true, actual = hasAlpha())
+                assertEquals(expected = ColorSpace.get(ColorSpace.Named.SRGB), actual = colorSpace)
+            }.createEmptyBitmapWith(
+                width = 202,
+                height = 101,
+                colorType = RGB_565,
+                hasAlpha = false
+            ).apply {
+                assertEquals(expected = 202, actual = width)
+                assertEquals(expected = 101, actual = height)
+                assertEquals(expected = ColorType.RGB_565, actual = config)
+                assertEquals(expected = false, actual = hasAlpha())
+                assertEquals(expected = ColorSpace.get(ColorSpace.Named.SRGB), actual = colorSpace)
+            }.createEmptyBitmapWith(
+                size = Size(100, 100),
+                colorType = RGB_565,
+                hasAlpha = false
+            ).apply {
+                assertEquals(expected = 100, actual = width)
+                assertEquals(expected = 100, actual = height)
+                assertEquals(expected = ColorType.RGB_565, actual = config)
+                assertEquals(expected = false, actual = hasAlpha())
+                assertEquals(expected = ColorSpace.get(ColorSpace.Named.SRGB), actual = colorSpace)
+            }
+
+            Bitmap.createBitmap(
+                /* width = */ 101,
+                /* height = */ 202,
+                /* config = */ Bitmap.Config.ARGB_8888,
+                /* hasAlpha = */ true,
+                /* colorSpace = */ ColorSpace.get(ColorSpace.Named.DISPLAY_P3)
+            ).apply {
+                assertEquals(expected = 101, actual = width)
+                assertEquals(expected = 202, actual = height)
+                assertEquals(expected = ColorType.ARGB_8888, actual = config)
+                assertEquals(expected = true, actual = hasAlpha())
+                assertEquals(
+                    expected = ColorSpace.get(ColorSpace.Named.DISPLAY_P3),
+                    actual = colorSpace
+                )
+            }.createEmptyBitmapWith(
+                width = 202,
+                height = 101,
+                colorType = RGB_565,
+                hasAlpha = false
+            ).apply {
+                assertEquals(expected = 202, actual = width)
+                assertEquals(expected = 101, actual = height)
+                assertEquals(expected = ColorType.RGB_565, actual = config)
+                assertEquals(expected = false, actual = hasAlpha())
+                assertEquals(
+                    expected = ColorSpace.get(ColorSpace.Named.DISPLAY_P3),
+                    actual = colorSpace
+                )
+            }.createEmptyBitmapWith(
+                size = Size(100, 100),
+                colorType = RGB_565,
+                hasAlpha = false
+            ).apply {
+                assertEquals(expected = 100, actual = width)
+                assertEquals(expected = 100, actual = height)
+                assertEquals(expected = ColorType.RGB_565, actual = config)
+                assertEquals(expected = false, actual = hasAlpha())
+                assertEquals(
+                    expected = ColorSpace.get(ColorSpace.Named.DISPLAY_P3),
+                    actual = colorSpace
+                )
+            }
+        } else {
+            Bitmap.createBitmap(
+                /* width = */ 101,
+                /* height = */ 202,
+                /* config = */ Bitmap.Config.ARGB_8888,
+            ).apply {
+                assertEquals(expected = 101, actual = width)
+                assertEquals(expected = 202, actual = height)
+                assertEquals(expected = ColorType.ARGB_8888, actual = config)
+            }.createEmptyBitmapWith(
+                width = 202,
+                height = 101,
+                colorType = RGB_565,
+                hasAlpha = false
+            ).apply {
+                assertEquals(expected = 202, actual = width)
+                assertEquals(expected = 101, actual = height)
+                assertEquals(expected = ColorType.RGB_565, actual = config)
+            }.createEmptyBitmapWith(
+                size = Size(100, 100),
+                colorType = RGB_565,
+                hasAlpha = false
+            ).apply {
+                assertEquals(expected = 100, actual = width)
+                assertEquals(expected = 100, actual = height)
+                assertEquals(expected = ColorType.RGB_565, actual = config)
+            }
         }
     }
 }

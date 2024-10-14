@@ -225,7 +225,6 @@ actual fun Bitmap.readIntPixel(x: Int, y: Int): Int {
  * Returns a new Bitmap that is a copy of this Bitmap with a background color.
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBackground
- * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testBackground2
  */
 actual fun Bitmap.background(color: Int): Bitmap {
     val inputBitmap = this
