@@ -21,8 +21,6 @@ import kotlin.test.assertTrue
 @RunWith(AndroidJUnit4::class)
 class BitmapRegionDecoderTest {
 
-    // TODO test format
-
     @Test
     fun testMutable() {
         val context = getTestContext()
