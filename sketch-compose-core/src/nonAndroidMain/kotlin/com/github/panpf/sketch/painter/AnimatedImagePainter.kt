@@ -284,11 +284,10 @@ class AnimatedImagePainter constructor(
                     onFrame(newFrame.frameBitmap.composeBitmap)
 
                     // Number of repeat plays. -1: Indicates infinite repetition. When it is greater than or equal to 0, the total number of plays is equal to '1 + repeatCount'
+                    if (repeatCount >= 0 && newFrame.index == codec.frameCount - 1) {
+                        repeatIndex++
+                    }
                     if ((repeatCount < 0 || repeatIndex <= repeatCount)) {
-                        if (newFrame.index == codec.frameCount - 1) {
-                            repeatIndex++
-                        }
-
                         /*
                          * Why use [nextFrameChannel] instead of sending the next frame directly in [renderChannel]?
                          * Because you have to wait for the onFrame callback to complete before decoding the next frame,

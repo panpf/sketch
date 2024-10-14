@@ -17,7 +17,9 @@
 * fix: 修复 AsyncImage 的 filterQuality 参数无效的
   bug。 [#211](https://github.com/panpf/sketch/issues/211)
 * fix: 修复 Android 平台上 blur、rotate 等 Transformation 没有保持 ColorSpace 不变的
-  bug。 [#213](https://github.com/panpf/sketch/issues/211)
+  bug。 [#213](https://github.com/panpf/sketch/issues/213)
+* fix: 修复非安卓平台上动图设置 repeatCount 并播放结束后没有停留在最后一帧，而停留在第一帧的
+  bug。 [#212](https://github.com/panpf/sketch/issues/212)
 * remove: 移除 ComposeBitmapImage
 * remove: 删除 Image.getPixels()
 * change: 现在非安卓平台上内存缓存中缓存的是 SkiaBitmapImage，不再是 ComposeBitmapImage

@@ -20,7 +20,10 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * fix: Fix the bug that the filterQuality parameter of AsyncImage is
   invalid. [#211](https://github.com/panpf/sketch/issues/211)
 * fix: Fixed the bug that Transformations such as blur and rotate on the Android platform did not
-  keep the ColorSpace unchanged. [#213](https://github.com/panpf/sketch/issues/211)
+  keep the ColorSpace unchanged. [#213](https://github.com/panpf/sketch/issues/213)
+* fix: Fixed the bug of setting repeatCount for animations on non-Android platforms and not staying
+  at the last frame after playing, but staying at the first
+  frame. [#212](https://github.com/panpf/sketch/issues/212)
 * remove: Remove ComposeBitmapImage
 * remove: Remove Image.getPixels()
 * change: SkiaBitmapImage is now cached in the memory cache on non-Android platforms, not
