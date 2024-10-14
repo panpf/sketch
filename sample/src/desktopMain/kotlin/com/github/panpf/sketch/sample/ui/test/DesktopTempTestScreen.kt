@@ -1,34 +1,16 @@
 package com.github.panpf.sketch.sample.ui.test
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.panpf.sketch.AnimatedImage
-import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.SingletonSketch
+import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.painter.AnimatedImagePainter
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.request.animationEndCallback
-import com.github.panpf.sketch.request.animationStartCallback
+import com.github.panpf.sketch.request.ComposableImageRequest
+import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
-import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.ioCoroutineDispatcher
-import kotlinx.coroutines.withContext
-import okio.buffer
-import okio.use
-import org.jetbrains.skia.Codec
-import org.jetbrains.skia.Data
 
 class DesktopTempTestScreen : BaseScreen() {
 
@@ -71,40 +53,44 @@ class DesktopTempTestScreen : BaseScreen() {
 //                    modifier = Modifier.size(200.dp).background(Color.Cyan)
 //                )
 
-                var animatedPainter by remember { mutableStateOf<AnimatedImagePainter?>(null) }
-                val context = LocalPlatformContext.current
-                LaunchedEffect(Unit) {
-                    withContext(ioCoroutineDispatcher()) {
-                        val sketch = SingletonSketch.get(context)
-                        val request = ImageRequest(context, ResourceImages.animGif.uri)
-                        val requestContext = RequestContext(sketch, request, Size.Empty)
-                        val bytes = sketch.components.newFetcherOrThrow(requestContext)
-                            .fetch().getOrThrow()
-                            .dataSource.openSource().buffer()
-                            .use { it.readByteArray() }
+//                var animatedPainter by remember { mutableStateOf<AnimatedImagePainter?>(null) }
+//                val context = LocalPlatformContext.current
+//                LaunchedEffect(Unit) {
+//                    withContext(ioCoroutineDispatcher()) {
+//                        val sketch = SingletonSketch.get(context)
+//                        val request = ImageRequest(context, ResourceImages.animGif.uri)
+//                        val requestContext = RequestContext(sketch, request, Size.Empty)
+//                        val bytes = sketch.components.newFetcherOrThrow(requestContext)
+//                            .fetch().getOrThrow()
+//                            .dataSource.openSource().buffer()
+//                            .use { it.readByteArray() }
+//
+//                        val data = Data.makeFromBytes(bytes)
+//                        val image = AnimatedImage(
+//                            codec = Codec.makeFromData(data),
+//                            repeatCount = null,
+//                            cacheDecodeTimeoutFrame = true,
+//                            animationStartCallback = request.animationStartCallback,
+//                            animationEndCallback = request.animationEndCallback
+//                        )
+//                        animatedPainter = AnimatedImagePainter(
+//                            animatedImage = image,
+//                        )
+//                    }
+//                }
+//                val animatedPainter1 = animatedPainter
+////                val animatedPainter1 = remember(animatedPainter) { animatedPainter }
+//                if (animatedPainter1 != null) {
+//                    Image(
+//                        painter = animatedPainter1,
+//                        contentDescription = null,
+//                        modifier = Modifier.size(200.dp)
+//                    )
+//                }
 
-                        val data = Data.makeFromBytes(bytes)
-                        val image = AnimatedImage(
-                            codec = Codec.makeFromData(data),
-                            repeatCount = null,
-                            cacheDecodeTimeoutFrame = true,
-                            animationStartCallback = request.animationStartCallback,
-                            animationEndCallback = request.animationEndCallback
-                        )
-                        animatedPainter = AnimatedImagePainter(
-                            animatedImage = image,
-                        )
-                    }
-                }
-                val animatedPainter1 = animatedPainter
-//                val animatedPainter1 = remember(animatedPainter) { animatedPainter }
-                if (animatedPainter1 != null) {
-                    Image(
-                        painter = animatedPainter1,
-                        contentDescription = null,
-                        modifier = Modifier.size(200.dp)
-                    )
-                }
+                AsyncImage(ComposableImageRequest(ResourceImages.numbersGif.uri) {
+                    repeatCount(0)
+                }, contentDescription = "numbersGif", modifier = Modifier.size(200.dp))
             }
         }
     }
