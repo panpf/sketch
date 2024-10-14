@@ -14,6 +14,7 @@ import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.ability.progressIndicator
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
+import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.sample.EventBus
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
@@ -68,6 +69,9 @@ fun MyZoomAsyncImage(
 
         val colorSpace by appSettings.colorSpace.collectAsState()
         colorSpace(colorSpace)
+
+        val repeatCount by appSettings.repeatCount.collectAsState()
+        repeatCount(repeatCount)
 
         placeholder(ThumbnailMemoryCacheStateImage(placeholderUri))
         crossfade(fadeStart = false)

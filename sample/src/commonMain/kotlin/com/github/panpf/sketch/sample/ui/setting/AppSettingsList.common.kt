@@ -98,24 +98,22 @@ fun createSettingItems(
         add(GroupSettingItem("Zoom"))
         addAll(zoomMenuList(appSettings))
     }
+
+    add(GroupSettingItem("Decode"))
+    addAll(decodeMenuList(appSettings))
     platformDecodeMenuList(appSettings).takeIf { it.isNotEmpty() }?.let {
-        add(GroupSettingItem("Decode"))
-        add(
-            DropdownSettingItem(
-                title = "Bitmap Color Type",
-                desc = null,
-                values = listOf("Default", "LowQuality", "HighQuality").plus(platformColorTypes()),
-                state = appSettings.colorTypeName,
-            )
-        )
         addAll(it)
     }
+
+    add(GroupSettingItem("Animated"))
+    addAll(animatedMenuList(appSettings))
+    platformAnimatedMenuList(appSettings).takeIf { it.isNotEmpty() }?.let {
+        addAll(it)
+    }
+
     add(GroupSettingItem("Cache"))
     addAll(cacheMenuList(context, appSettings, recreateSettingItems))
-    platformAnimatedMenuList(appSettings).takeIf { it.isNotEmpty() }?.let {
-        add(GroupSettingItem("Animated"))
-        addAll(it)
-    }
+
     add(GroupSettingItem("Other"))
     addAll(otherMenuList(appSettings))
     addAll(platformOtherMenuList(appSettings))
@@ -252,6 +250,28 @@ fun zoomMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
             title = "Show Tile Bounds",
             desc = "Overlay the state and area of the tile on the View",
             state = appSettings.showTileBounds,
+        )
+    )
+}
+
+fun decodeMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
+    add(
+        DropdownSettingItem(
+            title = "Bitmap Color Type",
+            desc = null,
+            values = listOf("Default", "LowQuality", "HighQuality").plus(platformColorTypes()),
+            state = appSettings.colorTypeName,
+        )
+    )
+}
+
+fun animatedMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
+    add(
+        DropdownSettingItem(
+            title = "Repeat Count",
+            desc = null,
+            values = listOf(-1, 0, 1, 2, 4),
+            state = appSettings.repeatCount,
         )
     )
 }

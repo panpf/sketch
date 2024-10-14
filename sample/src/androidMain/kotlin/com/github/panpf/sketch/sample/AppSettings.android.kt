@@ -151,6 +151,13 @@ actual class AppSettings actual constructor(val context: PlatformContext) {
     }
 
 
+    // -------------------------------------- animated image --------------------------------------
+
+    actual val repeatCount: SettingsStateFlow<Int> by lazy {
+        intSettingsStateFlow(context, "repeatCount", -1)
+    }
+
+
     // -------------------------------------- viewer image --------------------------------------
 
     actual val contentScaleName: SettingsStateFlow<String> by lazy {

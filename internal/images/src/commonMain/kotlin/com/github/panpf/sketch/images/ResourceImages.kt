@@ -281,6 +281,13 @@ object ResourceImages {
     )
     val numbers =
         arrayOf(number1, number2, number3, number4, number5, number6, number7, number8, number9)
+    val numbersGif: ResourceImageFile = ResourceImageFile(
+        resourceName = "numbers.gif",
+        name = "NUMBERS",
+        size = Size(698, 776),
+        mimeType = "image/gif",
+        animated = true
+    )
 
     val clockHor: ResourceImageFile = ResourceImageFile(
         resourceName = "clock_hor.jpeg",

@@ -23,6 +23,7 @@ import android.util.AttributeSet
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.preferQualityOverSpeed
+import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.ui.util.lifecycleOwner
@@ -47,6 +48,7 @@ class MyZoomImageView @JvmOverloads constructor(
             }
             @Suppress("DEPRECATION")
             preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && appSettings.preferQualityOverSpeed.value)
+            repeatCount(appSettings.repeatCount.value)
         }
     }
 
@@ -74,6 +76,9 @@ class MyZoomImageView @JvmOverloads constructor(
         listenSettings(appSettings.preferQualityOverSpeed) { preferQualityOverSpeed ->
             @Suppress("DEPRECATION")
             preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && preferQualityOverSpeed)
+        }
+        listenSettings(appSettings.repeatCount) { repeatCount ->
+            repeatCount(repeatCount)
         }
     }
 

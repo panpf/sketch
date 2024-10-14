@@ -24,6 +24,7 @@ import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
+import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.buildScale
@@ -190,6 +191,9 @@ private fun buildListImageRequest(
         }
 //        val scale by appSettings.scale.collectAsState()   // TODO Will cause lag
         scale(scale)
+
+        val repeatCount by appSettings.repeatCount.collectAsState()
+        repeatCount(repeatCount)
 
         val pauseLoadWhenScroll by appSettings.pauseLoadWhenScrollInList.collectAsState()
         pauseLoadWhenScrolling(pauseLoadWhenScroll)

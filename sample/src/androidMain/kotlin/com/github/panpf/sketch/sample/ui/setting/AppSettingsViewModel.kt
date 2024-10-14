@@ -69,6 +69,7 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
             appSettings.showProgressIndicatorInList.ignoreFirst(),
             appSettings.saveCellularTrafficInList.ignoreFirst(),
             appSettings.pauseLoadWhenScrollInList.ignoreFirst(),
+            appSettings.repeatCount.ignoreFirst(),
             appSettings.precisionName.ignoreFirst(),
             appSettings.scaleName.ignoreFirst(),
             appSettings.longImageScale.ignoreFirst(),
@@ -101,10 +102,16 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
                 add(ListSeparator("Zoom"))
                 addAll(makeZoomMenuList())
             }
+
             add(ListSeparator("Decode"))
             addAll(makeDecodeMenuList())
+
+            add(ListSeparator("Animated"))
+            addAll(makeAnimatedMenuList())
+
             add(ListSeparator("Cache"))
             addAll(makeCacheMenuList())
+
             add(ListSeparator("Other"))
             addAll(makeOtherMenuList())
         }
@@ -289,6 +296,18 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
                 )
             )
         }
+    }
+
+    private fun makeAnimatedMenuList(): List<Any> = buildList {
+        add(
+            MultiSelectMenu(
+                title = "Repeat Count",
+                desc = null,
+                values = listOf("-1", "0", "1", "2", "4"),
+                getValue = { appSettings.repeatCount.value.toString() },
+                onSelect = { _, value -> appSettings.repeatCount.value = value.toInt() }
+            )
+        )
     }
 
     private fun makeCacheMenuList(): List<Any> = buildList {

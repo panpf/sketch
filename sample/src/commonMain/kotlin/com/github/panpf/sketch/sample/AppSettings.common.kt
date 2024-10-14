@@ -62,6 +62,10 @@ expect class AppSettings(context: PlatformContext) {
     val pauseLoadWhenScrollInList: SettingsStateFlow<Boolean>
 
 
+    // -------------------------------------- animated image --------------------------------------
+
+    val repeatCount: SettingsStateFlow<Int>
+
     // -------------------------------------- viewer image --------------------------------------
 
     val contentScaleName: SettingsStateFlow<String>

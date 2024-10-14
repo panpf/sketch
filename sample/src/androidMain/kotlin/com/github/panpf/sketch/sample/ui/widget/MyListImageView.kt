@@ -33,6 +33,7 @@ import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.preferQualityOverSpeed
+import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.R
@@ -129,6 +130,7 @@ class MyListImageView @JvmOverloads constructor(
 
             pauseLoadWhenScrolling(appSettings.pauseLoadWhenScrollInList.value)
             saveCellularTraffic(appSettings.saveCellularTrafficInList.value)
+            repeatCount(appSettings.repeatCount.value)
 
             colorType(appSettings.colorType.value)
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -231,6 +233,10 @@ class MyListImageView @JvmOverloads constructor(
         }
         listenSettings(appSettings.saveCellularTrafficInList) { saveCellularTraffic ->
             saveCellularTraffic(saveCellularTraffic)
+        }
+
+        listenSettings(appSettings.repeatCount) { repeatCount ->
+            repeatCount(repeatCount)
         }
 
         listenSettings(appSettings.colorType) { colorType ->

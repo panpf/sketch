@@ -15,6 +15,7 @@ fun builtinImages(): List<ImageFile> {
     return ResourceImages.statics
         .asSequence()
         .plus(ResourceImages.anims)
+        .plus(ResourceImages.numbersGif)
         .plus(ResourceImages.longQMSHT)
         .plus(ResourceImages.clockExifs)
         .plus(ResourceImages.mp4)
