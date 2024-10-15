@@ -70,7 +70,7 @@ class ExifOrientationHelperTest {
             ResourceDataSource(
                 context.resources,
                 packageName = context.packageName,
-                com.github.panpf.sketch.test.utils.core.R.xml.network_security_config
+                com.github.panpf.sketch.test.R.xml.network_security_config
             ).readExifOrientation()
         )
     }
@@ -121,7 +121,7 @@ class ExifOrientationHelperTest {
             ResourceDataSource(
                 resources = context.resources,
                 packageName = context.packageName,
-                resId = com.github.panpf.sketch.test.utils.core.R.xml.network_security_config
+                resId = com.github.panpf.sketch.test.R.xml.network_security_config
             ).readExifOrientationWithMimeType("image/jpeg")
         )
     }

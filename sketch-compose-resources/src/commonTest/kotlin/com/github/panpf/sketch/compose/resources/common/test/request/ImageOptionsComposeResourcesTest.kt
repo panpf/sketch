@@ -9,8 +9,8 @@ import com.github.panpf.sketch.request.error
 import com.github.panpf.sketch.request.fallback
 import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.state.PainterStateImage
-import com.github.panpf.sketch.test.utils.compose.core.resources.Res
-import com.github.panpf.sketch.test.utils.compose.core.resources.moon
+import com.github.panpf.sketch.test.compose.resources.Res
+import com.github.panpf.sketch.test.compose.resources.moon
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

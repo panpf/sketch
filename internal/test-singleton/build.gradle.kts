@@ -6,15 +6,15 @@ plugins {
 
 addAllMultiplatformTargets()
 
-androidLibrary(nameSpace = "com.github.panpf.sketch.test.utils")
+androidLibrary(nameSpace = "com.github.panpf.sketch.test.singleton")
 
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(projects.internal.testUtilsCore)
+            api(projects.internal.test)
         }
         androidMain.dependencies {
-            api(projects.internal.testUtilsCore)
+            api(projects.internal.test)
         }
     }
 }

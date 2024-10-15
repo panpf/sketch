@@ -7,8 +7,8 @@ import com.github.panpf.sketch.fetch.newComposeResourceUri
 import com.github.panpf.sketch.fetch.supportComposeResources
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.ByteArrayDataSource
+import com.github.panpf.sketch.test.compose.resources.Res
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.compose.core.resources.Res
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toUri

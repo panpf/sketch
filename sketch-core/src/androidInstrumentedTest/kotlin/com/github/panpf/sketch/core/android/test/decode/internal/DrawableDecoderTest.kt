@@ -69,12 +69,12 @@ class DrawableDecoderTest {
 
         val request = ImageRequest(
             context,
-            newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.test)
+            newResourceUri(com.github.panpf.sketch.test.R.drawable.test)
         )
         val requestContext = request.toRequestContext(sketch)
         val dataSource = DrawableDataSource(
             context = context,
-            drawableFetcher = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy),
+            drawableFetcher = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_cloudy),
             dataFrom = LOCAL
         )
 
@@ -91,7 +91,7 @@ class DrawableDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = DrawableDecoder.Factory()
 
-        val imageUri = newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.test)
+        val imageUri = newResourceUri(com.github.panpf.sketch.test.R.drawable.test)
         val imageSize = Size(60.dp2px, 30.dp2px)
         val request = ImageRequest(context, imageUri)
 
@@ -134,7 +134,7 @@ class DrawableDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
 
         val factory = DrawableDecoder.Factory()
-        val imageUri = newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.test)
+        val imageUri = newResourceUri(com.github.panpf.sketch.test.R.drawable.test)
         val imageSize = Size(60.dp2px, 30.dp2px)
         val request = ImageRequest(context, imageUri)
 
@@ -307,12 +307,12 @@ class DrawableDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(
             context,
-            newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.test)
+            newResourceUri(com.github.panpf.sketch.test.R.drawable.test)
         )
         val requestContext = request.toRequestContext(sketch)
         val dataSource = DrawableDataSource(
             context = context,
-            drawableFetcher = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy),
+            drawableFetcher = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_cloudy),
             dataFrom = LOCAL
         )
         val element1 = DrawableDecoder(requestContext, dataSource, mimeType = null)
@@ -329,12 +329,12 @@ class DrawableDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(
             context,
-            newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.test)
+            newResourceUri(com.github.panpf.sketch.test.R.drawable.test)
         )
         val requestContext = request.toRequestContext(sketch)
         val dataSource = DrawableDataSource(
             context = context,
-            drawableFetcher = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy),
+            drawableFetcher = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_cloudy),
             dataFrom = LOCAL
         )
         val decoder = DrawableDecoder(requestContext, dataSource, mimeType = null)
@@ -363,7 +363,7 @@ class DrawableDecoderTest {
         // normal
         ImageRequest(
             context = context,
-            uri = newResourceUri(com.github.panpf.sketch.test.utils.core.R.drawable.test)
+            uri = newResourceUri(com.github.panpf.sketch.test.R.drawable.test)
         ).createDecoderOrNull(sketch, factory).apply {
             assertTrue(this is DrawableDecoder)
         }

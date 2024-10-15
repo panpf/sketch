@@ -32,7 +32,7 @@ class DrawableDataSourceTest {
 
         DrawableDataSource(
             context = context,
-            drawableFetcher = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy),
+            drawableFetcher = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_cloudy),
             dataFrom = DataFrom.MEMORY,
         ).apply {
             if (VERSION.SDK_INT >= 24) {
@@ -95,12 +95,12 @@ class DrawableDataSourceTest {
         )
         val element2 = DrawableDataSource(
             context = context,
-            drawableFetcher = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy),
+            drawableFetcher = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_cloudy),
             dataFrom = DataFrom.LOCAL,
         )
         val element3 = DrawableDataSource(
             context = context,
-            drawableFetcher = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy),
+            drawableFetcher = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_cloudy),
             dataFrom = DataFrom.MEMORY,
         )
 

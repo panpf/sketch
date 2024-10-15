@@ -53,7 +53,7 @@ class ViewAbilityTestActivity : Activity() {
             override val requestState: RequestState
                 get() = throw UnsupportedOperationException()
         }.apply {
-            id = com.github.panpf.sketch.test.utils.core.R.id.test_view
+            id = com.github.panpf.sketch.test.R.id.test_view
             addViewAbility(viewAbility)
             setImageResource(android.R.drawable.ic_delete)
 

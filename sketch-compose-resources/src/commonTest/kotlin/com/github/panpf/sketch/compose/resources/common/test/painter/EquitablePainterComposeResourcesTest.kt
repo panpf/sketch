@@ -5,8 +5,8 @@ import androidx.compose.ui.test.runComposeUiTest
 import com.github.panpf.sketch.painter.asEquitable
 import com.github.panpf.sketch.painter.equitablePainterResource
 import com.github.panpf.sketch.painter.rememberEquitablePainterResource
-import com.github.panpf.sketch.test.utils.compose.core.resources.Res
-import com.github.panpf.sketch.test.utils.compose.core.resources.moon
+import com.github.panpf.sketch.test.compose.resources.Res
+import com.github.panpf.sketch.test.compose.resources.moon
 import org.jetbrains.compose.resources.painterResource
 import kotlin.test.Test
 import kotlin.test.assertEquals

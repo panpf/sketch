@@ -12,10 +12,10 @@ import com.github.panpf.sketch.painter.ImageBitmapPainter
 import com.github.panpf.sketch.painter.PainterWrapper
 import com.github.panpf.sketch.painter.key
 import com.github.panpf.sketch.painter.toLogString
+import com.github.panpf.sketch.test.compose.resources.Res
+import com.github.panpf.sketch.test.compose.resources.ic_image_outline
 import com.github.panpf.sketch.test.utils.TestKeyPainter
 import com.github.panpf.sketch.test.utils.TestNullableKeyPainter
-import com.github.panpf.sketch.test.utils.compose.core.resources.Res
-import com.github.panpf.sketch.test.utils.compose.core.resources.ic_image_outline
 import com.github.panpf.sketch.test.utils.createBitmap
 import com.github.panpf.sketch.test.utils.toComposeBitmap
 import com.github.panpf.sketch.util.toLogString

@@ -16,10 +16,10 @@ kotlin {
         }
 
         commonTest.dependencies {
-            implementation(projects.internal.testUtilsCore)
+            implementation(projects.internal.test)
         }
         androidInstrumentedTest.dependencies {
-            implementation(projects.internal.testUtilsCore)
+            implementation(projects.internal.test)
         }
     }
 }

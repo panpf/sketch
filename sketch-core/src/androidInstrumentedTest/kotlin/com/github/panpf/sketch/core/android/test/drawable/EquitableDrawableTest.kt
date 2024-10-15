@@ -32,10 +32,10 @@ class EquitableDrawableTest {
         val context = getTestContext()
         assertEquals(
             expected = EquitableDrawable(
-                drawable = context.getDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)!!,
-                equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
+                drawable = context.getDrawable(com.github.panpf.sketch.test.R.drawable.ic_cloudy)!!,
+                equalityKey = com.github.panpf.sketch.test.R.drawable.ic_cloudy
             ),
-            actual = context.getEquitableDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)
+            actual = context.getEquitableDrawable(com.github.panpf.sketch.test.R.drawable.ic_cloudy)
         )
     }
 
@@ -44,10 +44,10 @@ class EquitableDrawableTest {
         val context = getTestContext()
         assertEquals(
             expected = EquitableDrawable(
-                drawable = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy),
-                equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
+                drawable = context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_cloudy),
+                equalityKey = com.github.panpf.sketch.test.R.drawable.ic_cloudy
             ),
-            actual = context.getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)
+            actual = context.getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_cloudy)
         )
     }
 
@@ -58,13 +58,13 @@ class EquitableDrawableTest {
             expected = EquitableDrawable(
                 drawable = ResourcesCompat.getDrawable(
                     /* res = */ context.resources,
-                    /* id = */ com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
+                    /* id = */ com.github.panpf.sketch.test.R.drawable.ic_cloudy,
                     /* theme = */ null
                 )!!,
-                equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
+                equalityKey = com.github.panpf.sketch.test.R.drawable.ic_cloudy
             ),
             actual = context.resources.getEquitableDrawableCompat(
-                resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
+                resId = com.github.panpf.sketch.test.R.drawable.ic_cloudy,
                 theme = null
             )
         )
@@ -77,14 +77,14 @@ class EquitableDrawableTest {
             expected = EquitableDrawable(
                 drawable = ResourcesCompat.getDrawableForDensity(
                     /* res = */ context.resources,
-                    /* id = */ com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
+                    /* id = */ com.github.panpf.sketch.test.R.drawable.ic_cloudy,
                     /* density = */ 2,
                     /* theme = */ null
                 )!!,
-                equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
+                equalityKey = com.github.panpf.sketch.test.R.drawable.ic_cloudy
             ),
             actual = context.resources.getEquitableDrawableCompatForDensity(
-                resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
+                resId = com.github.panpf.sketch.test.R.drawable.ic_cloudy,
                 density = 2,
                 theme = null
             )
@@ -96,10 +96,10 @@ class EquitableDrawableTest {
         val context = getTestContext()
         assertEquals(
             expected = EquitableDrawable(
-                drawable = context.resources.getDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)!!,
-                equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
+                drawable = context.resources.getDrawable(com.github.panpf.sketch.test.R.drawable.ic_cloudy)!!,
+                equalityKey = com.github.panpf.sketch.test.R.drawable.ic_cloudy
             ),
-            actual = context.resources.getEquitableDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)
+            actual = context.resources.getEquitableDrawable(com.github.panpf.sketch.test.R.drawable.ic_cloudy)
         )
     }
 
@@ -109,13 +109,13 @@ class EquitableDrawableTest {
         assertEquals(
             expected = EquitableDrawable(
                 drawable = context.resources.getDrawable(
-                    /* id = */ com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
+                    /* id = */ com.github.panpf.sketch.test.R.drawable.ic_cloudy,
                     /* theme = */ null
                 )!!,
-                equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
+                equalityKey = com.github.panpf.sketch.test.R.drawable.ic_cloudy
             ),
             actual = context.resources.getEquitableDrawable(
-                resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
+                resId = com.github.panpf.sketch.test.R.drawable.ic_cloudy,
                 theme = null
             )
         )
@@ -127,13 +127,13 @@ class EquitableDrawableTest {
         assertEquals(
             expected = EquitableDrawable(
                 drawable = context.resources.getDrawableForDensity(
-                    /* id = */ com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
+                    /* id = */ com.github.panpf.sketch.test.R.drawable.ic_cloudy,
                     /* density = */ 2
                 )!!,
-                equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
+                equalityKey = com.github.panpf.sketch.test.R.drawable.ic_cloudy
             ),
             actual = context.resources.getEquitableDrawableForDensity(
-                resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
+                resId = com.github.panpf.sketch.test.R.drawable.ic_cloudy,
                 density = 2,
             )
         )
@@ -145,14 +145,14 @@ class EquitableDrawableTest {
         assertEquals(
             expected = EquitableDrawable(
                 drawable = context.resources.getDrawableForDensity(
-                    /* id = */ com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
+                    /* id = */ com.github.panpf.sketch.test.R.drawable.ic_cloudy,
                     /* density = */ 2,
                     /* theme = */ null
                 )!!,
-                equalityKey = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
+                equalityKey = com.github.panpf.sketch.test.R.drawable.ic_cloudy
             ),
             actual = context.resources.getEquitableDrawableForDensity(
-                resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy,
+                resId = com.github.panpf.sketch.test.R.drawable.ic_cloudy,
                 density = 2,
                 theme = null
             )

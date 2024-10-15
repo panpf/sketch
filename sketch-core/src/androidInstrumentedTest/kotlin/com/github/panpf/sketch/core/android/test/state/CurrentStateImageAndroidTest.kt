@@ -18,8 +18,8 @@ class CurrentStateImageAndroidTest {
         )
 
         assertEquals(
-            expected = CurrentStateImage(DrawableStateImage(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)),
-            actual = CurrentStateImage(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+            expected = CurrentStateImage(DrawableStateImage(com.github.panpf.sketch.test.R.drawable.ic_animated)),
+            actual = CurrentStateImage(com.github.panpf.sketch.test.R.drawable.ic_animated)
         )
     }
 }

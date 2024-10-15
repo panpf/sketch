@@ -2151,12 +2151,12 @@ class IconAnimatablePainterStateImageAndroidTest {
         runComposeUiTest {
             setContent {
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = null,
                             iconSize = null,
@@ -2173,13 +2173,13 @@ class IconAnimatablePainterStateImageAndroidTest {
             setContent {
                 // background
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = ColorPainter(Color.Green).asEquitable(),
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
@@ -2189,13 +2189,13 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = Color.Green,
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
@@ -2205,13 +2205,13 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = android.R.color.darker_gray,
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
@@ -2222,13 +2222,13 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = IntColorFetcher(android.graphics.Color.YELLOW),
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = null,
@@ -2238,13 +2238,13 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
@@ -2257,13 +2257,13 @@ class IconAnimatablePainterStateImageAndroidTest {
 
                 // iconSize
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     iconSize = Size(101f, 202f),
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = null,
                             iconSize = Size(101f, 202f),
@@ -2275,13 +2275,13 @@ class IconAnimatablePainterStateImageAndroidTest {
 
                 // iconTint
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     iconTint = Color.Blue
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = null,
                             iconSize = null,
@@ -2291,13 +2291,13 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     iconTint = android.R.color.holo_purple
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = null,
                             iconSize = null,
@@ -2309,13 +2309,13 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = null,
                             iconSize = null,
@@ -2332,14 +2332,14 @@ class IconAnimatablePainterStateImageAndroidTest {
             setContent {
                 // background, iconSize
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = ColorPainter(Color.Green).asEquitable(),
                     iconSize = Size(101f, 202f),
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
@@ -2349,14 +2349,14 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = Color.Green,
                     iconSize = Size(101f, 202f),
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
@@ -2366,14 +2366,14 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = android.R.color.darker_gray,
                     iconSize = Size(101f, 202f),
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
@@ -2384,14 +2384,14 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = Size(101f, 202f),
@@ -2401,14 +2401,14 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
                     iconSize = Size(101f, 202f),
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
@@ -2421,14 +2421,14 @@ class IconAnimatablePainterStateImageAndroidTest {
 
                 // background: Painter, iconTine
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = ColorPainter(Color.Green).asEquitable(),
                     iconTint = Color.Blue
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
@@ -2438,14 +2438,14 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = ColorPainter(Color.Green).asEquitable(),
                     iconTint = android.R.color.holo_purple
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
@@ -2457,14 +2457,14 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = ColorPainter(Color.Green).asEquitable(),
                     iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
@@ -2476,14 +2476,14 @@ class IconAnimatablePainterStateImageAndroidTest {
 
                 // background: Color, iconTine
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = Color.Green,
                     iconTint = Color.Blue
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
@@ -2493,14 +2493,14 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = Color.Green,
                     iconTint = android.R.color.holo_purple
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
@@ -2512,14 +2512,14 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = Color.Green,
                     iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = null,
@@ -2531,14 +2531,14 @@ class IconAnimatablePainterStateImageAndroidTest {
 
                 // background: android res, iconTine
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = android.R.color.darker_gray,
                     iconTint = Color.Blue
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
@@ -2549,14 +2549,14 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = android.R.color.darker_gray,
                     iconTint = android.R.color.holo_purple
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
@@ -2569,14 +2569,14 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = android.R.color.darker_gray,
                     iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
@@ -2589,14 +2589,14 @@ class IconAnimatablePainterStateImageAndroidTest {
 
                 // background: IntColorFetcher, iconTine
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconTint = Color.Blue
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = null,
@@ -2606,14 +2606,14 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconTint = android.R.color.holo_purple
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = null,
@@ -2625,14 +2625,14 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = null,
@@ -2644,14 +2644,14 @@ class IconAnimatablePainterStateImageAndroidTest {
 
                 // background: Drawable, iconTine
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
                     iconTint = Color.Blue
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
@@ -2662,14 +2662,14 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
                     iconTint = android.R.color.holo_purple
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
@@ -2682,14 +2682,14 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
                     iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
@@ -2702,14 +2702,14 @@ class IconAnimatablePainterStateImageAndroidTest {
 
                 // iconSize, iconTint
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     iconSize = Size(101f, 202f),
                     iconTint = Color.Blue
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = null,
                             iconSize = Size(101f, 202f),
@@ -2719,14 +2719,14 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     iconSize = Size(101f, 202f),
                     iconTint = android.R.color.holo_purple
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = null,
                             iconSize = Size(101f, 202f),
@@ -2738,14 +2738,14 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     iconSize = Size(101f, 202f),
                     iconTint = IntColorFetcher(android.graphics.Color.CYAN)
                 ).apply {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = null,
                             iconSize = Size(101f, 202f),
@@ -2762,7 +2762,7 @@ class IconAnimatablePainterStateImageAndroidTest {
             setContent {
                 // background: Painter
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = ColorPainter(Color.Green).asEquitable(),
                     iconSize = Size(101f, 202f),
                     iconTint = Color.Blue
@@ -2770,7 +2770,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
@@ -2780,7 +2780,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = ColorPainter(Color.Green).asEquitable(),
                     iconSize = Size(101f, 202f),
                     iconTint = android.R.color.holo_purple
@@ -2788,7 +2788,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
@@ -2800,7 +2800,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = ColorPainter(Color.Green).asEquitable(),
                     iconSize = Size(101f, 202f),
                     iconTint = IntColorFetcher(android.graphics.Color.CYAN)
@@ -2808,7 +2808,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
@@ -2820,7 +2820,7 @@ class IconAnimatablePainterStateImageAndroidTest {
 
                 // background: Color
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = Color.Green,
                     iconSize = Size(101f, 202f),
                     iconTint = Color.Blue
@@ -2828,7 +2828,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
@@ -2838,7 +2838,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = Color.Green,
                     iconSize = Size(101f, 202f),
                     iconTint = android.R.color.holo_purple
@@ -2846,7 +2846,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
@@ -2858,7 +2858,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = Color.Green,
                     iconSize = Size(101f, 202f),
                     iconTint = IntColorFetcher(android.graphics.Color.CYAN)
@@ -2866,7 +2866,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color.Green).asEquitable(),
                             iconSize = Size(101f, 202f),
@@ -2878,7 +2878,7 @@ class IconAnimatablePainterStateImageAndroidTest {
 
                 // background: android res
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = android.R.color.darker_gray,
                     iconSize = Size(101f, 202f),
                     iconTint = Color.Blue
@@ -2886,7 +2886,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
@@ -2897,7 +2897,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = android.R.color.darker_gray,
                     iconSize = Size(101f, 202f),
                     iconTint = android.R.color.holo_purple
@@ -2905,7 +2905,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
@@ -2918,7 +2918,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = android.R.color.darker_gray,
                     iconSize = Size(101f, 202f),
                     iconTint = IntColorFetcher(android.graphics.Color.CYAN)
@@ -2926,7 +2926,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = LocalContext.current.getEquitableDrawableCompat(android.R.color.darker_gray)
                                 .asEquitablePainter(),
@@ -2939,7 +2939,7 @@ class IconAnimatablePainterStateImageAndroidTest {
 
                 // background: IntColorFetcher
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                     iconTint = Color.Blue
@@ -2947,7 +2947,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = Size(101f, 202f),
@@ -2957,7 +2957,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                     iconTint = android.R.color.holo_purple
@@ -2965,7 +2965,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = Size(101f, 202f),
@@ -2977,7 +2977,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = IntColorFetcher(android.graphics.Color.YELLOW),
                     iconSize = Size(101f, 202f),
                     iconTint = IntColorFetcher(android.graphics.Color.CYAN)
@@ -2985,7 +2985,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorPainter(Color(android.graphics.Color.YELLOW)).asEquitable(),
                             iconSize = Size(101f, 202f),
@@ -2997,7 +2997,7 @@ class IconAnimatablePainterStateImageAndroidTest {
 
                 // background: Drawable
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
                     iconSize = Size(101f, 202f),
                     iconTint = Color.Blue
@@ -3005,7 +3005,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
@@ -3016,7 +3016,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
                     iconSize = Size(101f, 202f),
                     iconTint = android.R.color.holo_purple
@@ -3024,7 +3024,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),
@@ -3037,7 +3037,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     )
                 }
                 rememberIconAnimatablePainterStateImage(
-                    icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+                    icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
                     background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable(),
                     iconSize = Size(101f, 202f),
                     iconTint = IntColorFetcher(android.graphics.Color.CYAN)
@@ -3045,7 +3045,7 @@ class IconAnimatablePainterStateImageAndroidTest {
                     assertEquals(
                         expected = IconAnimatablePainterStateImage(
                             icon = LocalContext.current
-                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                                .getEquitableDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                                 .asEquitablePainter(),
                             background = ColorDrawable(android.graphics.Color.YELLOW).asEquitable()
                                 .asEquitablePainter(),

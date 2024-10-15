@@ -709,11 +709,11 @@ class IconAnimatableDrawableStateImageTest {
     fun testIconAnimatableDrawableStateImageWithResIcon() {
         // One parameters
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = null,
                     iconSize = null,
                     iconTint = null
@@ -725,12 +725,12 @@ class IconAnimatableDrawableStateImageTest {
         // Two parameters
         // background
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = ColorDrawable(Color.GREEN).asEquitable(),
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ColorDrawable(Color.GREEN)
                         .asEquitable()
                         .let { RealDrawableFetcher(it) },
@@ -741,12 +741,12 @@ class IconAnimatableDrawableStateImageTest {
             )
         }
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = android.R.color.darker_gray,
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ResDrawableFetcher(android.R.color.darker_gray),
                     iconSize = null,
                     iconTint = null
@@ -755,12 +755,12 @@ class IconAnimatableDrawableStateImageTest {
             )
         }
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = IntColorFetcher(Color.YELLOW),
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ColorFetcherDrawableFetcher(IntColorFetcher(Color.YELLOW)),
                     iconSize = null,
                     iconTint = null
@@ -769,12 +769,12 @@ class IconAnimatableDrawableStateImageTest {
             )
         }
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = ColorDrawable(Color.YELLOW).asEquitable(),
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ColorDrawable(Color.YELLOW).asEquitable()
                         .let { RealDrawableFetcher(it) },
                     iconSize = null,
@@ -786,12 +786,12 @@ class IconAnimatableDrawableStateImageTest {
 
         // iconSize
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             iconSize = Size(101, 202),
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = null,
                     iconSize = Size(101, 202),
                     iconTint = null
@@ -802,12 +802,12 @@ class IconAnimatableDrawableStateImageTest {
 
         // iconTint
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             iconTint = android.R.color.holo_purple
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = null,
                     iconSize = null,
                     iconTint = ResColorFetcher(android.R.color.holo_purple)
@@ -816,12 +816,12 @@ class IconAnimatableDrawableStateImageTest {
             )
         }
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = null,
                     iconSize = null,
                     iconTint = IntColorFetcher(Color.CYAN)
@@ -833,13 +833,13 @@ class IconAnimatableDrawableStateImageTest {
         // Three parameters
         // background, iconSize
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = ColorDrawable(Color.GREEN).asEquitable(),
             iconSize = Size(101, 202),
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ColorDrawable(Color.GREEN)
                         .asEquitable()
                         .let { RealDrawableFetcher(it) },
@@ -850,13 +850,13 @@ class IconAnimatableDrawableStateImageTest {
             )
         }
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = android.R.color.darker_gray,
             iconSize = Size(101, 202),
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ResDrawableFetcher(android.R.color.darker_gray),
                     iconSize = Size(101, 202),
                     iconTint = null
@@ -865,13 +865,13 @@ class IconAnimatableDrawableStateImageTest {
             )
         }
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = IntColorFetcher(Color.YELLOW),
             iconSize = Size(101, 202),
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ColorFetcherDrawableFetcher(IntColorFetcher(Color.YELLOW)),
                     iconSize = Size(101, 202),
                     iconTint = null
@@ -880,13 +880,13 @@ class IconAnimatableDrawableStateImageTest {
             )
         }
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = ColorDrawable(Color.YELLOW).asEquitable(),
             iconSize = Size(101, 202),
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ColorDrawable(Color.YELLOW).asEquitable()
                         .let { RealDrawableFetcher(it) },
                     iconSize = Size(101, 202),
@@ -898,13 +898,13 @@ class IconAnimatableDrawableStateImageTest {
 
         // background: Painter, iconTine
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = ColorDrawable(Color.GREEN).asEquitable(),
             iconTint = android.R.color.holo_purple
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ColorDrawable(Color.GREEN)
                         .asEquitable()
                         .let { RealDrawableFetcher(it) },
@@ -915,13 +915,13 @@ class IconAnimatableDrawableStateImageTest {
             )
         }
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = ColorDrawable(Color.GREEN).asEquitable(),
             iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ColorDrawable(Color.GREEN)
                         .asEquitable()
                         .let { RealDrawableFetcher(it) },
@@ -934,13 +934,13 @@ class IconAnimatableDrawableStateImageTest {
 
         // background: android res, iconTine
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = android.R.color.darker_gray,
             iconTint = android.R.color.holo_purple
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ResDrawableFetcher(android.R.color.darker_gray),
                     iconSize = null,
                     iconTint = ResColorFetcher(android.R.color.holo_purple)
@@ -949,13 +949,13 @@ class IconAnimatableDrawableStateImageTest {
             )
         }
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = android.R.color.darker_gray,
             iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ResDrawableFetcher(android.R.color.darker_gray),
                     iconSize = null,
                     iconTint = IntColorFetcher(Color.CYAN)
@@ -966,13 +966,13 @@ class IconAnimatableDrawableStateImageTest {
 
         // background: IntColorFetcher, iconTine
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = IntColorFetcher(Color.YELLOW),
             iconTint = android.R.color.holo_purple
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ColorFetcherDrawableFetcher(IntColorFetcher(Color.YELLOW)),
                     iconSize = null,
                     iconTint = ResColorFetcher(android.R.color.holo_purple)
@@ -981,13 +981,13 @@ class IconAnimatableDrawableStateImageTest {
             )
         }
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = IntColorFetcher(Color.YELLOW),
             iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ColorFetcherDrawableFetcher(IntColorFetcher(Color.YELLOW)),
                     iconSize = null,
                     iconTint = IntColorFetcher(Color.CYAN)
@@ -998,13 +998,13 @@ class IconAnimatableDrawableStateImageTest {
 
         // background: Drawable, iconTine
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = ColorDrawable(Color.YELLOW).asEquitable(),
             iconTint = android.R.color.holo_purple
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ColorDrawable(Color.YELLOW).asEquitable()
                         .let { RealDrawableFetcher(it) },
                     iconSize = null,
@@ -1014,13 +1014,13 @@ class IconAnimatableDrawableStateImageTest {
             )
         }
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = ColorDrawable(Color.YELLOW).asEquitable(),
             iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ColorDrawable(Color.YELLOW).asEquitable()
                         .let { RealDrawableFetcher(it) },
                     iconSize = null,
@@ -1032,13 +1032,13 @@ class IconAnimatableDrawableStateImageTest {
 
         // iconSize, iconTint
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             iconSize = Size(101, 202),
             iconTint = android.R.color.holo_purple
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = null,
                     iconSize = Size(101, 202),
                     iconTint = ResColorFetcher(android.R.color.holo_purple)
@@ -1047,13 +1047,13 @@ class IconAnimatableDrawableStateImageTest {
             )
         }
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             iconSize = Size(101, 202),
             iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = null,
                     iconSize = Size(101, 202),
                     iconTint = IntColorFetcher(Color.CYAN)
@@ -1065,14 +1065,14 @@ class IconAnimatableDrawableStateImageTest {
         // Four parameters
         // background: Painter
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = ColorDrawable(Color.GREEN).asEquitable(),
             iconSize = Size(101, 202),
             iconTint = android.R.color.holo_purple
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ColorDrawable(Color.GREEN)
                         .asEquitable()
                         .let { RealDrawableFetcher(it) },
@@ -1083,14 +1083,14 @@ class IconAnimatableDrawableStateImageTest {
             )
         }
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = ColorDrawable(Color.GREEN).asEquitable(),
             iconSize = Size(101, 202),
             iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ColorDrawable(Color.GREEN)
                         .asEquitable()
                         .let { RealDrawableFetcher(it) },
@@ -1103,14 +1103,14 @@ class IconAnimatableDrawableStateImageTest {
 
         // background: android res
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = android.R.color.darker_gray,
             iconSize = Size(101, 202),
             iconTint = android.R.color.holo_purple
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ResDrawableFetcher(android.R.color.darker_gray),
                     iconSize = Size(101, 202),
                     iconTint = ResColorFetcher(android.R.color.holo_purple)
@@ -1119,14 +1119,14 @@ class IconAnimatableDrawableStateImageTest {
             )
         }
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = android.R.color.darker_gray,
             iconSize = Size(101, 202),
             iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ResDrawableFetcher(android.R.color.darker_gray),
                     iconSize = Size(101, 202),
                     iconTint = IntColorFetcher(Color.CYAN)
@@ -1137,14 +1137,14 @@ class IconAnimatableDrawableStateImageTest {
 
         // background: IntColorFetcher
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = IntColorFetcher(Color.YELLOW),
             iconSize = Size(101, 202),
             iconTint = android.R.color.holo_purple
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ColorFetcherDrawableFetcher(IntColorFetcher(Color.YELLOW)),
                     iconSize = Size(101, 202),
                     iconTint = ResColorFetcher(android.R.color.holo_purple)
@@ -1153,14 +1153,14 @@ class IconAnimatableDrawableStateImageTest {
             )
         }
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = IntColorFetcher(Color.YELLOW),
             iconSize = Size(101, 202),
             iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ColorFetcherDrawableFetcher(IntColorFetcher(Color.YELLOW)),
                     iconSize = Size(101, 202),
                     iconTint = IntColorFetcher(Color.CYAN)
@@ -1171,14 +1171,14 @@ class IconAnimatableDrawableStateImageTest {
 
         // background: Drawable
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = ColorDrawable(Color.YELLOW).asEquitable(),
             iconSize = Size(101, 202),
             iconTint = android.R.color.holo_purple
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ColorDrawable(Color.YELLOW).asEquitable()
                         .let { RealDrawableFetcher(it) },
                     iconSize = Size(101, 202),
@@ -1188,14 +1188,14 @@ class IconAnimatableDrawableStateImageTest {
             )
         }
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = ColorDrawable(Color.YELLOW).asEquitable(),
             iconSize = Size(101, 202),
             iconTint = IntColorFetcher(Color.CYAN)
         ).apply {
             assertEquals(
                 expected = IconAnimatableDrawableStateImage(
-                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+                    icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
                     background = ColorDrawable(Color.YELLOW).asEquitable()
                         .let { RealDrawableFetcher(it) },
                     iconSize = Size(101, 202),
@@ -1209,7 +1209,7 @@ class IconAnimatableDrawableStateImageTest {
     @Test
     fun testKey() {
         val iconDrawable =
-            ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+            ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated)
         val backgroundDrawable = RealColorDrawableFetcher(Color.GRAY)
         val intTintColor = IntColorFetcher(Color.BLUE)
         IconAnimatableDrawableStateImage(
@@ -1258,7 +1258,7 @@ class IconAnimatableDrawableStateImageTest {
             }
 
         IconAnimatableDrawableStateImage(
-            icon = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated,
+            icon = com.github.panpf.sketch.test.R.drawable.ic_animated,
             background = android.R.drawable.ic_lock_lock,
             iconSize = Size(50, 50),
             iconTint = android.R.color.holo_purple
@@ -1277,7 +1277,7 @@ class IconAnimatableDrawableStateImageTest {
     @Test
     fun testEqualsAndHashCode() {
         val element1 = IconAnimatableDrawableStateImage(
-            icon = ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated),
+            icon = ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated),
         )
         val element11 = element1.copy()
         val element2 = element1.copy(icon = ResDrawableFetcher(android.R.drawable.btn_star))
@@ -1316,7 +1316,7 @@ class IconAnimatableDrawableStateImageTest {
     @Test
     fun testToString() {
         val iconDrawable =
-            ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+            ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated)
         val backgroundDrawable = RealColorDrawableFetcher(Color.GRAY)
         val intTintColor = IntColorFetcher(Color.BLUE)
         IconAnimatableDrawableStateImage(

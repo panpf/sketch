@@ -26,10 +26,10 @@ class ResourceDataSourceTest {
         ResourceDataSource(
             resources = context.resources,
             packageName = context.packageName,
-            resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
+            resId = com.github.panpf.sketch.test.R.drawable.ic_launcher
         ).apply {
             assertEquals(
-                com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher,
+                com.github.panpf.sketch.test.R.drawable.ic_launcher,
                 this.resId
             )
             assertEquals(LOCAL, this.dataFrom)
@@ -42,7 +42,7 @@ class ResourceDataSourceTest {
         ResourceDataSource(
             resources = context.resources,
             packageName = context.packageName,
-            resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
+            resId = com.github.panpf.sketch.test.R.drawable.ic_launcher
         ).apply {
             assertEquals(
                 newResourceUri(packageName = packageName, resId = resId),
@@ -57,7 +57,7 @@ class ResourceDataSourceTest {
         ResourceDataSource(
             resources = context.resources,
             packageName = context.packageName,
-            resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
+            resId = com.github.panpf.sketch.test.R.drawable.ic_launcher
         ).apply {
             openSource().asOrThrow<Closeable>().close()
         }
@@ -79,7 +79,7 @@ class ResourceDataSourceTest {
         ResourceDataSource(
             resources = context.resources,
             packageName = context.packageName,
-            resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
+            resId = com.github.panpf.sketch.test.R.drawable.ic_launcher
         ).getFile(sketch).apply {
             assertTrue(actual = toString().contains("/${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}/"))
         }
@@ -91,12 +91,12 @@ class ResourceDataSourceTest {
         val element1 = ResourceDataSource(
             resources = context.resources,
             packageName = context.packageName,
-            resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
+            resId = com.github.panpf.sketch.test.R.drawable.ic_launcher
         )
         val element11 = ResourceDataSource(
             resources = context.resources,
             packageName = context.packageName,
-            resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
+            resId = com.github.panpf.sketch.test.R.drawable.ic_launcher
         )
         val element2 = ResourceDataSource(
             resources = context.resources,
@@ -128,10 +128,10 @@ class ResourceDataSourceTest {
         ResourceDataSource(
             resources = context.resources,
             packageName = context.packageName,
-            resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
+            resId = com.github.panpf.sketch.test.R.drawable.ic_launcher
         ).apply {
             assertEquals(
-                "ResourceDataSource(packageName='${context.packageName}', resId=${com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher})",
+                "ResourceDataSource(packageName='${context.packageName}', resId=${com.github.panpf.sketch.test.R.drawable.ic_launcher})",
                 toString()
             )
         }

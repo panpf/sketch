@@ -8,5 +8,6 @@ androidLibrary(nameSpace = "com.github.panpf.sketch.video")
 dependencies {
     api(projects.sketchCore)
 
-    androidTestImplementation(projects.internal.testUtils)
+    androidTestImplementation(projects.internal.test)
+    androidTestImplementation(projects.internal.testSingleton)
 }

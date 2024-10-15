@@ -103,7 +103,7 @@ class DrawableImageTest {
         }
 
         val drawable2 =
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.test)
+            context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.test)
         DrawableImage(drawable2).apply {
             assertEquals(expected = drawable2.intrinsicWidth, actual = width)
             assertEquals(expected = drawable2.intrinsicHeight, actual = height)
@@ -125,7 +125,7 @@ class DrawableImageTest {
         }
 
         val drawable2 =
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.test)
+            context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.test)
         DrawableImage(drawable2).apply {
             assertEquals(
                 expected = 4L * drawable2.intrinsicWidth * drawable2.intrinsicHeight,
@@ -150,7 +150,7 @@ class DrawableImageTest {
         assertFalse(drawableImage.checkValid())
 
         val drawable2 =
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.test)
+            context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.test)
         DrawableImage(drawable2).apply {
             assertTrue(checkValid())
         }

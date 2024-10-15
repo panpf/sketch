@@ -277,7 +277,7 @@ class IconDrawableTest {
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val icon =
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_circle)
+            context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_circle)
         val iconIntrinsicSize = Size(icon.intrinsicWidth, icon.intrinsicHeight)
         assertEquals(
             Size(50.dp2px, 50.dp2px),
@@ -339,7 +339,7 @@ class IconDrawableTest {
         val context = InstrumentationRegistry.getInstrumentation().context
 
         val icon =
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_circle)
+            context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_circle)
         val iconIntrinsicSize = Size(icon.intrinsicWidth, icon.intrinsicHeight)
         assertEquals(
             Size(50.dp2px, 50.dp2px),

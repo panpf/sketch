@@ -9,5 +9,6 @@ dependencies {
     api(projects.sketchAnimated)
     api(libs.androidgifdrawable)
 
-    androidTestImplementation(projects.internal.testUtils)
+    androidTestImplementation(projects.internal.test)
+    androidTestImplementation(projects.internal.testSingleton)
 }

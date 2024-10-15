@@ -11,5 +11,6 @@ dependencies {
     api(projects.sketchViewCore)
     api(libs.androidx.recyclerview)
 
-    androidTestImplementation(projects.internal.testUtils)
+    androidTestImplementation(projects.internal.test)
+    androidTestImplementation(projects.internal.testSingleton)
 }

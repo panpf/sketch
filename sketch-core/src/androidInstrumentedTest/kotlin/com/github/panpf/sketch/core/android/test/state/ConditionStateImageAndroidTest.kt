@@ -134,7 +134,7 @@ class ConditionStateImageAndroidTest {
             ) {
                 addState(
                     UriInvalidCondition,
-                    DrawableStateImage(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                    DrawableStateImage(com.github.panpf.sketch.test.R.drawable.ic_animated)
                 )
             },
             actual = ConditionStateImage(
@@ -142,7 +142,7 @@ class ConditionStateImageAndroidTest {
             ) {
                 addState(
                     condition = UriInvalidCondition,
-                    resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated
+                    resId = com.github.panpf.sketch.test.R.drawable.ic_animated
                 )
             }
         )
@@ -172,7 +172,7 @@ class ConditionStateImageAndroidTest {
             ) {
                 addState(
                     UriInvalidCondition,
-                    ColorDrawableStateImage(ResColorFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated))
+                    ColorDrawableStateImage(ResColorFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated))
                 )
             },
             actual = ConditionStateImage(
@@ -180,7 +180,7 @@ class ConditionStateImageAndroidTest {
             ) {
                 addState(
                     condition = UriInvalidCondition,
-                    color = ResColorFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                    color = ResColorFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated)
                 )
             }
         )

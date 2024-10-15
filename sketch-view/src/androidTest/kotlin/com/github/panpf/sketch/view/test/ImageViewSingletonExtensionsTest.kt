@@ -68,7 +68,7 @@ class ImageViewSingletonExtensionsTest {
                 imageView.setImageDrawable(null)
             }
             assertNull(imageView.drawable)
-            imageView.loadImage(com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher).job.join()
+            imageView.loadImage(com.github.panpf.sketch.test.R.drawable.ic_launcher).job.join()
             assertNotNull(imageView.drawable)
             withContext(Dispatchers.Main) {
                 imageView.setImageDrawable(null)
@@ -81,7 +81,7 @@ class ImageViewSingletonExtensionsTest {
                 imageView.setImageDrawable(null)
             }
             assertNull(imageView.drawable)
-            imageView.loadResourceImage(com.github.panpf.sketch.test.utils.core.R.drawable.test).job.join()
+            imageView.loadResourceImage(com.github.panpf.sketch.test.R.drawable.test).job.join()
             assertNotNull(imageView.drawable)
             withContext(Dispatchers.Main) {
                 imageView.setImageDrawable(null)
@@ -96,7 +96,7 @@ class ImageViewSingletonExtensionsTest {
             assertNull(imageView.drawable)
             imageView.loadResourceImage(
                 activity.packageName,
-                com.github.panpf.sketch.test.utils.core.R.drawable.test
+                com.github.panpf.sketch.test.R.drawable.test
             ).job.join()
             assertNotNull(imageView.drawable)
 

@@ -97,7 +97,7 @@ class DrawablesTest {
         if (VERSION.SDK_INT >= 21) {
             context.getXmlDrawableCompat(
                 context.resources,
-                com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
+                com.github.panpf.sketch.test.R.drawable.ic_cloudy
             ).apply {
                 if (VERSION.SDK_INT >= 24) {
                     assertTrue(this is VectorDrawable)
@@ -109,14 +109,14 @@ class DrawablesTest {
             assertFailsWith(Resources.NotFoundException::class) {
                 context.getXmlDrawableCompat(
                     context.resources,
-                    com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy
+                    com.github.panpf.sketch.test.R.drawable.ic_cloudy
                 )
             }
         }
 
         context.getXmlDrawableCompat(
             context.resources,
-            com.github.panpf.sketch.test.utils.core.R.drawable.test_error
+            com.github.panpf.sketch.test.R.drawable.test_error
         ).apply {
             assertTrue(this is GradientDrawable)
         }
@@ -124,7 +124,7 @@ class DrawablesTest {
         if (VERSION.SDK_INT >= 24) {
             context.getXmlDrawableCompat(
                 context.resources,
-                com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
+                com.github.panpf.sketch.test.R.drawable.ic_launcher
             ).apply {
                 assertTrue(this is BitmapDrawable)
             }
@@ -132,7 +132,7 @@ class DrawablesTest {
             assertFailsWith(Resources.NotFoundException::class) {
                 context.getXmlDrawableCompat(
                     context.resources,
-                    com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
+                    com.github.panpf.sketch.test.R.drawable.ic_launcher
                 )
             }
         }
@@ -142,7 +142,7 @@ class DrawablesTest {
     fun testToBitmap() {
         val context = getTestContext()
 
-        val imageResId = com.github.panpf.sketch.test.utils.core.R.drawable.test
+        val imageResId = com.github.panpf.sketch.test.R.drawable.test
         val imageSize = Size(60.dp2px, 30.dp2px)
         val drawable = context.getDrawableCompat(imageResId)
 
@@ -273,7 +273,7 @@ class DrawablesTest {
         }
 
         if (VERSION.SDK_INT <= VERSION_CODES.M) {
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+            context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                 .asOrThrow<AnimatedVectorDrawableCompat>().apply {
                     assertEquals(
                         expected = "AnimatedVectorDrawableCompat(${toSizeString()})",
@@ -286,7 +286,7 @@ class DrawablesTest {
                 }
         }
 
-        context.getDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)!!
+        context.getDrawable(com.github.panpf.sketch.test.R.drawable.ic_animated)!!
             .asOrThrow<AnimatedVectorDrawable>().apply {
                 assertEquals(
                     expected = "AnimatedVectorDrawable(${toSizeString()})",
@@ -300,7 +300,7 @@ class DrawablesTest {
 
         TransitionDrawable(
             /* layers = */ arrayOf(
-                context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.test),
+                context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.test),
                 context.getDrawableCompat(android.R.drawable.ic_delete)
             )
         ).apply {
@@ -339,7 +339,7 @@ class DrawablesTest {
         }
 
         if (VERSION.SDK_INT <= VERSION_CODES.M) {
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)
+            context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_cloudy)
                 .asOrThrow<VectorDrawableCompat>().apply {
                     assertEquals(
                         expected = "VectorDrawableCompat(${toSizeString()})",
@@ -352,7 +352,7 @@ class DrawablesTest {
                 }
         }
 
-        context.getDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)!!
+        context.getDrawable(com.github.panpf.sketch.test.R.drawable.ic_cloudy)!!
             .asOrThrow<VectorDrawable>().apply {
                 assertEquals(
                     expected = "VectorDrawable(${toSizeString()})",
@@ -404,7 +404,7 @@ class DrawablesTest {
         }
 
         ResizeDrawable(
-            drawable = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.test),
+            drawable = context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.test),
             size = Size(100, 100),
             scale = Scale.CENTER_CROP
         ).apply {
@@ -416,7 +416,7 @@ class DrawablesTest {
 
         LayerDrawable(
             /* layers = */ arrayOf(
-                context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.test),
+                context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.test),
                 context.getDrawableCompat(android.R.drawable.ic_delete)
             )
         ).apply {
@@ -431,7 +431,7 @@ class DrawablesTest {
     fun testToLogString() {
         val context = getTestContext()
         ResizeDrawable(
-            drawable = context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.test),
+            drawable = context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.test),
             size = Size(100, 100),
             scale = Scale.CENTER_CROP
         ).apply {
@@ -469,7 +469,7 @@ class DrawablesTest {
         }
 
         if (VERSION.SDK_INT <= VERSION_CODES.M) {
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+            context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_animated)
                 .asOrThrow<AnimatedVectorDrawableCompat>().apply {
                     assertEquals(
                         expected = "AnimatedVectorDrawableCompat(size=${toSizeString()})",
@@ -478,7 +478,7 @@ class DrawablesTest {
                 }
         }
 
-        context.getDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)!!
+        context.getDrawable(com.github.panpf.sketch.test.R.drawable.ic_animated)!!
             .asOrThrow<AnimatedVectorDrawable>().apply {
                 assertEquals(
                     expected = "AnimatedVectorDrawable(size=${toSizeString()})",
@@ -488,7 +488,7 @@ class DrawablesTest {
 
         TransitionDrawable(
             /* layers = */ arrayOf(
-                context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.test),
+                context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.test),
                 context.getDrawableCompat(android.R.drawable.ic_delete)
             )
         ).apply {
@@ -515,7 +515,7 @@ class DrawablesTest {
         }
 
         if (VERSION.SDK_INT <= VERSION_CODES.M) {
-            context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)
+            context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.ic_cloudy)
                 .asOrThrow<VectorDrawableCompat>().apply {
                     assertEquals(
                         expected = "VectorDrawableCompat(size=${toSizeString()})",
@@ -524,7 +524,7 @@ class DrawablesTest {
                 }
         }
 
-        context.getDrawable(com.github.panpf.sketch.test.utils.core.R.drawable.ic_cloudy)!!
+        context.getDrawable(com.github.panpf.sketch.test.R.drawable.ic_cloudy)!!
             .asOrThrow<VectorDrawable>().apply {
                 assertEquals(
                     expected = "VectorDrawable(size=${toSizeString()})",
@@ -561,7 +561,7 @@ class DrawablesTest {
 
         LayerDrawable(
             /* layers = */ arrayOf(
-                context.getDrawableCompat(com.github.panpf.sketch.test.utils.core.R.drawable.test),
+                context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.test),
                 context.getDrawableCompat(android.R.drawable.ic_delete)
             )
         ).apply {

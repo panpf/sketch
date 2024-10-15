@@ -11,11 +11,11 @@ import com.github.panpf.sketch.painter.IconAnimatablePainter
 import com.github.panpf.sketch.painter.asEquitable
 import com.github.panpf.sketch.painter.equitablePainterResource
 import com.github.panpf.sketch.painter.rememberIconAnimatablePainter
+import com.github.panpf.sketch.test.compose.resources.Res
+import com.github.panpf.sketch.test.compose.resources.desert
 import com.github.panpf.sketch.test.utils.SizeColorPainter
 import com.github.panpf.sketch.test.utils.asAnimatablePainter
 import com.github.panpf.sketch.test.utils.asEquitableWithThis
-import com.github.panpf.sketch.test.utils.compose.core.resources.Res
-import com.github.panpf.sketch.test.utils.compose.core.resources.desert
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

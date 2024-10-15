@@ -50,8 +50,8 @@ class ColorDrawableStateImageTest {
     @Test
     fun testResColorDrawableStateImage() {
         assertEquals(
-            expected = ColorDrawableStateImage(ResColorFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)),
-            actual = ResColorDrawableStateImage(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+            expected = ColorDrawableStateImage(ResColorFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated)),
+            actual = ResColorDrawableStateImage(com.github.panpf.sketch.test.R.drawable.ic_animated)
         )
     }
 
@@ -66,8 +66,8 @@ class ColorDrawableStateImageTest {
     @Test
     fun testColorDrawableStateImageResColor() {
         assertEquals(
-            expected = ColorDrawableStateImage(ResColorFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)),
-            actual = ColorDrawableStateImage(ResColorFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated))
+            expected = ColorDrawableStateImage(ResColorFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated)),
+            actual = ColorDrawableStateImage(ResColorFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated))
         )
     }
 

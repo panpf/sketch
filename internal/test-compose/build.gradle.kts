@@ -11,17 +11,17 @@ plugins {
 
 addAllMultiplatformTargets()
 
-androidLibrary(nameSpace = "com.github.panpf.sketch.test.utils.compose.core")
+androidLibrary(nameSpace = "com.github.panpf.sketch.test.compose")
 
 compose.resources {
-    packageOfResClass = "com.github.panpf.sketch.test.utils.compose.core.resources"
+    packageOfResClass = "com.github.panpf.sketch.test.compose.resources"
     publicResClass = true
 }
 
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(projects.internal.testUtilsCore)
+            api(projects.internal.test)
             api(projects.sketchComposeCore)
             api(compose.foundation)
             api(compose.ui)

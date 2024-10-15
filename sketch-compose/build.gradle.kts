@@ -18,7 +18,8 @@ kotlin {
         }
 
         commonTest.dependencies {
-            implementation(projects.internal.testUtilsCompose)
+            implementation(projects.internal.testCompose)
+            implementation(projects.internal.testSingleton)
         }
     }
 }

@@ -78,9 +78,9 @@ class DrawableStateImageTest {
 
         assertEquals(
             expected = DrawableStateImage(
-                ResDrawableFetcher(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+                ResDrawableFetcher(com.github.panpf.sketch.test.R.drawable.ic_animated)
             ),
-            actual = DrawableStateImage(com.github.panpf.sketch.test.utils.core.R.drawable.ic_animated)
+            actual = DrawableStateImage(com.github.panpf.sketch.test.R.drawable.ic_animated)
         )
     }
 

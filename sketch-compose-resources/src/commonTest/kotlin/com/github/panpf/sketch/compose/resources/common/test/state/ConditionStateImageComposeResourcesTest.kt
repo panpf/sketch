@@ -7,10 +7,10 @@ import com.github.panpf.sketch.state.ComposableConditionStateImage
 import com.github.panpf.sketch.state.ConditionStateImage.DefaultCondition
 import com.github.panpf.sketch.state.PainterStateImage
 import com.github.panpf.sketch.state.addState
+import com.github.panpf.sketch.test.compose.resources.Res
+import com.github.panpf.sketch.test.compose.resources.desert
+import com.github.panpf.sketch.test.compose.resources.moon
 import com.github.panpf.sketch.test.utils.UriInvalidCondition
-import com.github.panpf.sketch.test.utils.compose.core.resources.Res
-import com.github.panpf.sketch.test.utils.compose.core.resources.desert
-import com.github.panpf.sketch.test.utils.compose.core.resources.moon
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

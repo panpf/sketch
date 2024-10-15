@@ -80,7 +80,7 @@ class ResourceUriFetcherTest {
     @Suppress("ComplexRedundantLet")
     fun testFetch() = runTest {
         val context = getTestContext()
-        val resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
+        val resId = com.github.panpf.sketch.test.R.drawable.ic_launcher
 
         assertTrue(
             newResourceUri("drawable", "ic_launcher")
@@ -109,7 +109,7 @@ class ResourceUriFetcherTest {
         )
 
         assertTrue(
-            newResourceUri(com.github.panpf.sketch.test.utils.core.R.raw.sample)
+            newResourceUri(com.github.panpf.sketch.test.R.raw.sample)
                 .let { ResourceUriFetcher(context, it.toUri()) }
                 .fetch()
                 .getOrThrow().dataSource is ResourceDataSource
@@ -215,7 +215,7 @@ class ResourceUriFetcherTest {
             resName = "ic_launcher"
         )
         val resourceUriById = newResourceUri(
-            resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
+            resId = com.github.panpf.sketch.test.R.drawable.ic_launcher
         )
         val resourceUriByName2 = newResourceUri(
             packageName = testAppPackage,
@@ -224,7 +224,7 @@ class ResourceUriFetcherTest {
         )
         val resourceUriById2 = newResourceUri(
             packageName = testAppPackage,
-            resId = com.github.panpf.sketch.test.utils.core.R.drawable.ic_launcher
+            resId = com.github.panpf.sketch.test.R.drawable.ic_launcher
         )
         val httpUri = "http://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
