@@ -250,9 +250,6 @@ open class IconPainter constructor(
     }
 
     override fun DrawScope.onDraw() {
-        (icon as? PainterDrawInvalidate)?.drawInvalidateTick?.value
-        (background as? PainterDrawInvalidate)?.drawInvalidateTick?.value
-
         val containerSize = this@onDraw.size
         val containerBounds = Rect(0, 0, containerSize.width.toInt(), containerSize.height.toInt())
         if (background != null) {

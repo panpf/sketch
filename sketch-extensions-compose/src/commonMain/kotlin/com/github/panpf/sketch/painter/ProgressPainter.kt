@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.painter.Painter
  * Abstract definition of progress Painter
  */
 @Stable
-abstract class ProgressPainter : Painter(), PainterDrawInvalidate {
+abstract class ProgressPainter : Painter() {
 
     /**
      * Progress, range is -1f to 1f. Less than 0f means hidden, 0f means indeterminate progress, 1f means completed

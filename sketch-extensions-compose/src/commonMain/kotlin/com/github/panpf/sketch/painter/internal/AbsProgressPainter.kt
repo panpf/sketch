@@ -16,8 +16,9 @@
 
 package com.github.panpf.sketch.painter.internal
 
-import androidx.compose.runtime.MutableIntState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE
@@ -43,9 +44,8 @@ abstract class AbsProgressPainter(
     private var stepAnimationProgress: Float? = null
     private var stepAnimationEndProgress: Float? = null
     private var stepAnimationStartTimeMark: ValueTimeMark? = null
+    private var invalidateTick by mutableIntStateOf(0)
     private var hidden = false
-
-    override var drawInvalidateTick: MutableIntState = mutableIntStateOf(0)
 
     final override var progress: Float = 0f
         set(value) {
@@ -88,6 +88,7 @@ abstract class AbsProgressPainter(
         }
 
     override fun DrawScope.onDraw() {
+        invalidateTick
         if (hidden || (hiddenWhenIndeterminate && progress == 0f)) return
 
         val stepAnimationDone: Boolean
@@ -132,4 +133,8 @@ abstract class AbsProgressPainter(
      * @param drawProgress The progress to draw, ranging from 0 to 1
      */
     abstract fun DrawScope.drawProgress(drawProgress: Float)
+
+    private fun invalidateDraw() {
+        invalidateTick = (invalidateTick + 1) % Int.MAX_VALUE
+    }
 }
