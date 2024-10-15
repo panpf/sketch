@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.sample.ui.components
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Rect
@@ -15,12 +14,14 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.withSaveLayer
 import com.github.panpf.sketch.painter.AnimatablePainter
+import kotlin.time.TimeSource
 
 class NewMoonLoadingPainter(override val intrinsicSize: Size) : Painter(), AnimatablePainter {
 
-    private var rotation by mutableFloatStateOf(0f)
+    private var rotation = 0f
     private val paint = Paint()
-    private var running = false
+    private var running: Boolean? = null
+    private var startTime: TimeSource.Monotonic.ValueTimeMark? = null
 
     private var invalidateTick by mutableIntStateOf(0)
 
@@ -45,28 +46,36 @@ class NewMoonLoadingPainter(override val intrinsicSize: Size) : Painter(), Anima
             }
         }
 
-        if (running) {
-            rotation = (rotation + 5) % 360
+        if (running == null) {
+            running = true
+        }
+        if (running == true) {
+            val startTime = startTime ?: TimeSource.Monotonic.markNow().apply {
+                this@NewMoonLoadingPainter.startTime = this
+            }
+            val elapsedTime = startTime.elapsedNow().inWholeMilliseconds
+            rotation = ((elapsedTime % 1000) / 1000f) * 360f
+            invalidateDraw()
         }
     }
 
     override fun start() {
-        if (running) return
+        if (running == true) return
         running = true
         invalidateDraw()
     }
 
     override fun stop() {
-        if (!running) return
+        if (running != true) return
         running = false
         invalidateDraw()
     }
 
     override fun isRunning(): Boolean {
-        return running
+        return running == true
     }
 
-    fun invalidateDraw() {
+    private fun invalidateDraw() {
         invalidateTick = (invalidateTick + 1) % Int.MAX_VALUE
     }
 }

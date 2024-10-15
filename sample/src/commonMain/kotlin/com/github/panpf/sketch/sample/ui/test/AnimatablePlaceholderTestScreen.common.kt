@@ -19,22 +19,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.painter.EquitablePainter
+import com.github.panpf.sketch.painter.asEquitable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
+import com.github.panpf.sketch.sample.ui.components.NewMoonLoadingPainter
 import com.github.panpf.sketch.state.rememberIconAnimatablePainterStateImage
-
-@Composable
-expect fun rememberIconPlaceholderEclipseAnimatedPainter(context: PlatformContext): EquitablePainter?
 
 class AnimatablePlaceholderTestScreen : BaseScreen() {
 
@@ -42,79 +41,83 @@ class AnimatablePlaceholderTestScreen : BaseScreen() {
     override fun DrawContent() {
         ToolbarScaffold(title = "AnimatablePlaceholderTest") {
             val context = LocalPlatformContext.current
-            val eclipseAnimatedPainter = rememberIconPlaceholderEclipseAnimatedPainter(context)
-            if (eclipseAnimatedPainter != null) {
-                Column(
-                    modifier = Modifier.fillMaxSize()
-                        .windowInsetsPadding(NavigationBarDefaults.windowInsets)
+            val density = LocalDensity.current
+            val iconPainter = remember {
+                val sizePx = with(density) { 24.dp.toPx() }
+                val size = Size(sizePx, sizePx)
+                NewMoonLoadingPainter(size).asEquitable("NewMoonLoadingPainter")
+            }
+            val colorScheme = MaterialTheme.colorScheme
+            val placeholderStateImage = rememberIconAnimatablePainterStateImage(
+                icon = iconPainter,
+                background = colorScheme.primaryContainer,
+                iconTint = colorScheme.onPrimaryContainer
+            )
+            Column(
+                modifier = Modifier.fillMaxSize()
+                    .windowInsetsPadding(NavigationBarDefaults.windowInsets)
+            ) {
+                var urlIndexState by remember { mutableStateOf(0) }
+                val images = remember {
+                    arrayOf(
+                        ResourceImages.jpeg.uri,
+                        ResourceImages.webp.uri,
+                        ResourceImages.bmp.uri
+                    )
+                }
+                val uri = images[urlIndexState % images.size]
+                val request = ImageRequest(context, uri) {
+                    memoryCachePolicy(DISABLED)
+                    resultCachePolicy(DISABLED)
+                    placeholder(placeholderStateImage)
+                    components {
+                        addDecodeInterceptor(DelayDecodeInterceptor(3000))
+                    }
+                }
+                Spacer(modifier = Modifier.size(20.dp))
+                MyAsyncImage(
+                    request = request,
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .aspectRatio(1f)
+                        .weight(1f)
+                        .align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.size(16.dp))
+                MyAsyncImage(
+                    request = request,
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .aspectRatio(1.5f)
+                        .weight(1f)
+                        .align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.size(16.dp))
+                MyAsyncImage(
+                    request = request,
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .aspectRatio(0.5f)
+                        .weight(1f)
+                        .align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.size(40.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
                 ) {
-                    var urlIndexState by remember { mutableStateOf(0) }
-                    val images = remember {
-                        arrayOf(ResourceImages.jpeg.uri, ResourceImages.webp.uri, ResourceImages.bmp.uri)
-                    }
-                    val uri = images[urlIndexState % images.size]
-                    val colorScheme = MaterialTheme.colorScheme
-                    val placeholderStateImage = rememberIconAnimatablePainterStateImage(
-                        icon = eclipseAnimatedPainter,
-                        background = colorScheme.primaryContainer
-                    )
-                    val request = ImageRequest(context, uri) {
-                        memoryCachePolicy(DISABLED)
-                        resultCachePolicy(DISABLED)
-                        placeholder(placeholderStateImage)
-                        components {
-                            addDecodeInterceptor(DelayDecodeInterceptor(3000))
-                        }
-                    }
-                    Spacer(modifier = Modifier.size(20.dp))
-                    MyAsyncImage(
-                        request = request,
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .aspectRatio(1f)
-                            .weight(1f)
-                            .align(Alignment.CenterHorizontally)
-                    )
-                    Spacer(modifier = Modifier.size(16.dp))
-                    MyAsyncImage(
-                        request = request,
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .aspectRatio(1.5f)
-                            .weight(1f)
-                            .align(Alignment.CenterHorizontally)
-                    )
-                    Spacer(modifier = Modifier.size(16.dp))
-                    MyAsyncImage(
-                        request = request,
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .aspectRatio(0.5f)
-                            .weight(1f)
-                            .align(Alignment.CenterHorizontally)
-                    )
-                    Spacer(modifier = Modifier.size(40.dp))
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f)
+                    Button(
+                        onClick = { urlIndexState += 1 },
+                        modifier = Modifier.align(Alignment.Center)
                     ) {
-                        Button(
-                            onClick = { urlIndexState += 1 },
-                            modifier = Modifier.align(Alignment.Center)
-                        ) {
-                            Text(text = "Next")
-                        }
+                        Text(text = "Next")
                     }
-                    Spacer(modifier = Modifier.size(40.dp))
                 }
-            } else {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(text = "Not supported on this platform")
-                }
+                Spacer(modifier = Modifier.size(40.dp))
             }
         }
     }

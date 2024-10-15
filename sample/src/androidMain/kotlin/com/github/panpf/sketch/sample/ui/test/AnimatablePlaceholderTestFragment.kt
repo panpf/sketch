@@ -19,13 +19,17 @@ package com.github.panpf.sketch.sample.ui.test
 import android.os.Bundle
 import android.view.View
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
+import com.github.panpf.sketch.drawable.asEquitable
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentTestAnimatablePlaceholderBinding
 import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.components.NewMoonLoadingDrawable
 import com.github.panpf.sketch.state.IconAnimatableDrawableStateImage
+import com.github.panpf.sketch.util.Size
+import com.github.panpf.tools4a.dimen.ktx.dp2px
 
 class AnimatablePlaceholderTestFragment :
     BaseToolbarBindingFragment<FragmentTestAnimatablePlaceholderBinding>() {
@@ -52,15 +56,18 @@ class AnimatablePlaceholderTestFragment :
     }
 
     private fun loadImage(binding: FragmentTestAnimatablePlaceholderBinding) {
-        val images = arrayOf(ResourceImages.jpeg.uri, ResourceImages.webp.uri, ResourceImages.bmp.uri)
+        val images =
+            arrayOf(ResourceImages.jpeg.uri, ResourceImages.webp.uri, ResourceImages.bmp.uri)
         val urlString = images[urlIndex % images.size]
         binding.myImage1.loadImage(urlString) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             placeholder(
                 IconAnimatableDrawableStateImage(
-                    icon = R.drawable.ic_placeholder_eclipse_animated,
-                    background = R.color.placeholder_bg
+                    icon = NewMoonLoadingDrawable(Size(24.dp2px, 24.dp2px))
+                        .asEquitable("NewMoonLoadingDrawable"),
+                    background = R.color.placeholder_bg,
+                    iconTint = R.color.placeholder_icon
                 )
             )
             components {
@@ -72,8 +79,10 @@ class AnimatablePlaceholderTestFragment :
             resultCachePolicy(DISABLED)
             placeholder(
                 IconAnimatableDrawableStateImage(
-                    icon = R.drawable.ic_placeholder_eclipse_animated,
-                    background = R.color.placeholder_bg
+                    icon = NewMoonLoadingDrawable(Size(24.dp2px, 24.dp2px))
+                        .asEquitable("NewMoonLoadingDrawable"),
+                    background = R.color.placeholder_bg,
+                    iconTint = R.color.placeholder_icon
                 )
             )
             components {
@@ -85,8 +94,10 @@ class AnimatablePlaceholderTestFragment :
             resultCachePolicy(DISABLED)
             placeholder(
                 IconAnimatableDrawableStateImage(
-                    icon = R.drawable.ic_placeholder_eclipse_animated,
-                    background = R.color.placeholder_bg
+                    icon = NewMoonLoadingDrawable(Size(24.dp2px, 24.dp2px))
+                        .asEquitable("NewMoonLoadingDrawable"),
+                    background = R.color.placeholder_bg,
+                    iconTint = R.color.placeholder_icon
                 )
             )
             components {

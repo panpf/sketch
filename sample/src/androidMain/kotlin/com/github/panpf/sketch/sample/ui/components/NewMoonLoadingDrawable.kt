@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable
 import androidx.core.graphics.toRectF
 import androidx.core.graphics.withRotation
 import com.github.panpf.sketch.util.Size
+import kotlin.time.TimeSource
 
 class NewMoonLoadingDrawable(val intrinsicSize: Size) : Drawable(), Animatable {
 
@@ -24,7 +25,8 @@ class NewMoonLoadingDrawable(val intrinsicSize: Size) : Drawable(), Animatable {
         color = Color.GRAY
     }
     private var rotation = 0f
-    private var running = false
+    private var running: Boolean? = null
+    private var startTime: TimeSource.Monotonic.ValueTimeMark? = null
 
     override fun draw(canvas: Canvas) {
         val bounds = bounds
@@ -49,8 +51,15 @@ class NewMoonLoadingDrawable(val intrinsicSize: Size) : Drawable(), Animatable {
             restore()
         }
 
-        if (running) {
-            rotation = (rotation + 5) % 360
+        if (running == null) {
+            running = true
+        }
+        if (running == true) {
+            val startTime = startTime ?: TimeSource.Monotonic.markNow().apply {
+                this@NewMoonLoadingDrawable.startTime = this
+            }
+            val elapsedTime = startTime.elapsedNow().inWholeMilliseconds
+            rotation = ((elapsedTime % 1000) / 1000f) * 360f
             invalidateSelf()
         }
     }
@@ -82,18 +91,18 @@ class NewMoonLoadingDrawable(val intrinsicSize: Size) : Drawable(), Animatable {
     }
 
     override fun start() {
-        if (running) return
+        if (running == true) return
         running = true
         invalidateSelf()
     }
 
     override fun stop() {
-        if (!running) return
+        if (running != true) return
         running = false
         invalidateSelf()
     }
 
     override fun isRunning(): Boolean {
-        return running
+        return running == true
     }
 }
