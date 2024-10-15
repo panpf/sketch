@@ -42,6 +42,5 @@ actual fun PlatformContext.appCacheDirectory(): Path? = null
  * @see com.github.panpf.sketch.core.jscommon.test.util.PlatformContextsJsCommonTest.testScreenSize
  */
 actual fun PlatformContext.screenSize(): Size {
-    // TODO Get accurate screen size on js platform
     return Size(1920, 1080)
 }

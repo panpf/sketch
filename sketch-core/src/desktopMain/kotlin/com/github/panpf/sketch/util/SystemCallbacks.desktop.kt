@@ -35,14 +35,13 @@ internal class DesktopSystemCallbacks : SystemCallbacks {
 
     private val _isShutdown = atomic(false)
 
-    // TODO Implement network type detection for desktop platforms.
-    //  https://github.com/jordond/connectivity/blob/main/connectivity-apple/src/appleMain/kotlin/dev/jordond/connectivity/internal/AppleConnectivityProvider.kt
     override val isCellularNetworkConnected get() = false
     override var isShutdown: Boolean by _isShutdown
 
-    // TODO Listen for memory-pressure events to trim the memory cache on desktop platforms.
     override fun register() {
-
+        // TODO Listen for memory-pressure events to trim the memory cache on desktop platforms.
+        // TODO Implement network type detection for desktop platforms.
+        //  https://github.com/jordond/connectivity/blob/main/connectivity-apple/src/appleMain/kotlin/dev/jordond/connectivity/internal/AppleConnectivityProvider.kt
     }
 
     override fun shutdown() {

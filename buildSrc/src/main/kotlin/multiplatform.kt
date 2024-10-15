@@ -22,7 +22,6 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 enum class MultiplatformTargets {
     Android,
@@ -73,7 +72,6 @@ fun Project.addAllMultiplatformTargets(vararg targets: MultiplatformTargets) {
             }
 
             if (targets.isEmpty() || targets.contains(MultiplatformTargets.WasmJs)) {
-                @OptIn(ExperimentalWasmDsl::class)
                 wasmJs {
                     // TODO: Fix wasm tests.
                     browser {

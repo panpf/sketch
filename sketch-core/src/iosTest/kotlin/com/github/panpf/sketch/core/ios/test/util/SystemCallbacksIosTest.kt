@@ -18,7 +18,7 @@ class SystemCallbacksIosTest {
     }
 
     @Test
-    fun testDesktopSystemCallbacks() {
+    fun testIosSystemCallbacks() {
         val sketch = getSketch()
         SystemCallbacks(sketch).apply {
             assertEquals(expected = false, actual = isCellularNetworkConnected)
