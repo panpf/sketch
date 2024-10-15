@@ -46,6 +46,7 @@
 * new: DrawableDecoder 支持 colorSpace
 * new: 新增 'Drawable.asStateImage(Any)' 和 'ColorDrawable.asStateImage()' 扩展函数
 * new: animatedTransformation 现在支持非 Android 平台
+* depend: 升级 kotlin 2.0.21, ktor 3.0.0
 
 # 4.0.0-alpha08
 

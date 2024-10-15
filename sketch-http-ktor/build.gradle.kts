@@ -14,26 +14,25 @@ kotlin {
             api(projects.sketchHttpCore)
             api(libs.ktor.client.core)
         }
-        androidMain.dependencies {
-            api(libs.ktor.client.android)
-        }
-        desktopMain.dependencies {
-            api(libs.ktor.client.java)
-        }
-        iosMain.dependencies {
-            api(libs.ktor.client.ios)
-        }
-        jsMain.dependencies {
-            api(libs.ktor.client.js)
-        }
-        wasmJsMain.dependencies {
-            api(libs.ktor.client.core.wasm)
-            api(libs.ktor.client.wasmJs)
-        }
 
         commonTest.dependencies {
             implementation(projects.internal.test)
             implementation(projects.internal.testSingleton)
+        }
+        androidInstrumentedTest.dependencies {
+            implementation(libs.ktor.client.android)
+        }
+        desktopTest.dependencies {
+            implementation(libs.ktor.client.java)
+        }
+        iosTest.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
+        jsTest.dependencies {
+            implementation(libs.ktor.client.js)
+        }
+        wasmJsTest.dependencies {
+            implementation(libs.ktor.client.wasmJs)
         }
     }
 }

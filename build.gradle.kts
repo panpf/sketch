@@ -35,7 +35,6 @@ allprojects {
         mavenCentral()
         google()
         maven { setUrl("https://www.jitpack.io") }
-        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")   // ktor 3.3.0-wasm2
 //        maven { setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots") }
 //        mavenLocal()
     }

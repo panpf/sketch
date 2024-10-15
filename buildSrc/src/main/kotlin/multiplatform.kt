@@ -124,6 +124,50 @@ fun Project.addAllMultiplatformTargets(vararg targets: MultiplatformTargets) {
     }
 }
 
+// https://youtrack.jetbrains.com/issue/KT-56025
+fun Project.applyKotlinJsImplicitDependencyWorkaround() {
+    tasks {
+        val configureJs: Task.() -> Unit = {
+            dependsOn(named("jsDevelopmentLibraryCompileSync"))
+            dependsOn(named("jsDevelopmentExecutableCompileSync"))
+            dependsOn(named("jsProductionLibraryCompileSync"))
+            dependsOn(named("jsProductionExecutableCompileSync"))
+            dependsOn(named("jsTestTestDevelopmentExecutableCompileSync"))
+
+            dependsOn(getByPath(":sketch-singleton:jsDevelopmentLibraryCompileSync"))
+            dependsOn(getByPath(":sketch-singleton:jsDevelopmentExecutableCompileSync"))
+            dependsOn(getByPath(":sketch-singleton:jsProductionLibraryCompileSync"))
+            dependsOn(getByPath(":sketch-singleton:jsProductionExecutableCompileSync"))
+            dependsOn(getByPath(":sketch-singleton:jsTestTestDevelopmentExecutableCompileSync"))
+        }
+        named("jsBrowserProductionWebpack").configure(configureJs)
+        named("jsBrowserProductionLibraryDistribution").configure(configureJs)
+        named("jsNodeProductionLibraryDistribution").configure(configureJs)
+    }
+}
+
+// https://youtrack.jetbrains.com/issue/KT-56025
+fun Project.applyKotlinWasmJsImplicitDependencyWorkaround() {
+    tasks {
+        val configureWasmJs: Task.() -> Unit = {
+            dependsOn(named("wasmJsDevelopmentLibraryCompileSync"))
+            dependsOn(named("wasmJsDevelopmentExecutableCompileSync"))
+            dependsOn(named("wasmJsProductionLibraryCompileSync"))
+            dependsOn(named("wasmJsProductionExecutableCompileSync"))
+            dependsOn(named("wasmJsTestTestDevelopmentExecutableCompileSync"))
+
+            dependsOn(getByPath(":sketch-singleton:wasmJsDevelopmentLibraryCompileSync"))
+            dependsOn(getByPath(":sketch-singleton:wasmJsDevelopmentExecutableCompileSync"))
+            dependsOn(getByPath(":sketch-singleton:wasmJsProductionLibraryCompileSync"))
+            dependsOn(getByPath(":sketch-singleton:wasmJsProductionExecutableCompileSync"))
+            dependsOn(getByPath(":sketch-singleton:wasmJsTestTestDevelopmentExecutableCompileSync"))
+        }
+        named("wasmJsBrowserProductionWebpack").configure(configureWasmJs)
+        named("wasmJsBrowserProductionLibraryDistribution").configure(configureWasmJs)
+        named("wasmJsNodeProductionLibraryDistribution").configure(configureWasmJs)
+    }
+}
+
 val NamedDomainObjectContainer<KotlinSourceSet>.androidUnitTest: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("androidUnitTest")
 
@@ -165,47 +209,3 @@ val NamedDomainObjectContainer<KotlinSourceSet>.wasmJsMain: NamedDomainObjectPro
 
 val NamedDomainObjectContainer<KotlinSourceSet>.nonWasmJsMain: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("nonWasmJsMain")
-
-// https://youtrack.jetbrains.com/issue/KT-56025
-fun Project.applyKotlinJsImplicitDependencyWorkaround() {
-    tasks.invoke {
-        val configureJs: Task.() -> Unit = {
-            dependsOn(named("jsDevelopmentLibraryCompileSync"))
-            dependsOn(named("jsDevelopmentExecutableCompileSync"))
-            dependsOn(named("jsProductionLibraryCompileSync"))
-            dependsOn(named("jsProductionExecutableCompileSync"))
-            dependsOn(named("jsTestTestDevelopmentExecutableCompileSync"))
-
-            dependsOn(getByPath(":sketch-singleton:jsDevelopmentLibraryCompileSync"))
-            dependsOn(getByPath(":sketch-singleton:jsDevelopmentExecutableCompileSync"))
-            dependsOn(getByPath(":sketch-singleton:jsProductionLibraryCompileSync"))
-            dependsOn(getByPath(":sketch-singleton:jsProductionExecutableCompileSync"))
-            dependsOn(getByPath(":sketch-singleton:jsTestTestDevelopmentExecutableCompileSync"))
-        }
-        named("jsBrowserProductionWebpack").configure(configureJs)
-        named("jsBrowserProductionLibraryDistribution").configure(configureJs)
-        named("jsNodeProductionLibraryDistribution").configure(configureJs)
-    }
-}
-
-// https://youtrack.jetbrains.com/issue/KT-56025
-fun Project.applyKotlinWasmJsImplicitDependencyWorkaround() {
-    tasks.invoke {
-        val configureWasmJs: Task.() -> Unit = {
-            dependsOn(named("wasmJsDevelopmentLibraryCompileSync"))
-            dependsOn(named("wasmJsDevelopmentExecutableCompileSync"))
-            dependsOn(named("wasmJsProductionLibraryCompileSync"))
-            dependsOn(named("wasmJsProductionExecutableCompileSync"))
-            dependsOn(named("wasmJsTestTestDevelopmentExecutableCompileSync"))
-
-            dependsOn(getByPath(":sketch-singleton:wasmJsDevelopmentLibraryCompileSync"))
-            dependsOn(getByPath(":sketch-singleton:wasmJsDevelopmentExecutableCompileSync"))
-            dependsOn(getByPath(":sketch-singleton:wasmJsProductionLibraryCompileSync"))
-            dependsOn(getByPath(":sketch-singleton:wasmJsProductionExecutableCompileSync"))
-            dependsOn(getByPath(":sketch-singleton:wasmJsTestTestDevelopmentExecutableCompileSync"))
-        }
-        named("wasmJsBrowserProductionWebpack").configure(configureWasmJs)
-        named("wasmJsBrowserProductionLibraryDistribution").configure(configureWasmJs)
-        named("wasmJsNodeProductionLibraryDistribution").configure(configureWasmJs)
-    }
-}
