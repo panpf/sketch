@@ -8,17 +8,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.AsyncImageState
 import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.SubcomposeAsyncImage
 import com.github.panpf.sketch.ability.dataFromLogo
 import com.github.panpf.sketch.ability.mimeTypeLogo
 import com.github.panpf.sketch.ability.progressIndicator
+import com.github.panpf.sketch.painter.asEquitable
 import com.github.panpf.sketch.rememberAsyncImagePainter
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
@@ -37,7 +39,7 @@ import com.github.panpf.sketch.sample.ui.util.rememberMimeTypeLogoMap
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import com.github.panpf.sketch.sample.util.ifLet
 import com.github.panpf.sketch.state.ComposableConditionStateImage
-import com.github.panpf.sketch.state.StateImage
+import com.github.panpf.sketch.state.rememberIconAnimatablePainterStateImage
 import com.github.panpf.sketch.state.rememberIconPainterStateImage
 import com.github.panpf.sketch.state.saveCellularTrafficError
 
@@ -204,15 +206,25 @@ private fun buildListImageRequest(
         val disallowAnimatedImage by appSettings.disallowAnimatedImageInList.collectAsState()
         disallowAnimatedImage(disallowAnimatedImage)
 
-        // TODO uses a custom animation Painter, and can also demonstrate placeholder support animation
-        val animatedPlaceholderStateImage =
-            if (animatedPlaceholder) rememberAnimatedPlaceholderStateImage(context) else null
-        val placeholderStateImage = animatedPlaceholderStateImage
-            ?: rememberIconPainterStateImage(
+        val placeholderStateImage = if (animatedPlaceholder) {
+            val density = LocalDensity.current
+            val iconPainter = remember {
+                val sizePx = with(density) { 24.dp.toPx() }
+                val size = Size(sizePx, sizePx)
+                NewMoonLoadingPainter(size).asEquitable("NewMoonLoadingPainter")
+            }
+            rememberIconAnimatablePainterStateImage(
+                icon = iconPainter,
+                background = colorScheme.primaryContainer,
+                iconTint = colorScheme.onPrimaryContainer
+            )
+        } else {
+            rememberIconPainterStateImage(
                 icon = Res.drawable.ic_image_outline,
                 background = colorScheme.primaryContainer,
                 iconTint = colorScheme.onPrimaryContainer
             )
+        }
         placeholder(placeholderStateImage)
 
         error(
@@ -242,6 +254,3 @@ private fun buildListImageRequest(
         merge(platformAsyncImageSettings)
     }
 }
-
-@Composable
-expect fun rememberAnimatedPlaceholderStateImage(context: PlatformContext): StateImage?

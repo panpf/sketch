@@ -29,6 +29,7 @@ import com.github.panpf.sketch.ability.setClickIgnoreSaveCellularTrafficEnabled
 import com.github.panpf.sketch.ability.showDataFromLogo
 import com.github.panpf.sketch.ability.showMimeTypeLogoWithDrawable
 import com.github.panpf.sketch.ability.showProgressIndicator
+import com.github.panpf.sketch.drawable.asEquitable
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
@@ -39,6 +40,7 @@ import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.buildScale
+import com.github.panpf.sketch.sample.ui.components.NewMoonLoadingDrawable
 import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.util.lifecycleOwner
 import com.github.panpf.sketch.sample.util.collectWithLifecycle
@@ -47,6 +49,7 @@ import com.github.panpf.sketch.state.ConditionStateImage
 import com.github.panpf.sketch.state.IconAnimatableDrawableStateImage
 import com.github.panpf.sketch.state.IconDrawableStateImage
 import com.github.panpf.sketch.state.saveCellularTrafficError
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 import kotlinx.coroutines.flow.StateFlow
@@ -145,12 +148,13 @@ class MyListImageView @JvmOverloads constructor(
 
     fun setAnimatedPlaceholder(animatedPlaceholder: Boolean) {
         updateImageOptions {
-            // TODO uses a custom animation Drawable, and can also demonstrate placeholder support animation
             if (animatedPlaceholder) {
                 placeholder(
                     IconAnimatableDrawableStateImage(
-                        icon = R.drawable.ic_placeholder_eclipse_animated,
-                        background = R.color.placeholder_bg
+                        icon = NewMoonLoadingDrawable(Size(24.dp2px, 24.dp2px))
+                            .asEquitable("NewMoonLoadingDrawable"),
+                        background = R.color.placeholder_bg,
+                        iconTint = R.color.placeholder_icon
                     )
                 )
             } else {
@@ -158,6 +162,7 @@ class MyListImageView @JvmOverloads constructor(
                     IconDrawableStateImage(
                         icon = R.drawable.ic_image_outline,
                         background = R.color.placeholder_bg,
+                        iconTint = R.color.placeholder_icon
                     )
                 )
             }
