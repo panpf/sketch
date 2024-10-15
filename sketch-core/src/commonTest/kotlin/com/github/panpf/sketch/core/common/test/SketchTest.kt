@@ -29,7 +29,7 @@ import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.defaultFileSystem
@@ -401,10 +401,12 @@ class SketchTest {
     }
 
     @Test
-    fun testShutdown() {
-        val sketch = getTestContextAndNewSketch { }.second
-        sketch.shutdown()
-        sketch.shutdown()
+    fun testShutdown() = runTest {
+        runInNewSketchWithUse({
+        }) { _, sketch ->
+            sketch.shutdown()
+            sketch.shutdown()
+        }
     }
 
     @Test

@@ -19,7 +19,6 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.LifecycleContainer
 import com.github.panpf.sketch.test.utils.SizeColorPainter
 import com.github.panpf.sketch.test.utils.TestLifecycle
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -30,7 +29,7 @@ class AsyncImagePainterTest {
 
     @Test
     fun testRememberAsyncImagePainter() {
-        val (_, sketch) = getTestContextAndNewSketch { }
+        val (_, sketch) = getTestContextAndSketch()
         runComposeUiTest {
             var painter1: AsyncImagePainter? = null
             var painter2: AsyncImagePainter? = null
@@ -82,7 +81,7 @@ class AsyncImagePainterTest {
 
     @Test
     fun testRememberAsyncImagePainter2() {
-        val (_, sketch) = getTestContextAndNewSketch { }
+        val (_, sketch) = getTestContextAndSketch()
         runComposeUiTest {
             var painter1: AsyncImagePainter? = null
             var painter2: AsyncImagePainter? = null

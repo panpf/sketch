@@ -11,8 +11,8 @@ import com.github.panpf.sketch.SubcomposeAsyncImage
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.LifecycleContainer
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import kotlin.test.Test
 
 @OptIn(ExperimentalTestApi::class)
@@ -20,7 +20,7 @@ class SubcomposeAsyncImageTest {
 
     @Test
     fun testSubcomposeAsyncImage1() {
-        val (_, sketch) = getTestContextAndNewSketch { }
+        val (_, sketch) = getTestContextAndSketch()
         runComposeUiTest {
             setContent {
                 LifecycleContainer {
@@ -68,7 +68,7 @@ class SubcomposeAsyncImageTest {
 
     @Test
     fun testSubcomposeAsyncImage2() {
-        val (_, sketch) = getTestContextAndNewSketch { }
+        val (_, sketch) = getTestContextAndSketch()
         runComposeUiTest {
             setContent {
                 LifecycleContainer {
@@ -110,7 +110,7 @@ class SubcomposeAsyncImageTest {
 
     @Test
     fun testSubcomposeAsyncImage3() {
-        val (_, sketch) = getTestContextAndNewSketch { }
+        val (_, sketch) = getTestContextAndSketch()
         runComposeUiTest {
             setContent {
                 LifecycleContainer {
@@ -162,7 +162,7 @@ class SubcomposeAsyncImageTest {
 
     @Test
     fun testSubcomposeAsyncImage4() {
-        val (_, sketch) = getTestContextAndNewSketch { }
+        val (_, sketch) = getTestContextAndSketch()
         runComposeUiTest {
             setContent {
                 LifecycleContainer {

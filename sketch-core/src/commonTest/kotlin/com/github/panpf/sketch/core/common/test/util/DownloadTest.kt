@@ -6,7 +6,7 @@ import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.MyImagesHttpStack
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.util.DownloadData
 import kotlinx.coroutines.test.runTest
 import okio.use
@@ -19,12 +19,11 @@ class DownloadTest {
 
     @Test
     fun test() = runTest {
-        val (context, defaultSketch) = getTestContextAndSketch()
-        val (_, newSketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
+            val defaultSketch = getTestContextAndSketch().second
             httpStack(MyImagesHttpStack(defaultSketch))
-        }
-        try {
-            val downloadCache = newSketch.downloadCache
+        }) { context, sketch ->
+            val downloadCache = sketch.downloadCache
             downloadCache.clear()
             assertEquals(expected = 0L, actual = downloadCache.size)
 
@@ -37,19 +36,19 @@ class DownloadTest {
             val imageUri4 = "http://${ResourceImages.bmp.resourceName}"
             assertFalse(downloadCache.existWithLock(imageUri4))
 
-            val result1 = newSketch.enqueueDownload(ImageRequest(context, imageUri1)).await()
+            val result1 = sketch.enqueueDownload(ImageRequest(context, imageUri1)).await()
             assertTrue(result1.getOrThrow() is DownloadData.Cache)
             assertTrue(downloadCache.existWithLock(imageUri1))
             assertFalse(downloadCache.existWithLock(imageUri2))
 
-            val result2 = newSketch.enqueueDownload(ImageRequest(context, imageUri2) {
+            val result2 = sketch.enqueueDownload(ImageRequest(context, imageUri2) {
                 downloadCachePolicy(CachePolicy.ENABLED)
             }).await()
             assertTrue(result2.getOrThrow() is DownloadData.Cache)
             assertTrue(downloadCache.existWithLock(imageUri1))
             assertTrue(downloadCache.existWithLock(imageUri2))
 
-            val result3 = newSketch.executeDownload(ImageRequest(context, imageUri3) {
+            val result3 = sketch.executeDownload(ImageRequest(context, imageUri3) {
                 downloadCachePolicy(CachePolicy.DISABLED)
             })
             assertTrue(result3.getOrThrow() is DownloadData.Bytes)
@@ -57,7 +56,7 @@ class DownloadTest {
             assertTrue(downloadCache.existWithLock(imageUri2))
             assertFalse(downloadCache.existWithLock(imageUri3))
 
-            val result21 = newSketch.executeDownload(ImageRequest(context, imageUri2) {
+            val result21 = sketch.executeDownload(ImageRequest(context, imageUri2) {
                 downloadCachePolicy(CachePolicy.WRITE_ONLY)
             })
             assertTrue(result21.getOrThrow() is DownloadData.Bytes)
@@ -65,7 +64,7 @@ class DownloadTest {
             assertTrue(downloadCache.existWithLock(imageUri2))
             assertFalse(downloadCache.existWithLock(imageUri3))
 
-            val result11 = newSketch.executeDownload(ImageRequest(context, imageUri1) {
+            val result11 = sketch.executeDownload(ImageRequest(context, imageUri1) {
                 downloadCachePolicy(CachePolicy.READ_ONLY)
             })
             assertTrue(result11.getOrThrow() is DownloadData.Cache)
@@ -73,7 +72,7 @@ class DownloadTest {
             assertTrue(downloadCache.existWithLock(imageUri2))
             assertFalse(downloadCache.existWithLock(imageUri3))
 
-            val result4 = newSketch.executeDownload(ImageRequest(context, imageUri4) {
+            val result4 = sketch.executeDownload(ImageRequest(context, imageUri4) {
                 downloadCachePolicy(CachePolicy.READ_ONLY)
             })
             assertTrue(result4.getOrThrow() is DownloadData.Bytes)
@@ -81,9 +80,6 @@ class DownloadTest {
             assertTrue(downloadCache.existWithLock(imageUri2))
             assertFalse(downloadCache.existWithLock(imageUri3))
             assertFalse(downloadCache.existWithLock(imageUri4))
-        } finally {
-            newSketch.downloadCache.fileSystem.deleteRecursively(newSketch.downloadCache.directory)
-            newSketch.resultCache.fileSystem.deleteRecursively(newSketch.resultCache.directory)
         }
     }
 

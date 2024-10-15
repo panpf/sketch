@@ -49,9 +49,9 @@ import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.ratio
 import com.github.panpf.sketch.test.utils.runBlock
+import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.test.utils.samplingByTarget
 import com.github.panpf.sketch.test.utils.target
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -84,216 +84,218 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testDepth() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
             httpStack(TestHttpStack(it))
-        }
-        val imageUri = TestHttpStack.testImages.first().uri
+        }) { context, sketch ->
+            val imageUri = TestHttpStack.testImages.first().uri
 
-        // default
-        sketch.downloadCache.clear()
-        sketch.memoryCache.clear()
-        ImageRequest(context, imageUri) {
-            resultCachePolicy(DISABLED)
-            target(TestCountTarget())
-        }.let {
-            sketch.execute(it)
-        }.asOrNull<ImageResult.Success>()!!.apply {
-            assertEquals(DataFrom.NETWORK, dataFrom)
-        }
+            // default
+            sketch.downloadCache.clear()
+            sketch.memoryCache.clear()
+            ImageRequest(context, imageUri) {
+                resultCachePolicy(DISABLED)
+                target(TestCountTarget())
+            }.let {
+                sketch.execute(it)
+            }.asOrNull<ImageResult.Success>()!!.apply {
+                assertEquals(DataFrom.NETWORK, dataFrom)
+            }
 
-        // NETWORK
-        sketch.downloadCache.clear()
-        sketch.memoryCache.clear()
-        ImageRequest(context, imageUri) {
-            resultCachePolicy(DISABLED)
-            depth(NETWORK)
-            target(TestCountTarget())
-        }.let {
-            sketch.execute(it)
-        }.asOrNull<ImageResult.Success>()!!.apply {
-            assertEquals(DataFrom.NETWORK, dataFrom)
-        }
+            // NETWORK
+            sketch.downloadCache.clear()
+            sketch.memoryCache.clear()
+            ImageRequest(context, imageUri) {
+                resultCachePolicy(DISABLED)
+                depth(NETWORK)
+                target(TestCountTarget())
+            }.let {
+                sketch.execute(it)
+            }.asOrNull<ImageResult.Success>()!!.apply {
+                assertEquals(DataFrom.NETWORK, dataFrom)
+            }
 
-        // LOCAL
-        sketch.downloadCache.clear()
-        sketch.memoryCache.clear()
-        sketch.execute(ImageRequest(context, imageUri) {
-            resultCachePolicy(DISABLED)
-            target(TestCountTarget())
-        })
-        sketch.memoryCache.clear()
-        assertTrue(sketch.downloadCache.exist(imageUri))
-        ImageRequest(context, imageUri) {
-            resultCachePolicy(DISABLED)
-            depth(LOCAL)
-            target(TestCountTarget())
-        }.let {
-            sketch.execute(it)
-        }.asOrNull<ImageResult.Success>()!!.apply {
-            assertEquals(DataFrom.DOWNLOAD_CACHE, dataFrom)
-        }
+            // LOCAL
+            sketch.downloadCache.clear()
+            sketch.memoryCache.clear()
+            sketch.execute(ImageRequest(context, imageUri) {
+                resultCachePolicy(DISABLED)
+                target(TestCountTarget())
+            })
+            sketch.memoryCache.clear()
+            assertTrue(sketch.downloadCache.exist(imageUri))
+            ImageRequest(context, imageUri) {
+                resultCachePolicy(DISABLED)
+                depth(LOCAL)
+                target(TestCountTarget())
+            }.let {
+                sketch.execute(it)
+            }.asOrNull<ImageResult.Success>()!!.apply {
+                assertEquals(DataFrom.DOWNLOAD_CACHE, dataFrom)
+            }
 
-        sketch.downloadCache.clear()
-        sketch.memoryCache.clear()
-        ImageRequest(context, imageUri) {
-            resultCachePolicy(DISABLED)
-            depth(LOCAL)
-            target(TestCountTarget())
-        }.let {
-            sketch.execute(it)
-        }.asOrNull<ImageResult.Error>()!!.apply {
-            assertTrue(throwable is DepthException)
-        }
+            sketch.downloadCache.clear()
+            sketch.memoryCache.clear()
+            ImageRequest(context, imageUri) {
+                resultCachePolicy(DISABLED)
+                depth(LOCAL)
+                target(TestCountTarget())
+            }.let {
+                sketch.execute(it)
+            }.asOrNull<ImageResult.Error>()!!.apply {
+                assertTrue(throwable is DepthException)
+            }
 
-        // MEMORY
-        sketch.memoryCache.clear()
-        sketch.execute(ImageRequest(context, imageUri) {
-            resultCachePolicy(DISABLED)
-            target(TestCountTarget())
-        })
-        ImageRequest(context, imageUri) {
-            resultCachePolicy(DISABLED)
-            depth(MEMORY)
-            target(TestCountTarget())
-        }.let {
-            sketch.execute(it)
-        }.asOrNull<ImageResult.Success>()!!.apply {
-            assertEquals(DataFrom.MEMORY_CACHE, dataFrom)
-        }
+            // MEMORY
+            sketch.memoryCache.clear()
+            sketch.execute(ImageRequest(context, imageUri) {
+                resultCachePolicy(DISABLED)
+                target(TestCountTarget())
+            })
+            ImageRequest(context, imageUri) {
+                resultCachePolicy(DISABLED)
+                depth(MEMORY)
+                target(TestCountTarget())
+            }.let {
+                sketch.execute(it)
+            }.asOrNull<ImageResult.Success>()!!.apply {
+                assertEquals(DataFrom.MEMORY_CACHE, dataFrom)
+            }
 
-        sketch.memoryCache.clear()
-        ImageRequest(context, imageUri) {
-            resultCachePolicy(DISABLED)
-            depth(MEMORY)
-            target(TestCountTarget())
-        }.let {
-            sketch.execute(it)
-        }.asOrNull<ImageResult.Error>()!!.apply {
-            assertTrue(throwable is DepthException)
+            sketch.memoryCache.clear()
+            ImageRequest(context, imageUri) {
+                resultCachePolicy(DISABLED)
+                depth(MEMORY)
+                target(TestCountTarget())
+            }.let {
+                sketch.execute(it)
+            }.asOrNull<ImageResult.Error>()!!.apply {
+                assertTrue(throwable is DepthException)
+            }
         }
     }
 
     @Test
     fun testDownloadCachePolicy() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
             httpStack(TestHttpStack(it))
-        }
-        val diskCache = sketch.downloadCache
-        val imageUri = TestHttpStack.testImages.first().uri
+        }) { context, sketch ->
+            val diskCache = sketch.downloadCache
+            val imageUri = TestHttpStack.testImages.first().uri
 
-        /* ENABLED */
-        diskCache.clear()
-        assertFalse(diskCache.exist(imageUri))
-        ImageRequest(context, imageUri) {
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            downloadCachePolicy(ENABLED)
-        }.let {
-            sketch.execute(it)
-        }.asOrNull<ImageResult.Success>()!!.apply {
-            assertEquals(DataFrom.NETWORK, dataFrom)
-        }
+            /* ENABLED */
+            diskCache.clear()
+            assertFalse(diskCache.exist(imageUri))
+            ImageRequest(context, imageUri) {
+                memoryCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
+                downloadCachePolicy(ENABLED)
+            }.let {
+                sketch.execute(it)
+            }.asOrNull<ImageResult.Success>()!!.apply {
+                assertEquals(DataFrom.NETWORK, dataFrom)
+            }
 
-        assertTrue(diskCache.exist(imageUri))
-        ImageRequest(context, imageUri) {
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            downloadCachePolicy(ENABLED)
-        }.let {
-            sketch.execute(it)
-        }.asOrNull<ImageResult.Success>()!!.apply {
-            assertEquals(DataFrom.DOWNLOAD_CACHE, dataFrom)
-        }
+            assertTrue(diskCache.exist(imageUri))
+            ImageRequest(context, imageUri) {
+                memoryCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
+                downloadCachePolicy(ENABLED)
+            }.let {
+                sketch.execute(it)
+            }.asOrNull<ImageResult.Success>()!!.apply {
+                assertEquals(DataFrom.DOWNLOAD_CACHE, dataFrom)
+            }
 
-        /* DISABLED */
-        diskCache.clear()
-        assertFalse(diskCache.exist(imageUri))
-        ImageRequest(context, imageUri) {
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            downloadCachePolicy(DISABLED)
-        }.let {
-            sketch.execute(it)
-        }.asOrNull<ImageResult.Success>()!!.apply {
-            assertEquals(DataFrom.NETWORK, dataFrom)
-        }
+            /* DISABLED */
+            diskCache.clear()
+            assertFalse(diskCache.exist(imageUri))
+            ImageRequest(context, imageUri) {
+                memoryCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
+                downloadCachePolicy(DISABLED)
+            }.let {
+                sketch.execute(it)
+            }.asOrNull<ImageResult.Success>()!!.apply {
+                assertEquals(DataFrom.NETWORK, dataFrom)
+            }
 
-        assertFalse(diskCache.exist(imageUri))
-        ImageRequest(context, imageUri) {
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            downloadCachePolicy(DISABLED)
-        }.let {
-            sketch.execute(it)
-        }.asOrNull<ImageResult.Success>()!!.apply {
-            assertEquals(DataFrom.NETWORK, dataFrom)
-        }
+            assertFalse(diskCache.exist(imageUri))
+            ImageRequest(context, imageUri) {
+                memoryCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
+                downloadCachePolicy(DISABLED)
+            }.let {
+                sketch.execute(it)
+            }.asOrNull<ImageResult.Success>()!!.apply {
+                assertEquals(DataFrom.NETWORK, dataFrom)
+            }
 
-        /* READ_ONLY */
-        diskCache.clear()
-        assertFalse(diskCache.exist(imageUri))
-        ImageRequest(context, imageUri) {
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            downloadCachePolicy(READ_ONLY)
-        }.let {
-            sketch.execute(it)
-        }.asOrNull<ImageResult.Success>()!!.apply {
-            assertEquals(DataFrom.NETWORK, dataFrom)
-        }
+            /* READ_ONLY */
+            diskCache.clear()
+            assertFalse(diskCache.exist(imageUri))
+            ImageRequest(context, imageUri) {
+                memoryCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
+                downloadCachePolicy(READ_ONLY)
+            }.let {
+                sketch.execute(it)
+            }.asOrNull<ImageResult.Success>()!!.apply {
+                assertEquals(DataFrom.NETWORK, dataFrom)
+            }
 
-        assertFalse(diskCache.exist(imageUri))
-        ImageRequest(context, imageUri) {
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            downloadCachePolicy(READ_ONLY)
-        }.let {
-            sketch.execute(it)
-        }.asOrNull<ImageResult.Success>()!!.apply {
-            assertEquals(DataFrom.NETWORK, dataFrom)
-        }
+            assertFalse(diskCache.exist(imageUri))
+            ImageRequest(context, imageUri) {
+                memoryCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
+                downloadCachePolicy(READ_ONLY)
+            }.let {
+                sketch.execute(it)
+            }.asOrNull<ImageResult.Success>()!!.apply {
+                assertEquals(DataFrom.NETWORK, dataFrom)
+            }
 
-        assertFalse(diskCache.exist(imageUri))
-        ImageRequest(context, imageUri) {
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            downloadCachePolicy(ENABLED)
-        }.let {
-            sketch.execute(it)
-        }
-        assertTrue(diskCache.exist(imageUri))
-        ImageRequest(context, imageUri) {
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            downloadCachePolicy(READ_ONLY)
-        }.let {
-            sketch.execute(it)
-        }.asOrNull<ImageResult.Success>()!!.apply {
-            assertEquals(DataFrom.DOWNLOAD_CACHE, dataFrom)
-        }
+            assertFalse(diskCache.exist(imageUri))
+            ImageRequest(context, imageUri) {
+                memoryCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
+                downloadCachePolicy(ENABLED)
+            }.let {
+                sketch.execute(it)
+            }
+            assertTrue(diskCache.exist(imageUri))
+            ImageRequest(context, imageUri) {
+                memoryCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
+                downloadCachePolicy(READ_ONLY)
+            }.let {
+                sketch.execute(it)
+            }.asOrNull<ImageResult.Success>()!!.apply {
+                assertEquals(DataFrom.DOWNLOAD_CACHE, dataFrom)
+            }
 
-        /* WRITE_ONLY */
-        diskCache.clear()
-        assertFalse(diskCache.exist(imageUri))
-        ImageRequest(context, imageUri) {
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            downloadCachePolicy(WRITE_ONLY)
-        }.let {
-            sketch.execute(it)
-        }.asOrNull<ImageResult.Success>()!!.apply {
-            assertEquals(DataFrom.NETWORK, dataFrom)
-        }
+            /* WRITE_ONLY */
+            diskCache.clear()
+            assertFalse(diskCache.exist(imageUri))
+            ImageRequest(context, imageUri) {
+                memoryCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
+                downloadCachePolicy(WRITE_ONLY)
+            }.let {
+                sketch.execute(it)
+            }.asOrNull<ImageResult.Success>()!!.apply {
+                assertEquals(DataFrom.NETWORK, dataFrom)
+            }
 
-        assertTrue(diskCache.exist(imageUri))
-        ImageRequest(context, imageUri) {
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            downloadCachePolicy(WRITE_ONLY)
-        }.let {
-            sketch.execute(it)
-        }.asOrNull<ImageResult.Success>()!!.apply {
-            assertEquals(DataFrom.NETWORK, dataFrom)
+            assertTrue(diskCache.exist(imageUri))
+            ImageRequest(context, imageUri) {
+                memoryCachePolicy(DISABLED)
+                resultCachePolicy(DISABLED)
+                downloadCachePolicy(WRITE_ONLY)
+            }.let {
+                sketch.execute(it)
+            }.asOrNull<ImageResult.Success>()!!.apply {
+                assertEquals(DataFrom.NETWORK, dataFrom)
+            }
         }
     }
 
@@ -1151,10 +1153,8 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testAllowNullImage() = runTest {
-        /**
-         * @see com.github.panpf.sketch.view.core.test.target.GenericViewTargetTest.testAllowNullImage
-         * @see com.github.panpf.sketch.compose.core.common.test.target.GenericComposeTargetTest.testAllowNullImage
-         */
+        // com.github.panpf.sketch.view.core.test.target.GenericViewTargetTest.testAllowNullImage
+        // com.github.panpf.sketch.compose.core.common.test.target.GenericComposeTargetTest.testAllowNullImage
     }
 
     @Test
@@ -1315,33 +1315,34 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testProgressListener() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
             httpStack(TestHttpStack(it, 20))
-        }
-        val testImage = TestHttpStack.testImages.first()
+        }) { context, sketch ->
+            val testImage = TestHttpStack.testImages.first()
 
-        ProgressListenerSupervisor().let { listenerSupervisor ->
-            assertEquals(listOf(), listenerSupervisor.callbackActionList)
+            ProgressListenerSupervisor().let { listenerSupervisor ->
+                assertEquals(listOf(), listenerSupervisor.callbackActionList)
 
-            ImageRequest(context, testImage.uri) {
-                memoryCachePolicy(DISABLED)
-                resultCachePolicy(DISABLED)
-                downloadCachePolicy(DISABLED)
-                registerProgressListener(listenerSupervisor)
-            }.let { request ->
-                sketch.execute(request)
-            }
-
-            assertTrue(listenerSupervisor.callbackActionList.size > 1)
-            listenerSupervisor.callbackActionList.forEachIndexed { index, _ ->
-                if (index > 0) {
-                    assertTrue(listenerSupervisor.callbackActionList[index - 1].toLong() < listenerSupervisor.callbackActionList[index].toLong())
+                ImageRequest(context, testImage.uri) {
+                    memoryCachePolicy(DISABLED)
+                    resultCachePolicy(DISABLED)
+                    downloadCachePolicy(DISABLED)
+                    registerProgressListener(listenerSupervisor)
+                }.let { request ->
+                    sketch.execute(request)
                 }
+
+                assertTrue(listenerSupervisor.callbackActionList.size > 1)
+                listenerSupervisor.callbackActionList.forEachIndexed { index, _ ->
+                    if (index > 0) {
+                        assertTrue(listenerSupervisor.callbackActionList[index - 1].toLong() < listenerSupervisor.callbackActionList[index].toLong())
+                    }
+                }
+                assertEquals(
+                    testImage.contentLength,
+                    listenerSupervisor.callbackActionList.last().toLong()
+                )
             }
-            assertEquals(
-                testImage.contentLength,
-                listenerSupervisor.callbackActionList.last().toLong()
-            )
         }
     }
 

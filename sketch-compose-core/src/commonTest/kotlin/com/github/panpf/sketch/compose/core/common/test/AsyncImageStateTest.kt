@@ -49,7 +49,7 @@ import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.createBitmapImage
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.test.utils.similarity
 import com.github.panpf.sketch.test.utils.toPreviewBitmap
 import com.github.panpf.sketch.util.Size
@@ -835,272 +835,272 @@ class AsyncImageStateTest {
 
     @Test
     fun testPainterResultPainterStateLoadStateProgress() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
             httpStack(TestHttpStack(it, readDelayMillis = 20))
-        }
-
-        // success
-        runComposeUiTest {
-            val asyncImageState = AsyncImageState(
-                inspectionMode = false,
-                lifecycle = GlobalLifecycle,
-                windowContainerSize = IntSize(1080, 720),
-                imageOptions = ImageOptions {
-                    memoryCachePolicy(CachePolicy.DISABLED)
-                    resultCachePolicy(CachePolicy.DISABLED)
-                    downloadCachePolicy(CachePolicy.DISABLED)
-                    size(Size.Origin)
+        }) { context, sketch ->
+            // success
+            runComposeUiTest {
+                val asyncImageState = AsyncImageState(
+                    inspectionMode = false,
+                    lifecycle = GlobalLifecycle,
+                    windowContainerSize = IntSize(1080, 720),
+                    imageOptions = ImageOptions {
+                        memoryCachePolicy(CachePolicy.DISABLED)
+                        resultCachePolicy(CachePolicy.DISABLED)
+                        downloadCachePolicy(CachePolicy.DISABLED)
+                        size(Size.Origin)
+                    }
+                )
+                val request = ImageRequest(context, TestHttpStack.testImages.first().uri) {
+                    placeholder(Color.Gray)
+                    error(Color.Red)
                 }
-            )
-            val request = ImageRequest(context, TestHttpStack.testImages.first().uri) {
-                placeholder(Color.Gray)
-                error(Color.Red)
+                val painterHistory = mutableListOf<Painter?>()
+                val painterStateHistory = mutableListOf<PainterState?>()
+                val resultHistory = mutableListOf<ImageResult?>()
+                val loadStateHistory = mutableListOf<LoadState?>()
+                val progressHistory = mutableListOf<Progress?>()
+
+                setContent {
+                    LaunchedEffect(Unit) {
+                        snapshotFlow { asyncImageState.painter }.collect {
+                            painterHistory.add(it)
+                        }
+                    }
+                    LaunchedEffect(Unit) {
+                        snapshotFlow { asyncImageState.painterState }.collect {
+                            painterStateHistory.add(it)
+                        }
+                    }
+                    LaunchedEffect(Unit) {
+                        snapshotFlow { asyncImageState.result }.collect {
+                            resultHistory.add(it)
+                        }
+                    }
+                    LaunchedEffect(Unit) {
+                        snapshotFlow { asyncImageState.loadState }.collect {
+                            loadStateHistory.add(it)
+                        }
+                    }
+                    LaunchedEffect(Unit) {
+                        snapshotFlow { asyncImageState.progress }.collect {
+                            progressHistory.add(it)
+                        }
+                    }
+                    remember { asyncImageState }
+                    asyncImageState.sketch = sketch
+                    asyncImageState.request = request
+                    asyncImageState.contentScale = ContentScale.Fit
+                    asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
+                }
+                waitForIdle()
+                block(4000)
+
+                assertTrue(
+                    actual = asyncImageState.loadState is LoadState.Success,
+                    message = "loadState=${asyncImageState.loadState}"
+                )
+                assertTrue(
+                    actual = asyncImageState.result?.image is BitmapImage,
+                    message = "image=${asyncImageState.result?.image}"
+                )
+
+                assertEquals(
+                    expected = 3,
+                    actual = painterHistory.size,
+                    message = "painterHistory=${painterHistory}"
+                )
+                assertEquals(expected = null, actual = painterHistory[0])
+                assertEquals(expected = ColorPainter(Color.Gray), actual = painterHistory[1])
+                assertTrue(
+                    actual = painterHistory[2] is ImageBitmapPainter,
+                    message = "painter=${painterHistory[2]}"
+                )
+
+                assertEquals(
+                    expected = 3,
+                    actual = painterStateHistory.size,
+                    message = "painterStateHistory=${painterStateHistory}"
+                )
+                assertEquals(expected = null, actual = painterStateHistory[0])
+                assertEquals(
+                    expected = PainterState.Loading(ColorPainter(Color.Gray)),
+                    actual = painterStateHistory[1]
+                )
+                assertTrue(
+                    actual = painterStateHistory[2]?.asOrThrow<PainterState.Success>()?.painter is ImageBitmapPainter,
+                    message = "painter=${painterStateHistory[2]}"
+                )
+
+                assertEquals(
+                    expected = 2,
+                    actual = resultHistory.size,
+                    message = "resultHistory=${resultHistory}"
+                )
+                assertEquals(expected = null, actual = resultHistory[0])
+                assertTrue(
+                    actual = resultHistory[1]?.asOrThrow<ImageResult.Success>()?.image is BitmapImage,
+                    message = "painter=${resultHistory[1]}"
+                )
+
+                assertEquals(
+                    expected = 3,
+                    actual = loadStateHistory.size,
+                    message = "loadStateHistory=${loadStateHistory}"
+                )
+                assertEquals(expected = null, actual = loadStateHistory[0])
+                assertTrue(
+                    actual = loadStateHistory[1] is LoadState.Started,
+                    message = "loadStateHistory[1]=${loadStateHistory[1]}"
+                )
+                assertTrue(
+                    actual = loadStateHistory[2]?.asOrThrow<LoadState.Success>()?.result?.asOrThrow<ImageResult.Success>()?.image is BitmapImage,
+                    message = "loadStateHistory[2]=${loadStateHistory[2]}"
+                )
+
+                assertTrue(
+                    actual = progressHistory.size >= 5,
+                    message = "progressHistory=${progressHistory}"
+                )
+                assertEquals(
+                    expected = null,
+                    actual = progressHistory[0],
+                )
+                assertTrue(
+                    actual = progressHistory[1]!!.completedLength < progressHistory[1]!!.totalLength,
+                    message = "progressHistory[1]=${progressHistory[1]}"
+                )
+                assertEquals(
+                    expected = progressHistory.last()!!.completedLength,
+                    actual = progressHistory.last()!!.totalLength,
+                )
             }
-            val painterHistory = mutableListOf<Painter?>()
-            val painterStateHistory = mutableListOf<PainterState?>()
-            val resultHistory = mutableListOf<ImageResult?>()
-            val loadStateHistory = mutableListOf<LoadState?>()
-            val progressHistory = mutableListOf<Progress?>()
 
-            setContent {
-                LaunchedEffect(Unit) {
-                    snapshotFlow { asyncImageState.painter }.collect {
-                        painterHistory.add(it)
+            // error
+            runComposeUiTest {
+                val asyncImageState = AsyncImageState(
+                    inspectionMode = false,
+                    lifecycle = GlobalLifecycle,
+                    windowContainerSize = IntSize(1080, 720),
+                    imageOptions = ImageOptions {
+                        memoryCachePolicy(CachePolicy.DISABLED)
+                        resultCachePolicy(CachePolicy.DISABLED)
+                        downloadCachePolicy(CachePolicy.DISABLED)
+                        size(Size.Origin)
                     }
+                )
+                val request = ImageRequest(context, TestHttpStack.errorImage.uri) {
+                    placeholder(Color.Gray)
+                    error(Color.Red)
                 }
-                LaunchedEffect(Unit) {
-                    snapshotFlow { asyncImageState.painterState }.collect {
-                        painterStateHistory.add(it)
+                val painterHistory = mutableListOf<Painter?>()
+                val painterStateHistory = mutableListOf<PainterState?>()
+                val resultHistory = mutableListOf<ImageResult?>()
+                val loadStateHistory = mutableListOf<LoadState?>()
+                val progressHistory = mutableListOf<Progress?>()
+                setContent {
+                    LaunchedEffect(Unit) {
+                        snapshotFlow { asyncImageState.painter }.collect {
+                            painterHistory.add(it)
+                        }
                     }
-                }
-                LaunchedEffect(Unit) {
-                    snapshotFlow { asyncImageState.result }.collect {
-                        resultHistory.add(it)
+                    LaunchedEffect(Unit) {
+                        snapshotFlow { asyncImageState.painterState }.collect {
+                            painterStateHistory.add(it)
+                        }
                     }
-                }
-                LaunchedEffect(Unit) {
-                    snapshotFlow { asyncImageState.loadState }.collect {
-                        loadStateHistory.add(it)
+                    LaunchedEffect(Unit) {
+                        snapshotFlow { asyncImageState.result }.collect {
+                            resultHistory.add(it)
+                        }
                     }
-                }
-                LaunchedEffect(Unit) {
-                    snapshotFlow { asyncImageState.progress }.collect {
-                        progressHistory.add(it)
+                    LaunchedEffect(Unit) {
+                        snapshotFlow { asyncImageState.loadState }.collect {
+                            loadStateHistory.add(it)
+                        }
                     }
+                    LaunchedEffect(Unit) {
+                        snapshotFlow { asyncImageState.progress }.collect {
+                            progressHistory.add(it)
+                        }
+                    }
+                    remember { asyncImageState }
+                    asyncImageState.sketch = sketch
+                    asyncImageState.request = request
+                    asyncImageState.contentScale = ContentScale.Fit
+                    asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
                 }
-                remember { asyncImageState }
-                asyncImageState.sketch = sketch
-                asyncImageState.request = request
-                asyncImageState.contentScale = ContentScale.Fit
-                asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
+                waitForIdle()
+                block(2000)
+
+                assertTrue(
+                    actual = asyncImageState.loadState is LoadState.Error,
+                    message = "loadState=${asyncImageState.loadState}"
+                )
+                assertTrue(
+                    actual = asyncImageState.result?.image is PainterImage,
+                    message = "image=${asyncImageState.result?.image}"
+                )
+
+                assertEquals(
+                    expected = 3,
+                    actual = painterHistory.size,
+                    message = "painterHistory=${painterHistory}"
+                )
+                assertEquals(expected = null, actual = painterHistory[0])
+                assertEquals(expected = ColorPainter(Color.Gray), actual = painterHistory[1])
+                assertEquals(expected = ColorPainter(Color.Red), actual = painterHistory[2])
+
+                assertEquals(
+                    expected = 3,
+                    actual = painterStateHistory.size,
+                    message = "painterStateHistory=${painterStateHistory}"
+                )
+                assertEquals(expected = null, actual = painterStateHistory[0])
+                assertEquals(
+                    expected = PainterState.Loading(ColorPainter(Color.Gray)),
+                    actual = painterStateHistory[1]
+                )
+                assertEquals(
+                    expected = PainterState.Error(ColorPainter(Color.Red)),
+                    actual = painterStateHistory[2]
+                )
+
+                assertEquals(
+                    expected = 2,
+                    actual = resultHistory.size,
+                    message = "resultHistory=${resultHistory}"
+                )
+                assertEquals(expected = null, actual = resultHistory[0])
+                assertEquals(
+                    expected = PainterImage(ColorPainter(Color.Red)),
+                    actual = resultHistory[1]?.asOrThrow<ImageResult.Error>()?.image
+                )
+
+                assertEquals(
+                    expected = 3,
+                    actual = loadStateHistory.size,
+                    message = "loadStateHistory=${loadStateHistory}"
+                )
+                assertEquals(expected = null, actual = loadStateHistory[0])
+                assertTrue(
+                    actual = loadStateHistory[1] is LoadState.Started,
+                    message = "loadStateHistory[1]=${loadStateHistory[1]}"
+                )
+                assertEquals(
+                    expected = PainterImage(ColorPainter(Color.Red)),
+                    actual = loadStateHistory[2]?.asOrThrow<LoadState.Error>()?.result?.asOrThrow<ImageResult.Error>()?.image,
+                )
+
+                assertTrue(
+                    actual = progressHistory.size == 1,
+                    message = "progressHistory=${progressHistory}"
+                )
+                assertEquals(
+                    expected = null,
+                    actual = progressHistory[0],
+                )
             }
-            waitForIdle()
-            block(4000)
-
-            assertTrue(
-                actual = asyncImageState.loadState is LoadState.Success,
-                message = "loadState=${asyncImageState.loadState}"
-            )
-            assertTrue(
-                actual = asyncImageState.result?.image is BitmapImage,
-                message = "image=${asyncImageState.result?.image}"
-            )
-
-            assertEquals(
-                expected = 3,
-                actual = painterHistory.size,
-                message = "painterHistory=${painterHistory}"
-            )
-            assertEquals(expected = null, actual = painterHistory[0])
-            assertEquals(expected = ColorPainter(Color.Gray), actual = painterHistory[1])
-            assertTrue(
-                actual = painterHistory[2] is ImageBitmapPainter,
-                message = "painter=${painterHistory[2]}"
-            )
-
-            assertEquals(
-                expected = 3,
-                actual = painterStateHistory.size,
-                message = "painterStateHistory=${painterStateHistory}"
-            )
-            assertEquals(expected = null, actual = painterStateHistory[0])
-            assertEquals(
-                expected = PainterState.Loading(ColorPainter(Color.Gray)),
-                actual = painterStateHistory[1]
-            )
-            assertTrue(
-                actual = painterStateHistory[2]?.asOrThrow<PainterState.Success>()?.painter is ImageBitmapPainter,
-                message = "painter=${painterStateHistory[2]}"
-            )
-
-            assertEquals(
-                expected = 2,
-                actual = resultHistory.size,
-                message = "resultHistory=${resultHistory}"
-            )
-            assertEquals(expected = null, actual = resultHistory[0])
-            assertTrue(
-                actual = resultHistory[1]?.asOrThrow<ImageResult.Success>()?.image is BitmapImage,
-                message = "painter=${resultHistory[1]}"
-            )
-
-            assertEquals(
-                expected = 3,
-                actual = loadStateHistory.size,
-                message = "loadStateHistory=${loadStateHistory}"
-            )
-            assertEquals(expected = null, actual = loadStateHistory[0])
-            assertTrue(
-                actual = loadStateHistory[1] is LoadState.Started,
-                message = "loadStateHistory[1]=${loadStateHistory[1]}"
-            )
-            assertTrue(
-                actual = loadStateHistory[2]?.asOrThrow<LoadState.Success>()?.result?.asOrThrow<ImageResult.Success>()?.image is BitmapImage,
-                message = "loadStateHistory[2]=${loadStateHistory[2]}"
-            )
-
-            assertTrue(
-                actual = progressHistory.size >= 5,
-                message = "progressHistory=${progressHistory}"
-            )
-            assertEquals(
-                expected = null,
-                actual = progressHistory[0],
-            )
-            assertTrue(
-                actual = progressHistory[1]!!.completedLength < progressHistory[1]!!.totalLength,
-                message = "progressHistory[1]=${progressHistory[1]}"
-            )
-            assertEquals(
-                expected = progressHistory.last()!!.completedLength,
-                actual = progressHistory.last()!!.totalLength,
-            )
-        }
-
-        // error
-        runComposeUiTest {
-            val asyncImageState = AsyncImageState(
-                inspectionMode = false,
-                lifecycle = GlobalLifecycle,
-                windowContainerSize = IntSize(1080, 720),
-                imageOptions = ImageOptions {
-                    memoryCachePolicy(CachePolicy.DISABLED)
-                    resultCachePolicy(CachePolicy.DISABLED)
-                    downloadCachePolicy(CachePolicy.DISABLED)
-                    size(Size.Origin)
-                }
-            )
-            val request = ImageRequest(context, TestHttpStack.errorImage.uri) {
-                placeholder(Color.Gray)
-                error(Color.Red)
-            }
-            val painterHistory = mutableListOf<Painter?>()
-            val painterStateHistory = mutableListOf<PainterState?>()
-            val resultHistory = mutableListOf<ImageResult?>()
-            val loadStateHistory = mutableListOf<LoadState?>()
-            val progressHistory = mutableListOf<Progress?>()
-            setContent {
-                LaunchedEffect(Unit) {
-                    snapshotFlow { asyncImageState.painter }.collect {
-                        painterHistory.add(it)
-                    }
-                }
-                LaunchedEffect(Unit) {
-                    snapshotFlow { asyncImageState.painterState }.collect {
-                        painterStateHistory.add(it)
-                    }
-                }
-                LaunchedEffect(Unit) {
-                    snapshotFlow { asyncImageState.result }.collect {
-                        resultHistory.add(it)
-                    }
-                }
-                LaunchedEffect(Unit) {
-                    snapshotFlow { asyncImageState.loadState }.collect {
-                        loadStateHistory.add(it)
-                    }
-                }
-                LaunchedEffect(Unit) {
-                    snapshotFlow { asyncImageState.progress }.collect {
-                        progressHistory.add(it)
-                    }
-                }
-                remember { asyncImageState }
-                asyncImageState.sketch = sketch
-                asyncImageState.request = request
-                asyncImageState.contentScale = ContentScale.Fit
-                asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
-            }
-            waitForIdle()
-            block(2000)
-
-            assertTrue(
-                actual = asyncImageState.loadState is LoadState.Error,
-                message = "loadState=${asyncImageState.loadState}"
-            )
-            assertTrue(
-                actual = asyncImageState.result?.image is PainterImage,
-                message = "image=${asyncImageState.result?.image}"
-            )
-
-            assertEquals(
-                expected = 3,
-                actual = painterHistory.size,
-                message = "painterHistory=${painterHistory}"
-            )
-            assertEquals(expected = null, actual = painterHistory[0])
-            assertEquals(expected = ColorPainter(Color.Gray), actual = painterHistory[1])
-            assertEquals(expected = ColorPainter(Color.Red), actual = painterHistory[2])
-
-            assertEquals(
-                expected = 3,
-                actual = painterStateHistory.size,
-                message = "painterStateHistory=${painterStateHistory}"
-            )
-            assertEquals(expected = null, actual = painterStateHistory[0])
-            assertEquals(
-                expected = PainterState.Loading(ColorPainter(Color.Gray)),
-                actual = painterStateHistory[1]
-            )
-            assertEquals(
-                expected = PainterState.Error(ColorPainter(Color.Red)),
-                actual = painterStateHistory[2]
-            )
-
-            assertEquals(
-                expected = 2,
-                actual = resultHistory.size,
-                message = "resultHistory=${resultHistory}"
-            )
-            assertEquals(expected = null, actual = resultHistory[0])
-            assertEquals(
-                expected = PainterImage(ColorPainter(Color.Red)),
-                actual = resultHistory[1]?.asOrThrow<ImageResult.Error>()?.image
-            )
-
-            assertEquals(
-                expected = 3,
-                actual = loadStateHistory.size,
-                message = "loadStateHistory=${loadStateHistory}"
-            )
-            assertEquals(expected = null, actual = loadStateHistory[0])
-            assertTrue(
-                actual = loadStateHistory[1] is LoadState.Started,
-                message = "loadStateHistory[1]=${loadStateHistory[1]}"
-            )
-            assertEquals(
-                expected = PainterImage(ColorPainter(Color.Red)),
-                actual = loadStateHistory[2]?.asOrThrow<LoadState.Error>()?.result?.asOrThrow<ImageResult.Error>()?.image,
-            )
-
-            assertTrue(
-                actual = progressHistory.size == 1,
-                message = "progressHistory=${progressHistory}"
-            )
-            assertEquals(
-                expected = null,
-                actual = progressHistory[0],
-            )
         }
     }
 

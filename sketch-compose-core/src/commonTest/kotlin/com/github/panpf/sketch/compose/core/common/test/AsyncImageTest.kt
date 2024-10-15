@@ -11,8 +11,8 @@ import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.LifecycleContainer
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import kotlin.test.Test
 
 @OptIn(ExperimentalTestApi::class)
@@ -20,7 +20,7 @@ class AsyncImageTest {
 
     @Test
     fun testAsyncImage1() {
-        val (_, sketch) = getTestContextAndNewSketch { }
+        val (_, sketch) = getTestContextAndSketch()
         runComposeUiTest {
             setContent {
                 LifecycleContainer {
@@ -62,7 +62,7 @@ class AsyncImageTest {
 
     @Test
     fun testAsyncImage2() {
-        val (_, sketch) = getTestContextAndNewSketch { }
+        val (_, sketch) = getTestContextAndSketch()
         runComposeUiTest {
             setContent {
                 LifecycleContainer {

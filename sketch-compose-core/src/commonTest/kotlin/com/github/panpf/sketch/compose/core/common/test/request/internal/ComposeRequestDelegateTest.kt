@@ -1,9 +1,9 @@
 package com.github.panpf.sketch.compose.core.common.test.request.internal
 
 import androidx.lifecycle.Lifecycle
+import com.github.panpf.sketch.compose.core.common.test.target.TestGenericComposeTarget
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.ComposeRequestDelegate
-import com.github.panpf.sketch.target.TestGenericComposeTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestLifecycle
 import com.github.panpf.sketch.test.utils.block

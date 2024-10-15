@@ -27,19 +27,34 @@ import okio.Path
 
 expect fun getTestContext(): PlatformContext
 
-// TODO Change to use the newly created Sketch in the block,
-//  and automatically clear the downloadCache and resultCache after the block ends to
-//  prevent more and more junk files from being generated.
-fun getTestContextAndNewSketch(block: Sketch.Builder.(context: PlatformContext) -> Unit): Pair<PlatformContext, Sketch> {
+suspend inline fun runInNewSketchWithUse(
+    builder: Sketch.Builder.(context: PlatformContext) -> Unit,
+    crossinline block2: suspend (PlatformContext, Sketch) -> Unit
+) {
     val context = getTestContext()
-    val newSketch = Sketch.Builder(context).apply {
+    val sketch = Sketch.Builder(context).apply {
         logger(level = Logger.Level.Verbose)
         val directory = context.newAloneTestDiskCacheDirectory()
         downloadCacheOptions(DiskCache.Options(appCacheDirectory = directory))
         resultCacheOptions(DiskCache.Options(appCacheDirectory = directory))
-        block.invoke(this, context)
+        builder.invoke(this, context)
     }.build()
-    return context to newSketch
+    try {
+        block2(context, sketch)
+    } finally {
+        try {
+            sketch.downloadCache.clear()
+            sketch.resultCache.clear()
+            sketch.shutdown()
+            val fileSystem = sketch.fileSystem
+            fileSystem.deleteRecursively(sketch.downloadCache.directory)
+            fileSystem.delete(sketch.downloadCache.directory)
+            fileSystem.deleteRecursively(sketch.resultCache.directory)
+            fileSystem.delete(sketch.resultCache.directory)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }
 
 var sketchCount = 0

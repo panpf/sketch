@@ -7,8 +7,8 @@ import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.ComposeRequestDelegate
 import com.github.panpf.sketch.resize.ComposeResizeOnDrawHelper
-import com.github.panpf.sketch.target.TestComposeTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.TestComposeTarget
 import com.github.panpf.sketch.test.utils.TestCrossfadeTransition
 import com.github.panpf.sketch.transition.ComposeCrossfadeTransition
 import com.github.panpf.sketch.transition.CrossfadeTransition

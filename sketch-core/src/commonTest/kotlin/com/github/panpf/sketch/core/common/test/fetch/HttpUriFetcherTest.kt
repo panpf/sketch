@@ -30,8 +30,8 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.exist
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
 import com.github.panpf.sketch.test.utils.runBlock
+import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
@@ -76,454 +76,454 @@ class HttpUriFetcherTest {
 
     @Test
     fun testRepeatDownload() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
             httpStack(TestHttpStack(it))
-        }
+        }) { context, sketch ->
+            // Loop the test 50 times without making any mistakes
+            val testUri = TestHttpStack.testImages.first()
+            repeat(50) {
+                val request = ImageRequest(context, testUri.uri)
 
-        // Loop the test 50 times without making any mistakes
-        val testUri = TestHttpStack.testImages.first()
-        repeat(50) {
-            val request = ImageRequest(context, testUri.uri)
+                val downloadCacheKey = request.downloadCacheKey
+                val downloadCache = sketch.downloadCache
+                downloadCache.remove(downloadCacheKey)
+                assertFalse(downloadCache.exist(downloadCacheKey))
 
-            val downloadCacheKey = request.downloadCacheKey
-            val downloadCache = sketch.downloadCache
-            downloadCache.remove(downloadCacheKey)
-            assertFalse(downloadCache.exist(downloadCacheKey))
-
-            val deferredList = mutableListOf<Deferred<FetchResult?>>()
-            // Make 100 requests in a short period of time, expect only the first one to be downloaded from the network and the next 99 to be read from the disk cache
-            repeat(100) {
-                val deferred = async(ioCoroutineDispatcher()) {
-                    HttpUriFetcher.Factory().create(
-                        request
-                            .toRequestContext(sketch, Size.Empty)
-                    )!!.fetch().getOrNull()
+                val deferredList = mutableListOf<Deferred<FetchResult?>>()
+                // Make 100 requests in a short period of time, expect only the first one to be downloaded from the network and the next 99 to be read from the disk cache
+                repeat(100) {
+                    val deferred = async(ioCoroutineDispatcher()) {
+                        HttpUriFetcher.Factory().create(
+                            request
+                                .toRequestContext(sketch, Size.Empty)
+                        )!!.fetch().getOrNull()
+                    }
+                    deferredList.add(deferred)
                 }
-                deferredList.add(deferred)
-            }
-            val resultList = deferredList.map { it.await() }
-            assertEquals(100, resultList.size)
-            val fromNetworkList = resultList.mapIndexedNotNull { index, fetchResult ->
-                if (fetchResult!!.dataFrom == DataFrom.NETWORK) {
-                    index to DataFrom.NETWORK
-                } else {
-                    null
+                val resultList = deferredList.map { it.await() }
+                assertEquals(100, resultList.size)
+                val fromNetworkList = resultList.mapIndexedNotNull { index, fetchResult ->
+                    if (fetchResult!!.dataFrom == DataFrom.NETWORK) {
+                        index to DataFrom.NETWORK
+                    } else {
+                        null
+                    }
                 }
-            }
-            val fromDiskCacheList = resultList.mapIndexedNotNull { index, fetchResult ->
-                if (fetchResult!!.dataFrom == DataFrom.DOWNLOAD_CACHE) {
-                    index to DataFrom.DOWNLOAD_CACHE
-                } else {
-                    null
+                val fromDiskCacheList = resultList.mapIndexedNotNull { index, fetchResult ->
+                    if (fetchResult!!.dataFrom == DataFrom.DOWNLOAD_CACHE) {
+                        index to DataFrom.DOWNLOAD_CACHE
+                    } else {
+                        null
+                    }
                 }
+                assertTrue(
+                    fromNetworkList.size == 1 && fromDiskCacheList.size == 99,
+                    "The results are as follows\n${fromNetworkList.joinToString { "${it.first}:${it.second}" }}\n${fromDiskCacheList.joinToString { "${it.first}:${it.second}" }}",
+                )
             }
-            assertTrue(
-                fromNetworkList.size == 1 && fromDiskCacheList.size == 99,
-                "The results are as follows\n${fromNetworkList.joinToString { "${it.first}:${it.second}" }}\n${fromDiskCacheList.joinToString { "${it.first}:${it.second}" }}",
-            )
         }
     }
 
     @Test
     fun testDiskCachePolicy() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
             httpStack(TestHttpStack(it))
-        }
+        }) { context, sketch ->
+            val testUri = TestHttpStack.testImages.first()
 
-        val testUri = TestHttpStack.testImages.first()
+            // CachePolicy.ENABLED
+            runBlock {
+                val request = ImageRequest(context, testUri.uri) {
+                    downloadCachePolicy(CachePolicy.ENABLED)
+                }
+                val httpUriFetcher = HttpUriFetcher.Factory().create(
+                    request
+                        .toRequestContext(sketch, Size.Empty)
+                )!!
 
-        // CachePolicy.ENABLED
-        runBlock {
-            val request = ImageRequest(context, testUri.uri) {
-                downloadCachePolicy(CachePolicy.ENABLED)
+                val downloadCacheKey = request.downloadCacheKey
+                val downloadCache = sketch.downloadCache
+                downloadCache.remove(downloadCacheKey)
+                assertFalse(downloadCache.exist(downloadCacheKey))
+
+                httpUriFetcher.fetch().getOrThrow().apply {
+                    assertEquals(DataFrom.NETWORK, this.dataFrom, this.toString())
+                    assertTrue(
+                        this.dataSource is FileDataSource && this.dataSource.dataFrom == DataFrom.NETWORK,
+                        this.toString(),
+                    )
+                }
+                assertTrue(downloadCache.exist(downloadCacheKey))
+
+                httpUriFetcher.fetch().getOrThrow().apply {
+                    assertEquals(DataFrom.DOWNLOAD_CACHE, this.dataFrom, this.toString())
+                    assertTrue(
+                        this.dataSource is FileDataSource && this.dataSource.dataFrom == DataFrom.DOWNLOAD_CACHE,
+                        this.toString(),
+                    )
+                }
+                assertTrue(downloadCache.exist(downloadCacheKey))
             }
-            val httpUriFetcher = HttpUriFetcher.Factory().create(
-                request
-                    .toRequestContext(sketch, Size.Empty)
-            )!!
 
-            val downloadCacheKey = request.downloadCacheKey
-            val downloadCache = sketch.downloadCache
-            downloadCache.remove(downloadCacheKey)
-            assertFalse(downloadCache.exist(downloadCacheKey))
+            // CachePolicy.DISABLED
+            runBlock {
+                val request = ImageRequest(context, testUri.uri) {
+                    downloadCachePolicy(CachePolicy.DISABLED)
+                }
+                val httpUriFetcher = HttpUriFetcher.Factory().create(
+                    request
+                        .toRequestContext(sketch, Size.Empty)
+                )!!
 
-            httpUriFetcher.fetch().getOrThrow().apply {
-                assertEquals(DataFrom.NETWORK, this.dataFrom, this.toString())
-                assertTrue(
-                    this.dataSource is FileDataSource && this.dataSource.dataFrom == DataFrom.NETWORK,
-                    this.toString(),
-                )
+                val downloadCacheKey = request.downloadCacheKey
+                val downloadCache = sketch.downloadCache
+                downloadCache.remove(downloadCacheKey)
+                assertFalse(downloadCache.exist(downloadCacheKey))
+
+                httpUriFetcher.fetch().getOrThrow().apply {
+                    assertEquals(DataFrom.NETWORK, this.dataFrom, this.toString())
+                    assertTrue(
+                        this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == DataFrom.NETWORK,
+                        this.toString(),
+                    )
+                }
+                assertFalse(downloadCache.exist(downloadCacheKey))
+
+                httpUriFetcher.fetch().getOrThrow().apply {
+                    assertEquals(DataFrom.NETWORK, this.dataFrom, this.toString())
+                    assertTrue(
+                        this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == DataFrom.NETWORK,
+                        this.toString(),
+                    )
+                }
+                assertFalse(downloadCache.exist(downloadCacheKey))
             }
-            assertTrue(downloadCache.exist(downloadCacheKey))
 
-            httpUriFetcher.fetch().getOrThrow().apply {
-                assertEquals(DataFrom.DOWNLOAD_CACHE, this.dataFrom, this.toString())
-                assertTrue(
-                    this.dataSource is FileDataSource && this.dataSource.dataFrom == DataFrom.DOWNLOAD_CACHE,
-                    this.toString(),
-                )
+            // CachePolicy.READ_ONLY
+            runBlock {
+                val request = ImageRequest(context, testUri.uri) {
+                    downloadCachePolicy(CachePolicy.READ_ONLY)
+                }
+                val httpUriFetcher = HttpUriFetcher.Factory().create(
+                    request
+                        .toRequestContext(sketch, Size.Empty)
+                )!!
+
+                val downloadCacheKey = request.downloadCacheKey
+                val downloadCache = sketch.downloadCache
+                downloadCache.remove(downloadCacheKey)
+                assertFalse(downloadCache.exist(downloadCacheKey))
+
+                httpUriFetcher.fetch().getOrThrow().apply {
+                    assertEquals(DataFrom.NETWORK, this.dataFrom, this.toString())
+                    assertTrue(
+                        this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == DataFrom.NETWORK,
+                        this.toString(),
+                    )
+                }
+                assertFalse(downloadCache.exist(downloadCacheKey))
+
+                httpUriFetcher.fetch().getOrThrow().apply {
+                    assertEquals(DataFrom.NETWORK, this.dataFrom, this.toString())
+                    assertTrue(
+                        this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == DataFrom.NETWORK,
+                        this.toString(),
+                    )
+                }
+                assertFalse(downloadCache.exist(downloadCacheKey))
+
+                val request2 = ImageRequest(context, testUri.uri) {
+                    downloadCachePolicy(CachePolicy.ENABLED)
+                }
+                val httpUriFetcher2 = HttpUriFetcher.Factory().create(
+                    request2
+                        .toRequestContext(sketch, Size.Empty)
+                )!!
+                httpUriFetcher2.fetch().getOrThrow()
+                assertTrue(downloadCache.exist(downloadCacheKey))
+
+                httpUriFetcher.fetch().getOrThrow().apply {
+                    assertEquals(DataFrom.DOWNLOAD_CACHE, this.dataFrom, this.toString())
+                    assertTrue(
+                        this.dataSource is FileDataSource && this.dataSource.dataFrom == DataFrom.DOWNLOAD_CACHE,
+                        this.toString(),
+                    )
+                }
+                assertTrue(downloadCache.exist(downloadCacheKey))
             }
-            assertTrue(downloadCache.exist(downloadCacheKey))
-        }
 
-        // CachePolicy.DISABLED
-        runBlock {
-            val request = ImageRequest(context, testUri.uri) {
-                downloadCachePolicy(CachePolicy.DISABLED)
+            // CachePolicy.WRITE_ONLY
+            runBlock {
+                val request = ImageRequest(context, testUri.uri) {
+                    downloadCachePolicy(CachePolicy.WRITE_ONLY)
+                }
+                val httpUriFetcher = HttpUriFetcher.Factory().create(
+                    request
+                        .toRequestContext(sketch, Size.Empty)
+                )!!
+
+                val downloadCacheKey = request.downloadCacheKey
+                val downloadCache = sketch.downloadCache
+                downloadCache.remove(downloadCacheKey)
+                assertFalse(downloadCache.exist(downloadCacheKey))
+
+                httpUriFetcher.fetch().getOrThrow().apply {
+                    assertEquals(DataFrom.NETWORK, this.dataFrom, this.toString())
+                    assertTrue(
+                        this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == DataFrom.NETWORK,
+                        this.toString(),
+                    )
+                }
+                assertTrue(downloadCache.exist(downloadCacheKey))
+
+                httpUriFetcher.fetch().getOrThrow().apply {
+                    assertEquals(DataFrom.NETWORK, this.dataFrom, this.toString())
+                    assertTrue(
+                        this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == DataFrom.NETWORK,
+                        this.toString(),
+                    )
+                }
+                assertTrue(downloadCache.exist(downloadCacheKey))
             }
-            val httpUriFetcher = HttpUriFetcher.Factory().create(
-                request
-                    .toRequestContext(sketch, Size.Empty)
-            )!!
-
-            val downloadCacheKey = request.downloadCacheKey
-            val downloadCache = sketch.downloadCache
-            downloadCache.remove(downloadCacheKey)
-            assertFalse(downloadCache.exist(downloadCacheKey))
-
-            httpUriFetcher.fetch().getOrThrow().apply {
-                assertEquals(DataFrom.NETWORK, this.dataFrom, this.toString())
-                assertTrue(
-                    this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == DataFrom.NETWORK,
-                    this.toString(),
-                )
-            }
-            assertFalse(downloadCache.exist(downloadCacheKey))
-
-            httpUriFetcher.fetch().getOrThrow().apply {
-                assertEquals(DataFrom.NETWORK, this.dataFrom, this.toString())
-                assertTrue(
-                    this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == DataFrom.NETWORK,
-                    this.toString(),
-                )
-            }
-            assertFalse(downloadCache.exist(downloadCacheKey))
-        }
-
-        // CachePolicy.READ_ONLY
-        runBlock {
-            val request = ImageRequest(context, testUri.uri) {
-                downloadCachePolicy(CachePolicy.READ_ONLY)
-            }
-            val httpUriFetcher = HttpUriFetcher.Factory().create(
-                request
-                    .toRequestContext(sketch, Size.Empty)
-            )!!
-
-            val downloadCacheKey = request.downloadCacheKey
-            val downloadCache = sketch.downloadCache
-            downloadCache.remove(downloadCacheKey)
-            assertFalse(downloadCache.exist(downloadCacheKey))
-
-            httpUriFetcher.fetch().getOrThrow().apply {
-                assertEquals(DataFrom.NETWORK, this.dataFrom, this.toString())
-                assertTrue(
-                    this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == DataFrom.NETWORK,
-                    this.toString(),
-                )
-            }
-            assertFalse(downloadCache.exist(downloadCacheKey))
-
-            httpUriFetcher.fetch().getOrThrow().apply {
-                assertEquals(DataFrom.NETWORK, this.dataFrom, this.toString())
-                assertTrue(
-                    this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == DataFrom.NETWORK,
-                    this.toString(),
-                )
-            }
-            assertFalse(downloadCache.exist(downloadCacheKey))
-
-            val request2 = ImageRequest(context, testUri.uri) {
-                downloadCachePolicy(CachePolicy.ENABLED)
-            }
-            val httpUriFetcher2 = HttpUriFetcher.Factory().create(
-                request2
-                    .toRequestContext(sketch, Size.Empty)
-            )!!
-            httpUriFetcher2.fetch().getOrThrow()
-            assertTrue(downloadCache.exist(downloadCacheKey))
-
-            httpUriFetcher.fetch().getOrThrow().apply {
-                assertEquals(DataFrom.DOWNLOAD_CACHE, this.dataFrom, this.toString())
-                assertTrue(
-                    this.dataSource is FileDataSource && this.dataSource.dataFrom == DataFrom.DOWNLOAD_CACHE,
-                    this.toString(),
-                )
-            }
-            assertTrue(downloadCache.exist(downloadCacheKey))
-        }
-
-        // CachePolicy.WRITE_ONLY
-        runBlock {
-            val request = ImageRequest(context, testUri.uri) {
-                downloadCachePolicy(CachePolicy.WRITE_ONLY)
-            }
-            val httpUriFetcher = HttpUriFetcher.Factory().create(
-                request
-                    .toRequestContext(sketch, Size.Empty)
-            )!!
-
-            val downloadCacheKey = request.downloadCacheKey
-            val downloadCache = sketch.downloadCache
-            downloadCache.remove(downloadCacheKey)
-            assertFalse(downloadCache.exist(downloadCacheKey))
-
-            httpUriFetcher.fetch().getOrThrow().apply {
-                assertEquals(DataFrom.NETWORK, this.dataFrom, this.toString())
-                assertTrue(
-                    this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == DataFrom.NETWORK,
-                    this.toString(),
-                )
-            }
-            assertTrue(downloadCache.exist(downloadCacheKey))
-
-            httpUriFetcher.fetch().getOrThrow().apply {
-                assertEquals(DataFrom.NETWORK, this.dataFrom, this.toString())
-                assertTrue(
-                    this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == DataFrom.NETWORK,
-                    this.toString(),
-                )
-            }
-            assertTrue(downloadCache.exist(downloadCacheKey))
         }
     }
 
     @Test
     fun testProgress() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
             httpStack(TestHttpStack(it))
-        }
-
-        val testUri = TestHttpStack.testImages.first()
-        val progressList = mutableListOf<Long>()
-        val request = ImageRequest(context, testUri.uri) {
-            registerProgressListener { _, progress ->
-                progressList.add(progress.completedLength)
+        }) { context, sketch ->
+            val testUri = TestHttpStack.testImages.first()
+            val progressList = mutableListOf<Long>()
+            val request = ImageRequest(context, testUri.uri) {
+                registerProgressListener { _, progress ->
+                    progressList.add(progress.completedLength)
+                }
             }
-        }
 
-        val downloadCache = sketch.downloadCache
-        val downloadCacheKey = request.downloadCacheKey
-        downloadCache.remove(downloadCacheKey)
-        assertFalse(downloadCache.exist(downloadCacheKey))
+            val downloadCache = sketch.downloadCache
+            val downloadCacheKey = request.downloadCacheKey
+            downloadCache.remove(downloadCacheKey)
+            assertFalse(downloadCache.exist(downloadCacheKey))
 
-        HttpUriFetcher.Factory().create(
-            request
-                .toRequestContext(sketch, Size.Empty)
-        )!!.fetch().getOrThrow()
-        block(1000)
-        assertTrue(progressList.size > 0)
-        assertEquals(testUri.contentLength, progressList.last())
+            HttpUriFetcher.Factory().create(
+                request
+                    .toRequestContext(sketch, Size.Empty)
+            )!!.fetch().getOrThrow()
+            block(1000)
+            assertTrue(progressList.size > 0)
+            assertEquals(testUri.contentLength, progressList.last())
 
-        var lastProgress: Long? = null
-        progressList.forEach { progress ->
-            val currentLastProgress = lastProgress
-            if (currentLastProgress != null) {
-                assertTrue(currentLastProgress < progress)
+            var lastProgress: Long? = null
+            progressList.forEach { progress ->
+                val currentLastProgress = lastProgress
+                if (currentLastProgress != null) {
+                    assertTrue(currentLastProgress < progress)
+                }
+                lastProgress = progress
             }
-            lastProgress = progress
         }
     }
 
     @Test
     fun testCancel() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
             httpStack(TestHttpStack(it, readDelayMillis = 500))
-        }
-
-        val testUri = TestHttpStack.testImages.first()
-        val progressList = mutableListOf<Long>()
-        val request = ImageRequest(context, testUri.uri) {
-            downloadCachePolicy(CachePolicy.DISABLED)
-            registerProgressListener { _, progress ->
-                progressList.add(progress.completedLength)
+        }) { context, sketch ->
+            val testUri = TestHttpStack.testImages.first()
+            val progressList = mutableListOf<Long>()
+            val request = ImageRequest(context, testUri.uri) {
+                downloadCachePolicy(CachePolicy.DISABLED)
+                registerProgressListener { _, progress ->
+                    progressList.add(progress.completedLength)
+                }
             }
-        }
 
-        val downloadCacheKey = request.downloadCacheKey
-        val downloadCache = sketch.downloadCache
-        downloadCache.remove(downloadCacheKey)
-        assertFalse(downloadCache.exist(downloadCacheKey))
+            val downloadCacheKey = request.downloadCacheKey
+            val downloadCache = sketch.downloadCache
+            downloadCache.remove(downloadCacheKey)
+            assertFalse(downloadCache.exist(downloadCacheKey))
 
-        progressList.clear()
-        val job = launch(ioCoroutineDispatcher()) {
-            HttpUriFetcher.Factory().create(
-                request
-                    .toRequestContext(sketch, Size.Empty)
-            )!!.fetch().getOrThrow()
+            progressList.clear()
+            val job = launch(ioCoroutineDispatcher()) {
+                HttpUriFetcher.Factory().create(
+                    request
+                        .toRequestContext(sketch, Size.Empty)
+                )!!.fetch().getOrThrow()
+            }
+            block(2000)
+            job.cancel()
+            assertTrue(progressList.size > 0)
+            assertNull(progressList.find { it == testUri.contentLength })
         }
-        block(2000)
-        job.cancel()
-        assertTrue(progressList.size > 0)
-        assertNull(progressList.find { it == testUri.contentLength })
     }
 
     @Test
     fun testCancel2() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
             httpStack(TestHttpStack(it, readDelayMillis = 500, connectionDelayMillis = 500))
-        }
-
-        val testUri = TestHttpStack.testImages.first()
-        val progressList = mutableListOf<Long>()
-        val request = ImageRequest(context, testUri.uri) {
-            downloadCachePolicy(CachePolicy.DISABLED)
-            registerProgressListener { _, progress ->
-                progressList.add(progress.completedLength)
+        }) { context, sketch ->
+            val testUri = TestHttpStack.testImages.first()
+            val progressList = mutableListOf<Long>()
+            val request = ImageRequest(context, testUri.uri) {
+                downloadCachePolicy(CachePolicy.DISABLED)
+                registerProgressListener { _, progress ->
+                    progressList.add(progress.completedLength)
+                }
             }
-        }
 
-        val downloadCacheKey = request.downloadCacheKey
-        val downloadCache = sketch.downloadCache
-        downloadCache.remove(downloadCacheKey)
-        assertFalse(downloadCache.exist(downloadCacheKey))
+            val downloadCacheKey = request.downloadCacheKey
+            val downloadCache = sketch.downloadCache
+            downloadCache.remove(downloadCacheKey)
+            assertFalse(downloadCache.exist(downloadCacheKey))
 
-        progressList.clear()
-        val job = launch(ioCoroutineDispatcher()) {
-            HttpUriFetcher.Factory().create(
-                request
-                    .toRequestContext(sketch, Size.Empty)
-            )!!.fetch().getOrThrow()
+            progressList.clear()
+            val job = launch(ioCoroutineDispatcher()) {
+                HttpUriFetcher.Factory().create(
+                    request
+                        .toRequestContext(sketch, Size.Empty)
+                )!!.fetch().getOrThrow()
+            }
+            block(500)
+            job.cancel()
+            assertTrue(progressList.size == 0)
         }
-        block(500)
-        job.cancel()
-        assertTrue(progressList.size == 0)
     }
 
     @Test
     fun testErrorUrl() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
             httpStack(TestHttpStack(it))
-        }
-
-        val progressList = mutableListOf<Long>()
-        val request = ImageRequest(context, "http://error.com/sample.jpeg") {
-            registerProgressListener { _, progress ->
-                progressList.add(progress.completedLength)
+        }) { context, sketch ->
+            val progressList = mutableListOf<Long>()
+            val request = ImageRequest(context, "http://error.com/sample.jpeg") {
+                registerProgressListener { _, progress ->
+                    progressList.add(progress.completedLength)
+                }
             }
+            sketch.downloadCache.clear()
+            try {
+                HttpUriFetcher.Factory().create(
+                    request
+                        .toRequestContext(sketch, Size.Empty)
+                )!!.fetch().getOrThrow()
+                fail("No exception thrown")
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            assertEquals(0, progressList.size)
         }
-        sketch.downloadCache.clear()
-        try {
-            HttpUriFetcher.Factory().create(
-                request
-                    .toRequestContext(sketch, Size.Empty)
-            )!!.fetch().getOrThrow()
-            fail("No exception thrown")
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        assertEquals(0, progressList.size)
     }
 
     @Test
     fun testContentUrl() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
             httpStack(TestHttpStack(it))
-        }
-
-        val progressList = mutableListOf<Long>()
-        val request = ImageRequest(context, TestHttpStack.errorImage.uri) {
-            registerProgressListener { _, progress ->
-                progressList.add(progress.completedLength)
+        }) { context, sketch ->
+            val progressList = mutableListOf<Long>()
+            val request = ImageRequest(context, TestHttpStack.errorImage.uri) {
+                registerProgressListener { _, progress ->
+                    progressList.add(progress.completedLength)
+                }
             }
+            sketch.downloadCache.clear()
+            try {
+                HttpUriFetcher.Factory().create(
+                    request
+                        .toRequestContext(sketch, Size.Empty)
+                )!!.fetch().getOrThrow()
+                fail("No exception thrown")
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            assertEquals(0, progressList.size)
         }
-        sketch.downloadCache.clear()
-        try {
-            HttpUriFetcher.Factory().create(
-                request
-                    .toRequestContext(sketch, Size.Empty)
-            )!!.fetch().getOrThrow()
-            fail("No exception thrown")
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        assertEquals(0, progressList.size)
     }
 
     @Test
     fun testChunkedImage() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
             httpStack(TestHttpStack(it))
-        }
-
-        val progressList = mutableListOf<Long>()
-        val testUri = TestHttpStack.chunkedErrorImage
-        val request = ImageRequest(context, testUri.uri) {
-            registerProgressListener { _, progress ->
-                progressList.add(progress.completedLength)
+        }) { context, sketch ->
+            val progressList = mutableListOf<Long>()
+            val testUri = TestHttpStack.chunkedErrorImage
+            val request = ImageRequest(context, testUri.uri) {
+                registerProgressListener { _, progress ->
+                    progressList.add(progress.completedLength)
+                }
             }
+            sketch.downloadCache.clear()
+
+            HttpUriFetcher.Factory().create(
+                request
+                    .toRequestContext(sketch, Size.Empty)
+            )!!.fetch().getOrThrow()
+            assertTrue(progressList.size == 0)
+            assertNull(progressList.find { it == testUri.contentLength })
+
+            assertTrue(sketch.downloadCache.exist(request.downloadCacheKey))
         }
-        sketch.downloadCache.clear()
-
-        HttpUriFetcher.Factory().create(
-            request
-                .toRequestContext(sketch, Size.Empty)
-        )!!.fetch().getOrThrow()
-        assertTrue(progressList.size == 0)
-        assertNull(progressList.find { it == testUri.contentLength })
-
-        assertTrue(sketch.downloadCache.exist(request.downloadCacheKey))
     }
 
     @Test
     fun testLengthError() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
             httpStack(TestHttpStack(it))
-        }
-
-        val progressList = mutableListOf<Long>()
-        val testUri = TestHttpStack.lengthErrorImage
-        val request = ImageRequest(context, testUri.uri) {
-            registerProgressListener { _, progress ->
-                progressList.add(progress.completedLength)
+        }) { context, sketch ->
+            val progressList = mutableListOf<Long>()
+            val testUri = TestHttpStack.lengthErrorImage
+            val request = ImageRequest(context, testUri.uri) {
+                registerProgressListener { _, progress ->
+                    progressList.add(progress.completedLength)
+                }
             }
-        }
-        sketch.downloadCache.clear()
-        try {
-            HttpUriFetcher.Factory().create(
-                request
-                    .toRequestContext(sketch, Size.Empty)
-            )!!.fetch().getOrThrow()
-            fail("No exception thrown")
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        block(1000)
-        assertTrue(progressList.size > 0)
-        assertNotNull(progressList.find { it == testUri.contentLength + 1 })
+            sketch.downloadCache.clear()
+            try {
+                HttpUriFetcher.Factory().create(
+                    request
+                        .toRequestContext(sketch, Size.Empty)
+                )!!.fetch().getOrThrow()
+                fail("No exception thrown")
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            block(1000)
+            assertTrue(progressList.size > 0)
+            assertNotNull(progressList.find { it == testUri.contentLength + 1 })
 
-        assertFalse(sketch.downloadCache.exist(request.downloadCacheKey))
+            assertFalse(sketch.downloadCache.exist(request.downloadCacheKey))
+        }
     }
 
     @Test
     fun testLengthError2() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
             httpStack(TestHttpStack(it))
-        }
-
-        val progressList = mutableListOf<Long>()
-        val testUri = TestHttpStack.lengthErrorImage
-        val request = ImageRequest(context, testUri.uri) {
-            downloadCachePolicy(CachePolicy.DISABLED)
-            registerProgressListener { _, progress ->
-                progressList.add(progress.completedLength)
+        }) { context, sketch ->
+            val progressList = mutableListOf<Long>()
+            val testUri = TestHttpStack.lengthErrorImage
+            val request = ImageRequest(context, testUri.uri) {
+                downloadCachePolicy(CachePolicy.DISABLED)
+                registerProgressListener { _, progress ->
+                    progressList.add(progress.completedLength)
+                }
             }
-        }
-        sketch.downloadCache.clear()
-        try {
-            HttpUriFetcher.Factory().create(
-                request
-                    .toRequestContext(sketch, Size.Empty)
-            )!!.fetch().getOrThrow()
-            fail("No exception thrown")
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        block(1000)
-        assertTrue(progressList.size > 0)
-        assertNotNull(progressList.find { it == testUri.contentLength + 1 })
+            sketch.downloadCache.clear()
+            try {
+                HttpUriFetcher.Factory().create(
+                    request
+                        .toRequestContext(sketch, Size.Empty)
+                )!!.fetch().getOrThrow()
+                fail("No exception thrown")
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            block(1000)
+            assertTrue(progressList.size > 0)
+            assertNotNull(progressList.find { it == testUri.contentLength + 1 })
 
-        assertFalse(sketch.downloadCache.exist(request.downloadCacheKey))
+            assertFalse(sketch.downloadCache.exist(request.downloadCacheKey))
+        }
     }
 
     @Test

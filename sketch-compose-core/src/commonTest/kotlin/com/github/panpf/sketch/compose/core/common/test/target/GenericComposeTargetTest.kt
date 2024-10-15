@@ -2,6 +2,7 @@ package com.github.panpf.sketch.compose.core.common.test.target
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.asPainter
@@ -10,7 +11,9 @@ import com.github.panpf.sketch.painter.AnimatablePainter
 import com.github.panpf.sketch.painter.PainterWrapper
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.target.TestGenericComposeTarget
+import com.github.panpf.sketch.request.internal.OneShotRequestManager
+import com.github.panpf.sketch.request.internal.RequestManager
+import com.github.panpf.sketch.target.GenericComposeTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.createBitmap
 import kotlinx.coroutines.Dispatchers
@@ -201,5 +204,39 @@ class GenericComposeTargetTest {
         override fun isRunning(): Boolean {
             return running
         }
+    }
+}
+
+class TestGenericComposeTarget(override val fitScale: Boolean = true) : GenericComposeTarget() {
+
+    private var _painter: Painter? = null
+
+    private val requestManager = OneShotRequestManager()
+
+    override val painter: Painter?
+        get() = _painter
+
+    override fun setPainter(painter: Painter?) {
+        this._painter = painter
+    }
+
+    override fun getRequestManager(): RequestManager {
+        return requestManager
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        other as TestGenericComposeTarget
+        if (fitScale != other.fitScale) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return fitScale.hashCode()
+    }
+
+    override fun toString(): String {
+        return "TestComposeTarget(fitScale=$fitScale)"
     }
 }

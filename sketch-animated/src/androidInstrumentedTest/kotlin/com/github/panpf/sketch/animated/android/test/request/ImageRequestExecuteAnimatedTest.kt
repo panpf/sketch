@@ -28,7 +28,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.asOrNull
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import kotlin.test.Test
@@ -41,39 +41,40 @@ class ImageRequestExecuteAnimatedTest {
     fun testDisallowAnimatedImage() = runTest {
         if (VERSION.SDK_INT < VERSION_CODES.P) return@runTest
 
-        val (context, sketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
             components {
                 addDecoder(GifAnimatedDecoder.Factory())
             }
             httpStack(TestHttpStack(it))
+        }) { context, sketch ->
+            val imageUri = ResourceImages.animGif.uri
+            val request = ImageRequest(context, imageUri)
+
+            request.let { sketch.execute(it) }
+                .asOrNull<ImageResult.Success>()!!.apply {
+                    assertTrue(image.asOrNull<DrawableImage>()!!.drawable is AnimatableDrawable)
+                }
+
+            request.newRequest {
+                disallowAnimatedImage(false)
+            }.let { sketch.execute(it) }
+                .asOrNull<ImageResult.Success>()!!.apply {
+                    assertTrue(image.asOrNull<DrawableImage>()!!.drawable is AnimatableDrawable)
+                }
+
+            request.newRequest {
+                disallowAnimatedImage(null)
+            }.let { sketch.execute(it) }
+                .asOrNull<ImageResult.Success>()!!.apply {
+                    assertTrue(image.asOrNull<DrawableImage>()!!.drawable is AnimatableDrawable)
+                }
+
+            request.newRequest {
+                disallowAnimatedImage(true)
+            }.let { sketch.execute(it) }
+                .asOrNull<ImageResult.Success>()!!.apply {
+                    assertTrue(image.asOrNull<BitmapImage>() != null)
+                }
         }
-        val imageUri = ResourceImages.animGif.uri
-        val request = ImageRequest(context, imageUri)
-
-        request.let { sketch.execute(it) }
-            .asOrNull<ImageResult.Success>()!!.apply {
-                assertTrue(image.asOrNull<DrawableImage>()!!.drawable is AnimatableDrawable)
-            }
-
-        request.newRequest {
-            disallowAnimatedImage(false)
-        }.let { sketch.execute(it) }
-            .asOrNull<ImageResult.Success>()!!.apply {
-                assertTrue(image.asOrNull<DrawableImage>()!!.drawable is AnimatableDrawable)
-            }
-
-        request.newRequest {
-            disallowAnimatedImage(null)
-        }.let { sketch.execute(it) }
-            .asOrNull<ImageResult.Success>()!!.apply {
-                assertTrue(image.asOrNull<DrawableImage>()!!.drawable is AnimatableDrawable)
-            }
-
-        request.newRequest {
-            disallowAnimatedImage(true)
-        }.let { sketch.execute(it) }
-            .asOrNull<ImageResult.Success>()!!.apply {
-                assertTrue(image.asOrNull<BitmapImage>() != null)
-            }
     }
 }

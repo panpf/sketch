@@ -37,7 +37,7 @@ import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.block
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.util.IntColorFetcher
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
@@ -72,53 +72,54 @@ class ClickIgnoreSaveCellularTrafficAbilityTest {
 
     @Test
     fun test() = runTest {
-        val (_, sketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
             httpStack(TestHttpStack(it))
-        }
-        TestActivity::class.launchActivity().use { scenario ->
-            val activity = scenario.getActivitySync()
-            val imageView1: SketchImageView
-            withContext(Dispatchers.Main) {
-                val imageView = SketchImageView(activity).apply {
-                    setClickIgnoreSaveCellularTrafficEnabled(true)
-                    imageView1 = this
-                }
-                activity.setContentView(imageView)
-
-                ImageRequest(activity, TestHttpStack.testImages.first().uri) {
-                    components {
-                        addRequestInterceptor(
-                            SaveCellularTrafficRequestInterceptor(
-                                isCellularNetworkConnected = {
-                                    true
-                                }
-                            )
-                        )
+        }) { _, sketch ->
+            TestActivity::class.launchActivity().use { scenario ->
+                val activity = scenario.getActivitySync()
+                val imageView1: SketchImageView
+                withContext(Dispatchers.Main) {
+                    val imageView = SketchImageView(activity).apply {
+                        setClickIgnoreSaveCellularTrafficEnabled(true)
+                        imageView1 = this
                     }
-                    saveCellularTraffic(true)
-                    memoryCachePolicy(CachePolicy.DISABLED)
-                    resultCachePolicy(CachePolicy.DISABLED)
-                    downloadCachePolicy(CachePolicy.DISABLED)
-                    error(ConditionStateImage(ColorDrawableStateImage(IntColorFetcher(Color.RED))) {
-                        saveCellularTrafficError(ColorDrawableStateImage(IntColorFetcher(Color.YELLOW)))
-                    })
-                    target(imageView)
-                }.execute(sketch)
-            }
-            block(100)
-            assertEquals(
-                expected = Color.YELLOW,
-                actual = imageView1.drawable!!.asOrThrow<ColorDrawable>().color
-            )
+                    activity.setContentView(imageView)
 
-            withContext(Dispatchers.Main) {
-                imageView1.performClick()
+                    ImageRequest(activity, TestHttpStack.testImages.first().uri) {
+                        components {
+                            addRequestInterceptor(
+                                SaveCellularTrafficRequestInterceptor(
+                                    isCellularNetworkConnected = {
+                                        true
+                                    }
+                                )
+                            )
+                        }
+                        saveCellularTraffic(true)
+                        memoryCachePolicy(CachePolicy.DISABLED)
+                        resultCachePolicy(CachePolicy.DISABLED)
+                        downloadCachePolicy(CachePolicy.DISABLED)
+                        error(ConditionStateImage(ColorDrawableStateImage(IntColorFetcher(Color.RED))) {
+                            saveCellularTrafficError(ColorDrawableStateImage(IntColorFetcher(Color.YELLOW)))
+                        })
+                        target(imageView)
+                    }.execute(sketch)
+                }
+                block(100)
+                assertEquals(
+                    expected = Color.YELLOW,
+                    actual = imageView1.drawable!!.asOrThrow<ColorDrawable>().color
+                )
+
+                withContext(Dispatchers.Main) {
+                    imageView1.performClick()
+                }
+                block(1000)
+                assertTrue(
+                    actual = imageView1.drawable is BitmapDrawable,
+                    message = "drawable=${imageView1.drawable}"
+                )
             }
-            block(1000)
-            assertTrue(
-                actual = imageView1.drawable is BitmapDrawable,
-                message = "drawable=${imageView1.drawable}"
-            )
         }
     }
 }

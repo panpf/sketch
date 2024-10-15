@@ -1,6 +1,7 @@
-package com.github.panpf.sketch.target
+package com.github.panpf.sketch.test.utils
 
 import androidx.compose.ui.graphics.painter.Painter
+import com.github.panpf.sketch.target.ComposeTarget
 
 class TestComposeTarget : ComposeTarget {
 

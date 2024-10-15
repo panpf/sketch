@@ -40,10 +40,8 @@ class MyImagesHttpStack(val sketch: Sketch) : HttpStack {
         val fileName = url.toUri().authority
         val myImage = ResourceImages.values.find { it.resourceName == fileName } ?: throw IllegalArgumentException("Unknown image: $fileName")
         val request = ImageRequest(sketch.context, myImage.uri)
-        val fetchResult = sketch.components.newFetcherOrThrow(
-            request
-                .toRequestContext(sketch, Size.Empty)
-        ).fetch().getOrThrow()
+        val requestContext = request.toRequestContext(sketch, Size.Empty)
+        val fetchResult = sketch.components.newFetcherOrThrow(requestContext).fetch().getOrThrow()
         return MyImageResponse(url, fetchResult)
     }
 

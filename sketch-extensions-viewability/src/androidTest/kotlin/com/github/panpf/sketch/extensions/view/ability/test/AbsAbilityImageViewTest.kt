@@ -18,7 +18,7 @@ import com.github.panpf.sketch.test.singleton.request.execute
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.block
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
@@ -361,27 +361,28 @@ class AbsAbilityImageViewTest {
 
     @Test
     fun testRequestProgressListenerObserver() = runTest {
-        val (_, sketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
             httpStack(TestHttpStack(it))
-        }
-        ViewAbilityTestActivity::class.launchActivity().use { activityScenario ->
-            val activity = activityScenario.getActivitySync()
+        }) { _, sketch ->
+            ViewAbilityTestActivity::class.launchActivity().use { activityScenario ->
+                val activity = activityScenario.getActivitySync()
 
-            assertEquals(
-                expected = listOf(),
-                actual = activity.viewAbility.requestProgressListenerActions
-            )
+                assertEquals(
+                    expected = listOf(),
+                    actual = activity.viewAbility.requestProgressListenerActions
+                )
 
-            ImageRequest(activity, TestHttpStack.testImages.first().uri) {
-                target(activity.abilityView)
-                downloadCachePolicy(DISABLED)
-                resultCachePolicy(DISABLED)
-                memoryCachePolicy(DISABLED)
-            }.execute(sketch)
-            assertTrue(
-                actual = activity.viewAbility.requestProgressListenerActions.size > 0,
-                message = "size: ${activity.viewAbility.requestProgressListenerActions.size}"
-            )
+                ImageRequest(activity, TestHttpStack.testImages.first().uri) {
+                    target(activity.abilityView)
+                    downloadCachePolicy(DISABLED)
+                    resultCachePolicy(DISABLED)
+                    memoryCachePolicy(DISABLED)
+                }.execute(sketch)
+                assertTrue(
+                    actual = activity.viewAbility.requestProgressListenerActions.size > 0,
+                    message = "size: ${activity.viewAbility.requestProgressListenerActions.size}"
+                )
+            }
         }
     }
 

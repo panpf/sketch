@@ -3,6 +3,7 @@ package com.github.panpf.sketch.compose.core.common.test.transition
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import com.github.panpf.sketch.asImage
+import com.github.panpf.sketch.compose.core.common.test.target.TestGenericComposeTarget
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.painter.CrossfadePainter
@@ -14,7 +15,6 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
-import com.github.panpf.sketch.target.TestGenericComposeTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.createBitmap
 import com.github.panpf.sketch.test.utils.toRequestContext

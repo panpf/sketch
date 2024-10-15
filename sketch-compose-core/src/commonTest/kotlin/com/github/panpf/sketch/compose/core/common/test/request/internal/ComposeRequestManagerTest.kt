@@ -1,9 +1,9 @@
 package com.github.panpf.sketch.compose.core.common.test.request.internal
 
+import com.github.panpf.sketch.compose.core.common.test.target.TestGenericComposeTarget
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.ComposeRequestDelegate
 import com.github.panpf.sketch.request.internal.ComposeRequestManager
-import com.github.panpf.sketch.target.TestGenericComposeTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import kotlinx.coroutines.Job
 import kotlin.test.Test

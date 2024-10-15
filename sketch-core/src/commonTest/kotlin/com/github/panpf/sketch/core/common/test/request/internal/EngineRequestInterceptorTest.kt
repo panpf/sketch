@@ -22,7 +22,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestInterceptorChain
 import com.github.panpf.sketch.test.utils.TestHttpStack
-import com.github.panpf.sketch.test.utils.getTestContextAndNewSketch
+import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.asOrThrow
 import kotlinx.coroutines.Dispatchers
@@ -36,25 +36,25 @@ class EngineRequestInterceptorTest {
 
     @Test
     fun testIntercept() = runTest {
-        val (context, sketch) = getTestContextAndNewSketch {
+        runInNewSketchWithUse({
             httpStack(TestHttpStack(it))
+        }) { context, sketch ->
+            val executeRequest: suspend (ImageRequest) -> ImageData = { request ->
+                val chain = RequestInterceptorChain(
+                    requestContext = request.toRequestContext(sketch),
+                    interceptors = listOf(EngineRequestInterceptor()),
+                    index = 0,
+                )
+                withContext(Dispatchers.Main) {
+                    chain.proceed(request)
+                }.getOrThrow()
+            }
+
+            executeRequest(ImageRequest(context, ResourceImages.jpeg.uri)).asOrThrow<ImageData>()
+
+            executeRequest(ImageRequest(context, TestHttpStack.testImages.first().uri))
+                .asOrThrow<ImageData>()
         }
-
-        val executeRequest: suspend (ImageRequest) -> ImageData = { request ->
-            val chain = RequestInterceptorChain(
-                requestContext = request.toRequestContext(sketch),
-                interceptors = listOf(EngineRequestInterceptor()),
-                index = 0,
-            )
-            withContext(Dispatchers.Main) {
-                chain.proceed(request)
-            }.getOrThrow()
-        }
-
-        executeRequest(ImageRequest(context, ResourceImages.jpeg.uri)).asOrThrow<ImageData>()
-
-        executeRequest(ImageRequest(context, TestHttpStack.testImages.first().uri))
-            .asOrThrow<ImageData>()
     }
 
     @Test
