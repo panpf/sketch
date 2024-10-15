@@ -40,3 +40,7 @@ webpack.config.d/
 
 .kotlin/
 .run/iosSample.run.xml
+
+# Xcode
+*.xcuserstate
+**/xcuserdata
