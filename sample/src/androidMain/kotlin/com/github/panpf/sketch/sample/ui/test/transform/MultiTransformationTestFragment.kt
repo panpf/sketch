@@ -48,7 +48,7 @@ class MultiTransformationTestFragment :
         binding: FragmentTestTransformationMultiBinding,
         savedInstanceState: Bundle?
     ) {
-        viewModel.rotateData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+        viewModel.rotateData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             updateImage(binding)
             binding.degreesText.text = "$it"
         }
@@ -70,7 +70,7 @@ class MultiTransformationTestFragment :
             })
         }
 
-        viewModel.blurRadiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+        viewModel.blurRadiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             updateImage(binding)
             binding.blurValueText.text = "$it"
         }
@@ -92,13 +92,11 @@ class MultiTransformationTestFragment :
             })
         }
 
-        viewModel.roundedCornersRadiusData.repeatCollectWithLifecycle(
-            viewLifecycleOwner,
-            State.STARTED
-        ) {
-            updateImage(binding)
-            binding.roundedCornersRadiusText.text = "$it"
-        }
+        viewModel.roundedCornersRadiusData
+            .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
+                updateImage(binding)
+                binding.roundedCornersRadiusText.text = "$it"
+            }
         binding.roundedCornersSeekBar.apply {
             max = 100
             progress = viewModel.roundedCornersRadiusData.value
@@ -117,7 +115,7 @@ class MultiTransformationTestFragment :
             })
         }
 
-        viewModel.maskColorData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+        viewModel.maskColorData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             updateImage(binding)
         }
         binding.redButton.isChecked = true
@@ -156,7 +154,8 @@ class MultiTransformationTestFragment :
         private val _blurRadiusData = MutableStateFlow(30)
         val blurRadiusData: StateFlow<Int> = _blurRadiusData
 
-        private val _maskColorData = MutableStateFlow<Int?>(ColorUtils.setAlphaComponent(Color.RED, 128))
+        private val _maskColorData =
+            MutableStateFlow<Int?>(ColorUtils.setAlphaComponent(Color.RED, 128))
         val maskColorData: StateFlow<Int?> = _maskColorData
 
         private val _roundedCornersRadiusData = MutableStateFlow(30)

@@ -45,7 +45,7 @@ class RoundedCornersTransformationTestFragment :
         binding: FragmentTestTransformationRoundedCornersBinding,
         savedInstanceState: Bundle?
     ) {
-        viewModel.topLeftRadiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+        viewModel.topLeftRadiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             updateImage(binding)
             binding.topLeftRadiusText.text = "$it"
         }
@@ -67,7 +67,7 @@ class RoundedCornersTransformationTestFragment :
             })
         }
 
-        viewModel.topRightRadiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+        viewModel.topRightRadiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             updateImage(binding)
             binding.topRightRadiusText.text = "$it"
         }
@@ -89,10 +89,8 @@ class RoundedCornersTransformationTestFragment :
             })
         }
 
-        viewModel.bottomLeftRadiusData.repeatCollectWithLifecycle(
-            viewLifecycleOwner,
-            State.STARTED
-        ) {
+        viewModel.bottomLeftRadiusData
+            .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             updateImage(binding)
             binding.bottomLeftRadiusText.text = "$it"
         }
@@ -114,10 +112,8 @@ class RoundedCornersTransformationTestFragment :
             })
         }
 
-        viewModel.bottomRightRadiusData.repeatCollectWithLifecycle(
-            viewLifecycleOwner,
-            State.STARTED
-        ) {
+        viewModel.bottomRightRadiusData
+            .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             updateImage(binding)
             binding.bottomRightRadiusText.text = "$it"
         }

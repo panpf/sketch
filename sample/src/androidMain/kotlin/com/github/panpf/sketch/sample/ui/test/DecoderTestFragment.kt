@@ -69,7 +69,7 @@ class DecoderTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>(
     ) {
         toolbar.title = "Decoder"
 
-        viewModel.data.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+        viewModel.data.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             binding.pager.adapter = AssemblyFragmentStateAdapter(
                 fragment = this,
                 itemFactoryList = listOf(DecoderTestImageFragment.ItemFactory()),

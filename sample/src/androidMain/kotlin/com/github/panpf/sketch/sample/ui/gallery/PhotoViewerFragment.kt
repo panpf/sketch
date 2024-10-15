@@ -77,7 +77,7 @@ class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
         binding.zoomImage.apply {
             listOf(appSettings.scrollBarEnabled, photoPaletteViewModel.photoPaletteState)
                 .merge()
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     scrollBar = if (appSettings.scrollBarEnabled.value) {
                         ScrollBarSpec.Default.copy(color = photoPaletteViewModel.photoPaletteState.value.containerColorInt)
                     } else {
@@ -86,21 +86,21 @@ class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
                 }
             zoomable.apply {
                 appSettings.readModeEnabled
-                    .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                    .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                         readModeState.value = if (it) ReadMode.Default else null
                     }
                 appSettings.contentScaleName
-                    .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                    .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                         contentScaleState.value = ContentScaleCompat.valueOf(it)
                     }
                 appSettings.alignmentName
-                    .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                    .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                         alignmentState.value = AlignmentCompat.valueOf(it)
                     }
             }
             subsampling.apply {
                 appSettings.showTileBounds
-                    .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                    .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                         showTileBoundsState.value = it
                     }
             }
@@ -118,7 +118,7 @@ class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
             }
 
             appSettings.showOriginImage
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     loadImage(binding)
                 }
 
@@ -145,7 +145,7 @@ class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
                 }
             }
             zoomable.transformState
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     val zoomIn =
                         zoomable.getNextStepScale() > zoomable.transformState.value.scaleX
                     if (zoomIn) {
@@ -167,20 +167,19 @@ class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
             startImageInfoDialog(binding.zoomImage)
         }
 
-        photoPaletteViewModel.photoPaletteState.repeatCollectWithLifecycle(
-            owner = viewLifecycleOwner,
-            state = State.STARTED
-        ) { photoPalette ->
-            listOf(
-                binding.shareIcon,
-                binding.saveIcon,
-                binding.zoomIcon,
-                binding.rotateIcon,
-                binding.infoIcon
-            ).forEach {
-                it.background.asOrThrow<GradientDrawable>().setColor(photoPalette.containerColorInt)
+        photoPaletteViewModel.photoPaletteState
+            .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) { photoPalette ->
+                listOf(
+                    binding.shareIcon,
+                    binding.saveIcon,
+                    binding.zoomIcon,
+                    binding.rotateIcon,
+                    binding.infoIcon
+                ).forEach {
+                    it.background.asOrThrow<GradientDrawable>()
+                        .setColor(photoPalette.containerColorInt)
+                }
             }
-        }
     }
 
     private fun getImageUrl(): String {
@@ -197,7 +196,7 @@ class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
 
         binding.smallState.apply {
             binding.zoomImage.requestState.loadState
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     if (it is Error) {
                         error {
                             retryAction {

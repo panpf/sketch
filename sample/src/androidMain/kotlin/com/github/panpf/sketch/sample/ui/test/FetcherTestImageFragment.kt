@@ -38,7 +38,7 @@ class FetcherTestImageFragment : BaseBindingFragment<FragmentImageBinding>() {
 
         binding.smallState.apply {
             binding.myImage.requestState.loadState
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     if (it is Error) {
                         error {
                             retryAction {

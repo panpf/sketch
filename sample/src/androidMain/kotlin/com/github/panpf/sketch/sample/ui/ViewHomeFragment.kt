@@ -60,7 +60,7 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
 
         binding.playImage.apply {
             appSettings.disallowAnimatedImageInList
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     val iconResId = if (it) R.drawable.ic_play else R.drawable.ic_pause
                     setImageResource(iconResId)
                 }
@@ -73,7 +73,7 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
         binding.layoutImage.apply {
             val appSettings = context.appSettings
             appSettings.staggeredGridMode
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     val iconResId =
                         if (it) R.drawable.ic_layout_grid else R.drawable.ic_layout_grid_staggered
                     setImageResource(iconResId)

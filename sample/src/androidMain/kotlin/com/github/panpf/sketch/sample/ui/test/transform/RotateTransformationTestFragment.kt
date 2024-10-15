@@ -43,7 +43,7 @@ class RotateTransformationTestFragment :
         binding: FragmentTestTransformationRotateBinding,
         savedInstanceState: Bundle?
     ) {
-        viewModel.rotateData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+        viewModel.rotateData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             binding.myImage.loadImage(ResourceImages.statics.first().uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)

@@ -43,7 +43,7 @@ class BlurTransformationTestFragment :
         binding: FragmentTestTransformationBlurBinding,
         savedInstanceState: Bundle?
     ) {
-        viewModel.radiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+        viewModel.radiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             updateImage(binding = binding)
             binding.valueText.text = "$it"
         }
@@ -65,7 +65,7 @@ class BlurTransformationTestFragment :
             })
         }
 
-        viewModel.maskColorData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+        viewModel.maskColorData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             updateImage(binding = binding)
         }
         binding.noneButton1.isChecked = true
@@ -83,7 +83,7 @@ class BlurTransformationTestFragment :
         }
 
         viewModel.backgroundColorData
-            .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+            .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                 updateImage(binding = binding)
             }
         binding.noneButton2.isChecked = true

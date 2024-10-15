@@ -92,24 +92,22 @@ class PhotoPagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
             }
         }
 
-        binding.bgImage.requestState.loadState.repeatCollectWithLifecycle(
-            viewLifecycleOwner,
-            State.STARTED
-        ) {
-            if (it is LoadState.Success) {
-                photoPaletteViewModel.setPhotoPalette(
-                    PhotoPalette(
-                        palette = it.result.simplePalette,
-                        primaryColor = ResourcesCompat.getColor(
-                            resources, R.color.md_theme_primary, null
-                        ),
-                        primaryContainerColor = ResourcesCompat.getColor(
-                            resources, R.color.md_theme_primaryContainer, null
+        binding.bgImage.requestState.loadState
+            .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
+                if (it is LoadState.Success) {
+                    photoPaletteViewModel.setPhotoPalette(
+                        PhotoPalette(
+                            palette = it.result.simplePalette,
+                            primaryColor = ResourcesCompat.getColor(
+                                resources, R.color.md_theme_primary, null
+                            ),
+                            primaryContainerColor = ResourcesCompat.getColor(
+                                resources, R.color.md_theme_primaryContainer, null
+                            )
                         )
                     )
-                )
+                }
             }
-        }
 
         binding.pageNumberText.apply {
             val updateCurrentPageNumber: () -> Unit = {
@@ -128,7 +126,7 @@ class PhotoPagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
 
         binding.originImage.apply {
             appSettings.showOriginImage
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     setImageResource(if (it) R.drawable.ic_image2_baseline else R.drawable.ic_image2_outline)
                 }
 
@@ -153,19 +151,18 @@ class PhotoPagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
             findNavController().popBackStack()
         }
 
-        photoPaletteViewModel.photoPaletteState.repeatCollectWithLifecycle(
-            owner = viewLifecycleOwner,
-            state = State.STARTED
-        ) { photoPalette ->
-            listOf(
-                binding.backImage,
-                binding.settingsImage,
-                binding.originImage,
-                binding.pageNumberText
-            ).forEach {
-                it.background.asOrThrow<GradientDrawable>().setColor(photoPalette.containerColorInt)
+        photoPaletteViewModel.photoPaletteState
+            .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) { photoPalette ->
+                listOf(
+                    binding.backImage,
+                    binding.settingsImage,
+                    binding.originImage,
+                    binding.pageNumberText
+                ).forEach {
+                    it.background.asOrThrow<GradientDrawable>()
+                        .setColor(photoPalette.containerColorInt)
+                }
             }
-        }
     }
 
     private fun loadBgImage(binding: FragmentImagePagerBinding, imageUrl: String) {

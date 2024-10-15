@@ -24,7 +24,7 @@ class DecoderTestImageFragment : BaseBindingFragment<FragmentImageBinding>() {
 
     override fun onViewCreated(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
         viewModel.data
-            .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { list ->
+            .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) { list ->
                 val testItem = list[args.position]
                 if ((testItem.currentApi ?: 0) >= (testItem.minAPI ?: 0)) {
                     binding.myImage.apply {
@@ -44,10 +44,7 @@ class DecoderTestImageFragment : BaseBindingFragment<FragmentImageBinding>() {
 
                     binding.smallState.apply {
                         binding.myImage.requestState.loadState
-                            .repeatCollectWithLifecycle(
-                                viewLifecycleOwner,
-                                State.STARTED
-                            ) {
+                            .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                                 if (it is Error) {
                                     error {
                                         retryAction {

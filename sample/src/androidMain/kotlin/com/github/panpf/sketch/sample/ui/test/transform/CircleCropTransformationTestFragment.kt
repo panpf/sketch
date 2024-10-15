@@ -47,7 +47,7 @@ class CircleCropTransformationTestFragment :
         binding: FragmentTestTransformationCircleCropBinding,
         savedInstanceState: Bundle?
     ) {
-        viewModel.scaleData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+        viewModel.scaleData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             binding.startButton.isChecked = it == START_CROP
             binding.centerButton.isChecked = it == CENTER_CROP
             binding.endButton.isChecked = it == END_CROP

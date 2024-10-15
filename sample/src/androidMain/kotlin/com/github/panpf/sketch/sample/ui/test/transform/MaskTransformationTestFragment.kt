@@ -43,7 +43,7 @@ class MaskTransformationTestFragment :
         binding: FragmentTestTransformationMaskBinding,
         savedInstanceState: Bundle?
     ) {
-        viewModel.maskColorData.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+        viewModel.maskColorData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             binding.redButton.isChecked = it == MaskTransformationTestViewModel.MaskColor.RED
             binding.greenButton.isChecked = it == MaskTransformationTestViewModel.MaskColor.GREEN
             binding.blueButton.isChecked = it == MaskTransformationTestViewModel.MaskColor.BLUE

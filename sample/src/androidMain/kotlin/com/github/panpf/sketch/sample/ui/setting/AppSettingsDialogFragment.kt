@@ -48,12 +48,10 @@ class AppSettingsDialogFragment : BaseBindingDialogFragment<FragmentRecyclerBind
                     ListSeparatorItemFactory(),
                 )
             ).apply {
-                viewModel.menuListData.repeatCollectWithLifecycle(
-                    owner = viewLifecycleOwner,
-                    state = State.STARTED
-                ) {
-                    submitList(it)
-                }
+                viewModel.menuListData
+                    .repeatCollectWithLifecycle(owner = viewLifecycleOwner, state = State.CREATED) {
+                        submitList(it)
+                    }
             }
         }
     }

@@ -95,7 +95,7 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
             }
         )).apply {
             videoListViewModel.pagingFlow
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     submitData(it)
                 }
         }
@@ -112,7 +112,7 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
         }
 
         pagingAdapter.loadStateFlow
-            .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+            .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                 when (val refreshState = it.refresh) {
                     is LoadState.Loading -> {
                         binding.state.gone()

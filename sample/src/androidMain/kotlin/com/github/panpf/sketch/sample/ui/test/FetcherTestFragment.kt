@@ -48,7 +48,7 @@ class FetcherTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>(
     ) {
         toolbar.title = "Fetcher"
 
-        viewModel.data.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) { data ->
+        viewModel.data.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) { data ->
             val imageFromData = data ?: return@repeatCollectWithLifecycle
             val images = imageFromData.map { it.imageUri }
 

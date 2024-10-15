@@ -70,7 +70,7 @@ class ProgressIndicatorTestFragment :
             viewModel.action()
         }
 
-        viewModel.modelState.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+        viewModel.modelState.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             setupModel(binding, it)
         }
         binding.progressRadioButton.setOnCheckedChangeListener { _, isChecked ->
@@ -96,12 +96,12 @@ class ProgressIndicatorTestFragment :
                 viewModel.shortStepState
             ),
             transform = { it.joinToString() }
-        ).repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+        ).repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             setupProgressIndicator(binding)
         }
         binding.hiddenIndeterminateCheckBox.apply {
             viewModel.hiddenWhenIndeterminateState
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     isChecked = it
                 }
             setOnCheckedChangeListener { _, isChecked ->
@@ -110,7 +110,7 @@ class ProgressIndicatorTestFragment :
         }
         binding.hiddenCompletedCheckBox.apply {
             viewModel.hiddenWhenCompletedState
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     isChecked = it
                 }
             setOnCheckedChangeListener { _, isChecked ->
@@ -119,7 +119,7 @@ class ProgressIndicatorTestFragment :
         }
         binding.shortStepCheckBox.apply {
             viewModel.shortStepState
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+                .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     isChecked = it
                 }
             setOnCheckedChangeListener { _, isChecked ->
@@ -127,25 +127,23 @@ class ProgressIndicatorTestFragment :
             }
         }
 
-        viewModel.runningState.repeatCollectWithLifecycle(viewLifecycleOwner, State.STARTED) {
+        viewModel.runningState.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             binding.actionButton.text = if (it) "Stop" else "Start"
         }
 
-        viewModel.progressState.repeatCollectWithLifecycle(
-            viewLifecycleOwner,
-            State.STARTED
-        ) { progress ->
-            val request = ImageRequest(requireContext(), "http://sample.com/sample.jpeg")
-            val totalLength: Long = 100
-            val progress1 =
-                com.github.panpf.sketch.request.Progress(100, (progress * totalLength).toLong())
-            binding.image1.progressIndicatorAbility
-                .onUpdateRequestProgress(request, progress1)
-            binding.image2.progressIndicatorAbility
-                .onUpdateRequestProgress(request, progress1)
-            binding.image3.progressIndicatorAbility
-                .onUpdateRequestProgress(request, progress1)
-        }
+        viewModel.progressState
+            .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) { progress ->
+                val request = ImageRequest(requireContext(), "http://sample.com/sample.jpeg")
+                val totalLength: Long = 100
+                val progress1 =
+                    com.github.panpf.sketch.request.Progress(100, (progress * totalLength).toLong())
+                binding.image1.progressIndicatorAbility
+                    .onUpdateRequestProgress(request, progress1)
+                binding.image2.progressIndicatorAbility
+                    .onUpdateRequestProgress(request, progress1)
+                binding.image3.progressIndicatorAbility
+                    .onUpdateRequestProgress(request, progress1)
+            }
     }
 
     private fun setupModel(

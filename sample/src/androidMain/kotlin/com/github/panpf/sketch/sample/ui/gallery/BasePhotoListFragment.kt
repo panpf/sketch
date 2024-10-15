@@ -58,7 +58,7 @@ abstract class BasePhotoListFragment :
             appSettings.staggeredGridMode
                 .repeatCollectWithLifecycle(
                     viewLifecycleOwner,
-                    Lifecycle.State.STARTED
+                    Lifecycle.State.CREATED
                 ) { staggeredGridMode ->
                     val (layoutManager1, itemDecoration) =
                         newLayoutManagerAndItemDecoration(staggeredGridMode)
