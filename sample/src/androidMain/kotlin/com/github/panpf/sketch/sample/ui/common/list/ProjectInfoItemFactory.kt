@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.sample.ui.common.link
+package com.github.panpf.sketch.sample.ui.common.list
 
 import android.content.Context
 import com.github.panpf.sketch.sample.databinding.ListItemProjectInfoBinding

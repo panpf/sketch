@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.sample.util
 
+import com.github.panpf.sketch.decode.Decoder
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind.EXACTLY_ONCE
@@ -68,3 +69,5 @@ inline fun <T> T.ifLet(predicate: Boolean, block: (T) -> T): T {
     }
     return if (predicate) block(this) else this
 }
+
+expect fun platformGifDecoders(): List<Decoder.Factory>

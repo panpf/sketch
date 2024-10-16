@@ -5,10 +5,10 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_container_rounded_primary"
     android:minWidth="100dp"
-    android:minHeight="100dp">
+    android:minHeight="80dp">
 
     <TextView
-        android:id="@+id/linkTitleText"
+        android:id="@+id/titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

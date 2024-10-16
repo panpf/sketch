@@ -213,6 +213,18 @@
         app:popExitAnim="@anim/nav_pop_exit" />
 
     <fragment
+        android:id="@+id/animatedImageTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.AnimatedImageTestFragment"
+        android:label="AnimatedImageTestFragment" />
+    <action
+        android:id="@+id/action_animatedImageTestFragment"
+        app:destination="@id/animatedImageTestFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+
+    <fragment
         android:id="@+id/shareElementTestFragment"
         android:name="com.github.panpf.sketch.sample.ui.test.ShareElementTestFragment"
         android:label="ProgressIndicatorTestFragment" />

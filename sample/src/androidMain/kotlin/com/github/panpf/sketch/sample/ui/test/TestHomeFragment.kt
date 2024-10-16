@@ -14,10 +14,11 @@ import com.github.panpf.assemblyadapter.recycler.divider.Divider
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.model.Link
+import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
-import com.github.panpf.sketch.sample.ui.common.link.LinkItemFactory
-import com.github.panpf.sketch.sample.ui.common.link.ProjectInfoItemFactory
-import com.github.panpf.sketch.sample.ui.common.list.GridSeparatorItemFactory
+import com.github.panpf.sketch.sample.ui.common.list.ProjectInfoItemFactory
+import com.github.panpf.sketch.sample.ui.common.list.TestGroupItemFactory
+import com.github.panpf.sketch.sample.ui.common.list.TestItemItemFactory
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 
 class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
@@ -41,16 +42,17 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
             layoutManager = AssemblyGridLayoutManager.Builder(requireContext(), 2).apply {
                 itemSpanByItemFactory(
                     ProjectInfoItemFactory::class to ItemSpan.fullSpan(),
-                    GridSeparatorItemFactory::class to ItemSpan.fullSpan(),
+                    TestGroupItemFactory::class to ItemSpan.fullSpan(),
                 )
             }.build()
             adapter = AssemblyRecyclerAdapter(
                 itemFactoryList = listOf(
-                    LinkItemFactory().setOnItemClickListener { _, _, _, _, data ->
-                        startLink(data)
-                    },
+                    TestItemItemFactory()
+                        .setOnItemClickListener { _, _, _, _, data ->
+                            startLink(data)
+                        },
                     ProjectInfoItemFactory(),
-                    GridSeparatorItemFactory(),
+                    TestGroupItemFactory(),
                 ),
                 initDataList = pageList()
             )
@@ -64,31 +66,39 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
     }
 
     private fun pageList(): List<Any> = listOf(
-        Link(
-            title = "AnimatablePlaceholder",
-            navDirections = NavMainDirections.actionAnimatablePlaceholderTestViewFragment(),
-        ),
-        Link(
-            title = "DisplayInsanity",
-            navDirections = NavMainDirections.actionInsanityTestViewFragment()
-        ),
+        ListSeparator("Components"),
         Link(
             title = "Decoder",
             navDirections = NavMainDirections.actionDecoderTestPagerFragment()
-        ),
-        Link(
-            title = "ExifOrientation",
-            navDirections = NavMainDirections.actionExifOrientationTestPagerFragment()
         ),
         Link(
             title = "Fetcher",
             navDirections = NavMainDirections.actionFetcherTestFragment(),
             permissions = listOf(permission.READ_EXTERNAL_STORAGE)
         ),
+
+        ListSeparator("Functions"),
         Link(
-            title = "Local Videos",
-            navDirections = NavMainDirections.actionLocalVideoListFragment(),
-            permissions = listOf(permission.READ_EXTERNAL_STORAGE)
+            title = "AnimatedImage",
+            navDirections = NavMainDirections.actionAnimatedImageTestFragment()
+        ),
+        Link(
+            title = "ExifOrientation",
+            navDirections = NavMainDirections.actionExifOrientationTestPagerFragment()
+        ),
+        Link(
+            title = "Transformation",
+            navDirections = NavMainDirections.actionTransformationTestPagerFragment()
+        ),
+
+        ListSeparator("UI"),
+        Link(
+            title = "AnimatablePlaceholder",
+            navDirections = NavMainDirections.actionAnimatablePlaceholderTestViewFragment(),
+        ),
+        Link(
+            title = "IconDrawable",
+            navDirections = NavMainDirections.actionIconDrawableTestFragment()
         ),
         Link(
             title = "ProgressIndicator",
@@ -98,20 +108,23 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
             title = "RemoteViews",
             navDirections = NavMainDirections.actionRemoteViewsFragment()
         ),
+
+        ListSeparator("Other"),
+        Link(
+            title = "DisplayInsanity",
+            navDirections = NavMainDirections.actionInsanityTestViewFragment()
+        ),
+        Link(
+            title = "Local Videos",
+            navDirections = NavMainDirections.actionLocalVideoListFragment(),
+            permissions = listOf(permission.READ_EXTERNAL_STORAGE)
+        ),
 //        Link(
 //            title = "ShareElement",
 //            navDirections = NavMainDirections.actionShareElementTestFragment(),
 //        ),
         Link(
-            title = "Transformation",
-            navDirections = NavMainDirections.actionTransformationTestPagerFragment()
-        ),
-        Link(
-            title = "IconDrawable",
-            navDirections = NavMainDirections.actionIconDrawableTestFragment()
-        ),
-        Link(
-            title = "Temp",
+            title = "Android Temp",
             navDirections = NavMainDirections.actionTempTestFragment()
         ),
         "ProjectInfo"

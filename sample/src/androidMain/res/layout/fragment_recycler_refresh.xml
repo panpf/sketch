@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical"
-            tools:listitem="@layout/list_item_link" />
+            tools:listitem="@layout/list_item_test_item" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.github.panpf.sketch.sample.ui.widget.StateView

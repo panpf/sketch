@@ -37,7 +37,6 @@ import com.github.panpf.sketch.sample.ui.components.AutoLinkText
 import com.github.panpf.sketch.sample.util.Platform
 import com.github.panpf.sketch.sample.util.current
 import com.github.panpf.sketch.sample.util.isMobile
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
 expect fun platformTestScreens(): List<TestItem>
@@ -45,19 +44,34 @@ expect fun platformTestScreens(): List<TestItem>
 @Composable
 fun TestPage() {
     val testItems = remember {
-        listOf(
-            TestItem("AnimatablePlaceholder", AnimatablePlaceholderTestScreen()),
-            TestItem("Decoder", DecoderTestScreen()),
-            TestItem("DisplayInsanity", DisplayInsanityTestScreen()),
-            TestItem("ExifOrientation", ExifOrientationTestScreen()),
-            TestItem("Fetcher", FetcherTestScreen()),
-            TestItem("ProgressIndicator", ProgressIndicatorTestScreen()),
-            TestItem("Transformation", TransformationTestScreen()),
-            TestItem("IconPainter", IconPainterTestScreen()),
-            TestItem("Preview", PreviewTestScreen()),
-            TestItem("Temp", TempTestScreen()),
-            // TODO Animated related parameter testing
-        ).plus(platformTestScreens())
+        buildList {
+            add(TestGroup("Components"))
+            add(TestItem("Decoder", DecoderTestScreen()))
+            add(TestItem("Fetcher", FetcherTestScreen()))
+
+            add(TestGroup("Functions"))
+            add(TestItem("AnimatedImage", AnimatedImageTestScreen()))
+            add(TestItem("ExifOrientation", ExifOrientationTestScreen()))
+            add(TestItem("Transformation", TransformationTestScreen()))
+
+            add(TestGroup("UI"))
+            add(TestItem("AnimatablePlaceholder", AnimatablePlaceholderTestScreen()))
+            add(TestItem("IconPainter", IconPainterTestScreen()))
+            add(TestItem("Preview", PreviewTestScreen()))
+            add(TestItem("ProgressIndicator", ProgressIndicatorTestScreen()))
+
+            val platformTestScreens = platformTestScreens()
+            if (platformTestScreens.isNotEmpty()) {
+                add(TestGroup("Platform"))
+                addAll(platformTestScreens)
+            }
+
+            add(TestGroup("Other"))
+            add(TestItem("DisplayInsanity", DisplayInsanityTestScreen()))
+            add(TestItem("Temp", TempTestScreen()))
+
+            add(ProjectInfo)
+        }
     }
     val gridState = rememberLazyGridState()
     LazyVerticalGrid(
@@ -70,22 +84,44 @@ fun TestPage() {
     ) {
         items(
             count = testItems.size,
-            key = { testItems[it].title },
-            contentType = { 1 },
+            key = {
+                when (val data = testItems[it]) {
+                    is TestItem -> data.title
+                    is TestGroup -> data.title
+                    is ProjectInfo -> data.toString()
+                    else -> throw IllegalArgumentException("Unknown data type: $data")
+                }
+            },
+            span = {
+                when (val data = testItems[it]) {
+                    is TestItem -> GridItemSpan(1)
+                    is TestGroup -> GridItemSpan(maxLineSpan)
+                    is ProjectInfo -> GridItemSpan(maxLineSpan)
+                    else -> throw IllegalArgumentException("Unknown data type: $data")
+                }
+            },
+            contentType = {
+                when (val data = testItems[it]) {
+                    is TestItem -> 1
+                    is TestGroup -> 2
+                    is ProjectInfo -> 3
+                    else -> throw IllegalArgumentException("Unknown data type: $data")
+                }
+            },
         ) { index ->
-            TestGridItem(testItems[index])
-        }
-        item(
-            key = "ProjectInfo",
-            span = { GridItemSpan(this.maxLineSpan) },
-            contentType = 2
-        ) {
-            ProjectInfoItem()
+            when (val data = testItems[index]) {
+                is TestItem -> TestGridItem(data)
+                is TestGroup -> TestGroupItem(data)
+                is ProjectInfo -> ProjectInfoItem()
+                else -> throw IllegalArgumentException("Unknown data type: $data")
+            }
         }
     }
 }
 
 data class TestItem(val title: String, val screen: Screen)
+
+data class TestGroup(val title: String)
 
 @Composable
 fun TestGridItem(item: TestItem) {
@@ -94,7 +130,7 @@ fun TestGridItem(item: TestItem) {
     Box(
         modifier = Modifier
             .widthIn(100.dp, 1000.dp)
-            .heightIn(100.dp, 1000.dp)
+            .heightIn(80.dp, 1000.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(colorScheme.primaryContainer)
             .clickable { navigator.push(item.screen) }
@@ -110,13 +146,29 @@ fun TestGridItem(item: TestItem) {
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
+@Composable
+fun TestGroupItem(group: TestGroup) {
+    Text(
+        text = group.title,
+        color = MaterialTheme.colorScheme.onSurface,
+        fontSize = 18.sp,
+        modifier = Modifier.padding(top = 16.dp)
+    )
+}
+
+data object ProjectInfo {
+    override fun toString(): String {
+        return "ProjectInfo"
+    }
+}
+
 @Composable
 fun ProjectInfoItem() {
     val colorScheme = MaterialTheme.colorScheme
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(top = 50.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(colorScheme.primaryContainer)
             .padding(16.dp),

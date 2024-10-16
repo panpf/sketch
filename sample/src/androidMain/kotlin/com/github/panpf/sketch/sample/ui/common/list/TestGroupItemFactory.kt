@@ -32,24 +32,24 @@
 package com.github.panpf.sketch.sample.ui.common.list
 
 import android.content.Context
-import com.github.panpf.sketch.sample.databinding.GridItemSeparatorBinding
+import com.github.panpf.sketch.sample.databinding.ListItemTestGroupBinding
 import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 
-class GridSeparatorItemFactory :
-    BaseBindingItemFactory<ListSeparator, GridItemSeparatorBinding>(ListSeparator::class) {
+class TestGroupItemFactory :
+    BaseBindingItemFactory<ListSeparator, ListItemTestGroupBinding>(ListSeparator::class) {
 
     override fun initItem(
         context: Context,
-        binding: GridItemSeparatorBinding,
-        item: BindingItem<ListSeparator, GridItemSeparatorBinding>
+        binding: ListItemTestGroupBinding,
+        item: BindingItem<ListSeparator, ListItemTestGroupBinding>
     ) {
     }
 
     override fun bindItemData(
         context: Context,
-        binding: GridItemSeparatorBinding,
-        item: BindingItem<ListSeparator, GridItemSeparatorBinding>,
+        binding: ListItemTestGroupBinding,
+        item: BindingItem<ListSeparator, ListItemTestGroupBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: ListSeparator

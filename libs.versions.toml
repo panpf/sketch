@@ -24,6 +24,7 @@ appdirs = "1.2.2"
 cashapp-paging = "3.3.0-alpha02-0.5.1"
 ffmpegMediaMetadataRetriever = "1.0.16"
 google-material = "1.12.0"
+google-flexbox = "3.0.0"
 
 jetbrains-compose = "1.6.11"
 jetbrains-lifecycle = "2.8.0"
@@ -98,6 +99,7 @@ cashapp-paging-compose-common = { module = "app.cash.paging:paging-compose-commo
 ffmpegMediaMetadataRetriever-core = { module = "com.github.wseemann:FFmpegMediaMetadataRetriever-core", version.ref = "ffmpegMediaMetadataRetriever" }
 ffmpegMediaMetadataRetriever-native = { module = "com.github.wseemann:FFmpegMediaMetadataRetriever-native", version.ref = "ffmpegMediaMetadataRetriever" }
 google-material = { module = "com.google.android.material:material", version.ref = "google-material" }
+google-flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "google-flexbox" }
 
 jetbrains-lifecycle-common = { module = "org.jetbrains.androidx.lifecycle:lifecycle-common", version.ref = "jetbrains-lifecycle" }
 

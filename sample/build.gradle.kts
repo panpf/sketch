@@ -98,6 +98,7 @@ kotlin {
             implementation(libs.androidx.recyclerview)
             implementation(libs.androidx.swiperefreshlayout)
             implementation(libs.google.material)
+            implementation(libs.google.flexbox)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktor.client.android)
             implementation(libs.moko.permissions)

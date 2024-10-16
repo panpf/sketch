@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.sample.ui.common.link
+package com.github.panpf.sketch.sample.ui.common.list
 
 import android.content.Context
-import com.github.panpf.sketch.sample.databinding.ListItemLinkBinding
+import com.github.panpf.sketch.sample.databinding.ListItemTestItemBinding
 import com.github.panpf.sketch.sample.model.Link
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 
-class LinkItemFactory : BaseBindingItemFactory<Link, ListItemLinkBinding>(Link::class) {
+class TestItemItemFactory : BaseBindingItemFactory<Link, ListItemTestItemBinding>(Link::class) {
 
     override fun initItem(
         context: Context,
-        binding: ListItemLinkBinding,
-        item: BindingItem<Link, ListItemLinkBinding>
+        binding: ListItemTestItemBinding,
+        item: BindingItem<Link, ListItemTestItemBinding>
     ) {
     }
 
     override fun bindItemData(
         context: Context,
-        binding: ListItemLinkBinding,
-        item: BindingItem<Link, ListItemLinkBinding>,
+        binding: ListItemTestItemBinding,
+        item: BindingItem<Link, ListItemTestItemBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
         data: Link
     ) {
-        binding.linkTitleText.text = data.title
+        binding.titleText.text = data.title
     }
 }
