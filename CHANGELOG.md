@@ -26,6 +26,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
   frame. [#212](https://github.com/panpf/sketch/issues/212)
 * fix: Fixed the bug that GifDrawable and MovieDrawable could not correctly apply
   animatedTransformation. [#214](https://github.com/panpf/sketch/issues/214)
+* fix: Fixed the bug that the repeatCount setting of GifDrawableDecoder should be increased by 1 by
+  mistake. [#215](https://github.com/panpf/sketch/issues/215)
 * remove: Remove ComposeBitmapImage
 * remove: Remove Image.getPixels()
 * change: SkiaBitmapImage is now cached in the memory cache on non-Android platforms, not

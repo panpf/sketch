@@ -160,7 +160,7 @@ class GifDrawableDecoderTest {
             )
             val gifDrawable =
                 ((image.getDrawableOrThrow() as AnimatableDrawable).drawable as GifDrawableWrapperDrawable).gifDrawable
-            assertEquals(expected = 3, actual = gifDrawable.loopCount)
+            assertEquals(expected = 4, actual = gifDrawable.loopCount)
             assertNotNull(actual = gifDrawable.transform)
             gifDrawable.transform!!.onDraw(Canvas(), null, null)
         }

@@ -33,7 +33,6 @@ import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.animatable2CompatCallbackOf
 import com.github.panpf.sketch.request.animatedTransformation
@@ -127,8 +126,7 @@ class GifDrawableDecoder(
         })
         val request = requestContext.request
         val gifDrawable = gifInfoHandleHelper.createGifDrawable().apply {
-            loopCount =
-                (request.repeatCount ?: ANIMATION_REPEAT_INFINITE).takeIf { it != -1 } ?: 0
+            loopCount = request.repeatCount?.let { it + 1 }?.coerceAtLeast(0) ?: 0
 
             // Set the animated transformation to be applied on each frame.
             val transformation = request.animatedTransformation

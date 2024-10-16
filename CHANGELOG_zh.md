@@ -22,6 +22,8 @@
   bug。 [#212](https://github.com/panpf/sketch/issues/212)
 * fix: 修复 GifDrawable 和 MovieDrawable 无法正确应用 animatedTransformation 的
   bug。 [#214](https://github.com/panpf/sketch/issues/214)
+* fix: 修复 GifDrawableDecoder 的 repeatCount 设置错误应该加 1 的
+  bug。 [#215](https://github.com/panpf/sketch/issues/215)
 * remove: 移除 ComposeBitmapImage
 * remove: 删除 Image.getPixels()
 * change: 现在非安卓平台上内存缓存中缓存的是 SkiaBitmapImage，不再是 ComposeBitmapImage
