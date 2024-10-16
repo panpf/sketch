@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_container_rounded_primary"
+    android:layout_marginTop="50dp"
     android:padding="16dp">
 
     <androidx.appcompat.widget.AppCompatImageView
