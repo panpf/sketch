@@ -172,7 +172,7 @@ Sketch.Builder(context).apply {
 }.build()
 
 // Register for a single ImageRequest when loading an image
-ImageRequest(context, "file:///sdcard/sample.mp4") {
+ImageRequest(context, "https://example.com/image.jpg") {
     components {
         addDecodeInterceptor(MyDecodeInterceptor())
     }
@@ -186,14 +186,68 @@ ImageRequest(context, "file:///sdcard/sample.mp4") {
      method and return a new [DecodeResult]
 > 3. If you don’t want to execute the request anymore, just don’t execute the proceed method.
 
-## Decoding Related Properties
+## Decoding Properties
 
-* ImageRequest.colorType(BitmapColorSpace): Sets the color type of the bitmap. Available on all
-  platforms
-* ImageRequest.colorSpace(BitmapColorSpace): Set the color space of the bitmap. Available on all
-  platforms
-* ImageRequest.preferQualityOverSpeed(Boolean): Set quality priority decoding mode. Available only
-  on Android platform
+### BitmapColorType
+
+BitmapColorType is used to set the color type of the bitmap. The optional values are:
+
+* FixedColorType: always use the specified color type
+* LowQualityColorType: Prioritize low-quality color types
+    * jpeg images on the Android platform use RGB_565, and other values use the default value.
+    * jpeg and webp images on non-Android platforms use RGB_565, others use ARGB_4444
+* HighQualityColorType: Give priority to high-quality color types
+    * On the Android platform, API 26 and above use RGBA_F16, and others use the default value.
+    * Always use RGBA_F16 on non-Android platforms
+
+Example:
+
+```kotlin
+ImageRequest(context, "https://example.com/image.jpg") {
+    // Use specified color type on Android platform
+    colorType(Bitmap.Config.RGB_565)
+
+    // Use specified color type on non-Android platforms
+    colorType(ColorType.RGBA_F16)
+
+    // Prioritize lower quality color types
+    colorType(LowQualityColorType)
+
+    // Prioritize high-quality color types
+    colorType(HighQualityColorType)
+}
+```
+
+### BitmapColorSpace
+
+BitmapColorSpace is used to set the color space of the bitmap. The optional values are:
+
+* FixedColorSpace: Always use the specified color space
+
+Example:
+
+```kotlin
+ImageRequest(context, "https://example.com/image.jpg") {
+    // Use specified color space on Android platform
+    colorSpace(ColorSpace.Named.DISPLAY_P3)
+
+    // Use specified color space on non-Android platforms
+    colorSpace(ColorSpace.displayP3)
+}
+```
+
+### preferQualityOverSpeed
+
+preferQualityOverSpeed is used to set quality priority when decoding. It can only be used on the
+Android platform.
+
+Example:
+
+```kotlin
+ImageRequest(context, "https://example.com/image.jpg") {
+    preferQualityOverSpeed(true)
+}
+```
 
 [comment]: <> (classs)
 

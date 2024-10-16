@@ -163,7 +163,7 @@ Sketch.Builder(context).apply {
 }.build()
 
 // 加载图片时为单个 ImageRequest 注册
-ImageRequest(context, "file:///sdcard/sample.mp4") {
+ImageRequest(context, "https://example.com/image.jpg") {
     components {
         addDecodeInterceptor(MyDecodeInterceptor())
     }
@@ -175,13 +175,67 @@ ImageRequest(context, "file:///sdcard/sample.mp4") {
 > 2. 如果你想修改返回结果，就拦截 proceed 方法返回的结果，返回一个新的 [DecodeResult] 即可
 > 3. 如果想不再执行请求只需不执行 proceed 方法即可
 
-## 解码相关属性
+## 解码属性
 
-[//]: # (TODO Each decoding related attribute is introduced separately)
+### BitmapColorType
 
-* ImageRequest.colorType(BitmapColorType): 设置位图的颜色类型。全平台可用
-* ImageRequest.colorSpace(BitmapColorSpace): 设置位图的色彩空间。全平台可用
-* ImageRequest.preferQualityOverSpeed(Boolean): 设置质量优先解码模式。仅 Android 平台可用
+BitmapColorType 用于设置位图的颜色类型，可选值有：
+
+* FixedColorType：始终使用指定的颜色类型
+* LowQualityColorType：优先使用低质量的颜色类型
+  * Android 平台上 jpeg 图片使用 RGB_565，其它使用默认值
+  * 非 Android 平台上 jpeg 和 webp 图片使用 RGB_565，其它使用 ARGB_4444
+* HighQualityColorType：优先使用高质量的颜色类型
+  * Android 平台上 API 26 以上使用 RGBA_F16，其它使用默认值
+  * 非 Android 平台上始终使用 RGBA_F16
+
+示例：
+
+```kotlin
+ImageRequest(context, "https://example.com/image.jpg") {
+  // 在 Android 平台上使用指定的颜色类型
+  colorType(Bitmap.Config.RGB_565)
+
+  // 在非 Android 平台上使用指定的颜色类型
+  colorType(ColorType.RGBA_F16)
+
+  // 优先使用低质量的颜色类型
+  colorType(LowQualityColorType)
+
+  // 优先使用高质量的颜色类型
+  colorType(HighQualityColorType)
+}
+```
+
+### BitmapColorSpace
+
+BitmapColorSpace 用于设置位图的颜色空间，可选值有：
+
+* FixedColorSpace：始终使用指定的颜色空间
+
+示例：
+
+```kotlin
+ImageRequest(context, "https://example.com/image.jpg") {
+  // 在 Android 平台上使用指定的颜色空间
+  colorSpace(ColorSpace.Named.DISPLAY_P3)
+
+  // 在非 Android 平台上使用指定的颜色空间
+  colorSpace(ColorSpace.displayP3)
+}
+```
+
+### preferQualityOverSpeed
+
+preferQualityOverSpeed 用于设置质量优先解码时质量优先，只能在 Android 平台使用。
+
+示例：
+
+```kotlin
+ImageRequest(context, "https://example.com/image.jpg") {
+  preferQualityOverSpeed(true)
+}
+```
 
 [comment]: <> (classs)
 
