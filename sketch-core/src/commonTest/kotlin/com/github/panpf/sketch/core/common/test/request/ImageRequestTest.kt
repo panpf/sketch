@@ -162,7 +162,7 @@ class ImageRequestTest {
             assertNull(listener)
             assertNull(progressListener)
         }.newBuilder {
-            registerListener(
+            addListener(
                 onStart = { request: ImageRequest ->
 
                 },
@@ -176,7 +176,7 @@ class ImageRequestTest {
 
                 },
             )
-            registerProgressListener { _, _ ->
+            addProgressListener { _, _ ->
 
             }
         }.build().apply {
@@ -216,7 +216,7 @@ class ImageRequestTest {
             assertNull(listener)
             assertNull(progressListener)
         }.newRequest {
-            registerListener(
+            addListener(
                 onStart = { request: ImageRequest ->
 
                 },
@@ -230,7 +230,7 @@ class ImageRequestTest {
 
                 },
             )
-            registerProgressListener { _, _ ->
+            addProgressListener { _, _ ->
 
             }
         }.apply {
@@ -1365,41 +1365,41 @@ class ImageRequestTest {
         val listener3 = object : Listener {}
 
         ImageRequest(context1, uri) {
-            registerListener(listener1)
+            addListener(listener1)
         }.apply {
             assertEquals(listener1, listener)
             assertNull(target)
         }
         ImageRequest(context1, uri) {
-            registerListener(listener1)
-            registerListener(listener2)
+            addListener(listener1)
+            addListener(listener2)
         }.apply {
             assertEquals(Listeners(listOf(listener1, listener2)), listener)
             assertNull(target)
         }
         ImageRequest(context1, uri) {
-            registerListener(listener1)
-            registerListener(listener2)
-            registerListener(listener3)
+            addListener(listener1)
+            addListener(listener2)
+            addListener(listener3)
         }.apply {
             assertEquals(Listeners(listOf(listener1, listener2, listener3)), listener)
             assertNull(target)
         }
         ImageRequest(context1, uri) {
-            registerListener(listener1)
-            registerListener(listener2)
-            registerListener(listener3)
-            unregisterListener(listener2)
+            addListener(listener1)
+            addListener(listener2)
+            addListener(listener3)
+            removeListener(listener2)
         }.apply {
             assertEquals(Listeners(listOf(listener1, listener3)), listener)
             assertNull(target)
         }
         ImageRequest(context1, uri) {
-            registerListener(listener1)
-            registerListener(listener2)
-            registerListener(listener3)
-            unregisterListener(listener2)
-            unregisterListener(listener1)
+            addListener(listener1)
+            addListener(listener2)
+            addListener(listener3)
+            removeListener(listener2)
+            removeListener(listener1)
         }.apply {
             assertEquals(listener3, listener)
             assertNull(target)
@@ -1415,7 +1415,7 @@ class ImageRequestTest {
         }
         ImageRequest(context1, uri) {
             target(listenerTarget)
-            registerListener(listener1)
+            addListener(listener1)
         }.apply {
             assertEquals(
                 PairListener(first = listener1, second = listenerTarget.myListener),
@@ -1425,8 +1425,8 @@ class ImageRequestTest {
         }
         ImageRequest(context1, uri) {
             target(listenerTarget)
-            registerListener(listener1)
-            registerListener(listener2)
+            addListener(listener1)
+            addListener(listener2)
         }.apply {
             assertEquals(
                 PairListener(
@@ -1438,7 +1438,7 @@ class ImageRequestTest {
         }
 
         ImageRequest(context1, uri) {
-            registerListener(
+            addListener(
                 onStart = {},
                 onCancel = {},
                 onError = { _, _ -> },
@@ -1448,25 +1448,25 @@ class ImageRequestTest {
             assertNull(target)
         }
         ImageRequest(context1, uri) {
-            registerListener(onStart = {})
+            addListener(onStart = {})
         }.apply {
             assertTrue(listener is Listener)
             assertNull(target)
         }
         ImageRequest(context1, uri) {
-            registerListener(onCancel = {})
+            addListener(onCancel = {})
         }.apply {
             assertTrue(listener is Listener)
             assertNull(target)
         }
         ImageRequest(context1, uri) {
-            registerListener(onError = { _, _ -> })
+            addListener(onError = { _, _ -> })
         }.apply {
             assertTrue(listener is Listener)
             assertNull(target)
         }
         ImageRequest(context1, uri) {
-            registerListener(onSuccess = { _, _ -> })
+            addListener(onSuccess = { _, _ -> })
         }.apply {
             assertTrue(listener is Listener)
             assertNull(target)
@@ -1487,22 +1487,22 @@ class ImageRequestTest {
         val listener3 = ProgressListener { _, _ -> }
 
         ImageRequest(context1, uri) {
-            registerProgressListener(listener1)
+            addProgressListener(listener1)
         }.apply {
             assertEquals(listener1, progressListener)
             assertNull(target)
         }
         ImageRequest(context1, uri) {
-            registerProgressListener(listener1)
-            registerProgressListener(listener2)
+            addProgressListener(listener1)
+            addProgressListener(listener2)
         }.apply {
             assertEquals(ProgressListeners(listOf(listener1, listener2)), progressListener)
             assertNull(target)
         }
         ImageRequest(context1, uri) {
-            registerProgressListener(listener1)
-            registerProgressListener(listener2)
-            registerProgressListener(listener3)
+            addProgressListener(listener1)
+            addProgressListener(listener2)
+            addProgressListener(listener3)
         }.apply {
             assertEquals(
                 ProgressListeners(listOf(listener1, listener2, listener3)),
@@ -1511,20 +1511,20 @@ class ImageRequestTest {
             assertNull(target)
         }
         ImageRequest(context1, uri) {
-            registerProgressListener(listener1)
-            registerProgressListener(listener2)
-            registerProgressListener(listener3)
-            unregisterProgressListener(listener2)
+            addProgressListener(listener1)
+            addProgressListener(listener2)
+            addProgressListener(listener3)
+            removeProgressListener(listener2)
         }.apply {
             assertEquals(ProgressListeners(listOf(listener1, listener3)), progressListener)
             assertNull(target)
         }
         ImageRequest(context1, uri) {
-            registerProgressListener(listener1)
-            registerProgressListener(listener2)
-            registerProgressListener(listener3)
-            unregisterProgressListener(listener2)
-            unregisterProgressListener(listener1)
+            addProgressListener(listener1)
+            addProgressListener(listener2)
+            addProgressListener(listener3)
+            removeProgressListener(listener2)
+            removeProgressListener(listener1)
         }.apply {
             assertEquals(listener3, progressListener)
             assertNull(target)
@@ -1540,7 +1540,7 @@ class ImageRequestTest {
         }
         ImageRequest(context1, uri) {
             target(listenerTarget)
-            registerProgressListener(listener1)
+            addProgressListener(listener1)
         }.apply {
             assertEquals(
                 PairProgressListener(
@@ -1552,8 +1552,8 @@ class ImageRequestTest {
         }
         ImageRequest(context1, uri) {
             target(listenerTarget)
-            registerProgressListener(listener1)
-            registerProgressListener(listener2)
+            addProgressListener(listener1)
+            addProgressListener(listener2)
         }.apply {
             assertEquals(
                 PairProgressListener(
@@ -1695,10 +1695,10 @@ class ImageRequestTest {
 
         val scopeActions = listOfNotNull<ScopeAction<ImageRequest.Builder>>(
             ScopeAction {
-                registerListener(onStart = {})
+                addListener(onStart = {})
             },
             ScopeAction {
-                registerProgressListener { _, _ -> }
+                addProgressListener { _, _ -> }
             },
             ScopeAction {
                 defaultOptions(ImageOptions {
@@ -1817,8 +1817,8 @@ class ImageRequestTest {
         val testLifecycle = TestLifecycle()
         ImageRequest(context, "http://sample.com/sample.jpeg") {
             target(testTarget)
-            registerListener(testListener)
-            registerProgressListener(testProgressListener)
+            addListener(testListener)
+            addProgressListener(testProgressListener)
             lifecycle(testLifecycle)
 
             depth(LOCAL, "test")

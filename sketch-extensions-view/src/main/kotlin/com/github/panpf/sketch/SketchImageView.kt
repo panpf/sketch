@@ -49,8 +49,8 @@ open class SketchImageView @JvmOverloads constructor(
         @Suppress("LeakingThis")
         imageOptions = parseSketchImageViewXmlAttributes(context, attrs)
         @Suppress("LeakingThis")
-        registerListener(requestState)
-        registerProgressListener(requestState)
+        addListener(requestState)
+        addProgressListener(requestState)
     }
 
     override fun getListener(): Listener? {
@@ -76,7 +76,7 @@ open class SketchImageView @JvmOverloads constructor(
     /**
      * Register a Listener to listen for the loading process of the image
      */
-    fun registerListener(listener: Listener) {
+    fun addListener(listener: Listener) {
         listeners = (listeners?.list?.toMutableList() ?: mutableListOf())
             .apply { add(listener) }
             .takeIf { it.isNotEmpty() }
@@ -86,7 +86,7 @@ open class SketchImageView @JvmOverloads constructor(
     /**
      * Unregister a Listener
      */
-    fun unregisterListener(listener: Listener) {
+    fun removeListener(listener: Listener) {
         listeners = listeners?.list?.toMutableList()
             ?.apply { remove(listener) }
             ?.takeIf { it.isNotEmpty() }
@@ -96,7 +96,7 @@ open class SketchImageView @JvmOverloads constructor(
     /**
      * Register a ProgressListener to listen progress of the image loading
      */
-    fun registerProgressListener(listener: ProgressListener) {
+    fun addProgressListener(listener: ProgressListener) {
         progressListeners = (progressListeners?.list?.toMutableList() ?: mutableListOf())
             .apply { add(listener) }
             .takeIf { it.isNotEmpty() }
@@ -106,7 +106,7 @@ open class SketchImageView @JvmOverloads constructor(
     /**
      * Unregister a ProgressListener
      */
-    fun unregisterProgressListener(listener: ProgressListener) {
+    fun removeProgressListener(listener: ProgressListener) {
         progressListeners = progressListeners?.list?.toMutableList()
             ?.apply { remove(listener) }
             ?.takeIf { it.isNotEmpty() }

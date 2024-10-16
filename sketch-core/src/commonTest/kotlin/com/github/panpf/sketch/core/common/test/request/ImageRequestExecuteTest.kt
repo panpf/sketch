@@ -1275,7 +1275,7 @@ class ImageRequestExecuteTest {
             assertEquals(listOf(), listenerSupervisor.callbackActionList)
 
             ImageRequest(context, imageUri) {
-                registerListener(listenerSupervisor)
+                addListener(listenerSupervisor)
             }.let { request ->
                 sketch.execute(request)
             }
@@ -1289,7 +1289,7 @@ class ImageRequestExecuteTest {
             assertEquals(listOf(), listenerSupervisor.callbackActionList)
 
             ImageRequest(context, errorImageUri) {
-                registerListener(listenerSupervisor)
+                addListener(listenerSupervisor)
             }.let { request ->
                 sketch.execute(request)
             }
@@ -1303,7 +1303,7 @@ class ImageRequestExecuteTest {
         ImageRequest(context, ResourceImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
-            registerListener(listenerSupervisor)
+            addListener(listenerSupervisor)
         }.let { request ->
             deferred = async {
                 sketch.execute(request)
@@ -1327,7 +1327,7 @@ class ImageRequestExecuteTest {
                     memoryCachePolicy(DISABLED)
                     resultCachePolicy(DISABLED)
                     downloadCachePolicy(DISABLED)
-                    registerProgressListener(listenerSupervisor)
+                    addProgressListener(listenerSupervisor)
                 }.let { request ->
                     sketch.execute(request)
                 }
@@ -1455,7 +1455,7 @@ class ImageRequestExecuteTest {
             ImageRequest(context, ResourceImages.jpeg.uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
-                registerListener(listenerSupervisor)
+                addListener(listenerSupervisor)
                 target(testTarget)
             }.let { request ->
                 deferred = async {
@@ -1476,7 +1476,7 @@ class ImageRequestExecuteTest {
             ImageRequest(context, ResourceImages.jpeg.uri + ".fake") {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
-                registerListener(listenerSupervisor)
+                addListener(listenerSupervisor)
                 error(FakeStateImage())
                 target(testTarget)
             }.let { request ->

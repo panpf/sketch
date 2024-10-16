@@ -483,14 +483,14 @@ class AsyncImageStateTest {
         }
         assertNull(throwable)
 
-        // registerListener is not allowed
+        // addListener is not allowed
         throwable = null
         runComposeUiTest {
             setContent {
                 remember { asyncImageState }
                 asyncImageState.sketch = sketch
                 asyncImageState.request = ImageRequest(context, ResourceImages.jpeg.uri) {
-                    registerListener(
+                    addListener(
                         onStart = {
 
                         },
@@ -504,14 +504,14 @@ class AsyncImageStateTest {
         }
         assertTrue(actual = throwable is IllegalArgumentException, message = "throwable=$throwable")
 
-        // registerProgressListener is not allowed
+        // addProgressListener is not allowed
         throwable = null
         runComposeUiTest {
             setContent {
                 remember { asyncImageState }
                 asyncImageState.sketch = sketch
                 asyncImageState.request = ImageRequest(context, ResourceImages.jpeg.uri) {
-                    registerProgressListener { _, _ -> }
+                    addProgressListener { _, _ -> }
                 }
                 asyncImageState.contentScale = ContentScale.Fit
                 asyncImageState.filterQuality = DrawScope.DefaultFilterQuality

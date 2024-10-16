@@ -413,8 +413,8 @@ class CoreUtilsTest {
     fun testImageRequestDifference() {
         val context = getTestContext()
         val request = ImageRequest(context, ResourceImages.jpeg.uri) {
-            registerListener(object : Listener {})
-            registerProgressListener { _, _ -> }
+            addListener(object : Listener {})
+            addProgressListener { _, _ -> }
             target(TestTarget())
             lifecycle(TestLifecycle())
             depth(depth = Depth.LOCAL, from = "test")
@@ -478,7 +478,7 @@ class CoreUtilsTest {
             )
         }
         request.newRequest {
-            registerListener(object : Listener {})
+            addListener(object : Listener {})
         }.apply {
             assertEquals(
                 expected = "listener different: '${request.listener}' vs '${this@apply.listener}'",
@@ -486,7 +486,7 @@ class CoreUtilsTest {
             )
         }
         request.newRequest {
-            registerProgressListener { _, _ -> }
+            addProgressListener { _, _ -> }
         }.apply {
             assertEquals(
                 expected = "progressListener different: '${request.progressListener}' vs '${this@apply.progressListener}'",

@@ -43,6 +43,8 @@
 * change: 移除 AndroidBitmap、SkiBitmap、SkiaImageInfo、SkiaImage、SkiaRect，ComposeImagePainter 重命名为
   ImageBitmapPainter、SkiaAnimatedImage 重命名为 AnimatedImage、SkiaAnimatedImagePainter 重命名为
   AnimatedImagePainter
+* change: ImageRequest 的 registerListener 和 registerProgressListener 方法重命名为 addListener 和
+  addProgressListener
 * improve: 改进 IconDrawable，支持有固定大小的 background 并且限制 icon 必须有固定尺寸或指定 iconSize
 * improve: 改进 IconPainter，支持有固定大小的 background 并且限制 icon 必须有固定尺寸或指定 iconSize
 * new: 非安卓平台现在也支持 ColorType 了

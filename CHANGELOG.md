@@ -51,6 +51,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * change: Removed AndroidBitmap, SkiBitmap, SkiaImageInfo, SkiaImage, SkiaRect, and renamed
   ComposeImagePainter to ImageBitmapPainter, SkiaAnimatedImage renamed to AnimatedImage,
   SkiaAnimatedImagePainter renamed to AnimatedImagePainter
+* change: ImageRequest's registerListener and registerProgressListener methods renamed to
+  addListener and addProgressListener
 * improve: Improve IconDrawable, support fixed-size background and restrict icons to have fixed
   sizes or specify iconSize
 * improve: Improve IconPainter, support fixed-size background and restrict icons to have fixed

@@ -48,8 +48,8 @@ open class AbsStateZoomImageView @JvmOverloads constructor(
 
     init {
         @Suppress("LeakingThis")
-        registerListener(requestState)
-        registerProgressListener(requestState)
+        addListener(requestState)
+        addProgressListener(requestState)
     }
 
     override fun getListener(): Listener? {
@@ -72,28 +72,28 @@ open class AbsStateZoomImageView @JvmOverloads constructor(
         }
     }
 
-    fun registerListener(listener: Listener) {
+    fun addListener(listener: Listener) {
         listeners = (listeners?.list?.toMutableList() ?: mutableListOf())
             .apply { add(listener) }
             .takeIf { it.isNotEmpty() }
             ?.let { Listeners(it.toList()) }
     }
 
-    fun unregisterListener(listener: Listener) {
+    fun removeListener(listener: Listener) {
         listeners = listeners?.list?.toMutableList()
             ?.apply { remove(listener) }
             ?.takeIf { it.isNotEmpty() }
             ?.let { Listeners(it.toList()) }
     }
 
-    fun registerProgressListener(listener: ProgressListener) {
+    fun addProgressListener(listener: ProgressListener) {
         progressListeners = (progressListeners?.list?.toMutableList() ?: mutableListOf())
             .apply { add(listener) }
             .takeIf { it.isNotEmpty() }
             ?.let { ProgressListeners(it.toList()) }
     }
 
-    fun unregisterProgressListener(listener: ProgressListener) {
+    fun removeProgressListener(listener: ProgressListener) {
         progressListeners = progressListeners?.list?.toMutableList()
             ?.apply { remove(listener) }
             ?.takeIf { it.isNotEmpty() }

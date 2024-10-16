@@ -131,7 +131,7 @@ class SketchImageViewTest {
         val listener1 = object : Listener {}
         val listener2 = object : Listener {}
 
-        sketchImageView.registerListener(listener1)
+        sketchImageView.addListener(listener1)
         sketchImageView.getListener()!!.apply {
             assertTrue(this is Listeners)
             assertEquals(
@@ -140,7 +140,7 @@ class SketchImageViewTest {
             )
         }
 
-        sketchImageView.unregisterListener(listener2)
+        sketchImageView.removeListener(listener2)
         sketchImageView.getListener()!!.apply {
             assertTrue(this is Listeners)
             assertEquals(
@@ -149,7 +149,7 @@ class SketchImageViewTest {
             )
         }
 
-        sketchImageView.registerListener(listener2)
+        sketchImageView.addListener(listener2)
         sketchImageView.getListener()!!.apply {
             assertTrue(this is Listeners)
             assertEquals(
@@ -174,7 +174,7 @@ class SketchImageViewTest {
             )
         }
 
-        sketchImageView.unregisterListener(listener1)
+        sketchImageView.removeListener(listener1)
         sketchImageView.getListener()!!.apply {
             assertTrue(this is PairListener)
             assertEquals(
@@ -187,7 +187,7 @@ class SketchImageViewTest {
             )
         }
 
-        sketchImageView.unregisterListener(listener2)
+        sketchImageView.removeListener(listener2)
         sketchImageView.getListener()!!.apply {
             assertTrue(this is PairListener)
             assertEquals(
@@ -226,7 +226,7 @@ class SketchImageViewTest {
         val listener1 = ProgressListener { _, _ -> }
         val listener2 = ProgressListener { _, _ -> }
 
-        sketchImageView.registerProgressListener(listener1)
+        sketchImageView.addProgressListener(listener1)
         sketchImageView.getProgressListener()!!.apply {
             assertTrue(this is ProgressListeners)
             assertEquals(
@@ -235,7 +235,7 @@ class SketchImageViewTest {
             )
         }
 
-        sketchImageView.unregisterProgressListener(listener2)
+        sketchImageView.removeProgressListener(listener2)
         sketchImageView.getProgressListener()!!.apply {
             assertTrue(this is ProgressListeners)
             assertEquals(
@@ -244,7 +244,7 @@ class SketchImageViewTest {
             )
         }
 
-        sketchImageView.registerProgressListener(listener2)
+        sketchImageView.addProgressListener(listener2)
         sketchImageView.getProgressListener()!!.apply {
             assertTrue(this is ProgressListeners)
             assertEquals(
@@ -269,7 +269,7 @@ class SketchImageViewTest {
             )
         }
 
-        sketchImageView.unregisterProgressListener(listener1)
+        sketchImageView.removeProgressListener(listener1)
         sketchImageView.getProgressListener()!!.apply {
             assertTrue(this is PairProgressListener)
             assertEquals(
@@ -282,7 +282,7 @@ class SketchImageViewTest {
             )
         }
 
-        sketchImageView.unregisterProgressListener(listener2)
+        sketchImageView.removeProgressListener(listener2)
         sketchImageView.getProgressListener()!!.apply {
             assertTrue(this is PairProgressListener)
             assertEquals(

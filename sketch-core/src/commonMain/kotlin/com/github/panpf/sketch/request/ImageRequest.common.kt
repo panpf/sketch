@@ -304,22 +304,22 @@ data class ImageRequest(
         /**
          * Add the [Listener] to set
          */
-        fun registerListener(
+        fun addListener(
             listener: Listener
         ): Builder = apply {
-            definedRequestOptionsBuilder.registerListener(listener)
+            definedRequestOptionsBuilder.addListener(listener)
         }
 
         /**
          * Add the [Listener] to set
          */
         @Suppress("unused")
-        inline fun registerListener(
+        inline fun addListener(
             crossinline onStart: (request: ImageRequest) -> Unit = {},
             crossinline onCancel: (request: ImageRequest) -> Unit = {},
             crossinline onError: (request: ImageRequest, result: ImageResult.Error) -> Unit = { _, _ -> },
             crossinline onSuccess: (request: ImageRequest, result: ImageResult.Success) -> Unit = { _, _ -> }
-        ): Builder = registerListener(object :
+        ): Builder = addListener(object :
             Listener {
             override fun onStart(request: ImageRequest) = onStart(request)
             override fun onCancel(request: ImageRequest) = onCancel(request)
@@ -335,28 +335,28 @@ data class ImageRequest(
         /**
          * Remove the [Listener] from set
          */
-        fun unregisterListener(
+        fun removeListener(
             listener: Listener
         ): Builder = apply {
-            definedRequestOptionsBuilder.unregisterListener(listener)
+            definedRequestOptionsBuilder.removeListener(listener)
         }
 
         /**
          * Add the [ProgressListener] to set
          */
-        fun registerProgressListener(
+        fun addProgressListener(
             progressListener: ProgressListener
         ): Builder = apply {
-            definedRequestOptionsBuilder.registerProgressListener(progressListener)
+            definedRequestOptionsBuilder.addProgressListener(progressListener)
         }
 
         /**
          * Remove the [ProgressListener] from set
          */
-        fun unregisterProgressListener(
+        fun removeProgressListener(
             progressListener: ProgressListener
         ): Builder = apply {
-            definedRequestOptionsBuilder.unregisterProgressListener(progressListener)
+            definedRequestOptionsBuilder.removeProgressListener(progressListener)
         }
 
         /**

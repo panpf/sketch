@@ -46,7 +46,7 @@ class SketchAndroidTest {
         val imageView = ImageView(context)
         val listenerSupervisor4 = ListenerSupervisor()
         val request4 = ImageRequest(imageView, ResourceImages.jpeg.uri) {
-            registerListener(listenerSupervisor4)
+            addListener(listenerSupervisor4)
             lifecycle(GlobalLifecycle)
         }
         val result4 = try {

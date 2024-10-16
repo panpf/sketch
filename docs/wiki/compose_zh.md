@@ -154,7 +154,6 @@ when (painterState) {
     is Loading -> {}
     is Success -> {}
     is Error -> {}
-    is Empty -> {}
 }
 val painter: Painter? = state.painter
 
@@ -165,12 +164,13 @@ state.restart()
 ### listener/progressListener
 
 在使用 [AsyncImage]、[SubcomposeAsyncImage] 以及 [AsyncImagePainter] 时你不能调用 [ImageRequest] 的
-listener()、progressListener() 方法，这会导致 App 崩溃
+addListener()、addProgressListener() 方法，这会导致 App 崩溃
 
 原因是 [Listener]、[ProgressListener] 在使用的时候时都大部分情况下都是直接 new 一个新的实例，这会导致
 [ImageRequest] 的 equals 结果是 false 而触发重组，从而降低性能
 
-因此你必须用 [AsyncImageState] 的 loadState 和 progress 属性来代替 listener()、progressListener()
+因此你必须用 [AsyncImageState] 的 loadState 和 progress 属性来代替 addListener()
+、addProgressListener()
 
 ## Target
 

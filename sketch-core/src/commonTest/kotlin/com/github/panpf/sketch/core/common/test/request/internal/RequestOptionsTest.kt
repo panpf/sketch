@@ -23,8 +23,8 @@ class RequestOptionsTest {
         val progressListener1 = ProgressListenerSupervisor()
         val lifecycle1 = LifecycleResolver(TestLifecycle())
         RequestOptions.Builder().apply {
-            registerListener(listener1)
-            registerProgressListener(progressListener1)
+            addListener(listener1)
+            addProgressListener(progressListener1)
             lifecycle(lifecycle1)
         }.build().apply {
             assertEquals(expected = listener1, actual = listener)
@@ -33,11 +33,11 @@ class RequestOptionsTest {
         }
 
         RequestOptions.Builder().apply {
-            registerListener(listener1)
-            registerProgressListener(progressListener1)
+            addListener(listener1)
+            addProgressListener(progressListener1)
             lifecycle(lifecycle1)
-            unregisterListener(listener1)
-            unregisterProgressListener(progressListener1)
+            removeListener(listener1)
+            removeProgressListener(progressListener1)
             lifecycle(null)
         }.build().apply {
             assertEquals(expected = null, actual = listener)
@@ -60,8 +60,8 @@ class RequestOptionsTest {
             assertEquals(expected = null, actual = progressListener)
             assertEquals(expected = null, actual = lifecycleResolver)
         }.newBuilder().apply {
-            registerListener(listener1)
-            registerProgressListener(progressListener1)
+            addListener(listener1)
+            addProgressListener(progressListener1)
             lifecycle(lifecycle1)
         }.build().apply {
             assertEquals(expected = listener1, actual = listener)

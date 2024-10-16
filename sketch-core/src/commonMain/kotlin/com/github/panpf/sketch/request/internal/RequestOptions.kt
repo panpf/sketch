@@ -64,7 +64,7 @@ data class RequestOptions(
         /**
          * Add the [Listener] to set
          */
-        fun registerListener(
+        fun addListener(
             listener: Listener
         ): Builder = apply {
             val listeners = listeners
@@ -77,7 +77,7 @@ data class RequestOptions(
         /**
          * Remove the [Listener] from set
          */
-        fun unregisterListener(
+        fun removeListener(
             listener: Listener
         ): Builder = apply {
             listeners?.remove(listener)
@@ -86,7 +86,7 @@ data class RequestOptions(
         /**
          * Add the [ProgressListener] to set
          */
-        fun registerProgressListener(
+        fun addProgressListener(
             progressListener: ProgressListener
         ): Builder = apply {
             val progressListeners =
@@ -99,7 +99,7 @@ data class RequestOptions(
         /**
          * Remove the [ProgressListener] from set
          */
-        fun unregisterProgressListener(
+        fun removeProgressListener(
             progressListener: ProgressListener
         ): Builder = apply {
             progressListeners?.remove(progressListener)

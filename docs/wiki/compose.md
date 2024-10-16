@@ -161,7 +161,6 @@ when (painterState) {
     is Loading -> {}
     is Success -> {}
     is Error -> {}
-    is Empty -> {}
 }
 val painter: Painter? = state.painter
 
@@ -172,14 +171,14 @@ state.restart()
 ### listener/progressListener
 
 When using [AsyncImage], [SubcomposeAsyncImage] and [AsyncImagePainter], you cannot
-call [ImageRequest] listener(), progressListener() methods, which will cause the app to crash
+call [ImageRequest] addListener(), addProgressListener() methods, which will cause the app to crash
 
 The reason is that when using [Listener] and [ProgressListener], in most cases, they directly new a
 new instance, which will cause The equals result of [ImageRequest] is false and triggers
 reorganization, thus reducing performance
 
 Therefore you must use the loadState and progress properties of [AsyncImageState] instead of
-listener(), progressListener()
+addListener(), addProgressListener()
 
 ## Target
 

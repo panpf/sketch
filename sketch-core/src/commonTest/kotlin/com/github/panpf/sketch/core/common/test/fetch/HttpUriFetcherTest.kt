@@ -296,7 +296,7 @@ class HttpUriFetcherTest {
             val testUri = TestHttpStack.testImages.first()
             val progressList = mutableListOf<Long>()
             val request = ImageRequest(context, testUri.uri) {
-                registerProgressListener { _, progress ->
+                addProgressListener { _, progress ->
                     progressList.add(progress.completedLength)
                 }
             }
@@ -334,7 +334,7 @@ class HttpUriFetcherTest {
             val progressList = mutableListOf<Long>()
             val request = ImageRequest(context, testUri.uri) {
                 downloadCachePolicy(CachePolicy.DISABLED)
-                registerProgressListener { _, progress ->
+                addProgressListener { _, progress ->
                     progressList.add(progress.completedLength)
                 }
             }
@@ -367,7 +367,7 @@ class HttpUriFetcherTest {
             val progressList = mutableListOf<Long>()
             val request = ImageRequest(context, testUri.uri) {
                 downloadCachePolicy(CachePolicy.DISABLED)
-                registerProgressListener { _, progress ->
+                addProgressListener { _, progress ->
                     progressList.add(progress.completedLength)
                 }
             }
@@ -397,7 +397,7 @@ class HttpUriFetcherTest {
         }) { context, sketch ->
             val progressList = mutableListOf<Long>()
             val request = ImageRequest(context, "http://error.com/sample.jpeg") {
-                registerProgressListener { _, progress ->
+                addProgressListener { _, progress ->
                     progressList.add(progress.completedLength)
                 }
             }
@@ -422,7 +422,7 @@ class HttpUriFetcherTest {
         }) { context, sketch ->
             val progressList = mutableListOf<Long>()
             val request = ImageRequest(context, TestHttpStack.errorImage.uri) {
-                registerProgressListener { _, progress ->
+                addProgressListener { _, progress ->
                     progressList.add(progress.completedLength)
                 }
             }
@@ -448,7 +448,7 @@ class HttpUriFetcherTest {
             val progressList = mutableListOf<Long>()
             val testUri = TestHttpStack.chunkedErrorImage
             val request = ImageRequest(context, testUri.uri) {
-                registerProgressListener { _, progress ->
+                addProgressListener { _, progress ->
                     progressList.add(progress.completedLength)
                 }
             }
@@ -473,7 +473,7 @@ class HttpUriFetcherTest {
             val progressList = mutableListOf<Long>()
             val testUri = TestHttpStack.lengthErrorImage
             val request = ImageRequest(context, testUri.uri) {
-                registerProgressListener { _, progress ->
+                addProgressListener { _, progress ->
                     progressList.add(progress.completedLength)
                 }
             }
@@ -504,7 +504,7 @@ class HttpUriFetcherTest {
             val testUri = TestHttpStack.lengthErrorImage
             val request = ImageRequest(context, testUri.uri) {
                 downloadCachePolicy(CachePolicy.DISABLED)
-                registerProgressListener { _, progress ->
+                addProgressListener { _, progress ->
                     progressList.add(progress.completedLength)
                 }
             }

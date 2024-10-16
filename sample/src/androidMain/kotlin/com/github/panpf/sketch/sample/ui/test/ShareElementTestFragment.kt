@@ -46,7 +46,7 @@ class ShareElementTestFragment : BaseBindingFragment<FragmentTestShareElementBin
             Log.i("ShareElementTest", "$id. loadImage")
             postponeEnterTransition(100, MILLISECONDS)
             loadImage(ResourceImages.jpeg.uri) {
-                registerListener(
+                addListener(
                     onSuccess = { _, _ ->
                         startPostponedEnterTransition()
                     },

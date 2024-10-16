@@ -62,12 +62,12 @@ class RequestKeysTest {
         verifyKey(uri + _size + _precision + _scale)
 
         request = request.newRequest {
-            registerListener(onStart = {})
+            addListener(onStart = {})
         }
         verifyKey(uri + _size + _precision + _scale)
 
         request = request.newRequest {
-            registerProgressListener { _, _ -> }
+            addProgressListener { _, _ -> }
         }
         verifyKey(uri + _size + _precision + _scale)
 
@@ -283,12 +283,12 @@ class RequestKeysTest {
         verifyCacheKey(uri + _size + _precision + _scale)
 
         request = request.newRequest {
-            registerListener(onStart = {})
+            addListener(onStart = {})
         }
         verifyCacheKey(uri + _size + _precision + _scale)
 
         request = request.newRequest {
-            registerProgressListener { _, _ -> }
+            addProgressListener { _, _ -> }
         }
         verifyCacheKey(uri + _size + _precision + _scale)
 

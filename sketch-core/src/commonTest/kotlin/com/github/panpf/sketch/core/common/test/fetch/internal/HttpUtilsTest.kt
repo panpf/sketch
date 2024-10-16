@@ -34,7 +34,7 @@ class HttpUtilsTest {
                     sink = sink,
                     content = content,
                     request = ImageRequest(context, "http://sample.com/sample.jpeg") {
-                        registerProgressListener(progressListener)
+                        addProgressListener(progressListener)
                     },
                     contentLength = string.length.toLong(),
                     bufferSize = ceil(string.length / 3f).toInt(),
@@ -74,7 +74,7 @@ class HttpUtilsTest {
                     sink = sink,
                     content = content,
                     request = ImageRequest(context, "http://sample.com/sample.jpeg") {
-                        registerProgressListener(progressListener)
+                        addProgressListener(progressListener)
                     },
                     bufferSize = ceil(string.length / 3f).toInt(),
                     contentLength = 0
@@ -95,7 +95,7 @@ class HttpUtilsTest {
                     sink = sink,
                     content = content,
                     request = ImageRequest(context, "http://sample.com/sample.jpeg") {
-                        registerProgressListener(progressListener)
+                        addProgressListener(progressListener)
                     },
                     bufferSize = ceil(string.length / 3f).toInt(),
                     contentLength = string.length.toLong()

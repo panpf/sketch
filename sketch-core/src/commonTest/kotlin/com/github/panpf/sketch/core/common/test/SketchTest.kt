@@ -327,7 +327,7 @@ class SketchTest {
         /* success */
         val listenerSupervisor1 = ListenerSupervisor()
         val request1 = ImageRequest(context, ResourceImages.jpeg.uri) {
-            registerListener(listenerSupervisor1)
+            addListener(listenerSupervisor1)
         }
         val result1 = sketch.enqueue(request1).job.await()
         assertTrue(result1 is Success)
@@ -336,7 +336,7 @@ class SketchTest {
         /* error */
         val listenerSupervisor2 = ListenerSupervisor()
         val request2 = ImageRequest(context, ResourceImages.jpeg.uri + "1") {
-            registerListener(listenerSupervisor2)
+            addListener(listenerSupervisor2)
         }
         val result2 = sketch.enqueue(request2).job.await()
         assertTrue(result2 is Error)
@@ -354,7 +354,7 @@ class SketchTest {
                     disposable3?.job?.cancel()
                 })
             }
-            registerListener(listenerSupervisor3)
+            addListener(listenerSupervisor3)
         }
         disposable3 = sketch.enqueue(request3)
         disposable3.job.join()
@@ -368,7 +368,7 @@ class SketchTest {
         /* success */
         val listenerSupervisor1 = ListenerSupervisor()
         val request1 = ImageRequest(context, ResourceImages.jpeg.uri) {
-            registerListener(listenerSupervisor1)
+            addListener(listenerSupervisor1)
         }
         val result1 = sketch.execute(request1)
         assertTrue(result1 is Success)
@@ -377,7 +377,7 @@ class SketchTest {
         /* error */
         val listenerSupervisor2 = ListenerSupervisor()
         val request2 = ImageRequest(context, ResourceImages.jpeg.uri + "1") {
-            registerListener(listenerSupervisor2)
+            addListener(listenerSupervisor2)
         }
         val result2 = sketch.execute(request2)
         assertTrue(result2 is Error)
@@ -391,7 +391,7 @@ class SketchTest {
         val request3 = ImageRequest(context, ResourceImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
-            registerListener(listenerSupervisor3)
+            addListener(listenerSupervisor3)
         }
         deferred3 = async {
             sketch.execute(request3)
