@@ -179,12 +179,12 @@ class BitmapAndroidTest {
             }.createEmptyBitmapWith(
                 width = 202,
                 height = 101,
-                colorType = RGB_565,
+                colorType = ARGB_8888,
                 hasAlpha = false
             ).apply {
                 assertEquals(expected = 202, actual = width)
                 assertEquals(expected = 101, actual = height)
-                assertEquals(expected = ColorType.RGB_565, actual = config)
+                assertEquals(expected = ColorType.ARGB_8888, actual = config)
                 assertEquals(expected = false, actual = hasAlpha())
                 assertEquals(
                     expected = ColorSpace.get(ColorSpace.Named.DISPLAY_P3),
@@ -192,12 +192,12 @@ class BitmapAndroidTest {
                 )
             }.createEmptyBitmapWith(
                 size = Size(100, 100),
-                colorType = RGB_565,
+                colorType = ARGB_8888,
                 hasAlpha = false
             ).apply {
                 assertEquals(expected = 100, actual = width)
                 assertEquals(expected = 100, actual = height)
-                assertEquals(expected = ColorType.RGB_565, actual = config)
+                assertEquals(expected = ColorType.ARGB_8888, actual = config)
                 assertEquals(expected = false, actual = hasAlpha())
                 assertEquals(
                     expected = ColorSpace.get(ColorSpace.Named.DISPLAY_P3),

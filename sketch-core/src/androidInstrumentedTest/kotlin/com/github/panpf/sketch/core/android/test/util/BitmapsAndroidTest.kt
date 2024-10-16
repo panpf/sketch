@@ -17,6 +17,7 @@
 package com.github.panpf.sketch.core.android.test.util
 
 import android.graphics.Bitmap
+import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.Color
 import android.graphics.ColorSpace
@@ -1100,15 +1101,29 @@ class BitmapsAndroidTest {
         // colorType, colorSpace
         ResourceImages.jpeg.decode(
             colorType = BitmapColorType(colorType = RGB_565),
-            colorSpace = "DISPLAY_P3"
+            colorSpace = "SRGB"
         ).bitmap.apply {
             assertEquals(
-                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
                 actual = toShortInfoString()
             )
         }.background(Color.RED).apply {
             assertEquals(
-                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
+                actual = toShortInfoString()
+            )
+        }
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ARGB_8888),
+            colorSpace = "DISPLAY_P3"
+        ).bitmap.apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
+                actual = toShortInfoString()
+            )
+        }.background(Color.RED).apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
                 actual = toShortInfoString()
             )
         }
@@ -1195,24 +1210,48 @@ class BitmapsAndroidTest {
         // colorType, colorSpace
         ResourceImages.jpeg.decode(
             colorType = BitmapColorType(colorType = RGB_565),
-            colorSpace = "DISPLAY_P3"
+            colorSpace = "SRGB"
         ).bitmap.mutableCopy().apply {
             assertTrue(isMutable)
             assertEquals(
-                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
                 actual = toShortInfoString()
             )
         }.also {
             it.blur(20, firstReuseSelf = true).apply {
                 assertEquals(
-                    expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                    expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
                     actual = toShortInfoString()
                 )
             }
 
             it.blur(20, firstReuseSelf = false).apply {
                 assertEquals(
-                    expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                    expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
+                    actual = toShortInfoString()
+                )
+            }
+        }
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ARGB_8888),
+            colorSpace = "DISPLAY_P3"
+        ).bitmap.mutableCopy().apply {
+            assertTrue(isMutable)
+            assertEquals(
+                expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
+                actual = toShortInfoString()
+            )
+        }.also {
+            it.blur(20, firstReuseSelf = true).apply {
+                assertEquals(
+                    expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
+                    actual = toShortInfoString()
+                )
+            }
+
+            it.blur(20, firstReuseSelf = false).apply {
+                assertEquals(
+                    expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
                     actual = toShortInfoString()
                 )
             }
@@ -1307,10 +1346,26 @@ class BitmapsAndroidTest {
         // colorType, colorSpace
         ResourceImages.jpeg.decode(
             colorType = BitmapColorType(colorType = RGB_565),
+            colorSpace = "SRGB"
+        ).bitmap.apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
+                actual = toShortInfoString()
+            )
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
+        }.circleCrop(Scale.CENTER_CROP).apply {
+            assertEquals(
+                expected = "Bitmap(1291x1291,ARGB_8888${shortInfoColorSpace("SRGB")})",
+                actual = toShortInfoString()
+            )
+            assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
+        }
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ARGB_8888),
             colorSpace = "DISPLAY_P3"
         ).bitmap.apply {
             assertEquals(
-                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
                 actual = toShortInfoString()
             )
             assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
@@ -1410,15 +1465,29 @@ class BitmapsAndroidTest {
         // colorType, colorSpace
         ResourceImages.jpeg.decode(
             colorType = BitmapColorType(colorType = RGB_565),
-            colorSpace = "DISPLAY_P3"
+            colorSpace = "SRGB"
         ).bitmap.apply {
             assertEquals(
-                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
                 actual = toShortInfoString()
             )
         }.flip(horizontal = true).apply {
             assertEquals(
-                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
+                actual = toShortInfoString()
+            )
+        }
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ARGB_8888),
+            colorSpace = "DISPLAY_P3"
+        ).bitmap.apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
+                actual = toShortInfoString()
+            )
+        }.flip(horizontal = true).apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
                 actual = toShortInfoString()
             )
         }
@@ -1554,10 +1623,10 @@ class BitmapsAndroidTest {
         // colorType, colorSpace
         ResourceImages.jpeg.decode(
             colorType = BitmapColorType(colorType = RGB_565),
-            colorSpace = "DISPLAY_P3"
+            colorSpace = "SRGB"
         ).bitmap.apply {
             assertEquals(
-                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
                 actual = toShortInfoString()
             )
         }.let {
@@ -1571,7 +1640,30 @@ class BitmapsAndroidTest {
             )
         }.apply {
             assertEquals(
-                expected = "Bitmap(300x300,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                expected = "Bitmap(300x300,RGB_565${shortInfoColorSpace("SRGB")})",
+                actual = toShortInfoString()
+            )
+        }
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ARGB_8888),
+            colorSpace = "DISPLAY_P3"
+        ).bitmap.apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
+                actual = toShortInfoString()
+            )
+        }.let {
+            it.mapping(
+                mapping = Resize(
+                    width = 300,
+                    height = 300,
+                    precision = Precision.EXACTLY,
+                    scale = Scale.CENTER_CROP
+                ).calculateMapping(it.size)
+            )
+        }.apply {
+            assertEquals(
+                expected = "Bitmap(300x300,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
                 actual = toShortInfoString()
             )
         }
@@ -1647,24 +1739,48 @@ class BitmapsAndroidTest {
         // colorType, colorSpace
         ResourceImages.jpeg.decode(
             colorType = BitmapColorType(colorType = RGB_565),
-            colorSpace = "DISPLAY_P3"
+            colorSpace = "SRGB"
         ).bitmap.mutableCopy().apply {
             assertTrue(isMutable)
             assertEquals(
-                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
                 actual = toShortInfoString()
             )
         }.also {
             it.mask(ColorUtils.setAlphaComponent(Color.RED, 100), firstReuseSelf = true).apply {
                 assertEquals(
-                    expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                    expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
                     actual = toShortInfoString()
                 )
             }
 
             it.mask(ColorUtils.setAlphaComponent(Color.RED, 100), firstReuseSelf = false).apply {
                 assertEquals(
-                    expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                    expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
+                    actual = toShortInfoString()
+                )
+            }
+        }
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ARGB_8888),
+            colorSpace = "DISPLAY_P3"
+        ).bitmap.mutableCopy().apply {
+            assertTrue(isMutable)
+            assertEquals(
+                expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
+                actual = toShortInfoString()
+            )
+        }.also {
+            it.mask(ColorUtils.setAlphaComponent(Color.RED, 100), firstReuseSelf = true).apply {
+                assertEquals(
+                    expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
+                    actual = toShortInfoString()
+                )
+            }
+
+            it.mask(ColorUtils.setAlphaComponent(Color.RED, 100), firstReuseSelf = false).apply {
+                assertEquals(
+                    expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
                     actual = toShortInfoString()
                 )
             }
@@ -1787,17 +1903,43 @@ class BitmapsAndroidTest {
         // colorType, colorSpace
         ResourceImages.jpeg.decode(
             colorType = BitmapColorType(colorType = RGB_565),
-            colorSpace = "DISPLAY_P3"
+            colorSpace = "SRGB"
         ).bitmap.apply {
             assertEquals(
-                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
                 actual = toShortInfoString()
             )
             assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
         }.also {
             it.rotate(90).apply {
                 assertEquals(
-                    expected = "Bitmap(1936x1291,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                    expected = "Bitmap(1936x1291,RGB_565${shortInfoColorSpace("SRGB")})",
+                    actual = toShortInfoString()
+                )
+                assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
+            }
+
+            it.rotate(130).apply {
+                assertEquals(
+                    expected = "Bitmap(2312x2233,ARGB_8888${shortInfoColorSpace("SRGB")})",
+                    actual = toShortInfoString()
+                )
+                assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
+            }
+        }
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ARGB_8888),
+            colorSpace = "DISPLAY_P3"
+        ).bitmap.apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
+                actual = toShortInfoString()
+            )
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
+        }.also {
+            it.rotate(90).apply {
+                assertEquals(
+                    expected = "Bitmap(1936x1291,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
                     actual = toShortInfoString()
                 )
                 assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
@@ -1878,10 +2020,26 @@ class BitmapsAndroidTest {
         // colorType, colorSpace
         ResourceImages.jpeg.decode(
             colorType = BitmapColorType(colorType = RGB_565),
+            colorSpace = "SRGB"
+        ).bitmap.apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
+                actual = toShortInfoString()
+            )
+            assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
+        }.roundedCorners(floatArrayOf(20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f)).apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("SRGB")})",
+                actual = toShortInfoString()
+            )
+            assertEquals(expected = listOf(0, 0, 0, 0), actual = corners())
+        }
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ARGB_8888),
             colorSpace = "DISPLAY_P3"
         ).bitmap.apply {
             assertEquals(
-                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
                 actual = toShortInfoString()
             )
             assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
@@ -1918,15 +2076,29 @@ class BitmapsAndroidTest {
         // colorType, colorSpace
         ResourceImages.jpeg.decode(
             colorType = BitmapColorType(colorType = RGB_565),
-            colorSpace = "DISPLAY_P3"
+            colorSpace = "SRGB"
         ).bitmap.apply {
             assertEquals(
-                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
                 actual = toShortInfoString()
             )
         }.scale(1.5f).apply {
             assertEquals(
-                "Bitmap(1937x2904,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                "Bitmap(1937x2904,RGB_565${shortInfoColorSpace("SRGB")})",
+                toShortInfoString()
+            )
+        }
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ARGB_8888),
+            colorSpace = "DISPLAY_P3"
+        ).bitmap.apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
+                actual = toShortInfoString()
+            )
+        }.scale(1.5f).apply {
+            assertEquals(
+                "Bitmap(1937x2904,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
                 toShortInfoString()
             )
         }
@@ -1951,15 +2123,29 @@ class BitmapsAndroidTest {
         // colorType, colorSpace
         ResourceImages.jpeg.decode(
             colorType = BitmapColorType(colorType = RGB_565),
-            colorSpace = "DISPLAY_P3"
+            colorSpace = "SRGB"
         ).bitmap.apply {
             assertEquals(
-                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                expected = "Bitmap(1291x1936,RGB_565${shortInfoColorSpace("SRGB")})",
                 actual = toShortInfoString()
             )
         }.thumbnail(100, 100).apply {
             assertEquals(
-                "Bitmap(100x100,RGB_565${shortInfoColorSpace("DISPLAY_P3")})",
+                "Bitmap(100x100,RGB_565${shortInfoColorSpace("SRGB")})",
+                toShortInfoString()
+            )
+        }
+        ResourceImages.jpeg.decode(
+            colorType = BitmapColorType(colorType = ARGB_8888),
+            colorSpace = "DISPLAY_P3"
+        ).bitmap.apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
+                actual = toShortInfoString()
+            )
+        }.thumbnail(100, 100).apply {
+            assertEquals(
+                "Bitmap(100x100,ARGB_8888${shortInfoColorSpace("DISPLAY_P3")})",
                 toShortInfoString()
             )
         }

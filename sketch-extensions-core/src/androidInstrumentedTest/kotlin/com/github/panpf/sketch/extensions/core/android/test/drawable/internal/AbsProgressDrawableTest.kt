@@ -465,7 +465,7 @@ class AbsProgressDrawableTest {
         val drawProgressHistory = mutableListOf<String>()
 
         override fun drawProgress(canvas: Canvas, drawProgress: Float) {
-            drawProgressHistory.add(drawProgress.format(2).toString())
+            drawProgressHistory.add(drawProgress.format(1).toString())
         }
 
         override fun getIntrinsicWidth(): Int = size.width

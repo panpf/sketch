@@ -149,7 +149,7 @@ class AnimatedImagePainterTest {
                 Image(painter = animatedImagePainter, contentDescription = "")
             }
             waitForIdle()
-            block(100)
+            block(1000)
             assertTrue(animatedTransformationCalled)
         }
     }

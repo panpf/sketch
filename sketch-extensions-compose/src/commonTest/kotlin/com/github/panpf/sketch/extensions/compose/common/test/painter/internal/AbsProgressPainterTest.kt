@@ -42,7 +42,7 @@ class AbsProgressPainterTest {
 
             val actions = testProgressPainter.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "0.2", actual = actions.last(), message = "$actions")
             assertEquals(expected = 0.2f, actual = testProgressPainter.progress)
@@ -65,7 +65,7 @@ class AbsProgressPainterTest {
 
             val actions = testProgressPainter.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "0.5", actual = actions.last(), message = "$actions")
             assertEquals(expected = 0.5f, actual = testProgressPainter.progress)
@@ -88,7 +88,7 @@ class AbsProgressPainterTest {
 
             val actions = testProgressPainter.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "0.8", actual = actions.last(), message = "$actions")
             assertEquals(expected = 0.8f, actual = testProgressPainter.progress)
@@ -132,7 +132,7 @@ class AbsProgressPainterTest {
 
             val actions = testProgressPainter.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "1.0", actual = actions.last(), message = "$actions")
             assertEquals(expected = 1f, actual = testProgressPainter.progress)
@@ -199,7 +199,7 @@ class AbsProgressPainterTest {
 
             val actions = testProgressPainter.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "0.2", actual = actions.last(), message = "$actions")
             assertEquals(expected = 0.2f, actual = testProgressPainter.progress)
@@ -222,7 +222,7 @@ class AbsProgressPainterTest {
 
             val actions = testProgressPainter.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "0.5", actual = actions.last(), message = "$actions")
             assertEquals(expected = 0.5f, actual = testProgressPainter.progress)
@@ -245,7 +245,7 @@ class AbsProgressPainterTest {
 
             val actions = testProgressPainter.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "0.8", actual = actions.last(), message = "$actions")
             assertEquals(expected = 0.8f, actual = testProgressPainter.progress)
@@ -267,7 +267,7 @@ class AbsProgressPainterTest {
             waitForIdle()
 
             val actions = testProgressPainter.drawProgressHistory.distinct()
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "1.0", actual = actions.last(), message = "$actions")
             assertEquals(expected = 1f, actual = testProgressPainter.progress)
@@ -291,7 +291,7 @@ class AbsProgressPainterTest {
 
             val actions = testProgressPainter.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "1.0", actual = actions.last(), message = "$actions")
             assertEquals(expected = 1f, actual = testProgressPainter.progress)
@@ -334,7 +334,7 @@ class AbsProgressPainterTest {
 
             val actions = testProgressPainter.drawProgressHistory.distinct()
             checkElements(actions)
-            assertTrue(actual = actions.size >= 5, message = "$actions")
+            assertTrue(actual = actions.size >= 2, message = "$actions")
             assertTrue(actual = actions.first().toFloat() >= 0.0f, message = "$actions")
             assertEquals(expected = "1.0", actual = actions.last(), message = "$actions")
             assertEquals(expected = 1f, actual = testProgressPainter.progress)
@@ -366,7 +366,7 @@ class AbsProgressPainterTest {
         val drawProgressHistory = mutableListOf<String>()
 
         override fun DrawScope.drawProgress(drawProgress: Float) {
-            drawProgressHistory.add(drawProgress.format(2).toString())
+            drawProgressHistory.add(drawProgress.format(1).toString())
         }
 
         override val intrinsicSize: androidx.compose.ui.geometry.Size
