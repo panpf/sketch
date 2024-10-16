@@ -23,6 +23,7 @@ import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity
+import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.test.runTest
 import org.jetbrains.skia.ColorSpace
@@ -274,7 +275,7 @@ class WebpSkiaAnimatedDecoderTest {
     private data object TranslucentAnimatedTransformation : AnimatedTransformation {
         override val key: String = "TranslucentAnimatedTransformation"
 
-        override fun transform(canvas: Any): PixelOpacity {
+        override fun transform(canvas: Any, bounds: Rect): PixelOpacity {
             return PixelOpacity.TRANSLUCENT
         }
     }

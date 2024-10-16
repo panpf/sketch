@@ -18,6 +18,7 @@
 
 package com.github.panpf.sketch.decode.internal
 
+import android.graphics.Canvas
 import android.graphics.ImageDecoder
 import android.graphics.PixelFormat
 import android.graphics.PostProcessor
@@ -53,6 +54,7 @@ import com.github.panpf.sketch.transform.PixelOpacity
 import com.github.panpf.sketch.transform.PixelOpacity.OPAQUE
 import com.github.panpf.sketch.transform.PixelOpacity.TRANSLUCENT
 import com.github.panpf.sketch.transform.PixelOpacity.UNCHANGED
+import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -200,8 +202,13 @@ open class ImageDecoderAnimatedDecoder(
         )
     }
 
-    private fun AnimatedTransformation.asPostProcessor() =
-        PostProcessor { canvas -> transform(canvas).flag }
+    private fun AnimatedTransformation.asPostProcessor() = object : PostProcessor {
+        val rect = Rect()
+        override fun onPostProcess(canvas: Canvas): Int {
+            rect.set(0, 0, canvas.width, canvas.height)
+            return transform(canvas, rect).flag
+        }
+    }
 
     private val PixelOpacity.flag: Int
         get() = when (this) {

@@ -31,6 +31,7 @@ import com.github.panpf.sketch.request.cacheDecodeTimeoutFrame
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.transform.AnimatedTransformation
+import com.github.panpf.sketch.util.Rect
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -103,16 +104,16 @@ open class SkiaAnimatedDecoder(
             alphaType = codec.imageInfo.colorAlphaType,
             colorSpace = newColorSpace
         )
-        val animatedTransformation = request.animatedTransformation
         val animatedImage = AnimatedImage(
             codec = codec,
             imageInfo = skiaImageInfo,
             repeatCount = repeatCount,
             cacheDecodeTimeoutFrame = cacheDecodeTimeoutFrame,
-            animatedTransformation = animatedTransformation?.asProcessor(),
-            animationStartCallback = request.animationStartCallback,
+        ).apply {
+            animatedTransformation = request.animatedTransformation?.asCompat()
+            animationStartCallback = request.animationStartCallback
             animationEndCallback = request.animationEndCallback
-        )
+        }
         val resize = requestContext.computeResize(imageInfo.size)
         return DecodeResult(
             image = animatedImage,
@@ -124,9 +125,9 @@ open class SkiaAnimatedDecoder(
         )
     }
 
-    private fun AnimatedTransformation.asProcessor(): (Any) -> Unit {
-        return { canvas ->
-            this@asProcessor.transform(canvas)
+    private fun AnimatedTransformation.asCompat(): (Any, Rect) -> Unit {
+        return { canvas, bounds ->
+            this@asCompat.transform(canvas, bounds)
         }
     }
 }

@@ -26,6 +26,7 @@ import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity
+import com.github.panpf.sketch.util.Rect
 import com.github.panpf.tools4a.test.ktx.getFragmentSync
 import com.github.panpf.tools4a.test.ktx.launchFragmentInContainer
 import kotlinx.coroutines.Dispatchers
@@ -194,7 +195,7 @@ class MovieDrawableTest {
     private data object TranslucentAnimatedTransformation : AnimatedTransformation {
         override val key: String = "TranslucentAnimatedTransformation"
 
-        override fun transform(canvas: Any): PixelOpacity {
+        override fun transform(canvas: Any, bounds: Rect): PixelOpacity {
             return PixelOpacity.TRANSLUCENT
         }
     }

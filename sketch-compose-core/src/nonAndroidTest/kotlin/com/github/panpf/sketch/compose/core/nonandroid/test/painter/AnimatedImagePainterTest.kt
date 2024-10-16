@@ -136,9 +136,11 @@ class AnimatedImagePainterTest {
             .let { Data.makeFromBytes(it) }
             .let { Codec.makeFromData(it) }
         var animatedTransformationCalled = false
-        val animatedImage = AnimatedImage(codec1, animatedTransformation = {
-            animatedTransformationCalled = true
-        })
+        val animatedImage = AnimatedImage(codec1).apply {
+            animatedTransformation = { _, _ ->
+                animatedTransformationCalled = true
+            }
+        }
         val animatedImagePainter = AnimatedImagePainter(animatedImage)
         assertFalse(animatedTransformationCalled)
         runComposeUiTest {

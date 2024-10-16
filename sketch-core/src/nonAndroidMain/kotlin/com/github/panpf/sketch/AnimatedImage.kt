@@ -18,6 +18,7 @@
 
 package com.github.panpf.sketch
 
+import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.toLogString
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.ImageInfo
@@ -32,10 +33,11 @@ data class AnimatedImage constructor(
     val imageInfo: ImageInfo = codec.imageInfo,
     val repeatCount: Int? = null,
     val cacheDecodeTimeoutFrame: Boolean = false,
-    val animatedTransformation: ((Any) -> Unit)? = null,
-    val animationStartCallback: (() -> Unit)? = null,
-    val animationEndCallback: (() -> Unit)? = null,
 ) : Image {
+
+    var animatedTransformation: ((Any, Rect) -> Unit)? = null
+    var animationStartCallback: (() -> Unit)? = null
+    var animationEndCallback: (() -> Unit)? = null
 
     override val width: Int = codec.width
 
@@ -47,6 +49,10 @@ data class AnimatedImage constructor(
 
     override fun checkValid(): Boolean = true
 
-    override fun toString(): String =
-        "AnimatedImage(image=${codec.toLogString()}, shareable=$shareable)"
+    override fun toString(): String = "AnimatedImage(" +
+            "image=${codec.toLogString()}, " +
+            "imageInfo=$imageInfo, " +
+            "repeatCount=$repeatCount, " +
+            "cacheDecodeTimeoutFrame=$cacheDecodeTimeoutFrame" +
+            ")"
 }

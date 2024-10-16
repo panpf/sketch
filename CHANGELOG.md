@@ -24,6 +24,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * fix: Fixed the bug of setting repeatCount for animations on non-Android platforms and not staying
   at the last frame after playing, but staying at the first
   frame. [#212](https://github.com/panpf/sketch/issues/212)
+* fix: Fixed the bug that GifDrawable and MovieDrawable could not correctly apply
+  animatedTransformation. [#214](https://github.com/panpf/sketch/issues/214)
 * remove: Remove ComposeBitmapImage
 * remove: Remove Image.getPixels()
 * change: SkiaBitmapImage is now cached in the memory cache on non-Android platforms, not

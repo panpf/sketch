@@ -134,11 +134,22 @@ class GifDrawableDecoder(
             val transformation = request.animatedTransformation
             if (transformation != null) {
                 transform = object : Transform {
+                    private val srcRect = Rect()
+                    private val dstRect = Rect()
+                    private val bounds1 = com.github.panpf.sketch.util.Rect()
                     override fun onBoundsChange(bounds: Rect?) {
+                        if (bounds != null) {
+                            dstRect.set(bounds)
+                            bounds1.set(bounds.left, bounds.top, bounds.right, bounds.bottom)
+                        }
                     }
 
                     override fun onDraw(canvas: Canvas, paint: Paint?, buffer: Bitmap?) {
-                        transformation.transform(canvas)
+                        if (buffer != null) {
+                            srcRect.set(0, 0, buffer.width, buffer.height)
+                            canvas.drawBitmap(buffer, srcRect, dstRect, paint)
+                            transformation.transform(canvas, bounds1)
+                        }
                     }
                 }
             }

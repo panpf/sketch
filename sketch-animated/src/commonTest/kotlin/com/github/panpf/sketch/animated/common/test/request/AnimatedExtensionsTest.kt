@@ -13,6 +13,7 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity
+import com.github.panpf.sketch.util.Rect
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -228,7 +229,7 @@ class AnimatedExtensionsTest {
     private data object TranslucentAnimatedTransformation : AnimatedTransformation {
         override val key: String = "TranslucentAnimatedTransformation"
 
-        override fun transform(canvas: Any): PixelOpacity {
+        override fun transform(canvas: Any, bounds: Rect): PixelOpacity {
             return PixelOpacity.TRANSLUCENT
         }
     }

@@ -58,7 +58,8 @@ class MovieDrawable constructor(
     private val callbacks = mutableListOf<Animatable2Compat.AnimationCallback>()
 
     private val currentBounds = Rect()
-    private val tempCanvasBounds = Rect()
+
+    //    private val tempCanvasBounds = Rect()
     private var softwareCanvas: Canvas? = null
     private var softwareBitmap: Bitmap? = null
 
@@ -77,7 +78,7 @@ class MovieDrawable constructor(
     private var animatedTransformation: AnimatedTransformation? = null
     private var animatedTransformationPicture: Picture? = null
     private var pixelOpacity = UNCHANGED
-    private var isSoftwareScalingEnabled = false
+//    private var isSoftwareScalingEnabled = false
 
     init {
         require(!(VERSION.SDK_INT >= 26 && config == HARDWARE)) { "Bitmap config must not be hardware." }
@@ -88,17 +89,17 @@ class MovieDrawable constructor(
         val invalidate = updateFrameTime()
 
         // Update the scaling properties and draw the current frame.
-        if (isSoftwareScalingEnabled) {
-            updateBounds(canvas.bounds)
-            canvas.withSave {
-                val scale = 1 / softwareScale
-                scale(scale, scale)
-                drawFrame(canvas)
-            }
-        } else {
+//        if (isSoftwareScalingEnabled) {
+//            updateBounds(canvas.bounds)
+//            canvas.withSave {
+//                val scale = 1 / softwareScale
+//                scale(scale, scale)
+//                drawFrame(canvas)
+//            }
+//        } else {
             updateBounds(bounds)
             drawFrame(canvas)
-        }
+//        }
 
         // Request a new draw pass for the next frame if necessary.
         if (isRunning && invalidate) {
@@ -184,15 +185,16 @@ class MovieDrawable constructor(
             // Precompute the animated transformation.
             val picture = Picture()
             val canvas = picture.beginRecording(movie.width(), movie.height())
-            pixelOpacity = animatedTransformation.transform(canvas)
+            val bounds = com.github.panpf.sketch.util.Rect(0, 0, movie.width(), movie.height())
+            pixelOpacity = animatedTransformation.transform(canvas, bounds)
             picture.endRecording()
             animatedTransformationPicture = picture
-            isSoftwareScalingEnabled = true
+//            isSoftwareScalingEnabled = true
         } else {
             // If width/height are not positive, we're unable to draw the movie.
             animatedTransformationPicture = null
             pixelOpacity = UNCHANGED
-            isSoftwareScalingEnabled = false
+//            isSoftwareScalingEnabled = false
         }
 
         // Re-render the drawable.
@@ -237,7 +239,10 @@ class MovieDrawable constructor(
 
         softwareScale =
             computeScaleMultiplierWithFit(movieWidth, movieHeight, boundsWidth, boundsHeight, true)
-                .run { if (isSoftwareScalingEnabled) this else coerceAtMost(1.0) }
+                .run {
+//                    if (isSoftwareScalingEnabled) this else
+                    coerceAtMost(1.0)
+                }
                 .toFloat()
         val bitmapWidth = (softwareScale * movieWidth).toInt()
         val bitmapHeight = (softwareScale * movieHeight).toInt()
@@ -247,17 +252,17 @@ class MovieDrawable constructor(
         softwareBitmap = bitmap
         softwareCanvas = Canvas(bitmap)
 
-        if (isSoftwareScalingEnabled) {
-            hardwareScale = 1f
-            hardwareDx = 0f
-            hardwareDy = 0f
-        } else {
+//        if (isSoftwareScalingEnabled) {
+//            hardwareScale = 1f
+//            hardwareDx = 0f
+//            hardwareDy = 0f
+//        } else {
             hardwareScale =
                 computeScaleMultiplierWithFit(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight, true)
                     .toFloat()
             hardwareDx = bounds.left + (boundsWidth - hardwareScale * bitmapWidth) / 2
             hardwareDy = bounds.top + (boundsHeight - hardwareScale * bitmapHeight) / 2
-        }
+//        }
     }
 
     override fun getIntrinsicWidth() = movie.width()
@@ -313,5 +318,5 @@ class MovieDrawable constructor(
         return "MovieDrawable(size=${movie.width()}x${movie.height()}, config=$config)"
     }
 
-    private val Canvas.bounds get() = tempCanvasBounds.apply { set(0, 0, width, height) }
+//    private val Canvas.bounds get() = tempCanvasBounds.apply { set(0, 0, width, height) }
 }

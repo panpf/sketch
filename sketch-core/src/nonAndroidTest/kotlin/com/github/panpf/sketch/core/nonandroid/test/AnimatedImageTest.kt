@@ -102,31 +102,18 @@ class AnimatedImageTest {
         val element3 = AnimatedImage(codec1, imageInfo = codec1.imageInfo.withColorType(GRAY_8))
         val element4 = AnimatedImage(codec1, repeatCount = 5)
         val element5 = AnimatedImage(codec1, cacheDecodeTimeoutFrame = true)
-        val element6 = AnimatedImage(codec1, animationStartCallback = {})
-        val element7 = AnimatedImage(codec1, animationEndCallback = {})
 
         assertEquals(expected = element1, actual = element11)
         assertNotEquals(illegal = element1, actual = element2)
         assertNotEquals(illegal = element1, actual = element3)
         assertNotEquals(illegal = element1, actual = element4)
         assertNotEquals(illegal = element1, actual = element5)
-        assertNotEquals(illegal = element1, actual = element6)
-        assertNotEquals(illegal = element1, actual = element7)
         assertNotEquals(illegal = element2, actual = element3)
         assertNotEquals(illegal = element2, actual = element4)
         assertNotEquals(illegal = element2, actual = element5)
-        assertNotEquals(illegal = element2, actual = element6)
-        assertNotEquals(illegal = element2, actual = element7)
         assertNotEquals(illegal = element3, actual = element4)
         assertNotEquals(illegal = element3, actual = element5)
-        assertNotEquals(illegal = element3, actual = element6)
-        assertNotEquals(illegal = element3, actual = element7)
         assertNotEquals(illegal = element4, actual = element5)
-        assertNotEquals(illegal = element4, actual = element6)
-        assertNotEquals(illegal = element4, actual = element7)
-        assertNotEquals(illegal = element5, actual = element6)
-        assertNotEquals(illegal = element5, actual = element7)
-        assertNotEquals(illegal = element6, actual = element7)
         assertNotEquals(illegal = element1, actual = null as Any?)
         assertNotEquals(illegal = element1, actual = Any())
 
@@ -135,23 +122,12 @@ class AnimatedImageTest {
         assertNotEquals(illegal = element1.hashCode(), actual = element3.hashCode())
         assertNotEquals(illegal = element1.hashCode(), actual = element4.hashCode())
         assertNotEquals(illegal = element1.hashCode(), actual = element5.hashCode())
-        assertNotEquals(illegal = element1.hashCode(), actual = element6.hashCode())
-        assertNotEquals(illegal = element1.hashCode(), actual = element7.hashCode())
         assertNotEquals(illegal = element2.hashCode(), actual = element3.hashCode())
         assertNotEquals(illegal = element2.hashCode(), actual = element4.hashCode())
         assertNotEquals(illegal = element2.hashCode(), actual = element5.hashCode())
-        assertNotEquals(illegal = element2.hashCode(), actual = element6.hashCode())
-        assertNotEquals(illegal = element2.hashCode(), actual = element7.hashCode())
         assertNotEquals(illegal = element3.hashCode(), actual = element4.hashCode())
         assertNotEquals(illegal = element3.hashCode(), actual = element5.hashCode())
-        assertNotEquals(illegal = element3.hashCode(), actual = element6.hashCode())
-        assertNotEquals(illegal = element3.hashCode(), actual = element7.hashCode())
         assertNotEquals(illegal = element4.hashCode(), actual = element5.hashCode())
-        assertNotEquals(illegal = element4.hashCode(), actual = element6.hashCode())
-        assertNotEquals(illegal = element4.hashCode(), actual = element7.hashCode())
-        assertNotEquals(illegal = element5.hashCode(), actual = element6.hashCode())
-        assertNotEquals(illegal = element5.hashCode(), actual = element7.hashCode())
-        assertNotEquals(illegal = element6.hashCode(), actual = element7.hashCode())
     }
 
     @Test
@@ -163,7 +139,7 @@ class AnimatedImageTest {
             .let { Codec.makeFromData(it) }
         val animatedImage = AnimatedImage(codec)
         assertEquals(
-            expected = "AnimatedImage(image=${codec.toLogString()}, shareable=false)",
+            expected = "AnimatedImage(image=${codec.toLogString()}, imageInfo=${codec.imageInfo}, repeatCount=null, cacheDecodeTimeoutFrame=false)",
             actual = animatedImage.toString()
         )
     }

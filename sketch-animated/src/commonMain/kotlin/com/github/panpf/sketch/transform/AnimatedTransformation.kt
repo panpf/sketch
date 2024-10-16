@@ -17,6 +17,7 @@
 package com.github.panpf.sketch.transform
 
 import com.github.panpf.sketch.util.Key
+import com.github.panpf.sketch.util.Rect
 
 /**
  * An interface for making transformations to an animated image's pixel data.
@@ -29,7 +30,7 @@ interface AnimatedTransformation : Key {
      * @param canvas Canvas may be 'androidx.compose.ui.graphicsCanvas' or 'android.graphicsCanvas'.
      * @return The opacity of the image after drawing.
      */
-    fun transform(canvas: Any): PixelOpacity
+    fun transform(canvas: Any, bounds: Rect): PixelOpacity
 
     override fun equals(other: Any?): Boolean
 

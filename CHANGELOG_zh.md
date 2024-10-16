@@ -20,6 +20,8 @@
   bug。 [#213](https://github.com/panpf/sketch/issues/213)
 * fix: 修复非安卓平台上动图设置 repeatCount 并播放结束后没有停留在最后一帧，而停留在第一帧的
   bug。 [#212](https://github.com/panpf/sketch/issues/212)
+* fix: 修复 GifDrawable 和 MovieDrawable 无法正确应用 animatedTransformation 的
+  bug。 [#214](https://github.com/panpf/sketch/issues/214)
 * remove: 移除 ComposeBitmapImage
 * remove: 删除 Image.getPixels()
 * change: 现在非安卓平台上内存缓存中缓存的是 SkiaBitmapImage，不再是 ComposeBitmapImage

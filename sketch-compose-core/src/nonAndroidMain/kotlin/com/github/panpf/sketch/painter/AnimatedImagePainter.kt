@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.toSize
 import com.github.panpf.sketch.AnimatedImage
 import com.github.panpf.sketch.Bitmap
 import com.github.panpf.sketch.createBitmap
+import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.RememberedCounter
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -106,13 +107,9 @@ class AnimatedImagePainter constructor(
                 this@onDraw.size.height.roundToInt()
             )
             drawIntoCanvas {
-                val canvas: Canvas = it
-                animatedImage.animatedTransformation?.invoke(canvas)
-
                 paint.colorFilter = colorFilter
                 paint.alpha = alpha
                 paint.filterQuality = filterQuality
-
                 it.drawImageRect(
                     image = composeBitmap,
                     srcOffset = srcOffset,
@@ -121,6 +118,10 @@ class AnimatedImagePainter constructor(
                     dstSize = dstSize,
                     paint = paint,
                 )
+
+                val canvas: Canvas = it
+                animatedImage.animatedTransformation
+                    ?.invoke(canvas, Rect(0, 0, dstSize.width, dstSize.height))
             }
         } else if (!animatedPlayer.running && loadFirstFrameJob == null) {
             loadFirstFrame()
