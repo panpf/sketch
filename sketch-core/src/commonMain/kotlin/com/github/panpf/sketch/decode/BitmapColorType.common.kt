@@ -118,4 +118,4 @@ val BitmapColorType.isFixed: Boolean
  * @see com.github.panpf.sketch.core.common.test.decode.BitmapColorTypeTest.testIsDynamic
  */
 val BitmapColorType.isDynamic: Boolean
-    get() = this !is FixedColorType
+    get() = this is LowQualityColorType || this is HighQualityColorType

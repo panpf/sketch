@@ -24,6 +24,7 @@ import com.github.panpf.sketch.decode.isDynamic
 import com.github.panpf.sketch.decode.isFixed
 import com.github.panpf.sketch.decode.isHighQuality
 import com.github.panpf.sketch.decode.isLowQuality
+import com.github.panpf.sketch.test.utils.FakeBitmapColorType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -73,5 +74,6 @@ class BitmapColorTypeTest {
         assertTrue(LowQualityColorType.isDynamic)
         assertTrue(HighQualityColorType.isDynamic)
         assertFalse(BitmapColorType("ARGB_8888").isDynamic)
+        assertFalse(FakeBitmapColorType.isDynamic)
     }
 }
