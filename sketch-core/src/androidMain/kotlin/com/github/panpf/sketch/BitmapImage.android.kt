@@ -46,6 +46,6 @@ actual data class BitmapImage(
 
     actual override fun checkValid(): Boolean = !bitmap.isRecycled
 
-    override fun toString(): String =
+    actual override fun toString(): String =
         "BitmapImage(bitmap=${bitmap.toLogString()}, shareable=$shareable)"
 }

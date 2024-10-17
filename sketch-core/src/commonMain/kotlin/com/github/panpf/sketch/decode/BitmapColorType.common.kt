@@ -63,7 +63,15 @@ expect class PlatformColorType
  */
 expect object LowQualityColorType : BitmapColorType {
 
+    override val key: String
+
     override fun getColorType(mimeType: String?, isOpaque: Boolean): PlatformColorType?
+
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
 }
 
 /**
@@ -74,7 +82,15 @@ expect object LowQualityColorType : BitmapColorType {
  */
 expect object HighQualityColorType : BitmapColorType {
 
+    override val key: String
+
     override fun getColorType(mimeType: String?, isOpaque: Boolean): PlatformColorType?
+
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
 }
 
 /**
@@ -85,7 +101,15 @@ expect object HighQualityColorType : BitmapColorType {
  */
 expect class FixedColorType(value: String) : BitmapColorType {
 
+    override val key: String
+
     override fun getColorType(mimeType: String?, isOpaque: Boolean): PlatformColorType?
+
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
 }
 
 /**

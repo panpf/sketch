@@ -61,5 +61,13 @@ expect class PlatformColorSpace
  */
 expect class FixedColorSpace(value: String) : BitmapColorSpace {
 
+    override val key: String
+
     override fun getColorSpace(mimeType: String?, isOpaque: Boolean): PlatformColorSpace?
+
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
 }

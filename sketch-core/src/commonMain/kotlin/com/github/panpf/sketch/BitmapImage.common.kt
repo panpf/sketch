@@ -45,4 +45,10 @@ expect class BitmapImage : Image {
     override val shareable: Boolean
 
     override fun checkValid(): Boolean
+
+    override fun equals(other: Any?): Boolean
+
+    override fun hashCode(): Int
+
+    override fun toString(): String
 }

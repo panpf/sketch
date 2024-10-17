@@ -50,7 +50,7 @@ actual data class PlatformColorSpace(val colorSpace: ColorSpace) {
 @RequiresApi(Build.VERSION_CODES.O)
 actual data class FixedColorSpace actual constructor(val value: String) : BitmapColorSpace {
 
-    override val key: String = "Fixed($value)"
+    actual override val key: String = "Fixed($value)"
 
     constructor(colorSpace: ColorSpace.Named) : this(colorSpace.name)
 
@@ -62,5 +62,5 @@ actual data class FixedColorSpace actual constructor(val value: String) : Bitmap
         }
     }
 
-    override fun toString(): String = "FixedColorSpace($value)"
+    actual override fun toString(): String = "FixedColorSpace($value)"
 }

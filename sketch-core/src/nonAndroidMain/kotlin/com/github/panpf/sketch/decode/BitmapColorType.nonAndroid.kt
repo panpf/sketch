@@ -42,7 +42,7 @@ actual data class PlatformColorType(val colorType: ColorType)
  */
 actual data object LowQualityColorType : BitmapColorType {
 
-    override val key: String = "LowQuality"
+    actual override val key: String = "LowQuality"
 
     actual override fun getColorType(mimeType: String?, isOpaque: Boolean): PlatformColorType? {
         val imageFormat = ImageFormat.parseMimeType(mimeType)
@@ -56,7 +56,7 @@ actual data object LowQualityColorType : BitmapColorType {
         return PlatformColorType(colorType)
     }
 
-    override fun toString(): String = "LowQualityColorType"
+    actual override fun toString(): String = "LowQualityColorType"
 }
 
 /**
@@ -66,13 +66,13 @@ actual data object LowQualityColorType : BitmapColorType {
  */
 actual data object HighQualityColorType : BitmapColorType {
 
-    override val key: String = "HighQuality"
+    actual override val key: String = "HighQuality"
 
     actual override fun getColorType(mimeType: String?, isOpaque: Boolean): PlatformColorType? {
         return PlatformColorType(ColorType.RGBA_F16)
     }
 
-    override fun toString(): String = "HighQualityColorType"
+    actual override fun toString(): String = "HighQualityColorType"
 }
 
 /**
@@ -84,12 +84,12 @@ actual data class FixedColorType actual constructor(val value: String) : BitmapC
 
     constructor(colorType: ColorType) : this(colorType.name)
 
-    override val key: String = "Fixed($value)"
+    actual override val key: String = "Fixed($value)"
 
     actual override fun getColorType(mimeType: String?, isOpaque: Boolean): PlatformColorType? {
         val colorType = ColorType.valueOf(this.value)
         return PlatformColorType(colorType)
     }
 
-    override fun toString(): String = "FixedColorType($value)"
+    actual override fun toString(): String = "FixedColorType($value)"
 }
