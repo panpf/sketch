@@ -42,6 +42,7 @@ import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
+import com.github.panpf.sketch.util.ComponentDetector
 import com.github.panpf.sketch.util.DownloadData
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level
@@ -83,10 +84,25 @@ import okio.FileSystem
  * @see com.github.panpf.sketch.core.desktop.test.SketchDesktopTest
  * @see com.github.panpf.sketch.core.jscommon.test.SketchJsCommonTest
  * @see com.github.panpf.sketch.core.ios.test.SketchIosTest
- * @see com.github.panpf.sketch.core.jvmcommon.test.SketchJvmTest
- * @see com.github.panpf.sketch.core.nonjvmcommon.test.SketchNonJvmTest
  */
-class Sketch private constructor(options: Options) {
+class Sketch private constructor(
+    /** Application Context */
+    val context: PlatformContext,
+    /** Output log */
+    val logger: Logger,
+    /** File system */
+    val fileSystem: FileSystem,
+    memoryCacheLazy: Lazy<MemoryCache>,
+    downloadCacheLazy: Lazy<DiskCache>,
+    resultCacheLazy: Lazy<DiskCache>,
+    /** Execute HTTP request */
+    val httpStack: HttpStack?,
+    componentRegistry: ComponentRegistry,
+    /** Fill unset [ImageRequest] value */
+    val globalImageOptions: ImageOptions?,
+    val networkParallelismLimited: Int,
+    val decodeParallelismLimited: Int,
+) {
 
     private val requestExecutor = RequestExecutor(this)
     private val _isShutdown = atomic(false)
@@ -96,33 +112,18 @@ class Sketch private constructor(options: Options) {
         }
     )
 
-    /** Application Context */
-    val context: PlatformContext = options.context.application
-
-    /** Output log */
-    val logger: Logger = options.logger
-
-    /** File system */
-    val fileSystem: FileSystem = options.fileSystem
-
     /** Memory cache of previously loaded images */
-    val memoryCache: MemoryCache by options.memoryCacheLazy
+    val memoryCache: MemoryCache by memoryCacheLazy
 
     /** Disk caching of http downloads images */
-    val downloadCache: DiskCache by options.downloadCacheLazy
+    val downloadCache: DiskCache by downloadCacheLazy
 
     /** Disk caching of transformed images */
-    val resultCache: DiskCache by options.resultCacheLazy
-
-    /** Execute HTTP request */
-    val httpStack: HttpStack? = options.httpStack
-
-    /** Fill unset [ImageRequest] value */
-    val globalImageOptions: ImageOptions? = options.globalImageOptions
+    val resultCache: DiskCache by resultCacheLazy
 
     /** Register components that are required to perform [ImageRequest] and can be extended,
      * such as [Fetcher], [Decoder], [RequestInterceptor], [DecodeInterceptor] */
-    val components: Components = Components(options.componentRegistry)
+    val components: Components = Components(componentRegistry)
 
     /** Monitor network connection and system status */
     val systemCallbacks = SystemCallbacks(this)
@@ -130,7 +131,7 @@ class Sketch private constructor(options: Options) {
     /** Limit the number of concurrent network tasks, too many network tasks will cause network congestion */
     @OptIn(ExperimentalCoroutinesApi::class)
     val networkTaskDispatcher: CoroutineDispatcher = ioCoroutineDispatcher().let { dispatcher ->
-        options.networkParallelismLimited
+        networkParallelismLimited
             .takeIf { parallelism -> parallelism > 0 }
             ?.let { parallelism -> dispatcher.limitedParallelism(parallelism) }
             ?: dispatcher
@@ -139,7 +140,7 @@ class Sketch private constructor(options: Options) {
     /** Limit the number of concurrent decoding tasks because too many concurrent BitmapFactory tasks can affect UI performance */
     @OptIn(ExperimentalCoroutinesApi::class)
     val decodeTaskDispatcher: CoroutineDispatcher = ioCoroutineDispatcher().let { dispatcher ->
-        options.decodeParallelismLimited
+        decodeParallelismLimited
             .takeIf { parallelism -> parallelism > 0 }
             ?.let { parallelism -> dispatcher.limitedParallelism(parallelism) }
             ?: dispatcher
@@ -158,12 +159,12 @@ class Sketch private constructor(options: Options) {
                 appendLine().append("memoryCache: $memoryCache")
                 appendLine().append("resultCache: $resultCache")
                 appendLine().append("downloadCache: $downloadCache")
-                appendLine().append("fetchers: ${options.componentRegistry.fetcherFactoryList}")
-                appendLine().append("decoders: ${options.componentRegistry.decoderFactoryList}")
-                appendLine().append("requestInterceptors: ${options.componentRegistry.requestInterceptorList}")
-                appendLine().append("decodeInterceptors: ${options.componentRegistry.decodeInterceptorList}")
-                appendLine().append("networkParallelismLimited: ${options.networkParallelismLimited}")
-                appendLine().append("decodeParallelismLimited: ${options.decodeParallelismLimited}")
+                appendLine().append("fetchers: ${components.registry.fetcherFactoryList}")
+                appendLine().append("decoders: ${components.registry.decoderFactoryList}")
+                appendLine().append("requestInterceptors: ${components.registry.requestInterceptorList}")
+                appendLine().append("decodeInterceptors: ${components.registry.decodeInterceptorList}")
+                appendLine().append("networkParallelismLimited: $networkParallelismLimited")
+                appendLine().append("decodeParallelismLimited: $decodeParallelismLimited")
             }
         }
     }
@@ -254,20 +255,6 @@ class Sketch private constructor(options: Options) {
         resultCache.close()
     }
 
-    data class Options(
-        val context: PlatformContext,
-        val logger: Logger,
-        val fileSystem: FileSystem,
-        val memoryCacheLazy: Lazy<MemoryCache>,
-        val downloadCacheLazy: Lazy<DiskCache>,
-        val resultCacheLazy: Lazy<DiskCache>,
-        val httpStack: HttpStack?,
-        val componentRegistry: ComponentRegistry,
-        val globalImageOptions: ImageOptions?,
-        val networkParallelismLimited: Int,
-        val decodeParallelismLimited: Int,
-    )
-
     class Builder(context: PlatformContext) {
 
         private val context: PlatformContext = context.application
@@ -279,6 +266,7 @@ class Sketch private constructor(options: Options) {
         private var resultCacheLazy: Lazy<DiskCache>? = null
         private var resultCacheOptionsLazy: Lazy<DiskCache.Options>? = null
 
+        private var disabledComponentDetector: Boolean = false
         private var componentRegistry: ComponentRegistry? = null
         private var httpStack: HttpStack? = null
         private var globalImageOptions: ImageOptions? = null
@@ -409,6 +397,13 @@ class Sketch private constructor(options: Options) {
             addComponents(ComponentRegistry.Builder().apply(configBlock).build())
 
         /**
+         * Disable the component detector. This will prevent Sketch from automatically detecting and registering components.
+         */
+        fun disableComponentDetector(disabled: Boolean = true): Builder = apply {
+            this.disabledComponentDetector = disabled
+        }
+
+        /**
          * Set the [HttpStack] used for network requests.
          */
         fun httpStack(httpStack: HttpStack?): Builder = apply {
@@ -437,39 +432,67 @@ class Sketch private constructor(options: Options) {
         }
 
         fun build(): Sketch {
+            val context = context.application
+            val logger = this.logger ?: Logger()
             val finalFileSystem = fileSystem ?: defaultFileSystem()
-            val componentRegistry1 = componentRegistry
+            val componentDetector = ComponentDetector
+            val componentRegistry = componentRegistry
+                .merged(componentDetector.toComponentRegistry())
                 .merged(platformComponents(context))
-                .merged(defaultComponents())
+                .merged(commonComponents())
                 ?: ComponentRegistry.Builder().build()
-            val options = Options(
+            val memoryCacheLazy =
+                memoryCacheLazy ?: lazy { MemoryCache.Builder(this.context).build() }
+            val downloadCacheLazy = downloadCacheLazy ?: lazy {
+                val options = downloadCacheOptionsLazy?.value
+                DiskCache.DownloadBuilder(this.context, finalFileSystem).apply {
+                    if (options != null) {
+                        options(options)
+                    }
+                }.build()
+            }
+            val httpStacks = componentDetector.httpStacks
+            require(httpStacks.size <= 1) {
+                "There can be at most one HttpStack, but ComponentDetector found ${httpStacks.size}. " +
+                        "httpStacks=$httpStacks"
+            }
+            val httpStack =
+                httpStack ?: httpStacks.firstOrNull()?.httpStack(context)
+            val resultCacheLazy = resultCacheLazy ?: lazy {
+                val options = resultCacheOptionsLazy?.value
+                DiskCache.ResultBuilder(this.context, finalFileSystem).apply {
+                    if (options != null) {
+                        options(options)
+                    }
+                }.build()
+            }
+            val networkParallelismLimited = networkParallelismLimited ?: 10
+            val decodeParallelismLimited = decodeParallelismLimited ?: 4
+            return Sketch(
                 context = context,
-                logger = this.logger ?: Logger(),
+                logger = logger,
                 fileSystem = finalFileSystem,
-                memoryCacheLazy = memoryCacheLazy ?: lazy { MemoryCache.Builder(context).build() },
-                downloadCacheLazy = downloadCacheLazy ?: lazy {
-                    val options = downloadCacheOptionsLazy?.value
-                    DiskCache.DownloadBuilder(context, finalFileSystem).apply {
-                        if (options != null) {
-                            options(options)
-                        }
-                    }.build()
-                },
-                resultCacheLazy = resultCacheLazy ?: lazy {
-                    val options = resultCacheOptionsLazy?.value
-                    DiskCache.ResultBuilder(context, finalFileSystem).apply {
-                        if (options != null) {
-                            options(options)
-                        }
-                    }.build()
-                },
+                memoryCacheLazy = memoryCacheLazy,
+                downloadCacheLazy = downloadCacheLazy,
+                resultCacheLazy = resultCacheLazy,
                 httpStack = httpStack,
-                componentRegistry = componentRegistry1,
+                componentRegistry = componentRegistry,
                 globalImageOptions = globalImageOptions,
-                networkParallelismLimited = networkParallelismLimited ?: 10,
-                decodeParallelismLimited = decodeParallelismLimited ?: 4,
+                networkParallelismLimited = networkParallelismLimited,
+                decodeParallelismLimited = decodeParallelismLimited,
             )
-            return Sketch(options)
+        }
+
+        private fun ComponentDetector.toComponentRegistry(): ComponentRegistry? {
+            if (!disabledComponentDetector) return null
+            return ComponentRegistry {
+                fetchers.forEach { fetcherComponent ->
+                    fetcherComponent.factory()?.let { factory -> addFetcher(factory) }
+                }
+                decoders.forEach { decoderComponent ->
+                    decoderComponent.factory()?.let { factory -> addDecoder(factory) }
+                }
+            }
         }
     }
 }
@@ -487,19 +510,17 @@ internal expect fun platformComponents(context: PlatformContext): ComponentRegis
 /**
  * Provide components applicable to all platforms
  *
- * @see com.github.panpf.sketch.core.common.test.SketchTest.testDefaultComponents
+ * @see com.github.panpf.sketch.core.common.test.SketchTest.testCommonComponents
  */
-internal fun defaultComponents(): ComponentRegistry {
-    return ComponentRegistry {
-        addFetcher(HttpUriFetcher.Factory())
-        addFetcher(Base64UriFetcher.Factory())
-        addFetcher(FileUriFetcher.Factory())
+internal fun commonComponents(): ComponentRegistry = ComponentRegistry {
+    addFetcher(HttpUriFetcher.Factory())
+    addFetcher(Base64UriFetcher.Factory())
+    addFetcher(FileUriFetcher.Factory())
 
-        addRequestInterceptor(MemoryCacheRequestInterceptor())
-        addRequestInterceptor(EngineRequestInterceptor())
+    addRequestInterceptor(MemoryCacheRequestInterceptor())
+    addRequestInterceptor(EngineRequestInterceptor())
 
-        addDecodeInterceptor(ResultCacheDecodeInterceptor())
-        addDecodeInterceptor(TransformationDecodeInterceptor())
-        addDecodeInterceptor(EngineDecodeInterceptor())
-    }
+    addDecodeInterceptor(ResultCacheDecodeInterceptor())
+    addDecodeInterceptor(TransformationDecodeInterceptor())
+    addDecodeInterceptor(EngineDecodeInterceptor())
 }

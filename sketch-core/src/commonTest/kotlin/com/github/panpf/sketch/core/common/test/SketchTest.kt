@@ -7,8 +7,11 @@ import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
+import com.github.panpf.sketch.commonComponents
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
-import com.github.panpf.sketch.defaultComponents
+import com.github.panpf.sketch.fetch.Base64UriFetcher
+import com.github.panpf.sketch.fetch.FileUriFetcher
+import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.merged
 import com.github.panpf.sketch.platformComponents
@@ -214,7 +217,7 @@ class SketchTest {
         // components: Fetcher, Decoder
         Sketch.Builder(context).build().apply {
             assertEquals(
-                expected = platformComponents(context).merged(defaultComponents()),
+                expected = platformComponents(context).merged(commonComponents()),
                 actual = components.registry
             )
         }
@@ -229,7 +232,7 @@ class SketchTest {
                 expected = ComponentRegistry {
                     addFetcher(TestFetcher.Factory())
                     addDecoder(TestDecoder.Factory())
-                }.merged(platformComponents(context).merged(defaultComponents())),
+                }.merged(platformComponents(context).merged(commonComponents())),
                 actual = components.registry
             )
         }
@@ -317,6 +320,8 @@ class SketchTest {
 
         // The tests for networkParallelismLimited and decodeParallelismLimited are located at
         //  'com.github.panpf.sketch.core.desktop.test.SketchDesktopTest.testBuilder'
+
+        // TODO test disableComponentDetector
     }
 
     @Test
@@ -415,7 +420,21 @@ class SketchTest {
     }
 
     @Test
-    fun testDefaultComponents() {
+    fun testCommonComponents() {
+        assertEquals(
+            expected = ComponentRegistry {
+                addFetcher(HttpUriFetcher.Factory())
+                addFetcher(Base64UriFetcher.Factory())
+                addFetcher(FileUriFetcher.Factory())
 
+                addRequestInterceptor(MemoryCacheRequestInterceptor())
+                addRequestInterceptor(EngineRequestInterceptor())
+
+                addDecodeInterceptor(ResultCacheDecodeInterceptor())
+                addDecodeInterceptor(TransformationDecodeInterceptor())
+                addDecodeInterceptor(EngineDecodeInterceptor())
+            },
+            actual = commonComponents()
+        )
     }
 }

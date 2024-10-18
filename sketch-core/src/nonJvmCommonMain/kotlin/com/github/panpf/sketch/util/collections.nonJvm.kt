@@ -27,6 +27,28 @@ internal actual fun <K : Any, V : Any> LruMutableMap(
 ): MutableMap<K, V> = LruMutableMap(LinkedHashMap(initialCapacity, loadFactor))
 
 /**
+ * Convert this [Map] to an immutable [Map].
+ *
+ * @see com.github.panpf.sketch.core.nonjvmcommon.test.util.CollectionsNonJvmTest.testToImmutableMap
+ */
+internal actual fun <K, V> Map<K, V>.toImmutableMap() = when {
+    isEmpty() -> emptyMap()
+    this is ImmutableMap -> this
+    else -> ImmutableMap(LinkedHashMap(this))
+}
+
+/**
+ * Convert this [List] to an immutable [List].
+ *
+ * @see com.github.panpf.sketch.core.nonjvmcommon.test.util.CollectionsNonJvmTest.testToImmutableList
+ */
+internal actual fun <T> List<T>.toImmutableList() = when {
+    isEmpty() -> emptyList()
+    this is ImmutableList -> this
+    else -> ImmutableList(ArrayList(this))
+}
+
+/**
  * [MutableMap] whose entries are ordered by least recently used
  *
  * @see com.github.panpf.sketch.core.nonjvmcommon.test.util.CollectionsNonJvmTest.testLruMutableMap
@@ -69,5 +91,72 @@ internal class LruMutableMap<K : Any, V : Any>(
             put(key, value)
             return oldValue
         }
+    }
+}
+
+/**
+ * Immutable [Map]
+ *
+ * @see com.github.panpf.sketch.core.nonjvmcommon.test.util.CollectionsNonJvmTest.testImmutableMap
+ */
+private class ImmutableMap<K, V>(
+    private val delegate: Map<K, V>,
+) : Map<K, V> by delegate {
+
+    override val entries: Set<Map.Entry<K, V>>
+        get() = delegate.entries.mapTo(mutableSetOf(), ::ImmutableEntry)
+
+    override fun equals(other: Any?) = delegate == other
+    override fun hashCode() = delegate.hashCode()
+    override fun toString() = delegate.toString()
+
+    private class ImmutableEntry<K, V>(
+        private val delegate: Map.Entry<K, V>,
+    ) : Map.Entry<K, V> by delegate {
+        override fun equals(other: Any?) = delegate == other
+        override fun hashCode() = delegate.hashCode()
+        override fun toString() = delegate.toString()
+    }
+}
+
+/**
+ * Immutable [List]
+ *
+ * @see com.github.panpf.sketch.core.nonjvmcommon.test.util.CollectionsNonJvmTest.testImmutableList
+ */
+private class ImmutableList<T>(
+    private val delegate: List<T>,
+) : List<T> by delegate {
+
+    override fun iterator(): Iterator<T> {
+        return ImmutableIterator(delegate.iterator())
+    }
+
+    override fun listIterator(): ListIterator<T> {
+        return ImmutableListIterator(delegate.listIterator())
+    }
+
+    override fun listIterator(index: Int): ListIterator<T> {
+        return ImmutableListIterator(delegate.listIterator(index))
+    }
+
+    override fun equals(other: Any?) = delegate == other
+    override fun hashCode() = delegate.hashCode()
+    override fun toString() = delegate.toString()
+
+    private class ImmutableIterator<T>(
+        private val delegate: Iterator<T>,
+    ) : Iterator<T> by delegate {
+        override fun equals(other: Any?) = delegate == other
+        override fun hashCode() = delegate.hashCode()
+        override fun toString() = delegate.toString()
+    }
+
+    private class ImmutableListIterator<T>(
+        private val delegate: ListIterator<T>,
+    ) : ListIterator<T> by delegate {
+        override fun equals(other: Any?) = delegate == other
+        override fun hashCode() = delegate.hashCode()
+        override fun toString() = delegate.toString()
     }
 }

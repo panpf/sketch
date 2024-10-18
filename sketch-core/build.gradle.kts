@@ -26,7 +26,6 @@ kotlin {
             api(libs.jetbrains.lifecycle.common)
         }
         androidMain.dependencies {
-            api(libs.androidx.annotation)
             api(libs.androidx.appcompat.resources)
             api(libs.androidx.core)
             api(libs.androidx.exifinterface)

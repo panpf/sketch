@@ -16,6 +16,8 @@
 
 package com.github.panpf.sketch.util
 
+import java.util.Collections
+
 /**
  * Create a [MutableMap] that orders its entries by most recently used to least recently used.
  *
@@ -25,3 +27,25 @@ internal actual fun <K : Any, V : Any> LruMutableMap(
     initialCapacity: Int,
     loadFactor: Float,
 ): MutableMap<K, V> = LinkedHashMap(initialCapacity, loadFactor, true)
+
+/**
+ * Convert this [Map] to an immutable [Map].
+ *
+ * @see com.github.panpf.sketch.core.jvmcommon.test.util.CollectionsJvmTest.testToImmutableMap
+ */
+internal actual fun <K, V> Map<K, V>.toImmutableMap(): Map<K, V> = when (size) {
+    0 -> emptyMap()
+    1 -> entries.first().let { (key, value) -> Collections.singletonMap(key, value) }
+    else -> Collections.unmodifiableMap(LinkedHashMap(this))
+}
+
+/**
+ * Convert this [List] to an immutable [List].
+ *
+ * @see com.github.panpf.sketch.core.jvmcommon.test.util.CollectionsJvmTest.testToImmutableList
+ */
+internal actual fun <T> List<T>.toImmutableList(): List<T> = when (size) {
+    0 -> emptyList()
+    1 -> Collections.singletonList(first())
+    else -> Collections.unmodifiableList(ArrayList(this))
+}

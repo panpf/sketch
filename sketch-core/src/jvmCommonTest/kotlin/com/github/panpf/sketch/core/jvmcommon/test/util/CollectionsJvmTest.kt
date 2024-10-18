@@ -12,10 +12,7 @@ class CollectionsJvmTest {
             expected = true,
             actual = LruMutableMap<String, String>() is LinkedHashMap
         )
-    }
 
-    @Test
-    fun test() {
         val cache = LruMutableMap<String, Int>()
         cache["a"] = 1
         cache["b"] = 2
@@ -47,5 +44,15 @@ class CollectionsJvmTest {
             actual = cache.entries
                 .joinToString(prefix = "{", postfix = "}") { "${it.key}=${it.value}" }
         )
+    }
+
+    @Test
+    fun testToImmutableMap() {
+        // TODO test
+    }
+
+    @Test
+    fun testToImmutableList() {
+        // TODO test
     }
 }

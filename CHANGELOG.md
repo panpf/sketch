@@ -64,7 +64,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * new: DrawableDecoder supports colorSpace
 * new: Added 'Drawable.asStateImage(Any)' and 'ColorDrawable.asStateImage()' extension functions
 * new: animatedTransformation now supports non-Android platforms
-* depend: Upgrade kotlin 2.0.21, ktor 3.0.0
+* new: Added ComponentDetector to support automatic detection and registration of components
+* depend: Upgrade kotlin 2.0.21
 
 # 4.0.0-alpha08
 

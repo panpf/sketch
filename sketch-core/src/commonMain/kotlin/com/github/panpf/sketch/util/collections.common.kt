@@ -50,3 +50,19 @@ internal inline fun <T> List<T>.forEachIndexedIndices(action: (index: Int, T) ->
         action(i, get(i))
     }
 }
+
+/**
+ * Convert this [Map] to an immutable [Map].
+ *
+ * @see com.github.panpf.sketch.core.jvmcommon.test.util.CollectionsJvmTest.testToImmutableMap
+ * @see com.github.panpf.sketch.core.nonjvmcommon.test.util.CollectionsNonJvmTest.testToImmutableMap
+ */
+internal expect fun <K, V> Map<K, V>.toImmutableMap(): Map<K, V>
+
+/**
+ * Convert this [List] to an immutable [List].
+ *
+ * @see com.github.panpf.sketch.core.jvmcommon.test.util.CollectionsJvmTest.testToImmutableList
+ * @see com.github.panpf.sketch.core.nonjvmcommon.test.util.CollectionsNonJvmTest.testToImmutableList
+ */
+internal expect fun <T> List<T>.toImmutableList(): List<T>

@@ -1,7 +1,6 @@
 [versions]
 android-plugin = "8.7.1"
 androidx-activity = "1.9.0"
-androidx-annotation = "1.8.0"
 androidx-appcompat = "1.7.0"
 androidx-compose = "1.6.7"
 androidx-constraintlayout = "2.1.4"
@@ -68,7 +67,6 @@ gradlePlugin-kotlinxCover = { module = "org.jetbrains.kotlinx:kover-gradle-plugi
 gradlePlugin-mavenPublish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "mavenpublish" }
 
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
-androidx-annotation = { module = "androidx.annotation:annotation", version.ref = "androidx-annotation" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-appcompat-resources = { module = "androidx.appcompat:appcompat-resources", version.ref = "androidx-appcompat" }
 androidx-compose-ui-test-junit4-android = { module = "androidx.compose.ui:ui-test-junit4-android", version.ref = "androidx-compose" }
