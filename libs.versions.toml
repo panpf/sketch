@@ -33,7 +33,7 @@ junit = "4.13.2"
 
 kotlin = "2.0.21"
 kotlinx-atomicfu = "0.25.0" # sync with kotlin version
-kotlinx-coroutines = "1.9.0"
+kotlinx-coroutines = "1.8.1" # ktor 3.0.0-wasm2 versions do not compatible 1.9.0
 kotlinx-cover = "0.8.3"
 kotlinx-datetime = "0.6.1"
 kotlinx-serialization-json = "1.7.0"
