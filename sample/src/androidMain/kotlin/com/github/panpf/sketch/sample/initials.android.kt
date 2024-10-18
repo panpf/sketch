@@ -12,9 +12,19 @@ import com.github.panpf.sketch.decode.supportKoralGif
 import com.github.panpf.sketch.decode.supportMovieGif
 import com.github.panpf.sketch.decode.supportVideoFrame
 import com.github.panpf.sketch.fetch.supportAppIcon
+import com.github.panpf.sketch.http.HurlStack
+import com.github.panpf.sketch.http.KtorStack
+import com.github.panpf.sketch.http.OkHttpStack
 
 actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
     val appSettings = context.appSettings
+    val httpStack = when (appSettings.httpClient.value) {
+        "Ktor" -> KtorStack()
+        "OkHttp" -> OkHttpStack.Builder().build()
+        "HttpURLConnection" -> HurlStack.Builder().build()
+        else -> throw IllegalArgumentException("Unknown httpClient: ${appSettings.httpClient.value}")
+    }
+    httpStack(httpStack)
     addComponents {
         supportAppIcon()
         supportApkIcon()

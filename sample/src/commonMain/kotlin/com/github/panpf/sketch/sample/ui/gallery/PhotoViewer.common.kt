@@ -34,7 +34,7 @@ import com.github.panpf.sketch.sample.resources.ic_save
 import com.github.panpf.sketch.sample.resources.ic_share
 import com.github.panpf.sketch.sample.resources.ic_zoom_in
 import com.github.panpf.sketch.sample.resources.ic_zoom_out
-import com.github.panpf.sketch.sample.ui.common.list.LoadState
+import com.github.panpf.sketch.sample.ui.common.AsyncImagePageState
 import com.github.panpf.sketch.sample.ui.components.MyDialog
 import com.github.panpf.sketch.sample.ui.components.MyZoomAsyncImage
 import com.github.panpf.sketch.sample.ui.components.rememberMyDialogState
@@ -84,9 +84,9 @@ fun PhotoViewer(
                 .padding(vertical = 30.dp)
         )
 
-        LoadState(
+        AsyncImagePageState(
+            imageState = imageState,
             modifier = Modifier.align(Alignment.Center),
-            imageState = imageState
         )
 
         MyDialog(infoDialogState) {

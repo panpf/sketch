@@ -5,7 +5,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.github.panpf.sketch.sample.data.api.Apis
-import com.github.panpf.sketch.sample.data.api.Response.Success
+import com.github.panpf.sketch.sample.data.api.Response
 import com.github.panpf.sketch.sample.data.api.pexels.PexelsPhoto
 import com.github.panpf.sketch.sample.ui.model.Photo
 
@@ -18,10 +18,18 @@ actual fun PexelsPhotoListPage(screen: Screen) {
         pageSize = 80,
         load = { pageStart: Int, pageSize: Int ->
             Apis.pexelsApi.curated(pageStart, pageSize).let { response ->
-                if (response is Success) {
-                    response.body.photos.map { it.toPhoto() }
-                } else {
-                    emptyList()
+                when (response) {
+                    is Response.Success -> {
+                        Result.success(response.body.photos.map { it.toPhoto() })
+                    }
+
+                    is Response.Error -> {
+                        Result.failure(response.throwable!!)
+                    }
+
+                    else -> {
+                        throw IllegalStateException("Unsupported response: $response")
+                    }
                 }
             }
         },

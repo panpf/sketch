@@ -17,19 +17,21 @@ actual fun LocalPhotoListPage(screen: Screen) {
         initialPageStart = 0,
         pageSize = 80,
         load = { pageStart: Int, _: Int ->
-            if (pageStart == 0) {
-                builtinImages().map {
-                    Photo(
-                        originalUrl = it.uri,
-                        mediumUrl = it.uri,
-                        thumbnailUrl = it.uri,
-                        width = it.size.width,
-                        height = it.size.height,
-                    )
+            Result.success(
+                if (pageStart == 0) {
+                    builtinImages().map {
+                        Photo(
+                            originalUrl = it.uri,
+                            mediumUrl = it.uri,
+                            thumbnailUrl = it.uri,
+                            width = it.size.width,
+                            height = it.size.height,
+                        )
+                    }
+                } else {
+                    emptyList()
                 }
-            } else {
-                emptyList()
-            }
+            )
         },
         calculateNextPageStart = { currentPageStart: Int, loadedPhotoSize: Int ->
             currentPageStart + loadedPhotoSize

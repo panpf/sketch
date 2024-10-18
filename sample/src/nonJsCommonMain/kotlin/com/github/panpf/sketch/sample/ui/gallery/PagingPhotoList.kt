@@ -32,7 +32,7 @@ import app.cash.paging.compose.collectAsLazyPagingItems
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.ability.bindPauseLoadWhenScrolling
 import com.github.panpf.sketch.sample.appSettings
-import com.github.panpf.sketch.sample.ui.common.list.PagingAppendState
+import com.github.panpf.sketch.sample.ui.common.PagingAppendState
 import com.github.panpf.sketch.sample.ui.components.VerticalScrollbarCompat
 import com.github.panpf.sketch.sample.ui.model.Photo
 import kotlinx.coroutines.flow.Flow

@@ -23,18 +23,18 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.LocalPlatformContext
+import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.ability.dataFromLogo
 import com.github.panpf.sketch.ability.progressIndicator
-import com.github.panpf.sketch.rememberAsyncImageState
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.decode.Decoder
+import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
-import com.github.panpf.sketch.sample.ui.common.list.LoadState
+import com.github.panpf.sketch.sample.ui.common.AsyncImagePageState
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -112,9 +112,9 @@ class DecoderTestScreen : BaseScreen() {
                                         .progressIndicator(imageState, progressPainter)
                                 )
 
-                                LoadState(
+                                AsyncImagePageState(
+                                    imageState = imageState,
                                     modifier = Modifier.align(Alignment.Center),
-                                    imageState = imageState
                                 )
                             }
                         } else {

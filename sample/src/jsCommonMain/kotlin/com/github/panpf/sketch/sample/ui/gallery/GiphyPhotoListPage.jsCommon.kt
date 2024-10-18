@@ -19,10 +19,18 @@ actual fun GiphyPhotoListPage(screen: Screen) {
         pageSize = 80,
         load = { pageStart: Int, pageSize: Int ->
             Apis.giphyApi.trending(pageStart, pageSize).let { response ->
-                if (response is Response.Success) {
-                    response.body.dataList?.map { it.toPhoto() } ?: emptyList()
-                } else {
-                    emptyList()
+                when (response) {
+                    is Response.Success -> {
+                        Result.success(response.body.dataList?.map { it.toPhoto() } ?: emptyList())
+                    }
+
+                    is Response.Error -> {
+                        Result.failure(response.throwable!!)
+                    }
+
+                    else -> {
+                        throw IllegalStateException("Unsupported response: $response")
+                    }
                 }
             }
         },

@@ -34,6 +34,9 @@ abstract class BaseApi(val client: HttpClient, val baseUrl: String) {
         val result = runCatching {
             client.request(request)
         }
+        if (result.isFailure) {
+            println("Api request failure. ${request.url}. result: $result")
+        }
         val rawResponse = result.getOrNull()
         return when {
             rawResponse == null -> Response.Error(null, result.exceptionOrNull())

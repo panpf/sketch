@@ -35,7 +35,8 @@ import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.ability.bindPauseLoadWhenScrolling
 import com.github.panpf.sketch.sample.appSettings
-import com.github.panpf.sketch.sample.ui.common.list.AppendState
+import com.github.panpf.sketch.sample.ui.common.AppendState
+import com.github.panpf.sketch.sample.ui.common.PageState
 import com.github.panpf.sketch.sample.ui.components.VerticalScrollbarCompat
 import com.github.panpf.sketch.sample.ui.model.Photo
 import kotlinx.coroutines.flow.collectLatest
@@ -48,7 +49,7 @@ fun PhotoList(
     gridCellsMinSize: Dp = 100.dp,
     initialPageStart: Int = 0,
     pageSize: Int = 80,
-    load: suspend (pageStart: Int, pageSize: Int) -> List<Photo>,
+    load: suspend (pageStart: Int, pageSize: Int) -> Result<List<Photo>>,
     calculateNextPageStart: (currentPageStart: Int, loadedPhotoSize: Int) -> Int,
     onClick: (items: List<Photo>, photo: Photo, index: Int) -> Unit,
 ) {
@@ -59,20 +60,24 @@ fun PhotoList(
     var nextPageStart: Int? by remember { mutableStateOf(null) }
     var refreshing: Boolean by remember { mutableStateOf(false) }
     var appendState: AppendState? by remember { mutableStateOf(null) }
+    var pageState by remember { mutableStateOf(null as PageState?) }
     LaunchedEffect(Unit) {
-        snapshotFlow { pageStart }.collectLatest {
-            val finalPageStart = it.takeIf { it >= 0 } ?: initialPageStart  // refresh
+        snapshotFlow { pageStart }.collectLatest { pageStart ->
+            val finalPageStart = pageStart.takeIf { it >= 0 } ?: initialPageStart  // refresh
             refreshing = finalPageStart == initialPageStart
-            appendState = if (finalPageStart > initialPageStart) AppendState.LOADING else null
-            val loadedPhotos = load(finalPageStart, pageSize)
-            photos = if (it == initialPageStart) {
-                loadedPhotos
+            appendState = if (!refreshing) AppendState.Loading else null
+            val listResult = load(finalPageStart, pageSize)
+            if (listResult.isSuccess) {
+                val loadedPhotos = listResult.getOrThrow()
+                photos = if (refreshing) loadedPhotos else photos + loadedPhotos
+                nextPageStart = calculateNextPageStart(pageStart, loadedPhotos.size)
+                appendState = if (!refreshing && loadedPhotos.isEmpty()) AppendState.End else null
+                pageState = if (refreshing && photos.isEmpty()) PageState.Empty() else null
             } else {
-                photos + loadedPhotos
+                appendState = if (!refreshing) AppendState.Error() else null
+                pageState =
+                    if (refreshing) PageState.Error(listResult.exceptionOrNull()?.message) else null
             }
-            nextPageStart = calculateNextPageStart(it, loadedPhotos.size)
-            appendState = if (finalPageStart > initialPageStart && loadedPhotos.isEmpty())
-                AppendState.END else AppendState.LOADING
             refreshing = false
         }
     }
@@ -91,7 +96,9 @@ fun PhotoList(
             val staggeredGridState = rememberLazyStaggeredGridState()
             LaunchedEffect(staggeredGridState.layoutInfo, photos) {
                 val nextPageStart1 = nextPageStart
-                if (nextPageStart1 != null && staggeredGridState.layoutInfo.visibleItemsInfo.last().index == photos.size - 1) {
+                if (nextPageStart1 != null
+                    && staggeredGridState.layoutInfo.visibleItemsInfo.last().index == photos.size - 1
+                ) {
                     pageStart = nextPageStart1
                 }
             }
@@ -126,6 +133,8 @@ fun PhotoList(
             state = pullRefreshState,
             modifier = Modifier.align(Alignment.TopCenter)
         )
+
+        PageState(pageState, Modifier.align(Alignment.Center))
     }
 }
 
@@ -171,9 +180,7 @@ private fun PhotoSquareGrid(
                     span = { GridItemSpan(this.maxLineSpan) },
                     contentType = 2
                 ) {
-                    AppendState(appendState) {
-
-                    }
+                    AppendState(appendState)
                 }
             }
         }
@@ -227,9 +234,7 @@ private fun PhotoStaggeredGrid(
                     span = StaggeredGridItemSpan.FullLine,
                     contentType = 2
                 ) {
-                    AppendState(appendState) {
-
-                    }
+                    AppendState(appendState)
                 }
             }
         }

@@ -32,7 +32,7 @@ import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
-import com.github.panpf.sketch.sample.ui.common.list.LoadState
+import com.github.panpf.sketch.sample.ui.common.AsyncImagePageState
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -107,9 +107,9 @@ class FetcherTestScreen : BaseScreen() {
                                     .progressIndicator(imageState, progressPainter)
                             )
 
-                            LoadState(
+                            AsyncImagePageState(
+                                imageState = imageState,
                                 modifier = Modifier.align(Alignment.Center),
-                                imageState = imageState
                             )
                         }
                     }
