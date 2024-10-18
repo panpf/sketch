@@ -65,13 +65,16 @@ kotlin {
             implementation(projects.sketchComposeResources)
             implementation(projects.sketchExtensionsCompose)
             implementation(projects.sketchExtensionsComposeResources)
-            implementation(projects.sketchHttpKtor)
+            implementation(projects.sketchHttpKtor3)
+//            implementation(projects.sketchHttpKtor2)
             implementation(projects.sketchSvg)
             implementation(compose.components.resources)
             implementation(compose.material)    // pull refresh
             implementation(compose.material3)
-            implementation(libs.ktor.client.contentNegotiation)
-            implementation(libs.ktor.serialization.kotlinxJson)
+            implementation(libs.ktor3.client.contentNegotiation)
+//            implementation(libs.ktor2.client.contentNegotiation)
+            implementation(libs.ktor3.serialization.kotlinxJson)
+//            implementation(libs.ktor2.serialization.kotlinxJson)
             implementation(libs.panpf.zoomimage.compose)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.screenModel)
@@ -100,7 +103,8 @@ kotlin {
             implementation(libs.google.material)
             implementation(libs.google.flexbox)
             implementation(libs.kotlinx.serialization.json)
-            implementation(libs.ktor.client.android)
+            implementation(libs.ktor3.client.android)
+//            implementation(libs.ktor2.client.android)
             implementation(libs.moko.permissions)
             implementation(libs.panpf.assemblyadapter4.pager2)
             implementation(libs.panpf.assemblyadapter4.recycler)
@@ -122,9 +126,11 @@ kotlin {
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(compose.preview) // Only available on Android and desktop platforms
-            implementation(libs.ktor.client.java)
+            implementation(libs.ktor3.client.java)
+//            implementation(libs.ktor2.client.java)
         }
         jvmCommonMain.dependencies {
+            implementation(projects.sketchHttpHurl)
             implementation(projects.sketchHttpOkhttp)
         }
         iosMain {
@@ -133,14 +139,19 @@ kotlin {
             resources.srcDirs("../internal/images/files")
             dependencies {
                 implementation(libs.moko.permissions)
-                implementation(libs.ktor.client.darwin)
+                implementation(libs.ktor3.client.darwin)
+//                implementation(libs.ktor2.client.darwin)
             }
         }
         jsMain.dependencies {
-            implementation(libs.ktor.client.js)
+            implementation(libs.ktor3.client.js)
+//            implementation(libs.ktor2.client.js)
         }
         wasmJsMain.dependencies {
-            implementation(libs.ktor.client.wasmJs)
+            implementation(libs.ktor3.client.wasmJs)
+//            implementation(libs.ktor2.client.wasmJs)
+//            implementation(libs.ktor2.client.contentNegotiation.wasm)
+//            implementation(libs.ktor2.serialization.kotlinxJson.wasm)
         }
         nonJsCommonMain.dependencies {
             implementation(libs.androidx.datastore.core.okio)

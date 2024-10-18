@@ -9,7 +9,6 @@ import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.defaultComponents
-import com.github.panpf.sketch.defaultHttpStack
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.merged
 import com.github.panpf.sketch.platformComponents
@@ -203,7 +202,7 @@ class SketchTest {
 
         // httpStack
         Sketch.Builder(context).build().apply {
-            assertEquals(defaultHttpStack(), httpStack)
+            assertEquals(null, httpStack)
         }
 
         Sketch.Builder(context).apply {

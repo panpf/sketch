@@ -115,7 +115,7 @@ class Sketch private constructor(options: Options) {
     val resultCache: DiskCache by options.resultCacheLazy
 
     /** Execute HTTP request */
-    val httpStack: HttpStack = options.httpStack
+    val httpStack: HttpStack? = options.httpStack
 
     /** Fill unset [ImageRequest] value */
     val globalImageOptions: ImageOptions? = options.globalImageOptions
@@ -261,7 +261,7 @@ class Sketch private constructor(options: Options) {
         val memoryCacheLazy: Lazy<MemoryCache>,
         val downloadCacheLazy: Lazy<DiskCache>,
         val resultCacheLazy: Lazy<DiskCache>,
-        val httpStack: HttpStack,
+        val httpStack: HttpStack?,
         val componentRegistry: ComponentRegistry,
         val globalImageOptions: ImageOptions?,
         val networkParallelismLimited: Int,
@@ -463,7 +463,7 @@ class Sketch private constructor(options: Options) {
                         }
                     }.build()
                 },
-                httpStack = httpStack ?: defaultHttpStack(),
+                httpStack = httpStack,
                 componentRegistry = componentRegistry1,
                 globalImageOptions = globalImageOptions,
                 networkParallelismLimited = networkParallelismLimited ?: 10,
@@ -503,11 +503,3 @@ internal fun defaultComponents(): ComponentRegistry {
         addDecodeInterceptor(EngineDecodeInterceptor())
     }
 }
-
-/**
- * Provide a default [HttpStack] for network requests
- *
- * @see com.github.panpf.sketch.core.jvmcommon.test.SketchJvmTest.testDefaultHttpStack
- * @see com.github.panpf.sketch.core.nonjvmcommon.test.SketchNonJvmTest.testDefaultHttpStack
- */
-internal expect fun defaultHttpStack(): HttpStack

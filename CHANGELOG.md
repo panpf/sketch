@@ -53,6 +53,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
   SkiaAnimatedImagePainter renamed to AnimatedImagePainter
 * change: ImageRequest's registerListener and registerProgressListener methods renamed to
   addListener and addProgressListener
+* change: Remove the sketch-http-core module, add the sketch-http-hurl module, rename the
+  sketch-http-ktor module to sketch-http-ktor2, add the sketch-http-ktor3 module
 * improve: Improve IconDrawable, support fixed-size background and restrict icons to have fixed
   sizes or specify iconSize
 * improve: Improve IconPainter, support fixed-size background and restrict icons to have fixed

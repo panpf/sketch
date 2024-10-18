@@ -11,7 +11,7 @@ androidLibrary(nameSpace = "com.github.panpf.sketch.http.okhttp")
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(projects.sketchHttpCore)
+            api(projects.sketchCore)
             api(libs.okhttp3)
         }
 

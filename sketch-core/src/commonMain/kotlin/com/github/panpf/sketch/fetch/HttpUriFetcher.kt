@@ -92,6 +92,10 @@ class HttpUriFetcher constructor(
     }
 
     private suspend fun executeFetch(): Result<FetchResult> {
+        val httpStack = requireNotNull(sketch.httpStack) {
+            "You must configure HttpStack to load images from the network. https://github.com/panpf/sketch/blob/main/docs/wiki/http_stack.md"
+        }
+
         /* Check depth */
         val depth = request.depthHolder.depth
         if (depth >= Depth.LOCAL) {
@@ -108,7 +112,7 @@ class HttpUriFetcher constructor(
 
             // open connection
             val response = try {
-                sketch.httpStack.getResponse(url, request.httpHeaders, request.extras)
+                httpStack.getResponse(url, request.httpHeaders, request.extras)
             } catch (e: Throwable) {
                 return@withContext Result.failure(e)
             }

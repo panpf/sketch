@@ -20,7 +20,9 @@ androidLibrary(nameSpace = "com.github.panpf.sketch.core") {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(projects.sketchHttpCore)
+            api(libs.kotlin.stdlib)
+            api(libs.kotlinx.coroutines.core)
+            api(libs.okio)
             api(libs.jetbrains.lifecycle.common)
         }
         androidMain.dependencies {
@@ -36,9 +38,6 @@ kotlin {
         }
         nonAndroidMain.dependencies {
             api(libs.skiko)
-        }
-        nonJvmCommonMain.dependencies {
-            api(projects.sketchHttpKtor)
         }
 
         commonTest.dependencies {
