@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:OptIn(InternalCoroutinesApi::class, InternalCoroutinesApi::class)
-
 package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.ComponentRegistry
@@ -28,7 +26,6 @@ import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
-import kotlinx.coroutines.InternalCoroutinesApi
 
 /**
  * Adds SVG support
