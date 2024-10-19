@@ -437,7 +437,7 @@ class Sketch private constructor(
             val finalFileSystem = fileSystem ?: defaultFileSystem()
             val componentDetector = ComponentDetector
             val componentRegistry = componentRegistry
-                .merged(componentDetector.toComponentRegistry())
+                .merged(componentDetector.toComponentRegistry(context))
                 .merged(platformComponents(context))
                 .merged(commonComponents())
                 ?: ComponentRegistry.Builder().build()
@@ -483,14 +483,14 @@ class Sketch private constructor(
             )
         }
 
-        private fun ComponentDetector.toComponentRegistry(): ComponentRegistry? {
+        private fun ComponentDetector.toComponentRegistry(context: PlatformContext): ComponentRegistry? {
             if (!disabledComponentDetector) return null
             return ComponentRegistry {
                 fetchers.forEach { fetcherComponent ->
-                    fetcherComponent.factory()?.let { factory -> addFetcher(factory) }
+                    fetcherComponent.factory(context)?.let { factory -> addFetcher(factory) }
                 }
                 decoders.forEach { decoderComponent ->
-                    decoderComponent.factory()?.let { factory -> addDecoder(factory) }
+                    decoderComponent.factory(context)?.let { factory -> addDecoder(factory) }
                 }
             }
         }

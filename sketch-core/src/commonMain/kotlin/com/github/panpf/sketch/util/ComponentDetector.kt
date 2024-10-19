@@ -40,11 +40,11 @@ expect object ComponentDetector {
 }
 
 expect interface FetcherComponent {
-    fun factory(): Fetcher.Factory?
+    fun factory(context: PlatformContext): Fetcher.Factory?
 }
 
 expect interface DecoderComponent {
-    fun factory(): Decoder.Factory?
+    fun factory(context: PlatformContext): Decoder.Factory?
 }
 
 expect interface HttpStackComponent {

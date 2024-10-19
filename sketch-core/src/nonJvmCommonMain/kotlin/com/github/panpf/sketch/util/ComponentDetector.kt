@@ -53,11 +53,11 @@ actual object ComponentDetector {
 }
 
 actual interface FetcherComponent {
-    actual fun factory(): Fetcher.Factory?
+    actual fun factory(context: PlatformContext): Fetcher.Factory?
 }
 
 actual interface DecoderComponent {
-    actual fun factory(): Decoder.Factory?
+    actual fun factory(context: PlatformContext): Decoder.Factory?
 }
 
 actual interface HttpStackComponent {

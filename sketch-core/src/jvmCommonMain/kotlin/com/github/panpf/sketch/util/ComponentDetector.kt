@@ -63,12 +63,12 @@ actual object ComponentDetector {
 
 @Keep
 actual interface FetcherComponent {
-    actual fun factory(): Fetcher.Factory?
+    actual fun factory(context: PlatformContext): Fetcher.Factory?
 }
 
 @Keep
 actual interface DecoderComponent {
-    actual fun factory(): Decoder.Factory?
+    actual fun factory(context: PlatformContext): Decoder.Factory?
 }
 
 @Keep

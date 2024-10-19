@@ -22,4 +22,4 @@ import com.github.panpf.sketch.util.ComponentDetector
 @OptIn(ExperimentalStdlibApi::class)
 @EagerInitialization
 @Deprecated("", level = DeprecationLevel.HIDDEN)
-val initHook: Any = ComponentDetector.register(KtorStackComponent())
+val ktorStackComponentInitHook: Any = ComponentDetector.register(KtorStackComponent())
