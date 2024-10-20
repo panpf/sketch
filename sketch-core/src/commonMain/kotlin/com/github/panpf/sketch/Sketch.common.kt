@@ -28,8 +28,6 @@ import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
-import com.github.panpf.sketch.fetch.HttpUriFetcher
-import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
@@ -42,7 +40,7 @@ import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
-import com.github.panpf.sketch.util.ComponentDetector
+import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.DownloadData
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level
@@ -95,8 +93,6 @@ class Sketch private constructor(
     memoryCacheLazy: Lazy<MemoryCache>,
     downloadCacheLazy: Lazy<DiskCache>,
     resultCacheLazy: Lazy<DiskCache>,
-    /** Execute HTTP request */
-    val httpStack: HttpStack?,
     componentRegistry: ComponentRegistry,
     /** Fill unset [ImageRequest] value */
     val globalImageOptions: ImageOptions?,
@@ -155,7 +151,6 @@ class Sketch private constructor(
             buildString {
                 append("Configuration. ")
                 appendLine().append("logger: $logger")
-                appendLine().append("httpStack: $httpStack")
                 appendLine().append("memoryCache: $memoryCache")
                 appendLine().append("resultCache: $resultCache")
                 appendLine().append("downloadCache: $downloadCache")
@@ -266,9 +261,8 @@ class Sketch private constructor(
         private var resultCacheLazy: Lazy<DiskCache>? = null
         private var resultCacheOptionsLazy: Lazy<DiskCache.Options>? = null
 
-        private var disabledComponentDetector: Boolean = false
+        private var disabledComponentLoader: Boolean = false
         private var componentRegistry: ComponentRegistry? = null
-        private var httpStack: HttpStack? = null
         private var globalImageOptions: ImageOptions? = null
         private var networkParallelismLimited: Int? = null
         private var decodeParallelismLimited: Int? = null
@@ -397,17 +391,10 @@ class Sketch private constructor(
             addComponents(ComponentRegistry.Builder().apply(configBlock).build())
 
         /**
-         * Disable the component detector. This will prevent Sketch from automatically detecting and registering components.
+         * Disable the component loader. This will prevent Sketch from automatically detecting and registering components.
          */
-        fun disableComponentDetector(disabled: Boolean = true): Builder = apply {
-            this.disabledComponentDetector = disabled
-        }
-
-        /**
-         * Set the [HttpStack] used for network requests.
-         */
-        fun httpStack(httpStack: HttpStack?): Builder = apply {
-            this.httpStack = httpStack
+        fun disableComponentLoader(disabled: Boolean = true): Builder = apply {
+            this.disabledComponentLoader = disabled
         }
 
         /**
@@ -435,9 +422,9 @@ class Sketch private constructor(
             val context = context.application
             val logger = this.logger ?: Logger()
             val finalFileSystem = fileSystem ?: defaultFileSystem()
-            val componentDetector = ComponentDetector
+            val componentLoader = ComponentLoader
             val componentRegistry = componentRegistry
-                .merged(componentDetector.toComponentRegistry(context))
+                .merged(componentLoader.toComponentRegistry(context))
                 .merged(platformComponents(context))
                 .merged(commonComponents())
                 ?: ComponentRegistry.Builder().build()
@@ -451,13 +438,6 @@ class Sketch private constructor(
                     }
                 }.build()
             }
-            val httpStacks = componentDetector.httpStacks
-            require(httpStacks.size <= 1) {
-                "There can be at most one HttpStack, but ComponentDetector found ${httpStacks.size}. " +
-                        "httpStacks=$httpStacks"
-            }
-            val httpStack =
-                httpStack ?: httpStacks.firstOrNull()?.httpStack(context)
             val resultCacheLazy = resultCacheLazy ?: lazy {
                 val options = resultCacheOptionsLazy?.value
                 DiskCache.ResultBuilder(this.context, finalFileSystem).apply {
@@ -475,7 +455,6 @@ class Sketch private constructor(
                 memoryCacheLazy = memoryCacheLazy,
                 downloadCacheLazy = downloadCacheLazy,
                 resultCacheLazy = resultCacheLazy,
-                httpStack = httpStack,
                 componentRegistry = componentRegistry,
                 globalImageOptions = globalImageOptions,
                 networkParallelismLimited = networkParallelismLimited,
@@ -483,8 +462,8 @@ class Sketch private constructor(
             )
         }
 
-        private fun ComponentDetector.toComponentRegistry(context: PlatformContext): ComponentRegistry? {
-            if (!disabledComponentDetector) return null
+        private fun ComponentLoader.toComponentRegistry(context: PlatformContext): ComponentRegistry? {
+            if (!disabledComponentLoader) return null
             return ComponentRegistry {
                 fetchers.forEach { fetcherComponent ->
                     fetcherComponent.factory(context)?.let { factory -> addFetcher(factory) }
@@ -513,7 +492,6 @@ internal expect fun platformComponents(context: PlatformContext): ComponentRegis
  * @see com.github.panpf.sketch.core.common.test.SketchTest.testCommonComponents
  */
 internal fun commonComponents(): ComponentRegistry = ComponentRegistry {
-    addFetcher(HttpUriFetcher.Factory())
     addFetcher(Base64UriFetcher.Factory())
     addFetcher(FileUriFetcher.Factory())
 

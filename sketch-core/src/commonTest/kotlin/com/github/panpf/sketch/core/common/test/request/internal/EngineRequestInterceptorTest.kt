@@ -22,6 +22,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestInterceptorChain
 import com.github.panpf.sketch.test.utils.TestHttpStack
+import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.asOrThrow
@@ -37,7 +38,9 @@ class EngineRequestInterceptorTest {
     @Test
     fun testIntercept() = runTest {
         runInNewSketchWithUse({
-            httpStack(TestHttpStack(it))
+            components {
+                addFetcher(TestHttpUriFetcher.Factory(it))
+            }
         }) { context, sketch ->
             val executeRequest: suspend (ImageRequest) -> ImageData = { request ->
                 val chain = RequestInterceptorChain(

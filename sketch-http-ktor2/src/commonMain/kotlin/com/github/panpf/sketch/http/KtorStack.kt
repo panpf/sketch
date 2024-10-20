@@ -30,7 +30,7 @@ import io.ktor.utils.io.cancel
 /**
  * Ktor implementation of HttpStack
  *
- * @see com.github.panpf.sketch.http.ktor2.common.test.KtorStackTest
+ * @see com.github.panpf.sketch.http.ktor2.common.test.http.KtorStackTest
  */
 class KtorStack(val client: HttpClient = HttpClient()) : HttpStack {
 

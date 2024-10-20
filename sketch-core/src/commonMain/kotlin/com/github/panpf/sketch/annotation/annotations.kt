@@ -21,7 +21,7 @@ package com.github.panpf.sketch.annotation
  */
 @MustBeDocumented
 @Retention(value = AnnotationRetention.SOURCE)
-internal annotation class MainThread
+annotation class MainThread
 
 /**
  * Marks declarations that should only be called from a worker thread (on platforms that have
@@ -29,7 +29,7 @@ internal annotation class MainThread
  */
 @MustBeDocumented
 @Retention(value = AnnotationRetention.SOURCE)
-internal annotation class WorkerThread
+annotation class WorkerThread
 
 /**
  * Marks a statement that can be called from any thread (on platforms that have

@@ -17,6 +17,7 @@ import com.github.panpf.sketch.request.target
 import com.github.panpf.sketch.test.singleton.request.execute
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.TestHttpStack
+import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.util.Size
@@ -362,7 +363,9 @@ class AbsAbilityImageViewTest {
     @Test
     fun testRequestProgressListenerObserver() = runTest {
         runInNewSketchWithUse({
-            httpStack(TestHttpStack(it))
+            components {
+                addFetcher(TestHttpUriFetcher.Factory(it))
+            }
         }) { _, sketch ->
             ViewAbilityTestActivity::class.launchActivity().use { activityScenario ->
                 val activity = activityScenario.getActivitySync()

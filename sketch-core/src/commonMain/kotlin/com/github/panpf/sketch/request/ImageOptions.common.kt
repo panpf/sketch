@@ -22,9 +22,6 @@ import com.github.panpf.sketch.decode.BitmapColorSpace
 import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
-import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.http.isNotEmpty
-import com.github.panpf.sketch.http.merged
 import com.github.panpf.sketch.merged
 import com.github.panpf.sketch.resize.FixedSizeResolver
 import com.github.panpf.sketch.resize.Precision
@@ -70,14 +67,6 @@ data class ImageOptions(
      * A map of generic values that can be used to pass custom data to [Fetcher] and [Decoder].
      */
     val extras: Extras?,
-
-
-    /**
-     * Set headers for http requests
-     *
-     * @see com.github.panpf.sketch.http.HurlStack.getResponse
-     */
-    val httpHeaders: HttpHeaders?,
 
     /**
      * Http download cache policy
@@ -219,7 +208,6 @@ data class ImageOptions(
     fun isEmpty(): Boolean =
         depthHolder == null
                 && extras?.isEmpty() != false
-                && httpHeaders?.isEmpty() != false
                 && downloadCachePolicy == null
                 && colorType == null
                 && colorSpace == null
@@ -244,7 +232,6 @@ data class ImageOptions(
         private var depthHolder: DepthHolder? = null
         private var extrasBuilder: Extras.Builder? = null
 
-        private var httpHeadersBuilder: HttpHeaders.Builder? = null
         private var downloadCachePolicy: CachePolicy? = null
 
         private var colorType: BitmapColorType? = null
@@ -273,7 +260,6 @@ data class ImageOptions(
             this.depthHolder = options.depthHolder
             this.extrasBuilder = options.extras?.newBuilder()
 
-            this.httpHeadersBuilder = options.httpHeaders?.newBuilder()
             this.downloadCachePolicy = options.downloadCachePolicy
 
             this.colorType = options.colorType
@@ -332,39 +318,6 @@ data class ImageOptions(
          */
         fun removeExtra(key: String): Builder = apply {
             this.extrasBuilder?.remove(key)
-        }
-
-
-        /**
-         * Bulk set headers for any network request for this request
-         */
-        fun httpHeaders(httpHeaders: HttpHeaders?): Builder = apply {
-            this.httpHeadersBuilder = httpHeaders?.newBuilder()
-        }
-
-        /**
-         * Set a header for any network operations performed by this request.
-         */
-        fun httpHeader(name: String, value: String): Builder = apply {
-            this.httpHeadersBuilder = (this.httpHeadersBuilder ?: HttpHeaders.Builder()).apply {
-                set(name, value)
-            }
-        }
-
-        /**
-         * Add a header for any network operations performed by this request.
-         */
-        fun addHttpHeader(name: String, value: String): Builder = apply {
-            this.httpHeadersBuilder = (this.httpHeadersBuilder ?: HttpHeaders.Builder()).apply {
-                add(name, value)
-            }
-        }
-
-        /**
-         * Remove all network headers with the key [name].
-         */
-        fun removeHttpHeader(name: String): Builder = apply {
-            this.httpHeadersBuilder?.removeAll(name)
         }
 
         /**
@@ -686,9 +639,6 @@ data class ImageOptions(
                 extrasBuilder = extrasBuilder?.build().merged(it)?.newBuilder()
             }
 
-            options.httpHeaders?.let {
-                httpHeadersBuilder = httpHeadersBuilder?.build().merged(it)?.newBuilder()
-            }
             if (this.downloadCachePolicy == null) {
                 this.downloadCachePolicy = options.downloadCachePolicy
             }
@@ -749,12 +699,10 @@ data class ImageOptions(
 
         fun build(): ImageOptions {
             val extras = extrasBuilder?.build()?.takeIf { it.isNotEmpty() }
-            val httpHeaders = httpHeadersBuilder?.build()?.takeIf { it.isNotEmpty() }
             val transformations = transformations?.takeIf { it.isNotEmpty() }
             return ImageOptions(
                 depthHolder = depthHolder,
                 extras = extras,
-                httpHeaders = httpHeaders,
                 downloadCachePolicy = downloadCachePolicy,
                 resultCachePolicy = resultCachePolicy,
                 colorType = colorType,

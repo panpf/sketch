@@ -102,7 +102,7 @@ internal expect fun requiredMainThread()
  * @see com.github.panpf.sketch.core.desktop.test.util.CoreUtilsDesktopTest.testRequiredWorkThread
  * @see com.github.panpf.sketch.core.jscommon.test.util.CoreUtilsJsCommonTest.testRequiredWorkThread
  */
-internal expect fun requiredWorkThread()
+expect fun requiredWorkThread()
 
 /**
  * Gets the completed results, or null if not yet completed
@@ -378,9 +378,6 @@ fun ImageRequest?.difference(other: ImageRequest?): String {
     if (extras != other.extras) {
         return "extras different: '${extras}' vs '${other.extras}'"
     }
-    if (httpHeaders != other.httpHeaders) {
-        return "httpHeaders different: '${httpHeaders}' vs '${other.httpHeaders}'"
-    }
     if (downloadCachePolicy != other.downloadCachePolicy) {
         return "downloadCachePolicy different: '${downloadCachePolicy}' vs '${other.downloadCachePolicy}'"
     }
@@ -458,9 +455,6 @@ fun ImageOptions?.difference(other: ImageOptions?): String {
     }
     if (extras != other.extras) {
         return "extras different: '${extras}' vs '${other.extras}'"
-    }
-    if (httpHeaders != other.httpHeaders) {
-        return "httpHeaders different: '${httpHeaders}' vs '${other.httpHeaders}'"
     }
     if (downloadCachePolicy != other.downloadCachePolicy) {
         return "downloadCachePolicy different: '${downloadCachePolicy}' vs '${other.downloadCachePolicy}'"

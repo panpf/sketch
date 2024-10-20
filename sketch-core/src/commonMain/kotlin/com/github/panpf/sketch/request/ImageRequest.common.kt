@@ -25,7 +25,6 @@ import com.github.panpf.sketch.decode.BitmapColorSpace
 import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
-import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.merged
 import com.github.panpf.sketch.request.ImageOptions.Builder
 import com.github.panpf.sketch.request.internal.PairListener
@@ -133,14 +132,6 @@ data class ImageRequest(
      * A map of generic values that can be used to pass custom data to [Fetcher] and [Decoder].
      */
     val extras: Extras?,
-
-
-    /**
-     * Set headers for http requests
-     *
-     * @see com.github.panpf.sketch.http.HurlStack.getResponse
-     */
-    val httpHeaders: HttpHeaders?,
 
     /**
      * Http download cache policy
@@ -428,35 +419,6 @@ data class ImageRequest(
          */
         fun removeExtra(key: String): Builder = apply {
             definedOptionsBuilder.removeExtra(key)
-        }
-
-
-        /**
-         * Bulk set headers for any network request for this request
-         */
-        fun httpHeaders(httpHeaders: HttpHeaders?): Builder = apply {
-            definedOptionsBuilder.httpHeaders(httpHeaders)
-        }
-
-        /**
-         * Set a header for any network operations performed by this request.
-         */
-        fun httpHeader(name: String, value: String): Builder = apply {
-            definedOptionsBuilder.httpHeader(name, value)
-        }
-
-        /**
-         * Add a header for any network operations performed by this request.
-         */
-        fun addHttpHeader(name: String, value: String): Builder = apply {
-            definedOptionsBuilder.addHttpHeader(name, value)
-        }
-
-        /**
-         * Remove all network headers with the key [name].
-         */
-        fun removeHttpHeader(name: String): Builder = apply {
-            definedOptionsBuilder.removeHttpHeader(name)
         }
 
         /**
@@ -787,7 +749,6 @@ data class ImageRequest(
             val finalOptions = definedOptions.merged(defaultOptions)
             val depthHolder = finalOptions.depthHolder ?: DepthHolder.Default
             val extras = finalOptions.extras
-            val httpHeaders = finalOptions.httpHeaders
             val downloadCachePolicy = finalOptions.downloadCachePolicy ?: CachePolicy.ENABLED
             val resultCachePolicy = finalOptions.resultCachePolicy ?: CachePolicy.ENABLED
             val colorType = finalOptions.colorType
@@ -821,7 +782,6 @@ data class ImageRequest(
                 definedRequestOptions = definedRequestOptions,
                 depthHolder = depthHolder,
                 extras = extras,
-                httpHeaders = httpHeaders,
                 downloadCachePolicy = downloadCachePolicy,
                 resultCachePolicy = resultCachePolicy,
                 colorType = colorType,

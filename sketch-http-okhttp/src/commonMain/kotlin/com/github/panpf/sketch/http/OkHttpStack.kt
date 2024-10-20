@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 /**
  * OkHttp implementation of [HttpStack]
  *
- * @see com.github.panpf.sketch.http.okhttp.common.test.OkHttpStackTest
+ * @see com.github.panpf.sketch.http.okhttp.common.test.http.OkHttpStackTest
  */
 class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
 

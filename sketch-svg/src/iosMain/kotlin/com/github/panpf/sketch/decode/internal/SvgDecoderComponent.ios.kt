@@ -16,10 +16,10 @@
 
 package com.github.panpf.sketch.decode.internal
 
-import com.github.panpf.sketch.util.ComponentDetector
+import com.github.panpf.sketch.util.ComponentLoader
 
 @Suppress("DEPRECATION")
 @OptIn(ExperimentalStdlibApi::class)
 @EagerInitialization
 @Deprecated("", level = DeprecationLevel.HIDDEN)
-val svgDecoderComponentInitHook: Any = ComponentDetector.register(SvgDecoderComponent())
+val svgDecoderComponentInitHook: Any = ComponentLoader.register(SvgDecoderComponent())

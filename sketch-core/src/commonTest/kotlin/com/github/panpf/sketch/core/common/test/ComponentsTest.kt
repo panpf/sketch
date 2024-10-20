@@ -6,7 +6,6 @@ import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
-import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -17,6 +16,7 @@ import com.github.panpf.sketch.test.utils.TestDecodeInterceptor2
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestDecoder2
 import com.github.panpf.sketch.test.utils.TestFetcher
+import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor2
 import com.github.panpf.sketch.test.utils.getTestContext
@@ -141,7 +141,7 @@ class ComponentsTest {
             assertFailsWith(IllegalArgumentException::class) {
                 newFetcherOrThrow(ImageRequest(context, "file:///sdcard/sample.jpeg") {
                     components {
-                        addFetcher(HttpUriFetcher.Factory())
+                        addFetcher(TestHttpUriFetcher.Factory(context))
                     }
                 }.toRequestContext(sketch, Size.Empty))
             }
@@ -166,14 +166,14 @@ class ComponentsTest {
             }
             newFetcherOrThrow(ImageRequest(context, "http://sample.com/sample.jpeg") {
                 components {
-                    addFetcher(HttpUriFetcher.Factory())
+                    addFetcher(TestHttpUriFetcher.Factory(context))
                 }
             }.toRequestContext(sketch, Size.Empty))
         }
 
         Components(ComponentRegistry {
             addFetcher(FileUriFetcher.Factory())
-            addFetcher(HttpUriFetcher.Factory())
+            addFetcher(TestHttpUriFetcher.Factory(context))
         }).apply {
             assertTrue(
                 newFetcherOrThrow(
@@ -189,7 +189,7 @@ class ComponentsTest {
                         sketch,
                         Size.Empty
                     )
-                ) is HttpUriFetcher
+                ) is TestHttpUriFetcher
             )
             assertFailsWith(IllegalArgumentException::class) {
                 newFetcherOrThrow(
@@ -326,7 +326,6 @@ class ComponentsTest {
             )
         }
         Components(ComponentRegistry {
-            addFetcher(HttpUriFetcher.Factory())
             addFetcher(Base64UriFetcher.Factory())
             addFetcher(TestFetcher.Factory())
             addDecoder(TestDecoder.Factory())
@@ -337,7 +336,7 @@ class ComponentsTest {
         }).apply {
             assertEquals(
                 "Components(ComponentRegistry(" +
-                        "fetcherFactoryList=[HttpUriFetcher,Base64UriFetcher,TestFetcher]," +
+                        "fetcherFactoryList=[Base64UriFetcher,TestFetcher]," +
                         "decoderFactoryList=[TestDecoder,TestDecoder2]," +
                         "requestInterceptorList=[EngineRequestInterceptor(sortWeight=100)]," +
                         "decodeInterceptorList=[TransformationDecodeInterceptor(sortWeight=90),EngineDecodeInterceptor(sortWeight=100)]" +
@@ -351,10 +350,10 @@ class ComponentsTest {
     fun testEqualsAndHashCode() {
         val components0 = Components(ComponentRegistry())
         val components1 = Components(ComponentRegistry {
-            addFetcher(HttpUriFetcher.Factory())
+            addFetcher(TestFetcher.Factory())
         })
         val components11 = Components(ComponentRegistry {
-            addFetcher(HttpUriFetcher.Factory())
+            addFetcher(TestFetcher.Factory())
         })
         val components2 = Components(ComponentRegistry {
             addDecoder(TestDecoder.Factory())

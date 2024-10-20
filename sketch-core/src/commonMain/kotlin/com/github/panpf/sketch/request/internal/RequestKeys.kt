@@ -29,7 +29,6 @@ import com.github.panpf.sketch.util.Size
 internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendDepth()
     .appendRequestExtras()
-    .appendHttpHeaders()
     .appendDownloadCachePolicy()
     .appendColorType()
     .appendColorSpace()
@@ -104,12 +103,6 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
     fun appendCacheExtras(): ImageRequestKeyBuilder = apply {
         request.extras?.cacheKey?.takeIf { it.isNotEmpty() }?.also { parameterKey ->
             appendQueryParameter("_extras", parameterKey)
-        }
-    }
-
-    fun appendHttpHeaders(): ImageRequestKeyBuilder = apply {
-        request.httpHeaders?.takeIf { !it.isEmpty() }?.also {
-            appendQueryParameter("_httpHeaders", it.toString())
         }
     }
 

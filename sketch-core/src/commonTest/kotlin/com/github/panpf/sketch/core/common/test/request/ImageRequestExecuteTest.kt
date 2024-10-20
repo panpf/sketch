@@ -39,6 +39,7 @@ import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestErrorDecoder
 import com.github.panpf.sketch.test.utils.TestFetcherFactory
 import com.github.panpf.sketch.test.utils.TestHttpStack
+import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
 import com.github.panpf.sketch.test.utils.TestLifecycle
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestResizeOnDrawImage
@@ -85,7 +86,9 @@ class ImageRequestExecuteTest {
     @Test
     fun testDepth() = runTest {
         runInNewSketchWithUse({
-            httpStack(TestHttpStack(it))
+            components {
+                addFetcher(TestHttpUriFetcher.Factory(it))
+            }
         }) { context, sketch ->
             val imageUri = TestHttpStack.testImages.first().uri
 
@@ -177,7 +180,9 @@ class ImageRequestExecuteTest {
     @Test
     fun testDownloadCachePolicy() = runTest {
         runInNewSketchWithUse({
-            httpStack(TestHttpStack(it))
+            components {
+                addFetcher(TestHttpUriFetcher.Factory(it))
+            }
         }) { context, sketch ->
             val diskCache = sketch.downloadCache
             val imageUri = TestHttpStack.testImages.first().uri
@@ -1316,7 +1321,9 @@ class ImageRequestExecuteTest {
     @Test
     fun testProgressListener() = runTest {
         runInNewSketchWithUse({
-            httpStack(TestHttpStack(it, 20))
+            components {
+                addFetcher(TestHttpUriFetcher.Factory(it, readDelayMillis = 20))
+            }
         }) { context, sketch ->
             val testImage = TestHttpStack.testImages.first()
 

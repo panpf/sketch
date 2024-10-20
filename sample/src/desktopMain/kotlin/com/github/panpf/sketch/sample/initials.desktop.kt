@@ -4,21 +4,20 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.supportSkiaAnimatedWebp
 import com.github.panpf.sketch.decode.supportSkiaGif
-import com.github.panpf.sketch.http.HurlStack
-import com.github.panpf.sketch.http.KtorStack
-import com.github.panpf.sketch.http.OkHttpStack
+import com.github.panpf.sketch.fetch.supportHurlHttpUri
+import com.github.panpf.sketch.fetch.supportKtorHttpUri
+import com.github.panpf.sketch.fetch.supportOkHttpHttpUri
 import com.github.panpf.sketch.sample.ui.util.PexelsCompatibleRequestInterceptor
 
 actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
-    val appSettings = context.appSettings
-    val httpStack = when (appSettings.httpClient.value) {
-        "Ktor" -> KtorStack()
-        "OkHttp" -> OkHttpStack.Builder().build()
-        "HttpURLConnection" -> HurlStack.Builder().build()
-        else -> throw IllegalArgumentException("Unknown httpClient: ${appSettings.httpClient.value}")
-    }
-    httpStack(httpStack)
     addComponents {
+        when (val httpClient = context.appSettings.httpClient.value) {
+            "Ktor" -> supportKtorHttpUri()
+            "OkHttp" -> supportOkHttpHttpUri()
+            "HttpURLConnection" -> supportHurlHttpUri()
+            else -> throw IllegalArgumentException("Unknown httpClient: $httpClient")
+        }
+
         supportSkiaGif()
         supportSkiaAnimatedWebp()
 

@@ -35,6 +35,7 @@ import com.github.panpf.sketch.state.saveCellularTrafficError
 import com.github.panpf.sketch.test.singleton.request.execute
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.TestHttpStack
+import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
@@ -73,7 +74,9 @@ class ClickIgnoreSaveCellularTrafficAbilityTest {
     @Test
     fun test() = runTest {
         runInNewSketchWithUse({
-            httpStack(TestHttpStack(it))
+            components {
+                addFetcher(TestHttpUriFetcher.Factory(it))
+            }
         }) { _, sketch ->
             TestActivity::class.launchActivity().use { scenario ->
                 val activity = scenario.getActivitySync()

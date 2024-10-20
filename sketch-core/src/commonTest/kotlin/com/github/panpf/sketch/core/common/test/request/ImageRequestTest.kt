@@ -25,8 +25,6 @@ import com.github.panpf.sketch.decode.BitmapColorSpace
 import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.decode.HighQualityColorType
 import com.github.panpf.sketch.decode.LowQualityColorType
-import com.github.panpf.sketch.fetch.HttpUriFetcher
-import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.NETWORK
@@ -114,7 +112,6 @@ class ImageRequestTest {
             assertEquals(LifecycleResolver(GlobalLifecycle), this.lifecycleResolver)
             assertEquals(NETWORK, this.depthHolder.depth)
             assertNull(this.extras)
-            assertNull(this.httpHeaders)
             assertEquals(ENABLED, this.downloadCachePolicy)
             assertEquals(SizeResolver(context1.screenSize()), this.sizeResolver)
             assertEquals(FixedPrecisionDecider(LESS_PIXELS), this.precisionDecider)
@@ -393,7 +390,7 @@ class ImageRequestTest {
 
         ImageRequest(context1, uri) {
             memoryCachePolicy(DISABLED)
-            target(TestImageOptionsTarget(ImageOptions() {
+            target(TestImageOptionsTarget(ImageOptions {
                 memoryCachePolicy(READ_ONLY)
                 resultCachePolicy(WRITE_ONLY)
             }))
@@ -534,76 +531,6 @@ class ImageRequestTest {
             removeExtra("key1")
             build().apply {
                 assertNull(extras)
-            }
-        }
-    }
-
-    @Test
-    fun testHttpHeaders() {
-        val context1 = getTestContext()
-        val uri = ResourceImages.jpeg.uri
-        ImageRequest.Builder(context1, uri).apply {
-            build().apply {
-                assertNull(httpHeaders)
-            }
-
-            /* httpHeaders() */
-            httpHeaders(HttpHeaders())
-            build().apply {
-                assertNull(httpHeaders)
-            }
-
-            httpHeaders(HttpHeaders.Builder().set("key1", "value1").build())
-            build().apply {
-                assertEquals(1, httpHeaders?.size)
-                assertEquals("value1", httpHeaders?.getSet("key1"))
-            }
-
-            httpHeaders(null)
-            build().apply {
-                assertNull(httpHeaders)
-            }
-
-            /* httpHeader(), addHttpHeader(), removeHttpHeader() */
-            httpHeader("key1", "value1")
-            httpHeader("key2", "value2")
-            addHttpHeader("key3", "value3")
-            addHttpHeader("key3", "value3.1")
-            build().apply {
-                assertEquals(4, httpHeaders?.size)
-                assertEquals(2, httpHeaders?.setSize)
-                assertEquals(2, httpHeaders?.addSize)
-                assertEquals("value1", httpHeaders?.getSet("key1"))
-                assertEquals("value2", httpHeaders?.getSet("key2"))
-                assertEquals(listOf("value3", "value3.1"), httpHeaders?.getAdd("key3"))
-            }
-
-            httpHeader("key2", "value2.1")
-            build().apply {
-                assertEquals(4, httpHeaders?.size)
-                assertEquals(2, httpHeaders?.setSize)
-                assertEquals(2, httpHeaders?.addSize)
-                assertEquals("value1", httpHeaders?.getSet("key1"))
-                assertEquals("value2.1", httpHeaders?.getSet("key2"))
-                assertEquals(listOf("value3", "value3.1"), httpHeaders?.getAdd("key3"))
-            }
-
-            removeHttpHeader("key3")
-            build().apply {
-                assertEquals(2, httpHeaders?.size)
-                assertEquals("value1", httpHeaders?.getSet("key1"))
-                assertEquals("value2.1", httpHeaders?.getSet("key2"))
-            }
-
-            removeHttpHeader("key2")
-            build().apply {
-                assertEquals(1, httpHeaders?.size)
-                assertEquals("value1", httpHeaders?.getSet("key1"))
-            }
-
-            removeHttpHeader("key1")
-            build().apply {
-                assertNull(httpHeaders)
             }
         }
     }
@@ -1578,7 +1505,6 @@ class ImageRequestTest {
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             components {
-                addFetcher(HttpUriFetcher.Factory())
                 addFetcher(TestFetcher.Factory())
                 addDecoder(TestDecoder.Factory())
                 addRequestInterceptor(TestRequestInterceptor())
@@ -1587,7 +1513,6 @@ class ImageRequestTest {
         }.apply {
             assertEquals(
                 ComponentRegistry.Builder().apply {
-                    addFetcher(HttpUriFetcher.Factory())
                     addFetcher(TestFetcher.Factory())
                     addDecoder(TestDecoder.Factory())
                     addRequestInterceptor(TestRequestInterceptor())
@@ -1599,7 +1524,6 @@ class ImageRequestTest {
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             components {
-                addFetcher(HttpUriFetcher.Factory())
                 addFetcher(TestFetcher.Factory())
                 addDecoder(TestDecoder.Factory())
             }
@@ -1656,7 +1580,6 @@ class ImageRequestTest {
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             components {
-                addFetcher(HttpUriFetcher.Factory())
                 addFetcher(TestFetcher.Factory())
                 addDecoder(TestDecoder.Factory())
             }
@@ -1667,7 +1590,6 @@ class ImageRequestTest {
         }.apply {
             assertEquals(
                 ComponentRegistry.Builder().apply {
-                    addFetcher(HttpUriFetcher.Factory())
                     addFetcher(TestFetcher.Factory())
                     addDecoder(TestDecoder.Factory())
                     addRequestInterceptor(TestRequestInterceptor())
@@ -1711,11 +1633,6 @@ class ImageRequestTest {
             ScopeAction {
                 setExtra("type", "list")
                 setExtra("big", "true")
-            },
-            ScopeAction {
-                httpHeader("from", "china")
-                httpHeader("job", "Programmer")
-                addHttpHeader("Host", "www.google.com")
             },
             ScopeAction {
                 downloadCachePolicy(READ_ONLY)
@@ -1823,7 +1740,6 @@ class ImageRequestTest {
 
             depth(LOCAL, "test")
             setExtra("key", "value")
-            httpHeader("key1", "value1")
             downloadCachePolicy(WRITE_ONLY)
             colorType("RGB_565")
             colorSpace("SRGB")
@@ -1842,11 +1758,11 @@ class ImageRequestTest {
             allowNullImage(true)
             memoryCachePolicy(ENABLED)
             components {
-                addFetcher(HttpUriFetcher.Factory())
+                addFetcher(TestFetcher.Factory())
             }
         }.apply {
             assertEquals(
-                expected = "ImageRequest(context=$context, uri=http://sample.com/sample.jpeg, target=TestTarget, listener=$testListener, progressListener=$testProgressListener, lifecycleResolver=FixedLifecycleResolver($testLifecycle), definedRequestOptions=RequestOptions(listener=$testListener, progressListener=$testProgressListener, lifecycleResolver=FixedLifecycleResolver($testLifecycle)), definedOptions=ImageOptions(depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), httpHeaders=HttpHeaders(sets=[key1:value1],adds=[]), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], disallowAnimatedImage=true, resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[HttpUriFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[])), defaultOptions=null, depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), httpHeaders=HttpHeaders(sets=[key1:value1],adds=[]), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], disallowAnimatedImage=true, resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[HttpUriFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[]))",
+                expected = "ImageRequest(context=$context, uri=http://sample.com/sample.jpeg, target=TestTarget, listener=$testListener, progressListener=$testProgressListener, lifecycleResolver=FixedLifecycleResolver($testLifecycle), definedRequestOptions=RequestOptions(listener=$testListener, progressListener=$testProgressListener, lifecycleResolver=FixedLifecycleResolver($testLifecycle)), definedOptions=ImageOptions(depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], disallowAnimatedImage=true, resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[TestFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[])), defaultOptions=null, depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), httpHeaders=HttpHeaders(sets=[key1:value1],adds=[]), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], disallowAnimatedImage=true, resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[TestFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[]))",
                 actual = this.toString()
             )
         }

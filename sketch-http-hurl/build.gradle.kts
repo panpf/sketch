@@ -12,6 +12,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.sketchCore)
+            api(projects.sketchHttpCore)
         }
 
         commonTest.dependencies {

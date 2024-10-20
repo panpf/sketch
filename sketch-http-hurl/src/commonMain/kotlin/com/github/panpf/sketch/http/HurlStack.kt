@@ -25,7 +25,7 @@ import java.net.URL
 /**
  * Use [HttpURLConnection] to request HTTP
  *
- * @see com.github.panpf.sketch.http.hurl.common.test.HurlStackTest
+ * @see com.github.panpf.sketch.http.hurl.common.test.http.HurlStackTest
  */
 class HurlStack private constructor(
     val interceptors: List<Interceptor> = emptyList()

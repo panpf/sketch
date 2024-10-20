@@ -49,7 +49,7 @@ internal actual fun requiredMainThread() {
  *
  * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testRequiredWorkThread
  */
-internal actual fun requiredWorkThread() {
+actual fun requiredWorkThread() {
     check(!isMainThread()) {
         "This method must be executed in the work thread"
     }

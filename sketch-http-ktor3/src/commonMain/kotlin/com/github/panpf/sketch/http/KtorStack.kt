@@ -31,7 +31,7 @@ import io.ktor.utils.io.readAvailable
 /**
  * Ktor implementation of HttpStack
  *
- * @see com.github.panpf.sketch.http.ktor3.common.test.KtorStackTest
+ * @see com.github.panpf.sketch.http.ktor3.common.test.http.KtorStackTest
  */
 class KtorStack(val client: HttpClient = HttpClient()) : HttpStack {
 

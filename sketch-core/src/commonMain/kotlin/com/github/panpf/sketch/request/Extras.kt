@@ -19,6 +19,7 @@ package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.request.Extras.Entry
 import com.github.panpf.sketch.util.Key
+import com.github.panpf.sketch.util.Mergeable
 import com.github.panpf.sketch.util.keyOrNull
 import kotlin.jvm.JvmField
 
@@ -229,8 +230,15 @@ fun Extras?.merged(other: Extras?): Extras? {
     }
     return this.newBuilder().apply {
         other.values().forEach {
-            if (this@merged.entry(it.key) == null) {
-                set(it.key, it.value)
+            val existValue = this@merged.entry(it.key)?.value
+            val otherValue = it.value
+            if (existValue == null) {
+                set(it.key, otherValue)
+            } else if (existValue is Mergeable && otherValue is Mergeable) {
+                val newValue = existValue.merge(otherValue)
+                if (newValue !== existValue) {
+                    set(it.key, newValue)
+                }
             }
         }
     }.build()

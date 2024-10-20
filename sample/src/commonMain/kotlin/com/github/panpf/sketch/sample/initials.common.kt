@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 fun newSketch(context: PlatformContext): Sketch {
     val appSettings = context.appSettings
     return Sketch.Builder(context).apply {
-        disableComponentDetector()
+        disableComponentLoader()
         components {
             supportComposeResources()
 

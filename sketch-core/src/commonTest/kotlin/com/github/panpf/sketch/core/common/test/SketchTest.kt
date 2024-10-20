@@ -11,7 +11,6 @@ import com.github.panpf.sketch.commonComponents
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
-import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.merged
 import com.github.panpf.sketch.platformComponents
@@ -28,7 +27,6 @@ import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
-import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
@@ -203,17 +201,6 @@ class SketchTest {
             assertEquals(expected = resultCache4, actual = resultCache)
         }
 
-        // httpStack
-        Sketch.Builder(context).build().apply {
-            assertEquals(null, httpStack)
-        }
-
-        Sketch.Builder(context).apply {
-            httpStack(TestHttpStack(context))
-        }.build().apply {
-            assertEquals(TestHttpStack(context), httpStack)
-        }
-
         // components: Fetcher, Decoder
         Sketch.Builder(context).build().apply {
             assertEquals(
@@ -321,7 +308,7 @@ class SketchTest {
         // The tests for networkParallelismLimited and decodeParallelismLimited are located at
         //  'com.github.panpf.sketch.core.desktop.test.SketchDesktopTest.testBuilder'
 
-        // TODO test disableComponentDetector
+        // TODO test disableComponentLoader
     }
 
     @Test
@@ -423,7 +410,6 @@ class SketchTest {
     fun testCommonComponents() {
         assertEquals(
             expected = ComponentRegistry {
-                addFetcher(HttpUriFetcher.Factory())
                 addFetcher(Base64UriFetcher.Factory())
                 addFetcher(FileUriFetcher.Factory())
 

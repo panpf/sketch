@@ -24,7 +24,7 @@ import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.request.Extras
 import com.github.panpf.sketch.util.toUri
 
-class TestHttpStack constructor(
+class TestHttpStack(
     private val context: PlatformContext,
     val readDelayMillis: Long? = null,
     val connectionDelayMillis: Long? = null,
@@ -61,20 +61,23 @@ class TestHttpStack constructor(
         }
     }
 
-    override fun toString(): String {
-        return "TestHttpStack(readDelayMillis=$readDelayMillis)"
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as TestHttpStack
         if (readDelayMillis != other.readDelayMillis) return false
+        if (connectionDelayMillis != other.connectionDelayMillis) return false
         return true
     }
 
     override fun hashCode(): Int {
-        return readDelayMillis?.hashCode() ?: 0
+        var result = readDelayMillis?.hashCode() ?: 0
+        result = 31 * result + (connectionDelayMillis?.hashCode() ?: 0)
+        return result
+    }
+
+    override fun toString(): String {
+        return "TestHttpStack(readDelayMillis=$readDelayMillis, connectionDelayMillis=$connectionDelayMillis)"
     }
 
     class ErrorResponse(
@@ -127,7 +130,7 @@ class TestHttpStack constructor(
         }
     }
 
-    class TestImage constructor(
+    class TestImage(
         val uri: String,
         val contentLength: Long,
         val headerMap: Map<String, String>? = null

@@ -108,7 +108,9 @@ open class ComponentRegistry private constructor(
     internal fun newFetcherOrThrow(requestContext: RequestContext): Fetcher {
         return newFetcherOrNull(requestContext)
             ?: throw IllegalArgumentException(
-                "No Fetcher can handle this uri '${requestContext.request.uri}', Please add a new Fetcher to support it, refer to the documentation: https://github.com/panpf/sketch/blob/main/docs/wiki/fetcher.md"
+                "No Fetcher can handle this uri '${requestContext.request.uri}', " +
+                        "Please add a new Fetcher to support it, " +
+                        "refer to the documentation: https://github.com/panpf/sketch/blob/main/docs/wiki/fetcher.md"
             )
     }
 
@@ -160,6 +162,7 @@ open class ComponentRegistry private constructor(
     }
 
     override fun toString(): String {
+        // TODO improve, ComponentRegistry(fetchers=[...], decoders=[...], requestInterceptors=[...], decodeInterceptors=[...])
         val fetchersString = fetcherFactoryList
             .joinToString(prefix = "[", postfix = "]", separator = ",")
         val decodersString = decoderFactoryList

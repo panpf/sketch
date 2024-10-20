@@ -20,11 +20,11 @@ import androidx.annotation.Keep
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.SvgDecoder
-import com.github.panpf.sketch.util.ComponentDetector
+import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.DecoderComponent
 
 /**
- * Cooperate with [ComponentDetector] to achieve automatic registration [SvgDecoder]
+ * Cooperate with [ComponentLoader] to achieve automatic registration [SvgDecoder]
  *
  * @see com.github.panpf.sketch.svg.jvm.test.internal.SvgDecoderComponentJvmTest
  */

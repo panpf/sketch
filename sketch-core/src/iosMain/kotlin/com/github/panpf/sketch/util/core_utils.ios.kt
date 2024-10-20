@@ -23,7 +23,7 @@ internal actual fun requiredMainThread() {
  *
  * @see com.github.panpf.sketch.core.ios.test.util.CoreUtilsIosTest.testRequiredWorkThread
  */
-internal actual fun requiredWorkThread() {
+actual fun requiredWorkThread() {
     check(!isMainThread()) {
         "This method must be executed in the work thread"
     }

@@ -21,6 +21,6 @@ internal actual fun requiredMainThread() {
  *
  * @see com.github.panpf.sketch.core.jscommon.test.util.CoreUtilsJsCommonTest.testRequiredWorkThread
  */
-internal actual fun requiredWorkThread() {
+actual fun requiredWorkThread() {
 
 }

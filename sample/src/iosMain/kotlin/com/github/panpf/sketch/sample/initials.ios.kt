@@ -4,12 +4,12 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.supportSkiaAnimatedWebp
 import com.github.panpf.sketch.decode.supportSkiaGif
-import com.github.panpf.sketch.http.KtorStack
+import com.github.panpf.sketch.fetch.supportKtorHttpUri
 
 actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
     addComponents {
         supportSkiaGif()
         supportSkiaAnimatedWebp()
+        supportKtorHttpUri()
     }
-    httpStack(KtorStack())
 }

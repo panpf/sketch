@@ -45,6 +45,7 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ComposeSize
 import com.github.panpf.sketch.test.utils.TestErrorEqualsSizeResolver
 import com.github.panpf.sketch.test.utils.TestHttpStack
+import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
 import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.block
@@ -836,7 +837,9 @@ class AsyncImageStateTest {
     @Test
     fun testPainterResultPainterStateLoadStateProgress() = runTest {
         runInNewSketchWithUse({
-            httpStack(TestHttpStack(it, readDelayMillis = 20))
+            components {
+                addFetcher(TestHttpUriFetcher.Factory(it, readDelayMillis = 20))
+            }
         }) { context, sketch ->
             // success
             runComposeUiTest {

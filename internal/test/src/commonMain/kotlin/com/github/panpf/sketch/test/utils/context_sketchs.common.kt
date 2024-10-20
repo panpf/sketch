@@ -57,6 +57,34 @@ suspend inline fun runInNewSketchWithUse(
     }
 }
 
+suspend inline fun runInNewSketchWithUse(
+    crossinline block2: suspend (PlatformContext, Sketch) -> Unit
+) {
+    val context = getTestContext()
+    val sketch = Sketch.Builder(context).apply {
+        logger(level = Logger.Level.Verbose)
+        val directory = context.newAloneTestDiskCacheDirectory()
+        downloadCacheOptions(DiskCache.Options(appCacheDirectory = directory))
+        resultCacheOptions(DiskCache.Options(appCacheDirectory = directory))
+    }.build()
+    try {
+        block2(context, sketch)
+    } finally {
+        try {
+            sketch.downloadCache.clear()
+            sketch.resultCache.clear()
+            sketch.shutdown()
+            val fileSystem = sketch.fileSystem
+            fileSystem.deleteRecursively(sketch.downloadCache.directory)
+            fileSystem.delete(sketch.downloadCache.directory)
+            fileSystem.deleteRecursively(sketch.resultCache.directory)
+            fileSystem.delete(sketch.resultCache.directory)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+}
+
 var sketchCount = 0
 val sketchCountLock = SynchronizedObject()
 

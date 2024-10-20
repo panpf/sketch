@@ -25,8 +25,6 @@ import com.github.panpf.sketch.decode.BitmapColorSpace
 import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.decode.HighQualityColorType
 import com.github.panpf.sketch.decode.LowQualityColorType
-import com.github.panpf.sketch.fetch.HttpUriFetcher
-import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
@@ -56,6 +54,7 @@ import com.github.panpf.sketch.test.utils.TestDecodeInterceptor2
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestDecoder2
 import com.github.panpf.sketch.test.utils.TestFetcher
+import com.github.panpf.sketch.test.utils.TestFetcher2
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestTransition
 import com.github.panpf.sketch.transform.BlurTransformation
@@ -98,7 +97,6 @@ class ImageOptionsTest {
             assertFalse(this.isNotEmpty())
             assertNull(this.depthHolder)
             assertNull(this.extras)
-            assertNull(this.httpHeaders)
             assertNull(this.downloadCachePolicy)
             assertNull(this.colorType)
             assertNull(this.colorSpace)
@@ -131,14 +129,6 @@ class ImageOptionsTest {
             assertFalse(this.isEmpty())
             assertTrue(this.isNotEmpty())
             assertNotNull(this.extras)
-        }
-
-        ImageOptions {
-            addHttpHeader("headerKey", "headerValue")
-        }.apply {
-            assertFalse(this.isEmpty())
-            assertTrue(this.isNotEmpty())
-            assertNotNull(this.httpHeaders)
         }
 
         ImageOptions {
@@ -263,7 +253,7 @@ class ImageOptionsTest {
 
         ImageOptions {
             components {
-                addFetcher(HttpUriFetcher.Factory())
+                addFetcher(TestFetcher.Factory())
             }
         }.apply {
             assertFalse(this.isEmpty())
@@ -361,22 +351,6 @@ class ImageOptionsTest {
             setExtra("key", "value1")
         }).apply {
             assertEquals("value", this.extras?.get("key"))
-        }
-
-        ImageOptions().apply {
-            assertEquals(null, this.httpHeaders)
-        }.merged(ImageOptions {
-            addHttpHeader("addKey", "addValue")
-            httpHeader("setKey", "setValue")
-        }).apply {
-            assertEquals(listOf("addValue"), this.httpHeaders?.getAdd("addKey"))
-            assertEquals("setValue", this.httpHeaders?.getSet("setKey"))
-        }.merged(ImageOptions {
-            addHttpHeader("addKey", "addValue1")
-            httpHeader("setKey", "setValue1")
-        }).apply {
-            assertEquals(listOf("addValue", "addValue1"), this.httpHeaders?.getAdd("addKey"))
-            assertEquals("setValue", this.httpHeaders?.getSet("setKey"))
         }
 
         ImageOptions().apply {
@@ -610,7 +584,7 @@ class ImageOptionsTest {
             )
         }.merged(ImageOptions {
             components {
-                addFetcher(HttpUriFetcher.Factory())
+                addFetcher(TestFetcher2.Factory())
                 addDecoder(TestDecoder2.Factory())
                 addRequestInterceptor(EngineRequestInterceptor())
                 addDecodeInterceptor(TestDecodeInterceptor2())
@@ -622,7 +596,7 @@ class ImageOptionsTest {
                     addDecoder(TestDecoder.Factory())
                     addRequestInterceptor(TestRequestInterceptor())
                     addDecodeInterceptor(TestDecodeInterceptor())
-                    addFetcher(HttpUriFetcher.Factory())
+                    addFetcher(TestFetcher2.Factory())
                     addDecoder(TestDecoder2.Factory())
                     addRequestInterceptor(EngineRequestInterceptor())
                     addDecodeInterceptor(TestDecodeInterceptor2())
@@ -724,74 +698,6 @@ class ImageOptionsTest {
             removeExtra("key1")
             build().apply {
                 assertNull(extras)
-            }
-        }
-    }
-
-    @Test
-    fun testHttpHeaders() {
-        ImageOptions.Builder().apply {
-            build().apply {
-                assertNull(httpHeaders)
-            }
-
-            /* httpHeaders() */
-            httpHeaders(HttpHeaders())
-            build().apply {
-                assertNull(httpHeaders)
-            }
-
-            httpHeaders(HttpHeaders.Builder().set("key1", "value1").build())
-            build().apply {
-                assertEquals(1, httpHeaders?.size)
-                assertEquals("value1", httpHeaders?.getSet("key1"))
-            }
-
-            httpHeaders(null)
-            build().apply {
-                assertNull(httpHeaders)
-            }
-
-            /* setHttpHeader(), addHttpHeader(), removeHttpHeader() */
-            httpHeader("key1", "value1")
-            httpHeader("key2", "value2")
-            addHttpHeader("key3", "value3")
-            addHttpHeader("key3", "value3.1")
-            build().apply {
-                assertEquals(4, httpHeaders?.size)
-                assertEquals(2, httpHeaders?.setSize)
-                assertEquals(2, httpHeaders?.addSize)
-                assertEquals("value1", httpHeaders?.getSet("key1"))
-                assertEquals("value2", httpHeaders?.getSet("key2"))
-                assertEquals(listOf("value3", "value3.1"), httpHeaders?.getAdd("key3"))
-            }
-
-            httpHeader("key2", "value2.1")
-            build().apply {
-                assertEquals(4, httpHeaders?.size)
-                assertEquals(2, httpHeaders?.setSize)
-                assertEquals(2, httpHeaders?.addSize)
-                assertEquals("value1", httpHeaders?.getSet("key1"))
-                assertEquals("value2.1", httpHeaders?.getSet("key2"))
-                assertEquals(listOf("value3", "value3.1"), httpHeaders?.getAdd("key3"))
-            }
-
-            removeHttpHeader("key3")
-            build().apply {
-                assertEquals(2, httpHeaders?.size)
-                assertEquals("value1", httpHeaders?.getSet("key1"))
-                assertEquals("value2.1", httpHeaders?.getSet("key2"))
-            }
-
-            removeHttpHeader("key2")
-            build().apply {
-                assertEquals(1, httpHeaders?.size)
-                assertEquals("value1", httpHeaders?.getSet("key1"))
-            }
-
-            removeHttpHeader("key1")
-            build().apply {
-                assertNull(httpHeaders)
             }
         }
     }
@@ -1417,7 +1323,6 @@ class ImageOptionsTest {
 
         ImageOptions {
             components {
-                addFetcher(HttpUriFetcher.Factory())
                 addFetcher(TestFetcher.Factory())
                 addDecoder(TestDecoder.Factory())
                 addRequestInterceptor(TestRequestInterceptor())
@@ -1426,7 +1331,6 @@ class ImageOptionsTest {
         }.apply {
             assertEquals(
                 ComponentRegistry.Builder().apply {
-                    addFetcher(HttpUriFetcher.Factory())
                     addFetcher(TestFetcher.Factory())
                     addDecoder(TestDecoder.Factory())
                     addRequestInterceptor(TestRequestInterceptor())
@@ -1438,7 +1342,6 @@ class ImageOptionsTest {
 
         ImageOptions {
             components {
-                addFetcher(HttpUriFetcher.Factory())
                 addFetcher(TestFetcher.Factory())
                 addDecoder(TestDecoder.Factory())
             }
@@ -1465,7 +1368,6 @@ class ImageOptionsTest {
 
         ImageOptions {
             components {
-                addFetcher(HttpUriFetcher.Factory())
                 addFetcher(TestFetcher.Factory())
                 addDecoder(TestDecoder.Factory())
             }
@@ -1476,7 +1378,6 @@ class ImageOptionsTest {
         }.apply {
             assertEquals(
                 ComponentRegistry.Builder().apply {
-                    addFetcher(HttpUriFetcher.Factory())
                     addFetcher(TestFetcher.Factory())
                     addDecoder(TestDecoder.Factory())
                     addRequestInterceptor(TestRequestInterceptor())
@@ -1496,11 +1397,6 @@ class ImageOptionsTest {
             ScopeAction {
                 setExtra("type", "list")
                 setExtra("big", "true")
-            },
-            ScopeAction {
-                httpHeader("from", "china")
-                httpHeader("job", "Programmer")
-                addHttpHeader("Host", "www.google.com")
             },
             ScopeAction {
                 downloadCachePolicy(READ_ONLY)
@@ -1601,7 +1497,6 @@ class ImageOptionsTest {
         ImageOptions {
             depth(LOCAL, "test")
             setExtra("key", "value")
-            httpHeader("key1", "value1")
             downloadCachePolicy(WRITE_ONLY)
             colorType("RGB_565")
             colorSpace("SRGB")
@@ -1620,11 +1515,11 @@ class ImageOptionsTest {
             allowNullImage(true)
             memoryCachePolicy(ENABLED)
             components {
-                addFetcher(HttpUriFetcher.Factory())
+                addFetcher(TestFetcher.Factory())
             }
         }.apply {
             assertEquals(
-                expected = "ImageOptions(depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), httpHeaders=HttpHeaders(sets=[key1:value1],adds=[]), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], disallowAnimatedImage=true, resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[HttpUriFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[]))",
+                expected = "ImageOptions(depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], disallowAnimatedImage=true, resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[TestFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[]))",
                 actual = this.toString()
             )
         }
