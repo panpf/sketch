@@ -19,9 +19,9 @@ package com.github.panpf.sketch.sample.util
 import android.content.pm.PackageInfo
 import android.os.Build
 import com.github.panpf.sketch.decode.Decoder
-import com.github.panpf.sketch.decode.GifAnimatedDecoder
-import com.github.panpf.sketch.decode.GifDrawableDecoder
-import com.github.panpf.sketch.decode.GifMovieDecoder
+import com.github.panpf.sketch.decode.ImageDecoderGifDecoder
+import com.github.panpf.sketch.decode.KoralGifDecoder
+import com.github.panpf.sketch.decode.MovieGifDecoder
 
 @Suppress("DEPRECATION")
 internal val PackageInfo.versionCodeCompat: Int
@@ -34,11 +34,11 @@ internal val PackageInfo.versionCodeCompat: Int
 actual fun platformGifDecoders(): List<Decoder.Factory> {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
         listOf(
-            GifMovieDecoder.Factory(),
-            GifDrawableDecoder.Factory(),
-            GifAnimatedDecoder.Factory()
+            MovieGifDecoder.Factory(),
+            KoralGifDecoder.Factory(),
+            ImageDecoderGifDecoder.Factory()
         )
     } else {
-        listOf(GifMovieDecoder.Factory(), GifDrawableDecoder.Factory())
+        listOf(MovieGifDecoder.Factory(), KoralGifDecoder.Factory())
     }
 }

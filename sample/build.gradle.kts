@@ -60,7 +60,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.internal.images)
-            implementation(projects.sketchAnimated)
+            implementation(projects.sketchAnimatedGif)
+            implementation(projects.sketchAnimatedWebp)
             implementation(projects.sketchCompose)
             implementation(projects.sketchComposeResources)
             implementation(projects.sketchExtensionsCompose)
@@ -81,7 +82,8 @@ kotlin {
             implementation(libs.voyager.transitions)
         }
         androidMain.dependencies {
-            implementation(projects.sketchAnimatedKoralgif)
+            implementation(projects.sketchAnimatedGifKoral)
+            implementation(projects.sketchAnimatedHeif)
             implementation(projects.sketchExtensionsView)
             implementation(projects.sketchVideo)
             implementation(projects.sketchVideoFfmpeg)

@@ -33,13 +33,13 @@ import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.ApkIconDecoder
 import com.github.panpf.sketch.decode.FFmpegVideoFrameDecoder
-import com.github.panpf.sketch.decode.GifAnimatedDecoder
-import com.github.panpf.sketch.decode.GifDrawableDecoder
-import com.github.panpf.sketch.decode.GifMovieDecoder
-import com.github.panpf.sketch.decode.HeifAnimatedDecoder
+import com.github.panpf.sketch.decode.ImageDecoderAnimatedHeifDecoder
+import com.github.panpf.sketch.decode.ImageDecoderAnimatedWebpDecoder
+import com.github.panpf.sketch.decode.ImageDecoderGifDecoder
+import com.github.panpf.sketch.decode.KoralGifDecoder
+import com.github.panpf.sketch.decode.MovieGifDecoder
 import com.github.panpf.sketch.decode.SvgDecoder.Factory
 import com.github.panpf.sketch.decode.VideoFrameDecoder
-import com.github.panpf.sketch.decode.WebpAnimatedDecoder
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.sample.R.drawable
@@ -131,7 +131,7 @@ actual suspend fun buildDecoderTestItems(
         DecoderTestItem(
             name = "GIF_KORAL",
             imageUri = ResourceImages.animGif.uri,
-            imageDecoder = GifDrawableDecoder.Factory()
+            imageDecoder = KoralGifDecoder.Factory()
         )
     )
     add(
@@ -140,7 +140,7 @@ actual suspend fun buildDecoderTestItems(
             imageUri = ResourceImages.animGif.uri,
             minAPI = VERSION_CODES.KITKAT,
             currentApi = VERSION.SDK_INT,
-            imageDecoder = GifMovieDecoder.Factory()
+            imageDecoder = MovieGifDecoder.Factory()
         )
     )
     add(
@@ -149,7 +149,7 @@ actual suspend fun buildDecoderTestItems(
             imageUri = ResourceImages.animGif.uri,
             minAPI = VERSION_CODES.P,
             currentApi = VERSION.SDK_INT,
-            imageDecoder = GifAnimatedDecoder.Factory()
+            imageDecoder = ImageDecoderGifDecoder.Factory()
         )
     )
     add(
@@ -158,7 +158,7 @@ actual suspend fun buildDecoderTestItems(
             imageUri = ResourceImages.animWebp.uri,
             minAPI = VERSION_CODES.P,
             currentApi = VERSION.SDK_INT,
-            imageDecoder = WebpAnimatedDecoder.Factory()
+            imageDecoder = ImageDecoderAnimatedWebpDecoder.Factory()
         )
     )
     add(
@@ -167,7 +167,7 @@ actual suspend fun buildDecoderTestItems(
             imageUri = ResourceImages.animHeif.uri,
             minAPI = VERSION_CODES.P,
             currentApi = VERSION.SDK_INT,
-            imageDecoder = HeifAnimatedDecoder.Factory()
+            imageDecoder = ImageDecoderAnimatedHeifDecoder.Factory()
         )
     )
     add(

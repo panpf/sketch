@@ -1,8 +1,11 @@
 package com.github.panpf.sketch.sample.ui.util
 
+import com.github.panpf.sketch.http.HttpHeaders
+import com.github.panpf.sketch.http.merged
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
+import com.github.panpf.sketch.request.httpHeaders
 
 class PexelsCompatibleRequestInterceptor : RequestInterceptor {
 
@@ -14,10 +17,14 @@ class PexelsCompatibleRequestInterceptor : RequestInterceptor {
         val request = chain.request
         return if (request.uri.authority == "images.pexels.com") {
             val newRequest = request.newBuilder().apply {
-                httpHeader(
-                    "User-Agent",
-                    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-                )
+                val myHttpHeaders = HttpHeaders {
+                    set(
+                        name = "User-Agent",
+                        value = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                    )
+                }
+                val newHttpHeaders = request.httpHeaders.merged(myHttpHeaders)
+                httpHeaders(newHttpHeaders)
             }.build()
             chain.proceed(newRequest)
         } else {

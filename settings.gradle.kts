@@ -13,8 +13,11 @@ dependencyResolutionManagement {
 /*
  * Release
  */
-include(":sketch-animated")
-include(":sketch-animated-koralgif")
+include(":sketch-animated-core")
+include(":sketch-animated-gif")
+include(":sketch-animated-gif-koral")
+include(":sketch-animated-heif")
+include(":sketch-animated-webp")
 include(":sketch-compose")
 include(":sketch-compose-core")
 include(":sketch-compose-resources")
