@@ -68,6 +68,9 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * new: Added 'Drawable.asStateImage(Any)' and 'ColorDrawable.asStateImage()' extension functions
 * new: animatedTransformation now supports non-Android platforms
 * new: Added ComponentLoader to support automatic detection and registration of components
+* new: The Fetcher component carried by the sketch-http-\* module supports automatic registration.
+* new: The Decoder component carried by the sketch-animated-\* module supports automatic
+  registration.
 * depend: Upgrade kotlin 2.0.21
 
 # 4.0.0-alpha08

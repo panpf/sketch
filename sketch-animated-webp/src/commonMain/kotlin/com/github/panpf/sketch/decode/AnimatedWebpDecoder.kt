@@ -21,7 +21,7 @@ import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.RequestContext
 
 /**
- * Adds gif animated image support
+ * Adds webp animated image support
  *
  * @see com.github.panpf.sketch.animated.webp.common.test.decode.AnimatedWebpDecoderTest.testSupportAnimatedWebp
  */
@@ -30,7 +30,7 @@ fun ComponentRegistry.Builder.supportAnimatedWebp(): ComponentRegistry.Builder =
 }
 
 /**
- * Decode gif animated image files
+ * Decode webp animated image files
  *
  * @see com.github.panpf.sketch.animated.webp.common.test.decode.AnimatedWebpDecoderTest
  */
