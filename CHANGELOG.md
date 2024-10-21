@@ -76,6 +76,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * new: The Fetcher component carried by the sketch-http-\* module supports automatic registration.
 * new: The Decoder component carried by the sketch-animated-\* module supports automatic
   registration.
+* new: The Fetcher component carried by the sketch-compose-resources module supports automatic
+  registration
 * depend: Upgrade kotlin 2.0.21
 
 # 4.0.0-alpha08
