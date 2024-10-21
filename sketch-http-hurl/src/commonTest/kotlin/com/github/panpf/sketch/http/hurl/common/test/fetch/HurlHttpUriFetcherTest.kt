@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.http.hurl.common.test.fetch
 
-import com.github.panpf.sketch.fetch.HttpUriFetcher
+import com.github.panpf.sketch.fetch.HurlHttpUriFetcher
+import com.github.panpf.sketch.http.HurlStack
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -28,7 +29,7 @@ class HurlHttpUriFetcherTest {
         val ftpUri = "ftp://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
 
-        val factory = HttpUriFetcher.Factory()
+        val factory = HurlHttpUriFetcher.Factory()
         assertNotNull(
             factory.create(
                 ImageRequest(context, httpsUri)
@@ -57,8 +58,8 @@ class HurlHttpUriFetcherTest {
 
     @Test
     fun testFactoryEqualsAndHashCode() {
-        val element1 = HttpUriFetcher.Factory()
-        val element11 = HttpUriFetcher.Factory()
+        val element1 = HurlHttpUriFetcher.Factory()
+        val element11 = HurlHttpUriFetcher.Factory()
 
         assertEquals(element1, element11)
         assertNotEquals(element1, Any())
@@ -69,6 +70,10 @@ class HurlHttpUriFetcherTest {
 
     @Test
     fun testFactoryToString() {
-        assertEquals(expected = "HttpUriFetcher", actual = HttpUriFetcher.Factory().toString())
+        val httpStack: HurlStack = HurlStack.Builder().build()
+        assertEquals(
+            expected = "HurlHttpUriFetcher(httpStack=$httpStack)",
+            actual = HurlHttpUriFetcher.Factory(httpStack).toString()
+        )
     }
 }

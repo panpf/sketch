@@ -18,8 +18,11 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.exist
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.runBlock
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
+import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.Deferred
@@ -500,8 +503,68 @@ class HttpUriFetcherTest {
         val httpStack = TestHttpStack(context)
         val httpUriFetcher = HttpUriFetcher(sketch, httpStack, request)
         assertEquals(
-            expected = "HttpUriFetcher('http://sample.com/sample.jpg')",
+            expected = "HttpUriFetcher(sketch=$sketch, httpStack=$httpStack, request=$request)",
             actual = httpUriFetcher.toString()
+        )
+    }
+
+    @Test
+    fun testFactoryCreate() {
+        val (context, sketch) = getTestContextAndSketch()
+        val httpUri = "http://sample.com/sample.jpg"
+        val httpsUri = "https://sample.com/sample.jpg"
+        val ftpUri = "ftp://sample.com/sample.jpg"
+        val contentUri = "content://sample_app/sample"
+
+        val testHttpStack = TestHttpStack(context)
+        val factory = HttpUriFetcher.Factory(testHttpStack)
+        assertNotNull(
+            factory.create(
+                ImageRequest(context, httpsUri)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+        assertNotNull(
+            factory.create(
+                ImageRequest(context, httpUri)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+        assertNull(
+            factory.create(
+                ImageRequest(context, ftpUri)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+        assertNull(
+            factory.create(
+                ImageRequest(context, contentUri)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+    }
+
+    @Test
+    fun testFactoryEqualsAndHashCode() {
+        val context = getTestContext()
+        val testHttpStack = TestHttpStack(context)
+        val element1 = HttpUriFetcher.Factory(testHttpStack)
+        val element11 = HttpUriFetcher.Factory(testHttpStack)
+
+        assertEquals(element1, element11)
+        assertNotEquals(element1, Any())
+        assertNotEquals(element1, null as Any?)
+
+        assertEquals(element1.hashCode(), element11.hashCode())
+    }
+
+    @Test
+    fun testFactoryToString() {
+        val context = getTestContext()
+        val testHttpStack = TestHttpStack(context)
+        assertEquals(
+            expected = "HttpUriFetcher(httpStack=$testHttpStack)",
+            actual = HttpUriFetcher.Factory(testHttpStack).toString()
         )
     }
 }

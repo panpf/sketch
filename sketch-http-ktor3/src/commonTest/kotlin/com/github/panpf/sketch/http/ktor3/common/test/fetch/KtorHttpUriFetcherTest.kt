@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.http.ktor3.common.test.fetch
 
-import com.github.panpf.sketch.fetch.HttpUriFetcher
+import com.github.panpf.sketch.fetch.KtorHttpUriFetcher
+import com.github.panpf.sketch.http.KtorStack
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -28,7 +29,7 @@ class KtorHttpUriFetcherTest {
         val ftpUri = "ftp://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
 
-        val factory = HttpUriFetcher.Factory()
+        val factory = KtorHttpUriFetcher.Factory()
         assertNotNull(
             factory.create(
                 ImageRequest(context, httpsUri)
@@ -57,18 +58,27 @@ class KtorHttpUriFetcherTest {
 
     @Test
     fun testFactoryEqualsAndHashCode() {
-        val element1 = HttpUriFetcher.Factory()
-        val element11 = HttpUriFetcher.Factory()
+        val httpStack = KtorStack()
+        val httpStack2 = KtorStack()
+        val element1 = KtorHttpUriFetcher.Factory(httpStack)
+        val element11 = KtorHttpUriFetcher.Factory(httpStack)
+        val element2 = KtorHttpUriFetcher.Factory(httpStack2)
 
         assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
         assertNotEquals(element1, Any())
         assertNotEquals(element1, null as Any?)
 
         assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
     }
 
     @Test
     fun testFactoryToString() {
-        assertEquals(expected = "HttpUriFetcher", actual = HttpUriFetcher.Factory().toString())
+        val httpStack = KtorStack()
+        assertEquals(
+            expected = "KtorHttpUriFetcher(httpStack=$httpStack)",
+            actual = KtorHttpUriFetcher.Factory(httpStack).toString()
+        )
     }
 }

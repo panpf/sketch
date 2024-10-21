@@ -5,8 +5,8 @@ import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.MyImagesHttpStack
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
+import com.github.panpf.sketch.test.utils.supportMyImagesHttpUri
 import com.github.panpf.sketch.util.DownloadData
 import kotlinx.coroutines.test.runTest
 import okio.use
@@ -21,7 +21,9 @@ class DownloadTest {
     fun test() = runTest {
         runInNewSketchWithUse({
             val defaultSketch = getTestContextAndSketch().second
-            httpStack(MyImagesHttpStack(defaultSketch))
+            components {
+                supportMyImagesHttpUri(defaultSketch)
+            }
         }) { context, sketch ->
             val downloadCache = sketch.downloadCache
             downloadCache.clear()

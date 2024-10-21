@@ -23,7 +23,7 @@ class ImageRequestHttpExtensionsTest {
             /* httpHeaders() */
             httpHeaders(HttpHeaders())
             build().apply {
-                assertNull(httpHeaders)
+                assertEquals(HttpHeaders(), httpHeaders)
             }
 
             httpHeaders(HttpHeaders.Builder().set("key1", "value1").build())

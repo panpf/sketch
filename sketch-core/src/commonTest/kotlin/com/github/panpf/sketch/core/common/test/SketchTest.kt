@@ -11,6 +11,7 @@ import com.github.panpf.sketch.commonComponents
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
+import com.github.panpf.sketch.fetch.KtorHttpUriFetcher
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.merged
 import com.github.panpf.sketch.platformComponents
@@ -31,8 +32,10 @@ import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
+import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.defaultFileSystem
+import com.github.panpf.sketch.util.toComponentRegistry
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.test.runTest
@@ -204,12 +207,27 @@ class SketchTest {
         // components: Fetcher, Decoder
         Sketch.Builder(context).build().apply {
             assertEquals(
+                expected = ComponentLoader.toComponentRegistry(context)
+                    .merged(platformComponents(context)).merged(commonComponents()).toString(),
+                actual = components.registry.toString()
+            )
+            assertNotNull(components.registry.fetcherFactoryList.find { it is KtorHttpUriFetcher.Factory })
+        }
+
+        // components: Fetcher, Decoder
+        Sketch.Builder(context).apply {
+            componentLoaderEnabled(false)
+        }.build().apply {
+            assertEquals(
                 expected = platformComponents(context).merged(commonComponents()),
                 actual = components.registry
             )
+            assertNull(components.registry.fetcherFactoryList.find { it is KtorHttpUriFetcher.Factory })
         }
 
         Sketch.Builder(context).apply {
+            componentLoaderEnabled(false)
+        }.apply {
             components {
                 addFetcher(TestFetcher.Factory())
                 addDecoder(TestDecoder.Factory())
@@ -307,8 +325,6 @@ class SketchTest {
 
         // The tests for networkParallelismLimited and decodeParallelismLimited are located at
         //  'com.github.panpf.sketch.core.desktop.test.SketchDesktopTest.testBuilder'
-
-        // TODO test componentLoaderEnabled
     }
 
     @Test

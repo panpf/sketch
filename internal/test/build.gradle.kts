@@ -12,7 +12,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.sketchCore)
-            api(projects.sketchHttpCore)
+            api(projects.sketchHttpKtor3)
             api(projects.internal.images)
             api(libs.kotlin.test)
             api(libs.kotlinx.coroutines.test)
@@ -20,15 +20,11 @@ kotlin {
             api(libs.okio.fakefilesystem)
         }
         jvmCommonMain.dependencies {
-            api(projects.sketchHttpHurl)
             api(libs.junit)
             api(libs.kotlin.test.junit)
             api(libs.kotlin.reflect)
             api(libs.panpf.tools4j.reflect)
             api(libs.panpf.tools4j.security)
-        }
-        nonJvmCommonMain.dependencies {
-            api(projects.sketchHttpKtor3)
         }
         androidMain.dependencies {
             api(projects.sketchViewCore)
@@ -42,10 +38,12 @@ kotlin {
             api(libs.panpf.tools4a.network)
             api(libs.panpf.tools4a.run)
             api(libs.panpf.tools4a.test)
+            api(libs.ktor3.client.android)
         }
         desktopMain.dependencies {
             api(skikoAwtRuntimeDependency(libs.versions.skiko.get()))
             api(libs.appdirs)
+            api(libs.ktor3.client.java)
         }
         iosMain.dependencies {
             api(libs.ktor3.client.darwin)

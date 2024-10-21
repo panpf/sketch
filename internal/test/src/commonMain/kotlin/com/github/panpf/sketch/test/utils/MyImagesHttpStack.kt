@@ -16,8 +16,10 @@
 
 package com.github.panpf.sketch.test.utils
 
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.FetchResult
+import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.images.ResourceImages
@@ -29,6 +31,12 @@ import com.github.panpf.sketch.util.toUri
 import okio.BufferedSource
 import okio.buffer
 import okio.use
+
+fun ComponentRegistry.Builder.supportMyImagesHttpUri(
+    sketch: Sketch
+): ComponentRegistry.Builder = apply {
+    addFetcher(HttpUriFetcher.Factory(MyImagesHttpStack(sketch)))
+}
 
 class MyImagesHttpStack(val sketch: Sketch) : HttpStack {
 
