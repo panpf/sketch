@@ -112,11 +112,6 @@ data class ImageOptions(
     val transformations: List<Transformation>?,
 
     /**
-     * Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
-     */
-    val disallowAnimatedImage: Boolean?,
-
-    /**
      * Disk caching policy for Bitmaps affected by [sizeResolver] or [transformations]
      *
      * @see com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
@@ -221,7 +216,6 @@ data class ImageOptions(
                 && fallback == null
                 && error == null
                 && transitionFactory == null
-                && disallowAnimatedImage == null
                 && resizeOnDraw == null
                 && allowNullImage == null
                 && memoryCachePolicy == null
@@ -241,7 +235,6 @@ data class ImageOptions(
         private var precisionDecider: PrecisionDecider? = null
         private var scaleDecider: ScaleDecider? = null
         private var transformations: MutableList<Transformation>? = null
-        private var disallowAnimatedImage: Boolean? = null
         private var resultCachePolicy: CachePolicy? = null
 
         private var placeholder: StateImage? = null
@@ -275,7 +268,6 @@ data class ImageOptions(
             this.fallback = options.fallback
             this.error = options.error
             this.transitionFactory = options.transitionFactory
-            this.disallowAnimatedImage = options.disallowAnimatedImage
             this.resizeOnDraw = options.resizeOnDraw
             this.allowNullImage = options.allowNullImage
             this.memoryCachePolicy = options.memoryCachePolicy
@@ -508,13 +500,6 @@ data class ImageOptions(
             removeTransformations(removeTransformations.toList())
 
         /**
-         * Set disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
-         */
-        fun disallowAnimatedImage(disabled: Boolean? = true): Builder = apply {
-            this.disallowAnimatedImage = disabled
-        }
-
-        /**
          * Set disk caching policy for Bitmaps affected by [size] or [transformations]
          */
         fun resultCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
@@ -680,9 +665,6 @@ data class ImageOptions(
             if (this.transitionFactory == null) {
                 this.transitionFactory = options.transitionFactory
             }
-            if (this.disallowAnimatedImage == null) {
-                this.disallowAnimatedImage = options.disallowAnimatedImage
-            }
             if (this.resizeOnDraw == null) {
                 this.resizeOnDraw = options.resizeOnDraw
             }
@@ -716,7 +698,6 @@ data class ImageOptions(
                 fallback = fallback,
                 error = error,
                 transitionFactory = transitionFactory,
-                disallowAnimatedImage = disallowAnimatedImage,
                 resizeOnDraw = resizeOnDraw,
                 allowNullImage = allowNullImage,
                 memoryCachePolicy = memoryCachePolicy,

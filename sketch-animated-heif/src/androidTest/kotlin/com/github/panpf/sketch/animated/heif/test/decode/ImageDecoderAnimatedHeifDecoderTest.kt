@@ -16,6 +16,7 @@ import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorSpace
+import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.request.onAnimationEnd
 import com.github.panpf.sketch.request.onAnimationStart
 import com.github.panpf.sketch.request.repeatCount

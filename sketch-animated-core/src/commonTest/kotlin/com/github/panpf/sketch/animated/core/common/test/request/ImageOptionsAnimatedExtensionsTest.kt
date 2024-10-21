@@ -4,6 +4,7 @@ import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
+import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.request.onAnimationEnd
 import com.github.panpf.sketch.request.onAnimationStart
 import com.github.panpf.sketch.request.repeatCount
@@ -74,6 +75,30 @@ class ImageOptionsAnimatedExtensionsTest {
             animatedTransformation(myAnimatedTransformation)
         }.apply {
             assertEquals(myAnimatedTransformation, animatedTransformation)
+        }
+    }
+
+    @Test
+    fun testDisallowAnimatedImage() {
+        ImageOptions.Builder().apply {
+            build().apply {
+                assertNull(disallowAnimatedImage)
+            }
+
+            disallowAnimatedImage()
+            build().apply {
+                assertEquals(true, disallowAnimatedImage)
+            }
+
+            disallowAnimatedImage(false)
+            build().apply {
+                assertEquals(false, disallowAnimatedImage)
+            }
+
+            disallowAnimatedImage(null)
+            build().apply {
+                assertNull(disallowAnimatedImage)
+            }
         }
     }
 

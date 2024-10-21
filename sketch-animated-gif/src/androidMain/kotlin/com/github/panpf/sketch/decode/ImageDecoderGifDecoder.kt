@@ -23,6 +23,7 @@ import com.github.panpf.sketch.decode.internal.ImageDecoderAnimatedDecoder
 import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.source.DataSource
 
 /**
@@ -74,7 +75,7 @@ class ImageDecoderGifDecoder(
             val dataSource = fetchResult.dataSource
             if (
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
-                && !requestContext.request.disallowAnimatedImage
+                && requestContext.request.disallowAnimatedImage != true
                 && fetchResult.headerBytes.isGif()
             ) {
                 return ImageDecoderGifDecoder(requestContext, dataSource)

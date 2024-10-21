@@ -21,6 +21,7 @@ import com.github.panpf.sketch.decode.internal.SkiaAnimatedDecoder
 import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.source.DataSource
 
 /**
@@ -66,7 +67,7 @@ class SkiaGifDecoder(
 
         override fun create(requestContext: RequestContext, fetchResult: FetchResult): Decoder? {
             if (
-                !requestContext.request.disallowAnimatedImage
+                requestContext.request.disallowAnimatedImage != true
                 && fetchResult.headerBytes.isGif()
             ) {
                 return SkiaGifDecoder(requestContext, fetchResult.dataSource)

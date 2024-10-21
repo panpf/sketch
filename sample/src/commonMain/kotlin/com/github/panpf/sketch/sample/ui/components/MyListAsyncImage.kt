@@ -25,6 +25,7 @@ import com.github.panpf.sketch.rememberAsyncImagePainter
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.request.saveCellularTraffic

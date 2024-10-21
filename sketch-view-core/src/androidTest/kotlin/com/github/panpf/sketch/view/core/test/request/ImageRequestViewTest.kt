@@ -41,7 +41,6 @@ class ImageRequestViewTest {
 
             assertEquals(NETWORK, this.depthHolder.depth)
             assertNull(this.extras)
-            assertNull(this.httpHeaders)
             assertEquals(ENABLED, this.downloadCachePolicy)
             assertNull(this.colorType)
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -58,7 +57,6 @@ class ImageRequestViewTest {
             assertNull(this.fallback)
             assertNull(this.error)
             assertNull(this.transitionFactory)
-            assertFalse(this.disallowAnimatedImage)
             assertNull(this.resizeOnDraw)
             assertEquals(ENABLED, this.memoryCachePolicy)
         }

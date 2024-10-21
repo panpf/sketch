@@ -177,11 +177,6 @@ data class ImageRequest(
     val transformations: List<Transformation>?,
 
     /**
-     * Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
-     */
-    val disallowAnimatedImage: Boolean,
-
-    /**
      * Disk caching policy for Bitmaps affected by [sizeResolver] or [transformations]
      *
      * @see com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
@@ -605,13 +600,6 @@ data class ImageRequest(
         }
 
         /**
-         * Set disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
-         */
-        fun disallowAnimatedImage(disabled: Boolean? = true): Builder = apply {
-            definedOptionsBuilder.disallowAnimatedImage(disabled)
-        }
-
-        /**
          * Set disk caching policy for Bitmaps affected by [size] or [transformations]
          */
         fun resultCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
@@ -763,7 +751,6 @@ data class ImageRequest(
             val fallback = finalOptions.fallback
             val error = finalOptions.error
             val transitionFactory = finalOptions.transitionFactory
-            val disallowAnimatedImage = finalOptions.disallowAnimatedImage ?: false
             val resizeOnDraw = finalOptions.resizeOnDraw
             val allowNullImage = finalOptions.allowNullImage
             val memoryCachePolicy = finalOptions.memoryCachePolicy ?: CachePolicy.ENABLED
@@ -795,7 +782,6 @@ data class ImageRequest(
                 fallback = fallback,
                 error = error,
                 transitionFactory = transitionFactory,
-                disallowAnimatedImage = disallowAnimatedImage,
                 resizeOnDraw = resizeOnDraw,
                 allowNullImage = allowNullImage,
                 memoryCachePolicy = memoryCachePolicy,

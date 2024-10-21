@@ -38,7 +38,6 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendScale()
     .appendTransformations()
     .appendResultCachePolicy()
-    .appendDisallowAnimatedImage()
     .appendResizeOnDraw()
     .appendAllowNullImage()
     .appendMemoryCachePolicy()
@@ -65,7 +64,6 @@ internal fun ImageRequest.newCacheKey(size: Size): String = ImageRequestKeyBuild
     .appendPrecision()
     .appendScale()
     .appendTransformations()
-    .appendDisallowAnimatedImage()
     .appendDecoders()
     .appendDecodeInterceptors()
     .appendRequestInterceptors()
@@ -182,12 +180,6 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
                     list.joinToString(prefix = "[", postfix = "]", separator = ",")
                 appendQueryParameter("_decodeInterceptors", decodeInterceptorKeys)
             }
-    }
-
-    fun appendDisallowAnimatedImage(): ImageRequestKeyBuilder = apply {
-        if (request.disallowAnimatedImage) {
-            appendQueryParameter("_disallowAnimatedImage", true.toString())
-        }
     }
 
     fun appendResizeOnDraw(): ImageRequestKeyBuilder = apply {

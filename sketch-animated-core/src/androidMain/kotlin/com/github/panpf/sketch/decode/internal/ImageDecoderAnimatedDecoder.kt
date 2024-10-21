@@ -83,9 +83,9 @@ import java.nio.ByteBuffer
  * * scaleDecider
  * * colorType
  *
- * @see com.github.panpf.sketch.animated.gif.android.test.decode.GifAnimatedDecoderTest
- * @see com.github.panpf.sketch.animated.webp.android.test.decode.WebpAnimatedDecoderTest
- * @see com.github.panpf.sketch.animated.heif.test.decode.HeifAnimatedDecoderTest
+ * @see com.github.panpf.sketch.animated.gif.android.test.decode.ImageDecoderGifDecoderTest
+ * @see com.github.panpf.sketch.animated.webp.android.test.decode.ImageDecoderAnimatedWebpDecoderTest
+ * @see com.github.panpf.sketch.animated.heif.test.decode.ImageDecoderAnimatedHeifDecoderTest
  */
 @RequiresApi(Build.VERSION_CODES.P)
 open class ImageDecoderAnimatedDecoder(

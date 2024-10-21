@@ -21,6 +21,7 @@ import com.github.panpf.sketch.decode.internal.SkiaAnimatedDecoder
 import com.github.panpf.sketch.decode.internal.isAnimatedWebP
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.source.DataSource
 
 /**
@@ -66,7 +67,7 @@ class SkiaAnimatedWebpDecoder(
 
         override fun create(requestContext: RequestContext, fetchResult: FetchResult): Decoder? {
             if (
-                !requestContext.request.disallowAnimatedImage
+                requestContext.request.disallowAnimatedImage != true
                 && fetchResult.headerBytes.isAnimatedWebP()
             ) {
                 return SkiaAnimatedWebpDecoder(requestContext, fetchResult.dataSource)

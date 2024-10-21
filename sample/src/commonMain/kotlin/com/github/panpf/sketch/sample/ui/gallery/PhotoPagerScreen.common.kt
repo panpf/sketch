@@ -54,6 +54,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
 import com.github.panpf.sketch.sample.EventBus
 import com.github.panpf.sketch.sample.appSettings

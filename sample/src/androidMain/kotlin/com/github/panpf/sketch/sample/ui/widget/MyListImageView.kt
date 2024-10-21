@@ -32,6 +32,7 @@ import com.github.panpf.sketch.ability.showProgressIndicator
 import com.github.panpf.sketch.drawable.asEquitable
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.ImageOptions
+import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.request.repeatCount

@@ -35,6 +35,7 @@ import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
+import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
@@ -163,7 +164,7 @@ class MovieGifDecoder(
         ): Decoder? {
             val dataSource = fetchResult.dataSource
             if (
-                !requestContext.request.disallowAnimatedImage
+                requestContext.request.disallowAnimatedImage != true
                 && fetchResult.headerBytes.isGif()
             ) {
                 return MovieGifDecoder(requestContext, dataSource)

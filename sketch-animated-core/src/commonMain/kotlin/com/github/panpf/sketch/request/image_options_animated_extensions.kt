@@ -25,6 +25,7 @@ const val ANIMATION_REPEAT_COUNT_KEY = "sketch#animation_repeat_count"
 const val ANIMATION_START_CALLBACK_KEY = "sketch#animation_start_callback"
 const val ANIMATION_END_CALLBACK_KEY = "sketch#animation_end_callback"
 const val ANIMATED_TRANSFORMATION_KEY = "sketch#animated_transformation"
+const val DISALLOW_ANIMATED_IMAGE_KEY = "sketch#disallow_animated_image"
 
 /**
  * Set Number of repeat plays. -1: Indicates infinite repetition. When it is greater than or equal to 0, the total number of plays is equal to '1 + repeatCount'
@@ -129,3 +130,27 @@ fun ImageOptions.Builder.animatedTransformation(
  */
 val ImageOptions.animatedTransformation: AnimatedTransformation?
     get() = extras?.value(ANIMATED_TRANSFORMATION_KEY)
+
+
+/**
+ * Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
+ */
+val ImageOptions.disallowAnimatedImage: Boolean?
+    get() = extras?.value(DISALLOW_ANIMATED_IMAGE_KEY)
+
+/**
+ * Set the callback to be invoked at the end of the animation if the result is an animated Image.
+ *
+ * @see com.github.panpf.sketch.animated.core.common.test.request.ImageOptionsAnimatedExtensionsTest.testOnAnimationEnd
+ */
+fun ImageOptions.Builder.disallowAnimatedImage(disabled: Boolean? = true): ImageOptions.Builder =
+    apply {
+        if (disabled != null) {
+            setExtra(
+                key = DISALLOW_ANIMATED_IMAGE_KEY,
+                value = disabled,
+            )
+        } else {
+            removeExtra(DISALLOW_ANIMATED_IMAGE_KEY)
+        }
+    }

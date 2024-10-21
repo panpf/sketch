@@ -419,7 +419,6 @@ class CoreUtilsTest {
             lifecycle(TestLifecycle())
             depth(depth = Depth.LOCAL, from = "test")
             setExtra("extra1", "extra1Value")
-            httpHeader("httpHeader", "httpHeaderValue")
             downloadCachePolicy(CachePolicy.ENABLED)
             colorType("RGB_565")
             colorSpace("sRGB")
@@ -433,7 +432,6 @@ class CoreUtilsTest {
             fallback(FakeStateImage(FakeImage(Size(200, 200))))
             error(FakeStateImage(FakeImage(Size(300, 300))))
             transitionFactory(CrossfadeTransition.Factory())
-            disallowAnimatedImage(false)
             resizeOnDraw(true)
             memoryCachePolicy(CachePolicy.ENABLED)
             components {
@@ -522,14 +520,6 @@ class CoreUtilsTest {
         }.apply {
             assertEquals(
                 expected = "extras different: '${request.extras}' vs '${this@apply.extras}'",
-                actual = request.difference(this@apply)
-            )
-        }
-        request.newRequest {
-            httpHeader("httpHeader", "httpHeaderValue2")
-        }.apply {
-            assertEquals(
-                expected = "httpHeaders different: '${request.httpHeaders}' vs '${this@apply.httpHeaders}'",
                 actual = request.difference(this@apply)
             )
         }
@@ -638,14 +628,6 @@ class CoreUtilsTest {
             )
         }
         request.newRequest {
-            disallowAnimatedImage(true)
-        }.apply {
-            assertEquals(
-                expected = "disallowAnimatedImage different: '${request.disallowAnimatedImage}' vs '${this@apply.disallowAnimatedImage}'",
-                actual = request.difference(this@apply)
-            )
-        }
-        request.newRequest {
             resizeOnDraw(false)
         }.apply {
             assertEquals(
@@ -689,7 +671,6 @@ class CoreUtilsTest {
         val options = ImageOptions {
             depth(depth = Depth.LOCAL, from = "test")
             setExtra("extra1", "extra1Value")
-            httpHeader("httpHeader", "httpHeaderValue")
             downloadCachePolicy(CachePolicy.ENABLED)
             colorType("RGB_565")
             colorSpace("sRGB")
@@ -703,7 +684,6 @@ class CoreUtilsTest {
             fallback(FakeStateImage(FakeImage(Size(200, 200))))
             error(FakeStateImage(FakeImage(Size(300, 300))))
             transitionFactory(CrossfadeTransition.Factory())
-            disallowAnimatedImage(false)
             resizeOnDraw(true)
             memoryCachePolicy(CachePolicy.ENABLED)
             components {
@@ -744,14 +724,6 @@ class CoreUtilsTest {
         }.apply {
             assertEquals(
                 expected = "extras different: '${options.extras}' vs '${this@apply.extras}'",
-                actual = options.difference(this@apply)
-            )
-        }
-        options.newOptions {
-            httpHeader("httpHeader", "httpHeaderValue2")
-        }.apply {
-            assertEquals(
-                expected = "httpHeaders different: '${options.httpHeaders}' vs '${this@apply.httpHeaders}'",
                 actual = options.difference(this@apply)
             )
         }
@@ -856,14 +828,6 @@ class CoreUtilsTest {
         }.apply {
             assertEquals(
                 expected = "transitionFactory different: '${options.transitionFactory}' vs '${this@apply.transitionFactory}'",
-                actual = options.difference(this@apply)
-            )
-        }
-        options.newOptions {
-            disallowAnimatedImage(true)
-        }.apply {
-            assertEquals(
-                expected = "disallowAnimatedImage different: '${options.disallowAnimatedImage}' vs '${this@apply.disallowAnimatedImage}'",
                 actual = options.difference(this@apply)
             )
         }

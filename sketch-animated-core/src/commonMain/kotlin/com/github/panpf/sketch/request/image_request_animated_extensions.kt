@@ -125,3 +125,27 @@ fun ImageRequest.Builder.animatedTransformation(
  */
 val ImageRequest.animatedTransformation: AnimatedTransformation?
     get() = extras?.value(ANIMATED_TRANSFORMATION_KEY)
+
+
+/**
+ * Disallow decode animation image, animations such as gif will only decode their first frame and return BitmapDrawable
+ */
+val ImageRequest.disallowAnimatedImage: Boolean?
+    get() = extras?.value(DISALLOW_ANIMATED_IMAGE_KEY)
+
+/**
+ * Set the callback to be invoked at the end of the animation if the result is an animated Image.
+ *
+ * @see com.github.panpf.sketch.animated.core.common.test.request.ImageRequestAnimatedExtensionsTest.testOnAnimationEnd
+ */
+fun ImageRequest.Builder.disallowAnimatedImage(disabled: Boolean? = true): ImageRequest.Builder =
+    apply {
+        if (disabled != null) {
+            setExtra(
+                key = DISALLOW_ANIMATED_IMAGE_KEY,
+                value = disabled,
+            )
+        } else {
+            removeExtra(DISALLOW_ANIMATED_IMAGE_KEY)
+        }
+    }

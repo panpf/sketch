@@ -5,10 +5,12 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
 import com.github.panpf.sketch.request.animationStartCallback
+import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.request.onAnimationEnd
 import com.github.panpf.sketch.request.onAnimationStart
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity
@@ -182,6 +184,32 @@ class ImageRequestAnimatedExtensionsTest {
             animatedTransformation(myAnimatedTransformation)
         }.toRequestContext(sketch).cacheKey
         assertEquals(cacheKey1, cacheKey2)
+    }
+
+    @Test
+    fun testDisallowAnimatedImage() {
+        val context1 = getTestContext()
+        val uri = ResourceImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
+            build().apply {
+                assertNull(disallowAnimatedImage)
+            }
+
+            disallowAnimatedImage(true)
+            build().apply {
+                assertEquals(true, disallowAnimatedImage)
+            }
+
+            disallowAnimatedImage(false)
+            build().apply {
+                assertEquals(false, disallowAnimatedImage)
+            }
+
+            disallowAnimatedImage(null)
+            build().apply {
+                assertNull(disallowAnimatedImage)
+            }
+        }
     }
 
     private data object TranslucentAnimatedTransformation : AnimatedTransformation {

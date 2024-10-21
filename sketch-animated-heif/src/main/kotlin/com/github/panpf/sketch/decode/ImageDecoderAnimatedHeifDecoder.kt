@@ -23,6 +23,7 @@ import com.github.panpf.sketch.decode.internal.ImageDecoderAnimatedDecoder
 import com.github.panpf.sketch.decode.internal.isAnimatedHeif
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.source.DataSource
 
 /**
@@ -74,7 +75,7 @@ class ImageDecoderAnimatedHeifDecoder(
             val dataSource = fetchResult.dataSource
             if (
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
-                && !requestContext.request.disallowAnimatedImage
+                && requestContext.request.disallowAnimatedImage != true
                 && fetchResult.headerBytes.isAnimatedHeif()
             ) {
                 return ImageDecoderAnimatedHeifDecoder(requestContext, dataSource)

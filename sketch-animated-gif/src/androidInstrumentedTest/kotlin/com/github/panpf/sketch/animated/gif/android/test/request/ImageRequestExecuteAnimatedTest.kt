@@ -26,6 +26,7 @@ import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
 import com.github.panpf.sketch.test.utils.asOrNull
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse

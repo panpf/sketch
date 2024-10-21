@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:OptIn(InternalCoroutinesApi::class)
-
 package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.AnimatedImage
@@ -34,7 +32,6 @@ import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.util.Rect
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
-import kotlinx.coroutines.InternalCoroutinesApi
 import okio.buffer
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
@@ -62,9 +59,8 @@ import org.jetbrains.skia.impl.use
  * * animatedTransformation
  *
  * @see com.github.panpf.sketch.animated.gif.nonandroid.test.decode.GifSkiaAnimatedDecoderTest
- * @see com.github.panpf.sketch.animated.webp.nonandroid.test.decode.WebpSkiaAnimatedDecoderTest
+ * @see com.github.panpf.sketch.animated.webp.nonandroid.test.decode.SkiaAnimatedWebpDecoderTest
  */
-// TODO rename to AnimatedDecoder
 open class SkiaAnimatedDecoder(
     private val requestContext: RequestContext,
     private val dataSource: DataSource,

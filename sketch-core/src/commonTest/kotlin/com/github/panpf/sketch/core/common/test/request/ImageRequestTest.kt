@@ -122,7 +122,6 @@ class ImageRequestTest {
             assertNull(this.fallback)
             assertNull(this.error)
             assertNull(this.transitionFactory)
-            assertFalse(this.disallowAnimatedImage)
             assertFalse(this.resizeOnDraw ?: false)
             assertEquals(ENABLED, this.memoryCachePolicy)
         }
@@ -1049,32 +1048,6 @@ class ImageRequestTest {
     }
 
     @Test
-    fun testDisallowAnimatedImage() {
-        val context1 = getTestContext()
-        val uri = ResourceImages.jpeg.uri
-        ImageRequest.Builder(context1, uri).apply {
-            build().apply {
-                assertFalse(disallowAnimatedImage)
-            }
-
-            disallowAnimatedImage(true)
-            build().apply {
-                assertEquals(true, disallowAnimatedImage)
-            }
-
-            disallowAnimatedImage(false)
-            build().apply {
-                assertEquals(false, disallowAnimatedImage)
-            }
-
-            disallowAnimatedImage(null)
-            build().apply {
-                assertFalse(disallowAnimatedImage)
-            }
-        }
-    }
-
-    @Test
     fun testPlaceholder() {
         val context1 = getTestContext()
         val uri = ResourceImages.jpeg.uri
@@ -1665,9 +1638,6 @@ class ImageRequestTest {
                 resultCachePolicy(WRITE_ONLY)
             },
             ScopeAction {
-                disallowAnimatedImage(true)
-            },
-            ScopeAction {
                 placeholder(FakeStateImage())
             },
             ScopeAction {
@@ -1748,7 +1718,6 @@ class ImageRequestTest {
             precision(SAME_ASPECT_RATIO)
             scale(FILL)
             transformations(RotateTransformation(40))
-            disallowAnimatedImage(true)
             resultCachePolicy(READ_ONLY)
             placeholder(FakeStateImage(FakeImage(SketchSize(100, 100))))
             fallback(FakeStateImage(FakeImage(SketchSize(100, 100))))
@@ -1762,7 +1731,7 @@ class ImageRequestTest {
             }
         }.apply {
             assertEquals(
-                expected = "ImageRequest(context=$context, uri=http://sample.com/sample.jpeg, target=TestTarget, listener=$testListener, progressListener=$testProgressListener, lifecycleResolver=FixedLifecycleResolver($testLifecycle), definedRequestOptions=RequestOptions(listener=$testListener, progressListener=$testProgressListener, lifecycleResolver=FixedLifecycleResolver($testLifecycle)), definedOptions=ImageOptions(depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], disallowAnimatedImage=true, resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[TestFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[])), defaultOptions=null, depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), httpHeaders=HttpHeaders(sets=[key1:value1],adds=[]), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], disallowAnimatedImage=true, resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[TestFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[]))",
+                expected = "ImageRequest(context=$context, uri=http://sample.com/sample.jpeg, target=TestTarget, listener=$testListener, progressListener=$testProgressListener, lifecycleResolver=FixedLifecycleResolver($testLifecycle), definedRequestOptions=RequestOptions(listener=$testListener, progressListener=$testProgressListener, lifecycleResolver=FixedLifecycleResolver($testLifecycle)), definedOptions=ImageOptions(depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[TestFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[])), defaultOptions=null, depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), httpHeaders=HttpHeaders(sets=[key1:value1],adds=[]), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[TestFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[]))",
                 actual = this.toString()
             )
         }

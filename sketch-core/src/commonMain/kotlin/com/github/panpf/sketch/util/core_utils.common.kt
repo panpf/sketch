@@ -417,9 +417,6 @@ fun ImageRequest?.difference(other: ImageRequest?): String {
     if (transitionFactory != other.transitionFactory) {
         return "transitionFactory different: '${transitionFactory}' vs '${other.transitionFactory}'"
     }
-    if (disallowAnimatedImage != other.disallowAnimatedImage) {
-        return "disallowAnimatedImage different: '${disallowAnimatedImage}' vs '${other.disallowAnimatedImage}'"
-    }
     if (resizeOnDraw != other.resizeOnDraw) {
         return "resizeOnDraw different: '${resizeOnDraw}' vs '${other.resizeOnDraw}'"
     }
@@ -494,9 +491,6 @@ fun ImageOptions?.difference(other: ImageOptions?): String {
     }
     if (transitionFactory != other.transitionFactory) {
         return "transitionFactory different: '${transitionFactory}' vs '${other.transitionFactory}'"
-    }
-    if (disallowAnimatedImage != other.disallowAnimatedImage) {
-        return "disallowAnimatedImage different: '${disallowAnimatedImage}' vs '${other.disallowAnimatedImage}'"
     }
     if (resizeOnDraw != other.resizeOnDraw) {
         return "resizeOnDraw different: '${resizeOnDraw}' vs '${other.resizeOnDraw}'"

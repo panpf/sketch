@@ -147,23 +147,13 @@ class RequestKeysTest {
         )
 
         request = request.newRequest {
-            disallowAnimatedImage(true)
-        }
-        val _disallowAnimatedImage = "&_disallowAnimatedImage=true"
-        verifyKey(
-            uri + _depth + _extras + _downloadCachePolicy + _colorType + _colorSpace +
-                    _size + _sizeMultiplier + _precision + _scale +
-                    _transformations + _resultCachePolicy + _disallowAnimatedImage
-        )
-
-        request = request.newRequest {
             resizeOnDraw(true)
         }
         val _resizeOnDraw = "&_resizeOnDraw=true"
         verifyKey(
             uri + _depth + _extras + _downloadCachePolicy + _colorType + _colorSpace +
                     _size + _sizeMultiplier + _precision + _scale +
-                    _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw
+                    _transformations + _resultCachePolicy + _resizeOnDraw
         )
 
         request = request.newRequest {
@@ -173,7 +163,7 @@ class RequestKeysTest {
         verifyKey(
             uri + _depth + _extras + _downloadCachePolicy + _colorType + _colorSpace +
                     _size + _sizeMultiplier + _precision + _scale +
-                    _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
+                    _transformations + _resultCachePolicy + _resizeOnDraw +
                     _allowNullImage
         )
 
@@ -184,7 +174,7 @@ class RequestKeysTest {
         verifyKey(
             uri + _depth + _extras + _downloadCachePolicy + _colorType + _colorSpace +
                     _size + _sizeMultiplier + _precision + _scale +
-                    _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
+                    _transformations + _resultCachePolicy + _resizeOnDraw +
                     _allowNullImage + _memoryCachePolicy
         )
 
@@ -196,7 +186,7 @@ class RequestKeysTest {
         verifyKey(
             uri + _depth + _extras + _downloadCachePolicy + _colorType + _colorSpace +
                     _size + _sizeMultiplier + _precision + _scale +
-                    _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
+                    _transformations + _resultCachePolicy + _resizeOnDraw +
                     _allowNullImage + _memoryCachePolicy + _transitionFactory
         )
 
@@ -208,7 +198,7 @@ class RequestKeysTest {
         verifyKey(
             uri + _depth + _extras + _downloadCachePolicy + _colorType + _colorSpace +
                     _size + _sizeMultiplier + _precision + _scale +
-                    _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
+                    _transformations + _resultCachePolicy + _resizeOnDraw +
                     _allowNullImage + _memoryCachePolicy + _transitionFactory + _placeholder
         )
 
@@ -220,7 +210,7 @@ class RequestKeysTest {
         verifyKey(
             uri + _depth + _extras + _downloadCachePolicy + _colorType + _colorSpace +
                     _size + _sizeMultiplier + _precision + _scale +
-                    _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
+                    _transformations + _resultCachePolicy + _resizeOnDraw +
                     _allowNullImage + _memoryCachePolicy + _transitionFactory + _placeholder + _fallback
         )
 
@@ -232,7 +222,7 @@ class RequestKeysTest {
         verifyKey(
             uri + _depth + _extras + _downloadCachePolicy + _colorType + _colorSpace +
                     _size + _sizeMultiplier + _precision + _scale +
-                    _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
+                    _transformations + _resultCachePolicy + _resizeOnDraw +
                     _allowNullImage + _memoryCachePolicy + _transitionFactory + _placeholder +
                     _fallback + _error
         )
@@ -251,7 +241,7 @@ class RequestKeysTest {
         verifyKey(
             uri + _depth + _extras + _downloadCachePolicy + _colorType + _colorSpace +
                     _size + _sizeMultiplier + _precision + _scale +
-                    _transformations + _resultCachePolicy + _disallowAnimatedImage + _resizeOnDraw +
+                    _transformations + _resultCachePolicy + _resizeOnDraw +
                     _allowNullImage + _memoryCachePolicy + _transitionFactory + _placeholder +
                     _fallback + _error + _decoders + _decodeInterceptors + _requestInterceptors
         )
@@ -361,20 +351,11 @@ class RequestKeysTest {
         )
 
         request = request.newRequest {
-            disallowAnimatedImage(true)
-        }
-        val _disallowAnimatedImage = "&_disallowAnimatedImage=true"
-        verifyCacheKey(
-            uri + _extras + _colorType + _colorSpace +
-                    _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
-        )
-
-        request = request.newRequest {
             resizeOnDraw(true)
         }
         verifyCacheKey(
             uri + _extras + _colorType + _colorSpace +
-                    _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
+                    _size + _sizeMultiplier + _precision + _scale + _transformations
         )
 
         request = request.newRequest {
@@ -382,7 +363,7 @@ class RequestKeysTest {
         }
         verifyCacheKey(
             uri + _extras + _colorType + _colorSpace +
-                    _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
+                    _size + _sizeMultiplier + _precision + _scale + _transformations
         )
 
         val transitionFactory = CrossfadeTransition.Factory()
@@ -391,7 +372,7 @@ class RequestKeysTest {
         }
         verifyCacheKey(
             uri + _extras + _colorType + _colorSpace +
-                    _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
+                    _size + _sizeMultiplier + _precision + _scale + _transformations
         )
 
         val placeholder = FakeStateImage()
@@ -400,7 +381,7 @@ class RequestKeysTest {
         }
         verifyCacheKey(
             uri + _extras + _colorType + _colorSpace +
-                    _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
+                    _size + _sizeMultiplier + _precision + _scale + _transformations
         )
 
         val fallback = FakeStateImage(FakeImage(SketchSize(200, 200)))
@@ -409,7 +390,7 @@ class RequestKeysTest {
         }
         verifyCacheKey(
             uri + _extras + _colorType + _colorSpace +
-                    _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
+                    _size + _sizeMultiplier + _precision + _scale + _transformations
         )
 
         val error = FakeStateImage()
@@ -418,7 +399,7 @@ class RequestKeysTest {
         }
         verifyCacheKey(
             uri + _extras + _colorType + _colorSpace +
-                    _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage
+                    _size + _sizeMultiplier + _precision + _scale + _transformations
         )
 
         request = request.newRequest {
@@ -434,7 +415,7 @@ class RequestKeysTest {
         val _requestInterceptors = "&_requestInterceptors=[TestRequestInterceptor]"
         verifyCacheKey(
             uri + _extras + _colorType + _colorSpace +
-                    _size + _sizeMultiplier + _precision + _scale + _transformations + _disallowAnimatedImage + _decoders + _decodeInterceptors + _requestInterceptors
+                    _size + _sizeMultiplier + _precision + _scale + _transformations + _decoders + _decodeInterceptors + _requestInterceptors
         )
     }
 }
