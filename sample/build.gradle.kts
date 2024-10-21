@@ -84,6 +84,8 @@ kotlin {
         androidMain.dependencies {
             implementation(projects.sketchAnimatedGifKoral)
             implementation(projects.sketchAnimatedHeif)
+            implementation(projects.sketchExtensionsAppicon)
+            implementation(projects.sketchExtensionsApkicon)
             implementation(projects.sketchExtensionsView)
             implementation(projects.sketchVideo)
             implementation(projects.sketchVideoFfmpeg)

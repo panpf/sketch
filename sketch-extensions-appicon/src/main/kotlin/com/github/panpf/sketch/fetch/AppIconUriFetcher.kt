@@ -31,7 +31,7 @@ import com.github.panpf.sketch.util.Uri
 /**
  * Adds App icon support
  *
- * @see com.github.panpf.sketch.extensions.core.android.test.fetch.AppIconUriFetcherTest.testSupportAppIcon
+ * @see com.github.panpf.sketch.extensions.appicon.test.fetch.AppIconUriFetcherTest.testSupportAppIcon
  */
 fun ComponentRegistry.Builder.supportAppIcon(): ComponentRegistry.Builder = apply {
     addFetcher(AppIconUriFetcher.Factory())
@@ -40,7 +40,7 @@ fun ComponentRegistry.Builder.supportAppIcon(): ComponentRegistry.Builder = appl
 /**
  * Sample: 'app.icon://com.github.panpf.sketch.sample/1120'
  *
- * @see com.github.panpf.sketch.extensions.core.android.test.fetch.AppIconUriFetcherTest.testNewAppIconUri
+ * @see com.github.panpf.sketch.extensions.appicon.test.fetch.AppIconUriFetcherTest.testNewAppIconUri
  */
 fun newAppIconUri(packageName: String, versionCode: Int): String =
     "${AppIconUriFetcher.SCHEME}://$packageName/$versionCode"
@@ -50,7 +50,7 @@ fun newAppIconUri(packageName: String, versionCode: Int): String =
  *
  * Support 'app.icon://com.github.panpf.sketch.sample/1120' uri
  *
- * @see com.github.panpf.sketch.extensions.core.android.test.fetch.AppIconUriFetcherTest.testIsAppIconUri
+ * @see com.github.panpf.sketch.extensions.appicon.test.fetch.AppIconUriFetcherTest.testIsAppIconUri
  */
 fun isAppIconUri(uri: Uri): Boolean = AppIconUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
 
@@ -59,7 +59,7 @@ fun isAppIconUri(uri: Uri): Boolean = AppIconUriFetcher.SCHEME.equals(uri.scheme
  *
  * Support 'app.icon://com.github.panpf.sketch.sample/1120' uri
  *
- * @see com.github.panpf.sketch.extensions.core.android.test.fetch.AppIconUriFetcherTest
+ * @see com.github.panpf.sketch.extensions.appicon.test.fetch.AppIconUriFetcherTest
  */
 class AppIconUriFetcher constructor(
     val context: Context,
@@ -132,5 +132,4 @@ class AppIconUriFetcher constructor(
             return "AppIconUriFetcher"
         }
     }
-
 }

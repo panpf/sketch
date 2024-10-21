@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.extensions.core.android.test.drawable
+package com.github.panpf.sketch.extensions.apkicon.test.drawable
 
 import com.github.panpf.sketch.drawable.ApkIconDrawableFetcher
 import com.github.panpf.sketch.test.utils.getTestContext

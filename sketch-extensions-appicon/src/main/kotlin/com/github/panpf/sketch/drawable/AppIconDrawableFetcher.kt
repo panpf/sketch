@@ -20,12 +20,11 @@ import android.content.Context
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
-import com.github.panpf.sketch.util.versionCodeCompat
 
 /**
  * Get the icon of the installed app
  *
- * @see com.github.panpf.sketch.extensions.core.android.test.drawable.AppIconDrawableFetcherTest
+ * @see com.github.panpf.sketch.extensions.appicon.test.drawable.AppIconDrawableFetcherTest
  */
 class AppIconDrawableFetcher(
     private val packageName: String,
@@ -66,4 +65,12 @@ class AppIconDrawableFetcher(
 
     override fun toString(): String =
         "AppIconDrawableFetcher(packageName='$packageName', versionCode=$versionCode)"
+
+    @Suppress("DEPRECATION")
+    private val PackageInfo.versionCodeCompat: Int
+        get() = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+            longVersionCode.toInt()
+        } else {
+            versionCode
+        }
 }

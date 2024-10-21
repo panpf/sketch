@@ -50,6 +50,9 @@
 * change: 拆分 sketch-animated 模块为 sketch-animated-core 和
   sketch-animated-gif、sketch-animated-webp、sketch-animated-heif, sketch-animated-koralgif 模块重命名为
   sketch-animated-gif-koral
+* change: 从 sketch-extensions-core 模块中拆分出 sketch-extensions-apkicon 和
+  sketch-extensions-appicon
+  模块
 * improve: 改进 IconDrawable，支持有固定大小的 background 并且限制 icon 必须有固定尺寸或指定 iconSize
 * improve: 改进 IconPainter，支持有固定大小的 background 并且限制 icon 必须有固定尺寸或指定 iconSize
 * new: 非安卓平台现在也支持 ColorType 了

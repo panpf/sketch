@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.extensions.core.android.test.decode
+package com.github.panpf.sketch.extensions.apkicon.test.decode
 
 import android.graphics.Bitmap
 import androidx.test.ext.junit.runners.AndroidJUnit4

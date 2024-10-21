@@ -58,6 +58,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * change: Split the sketch-animated module into sketch-animated-core and sketch-animated-gif,
   sketch-animated-webp, sketch-animated-heif, sketch-animated-koralgif module and rename it to
   sketch-animated-gif-koral
+* change: Split sketch-extensions-apkicon and sketch-extensions-appicon module from the
+  sketch-extensions-core module
 * improve: Improve IconDrawable, support fixed-size background and restrict icons to have fixed
   sizes or specify iconSize
 * improve: Improve IconPainter, support fixed-size background and restrict icons to have fixed

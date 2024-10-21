@@ -28,7 +28,7 @@ import java.io.File
 /**
  * Adds Apk icon support
  *
- * @see com.github.panpf.sketch.extensions.core.android.test.decode.ApkIconDecoderTest.testSupportApkIcon
+ * @see com.github.panpf.sketch.extensions.apkicon.test.decode.ApkIconDecoderTest.testSupportApkIcon
  */
 fun ComponentRegistry.Builder.supportApkIcon(): ComponentRegistry.Builder = apply {
     addDecoder(ApkIconDecoder.Factory())
@@ -46,7 +46,7 @@ fun ComponentRegistry.Builder.supportApkIcon(): ComponentRegistry.Builder = appl
  * * colorType
  * * colorSpace
  *
- * @see com.github.panpf.sketch.extensions.core.android.test.decode.ApkIconDecoderTest
+ * @see com.github.panpf.sketch.extensions.apkicon.test.decode.ApkIconDecoderTest
  */
 class ApkIconDecoder(
     requestContext: RequestContext,

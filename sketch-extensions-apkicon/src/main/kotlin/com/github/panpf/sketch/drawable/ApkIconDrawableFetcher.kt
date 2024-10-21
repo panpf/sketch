@@ -25,7 +25,7 @@ import java.io.IOException
 /**
  * Get the icon of the APK file
  *
- * @see com.github.panpf.sketch.extensions.core.android.test.drawable.ApkIconDrawableFetcherTest
+ * @see com.github.panpf.sketch.extensions.apkicon.test.drawable.ApkIconDrawableFetcherTest
  */
 class ApkIconDrawableFetcher(private val file: File) : DrawableFetcher {
 
