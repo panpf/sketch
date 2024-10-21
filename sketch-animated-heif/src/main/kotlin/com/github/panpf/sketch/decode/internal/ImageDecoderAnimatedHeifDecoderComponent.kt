@@ -20,7 +20,6 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.annotation.Keep
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageDecoderAnimatedHeifDecoder
 import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.DecoderComponent
@@ -33,7 +32,7 @@ import com.github.panpf.sketch.util.DecoderComponent
 @Keep
 class ImageDecoderAnimatedHeifDecoderComponent : DecoderComponent {
 
-    override fun factory(context: PlatformContext): Decoder.Factory? {
+    override fun factory(context: PlatformContext): ImageDecoderAnimatedHeifDecoder.Factory? {
         return if (VERSION.SDK_INT >= VERSION_CODES.R) {
             ImageDecoderAnimatedHeifDecoder.Factory()
         } else {

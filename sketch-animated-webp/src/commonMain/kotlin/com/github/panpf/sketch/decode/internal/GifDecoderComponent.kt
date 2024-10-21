@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.decode.internal
 
+import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.AnimatedWebpDecoder
 import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.DecoderComponent
@@ -26,4 +27,6 @@ import com.github.panpf.sketch.util.DecoderComponent
  * @see com.github.panpf.sketch.animated.webp.jvm.test.decode.internal.AnimatedWebpDecoderComponentJvmTest
  * @see com.github.panpf.sketch.animated.webp.nonjvm.test.decode.internal.AnimatedWebpDecoderComponentNonJvmTest
  */
-expect class AnimatedWebpDecoderComponent : DecoderComponent
+expect class AnimatedWebpDecoderComponent : DecoderComponent {
+    override fun factory(context: PlatformContext): AnimatedWebpDecoder.Factory
+}

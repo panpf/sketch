@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.decode.internal
 
+import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.SvgDecoder
 import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.DecoderComponent
@@ -26,4 +27,6 @@ import com.github.panpf.sketch.util.DecoderComponent
  * @see com.github.panpf.sketch.svg.jvm.test.internal.SvgDecoderComponentJvmTest
  * @see com.github.panpf.sketch.svg.nonjvm.test.internal.SvgDecoderComponentNonJvmTest
  */
-expect class SvgDecoderComponent : DecoderComponent
+expect class SvgDecoderComponent : DecoderComponent {
+    override fun factory(context: PlatformContext): SvgDecoder.Factory
+}

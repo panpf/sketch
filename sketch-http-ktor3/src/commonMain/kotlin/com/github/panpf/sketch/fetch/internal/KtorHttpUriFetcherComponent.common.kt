@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.fetch.internal
 
+import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.fetch.KtorHttpUriFetcher
 import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.FetcherComponent
@@ -26,4 +27,6 @@ import com.github.panpf.sketch.util.FetcherComponent
  * @see com.github.panpf.sketch.http.ktor3.jvm.test.fetch.internal.KtorHttpUriFetcherComponentJvmTest
  * @see com.github.panpf.sketch.http.ktor3.nonjvm.test.fetch.internal.KtorHttpUriFetcherComponentNonJvmTest
  */
-expect class KtorHttpUriFetcherComponent : FetcherComponent
+expect class KtorHttpUriFetcherComponent : FetcherComponent {
+    override fun factory(context: PlatformContext): KtorHttpUriFetcher.Factory
+}

@@ -18,7 +18,6 @@ package com.github.panpf.sketch.decode.internal
 
 import androidx.annotation.Keep
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.VideoFrameDecoder
 import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.DecoderComponent
@@ -31,7 +30,7 @@ import com.github.panpf.sketch.util.DecoderComponent
 @Keep
 class VideoFrameDecoderComponent : DecoderComponent {
 
-    override fun factory(context: PlatformContext): Decoder.Factory {
+    override fun factory(context: PlatformContext): VideoFrameDecoder.Factory {
         return VideoFrameDecoder.Factory()
     }
 }

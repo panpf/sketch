@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.decode.internal
 
+import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.GifDecoder
 import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.DecoderComponent
@@ -26,4 +27,6 @@ import com.github.panpf.sketch.util.DecoderComponent
  * @see com.github.panpf.sketch.animated.gif.jvm.test.decode.internal.GifDecoderComponentJvmTest
  * @see com.github.panpf.sketch.animated.gif.nonjvm.test.decode.internal.GifDecoderComponentNonJvmTest
  */
-expect class GifDecoderComponent : DecoderComponent
+expect class GifDecoderComponent : DecoderComponent {
+    override fun factory(context: PlatformContext): GifDecoder.Factory
+}

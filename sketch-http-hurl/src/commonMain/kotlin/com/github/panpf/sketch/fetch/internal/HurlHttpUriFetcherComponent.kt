@@ -18,7 +18,6 @@ package com.github.panpf.sketch.fetch.internal
 
 import androidx.annotation.Keep
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.fetch.Fetcher.Factory
 import com.github.panpf.sketch.fetch.HurlHttpUriFetcher
 import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.FetcherComponent
@@ -31,7 +30,7 @@ import com.github.panpf.sketch.util.FetcherComponent
 @Keep
 class HurlHttpUriFetcherComponent : FetcherComponent {
 
-    override fun factory(context: PlatformContext): Factory {
+    override fun factory(context: PlatformContext): HurlHttpUriFetcher.Factory {
         return HurlHttpUriFetcher.Factory()
     }
 }

@@ -18,7 +18,6 @@ package com.github.panpf.sketch.fetch.internal
 
 import androidx.annotation.Keep
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.fetch.KtorHttpUriFetcher
 import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.FetcherComponent
@@ -31,7 +30,7 @@ import com.github.panpf.sketch.util.FetcherComponent
 @Keep
 actual class KtorHttpUriFetcherComponent : FetcherComponent {
 
-    override fun factory(context: PlatformContext): Fetcher.Factory? {
+    actual override fun factory(context: PlatformContext): KtorHttpUriFetcher.Factory {
         return KtorHttpUriFetcher.Factory()
     }
 }
