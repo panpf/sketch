@@ -16,11 +16,11 @@
 
 package com.github.panpf.sketch.request.internal
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.util.removeAndAddObserver

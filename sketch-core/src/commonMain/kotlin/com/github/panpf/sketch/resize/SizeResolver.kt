@@ -18,7 +18,7 @@
 
 package com.github.panpf.sketch.resize
 
-import com.github.panpf.sketch.annotation.MainThread
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.Size
 

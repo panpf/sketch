@@ -26,6 +26,8 @@
   bug。 [#215](https://github.com/panpf/sketch/issues/215)
 * remove: 移除 ComposeBitmapImage
 * remove: 删除 Image.getPixels()
+* remove: 移除 'com.github.panpf.sketch.annotation' 包下的 AnyThread、MainThread、IntRange、IntDef
+  注解，使用 'androidx.annotation' 包下的替代
 * change: 现在非安卓平台上内存缓存中缓存的是 SkiaBitmapImage，不再是 ComposeBitmapImage
 * change: Fetcher.Factory.create() 的传参改为 RequestContext
 * change: Decoder 的 decode() 方法移除 suspend 修饰符并且返回类型从 Result<DecodeResult> 改为

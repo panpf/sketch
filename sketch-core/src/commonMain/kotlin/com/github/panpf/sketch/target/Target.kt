@@ -16,10 +16,10 @@
 
 package com.github.panpf.sketch.target
 
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.annotation.MainThread
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.LifecycleResolver

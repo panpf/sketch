@@ -18,9 +18,9 @@
 
 package com.github.panpf.sketch.transform
 
+import androidx.annotation.IntRange
 import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.annotation.IntRange
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.request.RequestContext

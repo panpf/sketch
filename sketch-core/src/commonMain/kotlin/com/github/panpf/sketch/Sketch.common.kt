@@ -16,8 +16,8 @@
 
 package com.github.panpf.sketch
 
+import androidx.annotation.AnyThread
 import androidx.lifecycle.Lifecycle
-import com.github.panpf.sketch.annotation.AnyThread
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor

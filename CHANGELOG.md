@@ -30,6 +30,9 @@ Translations: [简体中文](CHANGELOG_zh.md)
   mistake. [#215](https://github.com/panpf/sketch/issues/215)
 * remove: Remove ComposeBitmapImage
 * remove: Remove Image.getPixels()
+* remove: Remove the AnyThread, MainThread, IntRange, and IntDef annotations under the '
+  com.github.panpf.sketch.annotation' package and use the alternatives under the '
+  androidx.annotation' package
 * change: SkiaBitmapImage is now cached in the memory cache on non-Android platforms, not
   ComposeBitmapImage.
 * change: The parameter passed in Fetcher.Factory.create() is changed to RequestContext

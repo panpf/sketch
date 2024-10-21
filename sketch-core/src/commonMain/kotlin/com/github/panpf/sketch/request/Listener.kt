@@ -16,7 +16,7 @@
 
 package com.github.panpf.sketch.request
 
-import com.github.panpf.sketch.annotation.MainThread
+import androidx.annotation.MainThread
 
 /**
  * A set of callbacks for an [ImageRequest].

@@ -16,7 +16,7 @@
 
 package com.github.panpf.sketch.cache.internal
 
-import com.github.panpf.sketch.annotation.MainThread
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.cache.ImageCacheValue
 import com.github.panpf.sketch.cache.getExtras
 import com.github.panpf.sketch.cache.getImageInfo
