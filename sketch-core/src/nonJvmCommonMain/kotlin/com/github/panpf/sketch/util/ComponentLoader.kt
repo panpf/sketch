@@ -25,28 +25,28 @@ import kotlinx.atomicfu.locks.synchronized
 actual object ComponentLoader {
 
     private val lock = SynchronizedObject()
-    private val _fetchers = mutableListOf<FetcherComponent>()
-    private val _decoders = mutableListOf<DecoderComponent>()
+    private val _fetchers = mutableListOf<FetcherProvider>()
+    private val _decoders = mutableListOf<DecoderProvider>()
 
-    actual val fetchers: List<FetcherComponent>
+    actual val fetchers: List<FetcherProvider>
         get() = synchronized(lock) { _fetchers.toImmutableList() }
 
-    actual val decoders: List<DecoderComponent>
+    actual val decoders: List<DecoderProvider>
         get() = synchronized(lock) { _decoders.toImmutableList() }
 
-    actual fun register(fetcher: FetcherComponent) = synchronized(lock) {
+    actual fun register(fetcher: FetcherProvider) = synchronized(lock) {
         _fetchers += fetcher
     }
 
-    actual fun register(decoder: DecoderComponent) = synchronized(lock) {
+    actual fun register(decoder: DecoderProvider) = synchronized(lock) {
         _decoders += decoder
     }
 }
 
-actual interface FetcherComponent {
+actual interface FetcherProvider {
     actual fun factory(context: PlatformContext): Fetcher.Factory?
 }
 
-actual interface DecoderComponent {
+actual interface DecoderProvider {
     actual fun factory(context: PlatformContext): Decoder.Factory?
 }

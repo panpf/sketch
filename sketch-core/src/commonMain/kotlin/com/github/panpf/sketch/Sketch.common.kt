@@ -261,7 +261,7 @@ class Sketch private constructor(
         private var resultCacheLazy: Lazy<DiskCache>? = null
         private var resultCacheOptionsLazy: Lazy<DiskCache.Options>? = null
 
-        private var disabledComponentLoader: Boolean = false
+        private var componentLoaderEnabled: Boolean = true
         private var componentRegistry: ComponentRegistry? = null
         private var globalImageOptions: ImageOptions? = null
         private var networkParallelismLimited: Int? = null
@@ -393,8 +393,8 @@ class Sketch private constructor(
         /**
          * Disable the component loader. This will prevent Sketch from automatically detecting and registering components.
          */
-        fun disableComponentLoader(disabled: Boolean = true): Builder = apply {
-            this.disabledComponentLoader = disabled
+        fun componentLoaderEnabled(enabled: Boolean): Builder = apply {
+            this.componentLoaderEnabled = enabled
         }
 
         /**
@@ -463,7 +463,7 @@ class Sketch private constructor(
         }
 
         private fun ComponentLoader.toComponentRegistry(context: PlatformContext): ComponentRegistry? {
-            if (!disabledComponentLoader) return null
+            if (!componentLoaderEnabled) return null
             return ComponentRegistry {
                 fetchers.forEach { fetcherComponent ->
                     fetcherComponent.factory(context)?.let { factory -> addFetcher(factory) }

@@ -22,21 +22,21 @@ import com.github.panpf.sketch.fetch.Fetcher
 
 expect object ComponentLoader {
 
-    val fetchers: List<FetcherComponent>
+    val fetchers: List<FetcherProvider>
 
-    val decoders: List<DecoderComponent>
-
-    // Only available on non-JVM. Added these declarations to work-around a compiler bug.
-    fun register(fetcher: FetcherComponent)
+    val decoders: List<DecoderProvider>
 
     // Only available on non-JVM. Added these declarations to work-around a compiler bug.
-    fun register(decoder: DecoderComponent)
+    fun register(fetcher: FetcherProvider)
+
+    // Only available on non-JVM. Added these declarations to work-around a compiler bug.
+    fun register(decoder: DecoderProvider)
 }
 
-expect interface FetcherComponent {
+expect interface FetcherProvider {
     fun factory(context: PlatformContext): Fetcher.Factory?
 }
 
-expect interface DecoderComponent {
+expect interface DecoderProvider {
     fun factory(context: PlatformContext): Decoder.Factory?
 }

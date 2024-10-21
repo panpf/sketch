@@ -28,33 +28,33 @@ actual object ComponentLoader {
     // https://github.com/Kotlin/kotlinx.coroutines/issues/1231
     actual val fetchers by lazy {
         ServiceLoader.load(
-            FetcherComponent::class.java,
-            FetcherComponent::class.java.classLoader,
+            FetcherProvider::class.java,
+            FetcherProvider::class.java.classLoader,
         ).iterator().asSequence().toList().toImmutableList()
     }
 
     actual val decoders by lazy {
         ServiceLoader.load(
-            DecoderComponent::class.java,
-            DecoderComponent::class.java.classLoader,
+            DecoderProvider::class.java,
+            DecoderProvider::class.java.classLoader,
         ).iterator().asSequence().toList().toImmutableList()
     }
 
-    actual fun register(fetcher: FetcherComponent) {
+    actual fun register(fetcher: FetcherProvider) {
         throw UnsupportedOperationException()
     }
 
-    actual fun register(decoder: DecoderComponent) {
+    actual fun register(decoder: DecoderProvider) {
         throw UnsupportedOperationException()
     }
 }
 
 @Keep
-actual interface FetcherComponent {
+actual interface FetcherProvider {
     actual fun factory(context: PlatformContext): Fetcher.Factory?
 }
 
 @Keep
-actual interface DecoderComponent {
+actual interface DecoderProvider {
     actual fun factory(context: PlatformContext): Decoder.Factory?
 }
