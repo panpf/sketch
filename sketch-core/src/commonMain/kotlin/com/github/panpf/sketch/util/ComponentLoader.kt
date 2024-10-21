@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.util
 
+import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
@@ -39,4 +40,20 @@ expect interface FetcherProvider {
 
 expect interface DecoderProvider {
     fun factory(context: PlatformContext): Decoder.Factory?
+}
+
+/**
+ * Convert [ComponentLoader] to [ComponentRegistry]
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.ComponentLoaderTest.testToComponentRegistry
+ */
+fun ComponentLoader.toComponentRegistry(context: PlatformContext): ComponentRegistry {
+    return ComponentRegistry {
+        fetchers.forEach { fetcherComponent ->
+            fetcherComponent.factory(context)?.let { factory -> addFetcher(factory) }
+        }
+        decoders.forEach { decoderComponent ->
+            decoderComponent.factory(context)?.let { factory -> addDecoder(factory) }
+        }
+    }
 }

@@ -52,6 +52,7 @@ import com.github.panpf.sketch.util.defaultFileSystem
 import com.github.panpf.sketch.util.defaultLogPipeline
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import com.github.panpf.sketch.util.isMainThread
+import com.github.panpf.sketch.util.toComponentRegistry
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -423,8 +424,10 @@ class Sketch private constructor(
             val logger = this.logger ?: Logger()
             val finalFileSystem = fileSystem ?: defaultFileSystem()
             val componentLoader = ComponentLoader
+            val loadedComponents = if (componentLoaderEnabled)
+                componentLoader.toComponentRegistry(context) else null
             val componentRegistry = componentRegistry
-                .merged(componentLoader.toComponentRegistry(context))
+                .merged(loadedComponents)
                 .merged(platformComponents(context))
                 .merged(commonComponents())
                 ?: ComponentRegistry.Builder().build()
@@ -460,18 +463,6 @@ class Sketch private constructor(
                 networkParallelismLimited = networkParallelismLimited,
                 decodeParallelismLimited = decodeParallelismLimited,
             )
-        }
-
-        private fun ComponentLoader.toComponentRegistry(context: PlatformContext): ComponentRegistry? {
-            if (!componentLoaderEnabled) return null
-            return ComponentRegistry {
-                fetchers.forEach { fetcherComponent ->
-                    fetcherComponent.factory(context)?.let { factory -> addFetcher(factory) }
-                }
-                decoders.forEach { decoderComponent ->
-                    decoderComponent.factory(context)?.let { factory -> addDecoder(factory) }
-                }
-            }
         }
     }
 }
