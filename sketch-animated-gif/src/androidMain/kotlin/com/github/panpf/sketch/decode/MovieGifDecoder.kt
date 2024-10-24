@@ -156,7 +156,7 @@ class MovieGifDecoder(
 
     class Factory : Decoder.Factory {
 
-        override val key: String = "GifMovieDecoder"
+        override val key: String = "MovieGifDecoder"
 
         override fun create(
             requestContext: RequestContext,
@@ -181,6 +181,6 @@ class MovieGifDecoder(
             return this::class.hashCode()
         }
 
-        override fun toString(): String = "GifMovieDecoder"
+        override fun toString(): String = "MovieGifDecoder"
     }
 }
