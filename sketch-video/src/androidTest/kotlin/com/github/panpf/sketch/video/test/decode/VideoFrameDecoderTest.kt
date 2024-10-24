@@ -326,8 +326,11 @@ class VideoFrameDecoderTest {
         val requestContext = request.toRequestContext(sketch)
         val dataSource = ResourceImages.mp4.toDataSource(context)
         val decoder = VideoFrameDecoder(requestContext, dataSource, "video/mp4")
-        assertTrue(actual = decoder.toString().contains("VideoFrameDecoder"))
-        assertTrue(actual = decoder.toString().contains("@"))
+        assertTrue(
+            actual = decoder.toString().contains("VideoFrameDecoder"),
+            message = decoder.toString()
+        )
+        assertTrue(actual = decoder.toString().contains("@"), message = decoder.toString())
     }
 
     @Test

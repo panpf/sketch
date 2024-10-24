@@ -9,5 +9,6 @@ dependencies {
     api(projects.sketchCore)
 
     androidTestImplementation(projects.internal.test)
-    androidTestImplementation(projects.internal.testSingleton)
+    androidTestImplementation(projects.internal.testSingletonView)
+    androidTestImplementation(projects.internal.testView)
 }

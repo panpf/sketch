@@ -25,11 +25,10 @@ import com.github.panpf.sketch.request.internal.OneShotRequestDelegate
 import com.github.panpf.sketch.request.internal.OneShotRequestManager
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.RequestManager
-import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.target.TransitionViewTarget
 import kotlinx.coroutines.Job
 
-class TestTransitionViewTarget : Target, TransitionViewTarget {
+class TestTransitionViewTarget : TransitionViewTarget {
 
     override var drawable: Drawable? = null
 

@@ -8,9 +8,11 @@ import com.github.panpf.sketch.fetch.isHttpUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
 
-class TestHttpUriFetcher(sketch: Sketch, httpStack: TestHttpStack, request: ImageRequest) :
-    HttpUriFetcher(sketch, httpStack, request) {
-
+class TestHttpUriFetcher(
+    sketch: Sketch,
+    httpStack: TestHttpStack,
+    request: ImageRequest
+) : HttpUriFetcher(sketch, httpStack, request) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

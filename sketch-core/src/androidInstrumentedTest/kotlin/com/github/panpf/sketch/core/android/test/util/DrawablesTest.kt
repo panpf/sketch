@@ -41,10 +41,9 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.colorType
 import com.github.panpf.sketch.createBitmap
-import com.github.panpf.sketch.drawable.ResizeDrawable
+import com.github.panpf.sketch.drawable.asEquitable
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
-import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.TestKeyDrawable
@@ -403,13 +402,10 @@ class DrawablesTest {
             )
         }
 
-        ResizeDrawable(
-            drawable = context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.test),
-            size = Size(100, 100),
-            scale = Scale.CENTER_CROP
-        ).apply {
+        context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.test)
+            .asEquitable("key123").apply {
             assertEquals(
-                expected = "ResizeDrawable(drawable=${drawable!!.toLogString()}, size=100x100, scale=CENTER_CROP)",
+                expected = "GradientDrawable:key123",
                 actual = key()
             )
         }
@@ -430,13 +426,10 @@ class DrawablesTest {
     @Test
     fun testToLogString() {
         val context = getTestContext()
-        ResizeDrawable(
-            drawable = context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.test),
-            size = Size(100, 100),
-            scale = Scale.CENTER_CROP
-        ).apply {
+        context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.test)
+            .asEquitable("key123").apply {
             assertEquals(
-                expected = "ResizeDrawable(drawable=${drawable!!.toLogString()}, size=100x100, scale=CENTER_CROP)",
+                expected = "EquitableDrawable(drawable=${drawable.toLogString()}, equalityKey=key123)",
                 actual = toLogString()
             )
         }

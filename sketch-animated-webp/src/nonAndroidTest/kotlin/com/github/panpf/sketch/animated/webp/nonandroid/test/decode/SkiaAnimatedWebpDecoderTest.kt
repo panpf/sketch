@@ -185,8 +185,11 @@ class SkiaAnimatedWebpDecoderTest {
         val requestContext = request.toRequestContext(sketch)
         val dataSource = ResourceImages.animWebp.toDataSource(context)
         val decoder = SkiaAnimatedWebpDecoder(requestContext, dataSource)
-        assertTrue(actual = decoder.toString().contains("SkiaAnimatedWebpDecoder"))
-        assertTrue(actual = decoder.toString().contains("@"))
+        assertTrue(
+            actual = decoder.toString().contains("SkiaAnimatedWebpDecoder"),
+            message = decoder.toString()
+        )
+        assertTrue(actual = decoder.toString().contains("@"), message = decoder.toString())
     }
 
     @Test

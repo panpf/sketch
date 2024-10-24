@@ -23,7 +23,7 @@ import com.github.panpf.sketch.loadAssetImage
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.loadResourceImage
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.test.utils.MediumImageViewTestActivity
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
@@ -43,8 +43,6 @@ class ImageViewSingletonExtensionsTest {
 
     @Test
     fun testLoadImage() = runTest {
-        val (_, sketch) = getTestContextAndSketch()
-
         MediumImageViewTestActivity::class.launchActivity().use { scenario ->
             val activity = scenario.getActivitySync()
             val imageView = activity.imageView
@@ -118,6 +116,7 @@ class ImageViewSingletonExtensionsTest {
             }
             assertNull(imageView.drawable)
 
+            val sketch = activity.sketch
             val file = sketch.components.newFetcherOrThrow(
                 ImageRequest(activity, ResourceImages.png.uri).toRequestContext(sketch, Size.Empty)
             ).fetch().getOrThrow().dataSource.getFile(sketch).toFile()

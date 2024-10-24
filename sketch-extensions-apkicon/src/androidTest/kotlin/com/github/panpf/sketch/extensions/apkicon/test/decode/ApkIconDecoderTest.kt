@@ -260,8 +260,11 @@ class ApkIconDecoderTest {
         val request = ImageRequest(context, "/sdcard/sample.apk")
         val requestContext = request.toRequestContext(sketch)
         val decoder = ApkIconDecoder(requestContext, LOCAL, File("/sdcard/sample.apk"))
-        assertTrue(actual = decoder.toString().contains("ApkIconDecoder"))
-        assertTrue(actual = decoder.toString().contains("@"))
+        assertTrue(
+            actual = decoder.toString().contains("ApkIconDecoder"),
+            message = decoder.toString()
+        )
+        assertTrue(actual = decoder.toString().contains("@"), message = decoder.toString())
     }
 
     @Test

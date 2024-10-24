@@ -1,15 +1,30 @@
 package com.github.panpf.sketch.view.core.test.resize
 
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
+import com.github.panpf.sketch.asDrawable
 import com.github.panpf.sketch.asImage
+import com.github.panpf.sketch.drawable.AnimatableDrawable
+import com.github.panpf.sketch.drawable.ResizeAnimatableDrawable
 import com.github.panpf.sketch.drawable.ResizeDrawable
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.LongImageScaleDecider
+import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ViewResizeOnDrawHelper
+import com.github.panpf.sketch.resize.resizeOnDraw
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.MediumImageViewTestActivity
 import com.github.panpf.sketch.test.utils.SizeColorDrawable
+import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.tools4a.test.ktx.getActivitySync
+import com.github.panpf.tools4a.test.ktx.launchActivity
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -125,5 +140,66 @@ class ViewResizeOnDrawHelperTest {
             expected = "ViewResizeOnDrawHelper",
             actual = ViewResizeOnDrawHelper.toString()
         )
+    }
+
+    @Test
+    fun testResizeOnDraw() = runTest {
+        val (_, sketch) = getTestContextAndSketch()
+        MediumImageViewTestActivity::class.launchActivity().use { scenario ->
+            val activity = scenario.getActivitySync()
+            val resources = activity.resources
+            val imageView = activity.imageView
+
+            val imageUri = ResourceImages.jpeg.uri
+            val bitmapDrawable =
+                BitmapDrawable(resources, Bitmap.createBitmap(100, 200, Bitmap.Config.RGB_565))
+
+            val request = ImageRequest(imageView, imageUri)
+            val bitmapDrawableImage = bitmapDrawable.asImage()
+            assertSame(
+                bitmapDrawableImage,
+                bitmapDrawableImage.resizeOnDraw(request, null)
+            )
+            val request1 = ImageRequest(imageView, imageUri) {
+                resizeOnDraw(true)
+            }
+            assertSame(
+                bitmapDrawableImage,
+                bitmapDrawableImage.resizeOnDraw(request1, null)
+            )
+            val request2 = ImageRequest(imageView, imageUri) {
+                size(500, 300)
+                precision(Precision.EXACTLY)
+            }
+            assertSame(
+                bitmapDrawable,
+                bitmapDrawableImage
+                    .resizeOnDraw(request2, request2.toRequestContext(sketch).size)
+                    .asDrawable()
+            )
+            val request3 = ImageRequest(imageView, imageUri) {
+                resizeOnDraw(true)
+                size(500, 300)
+                precision(Precision.EXACTLY)
+            }
+            bitmapDrawableImage
+                .resizeOnDraw(request3, request3.toRequestContext(sketch).size)
+                .asDrawable()
+                .let { it as ResizeDrawable }
+                .apply {
+                    assertSame(bitmapDrawable, drawable)
+                    assertEquals(Size(500, 300), size)
+                }
+
+            val animDrawable = AnimatableDrawable(TestAnimatableDrawable(bitmapDrawable))
+            animDrawable.asImage()
+                .resizeOnDraw(request3, request3.toRequestContext(sketch).size)
+                .asDrawable()
+                .let { it as ResizeAnimatableDrawable }
+                .apply {
+                    assertSame(animDrawable, drawable)
+                    assertEquals(Size(500, 300), size)
+                }
+        }
     }
 }

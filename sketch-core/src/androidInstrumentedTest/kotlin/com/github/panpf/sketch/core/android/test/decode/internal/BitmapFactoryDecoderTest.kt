@@ -1051,8 +1051,11 @@ class BitmapFactoryDecoderTest {
         val requestContext = request.toRequestContext(sketch)
         val dataSource = ResourceImages.jpeg.toDataSource(context)
         val decoder = BitmapFactoryDecoder(requestContext, dataSource)
-        assertTrue(actual = decoder.toString().contains("BitmapFactoryDecoder"))
-        assertTrue(actual = decoder.toString().contains("@"))
+        assertTrue(
+            actual = decoder.toString().contains("BitmapFactoryDecoder"),
+            message = decoder.toString()
+        )
+        assertTrue(actual = decoder.toString().contains("@"), message = decoder.toString())
     }
 
     @Test

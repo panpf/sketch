@@ -10,5 +10,6 @@ dependencies {
     api(libs.androidx.appcompat)
 
     androidTestImplementation(projects.internal.test)
-    androidTestImplementation(projects.internal.testSingleton)
+    androidTestImplementation(projects.internal.testHttp)
+    androidTestImplementation(projects.internal.testSingletonView)
 }

@@ -185,8 +185,11 @@ class GifSkiaAnimatedDecoderTest {
         val requestContext = request.toRequestContext(sketch)
         val dataSource = ResourceImages.animGif.toDataSource(context)
         val decoder = SkiaGifDecoder(requestContext, dataSource)
-        assertTrue(actual = decoder.toString().contains("SkiaGifDecoder"))
-        assertTrue(actual = decoder.toString().contains("@"))
+        assertTrue(
+            actual = decoder.toString().contains("SkiaGifDecoder"),
+            message = decoder.toString()
+        )
+        assertTrue(actual = decoder.toString().contains("@"), message = decoder.toString())
     }
 
     @Test

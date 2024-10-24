@@ -338,8 +338,11 @@ class DrawableDecoderTest {
             dataFrom = LOCAL
         )
         val decoder = DrawableDecoder(requestContext, dataSource, mimeType = null)
-        assertTrue(actual = decoder.toString().contains("DrawableDecoder"))
-        assertTrue(actual = decoder.toString().contains("@"))
+        assertTrue(
+            actual = decoder.toString().contains("DrawableDecoder"),
+            message = decoder.toString()
+        )
+        assertTrue(actual = decoder.toString().contains("@"), message = decoder.toString())
     }
 
     @Test

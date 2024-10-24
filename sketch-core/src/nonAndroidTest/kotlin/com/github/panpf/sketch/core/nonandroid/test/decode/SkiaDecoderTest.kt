@@ -988,8 +988,11 @@ class SkiaDecoderTest {
         val requestContext = request.toRequestContext(sketch)
         val dataSource = ResourceImages.jpeg.toDataSource(context)
         val decoder = SkiaDecoder(requestContext, dataSource)
-        assertTrue(actual = decoder.toString().contains("SkiaDecoder"))
-        assertTrue(actual = decoder.toString().contains("@"))
+        assertTrue(
+            actual = decoder.toString().contains("SkiaDecoder"),
+            message = decoder.toString()
+        )
+        assertTrue(actual = decoder.toString().contains("@"), message = decoder.toString())
     }
 
     @Test

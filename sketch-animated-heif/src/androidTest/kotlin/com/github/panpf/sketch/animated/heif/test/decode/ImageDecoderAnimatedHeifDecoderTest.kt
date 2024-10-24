@@ -182,8 +182,11 @@ class ImageDecoderAnimatedHeifDecoderTest {
         val requestContext = request.toRequestContext(sketch)
         val dataSource = ResourceImages.animHeif.toDataSource(context)
         val decoder = ImageDecoderAnimatedHeifDecoder(requestContext, dataSource)
-        assertTrue(actual = decoder.toString().contains("ImageDecoderHeifDecoder"))
-        assertTrue(actual = decoder.toString().contains("@"))
+        assertTrue(
+            actual = decoder.toString().contains("ImageDecoderAnimatedHeifDecoder"),
+            message = decoder.toString()
+        )
+        assertTrue(actual = decoder.toString().contains("@"), message = decoder.toString())
     }
 
     @Test
@@ -194,7 +197,7 @@ class ImageDecoderAnimatedHeifDecoderTest {
     @Test
     fun testFactoryKey() {
         assertEquals(
-            expected = "ImageDecoderHeifDecoder",
+            expected = "ImageDecoderAnimatedHeifDecoder",
             actual = Factory().key
         )
     }
@@ -277,7 +280,7 @@ class ImageDecoderAnimatedHeifDecoderTest {
     @Test
     fun testFactoryToString() = runTest {
         assertEquals(
-            expected = "ImageDecoderHeifDecoder",
+            expected = "ImageDecoderAnimatedHeifDecoder",
             actual = Factory().toString()
         )
     }

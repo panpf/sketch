@@ -10,5 +10,5 @@ dependencies {
     api(projects.sketchSingleton)
 
     androidTestImplementation(projects.internal.test)
-    androidTestImplementation(projects.internal.testSingleton)
+    androidTestImplementation(projects.internal.testView)
 }

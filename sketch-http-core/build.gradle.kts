@@ -16,6 +16,7 @@ kotlin {
 
         commonTest.dependencies {
             implementation(projects.internal.test)
+            implementation(projects.internal.testHttp)
             implementation(projects.internal.testSingleton)
         }
     }

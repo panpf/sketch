@@ -41,10 +41,12 @@ kotlin {
 
         commonTest.dependencies {
             implementation(projects.internal.test)
+            implementation(projects.internal.testHttp)
             implementation(projects.internal.testSingleton)
         }
         androidInstrumentedTest.dependencies {
             implementation(projects.internal.test)
+            implementation(projects.internal.testHttp)
             implementation(projects.internal.testSingleton)
         }
     }

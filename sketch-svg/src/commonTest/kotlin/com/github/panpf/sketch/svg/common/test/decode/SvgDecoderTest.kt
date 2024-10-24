@@ -275,8 +275,8 @@ class SvgDecoderTest {
         val requestContext = request.toRequestContext(sketch)
         val dataSource = ResourceImages.svg.toDataSource(context)
         val decoder = SvgDecoder(requestContext, dataSource)
-        assertTrue(actual = decoder.toString().contains("SvgDecoder"))
-        assertTrue(actual = decoder.toString().contains("@"))
+        assertTrue(actual = decoder.toString().contains("SvgDecoder"), message = decoder.toString())
+        assertTrue(actual = decoder.toString().contains("@"), message = decoder.toString())
     }
 
     @Test

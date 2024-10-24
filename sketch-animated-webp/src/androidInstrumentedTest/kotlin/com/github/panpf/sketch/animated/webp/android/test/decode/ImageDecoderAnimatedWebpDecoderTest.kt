@@ -63,7 +63,7 @@ class ImageDecoderAnimatedWebpDecoderTest {
             assertEquals(
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[WebpAnimatedDecoder]," +
+                        "decoderFactoryList=[ImageDecoderAnimatedWebpDecoder]," +
                         "requestInterceptorList=[]," +
                         "decodeInterceptorList=[]" +
                         ")",
@@ -78,7 +78,7 @@ class ImageDecoderAnimatedWebpDecoderTest {
             assertEquals(
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[WebpAnimatedDecoder,WebpAnimatedDecoder]," +
+                        "decoderFactoryList=[ImageDecoderAnimatedWebpDecoder,ImageDecoderAnimatedWebpDecoder]," +
                         "requestInterceptorList=[]," +
                         "decodeInterceptorList=[]" +
                         ")",
@@ -182,8 +182,11 @@ class ImageDecoderAnimatedWebpDecoderTest {
         val requestContext = request.toRequestContext(sketch)
         val dataSource = ResourceImages.animWebp.toDataSource(context)
         val decoder = ImageDecoderAnimatedWebpDecoder(requestContext, dataSource)
-        assertTrue(actual = decoder.toString().contains("WebpAnimatedDecoder"))
-        assertTrue(actual = decoder.toString().contains("@"))
+        assertTrue(
+            actual = decoder.toString().contains("ImageDecoderAnimatedWebpDecoder"),
+            message = decoder.toString()
+        )
+        assertTrue(actual = decoder.toString().contains("@"), message = decoder.toString())
     }
 
     @Test
@@ -194,7 +197,7 @@ class ImageDecoderAnimatedWebpDecoderTest {
     @Test
     fun testFactoryKey() {
         assertEquals(
-            expected = "WebpAnimatedDecoder",
+            expected = "ImageDecoderAnimatedWebpDecoder",
             actual = Factory().key
         )
     }
@@ -277,7 +280,7 @@ class ImageDecoderAnimatedWebpDecoderTest {
     @Test
     fun testFactoryToString() = runTest {
         assertEquals(
-            expected = "WebpAnimatedDecoder",
+            expected = "ImageDecoderAnimatedWebpDecoder",
             actual = Factory().toString()
         )
     }

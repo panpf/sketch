@@ -12,5 +12,6 @@ dependencies {
     api(libs.androidx.recyclerview)
 
     androidTestImplementation(projects.internal.test)
-    androidTestImplementation(projects.internal.testSingleton)
+    androidTestImplementation(projects.internal.testHttp)
+    androidTestImplementation(projects.internal.testSingletonView)
 }

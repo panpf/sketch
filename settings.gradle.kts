@@ -46,7 +46,11 @@ include(":sketch-view-core")
  * Private
  */
 include(":sample")
+include(":internal:componentLoaderTest")
 include(":internal:images")
 include(":internal:test")
 include(":internal:test-compose")
+include(":internal:test-http")
 include(":internal:test-singleton")
+include(":internal:test-singleton-view")
+include(":internal:test-view")

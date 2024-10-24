@@ -190,8 +190,11 @@ class MovieGifDecoderTest {
         val requestContext = request.toRequestContext(sketch)
         val dataSource = ResourceImages.animGif.toDataSource(context)
         val decoder = MovieGifDecoder(requestContext, dataSource)
-        assertTrue(actual = decoder.toString().contains("MovieGifDecoder"))
-        assertTrue(actual = decoder.toString().contains("@"))
+        assertTrue(
+            actual = decoder.toString().contains("MovieGifDecoder"),
+            message = decoder.toString()
+        )
+        assertTrue(actual = decoder.toString().contains("@"), message = decoder.toString())
     }
 
     @Test
