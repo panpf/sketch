@@ -37,7 +37,7 @@ class KtorHttpUriFetcherTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[KtorHttpUriFetcher(httpStack=KtorStack)]," +
+                        "fetcherFactoryList=[KtorHttpUriFetcher]," +
                         "decoderFactoryList=[]," +
                         "requestInterceptorList=[]," +
                         "decodeInterceptorList=[]" +
@@ -52,7 +52,7 @@ class KtorHttpUriFetcherTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[KtorHttpUriFetcher(httpStack=KtorStack),KtorHttpUriFetcher(httpStack=KtorStack)]," +
+                        "fetcherFactoryList=[KtorHttpUriFetcher,KtorHttpUriFetcher]," +
                         "decoderFactoryList=[]," +
                         "requestInterceptorList=[]," +
                         "decodeInterceptorList=[]" +
@@ -171,7 +171,7 @@ class KtorHttpUriFetcherTest {
     fun testFactoryToString() {
         val httpStack = KtorStack()
         assertEquals(
-            expected = "KtorHttpUriFetcher(httpStack=$httpStack)",
+            expected = "KtorHttpUriFetcher",
             actual = KtorHttpUriFetcher.Factory(httpStack).toString()
         )
     }

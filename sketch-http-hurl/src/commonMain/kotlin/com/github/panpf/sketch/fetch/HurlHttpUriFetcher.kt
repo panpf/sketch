@@ -77,6 +77,12 @@ class HurlHttpUriFetcher(
             return httpStack.hashCode()
         }
 
-        override fun toString(): String = "HurlHttpUriFetcher(httpStack=$httpStack)"
+        override fun toString(): String {
+            return if (httpStack.interceptors.isNotEmpty()) {
+                "HurlHttpUriFetcher(interceptors=${httpStack.interceptors})"
+            } else {
+                "HurlHttpUriFetcher"
+            }
+        }
     }
 }

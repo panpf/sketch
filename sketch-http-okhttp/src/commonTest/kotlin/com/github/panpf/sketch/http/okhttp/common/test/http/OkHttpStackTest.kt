@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.http.okhttp.common.test.http
 
 import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.http.OkHttpStack.MyInterceptor
 import kotlinx.coroutines.test.runTest
@@ -18,8 +17,8 @@ class OkHttpStackTest {
     @Test
     fun testBuilder() {
         OkHttpStack.Builder().build().apply {
-            assertEquals(HttpStack.DEFAULT_TIMEOUT, okHttpClient.connectTimeoutMillis)
-            assertEquals(HttpStack.DEFAULT_TIMEOUT, okHttpClient.readTimeoutMillis)
+            assertEquals(10_000, okHttpClient.connectTimeoutMillis)
+            assertEquals(10_000, okHttpClient.readTimeoutMillis)
             assertNull(okHttpClient.interceptors.find { it is MyInterceptor })
             assertEquals(0, okHttpClient.interceptors.size)
             assertEquals(0, okHttpClient.networkInterceptors.size)
@@ -190,8 +189,18 @@ class OkHttpStackTest {
     @Test
     fun testToString() {
         assertEquals(
-            "OkHttpStack(connectTimeout=10000,readTimeout=10000)",
-            OkHttpStack(OkHttpClient.Builder().build()).toString()
+            "OkHttpStack",
+            OkHttpStack.Builder().build().toString()
+        )
+        assertEquals(
+            "OkHttpStack(connectTimeout=7000,readTimeout=5000,interceptors=[MyInterceptor(userAgent=Android 8.1, headers={header1=value1}, addHeaders=[(header2, value2)])])",
+            OkHttpStack.Builder().apply {
+                connectTimeoutMillis(7000)
+                readTimeoutMillis(5000)
+                userAgent("Android 8.1")
+                headers("header1" to "value1")
+                addHeaders("header2" to "value2")
+            }.build().toString()
         )
     }
 }

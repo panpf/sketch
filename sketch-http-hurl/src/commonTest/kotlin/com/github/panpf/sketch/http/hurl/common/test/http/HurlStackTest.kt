@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.http.hurl.common.test.http
 
 import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.HurlStack
 import com.github.panpf.sketch.test.utils.asOrThrow
 import kotlinx.coroutines.test.runTest
@@ -20,8 +19,8 @@ class HurlStackTest {
         HurlStack.Builder().build().apply {
             val timeoutInterceptor = interceptors.find { it is HurlStack.TimeoutInterceptor }
                 ?.asOrThrow<HurlStack.TimeoutInterceptor>()
-            assertEquals(HttpStack.DEFAULT_TIMEOUT, timeoutInterceptor?.connectTimeoutMillis)
-            assertEquals(HttpStack.DEFAULT_TIMEOUT, timeoutInterceptor?.readTimeoutMillis)
+            assertEquals(null, timeoutInterceptor?.connectTimeout)
+            assertEquals(null, timeoutInterceptor?.readTimeout)
 
             val userAgentInterceptor = interceptors.find { it is HurlStack.UserAgentInterceptor }
                 ?.asOrThrow<HurlStack.UserAgentInterceptor>()
@@ -43,8 +42,8 @@ class HurlStackTest {
         }.build().apply {
             val timeoutInterceptor = interceptors.find { it is HurlStack.TimeoutInterceptor }
                 ?.asOrThrow<HurlStack.TimeoutInterceptor>()
-            assertEquals(2000, timeoutInterceptor?.connectTimeoutMillis)
-            assertEquals(3000, timeoutInterceptor?.readTimeoutMillis)
+            assertEquals(2000, timeoutInterceptor?.connectTimeout)
+            assertEquals(3000, timeoutInterceptor?.readTimeout)
         }
 
         HurlStack.Builder().apply {
@@ -169,8 +168,22 @@ class HurlStackTest {
     @Test
     fun testToString() {
         assertEquals(
-            expected = "HurlStack(interceptors=[TimeoutInterceptor(connectTimeoutMillis=7000, readTimeoutMillis=7000)])",
+            expected = "HurlStack",
             actual = HurlStack.Builder().build().toString()
+        )
+        assertEquals(
+            expected = "HurlStack(interceptors=[" +
+                    "TimeoutInterceptor(connectTimeout=7000, readTimeout=5000), " +
+                    "UserAgentInterceptor(userAgent=Android 8.1), " +
+                    "HttpHeadersInterceptor(httpHeaders=HttpHeaders(sets=[header1:value1],adds=[header2:value2]))" +
+                    "])",
+            actual = HurlStack.Builder().apply {
+                connectTimeoutMillis(7000)
+                readTimeoutMillis(5000)
+                userAgent("Android 8.1")
+                headers("header1" to "value1")
+                addHeaders("header2" to "value2")
+            }.build().toString()
         )
     }
 

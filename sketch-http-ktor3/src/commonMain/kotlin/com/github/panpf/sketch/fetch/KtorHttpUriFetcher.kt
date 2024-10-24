@@ -76,6 +76,6 @@ class KtorHttpUriFetcher(
             return httpStack.hashCode()
         }
 
-        override fun toString(): String = "KtorHttpUriFetcher(httpStack=$httpStack)"
+        override fun toString(): String = "KtorHttpUriFetcher"
     }
 }

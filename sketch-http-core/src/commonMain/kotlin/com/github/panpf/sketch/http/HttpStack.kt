@@ -28,10 +28,6 @@ import kotlin.coroutines.cancellation.CancellationException
  */
 interface HttpStack {
 
-    companion object {
-        const val DEFAULT_TIMEOUT = 7 * 1000
-    }
-
     /**
      * Send a request and return a response
      */

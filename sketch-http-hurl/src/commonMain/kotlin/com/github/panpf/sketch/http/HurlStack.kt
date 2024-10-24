@@ -64,8 +64,6 @@ class HurlStack private constructor(
         throw throw IOException("Unable to get response")
     }
 
-    override fun toString(): String = "HurlStack(interceptors=$interceptors)"
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
@@ -76,6 +74,14 @@ class HurlStack private constructor(
 
     override fun hashCode(): Int {
         return interceptors.hashCode()
+    }
+
+    override fun toString(): String {
+        return if (interceptors.isNotEmpty()) {
+            "HurlStack(interceptors=$interceptors)"
+        } else {
+            "HurlStack"
+        }
     }
 
     class Response(
@@ -115,8 +121,8 @@ class HurlStack private constructor(
     }
 
     class Builder {
-        private var connectTimeoutMillis: Int = HttpStack.DEFAULT_TIMEOUT
-        private var readTimeoutMillis: Int = HttpStack.DEFAULT_TIMEOUT
+        private var connectTimeoutMillis: Int? = null
+        private var readTimeoutMillis: Int? = null
         private var userAgent: String? = null
         private var httpHeadersBuilder: HttpHeaders.Builder? = null
         private var interceptors: MutableList<Interceptor>? = null
@@ -197,7 +203,11 @@ class HurlStack private constructor(
 
         fun build(): HurlStack {
             val finalInterceptors = buildList {
-                add(TimeoutInterceptor(connectTimeoutMillis, readTimeoutMillis))
+                val connectTimeoutMillis = this@Builder.connectTimeoutMillis
+                val readTimeoutMillis = this@Builder.readTimeoutMillis
+                if (connectTimeoutMillis != null || readTimeoutMillis != null) {
+                    add(TimeoutInterceptor(connectTimeoutMillis, readTimeoutMillis))
+                }
                 val userAgent = this@Builder.userAgent
                 if (userAgent != null) {
                     add(UserAgentInterceptor(userAgent))
@@ -237,6 +247,23 @@ class HurlStack private constructor(
         }
     }
 
+    data class TimeoutInterceptor(
+        val connectTimeout: Int? = null,
+        val readTimeout: Int? = null,
+    ) : Interceptor {
+
+        override fun intercept(chain: Interceptor.Chain): Response {
+            val connection = chain.connection
+            if (connectTimeout != null) {
+                connection.connectTimeout = connectTimeout
+            }
+            if (readTimeout != null) {
+                connection.readTimeout = readTimeout
+            }
+            return chain.proceed()
+        }
+    }
+
     data class HttpHeadersInterceptor(
         val httpHeaders: HttpHeaders?,
     ) : Interceptor {
@@ -248,23 +275,6 @@ class HurlStack private constructor(
             }
             httpHeaders?.setList?.forEach { (key, value) ->
                 connection.setRequestProperty(key, value)
-            }
-            return chain.proceed()
-        }
-    }
-
-    data class TimeoutInterceptor(
-        val connectTimeoutMillis: Int? = null,
-        val readTimeoutMillis: Int? = null,
-    ) : Interceptor {
-
-        override fun intercept(chain: Interceptor.Chain): Response {
-            val connection = chain.connection
-            if (connectTimeoutMillis != null) {
-                connection.connectTimeout = connectTimeoutMillis
-            }
-            if (readTimeoutMillis != null) {
-                connection.readTimeout = readTimeoutMillis
             }
             return chain.proceed()
         }
@@ -299,7 +309,7 @@ class HurlStack private constructor(
         }
 
         override fun toString(): String {
-            return "EngineInterceptor()"
+            return "EngineInterceptor"
         }
     }
 }

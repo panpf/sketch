@@ -37,7 +37,7 @@ class HurlHttpUriFetcherTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[HurlHttpUriFetcher(httpStack=HurlStack(interceptors=[TimeoutInterceptor(connectTimeoutMillis=7000, readTimeoutMillis=7000)]))]," +
+                        "fetcherFactoryList=[HurlHttpUriFetcher]," +
                         "decoderFactoryList=[]," +
                         "requestInterceptorList=[]," +
                         "decodeInterceptorList=[])",
@@ -51,7 +51,7 @@ class HurlHttpUriFetcherTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[HurlHttpUriFetcher(httpStack=HurlStack(interceptors=[TimeoutInterceptor(connectTimeoutMillis=7000, readTimeoutMillis=7000)])),HurlHttpUriFetcher(httpStack=HurlStack(interceptors=[TimeoutInterceptor(connectTimeoutMillis=7000, readTimeoutMillis=7000)]))]," +
+                        "fetcherFactoryList=[HurlHttpUriFetcher,HurlHttpUriFetcher]," +
                         "decoderFactoryList=[]," +
                         "requestInterceptorList=[]," +
                         "decodeInterceptorList=[])",
@@ -164,10 +164,24 @@ class HurlHttpUriFetcherTest {
 
     @Test
     fun testFactoryToString() {
-        val httpStack: HurlStack = HurlStack.Builder().build()
         assertEquals(
-            expected = "HurlHttpUriFetcher(httpStack=$httpStack)",
-            actual = HurlHttpUriFetcher.Factory(httpStack).toString()
+            expected = "HurlHttpUriFetcher",
+            actual = HurlHttpUriFetcher.Factory().toString()
+        )
+
+        assertEquals(
+            expected = "HurlHttpUriFetcher(interceptors=[" +
+                    "TimeoutInterceptor(connectTimeout=7000, readTimeout=5000), " +
+                    "UserAgentInterceptor(userAgent=Android 8.1), " +
+                    "HttpHeadersInterceptor(httpHeaders=HttpHeaders(sets=[header1:value1],adds=[header2:value2]))" +
+                    "])",
+            actual = HurlHttpUriFetcher.Factory(HurlStack.Builder().apply {
+                connectTimeoutMillis(7000)
+                readTimeoutMillis(5000)
+                userAgent("Android 8.1")
+                headers("header1" to "value1")
+                addHeaders("header2" to "value2")
+            }.build()).toString()
         )
     }
 }

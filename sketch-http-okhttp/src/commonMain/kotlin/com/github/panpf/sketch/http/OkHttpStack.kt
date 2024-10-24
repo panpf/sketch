@@ -52,9 +52,6 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
         return Response(okHttpClient.newCall(httpRequest).execute())
     }
 
-    override fun toString(): String =
-        "OkHttpStack(connectTimeout=${okHttpClient.connectTimeoutMillis},readTimeout=${okHttpClient.readTimeoutMillis})"
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
@@ -65,6 +62,39 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
 
     override fun hashCode(): Int {
         return okHttpClient.hashCode()
+    }
+
+    override fun toString(): String = buildString {
+        append("OkHttpStack(")
+        val beginLength = length
+
+        okHttpClient.connectTimeoutMillis.takeIf { it != 10_000 }?.let {
+            if (length > beginLength) append(",")
+            append("connectTimeout=$it")
+        }
+
+        okHttpClient.readTimeoutMillis.takeIf { it != 10_000 }?.let {
+            if (length > beginLength) append(",")
+            append("readTimeout=$it")
+        }
+
+        okHttpClient.interceptors.takeIf { it.isNotEmpty() }?.let {
+            if (length > beginLength) append(",")
+            append("interceptors=$it")
+        }
+
+        okHttpClient.networkInterceptors.takeIf { it.isNotEmpty() }?.let {
+            if (length > beginLength) append(",")
+            append("interceptors=$it")
+        }
+
+        append(")")
+    }.let {
+        if (it.endsWith("()")) {
+            it.replace("()", "")
+        } else {
+            it
+        }
     }
 
     class Response(
@@ -101,8 +131,8 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
     }
 
     class Builder {
-        private var connectTimeoutMillis: Int = HttpStack.DEFAULT_TIMEOUT
-        private var readTimeoutMillis: Int = HttpStack.DEFAULT_TIMEOUT
+        private var connectTimeoutMillis: Int? = null
+        private var readTimeoutMillis: Int? = null
         private var userAgent: String? = null
         private var headers: MutableMap<String, String>? = null
         private var addHeaders: MutableList<Pair<String, String>>? = null
@@ -182,8 +212,14 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
 
         fun build(): OkHttpStack {
             val okHttpClient = OkHttpClient.Builder().apply {
-                connectTimeout(connectTimeoutMillis.toLong(), MILLISECONDS)
-                readTimeout(readTimeoutMillis.toLong(), MILLISECONDS)
+                val connectTimeoutMillis = this@Builder.connectTimeoutMillis
+                if (connectTimeoutMillis != null) {
+                    connectTimeout(connectTimeoutMillis.toLong(), MILLISECONDS)
+                }
+                val readTimeoutMillis = this@Builder.readTimeoutMillis
+                if (readTimeoutMillis != null) {
+                    readTimeout(readTimeoutMillis.toLong(), MILLISECONDS)
+                }
                 val userAgent = userAgent
                 val extraHeaders = headers?.toMap()?.takeIf { it.isNotEmpty() }
                 val addExtraHeaders = addHeaders?.toList()?.takeIf { it.isNotEmpty() }
@@ -201,7 +237,7 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
         }
     }
 
-    class MyInterceptor(
+    data class MyInterceptor(
         val userAgent: String?,
         val headers: Map<String, String>? = null,
         val addHeaders: List<Pair<String, String>>? = null,

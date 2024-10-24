@@ -76,6 +76,37 @@ class OkHttpHttpUriFetcher(
             return httpStack.hashCode()
         }
 
-        override fun toString(): String = "OkHttpHttpUriFetcher(httpStack=$httpStack)"
+        override fun toString(): String = buildString {
+            append("OkHttpHttpUriFetcher(")
+            val beginLength = length
+
+            httpStack.okHttpClient.connectTimeoutMillis.takeIf { it != 10_000 }?.let {
+                if (length > beginLength) append(",")
+                append("connectTimeout=$it")
+            }
+
+            httpStack.okHttpClient.readTimeoutMillis.takeIf { it != 10_000 }?.let {
+                if (length > beginLength) append(",")
+                append("readTimeout=$it")
+            }
+
+            httpStack.okHttpClient.interceptors.takeIf { it.isNotEmpty() }?.let {
+                if (length > beginLength) append(",")
+                append("interceptors=$it")
+            }
+
+            httpStack.okHttpClient.networkInterceptors.takeIf { it.isNotEmpty() }?.let {
+                if (length > beginLength) append(",")
+                append("interceptors=$it")
+            }
+
+            append(")")
+        }.let {
+            if (it.endsWith("()")) {
+                it.replace("()", "")
+            } else {
+                it
+            }
+        }
     }
 }

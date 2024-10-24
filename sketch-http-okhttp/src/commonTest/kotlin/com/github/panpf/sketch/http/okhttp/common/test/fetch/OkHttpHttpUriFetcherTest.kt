@@ -37,7 +37,7 @@ class OkHttpHttpUriFetcherTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[OkHttpHttpUriFetcher(httpStack=OkHttpStack(connectTimeout=7000,readTimeout=7000))]," +
+                        "fetcherFactoryList=[OkHttpHttpUriFetcher]," +
                         "decoderFactoryList=[]," +
                         "requestInterceptorList=[]," +
                         "decodeInterceptorList=[]" +
@@ -52,7 +52,7 @@ class OkHttpHttpUriFetcherTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[OkHttpHttpUriFetcher(httpStack=OkHttpStack(connectTimeout=7000,readTimeout=7000)),OkHttpHttpUriFetcher(httpStack=OkHttpStack(connectTimeout=7000,readTimeout=7000))]," +
+                        "fetcherFactoryList=[OkHttpHttpUriFetcher,OkHttpHttpUriFetcher]," +
                         "decoderFactoryList=[]," +
                         "requestInterceptorList=[]," +
                         "decodeInterceptorList=[]" +
@@ -171,10 +171,19 @@ class OkHttpHttpUriFetcherTest {
 
     @Test
     fun testFactoryToString() {
-        val httpStack: OkHttpStack = OkHttpStack.Builder().build()
         assertEquals(
-            expected = "OkHttpHttpUriFetcher(httpStack=$httpStack)",
-            actual = OkHttpHttpUriFetcher.Factory(httpStack).toString()
+            expected = "OkHttpHttpUriFetcher",
+            actual = OkHttpHttpUriFetcher.Factory(OkHttpStack.Builder().build()).toString()
+        )
+        assertEquals(
+            expected = "OkHttpHttpUriFetcher(connectTimeout=7000,readTimeout=5000,interceptors=[MyInterceptor(userAgent=Android 8.1, headers={header1=value1}, addHeaders=[(header2, value2)])])",
+            actual = OkHttpHttpUriFetcher.Factory(OkHttpStack.Builder().apply {
+                connectTimeoutMillis(7000)
+                readTimeoutMillis(5000)
+                userAgent("Android 8.1")
+                headers("header1" to "value1")
+                addHeaders("header2" to "value2")
+            }.build()).toString()
         )
     }
 }
