@@ -20,6 +20,7 @@ import com.github.panpf.sketch.util.toComponentRegistry
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class ComponentLoaderTest {
 
@@ -58,5 +59,25 @@ class ComponentLoaderTest {
         assertNotNull(componentRegistry.decoderFactoryList.find { it is GifDecoder.Factory })
         assertNotNull(componentRegistry.decoderFactoryList.find { it is AnimatedWebpDecoder.Factory })
         assertNotNull(componentRegistry.decoderFactoryList.find { it is SvgDecoder.Factory })
+
+        // ignoreProviderClasses
+        val componentRegistry2 = componentLoader.toComponentRegistry(
+            context = context,
+            ignoreProviderClasses = listOf(
+                ComposeResourceUriFetcherProvider::class,
+                SvgDecoderProvider::class
+            )
+        )
+
+        assertEquals(3, componentRegistry2.fetcherFactoryList.size)
+        assertNull(componentRegistry2.fetcherFactoryList.find { it is ComposeResourceUriFetcher.Factory })
+        assertNotNull(componentRegistry2.fetcherFactoryList.find { it is KtorHttpUriFetcher.Factory })
+        assertNotNull(componentRegistry2.fetcherFactoryList.find { it is HurlHttpUriFetcher.Factory })
+        assertNotNull(componentRegistry2.fetcherFactoryList.find { it is OkHttpHttpUriFetcher.Factory })
+
+        assertEquals(2, componentRegistry2.decoderFactoryList.size)
+        assertNotNull(componentRegistry2.decoderFactoryList.find { it is GifDecoder.Factory })
+        assertNotNull(componentRegistry2.decoderFactoryList.find { it is AnimatedWebpDecoder.Factory })
+        assertNull(componentRegistry2.decoderFactoryList.find { it is SvgDecoder.Factory })
     }
 }

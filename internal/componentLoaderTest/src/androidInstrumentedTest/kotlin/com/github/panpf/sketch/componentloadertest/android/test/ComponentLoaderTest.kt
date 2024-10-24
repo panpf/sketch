@@ -90,5 +90,36 @@ class ComponentLoaderTest {
         assertNotNull(componentRegistry.decoderFactoryList.find { it is GifDecoder.Factory })
         assertNotNull(componentRegistry.decoderFactoryList.find { it is AnimatedWebpDecoder.Factory })
         assertNotNull(componentRegistry.decoderFactoryList.find { it is SvgDecoder.Factory })
+
+        // ignoreProviderClasses
+        val componentRegistry2 = componentLoader.toComponentRegistry(
+            context = context,
+            ignoreProviderClasses = listOf(
+                ComposeResourceUriFetcherProvider::class,
+                SvgDecoderProvider::class
+            )
+        )
+
+        assertEquals(4, componentRegistry2.fetcherFactoryList.size)
+        assertNotNull(componentRegistry2.fetcherFactoryList.find { it is AppIconUriFetcher.Factory })
+        assertNull(componentRegistry2.fetcherFactoryList.find { it is ComposeResourceUriFetcher.Factory })
+        assertNotNull(componentRegistry2.fetcherFactoryList.find { it is KtorHttpUriFetcher.Factory })
+        assertNotNull(componentRegistry2.fetcherFactoryList.find { it is HurlHttpUriFetcher.Factory })
+        assertNotNull(componentRegistry2.fetcherFactoryList.find { it is OkHttpHttpUriFetcher.Factory })
+
+        if (VERSION.SDK_INT >= VERSION_CODES.R) {
+            assertEquals(7, componentRegistry2.decoderFactoryList.size)
+            assertNotNull(componentRegistry2.decoderFactoryList.find { it is ImageDecoderAnimatedHeifDecoder.Factory })
+        } else {
+            assertEquals(6, componentRegistry2.decoderFactoryList.size)
+            assertNull(componentRegistry2.decoderFactoryList.find { it is ImageDecoderAnimatedHeifDecoder.Factory })
+        }
+        assertNotNull(componentRegistry2.decoderFactoryList.find { it is KoralGifDecoder.Factory })
+        assertNotNull(componentRegistry2.decoderFactoryList.find { it is ApkIconDecoder.Factory })
+        assertNotNull(componentRegistry2.decoderFactoryList.find { it is VideoFrameDecoder.Factory })
+        assertNotNull(componentRegistry2.decoderFactoryList.find { it is FFmpegVideoFrameDecoder.Factory })
+        assertNotNull(componentRegistry2.decoderFactoryList.find { it is GifDecoder.Factory })
+        assertNotNull(componentRegistry2.decoderFactoryList.find { it is AnimatedWebpDecoder.Factory })
+        assertNull(componentRegistry2.decoderFactoryList.find { it is SvgDecoder.Factory })
     }
 }

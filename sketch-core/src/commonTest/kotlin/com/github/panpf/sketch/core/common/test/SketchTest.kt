@@ -242,6 +242,24 @@ class SketchTest {
             )
         }
 
+        // addIgnoreComponentProviderClasses
+        Sketch.Builder(context).build().apply {
+            assertEquals(
+                expected = ComponentLoader.toComponentRegistry(context)
+                    .merged(platformComponents(context).merged(commonComponents())).toString(),
+                actual = components.registry.toString()
+            )
+        }
+        Sketch.Builder(context).apply {
+            // There is only one KtorHttpUriFetcherProvider in the current environment
+            addIgnoreComponentProvider(ComponentLoader.fetchers.first()::class)
+        }.build().apply {
+            assertEquals(
+                expected = platformComponents(context).merged(commonComponents()).toString(),
+                actual = components.registry.toString()
+            )
+        }
+
         // components: RequestInterceptor
         Sketch.Builder(context).build().apply {
             assertEquals(

@@ -66,6 +66,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import okio.FileSystem
+import kotlin.reflect.KClass
 
 /**
  * A service class that performs an [ImageRequest] to load an image.
@@ -263,6 +264,7 @@ class Sketch private constructor(
         private var resultCacheOptionsLazy: Lazy<DiskCache.Options>? = null
 
         private var componentLoaderEnabled: Boolean = true
+        private var ignoreComponentProviderClasses: MutableList<KClass<*>>? = null
         private var componentRegistry: ComponentRegistry? = null
         private var globalImageOptions: ImageOptions? = null
         private var networkParallelismLimited: Int? = null
@@ -399,6 +401,15 @@ class Sketch private constructor(
         }
 
         /**
+         * Ignore the specified component provider
+         */
+        fun addIgnoreComponentProvider(vararg classes: KClass<*>): Builder = apply {
+            (this.ignoreComponentProviderClasses ?: mutableListOf<KClass<*>>().apply {
+                this@Builder.ignoreComponentProviderClasses = this
+            }).addAll(classes.toList())
+        }
+
+        /**
          * Set an [ImageOptions], fill unset [ImageRequest] value
          */
         fun globalImageOptions(globalImageOptions: ImageOptions?): Builder = apply {
@@ -425,7 +436,10 @@ class Sketch private constructor(
             val finalFileSystem = fileSystem ?: defaultFileSystem()
             val componentLoader = ComponentLoader
             val loadedComponents = if (componentLoaderEnabled)
-                componentLoader.toComponentRegistry(context) else null
+                componentLoader.toComponentRegistry(
+                    context,
+                    ignoreComponentProviderClasses
+                ) else null
             val componentRegistry = componentRegistry
                 .merged(loadedComponents)
                 .merged(platformComponents(context))

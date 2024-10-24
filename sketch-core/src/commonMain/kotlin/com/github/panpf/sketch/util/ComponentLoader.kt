@@ -20,6 +20,7 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
+import kotlin.reflect.KClass
 
 /**
  * Component loader. Automatically load and register all components
@@ -66,12 +67,23 @@ expect interface DecoderProvider {
  * @see com.github.panpf.sketch.componentloadertest.js.test.ComponentLoaderTest.testToComponentRegistry
  * @see com.github.panpf.sketch.componentloadertest.wasmjs.test.ComponentLoaderTest.testToComponentRegistry
  */
-fun ComponentLoader.toComponentRegistry(context: PlatformContext): ComponentRegistry {
+fun ComponentLoader.toComponentRegistry(
+    context: PlatformContext,
+    ignoreProviderClasses: List<KClass<*>>? = null
+): ComponentRegistry {
     return ComponentRegistry {
-        fetchers.forEach { fetcherComponent ->
+        fetchers.filter { fetcherProvider ->
+            ignoreProviderClasses?.find { ignoreProviderClass ->
+                fetcherProvider::class == ignoreProviderClass
+            } == null
+        }.forEach { fetcherComponent ->
             fetcherComponent.factory(context)?.let { factory -> addFetcher(factory) }
         }
-        decoders.forEach { decoderComponent ->
+        decoders.filter { decoderProvider ->
+            ignoreProviderClasses?.find { ignoreProviderClass ->
+                decoderProvider::class == ignoreProviderClass
+            } == null
+        }.forEach { decoderComponent ->
             decoderComponent.factory(context)?.let { factory -> addDecoder(factory) }
         }
     }
