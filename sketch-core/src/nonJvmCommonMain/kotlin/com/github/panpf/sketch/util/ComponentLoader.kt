@@ -22,6 +22,13 @@ import com.github.panpf.sketch.fetch.Fetcher
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 
+/**
+ * Component loader. Automatically load and register all components
+ *
+ * @see com.github.panpf.sketch.componentloadertest.ios.test.ComponentLoaderTest
+ * @see com.github.panpf.sketch.componentloadertest.js.test.ComponentLoaderTest
+ * @see com.github.panpf.sketch.componentloadertest.wasmjs.test.ComponentLoaderTest
+ */
 actual object ComponentLoader {
 
     private val lock = SynchronizedObject()
@@ -43,10 +50,16 @@ actual object ComponentLoader {
     }
 }
 
+/**
+ * Register a [FetcherProvider] to [ComponentLoader]
+ */
 actual interface FetcherProvider {
     actual fun factory(context: PlatformContext): Fetcher.Factory?
 }
 
+/**
+ * Register a [DecoderProvider] to [ComponentLoader]
+ */
 actual interface DecoderProvider {
     actual fun factory(context: PlatformContext): Decoder.Factory?
 }

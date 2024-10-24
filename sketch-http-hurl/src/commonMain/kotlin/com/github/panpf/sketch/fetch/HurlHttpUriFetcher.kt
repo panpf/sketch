@@ -10,7 +10,7 @@ import com.github.panpf.sketch.request.RequestContext
 /**
  * Adds HurlHttpUriFetcher support
  *
- * @see com.github.panpf.sketch.http.hurl.common.test.fetch.HurlHttpUriFetcherTest.testHurlHttpUri
+ * @see com.github.panpf.sketch.http.hurl.common.test.fetch.HurlHttpUriFetcherTest.testSupportHurlHttpUri
  */
 fun ComponentRegistry.Builder.supportHurlHttpUri(
     httpStack: HurlStack = Builder().build()

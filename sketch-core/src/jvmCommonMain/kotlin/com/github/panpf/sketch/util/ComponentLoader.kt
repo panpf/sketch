@@ -22,6 +22,12 @@ import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
 import java.util.ServiceLoader
 
+/**
+ * Component loader. Automatically load and register all components
+ *
+ * @see com.github.panpf.sketch.componentloadertest.desktop.test.ComponentLoaderTest
+ * @see com.github.panpf.sketch.componentloadertest.android.test.ComponentLoaderTest
+ */
 actual object ComponentLoader {
 
     // This code is written intentionally so R8 can optimize it:
@@ -49,11 +55,17 @@ actual object ComponentLoader {
     }
 }
 
+/**
+ * Register a [FetcherProvider] to [ComponentLoader]
+ */
 @Keep
 actual interface FetcherProvider {
     actual fun factory(context: PlatformContext): Fetcher.Factory?
 }
 
+/**
+ * Register a [DecoderProvider] to [ComponentLoader]
+ */
 @Keep
 actual interface DecoderProvider {
     actual fun factory(context: PlatformContext): Decoder.Factory?

@@ -9,7 +9,7 @@ import com.github.panpf.sketch.request.RequestContext
 /**
  * Adds OkHttpHttpUriFetcher support
  *
- * @see com.github.panpf.sketch.http.okhttp.common.test.fetch.OkHttpHttpUriFetcherTest.testOkHttpHttpUri
+ * @see com.github.panpf.sketch.http.okhttp.common.test.fetch.OkHttpHttpUriFetcherTest.testSupportOkHttpHttpUri
  */
 fun ComponentRegistry.Builder.supportOkHttpHttpUri(
     httpStack: OkHttpStack = OkHttpStack.Builder().build()

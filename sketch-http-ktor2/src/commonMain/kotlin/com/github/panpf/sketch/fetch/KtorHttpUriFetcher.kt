@@ -9,7 +9,7 @@ import com.github.panpf.sketch.request.RequestContext
 /**
  * Adds KtorHttpUriFetcher support
  *
- * @see com.github.panpf.sketch.http.ktor2.common.test.fetch.KtorHttpUriFetcherTest.testKtorHttpUri
+ * @see com.github.panpf.sketch.http.ktor2.common.test.fetch.KtorHttpUriFetcherTest.testSupportKtorHttpUri
  */
 fun ComponentRegistry.Builder.supportKtorHttpUri(
     httpStack: KtorStack = KtorStack()

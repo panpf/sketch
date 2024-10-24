@@ -21,6 +21,15 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
 
+/**
+ * Component loader. Automatically load and register all components
+ *
+ * @see com.github.panpf.sketch.componentloadertest.android.test.ComponentLoaderTest
+ * @see com.github.panpf.sketch.componentloadertest.desktop.test.ComponentLoaderTest
+ * @see com.github.panpf.sketch.componentloadertest.ios.test.ComponentLoaderTest
+ * @see com.github.panpf.sketch.componentloadertest.js.test.ComponentLoaderTest
+ * @see com.github.panpf.sketch.componentloadertest.wasmjs.test.ComponentLoaderTest
+ */
 expect object ComponentLoader {
 
     val fetchers: List<FetcherProvider>
@@ -34,10 +43,16 @@ expect object ComponentLoader {
     fun register(decoder: DecoderProvider)
 }
 
+/**
+ * Register a [FetcherProvider] to [ComponentLoader]
+ */
 expect interface FetcherProvider {
     fun factory(context: PlatformContext): Fetcher.Factory?
 }
 
+/**
+ * Register a [DecoderProvider] to [ComponentLoader]
+ */
 expect interface DecoderProvider {
     fun factory(context: PlatformContext): Decoder.Factory?
 }
@@ -45,7 +60,11 @@ expect interface DecoderProvider {
 /**
  * Convert [ComponentLoader] to [ComponentRegistry]
  *
- * @see com.github.panpf.sketch.core.common.test.util.ComponentLoaderTest.testToComponentRegistry
+ * @see com.github.panpf.sketch.componentloadertest.android.test.ComponentLoaderTest.testToComponentRegistry
+ * @see com.github.panpf.sketch.componentloadertest.desktop.test.ComponentLoaderTest.testToComponentRegistry
+ * @see com.github.panpf.sketch.componentloadertest.ios.test.ComponentLoaderTest.testToComponentRegistry
+ * @see com.github.panpf.sketch.componentloadertest.js.test.ComponentLoaderTest.testToComponentRegistry
+ * @see com.github.panpf.sketch.componentloadertest.wasmjs.test.ComponentLoaderTest.testToComponentRegistry
  */
 fun ComponentLoader.toComponentRegistry(context: PlatformContext): ComponentRegistry {
     return ComponentRegistry {
