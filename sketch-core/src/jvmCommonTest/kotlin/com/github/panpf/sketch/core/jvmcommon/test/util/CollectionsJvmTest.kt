@@ -1,6 +1,8 @@
 package com.github.panpf.sketch.core.jvmcommon.test.util
 
 import com.github.panpf.sketch.util.LruMutableMap
+import com.github.panpf.sketch.util.toImmutableList
+import com.github.panpf.sketch.util.toImmutableMap
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -48,11 +50,33 @@ class CollectionsJvmTest {
 
     @Test
     fun testToImmutableMap() {
-        // TODO test
+        assertEquals(
+            expected = "class kotlin.collections.EmptyMap",
+            actual = mapOf<String, Int>().toImmutableMap()::class.java.toString()
+        )
+        assertEquals(
+            expected = "class java.util.Collections\$SingletonMap",
+            actual = mapOf("key" to 2).toImmutableMap()::class.java.toString()
+        )
+        assertEquals(
+            expected = "class java.util.Collections\$UnmodifiableMap",
+            actual = mapOf("key" to 2, "key2" to 4).toImmutableMap()::class.java.toString()
+        )
     }
 
     @Test
     fun testToImmutableList() {
-        // TODO test
+        assertEquals(
+            expected = "class kotlin.collections.EmptyList",
+            actual = listOf<String>().toImmutableList()::class.java.toString()
+        )
+        assertEquals(
+            expected = "class java.util.Collections\$SingletonList",
+            actual = listOf("key").toImmutableList()::class.java.toString()
+        )
+        assertEquals(
+            expected = "class java.util.Collections\$UnmodifiableRandomAccessList",
+            actual = listOf("key", "key2").toImmutableList()::class.java.toString()
+        )
     }
 }

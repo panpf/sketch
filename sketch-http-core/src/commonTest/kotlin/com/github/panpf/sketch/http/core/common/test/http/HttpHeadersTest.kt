@@ -15,7 +15,24 @@ class HttpHeadersTest {
 
     @Test
     fun testHttpHeaders() {
-        // TODO test
+        assertEquals(
+            expected = HttpHeaders.Builder().build(),
+            actual = HttpHeaders()
+        )
+        assertEquals(
+            expected = HttpHeaders.Builder().apply {
+                set("key1", "value1")
+                set("key2", "value2")
+                add("key3", "value3")
+                add("key3", "value31")
+            }.build(),
+            actual = HttpHeaders {
+                set("key1", "value1")
+                set("key2", "value2")
+                add("key3", "value3")
+                add("key3", "value31")
+            }
+        )
     }
 
     @Test
@@ -33,7 +50,7 @@ class HttpHeadersTest {
         }.build())
 
         assertEquals(httpHeaders, httpHeaders.newHttpHeaders())
-        assertNotEquals(httpHeaders, httpHeaders.newHttpHeaders() {
+        assertNotEquals(httpHeaders, httpHeaders.newHttpHeaders {
             add("key3", "value32")
         })
     }
@@ -232,6 +249,81 @@ class HttpHeadersTest {
         }.build().apply {
             assertEquals(
                 "HttpHeaders(sets=[key1:value1],adds=[key2:value2,key2:value21])",
+                toString()
+            )
+        }
+    }
+
+    @Test
+    fun testMerge() {
+        val httpHeaders0 = HttpHeaders.Builder().build().apply {
+            assertEquals("HttpHeaders(sets=[],adds=[])", toString())
+        }
+
+        val httpHeaders1 = HttpHeaders.Builder().apply {
+            set("set1", "setValue1")
+            add("add1", "addValue1")
+        }.build().apply {
+            assertEquals(
+                "HttpHeaders(sets=[set1:setValue1],adds=[add1:addValue1])",
+                toString()
+            )
+        }
+
+        val httpHeaders11 = HttpHeaders.Builder().apply {
+            set("set1", "setValue11")
+            add("add1", "addValue11")
+        }.build().apply {
+            assertEquals(
+                "HttpHeaders(sets=[set1:setValue11],adds=[add1:addValue11])",
+                toString()
+            )
+        }
+
+        val httpHeaders2 = HttpHeaders.Builder().apply {
+            set("set21", "setValue21")
+            set("set22", "setValue22")
+            add("add21", "addValue21")
+            add("add22", "addValue22")
+        }.build().apply {
+            assertEquals(
+                "HttpHeaders(sets=[set21:setValue21,set22:setValue22],adds=[add21:addValue21,add22:addValue22])",
+                toString()
+            )
+        }
+
+        httpHeaders0.merge(httpHeaders0).apply {
+            assertEquals("HttpHeaders(sets=[],adds=[])", toString())
+        }
+        httpHeaders0.merged(httpHeaders1).apply {
+            assertEquals(
+                "HttpHeaders(sets=[set1:setValue1],adds=[add1:addValue1])",
+                toString()
+            )
+        }
+        httpHeaders0.merge(httpHeaders2).apply {
+            assertEquals(
+                "HttpHeaders(sets=[set21:setValue21,set22:setValue22],adds=[add21:addValue21,add22:addValue22])",
+                toString()
+            )
+        }
+
+        httpHeaders1.merged(httpHeaders2).apply {
+            assertEquals(
+                "HttpHeaders(sets=[set1:setValue1,set21:setValue21,set22:setValue22],adds=[add1:addValue1,add21:addValue21,add22:addValue22])",
+                toString()
+            )
+        }
+
+        httpHeaders1.merge(httpHeaders11).apply {
+            assertEquals(
+                "HttpHeaders(sets=[set1:setValue1],adds=[add1:addValue1,add1:addValue11])",
+                toString()
+            )
+        }
+        httpHeaders11.merge(httpHeaders1).apply {
+            assertEquals(
+                "HttpHeaders(sets=[set1:setValue11],adds=[add1:addValue11,add1:addValue1])",
                 toString()
             )
         }

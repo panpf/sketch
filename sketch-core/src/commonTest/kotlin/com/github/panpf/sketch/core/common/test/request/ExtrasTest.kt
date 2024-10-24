@@ -5,6 +5,8 @@ import com.github.panpf.sketch.request.count
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.isNotEmpty
 import com.github.panpf.sketch.request.merged
+import com.github.panpf.sketch.test.utils.TestMergeable
+import com.github.panpf.sketch.test.utils.asOrThrow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -448,7 +450,25 @@ class ExtrasTest {
             assertSame(extras1, this)
         }
 
-        // TODO test Mergeable
+        // Mergeable
+        val extras101 = Extras.Builder().apply {
+            set("key1", setOf("value1", "value2"))
+        }.build()
+        val extras102 = Extras.Builder().apply {
+            set("key1", setOf("value3", "value4"))
+        }.build()
+        assertEquals(setOf("value1", "value2"), extras101.merged(extras102)!!["key1"])
+
+        val extras103 = Extras.Builder().apply {
+            set("key1", TestMergeable(setOf("value1", "value2")))
+        }.build()
+        val extras104 = Extras.Builder().apply {
+            set("key1", TestMergeable(setOf("value3", "value4")))
+        }.build()
+        assertEquals(
+            setOf("value1", "value2", "value3", "value4"),
+            extras103.merged(extras104)!!["key1"]!!.asOrThrow<TestMergeable>().values
+        )
     }
 
     /**

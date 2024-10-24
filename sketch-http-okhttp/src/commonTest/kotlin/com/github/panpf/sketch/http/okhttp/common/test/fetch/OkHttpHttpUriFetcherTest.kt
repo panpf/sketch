@@ -1,6 +1,10 @@
 package com.github.panpf.sketch.http.okhttp.common.test.fetch
 
+import com.github.panpf.sketch.ComponentRegistry
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.fetch.OkHttpHttpUriFetcher
+import com.github.panpf.sketch.fetch.supportOkHttpHttpUri
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -15,11 +19,103 @@ import kotlin.test.assertNull
 class OkHttpHttpUriFetcherTest {
 
     @Test
-    fun testOkHttpHttpUri() {
-        // TODO test
+    fun testSupportOkHttpHttpUri() {
+        ComponentRegistry().apply {
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetcherFactoryList=[]," +
+                        "decoderFactoryList=[]," +
+                        "requestInterceptorList=[]," +
+                        "decodeInterceptorList=[]" +
+                        ")",
+                actual = toString()
+            )
+        }
+
+        ComponentRegistry {
+            supportOkHttpHttpUri()
+        }.apply {
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetcherFactoryList=[OkHttpHttpUriFetcher(httpStack=OkHttpStack(connectTimeout=7000,readTimeout=7000))]," +
+                        "decoderFactoryList=[]," +
+                        "requestInterceptorList=[]," +
+                        "decodeInterceptorList=[]" +
+                        ")",
+                actual = toString()
+            )
+        }
+
+        ComponentRegistry {
+            supportOkHttpHttpUri()
+            supportOkHttpHttpUri()
+        }.apply {
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetcherFactoryList=[OkHttpHttpUriFetcher(httpStack=OkHttpStack(connectTimeout=7000,readTimeout=7000)),OkHttpHttpUriFetcher(httpStack=OkHttpStack(connectTimeout=7000,readTimeout=7000))]," +
+                        "decoderFactoryList=[]," +
+                        "requestInterceptorList=[]," +
+                        "decodeInterceptorList=[]" +
+                        ")",
+                actual = toString()
+            )
+        }
     }
 
-    // TODO test
+    @Test
+    fun testConstructor() {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, "http://sample.com/sample.jpg")
+        val httpStack = OkHttpStack.Builder().build()
+        OkHttpHttpUriFetcher(sketch, httpStack, request)
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val (context, sketch) = getTestContextAndSketch()
+        val sketch2 = Sketch.Builder(context).build()
+        val httpStack = OkHttpStack.Builder().build()
+        val httpStack2 = OkHttpStack.Builder().apply {
+            connectTimeoutMillis(1000)
+        }.build()
+        val request = ImageRequest(context, "http://sample.com/sample.jpg")
+        val request2 = request.newRequest { memoryCachePolicy(DISABLED) }
+        val element1 = OkHttpHttpUriFetcher(sketch, httpStack, request)
+        val element11 = OkHttpHttpUriFetcher(sketch, httpStack, request)
+        val element2 = OkHttpHttpUriFetcher(sketch2, httpStack, request)
+        val element3 = OkHttpHttpUriFetcher(sketch, httpStack2, request)
+        val element4 = OkHttpHttpUriFetcher(sketch, httpStack, request2)
+
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element1, element4)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element2, element4)
+        assertNotEquals(element3, element4)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
+
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element1.hashCode(), element4.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element4.hashCode())
+        assertNotEquals(element3.hashCode(), element4.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, "http://sample.com/sample.jpg")
+        val httpStack = OkHttpStack.Builder().build()
+        val httpUriFetcher = OkHttpHttpUriFetcher(sketch, httpStack, request)
+        assertEquals(
+            expected = "OkHttpHttpUriFetcher(sketch=$sketch, httpStack=$httpStack, request=$request)",
+            actual = httpUriFetcher.toString()
+        )
+    }
 
     @Test
     fun testFactoryCreate() {

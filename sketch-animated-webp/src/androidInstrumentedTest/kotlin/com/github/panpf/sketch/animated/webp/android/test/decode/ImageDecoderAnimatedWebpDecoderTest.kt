@@ -241,7 +241,7 @@ class ImageDecoderAnimatedWebpDecoderTest {
                 assertNull(this)
             }
 
-        ImageRequest(context, ResourceImages.animWebp.uri)
+        ImageRequest(context, ResourceImages.png.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/webp")
             }.apply {

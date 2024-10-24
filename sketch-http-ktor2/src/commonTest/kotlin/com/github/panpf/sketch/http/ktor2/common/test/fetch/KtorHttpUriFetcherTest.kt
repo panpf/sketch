@@ -1,6 +1,10 @@
 package com.github.panpf.sketch.http.ktor2.common.test.fetch
 
+import com.github.panpf.sketch.ComponentRegistry
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.fetch.KtorHttpUriFetcher
+import com.github.panpf.sketch.fetch.supportKtorHttpUri
 import com.github.panpf.sketch.http.KtorStack
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -15,11 +19,101 @@ import kotlin.test.assertNull
 class KtorHttpUriFetcherTest {
 
     @Test
-    fun testKtorHttpUri() {
-        // TODO test
+    fun testSupportKtorHttpUri() {
+        ComponentRegistry().apply {
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetcherFactoryList=[]," +
+                        "decoderFactoryList=[]," +
+                        "requestInterceptorList=[]," +
+                        "decodeInterceptorList=[]" +
+                        ")",
+                actual = toString()
+            )
+        }
+
+        ComponentRegistry {
+            supportKtorHttpUri()
+        }.apply {
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetcherFactoryList=[KtorHttpUriFetcher(httpStack=KtorStack)]," +
+                        "decoderFactoryList=[]," +
+                        "requestInterceptorList=[]," +
+                        "decodeInterceptorList=[]" +
+                        ")",
+                actual = toString()
+            )
+        }
+
+        ComponentRegistry {
+            supportKtorHttpUri()
+            supportKtorHttpUri()
+        }.apply {
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetcherFactoryList=[KtorHttpUriFetcher(httpStack=KtorStack),KtorHttpUriFetcher(httpStack=KtorStack)]," +
+                        "decoderFactoryList=[]," +
+                        "requestInterceptorList=[]," +
+                        "decodeInterceptorList=[]" +
+                        ")",
+                actual = toString()
+            )
+        }
     }
 
-    // TODO test
+    @Test
+    fun testConstructor() {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, "http://sample.com/sample.jpg")
+        val httpStack = KtorStack()
+        KtorHttpUriFetcher(sketch, httpStack, request)
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val (context, sketch) = getTestContextAndSketch()
+        val sketch2 = Sketch.Builder(context).build()
+        val httpStack = KtorStack()
+        val httpStack2 = KtorStack()
+        val request = ImageRequest(context, "http://sample.com/sample.jpg")
+        val request2 = request.newRequest { memoryCachePolicy(DISABLED) }
+        val element1 = KtorHttpUriFetcher(sketch, httpStack, request)
+        val element11 = KtorHttpUriFetcher(sketch, httpStack, request)
+        val element2 = KtorHttpUriFetcher(sketch2, httpStack, request)
+        val element3 = KtorHttpUriFetcher(sketch, httpStack2, request)
+        val element4 = KtorHttpUriFetcher(sketch, httpStack, request2)
+
+        assertEquals(element1, element11)
+        assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element1, element4)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element2, element4)
+        assertNotEquals(element3, element4)
+        assertNotEquals(element1, null as Any?)
+        assertNotEquals(element1, Any())
+
+        assertEquals(element1.hashCode(), element11.hashCode())
+        assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element1.hashCode(), element4.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element4.hashCode())
+        assertNotEquals(element3.hashCode(), element4.hashCode())
+    }
+
+    @Test
+    fun testToString() {
+        val (context, sketch) = getTestContextAndSketch()
+        val request = ImageRequest(context, "http://sample.com/sample.jpg")
+        val httpStack = KtorStack()
+        val httpUriFetcher = KtorHttpUriFetcher(sketch, httpStack, request)
+        assertEquals(
+            expected = "KtorHttpUriFetcher(sketch=$sketch, httpStack=$httpStack, request=$request)",
+            actual = httpUriFetcher.toString()
+        )
+    }
 
     @Test
     fun testFactoryCreate() {

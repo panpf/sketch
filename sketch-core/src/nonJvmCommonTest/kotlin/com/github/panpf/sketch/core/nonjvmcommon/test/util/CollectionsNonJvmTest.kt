@@ -1,6 +1,8 @@
 package com.github.panpf.sketch.core.nonjvmcommon.test.util
 
 import com.github.panpf.sketch.util.LruMutableMap
+import com.github.panpf.sketch.util.toImmutableList
+import com.github.panpf.sketch.util.toImmutableMap
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -48,21 +50,33 @@ class CollectionsNonJvmTest {
 
     @Test
     fun testToImmutableMap() {
-        // TODO test
+        assertEquals(
+            expected = "class kotlin.collections.EmptyMap",
+            actual = mapOf<String, Int>().toImmutableMap()::class.toString()
+        )
+        assertEquals(
+            expected = "class com.github.panpf.sketch.util.ImmutableMap",
+            actual = mapOf("key" to 2).toImmutableMap()::class.toString()
+        )
+        assertEquals(
+            expected = "class com.github.panpf.sketch.util.ImmutableMap",
+            actual = mapOf("key" to 2, "key2" to 4).toImmutableMap()::class.toString()
+        )
     }
 
     @Test
     fun testToImmutableList() {
-        // TODO test
-    }
-
-    @Test
-    fun testImmutableMap() {
-        // TODO test
-    }
-
-    @Test
-    fun testImmutableList() {
-        // TODO test
+        assertEquals(
+            expected = "class kotlin.collections.EmptyList",
+            actual = listOf<String>().toImmutableList()::class.toString()
+        )
+        assertEquals(
+            expected = "class com.github.panpf.sketch.util.ImmutableList",
+            actual = listOf("key").toImmutableList()::class.toString()
+        )
+        assertEquals(
+            expected = "class com.github.panpf.sketch.util.ImmutableList",
+            actual = listOf("key", "key2").toImmutableList()::class.toString()
+        )
     }
 }
