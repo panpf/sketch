@@ -63,10 +63,8 @@ class ComponentLoaderTest {
         // ignoreProviderClasses
         val componentRegistry2 = componentLoader.toComponentRegistry(
             context = context,
-            ignoreProviderClasses = listOf(
-                ComposeResourceUriFetcherProvider::class,
-                SvgDecoderProvider::class
-            )
+            ignoreFetcherProviders = listOf(ComposeResourceUriFetcherProvider::class),
+            ignoreDecoderProviders = listOf(SvgDecoderProvider::class),
         )
 
         assertEquals(3, componentRegistry2.fetcherFactoryList.size)

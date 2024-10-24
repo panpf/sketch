@@ -69,18 +69,19 @@ expect interface DecoderProvider {
  */
 fun ComponentLoader.toComponentRegistry(
     context: PlatformContext,
-    ignoreProviderClasses: List<KClass<*>>? = null
+    ignoreFetcherProviders: List<KClass<out FetcherProvider>>? = null,
+    ignoreDecoderProviders: List<KClass<out DecoderProvider>>? = null,
 ): ComponentRegistry {
     return ComponentRegistry {
         fetchers.filter { fetcherProvider ->
-            ignoreProviderClasses?.find { ignoreProviderClass ->
+            ignoreFetcherProviders?.find { ignoreProviderClass ->
                 fetcherProvider::class == ignoreProviderClass
             } == null
         }.forEach { fetcherComponent ->
             fetcherComponent.factory(context)?.let { factory -> addFetcher(factory) }
         }
         decoders.filter { decoderProvider ->
-            ignoreProviderClasses?.find { ignoreProviderClass ->
+            ignoreDecoderProviders?.find { ignoreProviderClass ->
                 decoderProvider::class == ignoreProviderClass
             } == null
         }.forEach { decoderComponent ->

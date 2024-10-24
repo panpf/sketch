@@ -11,7 +11,7 @@ import com.github.panpf.sketch.fetch.supportOkHttpHttpUri
 import com.github.panpf.sketch.sample.ui.util.PexelsCompatibleRequestInterceptor
 
 actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
-    addIgnoreComponentProvider(
+    addIgnoreFetcherProvider(
         KtorHttpUriFetcherProvider::class,
         OkHttpHttpUriFetcherProvider::class,
         HurlHttpUriFetcherProvider::class

@@ -41,7 +41,9 @@ import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.sketch.util.ComponentLoader
+import com.github.panpf.sketch.util.DecoderProvider
 import com.github.panpf.sketch.util.DownloadData
+import com.github.panpf.sketch.util.FetcherProvider
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level
 import com.github.panpf.sketch.util.Logger.Pipeline
@@ -264,7 +266,8 @@ class Sketch private constructor(
         private var resultCacheOptionsLazy: Lazy<DiskCache.Options>? = null
 
         private var componentLoaderEnabled: Boolean = true
-        private var ignoreComponentProviderClasses: MutableList<KClass<*>>? = null
+        private var ignoreFetcherProviders: MutableList<KClass<out FetcherProvider>>? = null
+        private var ignoreDecoderProviders: MutableList<KClass<out DecoderProvider>>? = null
         private var componentRegistry: ComponentRegistry? = null
         private var globalImageOptions: ImageOptions? = null
         private var networkParallelismLimited: Int? = null
@@ -401,12 +404,23 @@ class Sketch private constructor(
         }
 
         /**
-         * Ignore the specified component provider
+         * Ignore the specified FetcherProvider
          */
-        fun addIgnoreComponentProvider(vararg classes: KClass<*>): Builder = apply {
-            (this.ignoreComponentProviderClasses ?: mutableListOf<KClass<*>>().apply {
-                this@Builder.ignoreComponentProviderClasses = this
-            }).addAll(classes.toList())
+        fun addIgnoreFetcherProvider(vararg classes: KClass<out FetcherProvider>): Builder = apply {
+            (this.ignoreFetcherProviders
+                ?: mutableListOf<KClass<out FetcherProvider>>().apply {
+                    this@Builder.ignoreFetcherProviders = this
+                }).addAll(classes.toList())
+        }
+
+        /**
+         * Ignore the specified DecoderProvider
+         */
+        fun addIgnoreDecoderProvider(vararg classes: KClass<out DecoderProvider>): Builder = apply {
+            (this.ignoreDecoderProviders
+                ?: mutableListOf<KClass<out DecoderProvider>>().apply {
+                    this@Builder.ignoreDecoderProviders = this
+                }).addAll(classes.toList())
         }
 
         /**
@@ -437,8 +451,9 @@ class Sketch private constructor(
             val componentLoader = ComponentLoader
             val loadedComponents = if (componentLoaderEnabled)
                 componentLoader.toComponentRegistry(
-                    context,
-                    ignoreComponentProviderClasses
+                    context = context,
+                    ignoreFetcherProviders = ignoreFetcherProviders?.toList(),
+                    ignoreDecoderProviders = ignoreDecoderProviders?.toList()
                 ) else null
             val componentRegistry = componentRegistry
                 .merged(loadedComponents)

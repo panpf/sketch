@@ -252,7 +252,7 @@ class SketchTest {
         }
         Sketch.Builder(context).apply {
             // There is only one KtorHttpUriFetcherProvider in the current environment
-            addIgnoreComponentProvider(ComponentLoader.fetchers.first()::class)
+            addIgnoreFetcherProvider(ComponentLoader.fetchers.first()::class)
         }.build().apply {
             assertEquals(
                 expected = platformComponents(context).merged(commonComponents()).toString(),

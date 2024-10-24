@@ -20,18 +20,18 @@ import com.github.panpf.sketch.fetch.supportKtorHttpUri
 import com.github.panpf.sketch.fetch.supportOkHttpHttpUri
 
 actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
-    addIgnoreComponentProvider(
+    addIgnoreFetcherProvider(
         KtorHttpUriFetcherProvider::class,
         OkHttpHttpUriFetcherProvider::class,
         HurlHttpUriFetcherProvider::class
     )
 
-    addIgnoreComponentProvider(
+    addIgnoreDecoderProvider(
         VideoFrameDecoderProvider::class,
         FFmpegVideoFrameDecoderProvider::class
     )
 
-    addIgnoreComponentProvider(
+    addIgnoreDecoderProvider(
         KoralGifDecoderProvider::class,
         GifDecoderProvider::class
     )
