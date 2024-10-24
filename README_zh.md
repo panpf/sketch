@@ -13,7 +13,7 @@ Sketch 是专为 Compose Multiplatform 和 Android View 设计的图片加载库
 * `功能强大`：支持三级缓存、自动取消请求、自动调整图片尺寸、自动根据 Exif Orientation 旋转图片等
 * `功能丰富`：支持动图、SVG 图片、Base64 图片、视频帧
 * `易于扩展`：支持对缓存、解码、转换、过渡、占位图等各个环节的扩展
-* `特殊功能`：提供蜂窝流量时暂停下载、列表滚动中暂停加载、图片类型徽章、下载进度指示器等实用扩展
+* `扩展功能`：提供蜂窝流量时暂停下载、列表滚动中暂停加载、图片类型徽章、下载进度指示器等实用扩展
 * `现代化`：完全基于 Kotlin 和 Kotlin 协程设计
 
 ## 下载
@@ -22,46 +22,72 @@ Sketch 是专为 Compose Multiplatform 和 Android View 设计的图片加载库
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
 
-Compose Multiplatform:
+#### Compose Multiplatform:
+
+Import the required Compose and network modules:
 
 ```kotlin
 // 提供了 Sketch 的核心功能以及单例和依赖单例实现的扩展函数
 implementation("io.github.panpf.sketch4:sketch-compose:${LAST_VERSION}")
+
+// 提供了加载网络图片的能力
+implementation("io.github.panpf.sketch4:sketch-http:${LAST_VERSION}")
 ```
 
 > [!IMPORTANT]
 > 为提升 compose 的性能请拷贝 `sketch-core` 模块下的 [compose_compiler_config.conf]
 > 文件到您的项目中，然后按照  [Compose Stability Configuration][stability_configuration] 文档配置它
 
-Android View:
+#### Android View:
 
 ```kotlin
 // 提供了 Sketch 的核心功能以及单例和依赖单例实现的扩展函数
 implementation("io.github.panpf.sketch4:sketch-view:${LAST_VERSION}")
+
+// 提供了加载网络图片的能力
+implementation("io.github.panpf.sketch4:sketch-http:${LAST_VERSION}")
 ```
 
-还有一些可选的模块：
+#### 可选模块
 
 ```kotlin
-// 使用 Android 或 Skia 内置的解码器实现解码 gif、webp、heif 等动图并播放
-implementation("io.github.panpf.sketch4:sketch-animated:${LAST_VERSION}")
+// 使用 Android 或 Skia 内置的解码器解码 gif 动图并播放
+implementation("io.github.panpf.sketch4:sketch-animated-gif:${LAST_VERSION}")
 
-// [仅 Android] 使用 android-gif-drawable 库的 GifDrawable 实现解码 gif 并播放
-implementation("io.github.panpf.sketch4:sketch-animated-koralgif:${LAST_VERSION}")
+// [仅 Android] 使用 android-gif-drawable 库的 GifDrawable 解码 gif 动图并播放
+implementation("io.github.panpf.sketch4:sketch-animated-gif-koral:${LAST_VERSION}")
+
+// [仅 Android] Android 或 Skia 内置的解码器解码 heif 动图并播放
+implementation("io.github.panpf.sketch4:sketch-animated-heif:${LAST_VERSION}")
+
+// 使用 Android 或 Skia 内置的解码器解码 webp 动图并播放
+implementation("io.github.panpf.sketch4:sketch-animated-webp:${LAST_VERSION}")
 
 // 支持通过 uri 或 placeholder、fallback、error 访问 compose resources 资源
 implementation("io.github.panpf.sketch4:sketch-compose-resources:${LAST_VERSION}")
 implementation("io.github.panpf.sketch4:sketch-extensions-compose-resources:${LAST_VERSION}")
 
-// 提供下载进度、列表滚动中暂停加载、节省蜂窝流量、图片类型角标、加载 apk icon 和已安装 app icon 等实用功能
+// 提供下载进度、图片类型角标、列表滚动中暂停加载、节省蜂窝流量等实用功能
 implementation("io.github.panpf.sketch4:sketch-extensions-compose:${LAST_VERSION}")
 implementation("io.github.panpf.sketch4:sketch-extensions-view:${LAST_VERSION}")
 
-// [仅 JVM] 支持使用 OkHttp 下载图片
+// [仅 Android] 支持通过文件路径加载 apk 文件的图标 
+implementation("io.github.panpf.sketch4:sketch-extensions-apkicon:${LAST_VERSION}")
+
+// [仅 Android] 支持通过包名和版本号加载已安装 app 的图标
+implementation("io.github.panpf.sketch4:sketch-extensions-appicon:${LAST_VERSION}")
+
+// [仅 JVM] 支持使用 HttpURLConnection 访问网络图片
+implementation("io.github.panpf.sketch4:sketch-http-hurl:${LAST_VERSION}")
+
+// [仅 JVM] 支持使用 OkHttp 访问网络图片
 implementation("io.github.panpf.sketch4:sketch-http-okhttp:${LAST_VERSION}")
 
-// [仅 JVM] 支持使用 ktor 下载图片
-implementation("io.github.panpf.sketch4:sketch-http-ktor:${LAST_VERSION}")
+// 支持使用 2.x 版本的 ktor 访问网络图片
+implementation("io.github.panpf.sketch4:sketch-http-ktor2:${LAST_VERSION}")
+
+// 支持使用 3.x 版本的 ktor 访问网络图片
+implementation("io.github.panpf.sketch4:sketch-http-ktor3:${LAST_VERSION}")
 
 // 支持 SVG 图片
 implementation("io.github.panpf.sketch4:sketch-svg:${LAST_VERSION}")
@@ -75,8 +101,14 @@ implementation("io.github.panpf.sketch4:sketch-video-ffmpeg:${LAST_VERSION}")
 
 > [!TIP]
 > * `sketch-compose`、`sketch-view` 模块都依赖 `sketch-singleton`
-    模块提供的单例，如果你不需要单例则可以直接依赖他们的 `*-core` 版本
-> * 在 Android 上 `sketch-compose` 和 `sketch-view` 可以一起使用
+    > 模块提供的单例，如果你不需要单例则可以直接依赖他们的 `*-core` 版本
+> * `sketch-http` 模块在 jvm 平台上依赖 `sketch-http-hurl`，在非 jvm 平台上依赖 `sketch-http-ktor3`
+> * sketch 支持自动发现并注册组件，因此以下模块不需要你主动注册它们只需要配置依赖即可：
+    >
+* `sketch-animated-gif`、`sketch-animated-gif-koral`、`sketch-animated-heif`、`sketch-animated-webp`
+>   * `sketch-extensions-apkicon`、`sketch-extensions-appicon`
+>   * `sketch-http`、`sketch-http-hurl`、`sketch-http-okhttp`、`sketch-http-ktor2`、`sketch-http-ktor3`
+>   * `sketch-svg`、`sketch-video`、`sketch-video-ffmpeg`
 
 #### R8 / Proguard
 
@@ -85,7 +117,7 @@ Sketch 自己不需要配置任何混淆规则，但你可能需要为间接依�
 
 ## 快速上手
 
-Compose Multiplatform：
+#### Compose Multiplatform：
 
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
@@ -134,7 +166,7 @@ Image(
 > [!TIP]
 > `placeholder(Res.drawable.placeholder)` 需要导入 `sketch-compose-resources` 模块
 
-Android View：
+#### Android View：
 
 ```kotlin
 // val imageUri = "/sdcard/download/image.jpg"
@@ -161,15 +193,13 @@ val request = ImageRequest(context, imageUri) {
 context.sketch.enqueue(request)
 ```
 
-更多有关 Uri、图片类型、平台差异、Sketch 自定义、ImageRequest 等内容请查看 [《开始使用》][getting_started]
-文档
-
 ## 文档
 
 基础功能：
 
 * [开始使用][getting_started]
 * [Compose][compose]
+* [Http：加载网络图片][http]
 * [AnimatedImage：GIF、WEBP、HEIF][animated_image]
 * [Resize：修改图片尺寸][resize]
 * [Transformation：转换图片][transformation]
@@ -180,9 +210,8 @@ context.sketch.enqueue(request)
 * [ResultCache：了解结果缓存，避免重复转换][result_cache]
 * [MemoryCache：了解内存缓存，避免重复加载][memory_cache]
 * [Fetcher：了解 Fetcher 及扩展新的 URI 类型][fetcher]
-* [Decode：了解 Sketch 的解码过程][decode]
+* [Decoder：了解 Sketch 的解码过程][decoder]
 * [Target：将加载结果应用到目标上][target]
-* [HttpStack：了解 http 部分及使用 okhttp][http_stack]
 * [SVG：解码 SVG 静态图片][svg]
 * [VideoFrames：解码视频帧][video_frame]
 * [ExifOrientation：纠正图片方向][exif_orientation]
@@ -281,7 +310,7 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 
 [compose]: docs/wiki/compose_zh.md
 
-[decode]: docs/wiki/decode_zh.md
+[decoder]: docs/wiki/decoder_zh.md
 
 [download_cache]: docs/wiki/download_cache_zh.md
 
@@ -291,7 +320,7 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 
 [getting_started]: docs/wiki/getting_started_zh.md
 
-[http_stack]: docs/wiki/http_stack_zh.md
+[http]: docs/wiki/http_zh.md
 
 [image_options]: docs/wiki/image_options_zh.md
 

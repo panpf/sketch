@@ -1,6 +1,6 @@
 # Decoder
 
-Translations: [简体中文](decode_zh.md)
+Translations: [简体中文](decoder_zh.md)
 
 [Decoder] is used to decode image files. Each supported image type has a corresponding [Decoder]
 implementation, as shown in the following table:

@@ -1,6 +1,6 @@
 # HttpStack
 
-翻译：[English](http_stack.md)
+翻译：[English](http.md)
 
 [HttpStack] 用来发起 HTTP 网络请求并获取响应然后交由 [HttpUriFetcher] 下载图片
 

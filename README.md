@@ -17,7 +17,7 @@ has the following features:
 * `Rich functions`: Supports Animated image, SVG images, Base64 images, and video frames
 * `Easy to expand`: Supports expansion of various aspects such as caching, decoding, transformation,
   transition, placeholder, etc.
-* `Special functions`: Practical extensions such as pausing downloads when cellular data is
+* `Extended functions`: Practical extensions such as pausing downloads when cellular data is
   provided, pausing loading during list scrolling, image type badges, download progress indicators,
   etc.
 * `Modern`: Completely based on Kotlin and Kotlin coroutine design
@@ -28,12 +28,15 @@ has the following features:
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 
-Compose Multiplatform:
+#### Compose Multiplatform:
 
 ```kotlin
 // Provides the core functions of Sketch as well as singletons and extension 
 // functions that rely on singleton implementations
 implementation("io.github.panpf.sketch4:sketch-compose:${LAST_VERSION}")
+
+// Provides the ability to load network images
+implementation("io.github.panpf.sketch4:sketch-http:${LAST_VERSION}")
 ```
 
 > [!IMPORTANT]
@@ -41,37 +44,58 @@ implementation("io.github.panpf.sketch4:sketch-compose:${LAST_VERSION}")
 > the `sketch-core` module file to your project and configure it according to
 > the [Compose Stability Configuration][stability_configuration] documentation
 
-Android View:
+#### Android View:
 
 ```kotlin
 // Provides the core functions of Sketch as well as singletons and extension 
 // functions that rely on singleton implementations
 implementation("io.github.panpf.sketch4:sketch-view:${LAST_VERSION}")
+
+// Provides the ability to load network images
+implementation("io.github.panpf.sketch4:sketch-http:${LAST_VERSION}")
 ```
 
-There are also some optional modules:
+#### Optional modules:
 
 ```kotlin
-// Use Android or Skia's built-in decoder to decode gif, webp, heif and other animated images and play them
-implementation("io.github.panpf.sketch4:sketch-animated:${LAST_VERSION}")
+// Use Android or Skia's built-in decoder to decode gif animations and play them
+implementation("io.github.panpf.sketch4:sketch-animated-gif:${LAST_VERSION}")
 
-// [Android only] Use GifDrawable of the android-gif-drawable library to decode gif and play it
-implementation("io.github.panpf.sketch4:sketch-animated-koralgif:${LAST_VERSION}")
+// [Android only] Use the GifDrawable of the android-gif-drawable library to decode and play gif animations
+implementation("io.github.panpf.sketch4:sketch-animated-gif-koral:${LAST_VERSION}")
+
+// [Android only] Android or Skia's built-in decoder decodes heif animations and plays them
+implementation("io.github.panpf.sketch4:sketch-animated-heif:${LAST_VERSION}")
+
+// Use Android or Skia's built-in decoder to decode webp animations and play them
+implementation("io.github.panpf.sketch4:sketch-animated-webp:${LAST_VERSION}")
 
 // Support accessing compose resources through uri or placeholder, fallback, error, etc.
 implementation("io.github.panpf.sketch4:sketch-compose-resources:${LAST_VERSION}")
 implementation("io.github.panpf.sketch4:sketch-extensions-compose-resources:${LAST_VERSION}")
 
-// Provides practical functions such as download progress, pausing loading during list scrolling, 
-// saving cellular data, image type badge, loading apk icons and installed app icons, etc.
+// Provides practical functions such as download progress, image type icons, 
+//  pausing loading during list scrolling, and saving cellular traffic.
 implementation("io.github.panpf.sketch4:sketch-extensions-compose:${LAST_VERSION}")
 implementation("io.github.panpf.sketch4:sketch-extensions-view:${LAST_VERSION}")
 
-// [JVM only] Supports using OkHttp to download images
+// [Android only] Support icon loading of apk files via file path 
+implementation("io.github.panpf.sketch4:sketch-extensions-apkicon:${LAST_VERSION}")
+
+// [Android only] Support loading icons of installed apps by package name and version code
+implementation("io.github.panpf.sketch4:sketch-extensions-appicon:${LAST_VERSION}")
+
+// [JVM only] Support using HttpURLConnection to access network images
+implementation("io.github.panpf.sketch4:sketch-http-hurl:${LAST_VERSION}")
+
+// [JVM only] Support using OkHttp to access network images
 implementation("io.github.panpf.sketch4:sketch-http-okhttp:${LAST_VERSION}")
 
-// [JVM only] Supports using ktor to download images
-implementation("io.github.panpf.sketch4:sketch-http-ktor:${LAST_VERSION}")
+// Supports using ktor version 2.x to access network images
+implementation("io.github.panpf.sketch4:sketch-http-ktor2:${LAST_VERSION}")
+
+// Supports using ktor version 3.x to access network images
+implementation("io.github.panpf.sketch4:sketch-http-ktor3:${LAST_VERSION}")
 
 // Support SVG images
 implementation("io.github.panpf.sketch4:sketch-svg:${LAST_VERSION}")
@@ -88,6 +112,15 @@ implementation("io.github.panpf.sketch4:sketch-video-ffmpeg:${LAST_VERSION}")
     the `sketch-singleton` module. If you don’t need the singleton, you can directly rely on
     their `*-core` version.
 > * On Android `sketch-compose` and `sketch-view` can be used together
+> * The `sketch-http` module depends on `sketch-http-hurl` on jvm platforms and `sketch-http-ktor3`
+    on non-jvm platforms.
+> * Sketch supports automatic discovery and registration of components, so the following modules do
+    not require you to actively register them; you only need to configure dependencies:
+    >
+* `sketch-animated-gif`、`sketch-animated-gif-koral`、`sketch-animated-heif`、`sketch-animated-webp`
+>   * `sketch-extensions-apkicon`、`sketch-extensions-appicon`
+>   * `sketch-http`、`sketch-http-hurl`、`sketch-http-okhttp`、`sketch-http-ktor2`、`sketch-http-ktor3`
+>   * `sketch-svg`、`sketch-video`、`sketch-video-ffmpeg`
 
 #### R8 / Proguard
 
@@ -96,7 +129,7 @@ the indirectly dependent [Kotlin Coroutines], [OkHttp], [Okio] Add obfuscation c
 
 ## Quickly Started
 
-Compose Multiplatform:
+#### Compose Multiplatform:
 
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
@@ -145,7 +178,7 @@ Image(
 > [!TIP]
 > `placeholder(Res.drawable.placeholder)` needs to import the `sketch-compose-resources` module
 
-Android View:
+#### Android View:
 
 ```kotlin
 // val imageUri = "/sdcard/download/image.jpg"
@@ -172,15 +205,13 @@ val request = ImageRequest(context, imageUri) {
 context.sketch.enqueue(request)
 ```
 
-For more information about Uri, image types, platform differences, Sketch customization,
-ImageRequest, etc., please view the [《Getting Started》][getting_started] document
-
 ## Documents
 
 Basic functions:
 
 * [Get Started][getting_started]
 * [Compose][compose]
+* [Http: Load network images][http]
 * [AnimatedImage: GIF、WEBP、HEIF][animated_image]
 * [Resize: Modify the image size][resize]
 * [Transformation: Transformation image][transformation]
@@ -191,9 +222,8 @@ Basic functions:
 * [ResultCache: Understand result caching to avoid duplicate conversions][result_cache]
 * [MemoryCache: Understand memory caching to avoid repeated loading][memory_cache]
 * [Fetcher: Learn about Fetcher and extend new URI types][fetcher]
-* [Decode: Understand the decoding process of Sketch][decode]
+* [Decoder: Understand the decoding process of Sketch][decoder]
 * [Target: Apply the load results to the target][target]
-* [HttpStack: Learn about the HTTP section and using okhttp][http_stack]
 * [SVG: Decode SVG still images][svg]
 * [VideoFrames: Decode video frames][video_frame]
 * [ExifOrientation: Correct the image orientation][exif_orientation]
@@ -303,7 +333,7 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 
 [compose]: docs/wiki/compose.md
 
-[decode]: docs/wiki/decode.md
+[decoder]: docs/wiki/decoder.md
 
 [download_cache]: docs/wiki/download_cache.md
 
@@ -313,7 +343,7 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 
 [getting_started]: docs/wiki/getting_started.md
 
-[http_stack]: docs/wiki/http_stack.md
+[http]: docs/wiki/http.md
 
 [image_options]: docs/wiki/image_options.md
 

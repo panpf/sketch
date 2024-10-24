@@ -1,6 +1,6 @@
 # HttpStack
 
-Translations: [简体中文](http_stack_zh.md)
+Translations: [简体中文](http_zh.md)
 
 [HttpStack] is used to initiate HTTP network requests and obtain responses, then hand them over
 to [HttpUriFetcher] to download images.

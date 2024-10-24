@@ -113,7 +113,7 @@ component is destroyed.
 | Video frames  | sketch-video<br>sketch-video-ffmpeg         |
 | Apk icon      | sketch-extensions-core                      |
 
-Each image type has a corresponding Decoder support for it, [Learn more about Decoder][decode]
+Each image type has a corresponding Decoder support for it, [Learn more about Decoder][decoder]
 
 ## Supported URIs
 
@@ -449,9 +449,9 @@ Basic functions:
 * [ResultCache: Understand result caching to avoid duplicate conversions][result_cache]
 * [MemoryCache: Understand memory caching to avoid repeated loading][memory_cache]
 * [Fetcher: Learn about Fetcher and extend new URI types][fetcher]
-* [Decode: Understand the decoding process of Sketch][decode]
+* [Decoder: Understand the decoding process of Sketch][decoder]
 * [Target: Apply the load results to the target][target]
-* [HttpStack: Learn about the HTTP section and using okhttp][http_stack]
+* [HttpStack: Learn about the HTTP section and using okhttp][http]
 * [SVG: Decode SVG still images][svg]
 * [VideoFrames: Decode video frames][video_frame]
 * [ExifOrientation: Correct the image orientation][exif_orientation]
@@ -513,7 +513,7 @@ Featured functions:
 
 [compose]: compose.md
 
-[decode]: decode.md
+[decoder]: decoder.md
 
 [download_cache]: download_cache.md
 
@@ -523,7 +523,7 @@ Featured functions:
 
 [getting_started]: getting_started.md
 
-[http_stack]: http_stack.md
+[http]: http.md
 
 [image_options]: image_options.md
 

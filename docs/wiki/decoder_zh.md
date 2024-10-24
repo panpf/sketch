@@ -1,6 +1,6 @@
 # Decoder
 
-翻译：[English](decode.md)
+翻译：[English](decoder.md)
 
 [Decoder] 用于解码图片文件，支持的每一种图片类型都有对应的 [Decoder] 实现，如下表所示：
 

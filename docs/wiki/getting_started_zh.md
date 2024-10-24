@@ -108,7 +108,7 @@ context.sketch.enqueue(request)
 | 视频帧     | sketch-video<br>sketch-video-ffmpeg         |
 | Apk 图标  | sketch-extensions-core                      |
 
-每一种图片类型都有对应的 Decoder 对其提供支持，[详细了解 Decoder][decode]
+每一种图片类型都有对应的 Decoder 对其提供支持，[详细了解 Decoder][decoder]
 
 ## 支持的 URI
 
@@ -427,9 +427,9 @@ val imageResult: ImageResult? = imageView.imageResult
 * [ResultCache：了解结果缓存，避免重复转换][result_cache]
 * [MemoryCache：了解内存缓存，避免重复加载][memory_cache]
 * [Fetcher：了解 Fetcher 及扩展新的 URI 类型][fetcher]
-* [Decode：了解 Sketch 的解码过程][decode]
+* [Decoder：了解 Sketch 的解码过程][decoder]
 * [Target：将加载结果应用到目标上][target]
-* [HttpStack：了解 http 部分及使用 okhttp][http_stack]
+* [HttpStack：了解 http 部分及使用 okhttp][http]
 * [SVG：解码 SVG 静态图片][svg]
 * [VideoFrames：解码视频帧][video_frame]
 * [ExifOrientation：纠正图片方向][exif_orientation]
@@ -491,7 +491,7 @@ val imageResult: ImageResult? = imageView.imageResult
 
 [compose]: compose_zh.md
 
-[decode]: decode_zh.md
+[decoder]: decoder_zh.md
 
 [download_cache]: download_cache_zh.md
 
@@ -501,7 +501,7 @@ val imageResult: ImageResult? = imageView.imageResult
 
 [getting_started]: getting_started_zh.md
 
-[http_stack]: http_stack_zh.md
+[http]: http_zh.md
 
 [image_options]: image_options_zh.md
 
