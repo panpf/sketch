@@ -48,7 +48,7 @@ expect fun Image.asPainter(filterQuality: FilterQuality = DrawScope.DefaultFilte
  * @see com.github.panpf.sketch.compose.core.common.test.PainterImageTest
  */
 @Stable
-data class PainterImage(
+data class PainterImage constructor(
     val painter: Painter,
     override val shareable: Boolean = painter !is AnimatablePainter
 ) : Image {

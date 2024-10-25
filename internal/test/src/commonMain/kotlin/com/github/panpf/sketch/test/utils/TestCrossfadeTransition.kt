@@ -88,7 +88,7 @@ class TestCrossfadeTransition(
     }
 }
 
-data class TestCrossfadeImage(val image: Image) : Image by image {
+data class TestCrossfadeImage constructor(val image: Image) : Image by image {
     override fun toString(): String {
         return "TestCrossfadeImage(image=$image)"
     }

@@ -46,7 +46,7 @@ fun Image.asDrawable(): Drawable = when (this) {
  *
  * @see com.github.panpf.sketch.core.android.test.DrawableImageTest
  */
-data class DrawableImage internal constructor(
+data class DrawableImage constructor(
     val drawable: Drawable,
     override val shareable: Boolean = drawable !is Animatable
 ) : Image {

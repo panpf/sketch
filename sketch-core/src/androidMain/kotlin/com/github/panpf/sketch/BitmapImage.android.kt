@@ -33,7 +33,7 @@ actual fun Bitmap.asImage(shareable: Boolean): BitmapImage =
  *
  * @see com.github.panpf.sketch.core.android.test.BitmapImageAndroidTest
  */
-actual data class BitmapImage(
+actual data class BitmapImage constructor(
     actual val bitmap: Bitmap,
     actual override val shareable: Boolean = true,
 ) : Image {
