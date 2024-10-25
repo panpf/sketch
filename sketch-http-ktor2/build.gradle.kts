@@ -11,12 +11,23 @@ androidLibrary(nameSpace = "com.github.panpf.sketch.http.ktor2")
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            api(projects.sketchCore)
-            api(projects.sketchHttpCore)
-            api(libs.ktor2.client.core)
+            api(projects.sketchHttpKtor2Core)
+        }
+        androidMain.dependencies {
+            api(libs.ktor2.client.android)
+        }
+        desktopMain.dependencies {
+            api(libs.ktor2.client.java)
+        }
+        iosMain.dependencies {
+            api(libs.ktor2.client.darwin)
+        }
+        jsMain.dependencies {
+            api(libs.ktor2.client.js)
         }
         wasmJsMain.dependencies {
-            api(libs.ktor2.client.coreWasmJs)
+            api(projects.sketchHttpKtor2Core)
+            api(libs.ktor2.client.wasmJs)
         }
 
         commonTest.dependencies {
@@ -24,19 +35,8 @@ kotlin {
             implementation(projects.internal.testSingleton)
         }
         androidInstrumentedTest.dependencies {
-            implementation(libs.ktor2.client.android)
-        }
-        desktopTest.dependencies {
-            implementation(libs.ktor2.client.java)
-        }
-        iosTest.dependencies {
-            implementation(libs.ktor2.client.darwin)
-        }
-        jsTest.dependencies {
-            implementation(libs.ktor2.client.js)
-        }
-        wasmJsTest.dependencies {
-            implementation(libs.ktor2.client.wasmJs)
+            implementation(projects.internal.test)
+            implementation(projects.internal.testSingleton)
         }
     }
 }
