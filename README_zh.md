@@ -22,7 +22,7 @@ Sketch 是专为 Compose Multiplatform 和 Android View 设计的图片加载库
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
 
-#### Compose Multiplatform:
+### Compose Multiplatform:
 
 Import the required Compose and network modules:
 
@@ -38,7 +38,7 @@ implementation("io.github.panpf.sketch4:sketch-http:${LAST_VERSION}")
 > 为提升 compose 的性能请拷贝 `sketch-core` 模块下的 [compose_compiler_config.conf]
 > 文件到您的项目中，然后按照  [Compose Stability Configuration][stability_configuration] 文档配置它
 
-#### Android View:
+### Android View:
 
 ```kotlin
 // 提供了 Sketch 的核心功能以及单例和依赖单例实现的扩展函数
@@ -48,7 +48,7 @@ implementation("io.github.panpf.sketch4:sketch-view:${LAST_VERSION}")
 implementation("io.github.panpf.sketch4:sketch-http:${LAST_VERSION}")
 ```
 
-#### 可选模块
+### 可选模块
 
 ```kotlin
 // 使用 Android 或 Skia 内置的解码器解码 gif 动图并播放
@@ -103,21 +103,22 @@ implementation("io.github.panpf.sketch4:sketch-video-ffmpeg:${LAST_VERSION}")
 > * `sketch-compose`、`sketch-view` 模块都依赖 `sketch-singleton`
     > 模块提供的单例，如果你不需要单例则可以直接依赖他们的 `*-core` 版本
 > * `sketch-http` 模块在 jvm 平台上依赖 `sketch-http-hurl`，在非 jvm 平台上依赖 `sketch-http-ktor3`
-> * sketch 支持自动发现并注册组件，因此以下模块不需要你主动注册它们只需要配置依赖即可：
-    >
-* `sketch-animated-gif`、`sketch-animated-gif-koral`、`sketch-animated-heif`、`sketch-animated-webp`
->   * `sketch-extensions-apkicon`、`sketch-extensions-appicon`
->   * `sketch-http`、`sketch-http-hurl`、`sketch-http-okhttp`、`sketch-http-ktor2`、`sketch-http-ktor3`
->   * `sketch-svg`、`sketch-video`、`sketch-video-ffmpeg`
 
-#### R8 / Proguard
+### 注册组件
+
+Sketch 支持自动发现并注册 Fetcher 和 Decoder 组件，在 jvm 平台通过 ServiceLoader 实现，在非 jvm 平台通过
+@EagerInitialization 注解实现。
+
+自带模块全部支持自动注册，如果你想禁用自动注册，采用手动注册的方式请参考文档：[《注册组件》][register_component]
+
+### R8 / Proguard
 
 Sketch 自己不需要配置任何混淆规则，但你可能需要为间接依赖的 [Kotlin Coroutines], [OkHttp], [Okio]
 添加混淆配置
 
 ## 快速上手
 
-#### Compose Multiplatform：
+### Compose Multiplatform：
 
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
@@ -166,7 +167,7 @@ Image(
 > [!TIP]
 > `placeholder(Res.drawable.placeholder)` 需要导入 `sketch-compose-resources` 模块
 
-#### Android View：
+### Android View：
 
 ```kotlin
 // val imageUri = "/sdcard/download/image.jpg"
@@ -198,6 +199,7 @@ context.sketch.enqueue(request)
 基础功能：
 
 * [开始使用][getting_started]
+* [注册组件][register_component]
 * [Compose][compose]
 * [Http：加载网络图片][http]
 * [AnimatedImage：GIF、WEBP、HEIF][animated_image]
@@ -319,6 +321,8 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 [fetcher]: docs/wiki/fetcher_zh.md
 
 [getting_started]: docs/wiki/getting_started_zh.md
+
+[register_component]: docs/wiki/register_component_zh.md
 
 [http]: docs/wiki/http_zh.md
 

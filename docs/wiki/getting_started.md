@@ -490,9 +490,9 @@ Featured functions:
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
 
-[ImageRequest_SingletonExtensions]: ../../sketch-singleton/src/commonMain/kotlin/com/github/panpf/sketch/request/image_request_singleton_extensions.kt
+[ImageRequest_SingletonExtensions]: ../../sketch-singleton/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.singleton.kt
 
-[ImageRequest_ViewExtensions]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/request/image_request_view_extensions.kt
+[ImageRequest_ViewExtensions]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/request/ImageRequest.view.kt
 
 [ImageResult]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageResult.kt
 

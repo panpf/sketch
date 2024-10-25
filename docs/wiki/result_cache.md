@@ -93,7 +93,8 @@ Sketch.Builder(context).apply {
 
 ## 配置请求
 
-The default configuration of the result cache is [CachePolicy].ENABLED. You can control result caching through the resultCachePolicy
+The default configuration of the result cache is [CachePolicy].ENABLED. You can control result
+caching through the resultCachePolicy
 attribute of [ImageRequest] or [ImageOptions], as follows:
 
 ```kotlin
@@ -176,13 +177,11 @@ The results cache is cleared under the following circumstances:
 
 [DiskCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/DiskCache.common.kt
 
-[LruDiskCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/LruDiskCache.kt
+[LruDiskCache]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/internal/LruDiskCache.common.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
 
 [ImageOptions]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.common.kt
-
-[HttpUriFetcher]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/HttpUriFetcher.kt
 
 [ResultCacheDecodeInterceptor]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/internal/ResultCacheDecodeInterceptor.kt
 

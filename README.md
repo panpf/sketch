@@ -28,7 +28,7 @@ has the following features:
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 
-#### Compose Multiplatform:
+### Compose Multiplatform:
 
 ```kotlin
 // Provides the core functions of Sketch as well as singletons and extension 
@@ -44,7 +44,7 @@ implementation("io.github.panpf.sketch4:sketch-http:${LAST_VERSION}")
 > the `sketch-core` module file to your project and configure it according to
 > the [Compose Stability Configuration][stability_configuration] documentation
 
-#### Android View:
+### Android View:
 
 ```kotlin
 // Provides the core functions of Sketch as well as singletons and extension 
@@ -55,7 +55,7 @@ implementation("io.github.panpf.sketch4:sketch-view:${LAST_VERSION}")
 implementation("io.github.panpf.sketch4:sketch-http:${LAST_VERSION}")
 ```
 
-#### Optional modules:
+### Optional modules:
 
 ```kotlin
 // Use Android or Skia's built-in decoder to decode gif animations and play them
@@ -111,25 +111,27 @@ implementation("io.github.panpf.sketch4:sketch-video-ffmpeg:${LAST_VERSION}")
 > * `sketch-compose`, `sketch-view` Modules all depend on the singleton provided by
     the `sketch-singleton` module. If you don’t need the singleton, you can directly rely on
     their `*-core` version.
-> * On Android `sketch-compose` and `sketch-view` can be used together
 > * The `sketch-http` module depends on `sketch-http-hurl` on jvm platforms and `sketch-http-ktor3`
     on non-jvm platforms.
-> * Sketch supports automatic discovery and registration of components, so the following modules do
-    not require you to actively register them; you only need to configure dependencies:
-    >
-* `sketch-animated-gif`、`sketch-animated-gif-koral`、`sketch-animated-heif`、`sketch-animated-webp`
->   * `sketch-extensions-apkicon`、`sketch-extensions-appicon`
->   * `sketch-http`、`sketch-http-hurl`、`sketch-http-okhttp`、`sketch-http-ktor2`、`sketch-http-ktor3`
->   * `sketch-svg`、`sketch-video`、`sketch-video-ffmpeg`
 
-#### R8 / Proguard
+### Register component
+
+Sketch supports automatic discovery and registration of Fetcher and Decoder components, which are
+implemented through ServiceLoader on the JVM platform and through the @EagerInitialization
+annotation on non-JVM platforms.
+
+All built-in modules support automatic registration. If you want to disable automatic registration,
+please refer to the documentation for manual
+registration: [《Register component》][register_component]
+
+### R8 / Proguard
 
 Sketch itself does not need to configure any obfuscation rules, but you may need to configure it for
 the indirectly dependent [Kotlin Coroutines], [OkHttp], [Okio] Add obfuscation configuration
 
 ## Quickly Started
 
-#### Compose Multiplatform:
+### Compose Multiplatform:
 
 ```kotlin
 // val imageUri = "/Users/my/Downloads/image.jpg"
@@ -178,7 +180,7 @@ Image(
 > [!TIP]
 > `placeholder(Res.drawable.placeholder)` needs to import the `sketch-compose-resources` module
 
-#### Android View:
+### Android View:
 
 ```kotlin
 // val imageUri = "/sdcard/download/image.jpg"
@@ -210,6 +212,7 @@ context.sketch.enqueue(request)
 Basic functions:
 
 * [Get Started][getting_started]
+* [Register component][register_component]
 * [Compose][compose]
 * [Http: Load network images][http]
 * [AnimatedImage: GIF、WEBP、HEIF][animated_image]
@@ -342,6 +345,8 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 [fetcher]: docs/wiki/fetcher.md
 
 [getting_started]: docs/wiki/getting_started.md
+
+[register_component]: docs/wiki/register_component.md
 
 [http]: docs/wiki/http.md
 

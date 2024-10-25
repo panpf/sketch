@@ -1,117 +1,159 @@
-# HttpStack
+# Http 网络图片
 
 翻译：[English](http.md)
 
-[HttpStack] 用来发起 HTTP 网络请求并获取响应然后交由 [HttpUriFetcher] 下载图片
+## 组件
 
-在 jvm 平台上，[Sketch] 提供了 [HurlStack] 和 [OkHttpStack]
-两种实现，默认使用 [HurlStack]，[OkHttpStack] 需要额外依赖 `sketch-http-okhttp` 模块
+Sketch 提供了 `sketch-http-*` 系列组件以支持 Http 网络图片
 
-在非 jvm 平台上 [Sketch] 只提供了 [KtorStack] 实现，默认使用 [KtorStack]。
+| Module             | Component                                              | Android | iOS | Desktop | Web |
+|:-------------------|:-------------------------------------------------------|:--------|:----|:--------|:----|
+| sketch-http        | jvm: HurlHttpUriFetcher<br/>nonJvm: KtorHttpUriFetcher | ✅       | ✅   | ✅       | ✅   |
+| sketch-http-hurl   | HurlHttpUriFetcher                                     | ✅       | ❌   | ✅       | ❌   |
+| sketch-http-okhttp | OkHttpHttpUriFetcher                                   | ✅       | ❌   | ✅       | ❌   |
+| sketch-http-ktor2  | KtorHttpUriFetcher                                     | ✅       | ✅   | ✅       | ✅   |
+| sketch-http-ktor3  | KtorHttpUriFetcher                                     | ✅       | ✅   | ✅       | ✅   |
 
-你也可以在 jvm 平台上使用 [KtorStack]，这需要额外依赖 `sketch-http-ktor` 模块
+> [!IMPORTANT]
+> * HurlHttpUriFetcher 使用 jvm 自带的 HttpURLConnection 实现，不需要额外的依赖
+> * `sketch-http-ktor2` 和 `sketch-http-ktor3` 模块都包含各个平台所需的引擎，如果你需要使用其它引擎请使用它们的
+    > core 版本，例如 `sketch-http-ktor2-core` 和 `sketch-http-ktor3-core`，然后配置自己所需的引擎的依赖
 
-### HurlStack
+## 下载
 
-[HurlStack] 采用 HttpURLConnection 实现，支持以下配置：
+加载网络图片前需要先从上述组件中选择一个并配置依赖，以 `sketch-http` 为例：
+
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
 
 ```kotlin
-class MyApplication : Application(), SingletonSketch.Factory {
+implementation("io.github.panpf.sketch4:sketch-http:${LAST_VERSION}")
+```
 
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(context).apply {
-            httpStack(HurlStack.Builder().apply {
-                // 连接超时。默认 7000
-                connectTimeout(Int)
+> [!IMPORTANT]
+> ktor2 原本不支持 wasmJs，所以 `sketch-http-ktor2` 和 `sketch-http-ktor2-core` 的 wasmJs 版本使用的其实是
+`3.0.0-wasm2` 版本，而 `3.0.0-wasm2` 版本只发布到了 jetbrains 的私有仓库，所以需要你配置一下 jetbrains
+> 的私有仓库，如下：
+>   ```kotlin
+>   allprojects {
+>     repositories {
+>        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")   // ktor 3.0.0-wasm2
+>     }
+>   }
+>   ```
 
-                // 读取超时。默认 7000
-                readTimeout(Int)
+## 加载网络图片
 
-                // User-Agent。默认 null
-                userAgent(String)
+直接使用 http uri 加载图片即可，如下：
 
-                // 添加一些不可重复的 header。默认 null
-                extraHeaders(Map<String, String>)
+```kotlin
+val imageUri = "https://www.sample.com/image.jpg"
 
-                // 添加一些可重复的 header。默认 null
-                addExtraHeaders(Map<String, String>)
+// compose
+AsyncImage(
+    uri = imageUri,
+    contentDescription = "photo"
+)
 
-                // HttpURLConnection 在 执行 connect 之前交由此方法处理一下。默认 null
-                processRequest { url: String, connection: HttpURLConnection ->
+// view
+imageView.loadImage(imageUri)
+```
 
+## 配置
+
+Sketch 将 http 部分抽象为 [HttpStack]，每一个 \*HttpUriFetcher 都有对应的 [HttpStack] 实现，如下：
+
+* HurlHttpUriFetcher：[HurlStack]
+* OkHttpHttpUriFetcher：[OkHttpStack]
+* KtorHttpUriFetcher：[KtorStack]
+
+你可以先禁用相关组件的自动注册，然后在手动配置 \*HttpUriFetcher 时修改 [HttpStack] 的配置，如下：
+
+HurlStack:
+
+```kotlin
+Sketch.Builder(context).apply {
+    addIgnoreFetcherProvider(HurlHttpUriFetcherProvider::class)
+    addComponents {
+        val httpStack = HurlStack.Builder().apply {
+            connectTimeout(5000)
+            readTimeout(5000)
+            userAgent("Android 8.1")
+            headers("accept-encoding" to "gzip")   // 不可重复的 header
+            addHeaders("cookie" to "...")    // 可重复的 header
+            addInterceptor(object : HurlStack.Interceptor {
+                override fun intercept(chain: Interceptor.Chain): Response {
+                    val connection: HttpURLConnection = chain.connection
+                    // ...
+                    return chain.proceed()
                 }
-            }.build())
+            })
         }.build()
+        addFetcher(HurlHttpUriFetcher.Factory(httpStack))
     }
-}
-```
-
-### OkHttpStack
-
-使用 [OkHttpStack] 之前需要先依赖 `sketch-http-okhttp` 模块，然后在初始化 [Sketch] 时通过 `httpStack()`
-方法注册即可，如下：
-
-```kotlin
-class MyApplication : Application(), SingletonSketch.Factory {
-
-    override fun createSketch(): Sketch {
-        return Sketch.Builder(context).apply {
-            httpStack(OkHttpStack.Builder().apply {
-                // 连接超时。默认 7000
-                connectTimeout(Int)
-
-                // 读取超时。默认 7000
-                readTimeout(Int)
-
-                // User-Agent。默认 null
-                userAgent(String)
-
-                // 添加一些不可重复的 header。默认 null
-                extraHeaders(Map<String, String>)
-
-                // 添加一些可重复的 header。默认 null
-                addExtraHeaders(Map<String, String>)
-
-                // 拦截器。默认 null
-                interceptors(Interceptor)
-
-                // 网络拦截器。默认 null
-                networkInterceptors(Interceptor)
-            }.build())
-        }.build()
-    }
-}
-```
-
-### KtorStack
-
-在 jvm 平台上使用 [KtorStack] 之前需要先依赖 `sketch-http-ktor` 模块，然后在初始化 [Sketch]
-时通过 `httpStack()` 方法注册即可，如下：
-
-```kotlin
-Sketch.Builder(context).apply {
-    httpStack(KtorStack())
 }.build()
 ```
 
-### 自定义
-
-首先实现 [HttpStack] 接口定义自己的 [HttpStack]，然后在初始化 [Sketch] 时通过 `httpStack()` 方法注册即可：
+OkHttpStack:
 
 ```kotlin
 Sketch.Builder(context).apply {
-    httpStack(MyHttpStack())
+    addIgnoreFetcherProvider(OkHttpHttpUriFetcherProvider::class)
+    addComponents {
+        val httpStack = OkHttpStack.Builder().apply {
+            connectTimeout(5000)
+            readTimeout(5000)
+            userAgent("Android 8.1")
+            headers("accept-encoding" to "gzip")   // 不可重复的 header
+            addHeaders("cookie" to "...")    // 可重复的 header
+            interceptors(object : okhttp3.Interceptor {
+                override fun intercept(chain: Interceptor.Chain): Response {
+                    val request = chain.request()
+                    // ...
+                    return chain.proceed(request)
+                }
+            })
+            networkInterceptors(object : okhttp3.Interceptor {
+                override fun intercept(chain: Interceptor.Chain): Response {
+                    val request = chain.request()
+                    // ...
+                    return chain.proceed(request)
+                }
+            })
+        }.build()
+        addFetcher(OkHttpHttpUriFetcher.Factory(httpStack))
+    }
 }.build()
 ```
+
+KtorStack:
+
+```kotlin
+Sketch.Builder(context).apply {
+    addIgnoreFetcherProvider(KtorHttpUriFetcherProvider::class)
+    addComponents {
+        val httpClient = HttpClient {
+            // ...
+        }
+        val httpStack = KtorStack(httpClient)
+        addFetcher(KtorHttpUriFetcher.Factory(httpStack))
+    }
+}.build()
+```
+
+[comment]: <> (classs)
+
+[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch4/sketch-singleton
+
+[version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch4/
 
 [HttpStack]: ../../sketch-http-core/src/commonMain/kotlin/com/github/panpf/sketch/http/HttpStack.kt
 
-[HurlStack]: ../../sketch-http-core/src/jvmCommonMain/kotlin/com/github/panpf/sketch/http/HurlStack.kt
+[HurlStack]: ../../sketch-http-hurl/src/commonMain/kotlin/com/github/panpf/sketch/http/HurlStack.kt
 
 [OkHttpStack]: ../../sketch-http-okhttp/src/commonMain/kotlin/com/github/panpf/sketch/http/OkHttpStack.kt
 
-[KtorStack]: ../../sketch-http-ktor/src/commonMain/kotlin/com/github/panpf/sketch/http/KtorStack.kt
+[KtorStack]: ../../sketch-http-ktor3-core/src/commonMain/kotlin/com/github/panpf/sketch/http/KtorStack.kt
 
-[HttpUriFetcher]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/HttpUriFetcher.kt
+[HttpUriFetcher]: ../../sketch-http-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/HttpUriFetcher.kt
 
 [Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.common.kt

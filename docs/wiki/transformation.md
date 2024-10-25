@@ -45,15 +45,15 @@ and certainty of the key attribute:
 
 [Transformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/Transformation.kt
 
-[CircleCropTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/CircleCropTransformation.common.kt
+[CircleCropTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/CircleCropTransformation.kt
 
-[RotateTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/RotateTransformation.common.kt
+[RotateTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/RotateTransformation.kt
 
-[RoundedCornersTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/RoundedCornersTransformation.common.kt
+[RoundedCornersTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/RoundedCornersTransformation.kt
 
-[MaskTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/MaskTransformation.common.kt
+[MaskTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/MaskTransformation.kt
 
-[BlurTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/BlurTransformation.common.kt
+[BlurTransformation]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/BlurTransformation.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
 
