@@ -2,76 +2,49 @@
 
 翻译：[English](animated_image.md)
 
-> [!IMPORTANT]
-> 必须导入 `sketch-animated` 或 `sketch-animated-koralgif` 模块
+Sketch 提供了 `sketch-animated-*` 系列模块以支持动图，所支持的平台以及差异如下：
 
-[Sketch] 支持播放 GIF、WEBP、HEIF 动图，每一种动图都有相应的 [Decoder] 提供支持，他们所支持的平台以及差异如下：
+| Module                    | DecoderProvider                           | Decoder                                                                                                                          | Android   | iOS | Desktop | Web |
+|:--------------------------|:------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------|:----------|:----|:--------|:----|
+| sketch-animated-gif       | [GifDecoderProvider]                      | android api 28+: [ImageDecoderGifDecoder]</br>android api 27-: [MovieGifDecoder]</br>non android: [SkiaGifDecoder]               | ✅         | ✅   | ✅       | ✅   |
+| sketch-animated-gif-koral | [KoralGifDecoderProvider]                 | [KoralGifDecoder]                                                                                                                | ✅         | ❌   | ❌       | ❌   |
+| sketch-animated-webp      | [AnimatedWebpDecoderProvider]             | android api 28+: [ImageDecoderAnimatedWebpDecoder]</br>android api 27-: Not supported</br>non android: [SkiaAnimatedWebpDecoder] | ✅(API 28) | ✅   | ✅       | ✅   |
+| sketch-animated-heif      | [ImageDecoderAnimatedHeifDecoderProvider] | [ImageDecoderAnimatedHeifDecoder]                                                                                                | ✅(API 30) | ❌   | ❌       | ❌   |
 
-| Format        | Decoder                   | Android   | iOS | Desktop | Web | resize | Dependent modules        |
-|:--------------|:--------------------------|:----------|:----|:--------|:----|--------|:-------------------------|
-| GIF           | [GifAnimatedDecoder]      | ✅(API 28) | ❌   | ❌       | ❌   | ✅      | sketch-animated          |
-| GIF           | [GifMovieDecoder]         | ✅         | ❌   | ❌       | ❌   | ❌      | sketch-animated          |
-| GIF           | [GifDrawableDecoder]      | ✅         | ❌   | ❌       | ❌   | ✅      | sketch-animated-koralgif |
-| GIF           | [GifSkiaAnimatedDecoder]  | ❌         | ✅   | ✅       | ✅   | ❌      | sketch-animated          |
-| WEBP Animated | [WebpAnimatedDecoder]     | ✅(API 28) | ❌   | ❌       | ❌   | ✅      | sketch-animated          |
-| WEBP Animated | [WebpSkiaAnimatedDecoder] | ❌         | ✅   | ✅       | ✅   | ❌      | sketch-animated          |
-| HEIF Animated | [HeifAnimatedDecoder]     | ✅(API 30) | ❌   | ❌       | ❌   | ✅      | sketch-animated          |
+## 下载
 
-> [!TIP]
-> 在 Android 上为 GIF 提供了三种 [Decoder] 可供选择，你可以根据 app
-> 支持的最低版本选择合适的 [Decoder]
+加载动图前需要先从上述组件中选择一个并配置依赖，以 `sketch-animated-gif` 为例：
 
-## 注册动图解码器
-
-[Sketch] 默认并没有注册任何动图的 [Decoder]，需要你主动将 [Decoder] 注册到 [Sketch] 才能播放动图，如下：
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
 
 ```kotlin
-// 在自定义 Sketch 时为所有 ImageRequest 注册
-Sketch.Builder(context).apply {
-    components {
-        addDecoder(
-            when {
-                VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDecoder.Factory()
-                VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDecoder.Factory()
-                else -> GifDrawableDecoder.Factory()
-            }
-        )
-        if (VERSION.SDK_INT >= VERSION_CODES.P) {
-            addDecoder(WebpAnimatedDecoder.Factory())
-        }
-        if (VERSION.SDK_INT >= VERSION_CODES.R) {
-            addDecoder(HeifAnimatedDecoder.Factory())
-        }
-    }
-}.build()
+implementation("io.github.panpf.sketch4:sketch-animated-gif:${LAST_VERSION}")
+```
 
-// 加载图片时为单个 ImageRequest 注册
-ImageRequest(context, "https://www.example.com/image.gif") {
-    components {
-        addDecoder(
-            when {
-                VERSION.SDK_INT >= VERSION_CODES.P -> GifAnimatedDecoder.Factory()
-                VERSION.SDK_INT >= VERSION_CODES.KITKAT -> GifMovieDecoder.Factory()
-                else -> GifDrawableDecoder.Factory()
-            }
-        )
-        if (VERSION.SDK_INT >= VERSION_CODES.P) {
-            addDecoder(WebpAnimatedDecoder.Factory())
-        }
-        if (VERSION.SDK_INT >= VERSION_CODES.R) {
-            addDecoder(HeifAnimatedDecoder.Factory())
-        }
-    }
-}
+上述组件都支持自动注册，你只需要导入即可，无需额外配置，如果你需要手动注册，请阅读文档：[《注册组件》](register_component_zh.md)
+
+## 加载动图
+
+直接指定 uri 加载图片即可，如下：
+
+```kotlin
+val imageUri = "https://www.sample.com/image.gif"
+
+// compose
+AsyncImage(
+    uri = imageUri,
+    contentDescription = "photo"
+)
+
+// view
+imageView.loadImage(imageUri)
 ```
 
 ## 配置
 
-[ImageRequest] 和 [ImageOptions] 都提供了相关方法用于动图相关配置，如下：
+`sketch-animated-core` 模块为 [ImageRequest] 和 [ImageOptions] 一些扩展方法用于动图相关的配置，如下：
 
 ```kotlin
-import kotlin.coroutines.jvm.internal.CompletedContinuation.context
-
 ImageRequest(context, "https://www.example.com/image.gif") {
     // 禁用动图，只解码动图的第一帧
     disallowAnimatedImage()
@@ -87,7 +60,7 @@ ImageRequest(context, "https://www.example.com/image.gif") {
         // ...
     }
 
-    // 对动图的每一帧在绘制时进行修改 
+    // 对动图的每一帧在绘制时在动图的前景绘制内容
     animatedTransformation { canvas: Any ->
         if (canvas is androidx.compose.ui.graphics.Canvas) {
             // ...
@@ -130,6 +103,9 @@ ImageRequest(context, "https://www.example.com/image.gif") {
 
 [comment]: <> (classs)
 
+[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch4/sketch-singleton
+
+[version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch4/
 
 [AnimatableDrawable]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/drawable/AnimatableDrawable.kt
 
@@ -141,15 +117,15 @@ ImageRequest(context, "https://www.example.com/image.gif") {
 
 [GenericViewTarget]: ../../sketch-view-core/src/main/kotlin/com/github/panpf/sketch/target/GenericViewTarget.kt
 
-[GifAnimatedDecoder]: ../../sketch-animated/src/androidMain/kotlin/com/github/panpf/sketch/decode/GifAnimatedDecoder.kt
+[ImageDecoderGifDecoder]: ../../sketch-animated-gif/src/androidMain/kotlin/com/github/panpf/sketch/decode/ImageDecoderGifDecoder.kt
 
-[GifDrawableDecoder]: ../../sketch-animated-koralgif/src/main/kotlin/com/github/panpf/sketch/decode/GifDrawableDecoder.kt
+[KoralGifDecoder]: ../../sketch-animated-gif-koral/src/main/kotlin/com/github/panpf/sketch/decode/KoralGifDecoder.kt
 
-[GifMovieDecoder]: ../../sketch-animated/src/androidMain/kotlin/com/github/panpf/sketch/decode/GifMovieDecoder.kt
+[MovieGifDecoder]: ../../sketch-animated-gif/src/androidMain/kotlin/com/github/panpf/sketch/decode/MovieGifDecoder.kt
 
-[GifSkiaAnimatedDecoder]: ../../sketch-animated/src/nonAndroidMain/kotlin/com/github/panpf/sketch/decode/GifSkiaAnimatedDecoder.kt
+[SkiaGifDecoder]: ../../sketch-animated-gif/src/nonAndroidMain/kotlin/com/github/panpf/sketch/decode/SkiaGifDecoder.kt
 
-[HeifAnimatedDecoder]: ../../sketch-animated/src/androidMain/kotlin/com/github/panpf/sketch/decode/HeifAnimatedDecoder.kt
+[ImageDecoderAnimatedHeifDecoder]: ../../sketch-animated-heif/src/main/kotlin/com/github/panpf/sketch/decode/ImageDecoderAnimatedHeifDecoder.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
 
@@ -157,12 +133,17 @@ ImageRequest(context, "https://www.example.com/image.gif") {
 
 [Movie]: https://cs.android.com/android/platform/superproject/+/master:frameworks/base/graphics/java/android/graphics/Movie.java
 
-[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.common.kt
+[ImageDecoderAnimatedWebpDecoder]: ../../sketch-animated-webp/src/androidMain/kotlin/com/github/panpf/sketch/decode/ImageDecoderAnimatedWebpDecoder.kt
 
-[WebpAnimatedDecoder]: ../../sketch-animated/src/androidMain/kotlin/com/github/panpf/sketch/decode/WebpAnimatedDecoder.kt
+[SkiaAnimatedWebpDecoder]: ../../sketch-animated-webp/src/nonAndroidMain/kotlin/com/github/panpf/sketch/decode/SkiaAnimatedWebpDecoder.kt
 
-[WebpSkiaAnimatedDecoder]: ../../sketch-animated/src/nonAndroidMain/kotlin/com/github/panpf/sketch/decode/WebpSkiaAnimatedDecoder.kt
+[GifDecoderProvider]: ../../sketch-animated-gif/src/commonMain/kotlin/com/github/panpf/sketch/decode/internal/GifDecoderProvider.common.kt
 
+[KoralGifDecoderProvider]: ../../sketch-animated-gif-koral/src/main/kotlin/com/github/panpf/sketch/decode/internal/KoralGifDecoderProvider.kt
+
+[AnimatedWebpDecoderProvider]: ../../sketch-animated-webp/src/commonMain/kotlin/com/github/panpf/sketch/decode/internal/AnimatedWebpDecoderProvider.common.kt
+
+[ImageDecoderAnimatedHeifDecoderProvider]: ../../sketch-animated-heif/src/main/kotlin/com/github/panpf/sketch/decode/internal/ImageDecoderAnimatedHeifDecoderProvider.kt
 
 [comment]: <> (wiki)
 

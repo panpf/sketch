@@ -4,176 +4,67 @@
 
 [Decoder] 用于解码图片文件，支持的每一种图片类型都有对应的 [Decoder] 实现，如下表所示：
 
-| Format   | Decoder                                    | Dependent modules        | Android    | iOS             | Desktop         | Web             |
-|:---------|--------------------------------------------|--------------------------|------------|:----------------|:----------------|:----------------|
-| jpeg     | [BitmapFactoryDecoder]                     | -                        | ✅          | ❌               | ❌               | ❌               |
-| jpeg     | [SkiaDecoder]                              | -                        | ❌          | ✅               | ✅               | ✅               |
-| png      | [BitmapFactoryDecoder]                     | -                        | ✅          | ❌               | ❌               | ❌               |
-| png      | [SkiaDecoder]                              | -                        | ❌          | ✅               | ✅               | ✅               |
-| webp     | [BitmapFactoryDecoder]                     | -                        | ✅          | ❌               | ❌               | ❌               |
-| webp     | [SkiaDecoder]                              | -                        | ❌          | ✅               | ✅               | ✅               |
-| bmp      | [BitmapFactoryDecoder]                     | -                        | ✅          | ❌               | ❌               | ❌               |
-| bmp      | [SkiaDecoder]                              | -                        | ❌          | ✅               | ✅               | ✅               |
-| heif     | [BitmapFactoryDecoder]                     | -                        | ✅ (API 28) | ❌               | ❌               | ❌               |
-| avif     | [BitmapFactoryDecoder]                     | -                        | ✅ (API 31) | ❌               | ❌               | ❌               |
-| gif      | [GifAnimatedDecoder]                       | sketch-animated          | ✅ (API 28) | ❌               | ❌               | ❌               |
-| gif      | [GifDrawableDecoder]                       | sketch-animated-koralgif | ✅          | ❌               | ❌               | ❌               |
-| gif      | [GifMovieDecoder]<br/>(不支持 resize)         | sketch-animated          | ✅          | ❌               | ❌               | ❌               |
-| gif      | [GifSkiaAnimatedDecoder]<br/>(不支持 resize)  | sketch-animated          | ❌          | ✅               | ✅               | ✅               |
-| webp 动图  | [WebpAnimatedDecoder]                      | sketch-animated          | ✅ (API 28) | ❌               | ❌               | ❌               |
-| webp 动图  | [WebpSkiaAnimatedDecoder]<br/>(不支持 resize) | sketch-animated          | ❌          | ✅               | ✅               | ✅               |
-| heif 动图  | [HeifAnimatedDecoder]                      | sketch-animated          | ✅ (API 30) | ❌               | ❌               | ❌               |
-| svg      | [SvgDecoder]                               | sketch-svg               | ✅          | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) |
-| 视频帧      | [VideoFrameDecoder]                        | sketch-video             | ✅          | ❌               | ❌               | ❌               |
-| 视频帧      | [FFmpegVideoFrameDecoder]                  | sketch-video-ffmpeg      | ✅          | ❌               | ❌               | ❌               |
-| Apk Icon | [ApkIconDecoder]                           | sketch-extensions-core   | ✅          | ❌               | ❌               | ❌               |
+| Format   | Decoder                                    | Dependent modules         | Android    | iOS             | Desktop         | Web             |
+|:---------|--------------------------------------------|---------------------------|------------|:----------------|:----------------|:----------------|
+| jpeg     | [BitmapFactoryDecoder]                     | -                         | ✅          | ❌               | ❌               | ❌               |
+| jpeg     | [SkiaDecoder]                              | -                         | ❌          | ✅               | ✅               | ✅               |
+| png      | [BitmapFactoryDecoder]                     | -                         | ✅          | ❌               | ❌               | ❌               |
+| png      | [SkiaDecoder]                              | -                         | ❌          | ✅               | ✅               | ✅               |
+| webp     | [BitmapFactoryDecoder]                     | -                         | ✅          | ❌               | ❌               | ❌               |
+| webp     | [SkiaDecoder]                              | -                         | ❌          | ✅               | ✅               | ✅               |
+| bmp      | [BitmapFactoryDecoder]                     | -                         | ✅          | ❌               | ❌               | ❌               |
+| bmp      | [SkiaDecoder]                              | -                         | ❌          | ✅               | ✅               | ✅               |
+| heif     | [BitmapFactoryDecoder]                     | -                         | ✅ (API 28) | ❌               | ❌               | ❌               |
+| avif     | [BitmapFactoryDecoder]                     | -                         | ✅ (API 31) | ❌               | ❌               | ❌               |
+| gif      | [ImageDecoderGifDecoder]                   | sketch-animated-gif       | ✅ (API 28) | ❌               | ❌               | ❌               |
+| gif      | [MovieGifDecoder]<br/>(不支持 resize)         | sketch-animated-gif       | ✅          | ❌               | ❌               | ❌               |
+| gif      | [SkiaGifDecoder]<br/>(不支持 resize)          | sketch-animated-gif       | ❌          | ✅               | ✅               | ✅               |
+| gif      | [KoralGifDecoder]                          | sketch-animated-gif-koral | ✅          | ❌               | ❌               | ❌               |
+| webp 动图  | [ImageDecoderAnimatedWebpDecoder]          | sketch-animated-webp      | ✅ (API 28) | ❌               | ❌               | ❌               |
+| webp 动图  | [SkiaAnimatedWebpDecoder]<br/>(不支持 resize) | sketch-animated-webp      | ❌          | ✅               | ✅               | ✅               |
+| heif 动图  | [ImageDecoderAnimatedHeifDecoder]          | sketch-animated-heif      | ✅ (API 30) | ❌               | ❌               | ❌               |
+| svg      | [SvgDecoder]                               | sketch-svg                | ✅          | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) |
+| 视频帧      | [VideoFrameDecoder]                        | sketch-video              | ✅          | ❌               | ❌               | ❌               |
+| 视频帧      | [FFmpegVideoFrameDecoder]                  | sketch-video-ffmpeg       | ✅          | ❌               | ❌               | ❌               |
+| Apk Icon | [ApkIconDecoder]                           | sketch-extensions-core    | ✅          | ❌               | ❌               | ❌               |
 
 * [ApkIconDecoder] 在 Android 平台上解码 Apk
-  文件的图标（[了解更多](apk_app_icon_zh.md#加载-apk-的图标)）
+  文件的图标（[了解更多](apk_app_icon_zh.md#加载-apk-图标)）
 * [BitmapFactoryDecoder] 在 Android 平台上使用 Android 内置的 [BitmapFactory] 解码图片，它是最后的解码器
 * [DrawableDecoder] 在 Android 平台上解码 vector、shape 等 Android 支持的 xml drawable 图片
-* [GifAnimatedDecoder] 在 Android 平台上使用 Android 内置的 [ImageDecoder] 解码 gif
+* [ImageDecoderGifDecoder] 在 Android 平台上使用 Android 内置的 [ImageDecoder] 解码 gif
   动图（[了解更多](animated_image_zh.md)）
-* [GifDrawableDecoder] 在 Android 平台上使用 koral-- 的 [android-gif-drawable][android-gif-drawable]
+* [KoralGifDecoder] 在 Android 平台上使用 koral-- 的 [android-gif-drawable][android-gif-drawable]
   库解码 gif 动图（[了解更多](animated_image_zh.md)）
-* [GifMovieDecoder] 在 Android 平台上使用 Android 内置的 [Movie] 解码 gif
+* [MovieGifDecoder] 在 Android 平台上使用 Android 内置的 [Movie] 解码 gif
   动图（[了解更多](animated_image_zh.md)）
-* [GifSkiaAnimatedDecoder] 在非 Android 平台上使用 Skia 内置的 Codec 解码 gif
+* [SkiaGifDecoder] 在非 Android 平台上使用 Skia 内置的 Codec 解码 gif
   动图（[了解更多](animated_image_zh.md)）
-* [HeifAnimatedDecoder] 使用 Android 内置的 [ImageDecoder] 解码 heif
+* [ImageDecoderAnimatedHeifDecoder] 使用 Android 内置的 [ImageDecoder] 解码 heif
   动图（[了解更多](animated_image_zh.md)）
 * [SkiaDecoder] 在非 Android 平台上使用 Skia 内置的 Image 解码图片，它是最后的解码器
 * [SvgDecoder] 在 Android 平台上使用 BigBadaboom 的 [androidsvg] 库，在非 Android 平台上使用 Skia 内置的
   SVGDOM 解码静态 svg 文件（[了解更多](svg_zh.md)）
-* [WebpAnimatedDecoder] 在 Android 平台上使用 Android 内置的 [ImageDecoder] 解码 webp
+* [ImageDecoderAnimatedWebpDecoder] 在 Android 平台上使用 Android 内置的 [ImageDecoder] 解码 webp
   动图（[了解更多](animated_image_zh.md)）
-* [WebpSkiaAnimatedDecoder] 在非 Android 平台上使用 Skia 内置的 Codec 解码 webp
+* [SkiaAnimatedWebpDecoder] 在非 Android 平台上使用 Skia 内置的 Codec 解码 webp
   动图（[了解更多](animated_image_zh.md)）
 * [VideoFrameDecoder] 在 Android 平台上使用 Android 内置的 [MediaMetadataRetriever]
   类解码视频文件的帧（[了解更多](video_frame_zh.md)）
 * [FFmpegVideoFrameDecoder] 在 Android 平台上使用 wseemann 的 [FFmpegMediaMetadataRetriever]
   库解码视频帧（[了解更多](video_frame_zh.md)）
 
-### 注册 Decoder
-
-需要依赖单独模块的 [Decoder]（例如 [SvgDecoder]），需要在初始化 Sketch 时注册，如下：
-
-```kotlin
-// 在自定义 Sketch 时为所有 ImageRequest 注册
-Sketch.Builder(context).apply {
-    components {
-        addDecoder(SvgDecoder.Factory())
-    }
-}.build()
-
-// 加载图片时为单个 ImageRequest 注册
-ImageRequest(context, "file:///android_asset/sample.mypng") {
-    components {
-        addDecoder(SvgDecoder.Factory())
-    }
-}
-```
+上述组件都支持自动注册，你只需要导入即可，无需额外配置，如果你需要手动注册，请阅读文档：[《注册组件》](register_component_zh.md)
 
 ### 扩展 Decoder
 
-先实现 [Decoder] 接口定义你的 Decoder 和它的 Factory，然后通过 addDecoder() 方法注册即可，如下：
-
-```kotlin
-class MyDecoder : Decoder {
-
-    override suspend fun decode(): Result<BitmapDecodeResult> {
-        // 在这里解码图片
-    }
-
-    companion object {
-        const val MY_MIME_TYPE = "image/mypng"
-    }
-
-    class Factory : Decoder.Factory {
-
-        override fun create(
-            sketch: Sketch,
-            requestContext: RequestContext,
-            fetchResult: FetchResult
-        ): Decoder? {
-            val mimeType = fetchResult.mimeType
-            val dataSource = fetchResult.dataSource
-            // 在这通过 mimeType 或 dataSource 判断当前图片是否是
-            // MyDecoder 的目标类型，是的话返回一个新的 MyDecoder
-            return if (fetchResult.mimeType == MY_MIME_TYPE) {
-                MyDecoder()
-            } else {
-                null
-            }
-        }
-    }
-}
-
-// 在自定义 Sketch 时为所有 ImageRequest 注册
-Sketch.Builder(context).apply {
-    components {
-        addDecoder(MyDecoder.Factory())
-    }
-}.build()
-
-// 加载图片时为单个 ImageRequest 注册
-ImageRequest(context, "file:///android_asset/sample.mypng") {
-    components {
-        addDecoder(MyDecoder.Factory())
-    }
-}
-```
+先实现 [Decoder] 接口定义你的 Decoder 和它的
+Factory，然后注册即可，请阅读文档：[《注册组件》](register_component_zh.md)
 
 > [!CAUTION]
 > 1. 自定义 [Decoder] 需要应用 ImageRequest 中的很多与图片质量和尺寸相关的属性，例如
      size、colorType、colorSpace 等，可参考其它 [Decoder] 实现
 > 2. 如果你的 [Decoder] 是解码动图的话一定要判断 [ImageRequest].disallowAnimatedImage 参数
-
-## 解码拦截器
-
-Sketch 的解码过程支持通过拦截器来改变解码前后的输入和输出
-
-先实现 [DecodeInterceptor] 接口实现你的 DecodeInterceptor，然后通过 addDecodeInterceptor() 方法注册即可，如下：
-
-```kotlin
-class MyDecodeInterceptor : DecodeInterceptor {
-
-    // 如果当前 DecodeInterceptor 会修改返回的结果并且仅用于部分请求，那么请给一个不重复的 key 用于构建缓存 key，否则给 null 即可
-    override val key: String = "MyDecodeInterceptor"
-
-    // 用于排序，值越大在列表中越靠后。取值范围是 0 ~ 100。通常是零。只有 EngineDecodeInterceptor 可以是 100
-    override val sortWeight: Int = 0
-
-    @WorkerThread
-    override suspend fun intercept(
-        chain: DecodeInterceptor.Chain,
-    ): Result<DecodeResult> {
-        val newRequest = chain.request.newRequest {
-          colorType(Bitmap.Config.RGB_565)
-        }
-        return chain.proceed(newRequest)
-    }
-}
-
-// 在自定义 Sketch 时为所有 ImageRequest 注册
-Sketch.Builder(context).apply {
-    components {
-        addDecodeInterceptor(MyDecodeInterceptor())
-    }
-}.build()
-
-// 加载图片时为单个 ImageRequest 注册
-ImageRequest(context, "https://example.com/image.jpg") {
-    components {
-        addDecodeInterceptor(MyDecodeInterceptor())
-    }
-}
-```
-
-> [!TIP]
-> 1. MyDecodeInterceptor 演示了一个将所有请求的 Bitmap.Config 改为 RGB_565 的案例
-> 2. 如果你想修改返回结果，就拦截 proceed 方法返回的结果，返回一个新的 [DecodeResult] 即可
-> 3. 如果想不再执行请求只需不执行 proceed 方法即可
 
 ## 解码属性
 
@@ -257,15 +148,15 @@ ImageRequest(context, "https://example.com/image.jpg") {
 
 [DrawableDecoder]: ../../sketch-core/src/androidMain/kotlin/com/github/panpf/sketch/decode/internal/DrawableDecoder.kt
 
-[GifAnimatedDecoder]: ../../sketch-animated/src/androidMain/kotlin/com/github/panpf/sketch/decode/GifAnimatedDecoder.kt
+[ImageDecoderGifDecoder]: ../../sketch-animated-gif/src/androidMain/kotlin/com/github/panpf/sketch/decode/ImageDecoderGifDecoder.kt
 
-[HeifAnimatedDecoder]: ../../sketch-animated/src/androidMain/kotlin/com/github/panpf/sketch/decode/HeifAnimatedDecoder.kt
+[ImageDecoderAnimatedHeifDecoder]: ../../sketch-animated-heif/src/main/kotlin/com/github/panpf/sketch/decode/ImageDecoderAnimatedHeifDecoder.kt
 
-[WebpAnimatedDecoder]: ../../sketch-animated/src/androidMain/kotlin/com/github/panpf/sketch/decode/WebpAnimatedDecoder.kt
+[ImageDecoderAnimatedWebpDecoder]: ../../sketch-animated-webp/src/androidMain/kotlin/com/github/panpf/sketch/decode/ImageDecoderAnimatedWebpDecoder.kt
 
-[GifDrawableDecoder]: ../../sketch-animated-koralgif/src/main/kotlin/com/github/panpf/sketch/decode/GifDrawableDecoder.kt
+[KoralGifDecoder]: ../../sketch-animated-gif-koral/src/main/kotlin/com/github/panpf/sketch/decode/KoralGifDecoder.kt
 
-[GifMovieDecoder]: ../../sketch-animated/src/androidMain/kotlin/com/github/panpf/sketch/decode/GifMovieDecoder.kt
+[MovieGifDecoder]: ../../sketch-animated-gif/src/androidMain/kotlin/com/github/panpf/sketch/decode/MovieGifDecoder.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
 
@@ -283,14 +174,10 @@ ImageRequest(context, "https://example.com/image.jpg") {
 
 [MediaMetadataRetriever]: https://cs.android.com/android/platform/superproject/+/master:frameworks/base/media/kotlin/android/media/MediaMetadataRetriever.java
 
-[DecodeInterceptor]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/decode/DecodeInterceptor.kt
-
-[DecodeResult]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/decode/DecodeResult.kt
-
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
 
 [SkiaDecoder]: ../../sketch-core/src/nonAndroidMain/kotlin/com/github/panpf/sketch/decode/SkiaDecoder.kt
 
-[GifSkiaAnimatedDecoder]: ../../sketch-animated/src/nonAndroidMain/kotlin/com/github/panpf/sketch/decode/GifSkiaAnimatedDecoder.kt
+[SkiaGifDecoder]: ../../sketch-animated-gif/src/nonAndroidMain/kotlin/com/github/panpf/sketch/decode/SkiaGifDecoder.kt
 
-[WebpSkiaAnimatedDecoder]: ../../sketch-animated/src/nonAndroidMain/kotlin/com/github/panpf/sketch/decode/WebpSkiaAnimatedDecoder.kt
+[SkiaAnimatedWebpDecoder]: ../../sketch-animated-webp/src/nonAndroidMain/kotlin/com/github/panpf/sketch/decode/SkiaAnimatedWebpDecoder.kt

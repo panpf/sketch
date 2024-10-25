@@ -435,6 +435,7 @@ val imageResult: ImageResult? = imageView.imageResult
 * [ExifOrientation：纠正图片方向][exif_orientation]
 * [ImageOptions：统一管理图片配置][image_options]
 * [RequestInterceptor：拦截 ImageRequest][request_interceptor]
+* [DecodeInterceptor：拦截解码过程][decode_interceptor]
 * [预加载图片到内存中][preload]
 * [下载图片][download]
 * [Lifecycle][lifecycle]
@@ -526,6 +527,8 @@ val imageResult: ImageResult? = imageView.imageResult
 [progress_indicator]: progress_indicator_zh.md
 
 [request_interceptor]: request_interceptor_zh.md
+
+[decode_interceptor]: decode_interceptor_zh.md
 
 [resize]: resize_zh.md
 

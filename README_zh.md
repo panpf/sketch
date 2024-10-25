@@ -219,6 +219,7 @@ context.sketch.enqueue(request)
 * [ExifOrientation：纠正图片方向][exif_orientation]
 * [ImageOptions：统一管理图片配置][image_options]
 * [RequestInterceptor：拦截 ImageRequest][request_interceptor]
+* [DecodeInterceptor：拦截解码过程][decode_interceptor]
 * [预加载图片到内存中][preload]
 * [下载图片][download]
 * [Lifecycle][lifecycle]
@@ -253,8 +254,9 @@ context.sketch.enqueue(request)
 2. `.run` 目录下已经添加了各个平台的运行配置，同步完成后直接在 Android Studio
    顶部运行配置下拉框中选择对应平台的运行配置然后点击运行即可
 3. ios 平台的运行配置需要你根据模版手动创建，如下：
-   1. 拷贝 `.run/iosSample.run.template.xml` 文件，并去掉 `.template` 后缀，`.ignore` 文件中已经配置了忽略 `iosSample.run.xml` 
-   2. 在顶部运行配置下拉框点击 `Edit Configurations` 选择 `iosSample` 然后配置 `Execute target` 即可
+    1. 拷贝 `.run/iosSample.run.template.xml` 文件，并去掉 `.template` 后缀，`.ignore` 文件中已经配置了忽略
+       `iosSample.run.xml`
+    2. 在顶部运行配置下拉框点击 `Edit Configurations` 选择 `iosSample` 然后配置 `Execute target` 即可
 
 ## 关于 4.0 版本
 
@@ -349,6 +351,8 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 [progress_indicator]: docs/wiki/progress_indicator_zh.md
 
 [request_interceptor]: docs/wiki/request_interceptor_zh.md
+
+[decode_interceptor]: docs/wiki/decode_interceptor_zh.md
 
 [resize]: docs/wiki/resize_zh.md
 

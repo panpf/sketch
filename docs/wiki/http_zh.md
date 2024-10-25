@@ -4,15 +4,15 @@
 
 ## 组件
 
-Sketch 提供了 `sketch-http-*` 系列组件以支持 Http 网络图片
+Sketch 提供了 `sketch-http-*` 系列模块以支持 Http 网络图片，所支持的平台以及差异如下：
 
-| Module             | Component                                              | Android | iOS | Desktop | Web |
-|:-------------------|:-------------------------------------------------------|:--------|:----|:--------|:----|
-| sketch-http        | jvm: HurlHttpUriFetcher<br/>nonJvm: KtorHttpUriFetcher | ✅       | ✅   | ✅       | ✅   |
-| sketch-http-hurl   | HurlHttpUriFetcher                                     | ✅       | ❌   | ✅       | ❌   |
-| sketch-http-okhttp | OkHttpHttpUriFetcher                                   | ✅       | ❌   | ✅       | ❌   |
-| sketch-http-ktor2  | KtorHttpUriFetcher                                     | ✅       | ✅   | ✅       | ✅   |
-| sketch-http-ktor3  | KtorHttpUriFetcher                                     | ✅       | ✅   | ✅       | ✅   |
+| Module             | FetcherProvider                                                            | Fetcher                                                                         | Android | iOS | Desktop | Web |
+|:-------------------|:---------------------------------------------------------------------------|:--------------------------------------------------------------------------------|:--------|:----|:--------|:----|
+| sketch-http        | jvm: [HurlHttpUriFetcherProvider]<br/>nonJvm: [KtorHttpUriFetcherProvider] | jvm: [HurlHttpUriFetcher]<br/>nonJvm: [KtorHttpUriFetcher][Ktor3HttpUriFetcher] | ✅       | ✅   | ✅       | ✅   |
+| sketch-http-hurl   | [HurlHttpUriFetcherProvider]                                               | [HurlHttpUriFetcher]                                                            | ✅       | ❌   | ✅       | ❌   |
+| sketch-http-okhttp | [OkHttpHttpUriFetcherProvider]                                             | [OkHttpHttpUriFetcher]                                                          | ✅       | ❌   | ✅       | ❌   |
+| sketch-http-ktor2  | [KtorHttpUriFetcherProvider][Ktor2HttpUriFetcherProvider]                  | [KtorHttpUriFetcher][Ktor2HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅   |
+| sketch-http-ktor3  | [KtorHttpUriFetcherProvider][Ktor3HttpUriFetcherProvider]                  | [KtorHttpUriFetcher][Ktor3HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅   |
 
 > [!IMPORTANT]
 > * HurlHttpUriFetcher 使用 jvm 自带的 HttpURLConnection 实现，不需要额外的依赖
@@ -28,6 +28,8 @@ Sketch 提供了 `sketch-http-*` 系列组件以支持 Http 网络图片
 ```kotlin
 implementation("io.github.panpf.sketch4:sketch-http:${LAST_VERSION}")
 ```
+
+上述组件都支持自动注册，你只需要导入即可，无需额外配置，如果你需要手动注册，请阅读文档：[《注册组件》](register_component_zh.md)
 
 > [!IMPORTANT]
 > ktor2 原本不支持 wasmJs，所以 `sketch-http-ktor2` 和 `sketch-http-ktor2-core` 的 wasmJs 版本使用的其实是
@@ -156,4 +158,18 @@ Sketch.Builder(context).apply {
 
 [HttpUriFetcher]: ../../sketch-http-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/HttpUriFetcher.kt
 
-[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.common.kt
+[HurlHttpUriFetcher]: ../../sketch-http-hurl/src/commonMain/kotlin/com/github/panpf/sketch/fetch/HurlHttpUriFetcher.kt
+
+[OkHttpHttpUriFetcher]: ../../sketch-http-okhttp/src/commonMain/kotlin/com/github/panpf/sketch/fetch/OkHttpHttpUriFetcher.kt
+
+[Ktor2HttpUriFetcher]: ../../sketch-http-ktor2-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/KtorHttpUriFetcher.kt
+
+[Ktor3HttpUriFetcher]: ../../sketch-http-ktor3-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/KtorHttpUriFetcher.kt
+
+[HurlHttpUriFetcherProvider]: ../../sketch-http-hurl/src/commonMain/kotlin/com/github/panpf/sketch/fetch/internal/HurlHttpUriFetcherProvider.kt
+
+[OkHttpHttpUriFetcherProvider]: ../../sketch-http-okhttp/src/commonMain/kotlin/com/github/panpf/sketch/fetch/internal/OkHttpHttpUriFetcherProvider.kt
+
+[Ktor2HttpUriFetcherProvider]: ../../sketch-http-ktor2-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/internal/KtorHttpUriFetcherProvider.common.kt
+
+[Ktor3HttpUriFetcherProvider]: ../../sketch-http-ktor3-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/internal/KtorHttpUriFetcherProvider.common.kt

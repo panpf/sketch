@@ -232,6 +232,7 @@ Basic functions:
 * [ExifOrientation: Correct the image orientation][exif_orientation]
 * [ImageOptions: Manage image configurations in a unified manner][image_options]
 * [RequestInterceptor: Intercept ImageRequest][request_interceptor]
+* [DecodeInterceptor: Intercept the decoding process][decode_interceptor]
 * [Preload images into memory][preload]
 * [Download images][download]
 * [Lifecycle][lifecycle]
@@ -373,6 +374,8 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 [progress_indicator]: docs/wiki/progress_indicator.md
 
 [request_interceptor]: docs/wiki/request_interceptor.md
+
+[decode_interceptor]: docs/wiki/decode_interceptor.md
 
 [resize]: docs/wiki/resize.md
 

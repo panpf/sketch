@@ -4,15 +4,16 @@ Translations: [简体中文](http_zh.md)
 
 ## Components
 
-Sketch provides the `sketch-http-*` series of components to support Http network images
+Sketch provides the `sketch-http-*` series of modules to support Http network images, the
+supported platforms and differences are as follows:
 
-| Module             | Component                                              | Android | iOS | Desktop | Web |
-|:-------------------|:-------------------------------------------------------|:--------|:----|:--------|:----|
-| sketch-http        | jvm: HurlHttpUriFetcher<br/>nonJvm: KtorHttpUriFetcher | ✅       | ✅   | ✅       | ✅   |
-| sketch-http-hurl   | HurlHttpUriFetcher                                     | ✅       | ❌   | ✅       | ❌   |
-| sketch-http-okhttp | OkHttpHttpUriFetcher                                   | ✅       | ❌   | ✅       | ❌   |
-| sketch-http-ktor2  | KtorHttpUriFetcher                                     | ✅       | ✅   | ✅       | ✅   |
-| sketch-http-ktor3  | KtorHttpUriFetcher                                     | ✅       | ✅   | ✅       | ✅   |
+| Module             | FetcherProvider                                                            | Fetcher                                                                         | Android | iOS | Desktop | Web |
+|:-------------------|:---------------------------------------------------------------------------|:--------------------------------------------------------------------------------|:--------|:----|:--------|:----|
+| sketch-http        | jvm: [HurlHttpUriFetcherProvider]<br/>nonJvm: [KtorHttpUriFetcherProvider] | jvm: [HurlHttpUriFetcher]<br/>nonJvm: [KtorHttpUriFetcher][Ktor3HttpUriFetcher] | ✅       | ✅   | ✅       | ✅   |
+| sketch-http-hurl   | [HurlHttpUriFetcherProvider]                                               | [HurlHttpUriFetcher]                                                            | ✅       | ❌   | ✅       | ❌   |
+| sketch-http-okhttp | [OkHttpHttpUriFetcherProvider]                                             | [OkHttpHttpUriFetcher]                                                          | ✅       | ❌   | ✅       | ❌   |
+| sketch-http-ktor2  | [KtorHttpUriFetcherProvider][Ktor2HttpUriFetcherProvider]                  | [KtorHttpUriFetcher][Ktor2HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅   |
+| sketch-http-ktor3  | [KtorHttpUriFetcherProvider][Ktor3HttpUriFetcherProvider]                  | [KtorHttpUriFetcher][Ktor3HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅   |
 
 > [!IMPORTANT]
 > * HurlHttpUriFetcher is implemented using jvm’s own HttpURLConnection and does not require
@@ -27,11 +28,15 @@ Sketch provides the `sketch-http-*` series of components to support Http network
 Before loading network images, you need to select one of the above components and configure
 dependencies. Take `sketch-http` as an example:
 
-`${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 
 ```kotlin
 implementation("io.github.panpf.sketch4:sketch-http:${LAST_VERSION}")
 ```
+
+The above components all support automatic registration. You only need to import them without
+additional configuration. If you need to register manually, please read the
+documentation: [《Register component》](register_component.md)
 
 > [!IMPORTANT]
 > ktor2 originally did not support wasmJs, so the wasmJs versions of `sketch-http-ktor2` and
@@ -159,8 +164,20 @@ Sketch.Builder(context).apply {
 
 [OkHttpStack]: ../../sketch-http-okhttp/src/commonMain/kotlin/com/github/panpf/sketch/http/OkHttpStack.kt
 
-[KtorStack]: ../../sketch-http-ktor3-core/src/commonMain/kotlin/com/github/panpf/sketch/http/KtorStack.kt
-
 [HttpUriFetcher]: ../../sketch-http-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/HttpUriFetcher.kt
 
-[Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.common.kt
+[HurlHttpUriFetcher]: ../../sketch-http-hurl/src/commonMain/kotlin/com/github/panpf/sketch/fetch/HurlHttpUriFetcher.kt
+
+[OkHttpHttpUriFetcher]: ../../sketch-http-okhttp/src/commonMain/kotlin/com/github/panpf/sketch/fetch/OkHttpHttpUriFetcher.kt
+
+[Ktor2HttpUriFetcher]: ../../sketch-http-ktor2-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/KtorHttpUriFetcher.kt
+
+[Ktor3HttpUriFetcher]: ../../sketch-http-ktor3-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/KtorHttpUriFetcher.kt
+
+[HurlHttpUriFetcherProvider]: ../../sketch-http-hurl/src/commonMain/kotlin/com/github/panpf/sketch/fetch/internal/HurlHttpUriFetcherProvider.kt
+
+[OkHttpHttpUriFetcherProvider]: ../../sketch-http-okhttp/src/commonMain/kotlin/com/github/panpf/sketch/fetch/internal/OkHttpHttpUriFetcherProvider.kt
+
+[Ktor2HttpUriFetcherProvider]: ../../sketch-http-ktor2-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/internal/KtorHttpUriFetcherProvider.common.kt
+
+[Ktor3HttpUriFetcherProvider]: ../../sketch-http-ktor3-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/internal/KtorHttpUriFetcherProvider.common.kt
