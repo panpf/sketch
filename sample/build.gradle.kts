@@ -207,7 +207,8 @@ compose.desktop {
             )
         }
         buildTypes.release.proguard {
-//            obfuscate.set(true) // Obfuscate the code
+            obfuscate.set(true) // Obfuscate the code
+            optimize.set(true) // proguard optimization, enabled by default
             configurationFiles.from(project.file("compose-desktop.pro"))
         }
     }

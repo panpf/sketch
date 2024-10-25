@@ -9,4 +9,4 @@ fi
 
 ./gradlew sample:wasmJsBrowserDistribution
 
-echo "✅  WasmJs package is created successfully. Output: sample/build/dist/wasmJs/productionExecutable/"
+echo "✅  WasmJs package is created successfully. The distribution is written to $(pwd)/sample/build/dist/wasmJs/productionExecutable/"

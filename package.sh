@@ -11,8 +11,8 @@ set -e
 ./package_js.sh --skipClean
 ./package_wasmJs.sh --skipClean
 
-echo "Android Output: sample/build/outputs/apk/release/"
-echo "Desktop Output: sample/build/compose/binaries/main/"
-echo "JS Output: sample/build/dist/js/productionExecutable/"
-echo "WasmJs Output: sample/build/dist/wasmJs/productionExecutable/"
+echo "Android distribution is written to $(pwd)/sample/build/outputs/apk/release/"
+echo "Desktop distribution is written to $(pwd)sample/build/compose/binaries/main/"
+echo "JS distribution is written to $(pwd)sample/build/dist/js/productionExecutable/"
+echo "WasmJs distribution is written to $(pwd)sample/build/dist/wasmJs/productionExecutable/"
 echo "✅  All packages are created successfully."

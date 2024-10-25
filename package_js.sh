@@ -9,4 +9,4 @@ fi
 
 ./gradlew sample:jsBrowserDistribution
 
-echo "✅  JS package is created successfully. Output: sample/build/dist/js/productionExecutable/"
+echo "✅  JS package is created successfully. The distribution is written to $(pwd)/sample/build/dist/js/productionExecutable/"

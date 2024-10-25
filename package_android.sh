@@ -9,4 +9,4 @@ fi
 
 ./gradlew sample:assembleRelease
 
-echo "✅  Android package is created successfully. Output: sample/build/outputs/apk/release/"
+echo "✅  Android package is created successfully. The distribution is written to $(pwd)/sample/build/outputs/apk/release/"
