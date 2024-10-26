@@ -15,8 +15,15 @@ Sketch 为 view 和 Compose 提供了显示下载进度的扩展功能，如下�
 
 ## Compose
 
-> [!IMPORTANT]
-> 必须导入 `sketch-extensions-compose` 模块
+首先安装依赖
+
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
+
+```kotlin
+implementation("io.github.panpf.sketch4:sketch-extensions-compose:${LAST_VERSION}")
+```
+
+然后使用 progressIndicator() 函数添加进度指示器
 
 ```kotlin
 // val progressPainter = rememberMaskProgressPainter()
@@ -77,9 +84,15 @@ AsyncImage(
 
 ## View
 
-> [!IMPORTANT]
-> * 必须导入 `sketch-extensions-view` 模块
-> * 必须使用 [SketchImageView]
+首先安装依赖
+
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
+
+```kotlin
+implementation("io.github.panpf.sketch4:sketch-extensions-view:${LAST_VERSION}")
+```
+
+然后配合 [SketchImageView] 使用 show*ProgressIndicator() 函数添加进度指示器
 
 ```kotlin
 val sketchImageView = SketchImageView(context)
@@ -155,6 +168,10 @@ class MyProgressDrawable(
 val sketchImageView = SketchImageView(context)
 sketchImageView.showProgressIndicator(MyProgressDrawable())
 ```
+
+[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch4/sketch-singleton
+
+[version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch4/
 
 [SketchImageView]: ../../sketch-extensions-view/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 

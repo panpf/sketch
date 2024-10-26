@@ -15,8 +15,15 @@ Three styles are provided to choose from, as follows:
 
 ## Compose
 
-> [!IMPORTANT]
-> Required import `sketch-extensions-compose` module
+First install dependencies
+
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
+
+```kotlin
+implementation("io.github.panpf.sketch4:sketch-extensions-compose:${LAST_VERSION}")
+```
+
+Then use the progressIndicator() function to add a progress indicator
 
 ```kotlin
 // val progressPainter = rememberMaskProgressPainter()
@@ -77,9 +84,15 @@ AsyncImage(
 
 ## View
 
-> [!IMPORTANT]
-> * Required import `sketch-extensions-view` module
-> * Required [SketchImageView]
+First install dependencies
+
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
+
+```kotlin
+implementation("io.github.panpf.sketch4:sketch-extensions-view:${LAST_VERSION}")
+```
+
+Then use the show*ProgressIndicator() function with [SketchImageView] to add a progress indicator
 
 ```kotlin
 val sketchImageView = SketchImageView(context)
@@ -155,6 +168,10 @@ Then use your own indicator like this:
 val sketchImageView = SketchImageView(context)
 sketchImageView.showProgressIndicator(MyProgressDrawable())
 ```
+
+[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch4/sketch-singleton
+
+[version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch4/
 
 [SketchImageView]: ../../sketch-extensions-view/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 

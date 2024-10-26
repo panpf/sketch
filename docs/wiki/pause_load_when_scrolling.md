@@ -2,14 +2,21 @@
 
 Translations: [简体中文](pause_load_when_scrolling_zh.md)
 
-> [!IMPORTANT]
-> Required import `sketch-extensions-view` or `sketch-extensions-compose` module
+Loading a large number of images during list scrolling will reduce UI fluency. Therefore, pausing
+the loading of images during list scrolling on devices with poor performance can significantly
+improve UI fluency.
 
-Loading a large number of images during list scrolling will reduce UI fluency. Therefore, pausing the loading of images during list scrolling on devices with poor performance can significantly improve UI fluency.
+First install dependencies
 
-### Configure
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 
-First add a scroll listener to your list control, as follows:
+```kotlin
+implementation("io.github.panpf.sketch4:sketch-extensions-compose:${LAST_VERSION}")
+// or
+implementation("io.github.panpf.sketch4:sketch-extensions-view:${LAST_VERSION}")
+```
+
+Then add a scroll listener to the list control, as follows:
 
 ```kotlin
 // RecyclerView
@@ -30,7 +37,7 @@ fun ListContent() {
 }
 ```
 
-Then register the [PauseLoadWhenScrollingDecodeInterceptor] request interceptor as follows:
+Then register the [PauseLoadWhenScrollingDecodeInterceptor] request interceptor, as follows:
 
 ```kotlin
 // Register for all ImageRequests when customizing Sketch
@@ -55,6 +62,10 @@ ImageRequest(context, "https://example.com/image.jpg") {
     pauseLoadWhenScrolling(true)
 }
 ```
+
+[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch4/sketch-singleton
+
+[version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch4/
 
 [Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.common.kt
 

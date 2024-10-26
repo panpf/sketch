@@ -1,4 +1,4 @@
-# 解码拦截器
+# DecodeInterceptor
 
 翻译：[English](decode_interceptor.md)
 

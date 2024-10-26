@@ -2,8 +2,16 @@
 
 翻译：[English](sketch_image_view.md)
 
-> [!IMPORTANT]
-> 必须导入 `sketch-extensions-view` 模块
+Sketch 提供了一个 [SketchImageView] 组件，它配合 Sketch 使用可以更方便的加载图片，支持 xml 属性配置请求属性，支持
+flow 的方式监听请求的状态和结果，还支持显示下载进度和图片类型角标等功能
+
+## 安装依赖
+
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
+
+```kotlin
+implementation("io.github.panpf.sketch4:sketch-extensions-view:${LAST_VERSION}")
+```
 
 ### XML 属性
 
@@ -12,21 +20,15 @@
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" 
-    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.github.panpf.sketch.SketchImageView 
-        android:id="@+id/imageView"
-        android:layout_width="300dp" 
-        android:layout_height="300dp"
+    <com.github.panpf.sketch.SketchImageView android:id="@+id/imageView"
+        android:layout_width="300dp" android:layout_height="300dp"
         android:contentDescription="@string/app_name"
-        app:sketch_placeholder="@drawable/im_placeholder"
-        app:sketch_error="@drawable/im_error"
-        app:sketch_fallback="@drawable/im_fallback"
-        app:sketch_crossfade="true"
-        app:sketch_transformation="rotate"
-        app:sketch_transformation_rotate_degrees="55" />
+        app:sketch_placeholder="@drawable/im_placeholder" app:sketch_error="@drawable/im_error"
+        app:sketch_fallback="@drawable/im_fallback" app:sketch_crossfade="true"
+        app:sketch_transformation="rotate" app:sketch_transformation_rotate_degrees="55" />
 </FrameLayout>
 ```
 
@@ -98,6 +100,10 @@ scope.launch {
 
 * [显示下载进度][show_download_progress]
 * [显示图片类型角标][show_image_type]
+
+[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch4/sketch-singleton
+
+[version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch4/
 
 [SketchImageView]: ../../sketch-extensions-view/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 

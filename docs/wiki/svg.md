@@ -2,30 +2,20 @@
 
 Translations: [简体中文](svg_zh.md)
 
-> [!IMPORTANT]
-> Required import `sketch-svg` module
-
 Sketch supports decoding SVG static images, powered by [SvgDecoder]
 
-### Registered
+## Install dependencies
 
-Register [SvgDecoder], as follows:
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 
 ```kotlin
-// Register for all ImageRequests when customizing Sketch
-Sketch.Builder(context).apply {
-    components {
-        addDecoder(SvgDecoder.Factory())
-    }
-}.build()
-
-// Register for a single ImageRequest when loading an image
-ImageRequest(context, "https://www.example.com/image.svg") {
-    components {
-        addDecoder(SvgDecoder.Factory())
-    }
-}
+implementation("io.github.panpf.sketch4:sketch-svg:${LAST_VERSION}")
 ```
+
+> [!IMPORTANT]
+> `sketch-svg` The module supports automatic registration of components. For details
+> on component registration, please see the
+> documentation: [《Register component》](register_component.md)
 
 ### Configure
 
@@ -37,6 +27,10 @@ ImageRequest(context, "https://www.example.com/image.svg") {
     svgCss("...")    // Only Android
 }
 ```
+
+[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch4/sketch-singleton
+
+[version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch4/
 
 [SvgDecoder]: ../../sketch-svg/src/commonMain/kotlin/com/github/panpf/sketch/decode/SvgDecoder.kt
 

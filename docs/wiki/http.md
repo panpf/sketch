@@ -22,8 +22,11 @@ supported platforms and differences are as follows:
     each platform. If you need to use other engines, please use their core versions, such as
     `sketch-http-ktor2-core` and ` sketch-http-ktor3-core`, and then configure the dependencies of
     the engine you need
+> * The above components all support automatic registration. You only need to import them without
+    additional configuration. If you need to register manually, please read the
+    documentation: [《Register component》](register_component.md)
 
-## Download
+## Install dependencies
 
 Before loading network images, you need to select one of the above components and configure
 dependencies. Take `sketch-http` as an example:
@@ -33,10 +36,6 @@ dependencies. Take `sketch-http` as an example:
 ```kotlin
 implementation("io.github.panpf.sketch4:sketch-http:${LAST_VERSION}")
 ```
-
-The above components all support automatic registration. You only need to import them without
-additional configuration. If you need to register manually, please read the
-documentation: [《Register component》](register_component.md)
 
 > [!IMPORTANT]
 > ktor2 originally did not support wasmJs, so the wasmJs versions of `sketch-http-ktor2` and

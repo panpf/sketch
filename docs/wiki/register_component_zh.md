@@ -8,7 +8,7 @@ Sketch 支持通过 [Fetcher] 和 [Decoder] 接口扩展 Sketch 的功能，自�
 扩展组件在使用前需要先注册到 Sketch 或 ImageRequest，注册到 Sketch 的组件所有 ImageRequest 都可以使用，而注册到
 ImageRequest 的组件则只有当前 ImageRequest 可以使用
 
-[!TIP]
+> [!TIP]
 > 在 ImageRequest 中注册的组件的优先级高于在 Sketch 中注册的组件
 
 ## 注册到 Sketch
@@ -76,7 +76,7 @@ Sketch.Builder(context).apply {
     3. `ktorHttpUriFetcherProviderInitHook` 和 `KtorHttpUriFetcherProvider` 需要替换成你的
        [FetcherProvider] 或 [DecoderProvider] 实现类的名字
 
-[!TIP]
+> [!TIP]
 > 完整示例请参考 `sketch-http-ktor3` 模块
 
 ## 注册到 ImageRequest
@@ -84,13 +84,13 @@ Sketch.Builder(context).apply {
 注册到 ImageRequest 则和手动注册到 Sketch 一样，如下：
 
 ```kotlin
-ImageRequest(context, "http://sample.com/sample.jpeg").apply {
+ImageRequest(context, "http://sample.com/sample.jpeg") {
     components {
         addFetcher(MyFetcher.Factory())
         addDecoder(MyDecoder.Factory())
         // ...
     }
-}.build()
+}
 ```
 
 [Decoder]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/decode/Decoder.kt

@@ -93,20 +93,20 @@ context.sketch.enqueue(request)
 
 [Sketch] 支持多种静态图片和动态图片类型，如下：
 
-| 类型      | 依赖模块                                        |
-|:--------|---------------------------------------------|
-| jpeg    | _                                           |
-| png     | _                                           |
-| bmp     | _                                           |
-| webp    | _                                           |
-| heif    | _                                           |
-| avif    | _                                           |
-| svg     | sketch-svg                                  |
-| gif     | sketch-animated<br>sketch-animated-koralgif |
-| webp 动图 | sketch-animated                             |
-| heif 动图 | sketch-animated                             |
-| 视频帧     | sketch-video<br>sketch-video-ffmpeg         |
-| Apk 图标  | sketch-extensions-core                      |
+| 类型      | 依赖模块                                             |
+|:--------|--------------------------------------------------|
+| jpeg    | _                                                |
+| png     | _                                                |
+| bmp     | _                                                |
+| webp    | _                                                |
+| heif    | _                                                |
+| avif    | _                                                |
+| svg     | sketch-svg                                       |
+| gif     | sketch-animated-gif<br>sketch-animated-gif-koral |
+| webp 动图 | sketch-animated-webp                             |
+| heif 动图 | sketch-animated-heif                             |
+| 视频帧     | sketch-video<br>sketch-video-ffmpeg              |
+| Apk 图标  | sketch-extensions-apkicon                        |
 
 每一种图片类型都有对应的 Decoder 对其提供支持，[详细了解 Decoder][decoder]
 
@@ -114,17 +114,17 @@ context.sketch.enqueue(request)
 
 [Sketch] 支持从网络、本机、资源等不同的数据源加载图片，如下：
 
-| URI                       | 描述                       | 创建函数                    | 依赖模块                     |
-|:--------------------------|:-------------------------|:------------------------|:-------------------------|
-| http://, https://         | File in network          | _                       | _                        |
-| file://, /                | File in SDCard           | newFileUri()            | _                        |
-| content://                | Android Content Resolver | _                       | _                        |
-| file:///android_asset/    | Android Asset            | newAssetUri()           | _                        |
-| android.resource://       | Android Resource         | newResourceUri()        | _                        |
-| data:image/, data:img/    | Base64                   | newBase64Uri()          | _                        |
-| file:///compose_resource/ | Compose Resource         | newComposeResourceUri() | sketch-compose-resources |
-| file:///kotlin_resource/  | Kotlin Resource          | newKotlinResourceUri()  | _                        |
-| app.icon://               | Android App Icon         | newAppIconUri()         | sketch-extensions-core   |
+| URI                       | 描述                       | 创建函数                    | 依赖模块                                                                             |
+|:--------------------------|:-------------------------|:------------------------|:---------------------------------------------------------------------------------|
+| http://, https://         | File in network          | _                       | sketch-http-hurl<br>sketch-http-okhttp<br>sketch-http-ktor2<br>sketch-http-ktor3 |
+| file://, /                | File in SDCard           | newFileUri()            | _                                                                                |
+| content://                | Android Content Resolver | _                       | _                                                                                |
+| file:///android_asset/    | Android Asset            | newAssetUri()           | _                                                                                |
+| android.resource://       | Android Resource         | newResourceUri()        | _                                                                                |
+| data:image/, data:img/    | Base64                   | newBase64Uri()          | _                                                                                |
+| file:///compose_resource/ | Compose Resource         | newComposeResourceUri() | sketch-compose-resources                                                         |
+| file:///kotlin_resource/  | Kotlin Resource          | newKotlinResourceUri()  | _                                                                                |
+| app.icon://               | Android App Icon         | newAppIconUri()         | sketch-extensions-appicon                                                        |
 
 每一种 URI 都有对应的 Fetcher 对其提供支持，[详细了解 Fetcher][fetcher]
 
@@ -136,10 +136,11 @@ context.sketch.enqueue(request)
 |:------------------------------------------------------------------------------------------|---------------|:----------------|:----------------|:----------------|
 | jpeg<br/>png<br/>webp<br/>bmp                                                             | ✅             | ✅               | ✅               | ✅               |
 | heif                                                                                      | ✅ (API 28)    | ❌               | ❌               | ❌               |
+| avif                                                                                      | ✅ (API 31)    | ❌               | ❌               | ❌               |
+| svg                                                                                       | ✅             | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) |
 | gif                                                                                       | ✅             | ✅               | ✅               | ✅               |
 | webp 动图                                                                                   | ✅ (API 28)    | ✅               | ✅               | ✅               |
 | heif 动图                                                                                   | ✅ (API 30)    | ❌               | ❌               | ❌               |
-| svg                                                                                       | ✅             | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) |
 | 视频帧                                                                                       | ✅             | ❌               | ❌               | ❌               |
 | http://, https://<br/>file://, /<br/>file:///compose_resource/<br/>data:image/, data:img/ | ✅             | ✅               | ✅               | ✅               |
 | file:///android_asset/<br/>content://<br/>android.resource://                             | ✅             | ❌               | ❌               | ❌               |
@@ -416,7 +417,9 @@ val imageResult: ImageResult? = imageView.imageResult
 
 基础功能：
 
+* [注册组件][register_component]
 * [Compose][compose]
+* [Http：加载网络图片][http]
 * [AnimatedImage：GIF、WEBP、HEIF][animated_image]
 * [Resize：修改图片尺寸][resize]
 * [Transformation：转换图片][transformation]
@@ -429,7 +432,6 @@ val imageResult: ImageResult? = imageView.imageResult
 * [Fetcher：了解 Fetcher 及扩展新的 URI 类型][fetcher]
 * [Decoder：了解 Sketch 的解码过程][decoder]
 * [Target：将加载结果应用到目标上][target]
-* [HttpStack：了解 http 部分及使用 okhttp][http]
 * [SVG：解码 SVG 静态图片][svg]
 * [VideoFrames：解码视频帧][video_frame]
 * [ExifOrientation：纠正图片方向][exif_orientation]
@@ -489,6 +491,8 @@ val imageResult: ImageResult? = imageView.imageResult
 [animated_image]: animated_image_zh.md
 
 [apk_app_icon]: apk_app_icon_zh.md
+
+[register_component]: register_component_zh.md
 
 [compose]: compose_zh.md
 

@@ -8,8 +8,15 @@ Sketch provides extended functions for displaying image type logo for view and C
 
 ### Compose
 
-> [!IMPORTANT]
-> Required import `sketch-extensions-compose` module
+First install the dependencies
+
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
+
+```kotlin
+implementation("io.github.panpf.sketch4:sketch-extensions-compose:${LAST_VERSION}")
+```
+
+Then add the image type logo through the mimeTypeLogo() function
 
 ```kotlin
 val imageTypeIconMap = remember {
@@ -40,9 +47,15 @@ AsyncImage(
 
 ### View
 
-> [!IMPORTANT]
-> * Required import `sketch-extensions-view` module
-> * Required [SketchImageView]
+First install the dependencies
+
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
+
+```kotlin
+implementation("io.github.panpf.sketch4:sketch-extensions-view:${LAST_VERSION}")
+```
+
+Then use the showMimeTypeLogoWithRes() function with [SketchImageView] to add the image type logo.
 
 ```kotlin
 val sketchImageView = SketchImageView(context)
@@ -62,6 +75,10 @@ sketchImageView.showMimeTypeLogoWithRes(
 
 > [!TIP]
 > View version functionality is implemented by [MimeTypeLogoAbility]
+
+[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch4/sketch-singleton
+
+[version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch4/
 
 [SketchImageView]: ../../sketch-extensions-view/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 

@@ -54,12 +54,15 @@
 * [FFmpegVideoFrameDecoder] 在 Android 平台上使用 wseemann 的 [FFmpegMediaMetadataRetriever]
   库解码视频帧（[了解更多](video_frame_zh.md)）
 
-上述组件都支持自动注册，你只需要导入即可，无需额外配置，如果你需要手动注册，请阅读文档：[《注册组件》](register_component_zh.md)
+> [!IMPORTANT]
+> 上述组件都支持自动注册，你只需要导入即可，无需额外配置，如果你需要手动注册，
+> 请阅读文档：[《注册组件》](register_component_zh.md)
 
 ### 扩展 Decoder
 
-先实现 [Decoder] 接口定义你的 Decoder 和它的
-Factory，然后注册即可，请阅读文档：[《注册组件》](register_component_zh.md)
+先实现 [Decoder] 接口定义你的 Decoder 和它的 Factory
+
+然后参考文档 [《注册组件》](register_component_zh.md) 注册你的 Decoder 即可
 
 > [!CAUTION]
 > 1. 自定义 [Decoder] 需要应用 ImageRequest 中的很多与图片质量和尺寸相关的属性，例如

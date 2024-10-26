@@ -4,9 +4,9 @@ Translations: [简体中文](apk_app_icon_zh.md)
 
 ## Load Apk Icon
 
-First configure the dependencies of the `sketch-extensions-apkicon` module
+First install the dependencies
 
-`${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 
 ```kotlin
 implementation("io.github.panpf.sketch4:sketch-extensions-apkicon:${LAST_VERSION}")
@@ -26,9 +26,9 @@ sketch.enqueue(ImageRequest(context, uri = "/sdcard/sample.apk"))
 
 ## Load the icon of the installed app
 
-First configure the dependencies of the `sketch-extensions-appicon` module
+First install the dependencies
 
-`${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 
 ```kotlin
 implementation("io.github.panpf.sketch4:sketch-extensions-appicon:${LAST_VERSION}")

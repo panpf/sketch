@@ -2,30 +2,19 @@
 
 翻译：[English](svg.md)
 
-> [!IMPORTANT]
-> 必须导入 `sketch-svg` 模块
-
 Sketch 支持解码 SVG 静态图片，由 [SvgDecoder] 提供支持
 
-### 注册
+### 安装依赖
 
-注册 [SvgDecoder]，如下：
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
 
 ```kotlin
-// 在自定义 Sketch 时为所有 ImageRequest 注册
-Sketch.Builder(context).apply {
-    components {
-        addDecoder(SvgDecoder.Factory())
-    }
-}.build()
-
-// 加载图片时为单个 ImageRequest 注册
-ImageRequest(context, "https://www.example.com/image.svg") {
-    components {
-        addDecoder(SvgDecoder.Factory())
-    }
-}
+implementation("io.github.panpf.sketch4:sketch-svg:${LAST_VERSION}")
 ```
+
+> [!IMPORTANT]
+> `sketch-svg`
+> 模块支持自动注册组件，有关组件注册的详细内容请查看文档：[《注册组件》](register_component_zh.md)
 
 ### 配置
 
@@ -37,6 +26,10 @@ ImageRequest(context, "https://www.example.com/image.svg") {
     svgCss("...")    // Only Android 
 }
 ```
+
+[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch4/sketch-singleton
+
+[version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch4/
 
 [SvgDecoder]: ../../sketch-svg/src/commonMain/kotlin/com/github/panpf/sketch/decode/SvgDecoder.kt
 

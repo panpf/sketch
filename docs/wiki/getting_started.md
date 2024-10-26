@@ -98,20 +98,20 @@ component is destroyed.
 
 [Sketch] supports a variety of static and dynamic image types, as follows:
 
-| Format        | Dependent Modules                           |
-|:--------------|:--------------------------------------------|
-| jpeg          | _                                           |
-| png           | _                                           |
-| bmp           | _                                           |
-| webp          | _                                           |
-| heif          | _                                           |
-| avif          | _                                           |
-| svg           | sketch-svg                                  |
-| gif           | sketch-animated<br>sketch-animated-koralgif |
-| Animated webp | sketch-animated                             |
-| Animated heif | sketch-animated                             |
-| Video frames  | sketch-video<br>sketch-video-ffmpeg         |
-| Apk icon      | sketch-extensions-core                      |
+| Format        | Dependent Modules                                |
+|:--------------|:-------------------------------------------------|
+| jpeg          | _                                                |
+| png           | _                                                |
+| bmp           | _                                                |
+| webp          | _                                                |
+| heif          | _                                                |
+| avif          | _                                                |
+| svg           | sketch-svg                                       |
+| gif           | sketch-animated-gif<br>sketch-animated-gif-koral |
+| Animated webp | sketch-animated-webp                             |
+| Animated heif | sketch-animated-heif                             |
+| Video frames  | sketch-video<br>sketch-video-ffmpeg              |
+| Apk icon      | sketch-extensions-apkicon                        |
 
 Each image type has a corresponding Decoder support for it, [Learn more about Decoder][decoder]
 
@@ -120,17 +120,17 @@ Each image type has a corresponding Decoder support for it, [Learn more about De
 [Sketch] supports loading images from different data sources such as the network, local machine, and
 resources, as follows:
 
-| URI                       | Describe                 | Create Function         | Dependent Modules        |
-|:--------------------------|:-------------------------|:------------------------|:-------------------------|
-| http://, https://         | File in network          | _                       | _                        |
-| file://, /                | File in SDCard           | newFileUri()            | _                        |
-| content://                | Android Content Resolver | _                       | _                        |
-| file:///android_asset/    | Android Asset            | newAssetUri()           | _                        |
-| android.resource://       | Android Resource         | newResourceUri()        | _                        |
-| data:image/, data:img/    | Base64                   | newBase64Uri()          | _                        |
-| file:///compose_resource/ | Compose Resource         | newComposeResourceUri() | sketch-compose-resources |
-| file:///kotlin_resource/  | Kotlin Resource          | newKotlinResourceUri()  | _                        |
-| app.icon://               | Android App Icon         | newAppIconUri()         | sketch-extensions-core   |
+| URI                       | Describe                 | Create Function         | Dependent Modules                                                                |
+|:--------------------------|:-------------------------|:------------------------|:---------------------------------------------------------------------------------|
+| http://, https://         | File in network          | _                       | sketch-http-hurl<br>sketch-http-okhttp<br>sketch-http-ktor2<br>sketch-http-ktor3 |
+| file://, /                | File in SDCard           | newFileUri()            | _                                                                                |
+| content://                | Android Content Resolver | _                       | _                                                                                |
+| file:///android_asset/    | Android Asset            | newAssetUri()           | _                                                                                |
+| android.resource://       | Android Resource         | newResourceUri()        | _                                                                                |
+| data:image/, data:img/    | Base64                   | newBase64Uri()          | _                                                                                |
+| file:///compose_resource/ | Compose Resource         | newComposeResourceUri() | sketch-compose-resources                                                         |
+| file:///kotlin_resource/  | Kotlin Resource          | newKotlinResourceUri()  | _                                                                                |
+| app.icon://               | Android App Icon         | newAppIconUri()         | sketch-extensions-appicon                                                        |
 
 Each URI has its own Fetcher to support it, [Learn more about Fetcher][fetcher]
 
@@ -143,10 +143,11 @@ different, as follows:
 |:---------------------------------------------------------------------------------------------|:--------------|:------------------------|:------------------------|:------------------------|
 | jpeg<br/>png<br/>webp<br/>bmp                                                                | ✅             | ✅                       | ✅                       | ✅                       |
 | heif                                                                                         | ✅ (API 28)    | ❌                       | ❌                       | ❌                       |
+| avif                                                                                         | ✅ (API 31)    | ❌                       | ❌                       | ❌                       |
+| svg                                                                                          | ✅             | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) |
 | gif                                                                                          | ✅             | ✅                       | ✅                       | ✅                       |
 | Animated webp                                                                                | ✅ (API 28)    | ✅                       | ✅                       | ✅                       |
 | Animated heif                                                                                | ✅ (API 30)    | ❌                       | ❌                       | ❌                       |
-| svg                                                                                          | ✅             | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) |
 | Video frames                                                                                 | ✅             | ❌                       | ❌                       | ❌                       |
 | http://<br/>https://<br/>file://, /<br/>file:///compose_resource/<br/>data:image/jpeg;base64 | ✅             | ✅                       | ✅                       | ✅                       |
 | file:///android_asset/<br/>content://<br/>android.resource://                                | ✅             | ❌                       | ❌                       | ❌                       |
@@ -362,16 +363,16 @@ val imageResult: ImageResult = ...
 val request: ImageRequest = imageResult.request
 val image: Image = imageResult.image
 when (image) {
-     is BitmapImage -> {
+    is BitmapImage -> {
         val bitmap: Bitmap = image.bitmap
     }
-     is DrawableImage -> {
+    is DrawableImage -> {
         val drawable: Drawable = image.drawable
     }
     is PainterImage -> {
         val painter: Painter = image.painter
     }
-     is AnimatedImage -> {
+    is AnimatedImage -> {
         val codec: Codec = image.codec
     }
 }
@@ -438,7 +439,9 @@ val imageResult: ImageResult? = imageView.imageResult
 
 Basic functions:
 
+* [Register component][register_component]
 * [Compose][compose]
+* [Http: Load network images][http]
 * [AnimatedImage: GIF、WEBP、HEIF][animated_image]
 * [Resize: Modify the image size][resize]
 * [Transformation: Transformation image][transformation]
@@ -451,7 +454,6 @@ Basic functions:
 * [Fetcher: Learn about Fetcher and extend new URI types][fetcher]
 * [Decoder: Understand the decoding process of Sketch][decoder]
 * [Target: Apply the load results to the target][target]
-* [HttpStack: Learn about the HTTP section and using okhttp][http]
 * [SVG: Decode SVG still images][svg]
 * [VideoFrames: Decode video frames][video_frame]
 * [ExifOrientation: Correct the image orientation][exif_orientation]
@@ -511,6 +513,8 @@ Featured functions:
 [animated_image]: animated_image.md
 
 [apk_app_icon]: apk_app_icon.md
+
+[register_component]: register_component.md
 
 [compose]: compose.md
 

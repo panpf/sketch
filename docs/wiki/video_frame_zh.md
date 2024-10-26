@@ -2,43 +2,35 @@
 
 翻译：[English](video_frame.md)
 
-> [!IMPORTANT]
-> 1. 必须导入 `sketch-video` 或 `sketch-video-ffmpeg` 模块
-> 2. 仅支持 Android 平台
+Sketch 提供了 `sketch-video-*` 系列模块以支持解码视频帧
 
-Sketch 支持解码视频帧，由以下 Decoder 提供支持：
+| Module              | DecoderProvider                   | Decoder                   | Android   | iOS | Desktop | Web |
+|:--------------------|:----------------------------------|:--------------------------|:----------|:----|:--------|:----|
+| sketch-video        | [VideoFrameDecoderProvider]       | [VideoFrameDecoder]       | ✅(API 27) | ❌   | ❌       | ❌   |
+| sketch-video-ffmpeg | [FFmpegVideoFrameDecoderProvider] | [FFmpegVideoFrameDecoder] | ✅         | ❌   | ❌       | ❌   |
 
-* [VideoFrameDecoder]：使用 Android 内置的 MediaMetadataRetriever 类解码视频帧
-    * 需要先导入 `sketch-video` 模块
+* [VideoFrameDecoder]：
+    * 使用 Android 内置的 MediaMetadataRetriever 类解码视频帧
     * 建议 Android 8.1 及以上版本使用，因为 8.0 及以下版本不支持读取帧的缩略图，在解码 4k
       等较大的视频时将消耗大量的内存
-* [FFmpegVideoFrameDecoder]：使用 [wseemann/FFmpegMediaMetadataRetriever-project][FFmpegMediaMetadataRetriever-project] 库的 [FFmpegMediaMetadataRetriever] 类解码视频帧
-    * 需要先导入 `sketch-video-ffmpeg` 模块
+* [FFmpegVideoFrameDecoder]：
+    * 使用 [wseemann/FFmpegMediaMetadataRetriever-project][FFmpegMediaMetadataRetriever-project]
+      库的 [FFmpegMediaMetadataRetriever] 类解码视频帧
     * 库体积大概 23MB
 
-### 注册
+### 安装依赖
 
-根据情况选择合适的 Decoder，然后注册它，如下：
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
 
 ```kotlin
-// 在自定义 Sketch 时为所有 ImageRequest 注册
-Sketch.Builder(context).apply {
-    components {
-        addDecoder(VideoFrameDecoder.Factory())
-        //or
-        addDecoder(FFmpegVideoFrameDecoder.Factory())
-    }
-}.build()
-
-// 加载图片时为单个 ImageRequest 注册
-ImageRequest(context, "file:///sdcard/sample.mp4") {
-    components {
-        addDecoder(VideoFrameDecoder.Factory())
-        //or
-        addDecoder(FFmpegVideoFrameDecoder.Factory())
-    }
-}
+implementation("io.github.panpf.sketch4:sketch-video:${LAST_VERSION}")
+// or
+implementation("io.github.panpf.sketch4:sketch-video-ffmpeg:${LAST_VERSION}")
 ```
+
+> [!IMPORTANT]
+> 上述组件都支持自动注册，你只需要导入即可，无需额外配置，如果你需要手动注册，
+> 请阅读文档：[《注册组件》](register_component_zh.md)
 
 ### 配置
 
@@ -60,6 +52,10 @@ ImageRequest(context, "file:///sdcard/sample.mp4") {
 }
 ```
 
+[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch4/sketch-singleton
+
+[version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch4/
+
 [FFmpegMediaMetadataRetriever-project]: https://github.com/wseemann/FFmpegMediaMetadataRetriever
 
 [FFmpegMediaMetadataRetriever]: https://github.com/wseemann/FFmpegMediaMetadataRetriever/blob/master/core/src/main/kotlin/wseemann/media/FFmpegMediaMetadataRetriever.java
@@ -67,6 +63,10 @@ ImageRequest(context, "file:///sdcard/sample.mp4") {
 [VideoFrameDecoder]: ../../sketch-video/src/main/kotlin/com/github/panpf/sketch/decode/VideoFrameDecoder.kt
 
 [FFmpegVideoFrameDecoder]: ../../sketch-video-ffmpeg/src/main/kotlin/com/github/panpf/sketch/decode/FFmpegVideoFrameDecoder.kt
+
+[VideoFrameDecoderProvider]: ../../sketch-video/src/main/kotlin/com/github/panpf/sketch/decode/internal/VideoFrameDecoderProvider.kt
+
+[FFmpegVideoFrameDecoderProvider]: ../../sketch-video-ffmpeg/src/main/kotlin/com/github/panpf/sketch/decode/internal/FFmpegVideoFrameDecoderProvider.kt
 
 [ImageRequest]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
 

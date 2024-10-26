@@ -12,7 +12,7 @@ supported platforms and differences are as follows:
 | sketch-animated-webp      | [AnimatedWebpDecoderProvider]             | android api 28+: [ImageDecoderAnimatedWebpDecoder]</br>android api 27-: Not supported</br>non android: [SkiaAnimatedWebpDecoder] | ✅(API 28) | ✅   | ✅       | ✅   |
 | sketch-animated-heif      | [ImageDecoderAnimatedHeifDecoderProvider] | [ImageDecoderAnimatedHeifDecoder]                                                                                                | ✅(API 30) | ❌   | ❌       | ❌   |
 
-## Download
+## Install dependencies
 
 Before loading animations, you need to select one of the above components and configure
 dependencies. Take `sketch-animated-gif` as an example:
@@ -23,9 +23,10 @@ dependencies. Take `sketch-animated-gif` as an example:
 implementation("io.github.panpf.sketch4:sketch-animated-gif:${LAST_VERSION}")
 ```
 
-The above components all support automatic registration. You only need to import them without
-additional configuration. If you need to register manually, please read the
-documentation: [《Register component》](register_component.md)
+> [!IMPORTANT]
+> The above components all support automatic registration. You only need to import them without
+> additional configuration. If you need to register manually, please read the
+> documentation: [《Register component》](register_component.md)
 
 ## Load animated image
 

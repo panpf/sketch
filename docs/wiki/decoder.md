@@ -59,14 +59,16 @@ implementation, as shown in the following table:
 * [FFmpegVideoFrameDecoder] Decoding video frames using wseemann's [FFmpegMediaMetadataRetriever]
   library on Android ([Learn more](video_frame.md))
 
-The above components all support automatic registration. You only need to import them without
-additional configuration. If you need to register manually, please read the
-documentation: [《Register component》](register_component.md)
+> [!IMPORTANT]
+> The above components all support automatic registration. You only need to import them without
+> additional configuration. If you need to register manually, please read the
+> documentation: [《Register component》](register_component.md)
 
 ### Extend Decoder
 
-First implement the [Decoder] interface to define your Decoder and its Factory then register please,
-read the documentation: [《Register component》](register_component.md)
+First implement the [Decoder] interface to define your Decoder and its Factory
+
+Then refer to the document [《Register component》](register_component.md) to register your Decoder.
 
 > [!CAUTION]
 > 1. Customizing [Decoder] requires applying many properties related to image quality and size in

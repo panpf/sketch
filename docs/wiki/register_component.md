@@ -10,7 +10,7 @@ Extended components need to be registered with Sketch or ImageRequest before use
 registered with Sketch can be used by all ImageRequests, while components registered with
 ImageRequest can only be used by the current ImageRequest.
 
-[!TIP]
+> [!TIP]
 > Components registered in ImageRequest have higher priority than components registered in Sketch
 
 ## Register to Sketch
@@ -90,7 +90,7 @@ following steps (taking full-platform components as an example):
        with yours
        [FetcherProvider] or [DecoderProvider] implementation class name
 
-[!TIP]
+> [!TIP]
 > For a complete example, please refer to the `sketch-http-ktor3` module
 
 ## Register to ImageRequest

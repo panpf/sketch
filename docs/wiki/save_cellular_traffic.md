@@ -3,12 +3,19 @@
 Translations: [简体中文](save_cellular_traffic_zh.md)
 
 > [!IMPORTANT]
-> 1. Required import `sketch-extensions-core` module
-> 2. Temporarily unavailable for non-Android platforms
+> Only available on Android platform
 
 The cellular traffic saving function can set the depth parameter of [ImageRequest] to [Depth].LOCAL
 when detecting that current cellular traffic is present, so that images will no longer be downloaded
 from the network.
+
+### Install dependencies
+
+`${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
+
+```kotlin
+implementation("io.github.panpf.sketch4:sketch-extensions-core:${LAST_VERSION}")
+```
 
 ### Configure
 
@@ -66,7 +73,8 @@ ComposableImageRequest(context, "https://example.com/image.jpg") {
 ```
 
 > [!TIP]
-> `saveCellularTrafficError(Res.drawable.ic_signal_cellular)` needs to import the `sketch-extensions-compose-resources` module
+> `saveCellularTrafficError(Res.drawable.ic_signal_cellular)` needs to import the
+`sketch-extensions-compose-resources` module
 
 ### Click to force load
 
@@ -79,6 +87,10 @@ Enable clicking ImageView to ignore cellular data and redisplay the image
 ```kotlin
 sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(true)
 ```
+
+[version_icon]: https://img.shields.io/maven-central/v/io.github.panpf.sketch4/sketch-singleton
+
+[version_link]: https://repo1.maven.org/maven2/io/github/panpf/sketch4/
 
 [Sketch]: ../../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/Sketch.common.kt
 
