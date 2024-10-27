@@ -15,7 +15,7 @@ Three styles are provided to choose from, as follows:
 
 ## Compose
 
-First install dependencies
+First install component
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 
@@ -84,7 +84,7 @@ AsyncImage(
 
 ## View
 
-First install dependencies
+First install component
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 

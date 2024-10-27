@@ -8,7 +8,7 @@ Sketch provides extended functions for displaying image type logo for view and C
 
 ### Compose
 
-First install the dependencies
+First install the component
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 
@@ -47,7 +47,7 @@ AsyncImage(
 
 ### View
 
-First install the dependencies
+First install the component
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 

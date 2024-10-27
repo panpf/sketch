@@ -22,7 +22,7 @@ has the following features:
   etc.
 * `Modern`: Completely based on Kotlin and Kotlin coroutine design
 
-## Download
+## Install
 
 `Published to mavenCentral`
 

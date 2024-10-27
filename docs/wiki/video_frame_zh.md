@@ -18,7 +18,7 @@ Sketch 提供了 `sketch-video-*` 系列模块以支持解码视频帧
       库的 [FFmpegMediaMetadataRetriever] 类解码视频帧
     * 库体积大概 23MB
 
-### 安装依赖
+### 安装组件
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
 

@@ -12,7 +12,7 @@ supported platforms and differences are as follows:
 | sketch-animated-webp      | [AnimatedWebpDecoderProvider]             | android api 28+: [ImageDecoderAnimatedWebpDecoder]</br>android api 27-: Not supported</br>non android: [SkiaAnimatedWebpDecoder] | ✅(API 28) | ✅   | ✅       | ✅   |
 | sketch-animated-heif      | [ImageDecoderAnimatedHeifDecoderProvider] | [ImageDecoderAnimatedHeifDecoder]                                                                                                | ✅(API 30) | ❌   | ❌       | ❌   |
 
-## Install dependencies
+## Install component
 
 Before loading animations, you need to select one of the above components and configure
 dependencies. Take `sketch-animated-gif` as an example:

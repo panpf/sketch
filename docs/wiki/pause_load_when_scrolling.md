@@ -6,7 +6,7 @@ Loading a large number of images during list scrolling will reduce UI fluency. T
 the loading of images during list scrolling on devices with poor performance can significantly
 improve UI fluency.
 
-First install dependencies
+First install component
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 

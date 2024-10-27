@@ -15,7 +15,7 @@ Sketch 为 view 和 Compose 提供了显示下载进度的扩展功能，如下�
 
 ## Compose
 
-首先安装依赖
+首先安装组件
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
 
@@ -84,7 +84,7 @@ AsyncImage(
 
 ## View
 
-首先安装依赖
+首先安装组件
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
 

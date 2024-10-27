@@ -8,7 +8,7 @@
 节省蜂窝流量功能可以在检测到当前是蜂窝流量时将 [ImageRequest] 的 depth 参数设置为 [Depth]
 .LOCAL，这样就不会再从网络下载图片
 
-### 安装依赖
+### 安装组件
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
 

@@ -4,7 +4,7 @@ Translations: [简体中文](apk_app_icon_zh.md)
 
 ## Load Apk Icon
 
-First install the dependencies
+First install the component
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 
@@ -26,7 +26,7 @@ sketch.enqueue(ImageRequest(context, uri = "/sdcard/sample.apk"))
 
 ## Load the icon of the installed app
 
-First install the dependencies
+First install the component
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 

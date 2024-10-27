@@ -7,7 +7,7 @@ conveniently. It supports xml attributes to configure request attributes, suppor
 monitor the status and results of requests, and also supports functions such as displaying download
 progress and image type icons.
 
-## Install dependencies
+## Install component
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 

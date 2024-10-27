@@ -5,7 +5,7 @@
 Sketch 提供了一个 [SketchImageView] 组件，它配合 Sketch 使用可以更方便的加载图片，支持 xml 属性配置请求属性，支持
 flow 的方式监听请求的状态和结果，还支持显示下载进度和图片类型角标等功能
 
-## 安装依赖
+## 安装组件
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
 

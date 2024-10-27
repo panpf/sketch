@@ -4,7 +4,7 @@
 
 ## 加载 Apk 图标
 
-首先安装依赖
+首先安装组件
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
 
@@ -25,7 +25,7 @@ sketch.enqueue(ImageRequest(context, uri = "/sdcard/sample.apk"))
 
 ## 加载已安装 App 的图标
 
-首先安装依赖
+首先安装组件
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
 

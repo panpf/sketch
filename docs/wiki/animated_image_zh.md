@@ -11,7 +11,7 @@ Sketch 提供了 `sketch-animated-*` 系列模块以支持动图，所支持的�
 | sketch-animated-webp      | [AnimatedWebpDecoderProvider]             | android api 28+: [ImageDecoderAnimatedWebpDecoder]</br>android api 27-: Not supported</br>non android: [SkiaAnimatedWebpDecoder] | ✅(API 28) | ✅   | ✅       | ✅   |
 | sketch-animated-heif      | [ImageDecoderAnimatedHeifDecoderProvider] | [ImageDecoderAnimatedHeifDecoder]                                                                                                | ✅(API 30) | ❌   | ❌       | ❌   |
 
-## 下载
+## 安装组件
 
 加载动图前需要先从上述组件中选择一个并安装依赖，以 `sketch-animated-gif` 为例：
 

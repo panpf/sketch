@@ -4,7 +4,7 @@ Translations: [简体中文](svg_zh.md)
 
 Sketch supports decoding SVG static images, powered by [SvgDecoder]
 
-## Install dependencies
+## Install component
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 

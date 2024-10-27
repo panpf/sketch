@@ -5,7 +5,7 @@
 列表滚动的过程中大量加载图片会降低 UI 流畅度，因此在性能较差的设备上列表滚动中暂停加载图片能显著提高
 UI 流畅度
 
-首先安装依赖
+首先安装组件
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
 

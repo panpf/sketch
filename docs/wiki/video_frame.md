@@ -20,12 +20,14 @@ Sketch provides the `sketch-video-*` series of modules to support decoding video
       library
     * Library size is approximately 23 MB
 
-## Install dependencies
+## Install component
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 
 ```kotlin
-implementation("io.github.panpf.sketch4:sketch-svg:${LAST_VERSION}")
+implementation("io.github.panpf.sketch4:sketch-video:${LAST_VERSION}")
+// or
+implementation("io.github.panpf.sketch4:sketch-video-ffmpeg:${LAST_VERSION}")
 ```
 
 > [!IMPORTANT]

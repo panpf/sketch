@@ -4,7 +4,7 @@
 
 Sketch 支持解码 SVG 静态图片，由 [SvgDecoder] 提供支持
 
-### 安装依赖
+### 安装组件
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (不包含 'v')
 

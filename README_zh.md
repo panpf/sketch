@@ -16,7 +16,7 @@ Sketch 是专为 Compose Multiplatform 和 Android View 设计的图片加载库
 * `扩展功能`：提供蜂窝流量时暂停下载、列表滚动中暂停加载、图片类型徽章、下载进度指示器等实用扩展
 * `现代化`：完全基于 Kotlin 和 Kotlin 协程设计
 
-## 下载
+## 安装
 
 `已发布到 mavenCentral`
 

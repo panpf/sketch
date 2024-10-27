@@ -26,7 +26,7 @@ supported platforms and differences are as follows:
     additional configuration. If you need to register manually, please read the
     documentation: [《Register component》](register_component.md)
 
-## Install dependencies
+## Install component
 
 Before loading network images, you need to select one of the above components and configure
 dependencies. Take `sketch-http` as an example:

@@ -9,7 +9,7 @@ The cellular traffic saving function can set the depth parameter of [ImageReques
 when detecting that current cellular traffic is present, so that images will no longer be downloaded
 from the network.
 
-### Install dependencies
+### Install component
 
 `${LAST_VERSION}`: [![Download][version_icon]][version_link] (Not included 'v')
 
