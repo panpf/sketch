@@ -18,8 +18,9 @@ package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.util.ComponentLoader
 
+@JsExport   // Required
 @Suppress("DEPRECATION")
-@OptIn(ExperimentalStdlibApi::class)
+@OptIn(ExperimentalStdlibApi::class, ExperimentalJsExport::class)
 @EagerInitialization
 @Deprecated("", level = DeprecationLevel.HIDDEN)
 val svgDecoderProviderInitHook: Any = ComponentLoader.register(SvgDecoderProvider())

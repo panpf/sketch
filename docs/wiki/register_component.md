@@ -77,8 +77,8 @@ following steps (taking full-platform components as an example):
 3. Non-jvm platforms:
     1. Create an actual version of the [FetcherProvider] or [DecoderProvider] implementation class
        in the nonJvmCommonMain directory
-    2. Create any file in any location under the non-jvm platform directory such as iosMain, jsMain,
-       wasmJsMain and fill in the following content:
+   2. Create any file anywhere in the iosMain and wasmJsMain platform directories and fill in the
+      following content:
        ```kotlin
        @Suppress("DEPRECATION")
        @OptIn(ExperimentalStdlibApi::class)
@@ -86,7 +86,16 @@ following steps (taking full-platform components as an example):
        @Deprecated("", level = DeprecationLevel.HIDDEN)
        val ktorHttpUriFetcherProviderInitHook: Any = ComponentLoader.register(KtorHttpUriFetcherProvider())
        ```
-    3. `ktorHttpUriFetcherProviderInitHook` and `KtorHttpUriFetcherProvider` need to be replaced
+   3. Create any file anywhere in the jsMain platform directory and fill in the following content:
+      ```kotlin
+      @JsExport
+      @Suppress("DEPRECATION")
+      @OptIn(ExperimentalStdlibApi::class, ExperimentalJsExport::class)
+      @EagerInitialization
+      @Deprecated("", level = DeprecationLevel.HIDDEN)
+      val ktorHttpUriFetcherProviderInitHook: Any = ComponentLoader.register(KtorHttpUriFetcherProvider())
+      ```
+   4. `ktorHttpUriFetcherProviderInitHook` and `KtorHttpUriFetcherProvider` need to be replaced
        with yours
        [FetcherProvider] or [DecoderProvider] implementation class name
 

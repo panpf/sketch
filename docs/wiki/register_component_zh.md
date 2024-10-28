@@ -65,7 +65,7 @@ Sketch.Builder(context).apply {
     4. 在文件中一行一个填写你的 [FetcherProvider] 或 [DecoderProvider] 实现类的全名
 3. 非 jvm 平台：
     1. 在 nonJvmCommonMain 目录下创建 actual 版本的 [FetcherProvider] 或 [DecoderProvider] 的实现类
-    2. 分别在 iosMain、jsMain、wasmJsMain 等非 jvm 平台目录下任意位置创建任意文件填写以下内容：
+   2. 在 iosMain、wasmJsMain 平台目录下任意位置创建任意文件填写以下内容：
        ```kotlin
        @Suppress("DEPRECATION")
        @OptIn(ExperimentalStdlibApi::class)
@@ -73,7 +73,16 @@ Sketch.Builder(context).apply {
        @Deprecated("", level = DeprecationLevel.HIDDEN)
        val ktorHttpUriFetcherProviderInitHook: Any = ComponentLoader.register(KtorHttpUriFetcherProvider())
        ```
-    3. `ktorHttpUriFetcherProviderInitHook` 和 `KtorHttpUriFetcherProvider` 需要替换成你的
+   3. 在 jsMain 平台目录下任意位置创建任意文件填写以下内容：
+      ```kotlin
+      @JsExport
+      @Suppress("DEPRECATION")
+      @OptIn(ExperimentalStdlibApi::class, ExperimentalJsExport::class)
+      @EagerInitialization
+      @Deprecated("", level = DeprecationLevel.HIDDEN)
+      val ktorHttpUriFetcherProviderInitHook: Any = ComponentLoader.register(KtorHttpUriFetcherProvider())
+      ```
+   4. `ktorHttpUriFetcherProviderInitHook` 和 `KtorHttpUriFetcherProvider` 需要替换成你的
        [FetcherProvider] 或 [DecoderProvider] 实现类的名字
 
 > [!TIP]

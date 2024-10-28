@@ -18,8 +18,9 @@ package com.github.panpf.sketch.fetch.internal
 
 import com.github.panpf.sketch.util.ComponentLoader
 
+@JsExport   // Required
 @Suppress("DEPRECATION")
-@OptIn(ExperimentalStdlibApi::class)
+@OptIn(ExperimentalStdlibApi::class, ExperimentalJsExport::class)
 @EagerInitialization
 @Deprecated("", level = DeprecationLevel.HIDDEN)
 val composeResourceUriFetcherProviderInitHook: Any =
