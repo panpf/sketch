@@ -1,5 +1,6 @@
+@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
+
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     id("com.android.application")
@@ -40,7 +41,6 @@ kotlin {
         binaries.executable()
     }
 
-    @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         moduleName = "composeApp"
         browser {
@@ -199,6 +199,10 @@ androidApplication(
     nameSpace = appId.replace("sketch4", "sketch"),
     applicationId = appId
 ) {
+    defaultConfig {
+        buildConfigField("String", "VERSION_NAME", "\"${property("versionName").toString()}\"")
+        buildConfigField("int", "VERSION_CODE", property("versionCode").toString())
+    }
     signingConfigs {
         create("sample") {
             storeFile = project.file("sample.keystore")

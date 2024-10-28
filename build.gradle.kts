@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
+import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
@@ -82,9 +83,9 @@ fun Project.jvmTargetConfig() {
 fun Project.composeConfig() {
     plugins.withId("org.jetbrains.kotlin.plugin.compose") {
         extensions.configure<ComposeCompilerGradlePluginExtension> {
-            enableIntrinsicRemember = true
-            enableNonSkippingGroupOptimization = true
-            enableStrongSkippingMode = true
+            featureFlags.addAll(
+                ComposeFeatureFlag.OptimizeNonSkippingGroups
+            )
             stabilityConfigurationFile = rootDir.resolve("sketch-core/compose_compiler_config.conf")
 
             /**

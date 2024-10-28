@@ -14,6 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
+@file:Suppress("unused")
+
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.NamedDomainObjectProvider
 import org.gradle.api.Project
@@ -132,11 +136,11 @@ fun Project.applyKotlinJsImplicitDependencyWorkaround() {
             dependsOn(named("jsProductionExecutableCompileSync"))
             dependsOn(named("jsTestTestDevelopmentExecutableCompileSync"))
 
-            dependsOn(getByPath(":sketch-singleton:jsDevelopmentLibraryCompileSync"))
-            dependsOn(getByPath(":sketch-singleton:jsDevelopmentExecutableCompileSync"))
-            dependsOn(getByPath(":sketch-singleton:jsProductionLibraryCompileSync"))
-            dependsOn(getByPath(":sketch-singleton:jsProductionExecutableCompileSync"))
-            dependsOn(getByPath(":sketch-singleton:jsTestTestDevelopmentExecutableCompileSync"))
+            dependsOn(getByPath(":sketch-core:jsDevelopmentLibraryCompileSync"))
+            dependsOn(getByPath(":sketch-core:jsDevelopmentExecutableCompileSync"))
+            dependsOn(getByPath(":sketch-core:jsProductionLibraryCompileSync"))
+            dependsOn(getByPath(":sketch-core:jsProductionExecutableCompileSync"))
+            dependsOn(getByPath(":sketch-core:jsTestTestDevelopmentExecutableCompileSync"))
         }
         named("jsBrowserProductionWebpack").configure(configureJs)
         named("jsBrowserProductionLibraryDistribution").configure(configureJs)
@@ -154,11 +158,11 @@ fun Project.applyKotlinWasmJsImplicitDependencyWorkaround() {
             dependsOn(named("wasmJsProductionExecutableCompileSync"))
             dependsOn(named("wasmJsTestTestDevelopmentExecutableCompileSync"))
 
-            dependsOn(getByPath(":sketch-singleton:wasmJsDevelopmentLibraryCompileSync"))
-            dependsOn(getByPath(":sketch-singleton:wasmJsDevelopmentExecutableCompileSync"))
-            dependsOn(getByPath(":sketch-singleton:wasmJsProductionLibraryCompileSync"))
-            dependsOn(getByPath(":sketch-singleton:wasmJsProductionExecutableCompileSync"))
-            dependsOn(getByPath(":sketch-singleton:wasmJsTestTestDevelopmentExecutableCompileSync"))
+            dependsOn(getByPath(":sketch-core:wasmJsDevelopmentLibraryCompileSync"))
+            dependsOn(getByPath(":sketch-core:wasmJsDevelopmentExecutableCompileSync"))
+            dependsOn(getByPath(":sketch-core:wasmJsProductionLibraryCompileSync"))
+            dependsOn(getByPath(":sketch-core:wasmJsProductionExecutableCompileSync"))
+            dependsOn(getByPath(":sketch-core:wasmJsTestTestDevelopmentExecutableCompileSync"))
         }
         named("wasmJsBrowserProductionWebpack").configure(configureWasmJs)
         named("wasmJsBrowserProductionLibraryDistribution").configure(configureWasmJs)
