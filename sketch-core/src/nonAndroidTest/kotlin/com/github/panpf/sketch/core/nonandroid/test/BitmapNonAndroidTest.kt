@@ -1,11 +1,14 @@
 package com.github.panpf.sketch.core.nonandroid.test
 
+import com.github.panpf.sketch.byteCount as expectByteCount
+import com.github.panpf.sketch.height as expectHeight
+import com.github.panpf.sketch.isImmutable as expectIsImmutable
+import com.github.panpf.sketch.isMutable as expectIsMutable
+import com.github.panpf.sketch.size as expectSize
+import com.github.panpf.sketch.width as expectWidth
 import com.github.panpf.sketch.Bitmap
-import com.github.panpf.sketch.byteCount
 import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.isMutable
-import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.util.Size
 import org.jetbrains.skia.ColorAlphaType
@@ -28,41 +31,44 @@ class BitmapNonAndroidTest {
 
     @Test
     fun testWidth() {
-        assertEquals(expected = 100, actual = createBitmap(100, 200).width)
-        assertEquals(expected = 200, actual = createBitmap(200, 100).width)
+        assertEquals(expected = 100, actual = createBitmap(100, 200).expectWidth)
+        assertEquals(expected = 200, actual = createBitmap(200, 100).expectWidth)
     }
 
     @Test
     fun testHeight() {
-        assertEquals(expected = 200, actual = createBitmap(100, 200).height)
-        assertEquals(expected = 100, actual = createBitmap(200, 100).height)
+        assertEquals(expected = 200, actual = createBitmap(100, 200).expectHeight)
+        assertEquals(expected = 100, actual = createBitmap(200, 100).expectHeight)
     }
 
     @Test
     fun testSize() {
-        assertEquals(expected = Size(100, 200), actual = createBitmap(100, 200).size)
-        assertEquals(expected = Size(200, 100), actual = createBitmap(200, 100).size)
+        assertEquals(expected = Size(100, 200), actual = createBitmap(100, 200).expectSize)
+        assertEquals(expected = Size(200, 100), actual = createBitmap(200, 100).expectSize)
     }
 
     @Test
     fun testByteCount() {
         assertEquals(
             expected = 80000,
-            actual = createBitmap(100, 200, ColorType.RGBA_8888).byteCount
+            actual = createBitmap(100, 200, ColorType.RGBA_8888).expectByteCount
         )
-        assertEquals(expected = 40000, actual = createBitmap(200, 100, ColorType.RGB_565).byteCount)
+        assertEquals(
+            expected = 40000,
+            actual = createBitmap(200, 100, ColorType.RGB_565).expectByteCount
+        )
     }
 
     @Test
     fun testIsMutable() {
-        assertTrue(ResourceImages.jpeg.decode().bitmap.isMutable)
-        assertFalse(ResourceImages.jpeg.decode().bitmap.apply { setImmutable() }.isMutable)
+        assertTrue(ResourceImages.jpeg.decode().bitmap.expectIsMutable)
+        assertFalse(ResourceImages.jpeg.decode().bitmap.apply { setImmutable() }.expectIsMutable)
     }
 
     @Test
     fun testIsImmutable() {
-        assertFalse(ResourceImages.jpeg.decode().bitmap.isImmutable)
-        assertTrue(ResourceImages.jpeg.decode().bitmap.apply { setImmutable() }.isImmutable)
+        assertFalse(ResourceImages.jpeg.decode().bitmap.expectIsImmutable)
+        assertTrue(ResourceImages.jpeg.decode().bitmap.apply { setImmutable() }.expectIsImmutable)
     }
 
     @Test
