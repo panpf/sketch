@@ -24,13 +24,13 @@ sealed interface PainterState {
     ) : PainterState
 
     /** The request was successful. */
-    data class Success(
-        override val painter: Painter,
+    data class Success constructor(
+        override val painter: Painter,  // TODO result: ImageResult.Success
     ) : PainterState
 
     /** The request failed due to [ImageResult.Error.throwable]. */
     data class Error(
-        override val painter: Painter?,
+        override val painter: Painter?,  // TODO result: ImageResult.Error
     ) : PainterState
 }
 

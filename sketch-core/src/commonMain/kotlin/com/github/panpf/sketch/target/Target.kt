@@ -131,6 +131,7 @@ interface Target {
      * Called if the request completes successfully.
      */
     @MainThread
+    // TODO result: ImageRequest.Success
     fun onSuccess(sketch: Sketch, request: ImageRequest, result: Image) {
 
     }
@@ -139,6 +140,7 @@ interface Target {
      * Called if an error occurs while executing the request.
      */
     @MainThread
+    // TODO result: ImageRequest.Error
     fun onError(sketch: Sketch, request: ImageRequest, error: Image?) {
 
     }

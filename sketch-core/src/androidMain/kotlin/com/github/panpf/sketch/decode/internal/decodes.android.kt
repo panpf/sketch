@@ -272,6 +272,6 @@ fun supportBitmapRegionDecoder(mimeType: String, animated: Boolean = false): Boo
         // At present, it can only be assumed that API 36 starts to support it.
         ImageFormat.AVIF.mimeType -> VERSION.SDK_INT > 35
         // Other formats are supported by default, In order to prevent BitmapRegionDecoder from supporting new formats in the future, our failure to adapt will result in unavailability.
-        else -> true
+        else -> true    // TODO null
     }
 }
