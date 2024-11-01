@@ -166,7 +166,7 @@ fun Bitmap.toShortInfoString(): String =
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testMutableCopy
  */
 actual fun Bitmap.mutableCopy(): Bitmap {
-    return this.copyWith(config = config, isMutable = true)
+    return this.copyWith(config = safeConfig, isMutable = true)
 }
 
 /**
@@ -175,7 +175,7 @@ actual fun Bitmap.mutableCopy(): Bitmap {
  * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testMutableCopyOrSelf
  */
 actual fun Bitmap.mutableCopyOrSelf(): Bitmap {
-    return if (!isMutable) this.copyWith(config = config, isMutable = true) else this
+    return if (!isMutable) this.copyWith(config = safeConfig, isMutable = true) else this
 }
 
 /**
