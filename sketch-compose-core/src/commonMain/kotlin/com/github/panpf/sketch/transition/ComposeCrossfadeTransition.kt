@@ -69,13 +69,15 @@ class ComposeCrossfadeTransition constructor(
             is ImageResult.Success -> target.onSuccess(
                 sketch = sketch,
                 request = request,
-                result = crossfadePainter.asImage()
+                result = result,
+                image = crossfadePainter.asImage()
             )
 
             is ImageResult.Error -> target.onError(
                 sketch = sketch,
                 request = request,
-                error = crossfadePainter.asImage()
+                error = result,
+                image = crossfadePainter.asImage()
             )
         }
     }

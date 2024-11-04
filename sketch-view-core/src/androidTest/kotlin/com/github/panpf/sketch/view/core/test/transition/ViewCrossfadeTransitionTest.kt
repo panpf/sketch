@@ -36,6 +36,7 @@ import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.fakeSuccessImageResult
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transition.ViewCrossfadeTransition
 import kotlinx.coroutines.Dispatchers
@@ -110,7 +111,12 @@ class ViewCrossfadeTransitionTest {
 
         // success
         withContext(Dispatchers.Main) {
-            imageViewTarget.onSuccess(sketch, request, ColorDrawable(Color.GREEN).asImage())
+            imageViewTarget.onSuccess(
+                sketch,
+                request,
+                fakeSuccessImageResult(context),
+                ColorDrawable(Color.GREEN).asImage()
+            )
         }
         assertEquals(Color.GREEN, (imageView.drawable as ColorDrawable).color)
         assertEquals(Color.GREEN, (imageViewTarget.drawable as ColorDrawable).color)
@@ -134,7 +140,12 @@ class ViewCrossfadeTransitionTest {
 
         // error
         withContext(Dispatchers.Main) {
-            imageViewTarget.onSuccess(sketch, request, ColorDrawable(Color.GREEN).asImage())
+            imageViewTarget.onSuccess(
+                sketch,
+                request,
+                fakeSuccessImageResult(context),
+                ColorDrawable(Color.GREEN).asImage()
+            )
         }
         assertEquals(Color.GREEN, (imageView.drawable as ColorDrawable).color)
         assertEquals(Color.GREEN, (imageViewTarget.drawable as ColorDrawable).color)
@@ -150,7 +161,12 @@ class ViewCrossfadeTransitionTest {
 
         // start end same
         withContext(Dispatchers.Main) {
-            imageViewTarget.onSuccess(sketch, request, ColorDrawable(Color.GREEN).asImage())
+            imageViewTarget.onSuccess(
+                sketch,
+                request,
+                fakeSuccessImageResult(context),
+                ColorDrawable(Color.GREEN).asImage()
+            )
         }
         assertTrue(imageViewTarget.drawable!! is ColorDrawable)
         ViewCrossfadeTransition(

@@ -144,7 +144,7 @@ class RequestExecutor constructor(val sketch: Sketch) {
         val sketch = requestContext.sketch
         if (target != null) {
             setImage(sketch, lastRequest, target, result) {
-                target.onSuccess(sketch, lastRequest, result.image)
+                target.onSuccess(sketch, lastRequest, result, result.image)
             }
         }
         lastRequest.listener?.onSuccess(lastRequest, result)
@@ -180,7 +180,7 @@ class RequestExecutor constructor(val sketch: Sketch) {
         val throwable1 = errorResult.throwable
         if (target != null) {
             setImage(sketch, lastRequest, target, errorResult) {
-                target.onError(sketch, lastRequest, errorResult.image)
+                target.onError(sketch, lastRequest, errorResult, errorResult.image)
             }
         }
         lastRequest.listener?.onError(lastRequest, errorResult)

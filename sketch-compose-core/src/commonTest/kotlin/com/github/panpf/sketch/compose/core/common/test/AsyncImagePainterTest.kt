@@ -19,6 +19,7 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.LifecycleContainer
 import com.github.panpf.sketch.test.utils.SizeColorPainter
 import com.github.panpf.sketch.test.utils.TestLifecycle
+import com.github.panpf.sketch.test.utils.fakeSuccessImageResult
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -153,7 +154,8 @@ class AsyncImagePainterTest {
         asyncImageState.target.onSuccess(
             sketch = sketch,
             request = request,
-            result = SizeColorPainter(Color.Red, Size(101f, 202f)).asImage()
+            result = fakeSuccessImageResult(context),
+            image = SizeColorPainter(Color.Red, Size(101f, 202f)).asImage()
         )
         assertEquals(SizeColorPainter(Color.Red, Size(101f, 202f)), asyncImageState.target.painter)
         assertEquals(Size(101f, 202f), asyncImagePainter.intrinsicSize)

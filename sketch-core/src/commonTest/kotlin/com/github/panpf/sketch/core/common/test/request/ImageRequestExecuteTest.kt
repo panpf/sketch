@@ -1033,7 +1033,7 @@ class ImageRequestExecuteTest {
         val request = ImageRequest(context, imageUri) {
             size(500, 500)
             target(
-                onError = { _, _, image ->
+                onError = { _, _, _, image ->
                     onErrorImage = image
                 }
             )
@@ -1041,7 +1041,7 @@ class ImageRequestExecuteTest {
         val errorRequest = ImageRequest(context, ResourceImages.jpeg.uri + "1") {
             size(500, 500)
             target(
-                onError = { _, _, image ->
+                onError = { _, _, _, image ->
                     onErrorImage = image
                 }
             )

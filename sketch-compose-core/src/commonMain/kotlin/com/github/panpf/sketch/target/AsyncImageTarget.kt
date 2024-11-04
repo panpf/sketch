@@ -147,14 +147,24 @@ class AsyncImageTarget(
         painterStateMutableState.value = Loading(painter)
     }
 
-    override fun onSuccess(sketch: Sketch, request: ImageRequest, result: Image) {
-        super.onSuccess(sketch, request, result)
-        painterStateMutableState.value = PainterState.Success(painter!!)
+    override fun onSuccess(
+        sketch: Sketch,
+        request: ImageRequest,
+        result: ImageResult.Success,
+        image: Image
+    ) {
+        super.onSuccess(sketch, request, result, image)
+        painterStateMutableState.value = PainterState.Success(result, painter!!)
     }
 
-    override fun onError(sketch: Sketch, request: ImageRequest, error: Image?) {
-        super.onError(sketch, request, error)
-        painterStateMutableState.value = PainterState.Error(painter)
+    override fun onError(
+        sketch: Sketch,
+        request: ImageRequest,
+        error: ImageResult.Error,
+        image: Image?
+    ) {
+        super.onError(sketch, request, error, image)
+        painterStateMutableState.value = PainterState.Error(error, painter)
     }
 
     override fun equals(other: Any?): Boolean {

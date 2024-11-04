@@ -17,6 +17,7 @@ import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.createBitmap
+import com.github.panpf.sketch.test.utils.fakeSuccessImageResult
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transition.ComposeCrossfadeTransition
 import kotlinx.coroutines.Dispatchers
@@ -86,7 +87,12 @@ class ComposeCrossfadeTransitionTest {
 
         // success
         withContext(Dispatchers.Main) {
-            imageViewTarget.onSuccess(sketch, request, ColorPainter(Color.Green).asImage())
+            imageViewTarget.onSuccess(
+                sketch,
+                request,
+                fakeSuccessImageResult(context),
+                ColorPainter(Color.Green).asImage()
+            )
         }
         assertEquals(Color.Green, (imageViewTarget.painter as ColorPainter).color)
         val resultBitmap = createBitmap(100, 200)
@@ -109,7 +115,12 @@ class ComposeCrossfadeTransitionTest {
 
         // error
         withContext(Dispatchers.Main) {
-            imageViewTarget.onSuccess(sketch, request, ColorPainter(Color.Green).asImage())
+            imageViewTarget.onSuccess(
+                sketch,
+                request,
+                fakeSuccessImageResult(context),
+                ColorPainter(Color.Green).asImage()
+            )
         }
         assertEquals(Color.Green, (imageViewTarget.painter as ColorPainter).color)
         val error = ImageResult.Error(
@@ -124,7 +135,12 @@ class ComposeCrossfadeTransitionTest {
 
         // start end same
         withContext(Dispatchers.Main) {
-            imageViewTarget.onSuccess(sketch, request, ColorPainter(Color.Green).asImage())
+            imageViewTarget.onSuccess(
+                sketch,
+                request,
+                fakeSuccessImageResult(context),
+                ColorPainter(Color.Green).asImage()
+            )
         }
         assertTrue(imageViewTarget.painter!! is ColorPainter)
         ComposeCrossfadeTransition(

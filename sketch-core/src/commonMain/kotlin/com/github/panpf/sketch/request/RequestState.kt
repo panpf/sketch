@@ -16,8 +16,6 @@
 
 package com.github.panpf.sketch.request
 
-import com.github.panpf.sketch.request.LoadState.Canceled
-import com.github.panpf.sketch.request.LoadState.Started
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -40,7 +38,7 @@ class RequestState : Listener, ProgressListener {
     override fun onStart(request: ImageRequest) {
         _resultState.value = null
         _progressState.value = null
-        _loadState.value = Started(request)
+        _loadState.value = LoadState.Started(request)
     }
 
     override fun onSuccess(request: ImageRequest, result: ImageResult.Success) {
@@ -54,7 +52,7 @@ class RequestState : Listener, ProgressListener {
     }
 
     override fun onCancel(request: ImageRequest) {
-        _loadState.value = Canceled(request)
+        _loadState.value = LoadState.Canceled(request)
     }
 
     override fun onUpdateProgress(request: ImageRequest, progress: Progress) {

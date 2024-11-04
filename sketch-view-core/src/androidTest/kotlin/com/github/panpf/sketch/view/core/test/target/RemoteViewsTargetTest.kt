@@ -8,6 +8,8 @@ import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.target.RemoteViewsTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.fakeErrorImageResult
+import com.github.panpf.sketch.test.utils.fakeSuccessImageResult
 import com.github.panpf.sketch.test.utils.getDrawableCompat
 import org.junit.runner.RunWith
 import kotlin.test.Test
@@ -39,16 +41,20 @@ class RemoteViewsTargetTest {
             assertEquals(1, callbackCount)
 
             onError(
-                sketch, request,
+                sketch,
+                request,
+                fakeErrorImageResult(context),
                 context.getDrawableCompat(android.R.drawable.ic_lock_lock).asImage()
             )
             assertEquals(2, callbackCount)
 
-            onError(sketch, request, null)
+            onError(sketch, request, fakeErrorImageResult(context), null)
             assertEquals(2, callbackCount)
 
             onSuccess(
-                sketch, request,
+                sketch,
+                request,
+                fakeSuccessImageResult(context),
                 context.getDrawableCompat(android.R.drawable.ic_lock_lock).asImage()
             )
             assertEquals(3, callbackCount)
@@ -71,16 +77,20 @@ class RemoteViewsTargetTest {
             assertEquals(2, callbackCount)
 
             onError(
-                sketch, request2,
+                sketch,
+                request2,
+                fakeErrorImageResult(context),
                 context.getDrawableCompat(android.R.drawable.ic_lock_lock).asImage()
             )
             assertEquals(3, callbackCount)
 
-            onError(sketch, request2, null)
+            onError(sketch, request2, fakeErrorImageResult(context), null)
             assertEquals(4, callbackCount)
 
             onSuccess(
-                sketch, request2,
+                sketch,
+                request2,
+                fakeSuccessImageResult(context),
                 context.getDrawableCompat(android.R.drawable.ic_lock_lock).asImage()
             )
             assertEquals(5, callbackCount)

@@ -22,6 +22,7 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.Listener
 import com.github.panpf.sketch.request.ProgressListener
@@ -131,8 +132,12 @@ interface Target {
      * Called if the request completes successfully.
      */
     @MainThread
-    // TODO result: ImageRequest.Success
-    fun onSuccess(sketch: Sketch, request: ImageRequest, result: Image) {
+    fun onSuccess(
+        sketch: Sketch,
+        request: ImageRequest,
+        result: ImageResult.Success,
+        image: Image
+    ) {
 
     }
 
@@ -140,8 +145,12 @@ interface Target {
      * Called if an error occurs while executing the request.
      */
     @MainThread
-    // TODO result: ImageRequest.Error
-    fun onError(sketch: Sketch, request: ImageRequest, error: Image?) {
+    fun onError(
+        sketch: Sketch,
+        request: ImageRequest,
+        error: ImageResult.Error,
+        image: Image?
+    ) {
 
     }
 

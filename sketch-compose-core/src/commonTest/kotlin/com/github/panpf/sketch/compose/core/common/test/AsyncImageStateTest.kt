@@ -50,6 +50,7 @@ import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.createBitmapImage
+import com.github.panpf.sketch.test.utils.fakeSuccessImageResult
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.test.utils.similarity
 import com.github.panpf.sketch.test.utils.toPreviewBitmap
@@ -320,7 +321,12 @@ class AsyncImageStateTest {
         assertEquals(expected = null, actual = asyncImageState.filterQuality)
         assertEquals(expected = FilterQuality.Low, actual = target.filterQuality)
         assertEquals(expected = null, actual = target.filterQualityMutableState.value)
-        target.onSuccess(sketch, request, createBitmapImage(101, 202)).apply {
+        target.onSuccess(
+            sketch,
+            request,
+            fakeSuccessImageResult(context),
+            createBitmapImage(101, 202)
+        ).apply {
             assertEquals(
                 expected = FilterQuality.Low,
                 actual = asyncImageState.painter!!.asOrThrow<ImageBitmapPainter>().filterQuality
@@ -331,7 +337,12 @@ class AsyncImageStateTest {
         assertEquals(expected = FilterQuality.High, actual = asyncImageState.filterQuality)
         assertEquals(expected = FilterQuality.High, actual = target.filterQuality)
         assertEquals(expected = FilterQuality.High, actual = target.filterQualityMutableState.value)
-        target.onSuccess(sketch, request, createBitmapImage(101, 202)).apply {
+        target.onSuccess(
+            sketch,
+            request,
+            fakeSuccessImageResult(context),
+            createBitmapImage(101, 202)
+        ).apply {
             assertEquals(
                 expected = FilterQuality.High,
                 actual = asyncImageState.painter!!.asOrThrow<ImageBitmapPainter>().filterQuality
@@ -1064,9 +1075,12 @@ class AsyncImageStateTest {
                     expected = PainterState.Loading(ColorPainter(Color.Gray)),
                     actual = painterStateHistory[1]
                 )
+                assertTrue(
+                    actual = painterStateHistory[2] is PainterState.Error
+                )
                 assertEquals(
-                    expected = PainterState.Error(ColorPainter(Color.Red)),
-                    actual = painterStateHistory[2]
+                    expected = ColorPainter(Color.Red),
+                    actual = painterStateHistory[2]?.painter
                 )
 
                 assertEquals(

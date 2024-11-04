@@ -22,6 +22,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.AttachObserver
 import com.github.panpf.sketch.request.internal.OneShotRequestDelegate
 import com.github.panpf.sketch.request.internal.OneShotRequestManager
@@ -42,14 +43,24 @@ class TestTarget(override val currentImage: Image? = null) : Target, LifecycleEv
         startImage = placeholder
     }
 
-    override fun onSuccess(sketch: Sketch, request: ImageRequest, result: Image) {
-        super.onSuccess(sketch, request, result)
-        successImage = result
+    override fun onSuccess(
+        sketch: Sketch,
+        request: ImageRequest,
+        result: ImageResult.Success,
+        image: Image
+    ) {
+        super.onSuccess(sketch, request, result, image)
+        successImage = image
     }
 
-    override fun onError(sketch: Sketch, request: ImageRequest, error: Image?) {
-        super.onError(sketch, request, error)
-        errorImage = error
+    override fun onError(
+        sketch: Sketch,
+        request: ImageRequest,
+        error: ImageResult.Error,
+        image: Image?
+    ) {
+        super.onError(sketch, request, error, image)
+        errorImage = image
     }
 
     private val requestManager = OneShotRequestManager()

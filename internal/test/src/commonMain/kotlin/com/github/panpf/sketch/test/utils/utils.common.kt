@@ -1,7 +1,15 @@
 package com.github.panpf.sketch.test.utils
 
+import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
@@ -65,5 +73,38 @@ fun block(millis: Long) {
         while (startTime.elapsedNow().inWholeMilliseconds < millis) {
             // Do nothing
         }
+    }
+}
+
+fun fakeSuccessImageResult(context: PlatformContext): ImageResult.Success {
+    return ImageResult.Success(
+        request = ImageRequest(context, "http://test.com/test.jpg"),
+        cacheKey = "http://test.com/test.jpg",
+        image = FakeImage(100, 200),
+        imageInfo = ImageInfo(100, 200, "image/jpeg"),
+        dataFrom = LOCAL,
+        resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
+        transformeds = null,
+        extras = null,
+    )
+}
+
+fun fakeErrorImageResult(context: PlatformContext): ImageResult.Error {
+    return ImageResult.Error(
+        request = ImageRequest(context, "http://test.com/test.jpg"),
+        image = FakeImage(100, 200),
+        throwable = TestException(),
+    )
+}
+
+class TestException : Exception() {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        return other != null && this::class == other::class
+    }
+
+    override fun hashCode(): Int {
+        return this::class.hashCode()
     }
 }

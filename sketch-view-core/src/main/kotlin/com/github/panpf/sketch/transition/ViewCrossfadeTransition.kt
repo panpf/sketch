@@ -69,13 +69,15 @@ class ViewCrossfadeTransition @JvmOverloads constructor(
             is ImageResult.Success -> target.onSuccess(
                 sketch = sketch,
                 request = request,
-                result = crossfadeDrawable.asImage()
+                result = result,
+                image = crossfadeDrawable.asImage()
             )
 
             is ImageResult.Error -> target.onError(
                 sketch = sketch,
                 request = request,
-                error = crossfadeDrawable.asImage()
+                error = result,
+                image = crossfadeDrawable.asImage()
             )
         }
     }

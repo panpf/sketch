@@ -16,6 +16,8 @@ import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.target.GenericComposeTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.createBitmap
+import com.github.panpf.sketch.test.utils.fakeErrorImageResult
+import com.github.panpf.sketch.test.utils.fakeSuccessImageResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
@@ -77,18 +79,28 @@ class GenericComposeTargetTest {
 
         val painter2 = createBitmap(100, 100).asImage().asPainter()
         withContext(Dispatchers.Main) {
-            composeTarget.onSuccess(sketch, request, painter2.asImage())
+            composeTarget.onSuccess(
+                sketch,
+                request,
+                fakeSuccessImageResult(context),
+                painter2.asImage()
+            )
         }
         assertSame(painter2, composeTarget.painter)
 
         val painter3 = createBitmap(100, 100).asImage().asPainter()
         withContext(Dispatchers.Main) {
-            composeTarget.onError(sketch, request, painter3.asImage())
+            composeTarget.onError(
+                sketch,
+                request,
+                fakeErrorImageResult(context),
+                painter3.asImage()
+            )
         }
         assertSame(painter3, composeTarget.painter)
 
         withContext(Dispatchers.Main) {
-            composeTarget.onError(sketch, request, null)
+            composeTarget.onError(sketch, request, fakeErrorImageResult(context), null)
         }
         assertSame(painter3, composeTarget.painter)
 
@@ -111,12 +123,22 @@ class GenericComposeTargetTest {
 
         val painter5 = createBitmap(100, 100).asImage().asPainter()
         withContext(Dispatchers.Main) {
-            composeTarget.onError(sketch, allowNullImageRequest, painter5.asImage())
+            composeTarget.onError(
+                sketch,
+                allowNullImageRequest,
+                fakeErrorImageResult(context),
+                painter5.asImage()
+            )
         }
         assertSame(painter5, composeTarget.painter)
 
         withContext(Dispatchers.Main) {
-            composeTarget.onError(sketch, allowNullImageRequest, null)
+            composeTarget.onError(
+                sketch,
+                allowNullImageRequest,
+                fakeErrorImageResult(context),
+                null
+            )
         }
         assertNull(composeTarget.painter)
     }
@@ -129,14 +151,14 @@ class GenericComposeTargetTest {
         TestGenericComposeTarget().apply {
             val painter = ColorPainter(Color.Red)
             onStart(sketch, request, painter.asImage())
-            onError(sketch, request, painter.asImage())
-            onSuccess(sketch, request, painter.asImage())
+            onError(sketch, request, fakeErrorImageResult(context), painter.asImage())
+            onSuccess(sketch, request, fakeSuccessImageResult(context), painter.asImage())
 
             onStateChanged(GlobalLifecycle.owner, Lifecycle.Event.ON_START)
 
             onStart(sketch, request, painter.asImage())
-            onError(sketch, request, painter.asImage())
-            onSuccess(sketch, request, painter.asImage())
+            onError(sketch, request, fakeErrorImageResult(context), painter.asImage())
+            onSuccess(sketch, request, fakeSuccessImageResult(context), painter.asImage())
         }
 
         TestGenericComposeTarget().apply {
@@ -146,7 +168,12 @@ class GenericComposeTargetTest {
             val animatableDrawable = TestAnimatableColorPainter(Color.Red)
             assertFalse(animatableDrawable.running)
 
-            onSuccess(sketch, request, animatableDrawable.asImage())
+            onSuccess(
+                sketch,
+                request,
+                fakeSuccessImageResult(context),
+                animatableDrawable.asImage()
+            )
             assertFalse(isStarted)
             assertFalse(isAttached)
             assertFalse(animatableDrawable.running)
@@ -181,10 +208,20 @@ class GenericComposeTargetTest {
             assertTrue(isAttached)
             assertTrue(animatableDrawable.running)
 
-            onSuccess(sketch, request, ColorPainter(Color.Red).asImage())
+            onSuccess(
+                sketch,
+                request,
+                fakeSuccessImageResult(context),
+                ColorPainter(Color.Red).asImage()
+            )
             assertFalse(animatableDrawable.running)
 
-            onSuccess(sketch, request, animatableDrawable.asImage())
+            onSuccess(
+                sketch,
+                request,
+                fakeSuccessImageResult(context),
+                animatableDrawable.asImage()
+            )
             assertTrue(animatableDrawable.running)
         }
     }

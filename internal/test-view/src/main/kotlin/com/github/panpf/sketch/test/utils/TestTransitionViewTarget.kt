@@ -21,6 +21,7 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asDrawable
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.OneShotRequestDelegate
 import com.github.panpf.sketch.request.internal.OneShotRequestManager
 import com.github.panpf.sketch.request.internal.RequestDelegate
@@ -38,12 +39,22 @@ class TestTransitionViewTarget : TransitionViewTarget {
         this.drawable = placeholder?.asDrawable()
     }
 
-    override fun onSuccess(sketch: Sketch, request: ImageRequest, result: Image) {
-        this.drawable = result.asDrawable()
+    override fun onSuccess(
+        sketch: Sketch,
+        request: ImageRequest,
+        result: ImageResult.Success,
+        image: Image
+    ) {
+        this.drawable = image.asDrawable()
     }
 
-    override fun onError(sketch: Sketch, request: ImageRequest, error: Image?) {
-        this.drawable = error?.asDrawable()
+    override fun onError(
+        sketch: Sketch,
+        request: ImageRequest,
+        error: ImageResult.Error,
+        image: Image?
+    ) {
+        this.drawable = image?.asDrawable()
     }
 
     private val requestManager = OneShotRequestManager()

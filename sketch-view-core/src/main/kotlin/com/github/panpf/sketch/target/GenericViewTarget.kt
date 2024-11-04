@@ -27,6 +27,7 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asDrawable
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.AttachObserver
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.request.internal.requestManager
@@ -55,12 +56,19 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
         updateImage(request, placeholder)
     }
 
-    override fun onSuccess(sketch: Sketch, request: ImageRequest, result: Image) {
-        updateImage(request, result)
-    }
+    override fun onSuccess(
+        sketch: Sketch,
+        request: ImageRequest,
+        result: ImageResult.Success,
+        image: Image
+    ) = updateImage(request, image)
 
-    override fun onError(sketch: Sketch, request: ImageRequest, error: Image?) =
-        updateImage(request, error)
+    override fun onError(
+        sketch: Sketch,
+        request: ImageRequest,
+        error: ImageResult.Error,
+        image: Image?
+    ) = updateImage(request, image)
 
     override fun onStateChanged(source: LifecycleOwner, event: Event) {
         when (event) {

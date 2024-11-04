@@ -20,6 +20,8 @@ import com.github.panpf.sketch.test.utils.RememberedPainter
 import com.github.panpf.sketch.test.utils.TestLifecycle
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.createBitmapImage
+import com.github.panpf.sketch.test.utils.fakeErrorImageResult
+import com.github.panpf.sketch.test.utils.fakeSuccessImageResult
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -57,25 +59,25 @@ class AsyncImageTargetTest {
         val painter3 = ColorPainter(Color.Yellow)
         val painter4 = RememberedPainter(ColorPainter(Color.Blue))
 
-        target.onSuccess(sketch, request, painter1.asImage())
+        target.onSuccess(sketch, request, fakeSuccessImageResult(context), painter1.asImage())
         assertSame(expected = painter1, actual = target.painterState.value)
         assertSame(expected = painter1, actual = target.painter)
         assertEquals(expected = 0, actual = painter2.rememberedCounter.count)
         assertEquals(expected = 0, actual = painter4.rememberedCounter.count)
 
-        target.onSuccess(sketch, request, painter2.asImage())
+        target.onSuccess(sketch, request, fakeSuccessImageResult(context), painter2.asImage())
         assertSame(expected = painter2, actual = target.painterState.value)
         assertSame(expected = painter2, actual = target.painter)
         assertEquals(expected = 1, actual = painter2.rememberedCounter.count)
         assertEquals(expected = 0, actual = painter4.rememberedCounter.count)
 
-        target.onSuccess(sketch, request, painter3.asImage())
+        target.onSuccess(sketch, request, fakeSuccessImageResult(context), painter3.asImage())
         assertSame(expected = painter3, actual = target.painterState.value)
         assertSame(expected = painter3, actual = target.painter)
         assertEquals(expected = 0, actual = painter2.rememberedCounter.count)
         assertEquals(expected = 0, actual = painter4.rememberedCounter.count)
 
-        target.onSuccess(sketch, request, painter4.asImage())
+        target.onSuccess(sketch, request, fakeSuccessImageResult(context), painter4.asImage())
         assertSame(expected = painter4, actual = target.painterState.value)
         assertSame(expected = painter4, actual = target.painter)
         assertEquals(expected = 0, actual = painter2.rememberedCounter.count)
@@ -188,7 +190,12 @@ class AsyncImageTargetTest {
         )
         assertEquals(expected = FilterQuality.Low, actual = target.filterQuality)
         assertEquals(expected = null, actual = target.filterQualityMutableState.value)
-        target.onSuccess(sketch, request, createBitmapImage(101, 202)).apply {
+        target.onSuccess(
+            sketch,
+            request,
+            fakeSuccessImageResult(context),
+            createBitmapImage(101, 202)
+        ).apply {
             assertEquals(
                 expected = FilterQuality.Low,
                 actual = target.painter!!.asOrThrow<ImageBitmapPainter>().filterQuality
@@ -198,7 +205,12 @@ class AsyncImageTargetTest {
         target.filterQualityMutableState.value = FilterQuality.High
         assertEquals(expected = FilterQuality.High, actual = target.filterQuality)
         assertEquals(expected = FilterQuality.High, actual = target.filterQualityMutableState.value)
-        target.onSuccess(sketch, request, createBitmapImage(101, 202)).apply {
+        target.onSuccess(
+            sketch,
+            request,
+            fakeSuccessImageResult(context),
+            createBitmapImage(101, 202)
+        ).apply {
             assertEquals(
                 expected = FilterQuality.High,
                 actual = target.painter!!.asOrThrow<ImageBitmapPainter>().filterQuality
@@ -401,19 +413,19 @@ class AsyncImageTargetTest {
             actual = target.painterStateState.value
         )
 
-        target.onSuccess(sketch, request, painter2.asImage())
+        target.onSuccess(sketch, request, fakeSuccessImageResult(context), painter2.asImage())
         assertEquals(expected = painter2, actual = target.painter)
         assertEquals(expected = painter2, actual = target.painterState.value)
         assertEquals(
-            expected = PainterState.Success(painter2),
+            expected = PainterState.Success(fakeSuccessImageResult(context), painter2),
             actual = target.painterStateState.value
         )
 
-        target.onError(sketch, request, painter3.asImage())
+        target.onError(sketch, request, fakeErrorImageResult(context), painter3.asImage())
         assertEquals(expected = painter3, actual = target.painter)
         assertEquals(expected = painter3, actual = target.painterState.value)
         assertEquals(
-            expected = PainterState.Error(painter3),
+            expected = PainterState.Error(fakeErrorImageResult(context), painter3),
             actual = target.painterStateState.value
         )
     }

@@ -19,6 +19,7 @@ package com.github.panpf.sketch.test.utils
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.OneShotRequestDelegate
 import com.github.panpf.sketch.request.internal.OneShotRequestManager
 import com.github.panpf.sketch.request.internal.RequestDelegate
@@ -40,12 +41,22 @@ class TestTransitionTarget : Target, TransitionTarget {
         this.image = placeholder
     }
 
-    override fun onSuccess(sketch: Sketch, request: ImageRequest, result: Image) {
-        this.image = result
+    override fun onSuccess(
+        sketch: Sketch,
+        request: ImageRequest,
+        result: ImageResult.Success,
+        image: Image
+    ) {
+        this.image = image
     }
 
-    override fun onError(sketch: Sketch, request: ImageRequest, error: Image?) {
-        this.image = error
+    override fun onError(
+        sketch: Sketch,
+        request: ImageRequest,
+        error: ImageResult.Error,
+        image: Image?
+    ) {
+        this.image = image
     }
 
     private val requestManager = OneShotRequestManager()

@@ -40,7 +40,7 @@ sealed interface LoadState {
      *
      * @see com.github.panpf.sketch.core.common.test.request.LoadStateTest.testSuccess
      */
-    data class Success(
+    data class Success constructor(
         override val request: ImageRequest,
         val result: ImageResult.Success
     ) : LoadState

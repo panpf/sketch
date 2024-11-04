@@ -27,6 +27,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asPainter
 import com.github.panpf.sketch.painter.AnimatablePainter
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.AttachObserver
 import com.github.panpf.sketch.transition.TransitionComposeTarget
 import com.github.panpf.sketch.util.asOrNull
@@ -51,11 +52,19 @@ abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget,
     override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) =
         updateImage(request, placeholder)
 
-    override fun onError(sketch: Sketch, request: ImageRequest, error: Image?) =
-        updateImage(request, error)
+    override fun onSuccess(
+        sketch: Sketch,
+        request: ImageRequest,
+        result: ImageResult.Success,
+        image: Image
+    ) = updateImage(request, image)
 
-    override fun onSuccess(sketch: Sketch, request: ImageRequest, result: Image) =
-        updateImage(request, result)
+    override fun onError(
+        sketch: Sketch,
+        request: ImageRequest,
+        error: ImageResult.Error,
+        image: Image?
+    ) = updateImage(request, image)
 
     override fun onStateChanged(source: LifecycleOwner, event: Event) {
         when (event) {

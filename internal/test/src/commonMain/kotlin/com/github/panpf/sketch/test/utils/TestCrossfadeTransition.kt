@@ -37,13 +37,15 @@ class TestCrossfadeTransition(
             is ImageResult.Success -> target.onSuccess(
                 sketch = sketch,
                 request = request,
-                result = TestCrossfadeImage(result.image)
+                result = result,
+                image = TestCrossfadeImage(result.image)
             )
 
             is ImageResult.Error -> target.onError(
                 sketch = sketch,
                 request = request,
-                error = result.image?.let { TestCrossfadeImage(it) })
+                error = result,
+                image = result.image?.let { TestCrossfadeImage(it) })
         }
     }
 

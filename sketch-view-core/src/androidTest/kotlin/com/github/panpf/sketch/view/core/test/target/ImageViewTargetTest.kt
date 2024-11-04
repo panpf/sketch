@@ -12,6 +12,7 @@ import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.fakeSuccessImageResult
 import com.github.panpf.sketch.test.utils.getTestContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
@@ -41,7 +42,7 @@ class ImageViewTargetTest {
         assertSame(drawable1, target.drawable)
 
         val request = ImageRequest(context, "http://sample/com/sample/jpeg")
-        target.onSuccess(sketch, request, drawable2.asImage())
+        target.onSuccess(sketch, request, fakeSuccessImageResult(context), drawable2.asImage())
         assertSame(drawable2, imageView.drawable)
         assertSame(drawable2, target.drawable)
     }
