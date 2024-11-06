@@ -16,6 +16,7 @@ kotlin {
         nonJvmCommonMain.dependencies {
             api(projects.sketchHttpKtor3)
         }
+
         iosMain.dependencies {
             api(libs.ktor3.client.darwin)
         }

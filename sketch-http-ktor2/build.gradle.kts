@@ -4,7 +4,11 @@ plugins {
     id("org.jetbrains.kotlinx.kover")
 }
 
-addAllMultiplatformTargets()
+addAllMultiplatformTargets(
+    *MultiplatformTargets.values()
+        .filter { it != MultiplatformTargets.WasmJs }
+        .toTypedArray()
+)
 
 androidLibrary(nameSpace = "com.github.panpf.sketch.http.ktor2")
 
@@ -24,10 +28,6 @@ kotlin {
         }
         jsMain.dependencies {
             api(libs.ktor2.client.js)
-        }
-        wasmJsMain.dependencies {
-            api(projects.sketchHttpKtor2Core)
-            api(libs.ktor2.client.wasmJs)
         }
 
         commonTest.dependencies {

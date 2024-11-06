@@ -57,7 +57,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
 * change: ImageRequest's registerListener and registerProgressListener methods renamed to
   addListener and addProgressListener
 * change: Remove the sketch-http-core module, add the sketch-http-hurl module, rename the
-  sketch-http-ktor module to sketch-http-ktor2, add the sketch-http-ktor3 module
+  sketch-http-ktor module to sketch-http-ktor2 and wasmJs is no longer supported, add the
+  sketch-http-ktor3 module
 * change: Split the sketch-animated module into sketch-animated-core and sketch-animated-gif,
   sketch-animated-webp, sketch-animated-heif, sketch-animated-koralgif module and rename it to
   sketch-animated-gif-koral

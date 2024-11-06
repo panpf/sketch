@@ -37,7 +37,6 @@ kotlinx-cover = "0.8.3"
 kotlinx-datetime = "0.6.1"
 kotlinx-serialization-json = "1.7.0"
 ktor2 = "2.3.12"
-ktor2-wasm = "3.0.0-wasm2"
 ktor3 = "3.0.0"
 
 leakcanary = "2.14"
@@ -117,15 +116,9 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 
 ktor2-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor2" }
 ktor2-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor2" }
-ktor2-client-coreWasmJs = { module = "io.ktor:ktor-client-core", version.ref = "ktor2-wasm" }
 ktor2-client-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor2" }
 ktor2-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor2" }
 ktor2-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor2" }
-ktor2-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor2" }
-ktor2-client-contentNegotiation-wasm = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor2-wasm" }
-ktor2-client-wasmJs = { module = "io.ktor:ktor-client-js-wasm-js", version.ref = "ktor2-wasm" }
-ktor2-serialization-kotlinxJson = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor2" }
-ktor2-serialization-kotlinxJson-wasm = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor2-wasm" }
 
 ktor3-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor3" }
 ktor3-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor3" }

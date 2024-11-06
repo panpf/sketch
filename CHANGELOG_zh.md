@@ -48,7 +48,7 @@
 * change: ImageRequest 的 registerListener 和 registerProgressListener 方法重命名为 addListener 和
   addProgressListener
 * change: 移除 sketch-http-core 模块，增加 sketch-http-hurl 模块，sketch-http-ktor 模块重命名为
-  sketch-http-ktor2，增加 sketch-http-ktor3 模块
+  sketch-http-ktor2 并且不再支持 wasmJs，增加 sketch-http-ktor3 模块
 * change: 拆分 sketch-animated 模块为 sketch-animated-core 和
   sketch-animated-gif、sketch-animated-webp、sketch-animated-heif, sketch-animated-koralgif 模块重命名为
   sketch-animated-gif-koral

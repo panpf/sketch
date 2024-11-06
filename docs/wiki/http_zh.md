@@ -6,18 +6,19 @@
 
 Sketch 提供了 `sketch-http-*` 系列模块以支持 Http 网络图片，所支持的平台以及差异如下：
 
-| Module             | FetcherProvider                                                            | Fetcher                                                                         | Android | iOS | Desktop | Web |
-|:-------------------|:---------------------------------------------------------------------------|:--------------------------------------------------------------------------------|:--------|:----|:--------|:----|
-| sketch-http        | jvm: [HurlHttpUriFetcherProvider]<br/>nonJvm: [KtorHttpUriFetcherProvider] | jvm: [HurlHttpUriFetcher]<br/>nonJvm: [KtorHttpUriFetcher][Ktor3HttpUriFetcher] | ✅       | ✅   | ✅       | ✅   |
-| sketch-http-hurl   | [HurlHttpUriFetcherProvider]                                               | [HurlHttpUriFetcher]                                                            | ✅       | ❌   | ✅       | ❌   |
-| sketch-http-okhttp | [OkHttpHttpUriFetcherProvider]                                             | [OkHttpHttpUriFetcher]                                                          | ✅       | ❌   | ✅       | ❌   |
-| sketch-http-ktor2  | [KtorHttpUriFetcherProvider][Ktor2HttpUriFetcherProvider]                  | [KtorHttpUriFetcher][Ktor2HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅   |
-| sketch-http-ktor3  | [KtorHttpUriFetcherProvider][Ktor3HttpUriFetcherProvider]                  | [KtorHttpUriFetcher][Ktor3HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅   |
+| Module             | FetcherProvider                                                            | Fetcher                                                                         | Android | iOS | Desktop | Js | WasmJs |
+|:-------------------|:---------------------------------------------------------------------------|:--------------------------------------------------------------------------------|:--------|:----|:--------|:---|--------|
+| sketch-http        | jvm: [HurlHttpUriFetcherProvider]<br/>nonJvm: [KtorHttpUriFetcherProvider] | jvm: [HurlHttpUriFetcher]<br/>nonJvm: [KtorHttpUriFetcher][Ktor3HttpUriFetcher] | ✅       | ✅   | ✅       | ✅  | ✅      |
+| sketch-http-hurl   | [HurlHttpUriFetcherProvider]                                               | [HurlHttpUriFetcher]                                                            | ✅       | ❌   | ✅       | ❌  | ❌      |
+| sketch-http-okhttp | [OkHttpHttpUriFetcherProvider]                                             | [OkHttpHttpUriFetcher]                                                          | ✅       | ❌   | ✅       | ❌  | ❌      |
+| sketch-http-ktor2  | [KtorHttpUriFetcherProvider][Ktor2HttpUriFetcherProvider]                  | [KtorHttpUriFetcher][Ktor2HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅  | ❌      |
+| sketch-http-ktor3  | [KtorHttpUriFetcherProvider][Ktor3HttpUriFetcherProvider]                  | [KtorHttpUriFetcher][Ktor3HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅  | ✅      |
 
 > [!IMPORTANT]
 > * HurlHttpUriFetcher 使用 jvm 自带的 HttpURLConnection 实现，不需要额外的依赖
 > * `sketch-http-ktor2` 和 `sketch-http-ktor3` 模块都包含各个平台所需的引擎，如果你需要使用其它引擎请使用它们的
     core 版本，例如 `sketch-http-ktor2-core` 和 `sketch-http-ktor3-core`，然后配置自己所需的引擎的依赖
+> * ktor2 不支持 wasmJs 平台，必须要支持 wasmJs 平台的请使用 ktor3
 > * 上述组件都支持自动注册，你只需要导入即可，无需额外配置，如果你需要手动注册，
     请阅读文档：[《注册组件》](register_component_zh.md)
 
@@ -30,18 +31,6 @@ Sketch 提供了 `sketch-http-*` 系列模块以支持 Http 网络图片，所�
 ```kotlin
 implementation("io.github.panpf.sketch4:sketch-http:${LAST_VERSION}")
 ```
-
-> [!IMPORTANT]
-> ktor2 原本不支持 wasmJs，所以 `sketch-http-ktor2` 和 `sketch-http-ktor2-core` 的 wasmJs 版本使用的其实是
-`3.0.0-wasm2` 版本，而 `3.0.0-wasm2` 版本只发布到了 jetbrains 的私有仓库，所以需要你配置一下 jetbrains
-> 的私有仓库，如下：
->   ```kotlin
->   allprojects {
->     repositories {
->        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")   // ktor 3.0.0-wasm2
->     }
->   }
->   ```
 
 ## 加载网络图片
 

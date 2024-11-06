@@ -7,13 +7,13 @@ Translations: [简体中文](http_zh.md)
 Sketch provides the `sketch-http-*` series of modules to support Http network images, the
 supported platforms and differences are as follows:
 
-| Module             | FetcherProvider                                                            | Fetcher                                                                         | Android | iOS | Desktop | Web |
-|:-------------------|:---------------------------------------------------------------------------|:--------------------------------------------------------------------------------|:--------|:----|:--------|:----|
-| sketch-http        | jvm: [HurlHttpUriFetcherProvider]<br/>nonJvm: [KtorHttpUriFetcherProvider] | jvm: [HurlHttpUriFetcher]<br/>nonJvm: [KtorHttpUriFetcher][Ktor3HttpUriFetcher] | ✅       | ✅   | ✅       | ✅   |
-| sketch-http-hurl   | [HurlHttpUriFetcherProvider]                                               | [HurlHttpUriFetcher]                                                            | ✅       | ❌   | ✅       | ❌   |
-| sketch-http-okhttp | [OkHttpHttpUriFetcherProvider]                                             | [OkHttpHttpUriFetcher]                                                          | ✅       | ❌   | ✅       | ❌   |
-| sketch-http-ktor2  | [KtorHttpUriFetcherProvider][Ktor2HttpUriFetcherProvider]                  | [KtorHttpUriFetcher][Ktor2HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅   |
-| sketch-http-ktor3  | [KtorHttpUriFetcherProvider][Ktor3HttpUriFetcherProvider]                  | [KtorHttpUriFetcher][Ktor3HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅   |
+| Module             | FetcherProvider                                                            | Fetcher                                                                         | Android | iOS | Desktop | Js | WasmJs |
+|:-------------------|:---------------------------------------------------------------------------|:--------------------------------------------------------------------------------|:--------|:----|:--------|:---|--------|
+| sketch-http        | jvm: [HurlHttpUriFetcherProvider]<br/>nonJvm: [KtorHttpUriFetcherProvider] | jvm: [HurlHttpUriFetcher]<br/>nonJvm: [KtorHttpUriFetcher][Ktor3HttpUriFetcher] | ✅       | ✅   | ✅       | ✅  | ✅      |
+| sketch-http-hurl   | [HurlHttpUriFetcherProvider]                                               | [HurlHttpUriFetcher]                                                            | ✅       | ❌   | ✅       | ❌  | ❌      |
+| sketch-http-okhttp | [OkHttpHttpUriFetcherProvider]                                             | [OkHttpHttpUriFetcher]                                                          | ✅       | ❌   | ✅       | ❌  | ❌      |
+| sketch-http-ktor2  | [KtorHttpUriFetcherProvider][Ktor2HttpUriFetcherProvider]                  | [KtorHttpUriFetcher][Ktor2HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅  | ❌      |
+| sketch-http-ktor3  | [KtorHttpUriFetcherProvider][Ktor3HttpUriFetcherProvider]                  | [KtorHttpUriFetcher][Ktor3HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅  | ✅      |
 
 > [!IMPORTANT]
 > * HurlHttpUriFetcher is implemented using jvm’s own HttpURLConnection and does not require
@@ -22,6 +22,8 @@ supported platforms and differences are as follows:
     each platform. If you need to use other engines, please use their core versions, such as
     `sketch-http-ktor2-core` and ` sketch-http-ktor3-core`, and then configure the dependencies of
     the engine you need
+> * ktor2 does not support the wasmJs platform. If you must support the wasmJs platform, please use
+    ktor3
 > * The above components all support automatic registration. You only need to import them without
     additional configuration. If you need to register manually, please read the
     documentation: [《Register component》](register_component.md)
@@ -36,19 +38,6 @@ dependencies. Take `sketch-http` as an example:
 ```kotlin
 implementation("io.github.panpf.sketch4:sketch-http:${LAST_VERSION}")
 ```
-
-> [!IMPORTANT]
-> ktor2 originally did not support wasmJs, so the wasmJs versions of `sketch-http-ktor2` and
-`sketch-http-ktor2-core` actually use the `3.0.0-wasm2` version, and the `3.0.0-wasm2` version only
-> It is published to the private warehouse of jetbrains, so you need to configure the private
-> warehouse of jetbrains, as follows:
->   ```kotlin
->   allprojects {
->     repositories {
->        maven("https://maven.pkg.jetbrains.space/kotlin/p/wasm/experimental")   // ktor 3.0.0-wasm2
->     }
->   }
->   ```
 
 ## Load network images
 
