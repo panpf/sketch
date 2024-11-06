@@ -252,6 +252,13 @@ Featured functions:
 
 Please review the [CHANGELOG.md] file
 
+## Test Platform
+
+* Android：macOS Arm64 Emulator；API 21-34
+* Desktop：macOS 14.6.1；JDK 17
+* iOS：iphone 16 simulator；iOS 18.1
+* Web：None
+
 ## Run Sample App
 
 Prepare the environment:
