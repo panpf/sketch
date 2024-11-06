@@ -272,7 +272,8 @@ class BitmapsNonAndroidTest {
     @Test
     fun testReadIntPixels() {
         @Suppress("EnumValuesSoftDeprecate")
-        ColorType.values().filter { it != ColorType.UNKNOWN }.forEach { colorType ->
+        ColorType.values().filter { it != ColorType.UNKNOWN && it != ColorType.BGRA_10101010_XR }
+            .forEach { colorType ->
             val jpegBitmap = ResourceImages.jpeg.decode(BitmapColorType(colorType)).bitmap
             val newJpegBitmap = createBitmap(jpegBitmap.imageInfo)
             if (jpegBitmap.produceFingerPrint() == "ffffffffffffffff") {
@@ -327,7 +328,8 @@ class BitmapsNonAndroidTest {
         }
 
         @Suppress("EnumValuesSoftDeprecate")
-        ColorType.values().filter { it != ColorType.UNKNOWN }.forEach { colorType ->
+        ColorType.values().filter { it != ColorType.UNKNOWN && it != ColorType.BGRA_10101010_XR }
+            .forEach { colorType ->
             val jpegBitmap =
                 ResourceImages.jpeg.decode(BitmapColorType(colorType)).bitmap.apply {
                     assertEquals(expected = Size(1291, 1936), actual = size)
@@ -481,7 +483,8 @@ class BitmapsNonAndroidTest {
     @Test
     fun testInstallIntPixels() {
         @Suppress("EnumValuesSoftDeprecate")
-        ColorType.values().filter { it != ColorType.UNKNOWN }.forEach { colorType ->
+        ColorType.values().filter { it != ColorType.UNKNOWN && it != ColorType.BGRA_10101010_XR }
+            .forEach { colorType ->
             val jpegBitmap = ResourceImages.jpeg.decode(BitmapColorType(colorType)).bitmap
             val newJpegBitmap = createBitmap(jpegBitmap.imageInfo)
             if (jpegBitmap.produceFingerPrint() == "ffffffffffffffff") {

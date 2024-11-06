@@ -79,7 +79,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
   registration.
 * new: The Fetcher component carried by the sketch-compose-resources module supports automatic
   registration
-* depend: Upgrade kotlin 2.0.21
+* depend: Upgrade kotlin 2.0.21, kotlinx coroutines 1.9.0
+* depend: Upgrade jetbrains compose 1.7.0, jetbrains lifecycle 2.8.3
 
 # 4.0.0-alpha08
 

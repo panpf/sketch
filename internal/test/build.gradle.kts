@@ -19,7 +19,6 @@ kotlin {
             api(libs.okio.fakefilesystem)
         }
         jvmCommonMain.dependencies {
-            api(libs.junit)
             api(libs.kotlin.test.junit)
             api(libs.kotlin.reflect)
             api(libs.panpf.tools4j.reflect)

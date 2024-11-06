@@ -92,7 +92,6 @@ kotlin {
             implementation(libs.androidx.appcompat)
             implementation(libs.androidx.constraintlayout)
             implementation(libs.androidx.constraintlayout.compose)
-            implementation(libs.androidx.core)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.viewmodel.compose)
             implementation(libs.androidx.lifecycle.runtime)

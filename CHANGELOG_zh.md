@@ -66,7 +66,8 @@
 * new: sketch-http-\* 模块携带的 Fetcher 组件支持自动注册
 * new: sketch-animated-\* 模块携带的 Decoder 组件支持自动注册
 * new: sketch-compose-resources 模块携带的 Fetcher 组件支持自动注册
-* depend: 升级 kotlin 2.0.21
+* depend: 升级 kotlin 2.0.21, kotlinx coroutines 1.9.0
+* depend: 升级 jetbrains compose 1.7.0, jetbrains lifecycle 2.8.3
 
 # 4.0.0-alpha08
 

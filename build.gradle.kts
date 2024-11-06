@@ -54,6 +54,17 @@ allprojects {
     androidTestConfig()
 }
 
+// TODO jetbrains-compose bug https://youtrack.jetbrains.com/issue/CMP-5831
+allprojects {
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "org.jetbrains.kotlinx" && requested.name == "atomicfu") {
+                useVersion(libs.versions.kotlinx.atomicfu.get())
+            }
+        }
+    }
+}
+
 fun Project.kotlinDependenciesConfig() {
     dependencies {
         modules {
