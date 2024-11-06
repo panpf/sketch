@@ -58,6 +58,7 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeStateImage
 import com.github.panpf.sketch.test.utils.FakeTransition
+import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.ScopeAction
 import com.github.panpf.sketch.test.utils.TestComponentsTarget
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
@@ -75,6 +76,7 @@ import com.github.panpf.sketch.test.utils.TestRequestInterceptor2
 import com.github.panpf.sketch.test.utils.TestScaleResolverTarget
 import com.github.panpf.sketch.test.utils.TestSizeResolverTarget
 import com.github.panpf.sketch.test.utils.TestTarget
+import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.target
 import com.github.panpf.sketch.transform.BlurTransformation
@@ -840,6 +842,10 @@ class ImageRequestTest {
 
     @Test
     fun testPrecision() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val uri = ResourceImages.jpeg.uri
         ImageRequest.Builder(context, uri).apply {

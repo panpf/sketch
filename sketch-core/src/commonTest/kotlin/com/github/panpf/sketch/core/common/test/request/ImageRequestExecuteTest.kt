@@ -185,6 +185,10 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testDownloadCachePolicy() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Unexpected uninformative error in iOS test environment.
+            return@runTest
+        }
         runInNewSketchWithUse({
             components {
                 addFetcher(TestHttpUriFetcher.Factory(it))
@@ -312,6 +316,10 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testResize() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
 
         // default
@@ -752,6 +760,10 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testTransformations() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val imageUri = ResourceImages.jpeg.uri
         val request = ImageRequest(context, imageUri) {
@@ -844,6 +856,10 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testResultCachePolicy() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val diskCache = sketch.resultCache
         val imageUri = ResourceImages.jpeg.uri
@@ -951,6 +967,10 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testPlaceholder() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val imageUri = ResourceImages.jpeg.uri
         var onStartImage: Image?
@@ -992,6 +1012,10 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testFallback() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val fallbackStateImage = FakeStateImage()
 
@@ -1033,6 +1057,10 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testError() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val imageUri = ResourceImages.jpeg.uri
         var onErrorImage: Image?
@@ -1085,6 +1113,10 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testTransition() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val imageUri = ResourceImages.jpeg.uri
         val testTarget = TestTransitionTarget()
@@ -1128,6 +1160,10 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testResizeOnDraw() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val imageUri = ResourceImages.jpeg.uri
         val request = ImageRequest(context, imageUri) {
@@ -1170,6 +1206,10 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testMemoryCachePolicy() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val memoryCache = sketch.memoryCache
         val imageUri = ResourceImages.jpeg.uri
@@ -1278,6 +1318,10 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testListener() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val imageUri = ResourceImages.jpeg.uri
         val errorImageUri = ResourceImages.jpeg.uri + ".fake"
@@ -1326,6 +1370,10 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testProgressListener() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         runInNewSketchWithUse({
             components {
                 addFetcher(TestHttpUriFetcher.Factory(it, readDelayMillis = 20))
@@ -1361,6 +1409,10 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testComponents() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val context = getTestContext()
 
         ImageRequest(context, ResourceImages.jpeg.uri)
@@ -1426,6 +1478,10 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testTarget() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
 
         TestTarget().let { testTarget ->
@@ -1506,6 +1562,10 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testLifecycle() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val lifecycle = TestLifecycle()
         withContext(Dispatchers.Main) {
