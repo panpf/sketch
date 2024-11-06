@@ -241,10 +241,10 @@ context.sketch.enqueue(request)
 
 ## 测试平台
 
-* Android：macOS Arm64 Emulator；API 21-34
-* Desktop：macOS 14.6.1；JDK 17
-* iOS：iphone 16 simulator；iOS 18.1
-* Web：None
+* Android: Emulator; Arm64; API 21-34
+* Desktop: macOS; 14.6.1; JDK 17
+* iOS: iphone 16 simulator; iOS 18.1
+* Web: Chrome; 130
 
 ## 运行示例 App
 
