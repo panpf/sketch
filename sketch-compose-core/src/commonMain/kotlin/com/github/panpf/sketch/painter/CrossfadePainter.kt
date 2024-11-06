@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.layout.times
 import com.github.panpf.sketch.transition.CrossfadeTransition
+import com.github.panpf.sketch.transition.TransitionPainter
 import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
 import kotlin.js.JsName
 import kotlin.math.max
@@ -66,7 +67,7 @@ class CrossfadePainter constructor(
     val durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
     val fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
     val preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
-) : Painter(), RememberObserver, AnimatablePainter, SketchPainter {
+) : Painter(), RememberObserver, AnimatablePainter, SketchPainter, TransitionPainter {
 
     companion object {
         private const val STATE_START = 0
