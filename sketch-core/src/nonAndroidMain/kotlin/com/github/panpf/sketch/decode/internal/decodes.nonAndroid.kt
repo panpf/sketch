@@ -191,3 +191,14 @@ internal fun Image.decodeRegion(
     )
     return bitmap
 }
+
+/**
+ * Check whether the Skia platform supports decoding the specified region
+ */
+fun supportDecodeRegion(mimeType: String): Boolean? = when (mimeType) {
+    "image/jpeg", "image/png", "image/webp", "image/bmp", "image/gif" -> true
+    "image/svg+xml" -> false
+    // TODO Get the skiko version and return false directly.
+    //  "image/heic", "image/heif", "image/avif" -> false
+    else -> null
+}

@@ -51,7 +51,8 @@ class BitmapFactoryDecodeHelper(
         dataSource.readImageInfo(exifOrientationHelper)
     }
     override val supportRegion: Boolean by lazy {
-        supportBitmapRegionDecoder(imageInfo.mimeType)
+        // The result returns null, which means unknown, but future versions may support it, so it is still worth trying.
+        supportBitmapRegionDecoder(imageInfo.mimeType) ?: true
     }
 
     override fun decode(sampleSize: Int): Image {

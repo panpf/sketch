@@ -63,12 +63,10 @@ class SkiaDecodeHelper constructor(
             readImageInfo(codec, skiaImage)
         }
     }
-    override val supportRegion: Boolean = true
-    // TODO null
-//    override fun checkSupport(mimeType: String): Boolean? = when (mimeType) {
-//        "image/jpeg", "image/png", "image/webp", "image/bmp" -> true
-//        else -> null
-//    }
+    override val supportRegion: Boolean by lazy {
+        // The result returns null, which means unknown, but future versions may support it, so it is still worth trying.
+        supportDecodeRegion(imageInfo.mimeType) ?: true
+    }
 
     override fun decode(sampleSize: Int): com.github.panpf.sketch.SketchImage {
         val decodeConfig = DecodeConfig(request, imageInfo.mimeType, skiaImage.isOpaque).apply {

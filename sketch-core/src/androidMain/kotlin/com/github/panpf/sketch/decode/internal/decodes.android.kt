@@ -256,8 +256,7 @@ fun DataSource.decodeRegion(
  * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testSupportBitmapRegionDecoder
  */
 @SuppressLint("ObsoleteSdkInt")
-fun supportBitmapRegionDecoder(mimeType: String, animated: Boolean = false): Boolean {
-    require(mimeType.startsWith("image/"))
+fun supportBitmapRegionDecoder(mimeType: String, animated: Boolean = false): Boolean? {
     return when (mimeType) {
         ImageFormat.JPEG.mimeType -> true
         ImageFormat.PNG.mimeType -> true
@@ -270,8 +269,8 @@ fun supportBitmapRegionDecoder(mimeType: String, animated: Boolean = false): Boo
         // For the AVIF format, BitmapFactory starts to support it from API 31.
         // But BitmapRegionDecoder still does not support it until API 35.
         // At present, it can only be assumed that API 36 starts to support it.
-        ImageFormat.AVIF.mimeType -> VERSION.SDK_INT > 35
+        ImageFormat.AVIF.mimeType -> if (VERSION.SDK_INT <= 35) false else null
         // Other formats are supported by default, In order to prevent BitmapRegionDecoder from supporting new formats in the future, our failure to adapt will result in unavailability.
-        else -> true    // TODO null
+        else -> null
     }
 }

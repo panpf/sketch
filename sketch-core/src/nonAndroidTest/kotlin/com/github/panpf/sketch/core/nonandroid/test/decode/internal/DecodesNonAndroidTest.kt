@@ -17,6 +17,7 @@ import com.github.panpf.sketch.decode.internal.getResizeTransformed
 import com.github.panpf.sketch.decode.internal.readImageInfo
 import com.github.panpf.sketch.decode.internal.readImageInfoWithIgnoreExifOrientation
 import com.github.panpf.sketch.decode.internal.resize
+import com.github.panpf.sketch.decode.internal.supportDecodeRegion
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.request.ImageRequest
@@ -1475,5 +1476,19 @@ class DecodesNonAndroidTest {
             ResourceImages.jpeg.toDataSource(context).toSkiaImage()
                 .decodeRegion(Size.Empty.toRect())
         }
+    }
+
+    @Test
+    fun testSupportDecodeRegion() {
+        assertEquals(expected = true, actual = supportDecodeRegion("image/jpeg"))
+        assertEquals(expected = true, actual = supportDecodeRegion("image/png"))
+        assertEquals(expected = true, actual = supportDecodeRegion("image/bmp"))
+        assertEquals(expected = true, actual = supportDecodeRegion("image/webp"))
+        assertEquals(expected = true, actual = supportDecodeRegion("image/gif"))
+        assertEquals(expected = false, actual = supportDecodeRegion("image/svg+xml"))
+        assertEquals(expected = null, actual = supportDecodeRegion("image/heic"))
+        assertEquals(expected = null, actual = supportDecodeRegion("image/heif"))
+        assertEquals(expected = null, actual = supportDecodeRegion("image/avif"))
+        assertEquals(expected = null, actual = supportDecodeRegion("image/fake"))
     }
 }

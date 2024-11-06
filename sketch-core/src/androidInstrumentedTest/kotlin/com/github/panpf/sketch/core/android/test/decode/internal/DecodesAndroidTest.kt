@@ -1834,15 +1834,12 @@ class DecodesAndroidTest {
         }
 
         assertEquals(
-            expected = true,
+            expected = null,
             actual = supportBitmapRegionDecoder("image/fake", animated = true)
         )
         assertEquals(
-            expected = true,
+            expected = null,
             actual = supportBitmapRegionDecoder("image/fake", animated = false)
         )
-        assertFailsWith(IllegalArgumentException::class) {
-            supportBitmapRegionDecoder("video/mp4")
-        }
     }
 }
