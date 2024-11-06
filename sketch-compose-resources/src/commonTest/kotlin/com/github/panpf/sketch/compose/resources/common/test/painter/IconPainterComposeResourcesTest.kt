@@ -14,8 +14,10 @@ import com.github.panpf.sketch.painter.rememberIconPainter
 import com.github.panpf.sketch.test.compose.resources.Res
 import com.github.panpf.sketch.test.compose.resources.desert
 import com.github.panpf.sketch.test.compose.resources.moon
+import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.SizeColorPainter
 import com.github.panpf.sketch.test.utils.asEquitable
+import com.github.panpf.sketch.test.utils.current
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -23,6 +25,10 @@ class IconPainterComposeResourcesTest {
 
     @Test
     fun testRememberIconPainterWithPainterIcon() {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return
+        }
         // One parameters
         runComposeUiTest {
             setContent {
@@ -296,6 +302,10 @@ class IconPainterComposeResourcesTest {
 
     @Test
     fun testRememberIconPainterWithDrawableResourcesIcon() {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return
+        }
         // One parameters
         runComposeUiTest {
             setContent {

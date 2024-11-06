@@ -33,6 +33,7 @@ import com.github.panpf.sketch.test.singleton.request.execute
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeStateImage
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
+import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestCountTarget
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
@@ -48,6 +49,7 @@ import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.TestTransitionTarget
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.corners
+import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.ratio
@@ -85,6 +87,10 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testDepth() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Will get stuck forever in iOS test environment.
+            return@runTest
+        }
         runInNewSketchWithUse({
             components {
                 addFetcher(TestHttpUriFetcher.Factory(it))

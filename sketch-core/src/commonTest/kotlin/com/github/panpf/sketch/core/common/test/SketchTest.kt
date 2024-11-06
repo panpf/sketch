@@ -25,10 +25,12 @@ import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.DelayDecodeInterceptor
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
+import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
+import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
@@ -347,6 +349,10 @@ class SketchTest {
 
     @Test
     fun testEnqueue() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
 
         /* success */
@@ -388,6 +394,10 @@ class SketchTest {
 
     @Test
     fun testExecute() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
 
         /* success */

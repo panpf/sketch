@@ -13,8 +13,10 @@ import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.createDecodeHelper
+import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
@@ -40,6 +42,10 @@ class HelperDecoderTest {
 
     @Test
     fun testDecode() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
 
         val exifRotate90ImageUri = ResourceImages.clockExifRotate90.uri

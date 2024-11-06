@@ -10,6 +10,8 @@ import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.state.PainterStateImage
 import com.github.panpf.sketch.test.compose.resources.Res
 import com.github.panpf.sketch.test.compose.resources.moon
+import com.github.panpf.sketch.test.utils.Platform
+import com.github.panpf.sketch.test.utils.current
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -18,6 +20,10 @@ class ImageRequestComposeResourcesTest {
 
     @Test
     fun testPlaceholder() {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return
+        }
         runComposeUiTest {
             setContent {
                 ComposableImageRequest("http://sample.com/sample.jpeg") {
@@ -34,6 +40,10 @@ class ImageRequestComposeResourcesTest {
 
     @Test
     fun testFallback() {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return
+        }
         runComposeUiTest {
             setContent {
                 ComposableImageRequest("http://sample.com/sample.jpeg") {
@@ -50,6 +60,10 @@ class ImageRequestComposeResourcesTest {
 
     @Test
     fun testError() {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return
+        }
         runComposeUiTest {
             setContent {
                 ComposableImageRequest("http://sample.com/sample.jpeg") {

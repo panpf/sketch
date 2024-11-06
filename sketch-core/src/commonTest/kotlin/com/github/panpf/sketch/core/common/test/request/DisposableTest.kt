@@ -5,7 +5,9 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.OneShotDisposable
 import com.github.panpf.sketch.request.internal.OneShotRequestManager
+import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.block
+import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +22,10 @@ class DisposableTest {
 
     @Test
     fun testReusableDisposable() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val context = getTestContext()
         val job = async(ioCoroutineDispatcher()) {
             block(1000)

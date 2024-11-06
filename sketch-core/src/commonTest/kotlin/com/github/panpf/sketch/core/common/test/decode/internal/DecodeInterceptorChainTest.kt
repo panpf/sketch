@@ -28,7 +28,9 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.createBitmapImage
+import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.runBlock
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.test.runTest
@@ -39,6 +41,10 @@ class DecodeInterceptorChainTest {
 
     @Test
     fun test() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
 
         runBlock {

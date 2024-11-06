@@ -43,6 +43,7 @@ import com.github.panpf.sketch.size
 import com.github.panpf.sketch.target.AsyncImageTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ComposeSize
+import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestErrorEqualsSizeResolver
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
@@ -50,6 +51,7 @@ import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.createBitmapImage
+import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.fakeSuccessImageResult
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.test.utils.similarity
@@ -597,6 +599,10 @@ class AsyncImageStateTest {
 
     @Test
     fun testPreview() {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return
+        }
         val (context, sketch) = getTestContextAndSketch()
         val asyncImageState = AsyncImageState(
             inspectionMode = true,
@@ -645,6 +651,10 @@ class AsyncImageStateTest {
 
     @Test
     fun testLoad() {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return
+        }
         val (context, sketch) = getTestContextAndSketch()
 
         val resourceImage = ResourceImages.jpeg
@@ -792,6 +802,10 @@ class AsyncImageStateTest {
 
     @Test
     fun testRestart() {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return
+        }
         val (context, sketch) = getTestContextAndSketch()
 
         val resourceImage = ResourceImages.jpeg
@@ -847,6 +861,10 @@ class AsyncImageStateTest {
 
     @Test
     fun testPainterResultPainterStateLoadStateProgress() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         runInNewSketchWithUse({
             components {
                 addFetcher(TestHttpUriFetcher.Factory(it, readDelayMillis = 20))

@@ -10,6 +10,7 @@ import com.github.panpf.sketch.merged
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor2
 import com.github.panpf.sketch.test.utils.TestDecoder
@@ -17,6 +18,7 @@ import com.github.panpf.sketch.test.utils.TestDecoder2
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
+import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Size
@@ -277,6 +279,10 @@ class ComponentRegistryTest {
 
     @Test
     fun testNewDecoder() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "file:///sdcard/sample.jpeg")
         val requestContext = request.toRequestContext(sketch)

@@ -11,6 +11,7 @@ import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.AllFetcher
 import com.github.panpf.sketch.test.utils.FakeDecoder
+import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor2
 import com.github.panpf.sketch.test.utils.TestDecoder
@@ -19,6 +20,7 @@ import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor2
+import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
@@ -232,6 +234,10 @@ class ComponentsTest {
 
     @Test
     fun testNewDecoder() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
 
         Components(ComponentRegistry {

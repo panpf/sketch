@@ -18,9 +18,11 @@ import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.createDecoderOrDefault
 import com.github.panpf.sketch.test.utils.createDecoderOrNull
+import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.AnimatedTransformation
@@ -96,6 +98,10 @@ class GifSkiaAnimatedDecoderTest {
 
     @Test
     fun testImageInfo() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val factory = Factory()
 
@@ -111,6 +117,10 @@ class GifSkiaAnimatedDecoderTest {
 
     @Test
     fun testDecode() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val factory = Factory()
 
@@ -207,6 +217,10 @@ class GifSkiaAnimatedDecoderTest {
 
     @Test
     fun testFactoryCreate() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val factory = Factory()
 

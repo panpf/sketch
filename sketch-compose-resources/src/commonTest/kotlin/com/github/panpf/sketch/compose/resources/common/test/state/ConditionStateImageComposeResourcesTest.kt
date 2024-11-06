@@ -10,7 +10,9 @@ import com.github.panpf.sketch.state.addState
 import com.github.panpf.sketch.test.compose.resources.Res
 import com.github.panpf.sketch.test.compose.resources.desert
 import com.github.panpf.sketch.test.compose.resources.moon
+import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.UriInvalidCondition
+import com.github.panpf.sketch.test.utils.current
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -19,6 +21,10 @@ class ConditionStateImageComposeResourcesTest {
 
     @Test
     fun testComposableConditionStateImage() {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return
+        }
         runComposeUiTest {
             setContent {
                 ComposableConditionStateImage(Res.drawable.moon) {}.apply {
@@ -48,6 +54,10 @@ class ConditionStateImageComposeResourcesTest {
 
     @Test
     fun testAddState() {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return
+        }
         runComposeUiTest {
             setContent {
                 ComposableConditionStateImage(Res.drawable.moon) {

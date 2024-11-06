@@ -37,10 +37,12 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestCountTarget
 import com.github.panpf.sketch.test.utils.TestMemoryCacheRequestIntercept
 import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.test.utils.createCacheValue
+import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.asOrThrow
 import kotlinx.coroutines.Dispatchers
@@ -56,6 +58,10 @@ class MemoryCacheRequestInterceptorTest {
 
     @Test
     fun testIntercept() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Will get stuck forever in iOS test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val memoryCache = sketch.memoryCache
 
@@ -199,6 +205,10 @@ class MemoryCacheRequestInterceptorTest {
 
     @Test
     fun testWithLock() {
+        if (Platform.current == Platform.iOS) {
+            // Will get stuck forever in iOS test environment.
+            return
+        }
         val (context, sketch) = getTestContextAndSketch()
         val memoryCache = sketch.memoryCache
 

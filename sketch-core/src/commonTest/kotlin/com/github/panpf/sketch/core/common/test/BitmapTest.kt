@@ -4,9 +4,11 @@ import com.github.panpf.sketch.byteCount
 import com.github.panpf.sketch.height
 import com.github.panpf.sketch.isImmutable
 import com.github.panpf.sketch.isMutable
+import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.create565Bitmap
 import com.github.panpf.sketch.test.utils.createARGBBitmap
 import com.github.panpf.sketch.test.utils.createBitmap
+import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.getImmutableBitmap
 import com.github.panpf.sketch.test.utils.getMutableBitmap
 import com.github.panpf.sketch.width
@@ -37,12 +39,20 @@ class BitmapTest {
 
     @Test
     fun testIsMutable() {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return
+        }
         assertTrue(getMutableBitmap().isMutable)
         assertFalse(getImmutableBitmap().isMutable)
     }
 
     @Test
     fun testIsImmutable() {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return
+        }
         assertFalse(getMutableBitmap().isImmutable)
         assertTrue(getImmutableBitmap().isImmutable)
     }

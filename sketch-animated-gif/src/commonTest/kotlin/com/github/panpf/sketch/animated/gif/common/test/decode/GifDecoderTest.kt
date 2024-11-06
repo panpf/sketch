@@ -10,7 +10,9 @@ import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.createDecoderOrNull
+import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -67,6 +69,10 @@ class GifDecoderTest {
 
     @Test
     fun testConstructor() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
 
         val request = ImageRequest(context, ResourceImages.animGif.uri)
@@ -80,6 +86,10 @@ class GifDecoderTest {
 
     @Test
     fun testEqualsAndHashCode() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, ResourceImages.animGif.uri)
         val requestContext = request.toRequestContext(sketch)
@@ -98,6 +108,10 @@ class GifDecoderTest {
 
     @Test
     fun testToString() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, ResourceImages.animGif.uri)
         val requestContext = request.toRequestContext(sketch)
@@ -129,6 +143,10 @@ class GifDecoderTest {
 
     @Test
     fun testFactoryCreate() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val factory = GifDecoder.Factory()
 

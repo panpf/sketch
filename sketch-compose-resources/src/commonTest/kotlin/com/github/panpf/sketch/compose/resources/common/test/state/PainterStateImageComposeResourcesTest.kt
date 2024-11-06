@@ -7,6 +7,8 @@ import com.github.panpf.sketch.state.PainterStateImage
 import com.github.panpf.sketch.state.rememberPainterStateImage
 import com.github.panpf.sketch.test.compose.resources.Res
 import com.github.panpf.sketch.test.compose.resources.moon
+import com.github.panpf.sketch.test.utils.Platform
+import com.github.panpf.sketch.test.utils.current
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -15,6 +17,10 @@ class PainterStateImageComposeResourcesTest {
 
     @Test
     fun testRememberPainterStateImage() {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return
+        }
         runComposeUiTest {
             setContent {
                 assertEquals(

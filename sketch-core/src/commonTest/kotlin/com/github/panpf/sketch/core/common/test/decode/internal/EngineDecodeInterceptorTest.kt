@@ -23,6 +23,8 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.Platform
+import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -34,6 +36,10 @@ class EngineDecodeInterceptorTest {
 
     @Test
     fun testIntercept() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
         val (context, sketch) = getTestContextAndSketch()
         val interceptors = listOf(EngineDecodeInterceptor())
         val request = ImageRequest(context, ResourceImages.jpeg.uri) {
