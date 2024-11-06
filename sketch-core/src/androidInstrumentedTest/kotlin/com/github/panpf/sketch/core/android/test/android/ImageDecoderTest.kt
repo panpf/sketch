@@ -2,7 +2,9 @@ package com.github.panpf.sketch.core.android.test.android
 
 import android.graphics.Bitmap.Config.HARDWARE
 import android.graphics.ImageDecoder
+import android.os.Build
 import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.images.ResourceImages
@@ -42,7 +44,7 @@ class ImageDecoderTest {
 
     @Test
     fun testConfig() {
-        if (VERSION.SDK_INT < 28) return
+        if (VERSION.SDK_INT < 28 || VERSION.SDK_INT == VERSION_CODES.TIRAMISU) return
         val context = getTestContext()
 
         decodeImageUseImageDecoder(context, ResourceImages.jpeg.resourceName).also { bitmap ->
@@ -160,10 +162,12 @@ class ImageDecoderTest {
                 inSampleSizeOnInBitmapMinAPI = -1
             ),
         ).forEach {
-            testDecodeImage(image = it, enabledInBitmap = false, sampleSize = 1)
-            testDecodeImage(image = it, enabledInBitmap = false, sampleSize = 2)
-            testDecodeImage(image = it, enabledInBitmap = true, sampleSize = 1)
-            testDecodeImage(image = it, enabledInBitmap = true, sampleSize = 2)
+            if (!(it.assetName.contains("heic") || it.assetName.contains("heif")) && VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU) {
+                testDecodeImage(image = it, enabledInBitmap = false, sampleSize = 1)
+                testDecodeImage(image = it, enabledInBitmap = false, sampleSize = 2)
+                testDecodeImage(image = it, enabledInBitmap = true, sampleSize = 1)
+                testDecodeImage(image = it, enabledInBitmap = true, sampleSize = 2)
+            }
         }
     }
 

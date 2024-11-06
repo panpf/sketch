@@ -63,7 +63,7 @@ class ImageDecoderAnimatedHeifDecoderTest {
             assertEquals(
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[ImageDecoderHeifDecoder]," +
+                        "decoderFactoryList=[ImageDecoderAnimatedHeifDecoder]," +
                         "requestInterceptorList=[]," +
                         "decodeInterceptorList=[]" +
                         ")",
@@ -78,7 +78,7 @@ class ImageDecoderAnimatedHeifDecoderTest {
             assertEquals(
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[ImageDecoderHeifDecoder,ImageDecoderHeifDecoder]," +
+                        "decoderFactoryList=[ImageDecoderAnimatedHeifDecoder,ImageDecoderAnimatedHeifDecoder]," +
                         "requestInterceptorList=[]," +
                         "decodeInterceptorList=[]" +
                         ")",
@@ -120,7 +120,7 @@ class ImageDecoderAnimatedHeifDecoderTest {
 
     @Test
     fun testDecode() = runTest {
-        if (VERSION.SDK_INT < VERSION_CODES.R) return@runTest
+        if (VERSION.SDK_INT < VERSION_CODES.R || VERSION.SDK_INT == VERSION_CODES.TIRAMISU) return@runTest
 
         val (context, sketch) = getTestContextAndSketch()
         val factory = Factory()

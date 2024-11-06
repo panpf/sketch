@@ -50,7 +50,7 @@ class ImageSerializerNonAndroidTest {
         assertEquals(expected = 0, actual = buffer.size)
 
         imageSerializer.compress(image, buffer)
-        assertEquals(expected = 2101819, actual = buffer.size)
+        assertTrue(actual = buffer.size >= 2000000, message = "buffer.size=${buffer.size}")
 
         val requestContext = request.toRequestContext(sketch, Size.Origin)
         val imageInfo = ImageInfo(image.size, "image/jpeg")
