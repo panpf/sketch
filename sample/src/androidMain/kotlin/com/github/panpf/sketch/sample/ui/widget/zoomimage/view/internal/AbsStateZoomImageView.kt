@@ -28,7 +28,6 @@ import com.github.panpf.sketch.request.internal.PairListener
 import com.github.panpf.sketch.request.internal.PairProgressListener
 import com.github.panpf.sketch.request.internal.ProgressListeners
 
-
 /**
  * Convert Sketch's Request Listener to StateFlow's ZoomImageView.
  *

@@ -19,13 +19,17 @@ package com.github.panpf.zoomimage
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.util.SketchUtils
-import com.github.panpf.zoomimage.sketch.SketchImageSource
-import com.github.panpf.zoomimage.sketch.SketchTileBitmapCache
+import com.github.panpf.zoomimage.sketch.SketchTileImageCache
+import com.github.panpf.zoomimage.subsampling.SubsamplingImage
+import com.github.panpf.zoomimage.subsampling.SubsamplingImageGenerateResult
 import com.github.panpf.zoomimage.util.Logger
+import com.github.panpf.zoomimage.view.sketch.SketchViewSubsamplingImageGenerator
 import com.github.panpf.zoomimage.view.sketch.internal.AbsStateZoomImageView
+import com.github.panpf.zoomimage.view.sketch.internal.AnimatableSketchViewSubsamplingImageGenerator
+import com.github.panpf.zoomimage.view.sketch.internal.EngineSketchViewSubsamplingImageGenerator
+import kotlinx.coroutines.launch
 
 /**
  * An ImageView that integrates the Sketch image loading framework that zoom and subsampling huge images
@@ -40,7 +44,7 @@ import com.github.panpf.zoomimage.view.sketch.internal.AbsStateZoomImageView
  * }
  * ```
  *
- * @see com.github.panpf.zoomimage.view.sketch.core.test.SketchZoomImageViewTest
+ * @see com.github.panpf.zoomimage.view.sketch4.core.test.SketchZoomImageViewTest
  */
 open class SketchZoomImageView @JvmOverloads constructor(
     context: Context,
@@ -48,7 +52,23 @@ open class SketchZoomImageView @JvmOverloads constructor(
     defStyle: Int = 0
 ) : AbsStateZoomImageView(context, attrs, defStyle) {
 
+    private val defaultSubsamplingImageGenerators = listOf(
+        AnimatableSketchViewSubsamplingImageGenerator(),
+        EngineSketchViewSubsamplingImageGenerator()
+    )
+    private var subsamplingImageGenerators: List<SketchViewSubsamplingImageGenerator> =
+        defaultSubsamplingImageGenerators
     private var resetImageSourceOnAttachedToWindow: Boolean = false
+
+    fun setSubsamplingImageGenerators(subsamplingImageGenerators: List<SketchViewSubsamplingImageGenerator>?) {
+        this.subsamplingImageGenerators =
+            subsamplingImageGenerators.orEmpty() + defaultSubsamplingImageGenerators
+    }
+
+    fun setSubsamplingImageGenerators(vararg subsamplingImageGenerators: SketchViewSubsamplingImageGenerator) {
+        this.subsamplingImageGenerators =
+            subsamplingImageGenerators.toList() + defaultSubsamplingImageGenerators
+    }
 
     override fun newLogger(): Logger = Logger(tag = "SketchZoomImageView")
 
@@ -76,34 +96,36 @@ open class SketchZoomImageView @JvmOverloads constructor(
                 resetImageSourceOnAttachedToWindow = true
                 return@post
             }
+
             val sketch = SketchUtils.getSketch(this)
+            val subsamplingEngine = _subsamplingEngine ?: return@post
+            val tileImageCacheState = subsamplingEngine.tileImageCacheState
+            if (tileImageCacheState.value == null && sketch != null) {
+                tileImageCacheState.value = SketchTileImageCache(sketch)
+            }
+
             val result = SketchUtils.getResult(this)
-            _subsamplingEngine?.apply {
-                if (tileBitmapCacheState.value == null && sketch != null) {
-                    tileBitmapCacheState.value = SketchTileBitmapCache(sketch)
+            val drawable = drawable
+            if (sketch != null && result is ImageResult.Success && drawable != null) {
+                val coroutineScope = coroutineScope!!
+                coroutineScope.launch {
+                    val generateResult = subsamplingImageGenerators.firstNotNullOfOrNull {
+                        it.generateImage(sketch, result, drawable)
+                    }
+                    if (generateResult is SubsamplingImageGenerateResult.Error) {
+                        logger.d {
+                            "SketchZoomImageView. ${generateResult.message}. uri='${result.request.uri}'"
+                        }
+                    }
+                    if (generateResult is SubsamplingImageGenerateResult.Success) {
+                        setSubsamplingImage(generateResult.subsamplingImage)
+                    } else {
+                        setSubsamplingImage(null as SubsamplingImage?)
+                    }
                 }
-                setImageSource(newImageSource(sketch, result))
+            } else {
+                setSubsamplingImage(null as SubsamplingImage?)
             }
         }
-    }
-
-    private fun newImageSource(
-        sketch: Sketch?,
-        result: ImageResult?
-    ): SketchImageSource.Factory? {
-        val drawable = drawable
-        if (drawable == null) {
-            logger.d { "SketchZoomImageView. Can't use Subsampling, drawable is null" }
-            return null
-        }
-        if (sketch == null) {
-            logger.d { "SketchZoomImageView. Can't use Subsampling, sketch is null" }
-            return null
-        }
-        if (result !is ImageResult.Success) {
-            logger.d { "SketchZoomImageView. Can't use Subsampling, result is not Success" }
-            return null
-        }
-        return SketchImageSource.Factory(sketch, result.request.uri.toString())
     }
 }

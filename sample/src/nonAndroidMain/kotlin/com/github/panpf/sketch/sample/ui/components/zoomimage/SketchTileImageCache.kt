@@ -20,37 +20,36 @@ import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.cache.ImageCacheValue
-import com.github.panpf.zoomimage.subsampling.AndroidTileBitmap
-import com.github.panpf.zoomimage.subsampling.BitmapFrom
+import com.github.panpf.zoomimage.subsampling.BitmapTileImage
 import com.github.panpf.zoomimage.subsampling.ImageInfo
-import com.github.panpf.zoomimage.subsampling.TileBitmap
-import com.github.panpf.zoomimage.subsampling.TileBitmapCache
+import com.github.panpf.zoomimage.subsampling.TileImage
+import com.github.panpf.zoomimage.subsampling.TileImageCache
 
 /**
- * Implement [TileBitmapCache] based on Sketch on Android platforms
+ * Implement [TileImageCache] based on Sketch on non-Android platforms
  *
- * @see com.github.panpf.zoomimage.core.sketch.android.test.SketchTileBitmapCacheTest
+ * @see com.github.panpf.zoomimage.core.sketch4.nonandroid.test.SketchTileImageCacheTest
  */
-@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
-actual class SketchTileBitmapCache actual constructor(
+actual class SketchTileImageCache actual constructor(
     private val sketch: Sketch,
-) : TileBitmapCache {
+) : TileImageCache {
 
-    actual override fun get(key: String): TileBitmap? {
+    actual override fun get(key: String): TileImage? {
         val cacheValue = sketch.memoryCache[key] ?: return null
         cacheValue as ImageCacheValue
-        val image = cacheValue.image as BitmapImage
-        return AndroidTileBitmap(image.bitmap, key, BitmapFrom.MEMORY_CACHE)
+        val bitmapImage = cacheValue.image as BitmapImage
+        val bitmap = bitmapImage.bitmap
+        return BitmapTileImage(bitmap, key, fromCache = true)
     }
 
     actual override fun put(
         key: String,
-        tileBitmap: TileBitmap,
+        tileImage: TileImage,
         imageUrl: String,
         imageInfo: ImageInfo,
-    ): TileBitmap? {
-        tileBitmap as AndroidTileBitmap
-        val bitmap = tileBitmap.bitmap!!
+    ): TileImage? {
+        tileImage as BitmapTileImage
+        val bitmap = tileImage.bitmap
         val cacheValue = ImageCacheValue(bitmap.asImage())
         sketch.memoryCache.put(key, cacheValue)
         return null

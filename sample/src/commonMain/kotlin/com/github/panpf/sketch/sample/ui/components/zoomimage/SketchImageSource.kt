@@ -29,7 +29,7 @@ import okio.Source
 /**
  * [ImageSource] implementation that uses Sketch to load images
  *
- * @see com.github.panpf.zoomimage.core.sketch.desktop.test.SketchImageSourceTest
+ * @see com.github.panpf.zoomimage.core.sketch4.desktop.test.SketchImageSourceTest
  */
 class SketchImageSource(
     val imageUri: String,

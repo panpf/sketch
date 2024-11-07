@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.NonRestartableComposable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,11 +49,12 @@ import com.github.panpf.zoomimage.compose.zoom.ScrollBarSpec
 import com.github.panpf.zoomimage.compose.zoom.mouseZoom
 import com.github.panpf.zoomimage.compose.zoom.zoom
 import com.github.panpf.zoomimage.compose.zoom.zoomScrollBar
-import com.github.panpf.zoomimage.sketch.SketchImageSource
-import com.github.panpf.zoomimage.sketch.SketchTileBitmapCache
-import com.github.panpf.zoomimage.subsampling.ImageSource
+import com.github.panpf.zoomimage.sketch.SketchTileImageCache
+import com.github.panpf.zoomimage.subsampling.SubsamplingImage
+import com.github.panpf.zoomimage.subsampling.SubsamplingImageGenerateResult
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
-
 
 /**
  * An image component that integrates the Sketch image loading framework that zoom and subsampling huge images
@@ -87,7 +89,7 @@ import kotlin.math.roundToInt
  * @param scrollBar Controls whether scroll bars are displayed and their style
  * @param onLongPress Called when the user long presses the image
  * @param onTap Called when the user taps the image
- * @see com.github.panpf.zoomimage.compose.sketch.core.test.SketchZoomAsyncImageTest.testSketchZoomAsyncImage1
+ * @see com.github.panpf.zoomimage.compose.sketch4.core.test.SketchZoomAsyncImageTest.testSketchZoomAsyncImage1
  */
 @Composable
 @NonRestartableComposable
@@ -159,7 +161,7 @@ fun SketchZoomAsyncImage(
  * @param scrollBar Controls whether scroll bars are displayed and their style
  * @param onLongPress Called when the user long presses the image
  * @param onTap Called when the user taps the image
- * @see com.github.panpf.zoomimage.compose.sketch.core.test.SketchZoomAsyncImageTest.testSketchZoomAsyncImage2
+ * @see com.github.panpf.zoomimage.compose.sketch4.core.test.SketchZoomAsyncImageTest.testSketchZoomAsyncImage2
  */
 @Composable
 fun SketchZoomAsyncImage(
@@ -182,11 +184,12 @@ fun SketchZoomAsyncImage(
     zoomState.zoomable.alignment = alignment
 
     LaunchedEffect(zoomState.subsampling) {
-        zoomState.subsampling.tileBitmapCache = SketchTileBitmapCache(sketch)
+        zoomState.subsampling.tileImageCache = SketchTileImageCache(sketch)
     }
+    val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
-        snapshotFlow { state.painterState }.collect {
-            onPainterState(sketch, zoomState, request, it)
+        snapshotFlow { state.painterState }.collect { painterState ->
+            onState(coroutineScope, sketch, zoomState, request, painterState)
         }
     }
 
@@ -222,31 +225,41 @@ fun SketchZoomAsyncImage(
     }
 }
 
-private fun onPainterState(
+private fun onState(
+    coroutineScope: CoroutineScope,
     sketch: Sketch,
     zoomState: SketchZoomState,
     request: ImageRequest,
-    loadState: PainterState?,
+    painterState: PainterState?,
 ) {
     zoomState.zoomable.logger.d {
-        "SketchZoomAsyncImage. onPainterState. state=${loadState?.name}. uri='${request.uri}'"
+        "SketchZoomAsyncImage. onPainterState. state=${painterState?.name}. uri='${request.uri}'"
     }
-    val painterSize = loadState?.painter
+    val painterSize = painterState?.painter
         ?.intrinsicSize
         ?.takeIf { it.isSpecified }
         ?.roundToIntSize()
         ?.takeIf { it.isNotEmpty() }
     zoomState.zoomable.contentSize = painterSize ?: IntSize.Zero
 
-    when (loadState) {
-        is PainterState.Success -> {
-            val imageSource = SketchImageSource.Factory(sketch, request.uri.toString())
-            zoomState.setImageSource(imageSource)
+    if (painterState is PainterState.Success) {
+        coroutineScope.launch {
+            val generateResult = zoomState.subsamplingImageGenerators.firstNotNullOfOrNull {
+                it.generateImage(sketch, painterState.result, painterState.painter)
+            }
+            if (generateResult is SubsamplingImageGenerateResult.Error) {
+                zoomState.subsampling.logger.d {
+                    "SketchZoomAsyncImage. ${generateResult.message}. uri='${request.uri}'"
+                }
+            }
+            if (generateResult is SubsamplingImageGenerateResult.Success) {
+                zoomState.setSubsamplingImage(generateResult.subsamplingImage)
+            } else {
+                zoomState.setSubsamplingImage(null as SubsamplingImage?)
+            }
         }
-
-        else -> {
-            zoomState.setImageSource(null as ImageSource?)
-        }
+    } else {
+        zoomState.setSubsamplingImage(null as SubsamplingImage?)
     }
 }
 
