@@ -5,10 +5,10 @@ package com.github.panpf.sketch.compose.core.common.test.painter
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.github.panpf.sketch.painter.startWithLifecycle
 import com.github.panpf.sketch.test.utils.TestAnimatablePainter
 import com.github.panpf.sketch.test.utils.TestLifecycle

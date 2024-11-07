@@ -17,6 +17,7 @@ kotlin {
             api(compose.foundation)
             api(compose.runtime)
             api(compose.ui)
+            api(libs.jetbrains.lifecycle.runtime.compose)
         }
 
         commonTest.dependencies {

@@ -14,10 +14,10 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
 import androidx.compose.ui.unit.IntSize
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.github.panpf.sketch.AsyncImageState
 import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.PainterImage
