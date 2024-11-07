@@ -6,66 +6,95 @@
 > 1. 4.x 版本为兼容 Compose Multiplatform 而进行了大量破坏性重构和简化，不兼容 3.x 版本
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 
-# new
+# 4.0.0-beta01
 
-* fix: 修复当 ImageView 已附到窗口但是因 padding 导致 size 为 null 时无法加载图片的
-  bug。 [#208](https://github.com/panpf/sketch/issues/208)
-* fix: 修复 CircleCrop、Rotate、RoundedCorners Transformation 在 RGB_565 时不工作的
-  bug。 [#209](https://github.com/panpf/sketch/issues/209)
-* fix: 修复 RingProgressDrawable, SectorProgressDrawable, RingProgressPainter, SectorProgressPainter
-  的 equals 方法未按预期执行的 bug。 [#210](https://github.com/panpf/sketch/issues/210)
+core:
+
+* remove: 删除 Image.getPixels()
+* remove: 移除 'com.github.panpf.sketch.annotation' 包下的 AnyThread、MainThread、IntRange、IntDef
+  注解，使用 'androidx.annotation' 包下的替代
+* change: 合并 AndroidBitmapImage 和 SkiaBitmapImage 为 BitmapImage
+* change: DrawableEqualizer 重命名为 EquitableDrawable
+* change: 移除 AndroidBitmap、SkiBitmap、SkiaImageInfo、SkiaImage、SkiaRect
+* change: SkiaAnimatedImage 重命名为 AnimatedImage
+* change: ImageRequest 的 registerListener 和 registerProgressListener 方法重命名为 addListener 和
+  addProgressListener
+* new: 新增 ComponentLoader，支持自动探测并注册 Fetcher 和 Decoder 组件，所有自带模块里的组件都已支持
+
+compose:
+
 * fix: 修复 AsyncImage 的 filterQuality 参数无效的
   bug。 [#211](https://github.com/panpf/sketch/issues/211)
-* fix: 修复 Android 平台上 blur、rotate 等 Transformation 没有保持 ColorSpace 不变的
-  bug。 [#213](https://github.com/panpf/sketch/issues/213)
+* remove: 移除 ComposeBitmapImage
+* change: 移除 PainterState.Empty
+* change: PainterEqualizer 重命名为 EquitablePainter
+* change: ComposeImagePainter 重命名为 ImageBitmapPainter、SkiaAnimatedImagePainter 重命名为
+  AnimatedImagePainter
+
+view:
+* fix: 修复当 ImageView 已附到窗口但是因 padding 导致 size 为 null 时无法加载图片的
+  bug。 [#208](https://github.com/panpf/sketch/issues/208)
+
+decode:
+
+* change: Decoder 的 decode() 方法移除 suspend 修饰符并且返回类型从 Result<DecodeResult> 改为
+  DecodeResult
+* change: BitmapConfig 重构为 BitmapColorType
+* new: 非安卓平台现在也支持 ColorType 了
+* new: 非安卓平台现在也支持 ColorSpace 了
+* new: DrawableDecoder 支持 colorSpace
+
+fetch:
+
+* change: Fetcher.Factory.create() 的传参改为 RequestContext
+
+cache:
+
+* change: 现在非安卓平台上内存缓存中缓存的是 SkiaBitmapImage，不再是 ComposeBitmapImage
+* change: 桌面和 web 平台的默认内存缓存大小现在是 256MB，ios 平台是 128MB
+
+http:
+
+* remove: 移除 ImageRequest.Builder 和 ImageOptions.Builder 的 setHttpHeader() 和 addHttpHeader() 方法
+* change: 移除 sketch-http-core 模块，增加 sketch-http-hurl 模块，sketch-http-ktor 模块重命名为
+  sketch-http-ktor2 并且不再支持 wasmJs，增加 sketch-http-ktor3 模块
+
+animated:
 * fix: 修复非安卓平台上动图设置 repeatCount 并播放结束后没有停留在最后一帧，而停留在第一帧的
   bug。 [#212](https://github.com/panpf/sketch/issues/212)
 * fix: 修复 GifDrawable 和 MovieDrawable 无法正确应用 animatedTransformation 的
   bug。 [#214](https://github.com/panpf/sketch/issues/214)
 * fix: 修复 GifDrawableDecoder 的 repeatCount 设置错误应该加 1 的
   bug。 [#215](https://github.com/panpf/sketch/issues/215)
-* remove: 移除 ComposeBitmapImage
-* remove: 删除 Image.getPixels()
-* remove: 移除 'com.github.panpf.sketch.annotation' 包下的 AnyThread、MainThread、IntRange、IntDef
-  注解，使用 'androidx.annotation' 包下的替代
-* change: 现在非安卓平台上内存缓存中缓存的是 SkiaBitmapImage，不再是 ComposeBitmapImage
-* change: Fetcher.Factory.create() 的传参改为 RequestContext
-* change: Decoder 的 decode() 方法移除 suspend 修饰符并且返回类型从 Result<DecodeResult> 改为
-  DecodeResult
-* change: Transformation 的 transform() 方法移除 suspend 修饰符
-* change: 桌面和 web 平台的默认内存缓存大小现在是 256MB，ios 平台是 128MB
-* change: BitmapConfig 重构为 BitmapColorType
-* change: 合并 AndroidBitmapImage 和 SkiaBitmapImage 为 BitmapImage
-* change: ImageRequest.Builder 和 ImageOptions.Builder 的 setHttpHeader 方法重命名为 httpHeader
-* change: DrawableEqualizer 和 PainterEqualizer 改为 EquitableDrawable 和 EquitablePainter
-* change: ImageRequest 和 ImageOptions 的 error 属性的类型从 ErrorImageState 改为 StateImage
-* change: ErrorImageState 重构为 ConditionStateImage，并且 ConditionStateImage 可以用在 placeholder 和
-  fallback
-* change: 移除 PainterState.Empty
-* change: 移除 AndroidBitmap、SkiBitmap、SkiaImageInfo、SkiaImage、SkiaRect，ComposeImagePainter 重命名为
-  ImageBitmapPainter、SkiaAnimatedImage 重命名为 AnimatedImage、SkiaAnimatedImagePainter 重命名为
-  AnimatedImagePainter
-* change: ImageRequest 的 registerListener 和 registerProgressListener 方法重命名为 addListener 和
-  addProgressListener
-* change: 移除 sketch-http-core 模块，增加 sketch-http-hurl 模块，sketch-http-ktor 模块重命名为
-  sketch-http-ktor2 并且不再支持 wasmJs，增加 sketch-http-ktor3 模块
 * change: 拆分 sketch-animated 模块为 sketch-animated-core 和
   sketch-animated-gif、sketch-animated-webp、sketch-animated-heif, sketch-animated-koralgif 模块重命名为
   sketch-animated-gif-koral
-* change: 从 sketch-extensions-core 模块中拆分出 sketch-extensions-apkicon 和
-  sketch-extensions-appicon
-  模块
+* improve: animatedTransformation 现在支持非 Android 平台
+
+transformation:
+
+* fix: 修复 CircleCrop、Rotate、RoundedCorners Transformation 在 RGB_565 时不工作的
+  bug。 [#209](https://github.com/panpf/sketch/issues/209)
+* fix: 修复 Android 平台上 blur、rotate 等 Transformation 没有保持 ColorSpace 不变的
+  bug。 [#213](https://github.com/panpf/sketch/issues/213)
+* change: Transformation 的 transform() 方法移除 suspend 修饰符
+
+state:
+* change: ImageRequest 和 ImageOptions 的 error 属性的类型从 ErrorImageState 改为 StateImage
+* change: ErrorImageState 重构为 ConditionStateImage，并且 ConditionStateImage 可以用在 placeholder 和
+  fallback
 * improve: 改进 IconDrawable，支持有固定大小的 background 并且限制 icon 必须有固定尺寸或指定 iconSize
 * improve: 改进 IconPainter，支持有固定大小的 background 并且限制 icon 必须有固定尺寸或指定 iconSize
-* new: 非安卓平台现在也支持 ColorType 了
-* new: 非安卓平台现在也支持 ColorSpace 了
-* new: DrawableDecoder 支持 colorSpace
 * new: 新增 'Drawable.asStateImage(Any)' 和 'ColorDrawable.asStateImage()' 扩展函数
-* new: animatedTransformation 现在支持非 Android 平台
-* new: 新增 ComponentLoader，支持自动探测并注册组件
-* new: sketch-http-\* 模块携带的 Fetcher 组件支持自动注册
-* new: sketch-animated-\* 模块携带的 Decoder 组件支持自动注册
-* new: sketch-compose-resources 模块携带的 Fetcher 组件支持自动注册
+
+extensions:
+
+* fix: 修复 RingProgressDrawable, SectorProgressDrawable, RingProgressPainter, SectorProgressPainter
+  的 equals 方法未按预期执行的 bug。 [#210](https://github.com/panpf/sketch/issues/210)
+* change: 从 sketch-extensions-core 模块中拆分出 sketch-extensions-apkicon 和
+  sketch-extensions-appicon 模块
+
+other:
 * depend: 升级 kotlin 2.0.21, kotlinx coroutines 1.9.0
 * depend: 升级 jetbrains compose 1.7.0, jetbrains lifecycle 2.8.3
 

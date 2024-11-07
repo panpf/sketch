@@ -8,77 +8,110 @@ Translations: [简体中文](CHANGELOG_zh.md)
 > 2. The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
      prompt for upgrade.
 
-# new
+# 4.0.0-beta01
 
-* fix: Fix the bug that the image cannot be loaded when the ImageView is attached to the window but
-  the size is null due to padding. [#208](https://github.com/panpf/sketch/issues/208)
-* fix: Fixed CircleCrop, Rotate, RoundedCorners Transformation not working in RGB_565
-  bug. [#209](https://github.com/panpf/sketch/issues/209)
-* fix: Fixed the bug that the equals method of RingProgressDrawable, SectorProgressDrawable,
-  RingProgressPainter, SectorProgressPainter did not execute as
-  expected. [#210](https://github.com/panpf/sketch/issues/210)
-* fix: Fix the bug that the filterQuality parameter of AsyncImage is
-  invalid. [#211](https://github.com/panpf/sketch/issues/211)
-* fix: Fixed the bug that Transformations such as blur and rotate on the Android platform did not
-  keep the ColorSpace unchanged. [#213](https://github.com/panpf/sketch/issues/213)
-* fix: Fixed the bug of setting repeatCount for animations on non-Android platforms and not staying
-  at the last frame after playing, but staying at the first
-  frame. [#212](https://github.com/panpf/sketch/issues/212)
-* fix: Fixed the bug that GifDrawable and MovieDrawable could not correctly apply
-  animatedTransformation. [#214](https://github.com/panpf/sketch/issues/214)
-* fix: Fixed the bug that the repeatCount setting of GifDrawableDecoder should be increased by 1 by
-  mistake. [#215](https://github.com/panpf/sketch/issues/215)
-* remove: Remove ComposeBitmapImage
+core:
+
 * remove: Remove Image.getPixels()
 * remove: Remove the AnyThread, MainThread, IntRange, and IntDef annotations under the '
   com.github.panpf.sketch.annotation' package and use the alternatives under the '
   androidx.annotation' package
-* change: SkiaBitmapImage is now cached in the memory cache on non-Android platforms, not
-  ComposeBitmapImage.
-* change: The parameter passed in Fetcher.Factory.create() is changed to RequestContext
+* change: Merge AndroidBitmapImage and SkiaBitmapImage into BitmapImage
+* change: DrawableEqualizer renamed to EquitableDrawable
+* change: Remove AndroidBitmap, SkiBitmap, SkiaImageInfo, SkiaImage, SkiaRect
+* change: SkiaAnimatedImage renamed to AnimatedImage
+* change: ImageRequest's registerListener and registerProgressListener methods renamed to
+  addListener and addProgressListener
+* new: Added ComponentLoader, which supports automatic detection and registration of Fetcher and
+  Decoder components. All components in the built-in module are supported.
+
+compose:
+
+* fix: Fix the bug that the filterQuality parameter of AsyncImage is
+  invalid. [#211](https://github.com/panpf/sketch/issues/211)
+* remove: Remove ComposeBitmapImage
+* remove: Remove PainterState.Empty
+* change: PainterEqualizer renamed to EquitablePainter
+* change: ComposeImagePainter renamed to ImageBitmapPainter, SkiaAnimatedImagePainter renamed to
+  AnimatedImagePainter
+
+view:
+
+* fix: Fix the bug that the image cannot be loaded when the ImageView is attached to the window but
+  size is null due to padding. [#208](https://github.com/panpf/sketch/issues/208)
+
+decode:
+
 * change: Decoder's decode() method removes the suspend modifier and changes the return type from
   Result<DecodeResult> to DecodeResult
-* change: Transformation's transform() method removes the suspend modifier
+* change: BitmapConfig refactored to BitmapColorType
+* new: Non-Android platforms now also support ColorType
+* new: Non-Android platforms now also support ColorSpace
+* new: DrawableDecoder supports colorSpace
+
+fetch:
+
+* change: The parameter passed in Fetcher.Factory.create() is changed to RequestContext
+
+cache:
+
+* change: SkiaBitmapImage is now cached in the memory cache on non-Android platforms, not
+  ComposeBitmapImage.
 * change: The default memory cache size is now 256MB for desktop and web platforms and 128MB for ios
   platforms
-* change: BitmapConfig refactored to BitmapColorType
-* change: Merge AndroidBitmapImage and SkiaBitmapImage into BitmapImage
-* change: The setHttpHeader method of ImageRequest.Builder and ImageOptions.Builder is renamed to
-  httpHeader
-* change: DrawableEqualizer and PainterEqualizer changed to EquitableDrawable and EquitablePainter
+
+http:
+
+* remove: Removed the setHttpHeader() and addHttpHeader() methods of ImageRequest.Builder and
+  ImageOptions.Builder
+* change: Remove the sketch-http-core module, add the sketch-http-hurl module, rename the
+  sketch-http-ktor module to sketch-http-ktor2 and no longer support wasmJs, add the
+  sketch-http-ktor3 module
+
+animated:
+
+* fix: Fixed the bug that on non-Android platforms, animations set repeatCount and do not stay on
+  the last frame after playing, but stay on the first
+  frame. [#212](https://github.com/panpf/sketch/issues/212)
+* fix: Fixed the bug that GifDrawable and MovieDrawable could not apply animatedTransformation
+  correctly. [#214](https://github.com/panpf/sketch/issues/214)
+* fix: Fixed the bug that the repeatCount setting of GifDrawableDecoder should be increased by 1 by
+  mistake. [#215](https://github.com/panpf/sketch/issues/215)
+* change: Split the sketch-animated module into sketch-animated-core and sketch-animated-gif,
+  sketch-animated-webp, sketch-animated-heif, sketch-animated-koralgif module and rename it to
+  sketch-animated-gif-koral
+* improve: animatedTransformation now supports non-Android platforms
+
+transformation:
+
+* fix: Fix the bug that CircleCrop, Rotate, RoundedCorners Transformation does not work at
+  RGB_565. [#209](https://github.com/panpf/sketch/issues/209)
+* fix: Fixed the bug that Transformations such as blur and rotate on the Android platform did not
+  keep the ColorSpace unchanged. [#213](https://github.com/panpf/sketch/issues/213)
+* change: Transformation's transform() method removes the suspend modifier
+
+state:
+
 * change: The type of error attribute of ImageRequest and ImageOptions changed from ErrorImageState
   to StateImage
 * change: ErrorImageState is refactored into ConditionStateImage, and ConditionStateImage can be
   used in placeholder and fallback
-* change: Remove PainterState.Empty
-* change: Removed AndroidBitmap, SkiBitmap, SkiaImageInfo, SkiaImage, SkiaRect, and renamed
-  ComposeImagePainter to ImageBitmapPainter, SkiaAnimatedImage renamed to AnimatedImage,
-  SkiaAnimatedImagePainter renamed to AnimatedImagePainter
-* change: ImageRequest's registerListener and registerProgressListener methods renamed to
-  addListener and addProgressListener
-* change: Remove the sketch-http-core module, add the sketch-http-hurl module, rename the
-  sketch-http-ktor module to sketch-http-ktor2 and wasmJs is no longer supported, add the
-  sketch-http-ktor3 module
-* change: Split the sketch-animated module into sketch-animated-core and sketch-animated-gif,
-  sketch-animated-webp, sketch-animated-heif, sketch-animated-koralgif module and rename it to
-  sketch-animated-gif-koral
-* change: Split sketch-extensions-apkicon and sketch-extensions-appicon module from the
-  sketch-extensions-core module
 * improve: Improve IconDrawable, support fixed-size background and restrict icons to have fixed
   sizes or specify iconSize
-* improve: Improve IconPainter, support fixed-size background and restrict icons to have fixed
-  sizes or specify iconSize
-* new: Non-Android platforms now also support ColorType
-* new: Non-Android platforms now also support ColorSpace
-* new: DrawableDecoder supports colorSpace
+* improve: Improve IconPainter, support fixed-size background and restrict icons to have fixed sizes
+  or specify iconSize
 * new: Added 'Drawable.asStateImage(Any)' and 'ColorDrawable.asStateImage()' extension functions
-* new: animatedTransformation now supports non-Android platforms
-* new: Added ComponentLoader to support automatic detection and registration of components
-* new: The Fetcher component carried by the sketch-http-\* module supports automatic registration.
-* new: The Decoder component carried by the sketch-animated-\* module supports automatic
-  registration.
-* new: The Fetcher component carried by the sketch-compose-resources module supports automatic
-  registration
+
+extensions:
+
+* fix: Fixed the bug that the equals method of RingProgressDrawable, SectorProgressDrawable,
+  RingProgressPainter, SectorProgressPainter did not execute as
+  expected. [#210](https://github.com/panpf/sketch/issues/210)
+* change: Split the sketch-extensions-apkicon and sketch-extensions-appicon modules from the
+  sketch-extensions-core module
+
+other:
+
 * depend: Upgrade kotlin 2.0.21, kotlinx coroutines 1.9.0
 * depend: Upgrade jetbrains compose 1.7.0, jetbrains lifecycle 2.8.3
 
