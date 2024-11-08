@@ -127,8 +127,9 @@ class StateView @JvmOverloads constructor(
             message(binding.root.context.resources.getString(resId))
         }
 
-        fun message(e: Throwable) {
+        fun message(e: Throwable?) {
             val message = when (e) {
+                null -> "Load failed"
                 is SecurityException -> "Network permission error：${e.message}"
                 is UnknownHostException -> if (binding.root.context.isNetworkConnected())
                     "Unknown Host error" else "No network connection"

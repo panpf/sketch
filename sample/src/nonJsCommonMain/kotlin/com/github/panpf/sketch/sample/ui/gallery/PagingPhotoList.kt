@@ -32,7 +32,8 @@ import app.cash.paging.compose.collectAsLazyPagingItems
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.ability.bindPauseLoadWhenScrolling
 import com.github.panpf.sketch.sample.appSettings
-import com.github.panpf.sketch.sample.ui.common.PagingAppendState
+import com.github.panpf.sketch.sample.ui.common.PagingListAppendState
+import com.github.panpf.sketch.sample.ui.common.PagingListRefreshState
 import com.github.panpf.sketch.sample.ui.components.VerticalScrollbarCompat
 import com.github.panpf.sketch.sample.ui.model.Photo
 import kotlinx.coroutines.flow.Flow
@@ -81,6 +82,8 @@ fun PagingPhotoList(
             state = pullRefreshState,
             modifier = Modifier.align(Alignment.TopCenter)
         )
+
+        PagingListRefreshState(pagingItems)
     }
 }
 
@@ -107,18 +110,16 @@ private fun PhotoSquareGrid(
                 key = { "${pagingItems.peek(it)?.originalUrl}:${it}" },
                 contentType = { 1 }
             ) { index ->
-                val item = pagingItems[index]
-                item?.let {
-                    PhotoGridItem(
-                        index = index,
-                        photo = it,
-                        animatedPlaceholder = animatedPlaceholder,
-                        staggeredGridMode = false,
-                        onClick = { photo, index ->
-                            onClick(pagingItems.itemSnapshotList.items, photo, index)
-                        },
-                    )
-                }
+                val photo = pagingItems[index]!!
+                PhotoGridItem(
+                    index = index,
+                    photo = photo,
+                    animatedPlaceholder = animatedPlaceholder,
+                    staggeredGridMode = false,
+                    onClick = { photo1, index1 ->
+                        onClick(pagingItems.itemSnapshotList.items, photo1, index1)
+                    },
+                )
             }
 
             if (pagingItems.itemCount > 0) {
@@ -127,9 +128,7 @@ private fun PhotoSquareGrid(
                     span = { GridItemSpan(this.maxLineSpan) },
                     contentType = 2
                 ) {
-                    PagingAppendState(pagingItems.loadState.append) {
-                        pagingItems.retry()
-                    }
+                    PagingListAppendState(pagingItems)
                 }
             }
         }
@@ -164,18 +163,16 @@ private fun PhotoStaggeredGrid(
                 key = { "${pagingItems.peek(it)?.originalUrl}:${it}" },
                 contentType = { 1 }
             ) { index ->
-                val item = pagingItems[index]
-                item?.let {
-                    PhotoGridItem(
-                        index = index,
-                        photo = it,
-                        animatedPlaceholder = animatedPlaceholder,
-                        staggeredGridMode = true,
-                        onClick = { photo, index ->
-                            onClick(pagingItems.itemSnapshotList.items, photo, index)
-                        },
-                    )
-                }
+                val photo = pagingItems[index]!!
+                PhotoGridItem(
+                    index = index,
+                    photo = photo,
+                    animatedPlaceholder = animatedPlaceholder,
+                    staggeredGridMode = true,
+                    onClick = { photo1, index1 ->
+                        onClick(pagingItems.itemSnapshotList.items, photo1, index1)
+                    },
+                )
             }
 
             if (pagingItems.itemCount > 0) {
@@ -184,9 +181,7 @@ private fun PhotoStaggeredGrid(
                     span = StaggeredGridItemSpan.FullLine,
                     contentType = 2
                 ) {
-                    PagingAppendState(pagingItems.loadState.append) {
-                        pagingItems.retry()
-                    }
+                    PagingListAppendState(pagingItems)
                 }
             }
         }

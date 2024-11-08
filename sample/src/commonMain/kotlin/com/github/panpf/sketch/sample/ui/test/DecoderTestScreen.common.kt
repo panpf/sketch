@@ -112,10 +112,7 @@ class DecoderTestScreen : BaseScreen() {
                                         .progressIndicator(imageState, progressPainter)
                                 )
 
-                                AsyncImagePageState(
-                                    imageState = imageState,
-                                    modifier = Modifier.align(Alignment.Center),
-                                )
+                                AsyncImagePageState(imageState = imageState)
                             }
                         } else {
                             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

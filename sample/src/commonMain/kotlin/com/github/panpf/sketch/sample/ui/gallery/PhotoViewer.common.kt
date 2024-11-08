@@ -84,10 +84,7 @@ fun PhotoViewer(
                 .padding(vertical = 30.dp)
         )
 
-        AsyncImagePageState(
-            imageState = imageState,
-            modifier = Modifier.align(Alignment.Center),
-        )
+        AsyncImagePageState(imageState = imageState)
 
         MyDialog(infoDialogState) {
             PhotoInfo(imageState.result)

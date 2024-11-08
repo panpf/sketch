@@ -6,22 +6,25 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.github.panpf.sketch.AsyncImageState
-import com.github.panpf.sketch.request.LoadState
+import app.cash.paging.LoadStateError
+import app.cash.paging.compose.LazyPagingItems
 
 @Composable
-fun AsyncImagePageState(imageState: AsyncImageState, modifier: Modifier = Modifier.fillMaxSize()) {
+fun PagingListRefreshState(
+    pagingItems: LazyPagingItems<*>,
+    modifier: Modifier = Modifier.fillMaxSize()
+) {
     val pageState by remember {
         derivedStateOf {
-            if (imageState.loadState is LoadState.Error) {
-                PageState.Error("Image load failed") {
-                    imageState.restart()
+            val refreshState = pagingItems.loadState.refresh
+            if (refreshState is LoadStateError) {
+                PageState.Error(refreshState.error.message) {
+                    pagingItems.refresh()
                 }
             } else {
                 null
             }
         }
     }
-
     PageState(pageState = pageState, modifier = modifier)
 }

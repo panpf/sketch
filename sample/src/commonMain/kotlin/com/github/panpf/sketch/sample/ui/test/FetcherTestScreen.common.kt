@@ -17,7 +17,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.ScreenModel
@@ -107,10 +106,7 @@ class FetcherTestScreen : BaseScreen() {
                                     .progressIndicator(imageState, progressPainter)
                             )
 
-                            AsyncImagePageState(
-                                imageState = imageState,
-                                modifier = Modifier.align(Alignment.Center),
-                            )
+                            AsyncImagePageState(imageState = imageState)
                         }
                     }
                 }

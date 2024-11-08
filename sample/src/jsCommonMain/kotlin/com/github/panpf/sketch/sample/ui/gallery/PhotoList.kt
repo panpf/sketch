@@ -134,7 +134,7 @@ fun PhotoList(
             modifier = Modifier.align(Alignment.TopCenter)
         )
 
-        PageState(pageState, Modifier.align(Alignment.Center))
+        PageState(pageState)
     }
 }
 
