@@ -26,7 +26,7 @@ has the following features:
 
 * Android: Please go to the [Releases](https://github.com/panpf/sketch/releases) page to download
   the latest version of the installation package
-* Web: https://panpf.github.io/sketch-demo/
+* Web: https://panpf.github.io/sketch/app
 * Desktop: Use [kdoctor] to check the running environment, and follow the prompts to install the
   required software, and then execute the `./package_desktop.sh` command in the project root
   directory to package. The installation package location is included in the output.
