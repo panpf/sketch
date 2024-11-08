@@ -16,6 +16,14 @@ Sketch 是专为 Compose Multiplatform 和 Android View 设计的图片加载库
 * `扩展功能`：提供蜂窝流量时暂停下载、列表滚动中暂停加载、图片类型徽章、下载进度指示器等实用扩展
 * `现代化`：完全基于 Kotlin 和 Kotlin 协程设计
 
+## 示例 App
+
+* Android：请到 [Releases](https://github.com/panpf/sketch/releases) 页面下载最新版本的安装包
+* Web：https://panpf.github.io/sketch-demo/
+* 桌面：使用 [kdoctor] 检查运行环境，并按照提示安装需要的软件，然后在项目根目录执行
+  `./package_desktop.sh` 命令打包，安装包位置包含在输出中
+* iOS：请参考 [运行示例 App](#运行示例-app) 部分自行编译运行
+
 ## 安装
 
 `已发布到 mavenCentral`
