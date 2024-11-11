@@ -8,9 +8,14 @@
 
 # new
 
+core:
+
+* fix: 修复磁盘缓存因被杀导致 REMOVE 记录丢失，重新初始化未校验文件是否存在导致 size() 异常的
+  bug [#219](https://github.com/panpf/sketch/issues/219)
+
 animated:
 
-fix: 修复 sketch-animated-heif 的依赖中意外的包含了本地测试 module 的
+* fix: 修复 sketch-animated-heif 的依赖中意外的包含了本地测试 module 的
 bug [#220](https://github.com/panpf/sketch/issues/220)
 
 # 4.0.0-beta01

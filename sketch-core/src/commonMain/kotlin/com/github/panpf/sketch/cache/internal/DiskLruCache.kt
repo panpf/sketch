@@ -186,6 +186,7 @@ internal class DiskLruCache(
             try {
                 readJournal()
                 processJournal()
+                filterFileNotExistEntry()
                 initialized = true
                 return
             } catch (_: IOException) {
@@ -204,6 +205,17 @@ internal class DiskLruCache(
 
         writeJournal()
         initialized = true
+    }
+
+    private fun filterFileNotExistEntry() {
+        for (entry in lruEntries.values.toTypedArray()) {
+            if (entry.readable && entry.currentEditor == null && !entry.zombie) {
+                val allExist = entry.cleanFiles.all { fileSystem.exists(it) }
+                if (!allExist) {
+                    removeEntry(entry)
+                }
+            }
+        }
     }
 
     /**

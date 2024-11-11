@@ -10,9 +10,16 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 # new
 
+core:
+
+* fix: Fixed a bug that caused REMOVE records to be lost due to disk cache being killed, and
+  re-initialization did not verify whether the file existed, causing size()
+  exceptions. [#219](https://github.com/panpf/sketch/issues/219)
+
 animated:
 
-fix: Fixed the bug that the dependency of sketch-animated-heif accidentally included the local test
+* fix: Fixed the bug that the dependency of sketch-animated-heif accidentally included the local
+  test
 module. [#220](https://github.com/panpf/sketch/issues/220)
 
 # 4.0.0-beta01
