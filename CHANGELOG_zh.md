@@ -6,6 +6,13 @@
 > 1. 4.x 版本为兼容 Compose Multiplatform 而进行了大量破坏性重构和简化，不兼容 3.x 版本
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 
+# new
+
+animated:
+
+fix: 修复 sketch-animated-heif 的依赖中意外的包含了本地测试 module 的
+bug [#220](https://github.com/panpf/sketch/issues/220)
+
 # 4.0.0-beta01
 
 core:

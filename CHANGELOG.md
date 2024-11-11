@@ -8,6 +8,13 @@ Translations: [简体中文](CHANGELOG_zh.md)
 > 2. The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
      prompt for upgrade.
 
+# new
+
+animated:
+
+fix: Fixed the bug that the dependency of sketch-animated-heif accidentally included the local test
+module. [#220](https://github.com/panpf/sketch/issues/220)
+
 # 4.0.0-beta01
 
 core:
