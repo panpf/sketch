@@ -162,7 +162,6 @@ open class ComponentRegistry private constructor(
     }
 
     override fun toString(): String {
-        // TODO improve, ComponentRegistry(fetchers=[...], decoders=[...], requestInterceptors=[...], decodeInterceptors=[...])
         val fetchersString = fetcherFactoryList
             .joinToString(prefix = "[", postfix = "]", separator = ",")
         val decodersString = decoderFactoryList

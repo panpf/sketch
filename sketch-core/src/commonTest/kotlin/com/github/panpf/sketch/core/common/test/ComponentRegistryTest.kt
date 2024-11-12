@@ -461,14 +461,65 @@ class ComponentRegistryTest {
     }
 
     @Test
-    fun testBuilderAddFetcher() {
+    fun testBuilder() {
         ComponentRegistry().apply {
             assertTrue(fetcherFactoryList.isEmpty())
+            assertTrue(decoderFactoryList.isEmpty())
+            assertTrue(requestInterceptorList.isEmpty())
+            assertTrue(decodeInterceptorList.isEmpty())
         }
 
         ComponentRegistry {
             addFetcher(Base64UriFetcher.Factory())
-            addFetcher(TestFetcher.Factory())
+            addDecoder(TestDecoder.Factory())
+            addRequestInterceptor(EngineRequestInterceptor())
+            assertFailsWith(IllegalArgumentException::class) {
+                addRequestInterceptor(TestRequestInterceptor(-1))
+            }
+            assertFailsWith(IllegalArgumentException::class) {
+                addRequestInterceptor(TestRequestInterceptor(100))
+            }
+            addDecodeInterceptor(EngineDecodeInterceptor())
+            assertFailsWith(IllegalArgumentException::class) {
+                addDecodeInterceptor(TestDecodeInterceptor(-1))
+            }
+            assertFailsWith(IllegalArgumentException::class) {
+                addDecodeInterceptor(TestDecodeInterceptor(100))
+            }
+        }.apply {
+            assertEquals(
+                listOf(
+                    Base64UriFetcher.Factory(),
+                ),
+                fetcherFactoryList
+            )
+            assertEquals(
+                listOf(
+                    TestDecoder.Factory(),
+                ),
+                decoderFactoryList
+            )
+            assertEquals(
+                listOf(
+                    EngineRequestInterceptor()
+                ),
+                requestInterceptorList
+            )
+            assertEquals(
+                listOf(
+                    EngineDecodeInterceptor(),
+                ),
+                decodeInterceptorList
+            )
+        }.newRegistry {
+            addComponents(ComponentRegistry {
+                addFetcher(TestFetcher.Factory())
+                addDecoder(TestDecoder2.Factory())
+                addRequestInterceptor(MemoryCacheRequestInterceptor())
+                addRequestInterceptor(TestRequestInterceptor(95))
+                addDecodeInterceptor(TransformationDecodeInterceptor())
+                addDecodeInterceptor(TestDecodeInterceptor(95))
+            })
         }.apply {
             assertEquals(
                 listOf(
@@ -477,19 +528,6 @@ class ComponentRegistryTest {
                 ),
                 fetcherFactoryList
             )
-        }
-    }
-
-    @Test
-    fun testBuilderAddDecoder() {
-        ComponentRegistry().apply {
-            assertTrue(decoderFactoryList.isEmpty())
-        }
-
-        ComponentRegistry {
-            addDecoder(TestDecoder.Factory())
-            addDecoder(TestDecoder2.Factory())
-        }.apply {
             assertEquals(
                 listOf(
                     TestDecoder.Factory(),
@@ -497,27 +535,6 @@ class ComponentRegistryTest {
                 ),
                 decoderFactoryList
             )
-        }
-    }
-
-    @Test
-    fun testBuilderAddRequestInterceptor() {
-        ComponentRegistry().apply {
-            assertTrue(requestInterceptorList.isEmpty())
-        }
-
-        ComponentRegistry {
-            addRequestInterceptor(EngineRequestInterceptor())
-            addRequestInterceptor(MemoryCacheRequestInterceptor())
-            addRequestInterceptor(TestRequestInterceptor(95))
-
-            assertFailsWith(IllegalArgumentException::class) {
-                addRequestInterceptor(TestRequestInterceptor(-1))
-            }
-            assertFailsWith(IllegalArgumentException::class) {
-                addRequestInterceptor(TestRequestInterceptor(100))
-            }
-        }.apply {
             assertEquals(
                 listOf(
                     MemoryCacheRequestInterceptor(),
@@ -526,26 +543,6 @@ class ComponentRegistryTest {
                 ),
                 requestInterceptorList
             )
-        }
-    }
-
-    @Test
-    fun testBuilderAddDecodeInterceptor() {
-        ComponentRegistry().apply {
-            assertTrue(decodeInterceptorList.isEmpty())
-        }
-
-        ComponentRegistry {
-            addDecodeInterceptor(EngineDecodeInterceptor())
-            addDecodeInterceptor(TransformationDecodeInterceptor())
-            addDecodeInterceptor(TestDecodeInterceptor(95))
-            assertFailsWith(IllegalArgumentException::class) {
-                addDecodeInterceptor(TestDecodeInterceptor(-1))
-            }
-            assertFailsWith(IllegalArgumentException::class) {
-                addDecodeInterceptor(TestDecodeInterceptor(100))
-            }
-        }.apply {
             assertEquals(
                 listOf(
                     TransformationDecodeInterceptor(),
