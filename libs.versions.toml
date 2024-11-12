@@ -21,6 +21,8 @@ androidgifdrawable = "1.2.15"
 androidsvg = "1.4"
 appdirs = "1.2.2"
 
+buildkonfig = "0.15.2"
+
 cashapp-paging = "3.3.0-alpha02-0.5.1"
 
 ffmpegMediaMetadataRetriever = "1.0.16"
@@ -62,6 +64,7 @@ voyager = "1.1.0-alpha03"
 [libraries]
 gradlePlugin-android = { module = "com.android.tools.build:gradle", version.ref = "android-plugin" }
 gradlePlugin-androidxNavigationSafeArgs = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "androidx-navigation" }
+gradlePlugin-buildkonfig = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildkonfig" }
 gradlePlugin-jetbrainsCompose = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "jetbrains-compose" }
 gradlePlugin-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 gradlePlugin-kotlinComposeCompiler = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }

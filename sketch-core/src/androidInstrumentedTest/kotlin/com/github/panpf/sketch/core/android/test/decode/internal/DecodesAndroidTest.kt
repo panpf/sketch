@@ -1812,15 +1812,6 @@ class DecodesAndroidTest {
             ResourceImages.animGif,
             ResourceImages.animWebp,
             ResourceImages.animHeif,
-            ResourceImages.clockExifFlipHorizontal,
-            ResourceImages.clockExifFlipVertical,
-            ResourceImages.clockExifNormal,
-            ResourceImages.clockExifRotate90,
-            ResourceImages.clockExifRotate180,
-            ResourceImages.clockExifRotate270,
-            ResourceImages.clockExifTranspose,
-            ResourceImages.clockExifTransverse,
-            ResourceImages.clockExifUndefined,
         ).forEach { imageFile ->
             val dataSource = imageFile.toDataSource(context)
             val result = runCatching {
@@ -1840,6 +1831,10 @@ class DecodesAndroidTest {
         assertEquals(
             expected = null,
             actual = supportBitmapRegionDecoder("image/fake", animated = false)
+        )
+        assertEquals(
+            expected = false,
+            actual = supportBitmapRegionDecoder("video/mp4", animated = false)
         )
     }
 }

@@ -17,12 +17,14 @@
 package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.Bitmap
+import com.github.panpf.sketch.core.BuildKonfig
 import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchRect
+import com.github.panpf.sketch.util.compareVersions
 import com.github.panpf.sketch.util.toSkiaRect
 import okio.buffer
 import okio.use
@@ -194,11 +196,19 @@ internal fun Image.decodeRegion(
 
 /**
  * Check whether the Skia platform supports decoding the specified region
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testSupportDecodeRegion
  */
-fun supportDecodeRegion(mimeType: String): Boolean? = when (mimeType) {
-    "image/jpeg", "image/png", "image/webp", "image/bmp", "image/gif" -> true
-    "image/svg+xml" -> false
-    // TODO Get the skiko version and return false directly.
-    //  "image/heic", "image/heif", "image/avif" -> false
-    else -> null
+fun supportDecodeRegion(mimeType: String): Boolean? {
+    if (!mimeType.startsWith("image/")) {
+        return false
+    }
+    return when (mimeType) {
+        "image/jpeg", "image/png", "image/webp", "image/bmp", "image/gif" -> true
+        "image/svg+xml" -> false
+        "image/heic", "image/heif", "image/avif" ->
+            if (compareVersions(BuildKonfig.SKIKO_VERSION_NAME, "0.8.15") <= 0) false else null
+
+        else -> null
+    }
 }

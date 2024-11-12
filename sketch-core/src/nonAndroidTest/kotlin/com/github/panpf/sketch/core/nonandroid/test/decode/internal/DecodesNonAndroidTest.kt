@@ -44,6 +44,7 @@ import com.github.panpf.sketch.test.utils.toRect
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.test.utils.toSkiaImage
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.div
 import com.github.panpf.sketch.util.isSameAspectRatio
 import com.github.panpf.sketch.util.size
 import com.github.panpf.sketch.util.times
@@ -1480,15 +1481,31 @@ class DecodesNonAndroidTest {
 
     @Test
     fun testSupportDecodeRegion() {
-        assertEquals(expected = true, actual = supportDecodeRegion("image/jpeg"))
-        assertEquals(expected = true, actual = supportDecodeRegion("image/png"))
-        assertEquals(expected = true, actual = supportDecodeRegion("image/bmp"))
-        assertEquals(expected = true, actual = supportDecodeRegion("image/webp"))
-        assertEquals(expected = true, actual = supportDecodeRegion("image/gif"))
-        assertEquals(expected = false, actual = supportDecodeRegion("image/svg+xml"))
-        assertEquals(expected = null, actual = supportDecodeRegion("image/heic"))
-        assertEquals(expected = null, actual = supportDecodeRegion("image/heif"))
-        assertEquals(expected = null, actual = supportDecodeRegion("image/avif"))
+        val context = getTestContext()
+        listOf(
+            ResourceImages.jpeg,
+            ResourceImages.png,
+            ResourceImages.bmp,
+            ResourceImages.webp,
+            ResourceImages.heic,
+            ResourceImages.avif,
+            ResourceImages.svg,
+            ResourceImages.animGif,
+            ResourceImages.animWebp,
+            ResourceImages.animHeif,
+        ).forEach { imageFile ->
+            val dataSource = imageFile.toDataSource(context)
+            val result = runCatching {
+                dataSource.toSkiaImage().decodeRegion(srcRect = (imageFile.size / 2f).toRect())
+            }
+            assertEquals(
+                expected = supportDecodeRegion(imageFile.mimeType),
+                actual = result.isSuccess,
+                message = "imageFile=${imageFile.uri}, failure: '${result.exceptionOrNull()}'"
+            )
+        }
+
         assertEquals(expected = null, actual = supportDecodeRegion("image/fake"))
+        assertEquals(expected = false, actual = supportDecodeRegion("video/mp4"))
     }
 }

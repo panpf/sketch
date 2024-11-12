@@ -1,5 +1,6 @@
 plugins {
     id("com.android.library")
+    id("com.codingfeline.buildkonfig")
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.kotlinx.atomicfu")
     id("org.jetbrains.kotlinx.kover")
@@ -49,5 +50,29 @@ kotlin {
             implementation(projects.internal.testHttp)
             implementation(projects.internal.testSingleton)
         }
+    }
+}
+
+buildkonfig {
+    packageName = "com.github.panpf.sketch.core"
+    defaultConfigs {
+        buildConfigField(
+            type = com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING,
+            name = "VERSION_NAME",
+            value = project.versionName,
+            const = true
+        )
+        buildConfigField(
+            type = com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING,
+            name = "VERSION_CODE",
+            value = project.versionCode.toString(),
+            const = true
+        )
+        buildConfigField(
+            type = com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING,
+            name = "SKIKO_VERSION_NAME",
+            value = libs.versions.skiko.get(),
+            const = true
+        )
     }
 }

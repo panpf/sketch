@@ -6,6 +6,13 @@
 > 1. 4.x 版本为兼容 Compose Multiplatform 而进行了大量破坏性重构和简化，不兼容 3.x 版本
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 
+# new
+
+decode:
+
+* improve: 改进根据 mimeType 判断是否支持区域解码，非 image 类型直接返回 false，非 Android 平台上根据
+  skiko 版本判断是否支持 heic、heif、avif 类型
+
 # 4.0.0-beta02
 
 core:
@@ -16,7 +23,7 @@ core:
 animated:
 
 * fix: 修复 sketch-animated-heif 的依赖中意外的包含了本地测试 module 的
-bug [#220](https://github.com/panpf/sketch/issues/220)
+  bug [#220](https://github.com/panpf/sketch/issues/220)
 
 # 4.0.0-beta01
 
@@ -44,6 +51,7 @@ compose:
   AnimatedImagePainter
 
 view:
+
 * fix: 修复当 ImageView 已附到窗口但是因 padding 导致 size 为 null 时无法加载图片的
   bug。 [#208](https://github.com/panpf/sketch/issues/208)
 
@@ -72,6 +80,7 @@ http:
   sketch-http-ktor2 并且不再支持 wasmJs，增加 sketch-http-ktor3 模块
 
 animated:
+
 * fix: 修复非安卓平台上动图设置 repeatCount 并播放结束后没有停留在最后一帧，而停留在第一帧的
   bug。 [#212](https://github.com/panpf/sketch/issues/212)
 * fix: 修复 GifDrawable 和 MovieDrawable 无法正确应用 animatedTransformation 的
@@ -92,6 +101,7 @@ transformation:
 * change: Transformation 的 transform() 方法移除 suspend 修饰符
 
 state:
+
 * change: ImageRequest 和 ImageOptions 的 error 属性的类型从 ErrorImageState 改为 StateImage
 * change: ErrorImageState 重构为 ConditionStateImage，并且 ConditionStateImage 可以用在 placeholder 和
   fallback
@@ -107,6 +117,7 @@ extensions:
   sketch-extensions-appicon 模块
 
 other:
+
 * depend: 升级 kotlin 2.0.21, kotlinx coroutines 1.9.0
 * depend: 升级 jetbrains compose 1.7.0, jetbrains lifecycle 2.8.3
 

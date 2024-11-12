@@ -257,6 +257,9 @@ fun DataSource.decodeRegion(
  */
 @SuppressLint("ObsoleteSdkInt")
 fun supportBitmapRegionDecoder(mimeType: String, animated: Boolean = false): Boolean? {
+    if (!mimeType.startsWith("image/")) {
+        return false
+    }
     return when (mimeType) {
         ImageFormat.JPEG.mimeType -> true
         ImageFormat.PNG.mimeType -> true

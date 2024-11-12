@@ -18,6 +18,7 @@ buildscript {
     dependencies {
         classpath(libs.gradlePlugin.android)
         classpath(libs.gradlePlugin.androidxNavigationSafeArgs)
+        classpath(libs.gradlePlugin.buildkonfig)
         classpath(libs.gradlePlugin.jetbrainsCompose)
         classpath(libs.gradlePlugin.kotlin)
         classpath(libs.gradlePlugin.kotlinSerialization)

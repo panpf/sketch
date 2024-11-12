@@ -8,6 +8,14 @@ Translations: [简体中文](CHANGELOG_zh.md)
 > 2. The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
      prompt for upgrade.
 
+# new
+
+decode:
+
+* improve: Improve to determine whether regional decoding is supported based on mimeType. Non-image
+  types directly return false. On non-Android platforms, based on the skiko version, it is
+  determined whether heic, heif, and avi types are supported.
+
 # 4.0.0-beta02
 
 core:
