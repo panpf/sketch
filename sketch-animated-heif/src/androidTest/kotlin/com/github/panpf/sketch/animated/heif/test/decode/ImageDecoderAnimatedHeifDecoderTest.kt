@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.animated.heif.test.decode
 
 import android.graphics.ColorSpace.Named.SRGB
+import android.graphics.drawable.AnimatedImageDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -10,8 +11,7 @@ import com.github.panpf.sketch.decode.ImageDecoderAnimatedHeifDecoder.Factory
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.supportAnimatedHeif
-import com.github.panpf.sketch.drawable.AnimatableDrawable
-import com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable
+import com.github.panpf.sketch.drawable.ScaledAnimatableDrawable
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.request.ImageRequest
@@ -135,9 +135,8 @@ class ImageDecoderAnimatedHeifDecoderTest {
             assertEquals(expected = LOCAL, actual = this.dataFrom)
             assertEquals(expected = null, actual = this.transformeds)
             val animatedImageDrawable = image.getDrawableOrThrow()
-                .asOrThrow<AnimatableDrawable>().drawable!!
-                .asOrThrow<ScaledAnimatedImageDrawable>()
-                .drawable
+                .asOrThrow<ScaledAnimatableDrawable>()
+                .drawable as AnimatedImageDrawable
             assertEquals(expected = -1, actual = animatedImageDrawable.repeatCount)
         }
 
@@ -153,9 +152,8 @@ class ImageDecoderAnimatedHeifDecoderTest {
                 actual = this.transformeds
             )
             val animatedImageDrawable = image.getDrawableOrThrow()
-                .asOrThrow<AnimatableDrawable>().drawable!!
-                .asOrThrow<ScaledAnimatedImageDrawable>()
-                .drawable
+                .asOrThrow<ScaledAnimatableDrawable>()
+                .drawable as AnimatedImageDrawable
             assertEquals(expected = 3, actual = animatedImageDrawable.repeatCount)
         }
     }

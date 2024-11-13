@@ -32,8 +32,7 @@ import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.drawable.AnimatableDrawable
-import com.github.panpf.sketch.drawable.ScaledAnimatedImageDrawable
+import com.github.panpf.sketch.drawable.ScaledAnimatableDrawable
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.animatedTransformation
@@ -179,19 +178,18 @@ open class ImageDecoderAnimatedDecoder(
             ?.takeIf { it != ANIMATION_REPEAT_INFINITE }
             ?: AnimatedImageDrawable.REPEAT_INFINITE
         // AnimatedImageDrawable cannot be scaled using bounds, which will be exposed in the ResizeDrawable
-        // Use ScaledAnimatedImageDrawable package solution to this it
-        val animatableDrawable =
-            AnimatableDrawable(ScaledAnimatedImageDrawable(drawable)).apply {
-                val onStart = request.animationStartCallback
-                val onEnd = request.animationEndCallback
-                if (onStart != null || onEnd != null) {
-                    // Will be executed before EngineRequestInterceptor.intercept() return
-                    @Suppress("OPT_IN_USAGE")
-                    GlobalScope.launch(Dispatchers.Main) {
-                        registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
-                    }
+        // Use ScaledAnimatableDrawable package solution to this it
+        val animatableDrawable = ScaledAnimatableDrawable(drawable).apply {
+            val onStart = request.animationStartCallback
+            val onEnd = request.animationEndCallback
+            if (onStart != null || onEnd != null) {
+                // Will be executed before EngineRequestInterceptor.intercept() return
+                @Suppress("OPT_IN_USAGE")
+                GlobalScope.launch(Dispatchers.Main) {
+                    registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
                 }
             }
+        }
         return DecodeResult(
             image = animatableDrawable.asImage(),
             imageInfo = imageInfo!!,

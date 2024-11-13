@@ -13,7 +13,7 @@ class ToFormatStringTest {
                     painter=ResizeAnimatablePainter(
                         painter=DrawableAnimatablePainter(
                             drawable=AnimatableDrawable(
-                                drawable=ScaledAnimatedImageDrawable(
+                                drawable=ScaledAnimatableDrawable(
                                     drawable=AnimatedImageDrawable(240x240),
                                     fitScale=true
                                 )
@@ -25,7 +25,7 @@ class ToFormatStringTest {
                     shareable=false
                 )
             """.trimIndent(),
-            actual = "PainterImage(painter=ResizeAnimatablePainter(painter=DrawableAnimatablePainter(drawable=AnimatableDrawable(drawable=ScaledAnimatedImageDrawable(drawable=AnimatedImageDrawable(240x240), fitScale=true))), size=Size(346.0x346.0), scale=CENTER_CROP), shareable=false)"
+            actual = "PainterImage(painter=ResizeAnimatablePainter(painter=DrawableAnimatablePainter(drawable=AnimatableDrawable(drawable=ScaledAnimatableDrawable(drawable=AnimatedImageDrawable(240x240), fitScale=true))), size=Size(346.0x346.0), scale=CENTER_CROP), shareable=false)"
                 .toFormattedString()
         )
     }

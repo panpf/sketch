@@ -23,17 +23,16 @@ import android.graphics.Canvas
 import android.graphics.ColorFilter
 import android.graphics.PorterDuff
 import android.graphics.Rect
-import android.graphics.drawable.Animatable2
-import android.graphics.drawable.Animatable2.AnimationCallback
+import android.graphics.drawable.Animatable
 import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Drawable.Callback
-import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.withSave
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import com.github.panpf.sketch.drawable.internal.AnimatableCallbackHelper
 import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
-import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.util.toLogString
 import kotlin.math.roundToInt
 
@@ -43,19 +42,22 @@ import kotlin.math.roundToInt
  * This allows drawables that only draw within their intrinsic dimensions
  * (e.g. [AnimatedImageDrawable]) to fill their entire bounds.
  *
- * @see com.github.panpf.sketch.animated.core.android.test.drawable.ScaledAnimatedImageDrawableTest
+ * @see com.github.panpf.sketch.animated.core.android.test.drawable.ScaledAnimatableDrawableTest
  */
-@RequiresApi(VERSION_CODES.P)
-class ScaledAnimatedImageDrawable @JvmOverloads constructor(
-    val drawable: AnimatedImageDrawable,
+class ScaledAnimatableDrawable @JvmOverloads constructor(
+    val drawable: Drawable,
     val fitScale: Boolean = true
-) : Drawable(), Animatable2, Callback, SketchDrawable {
+) : Drawable(), Animatable2Compat, Callback, SketchDrawable {
 
     private var childDx = 0f
     private var childDy = 0f
     private var childScale = 1f
 
+    private var callbackHelper: AnimatableCallbackHelper? = null
+
     init {
+        require(drawable is Animatable) { "Drawable must be an Animatable" }
+        callbackHelper = AnimatableCallbackHelper(drawable)
         drawable.callback = this
     }
 
@@ -95,7 +97,8 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
 
         val targetWidth = bounds.width()
         val targetHeight = bounds.height()
-        val multiplier = computeScaleMultiplierWithFit(width, height, targetWidth, targetHeight, fitScale)
+        val multiplier =
+            computeScaleMultiplierWithFit(width, height, targetWidth, targetHeight, fitScale)
 
         val left = ((targetWidth - multiplier * width) / 2).roundToInt()
         val top = ((targetHeight - multiplier * height) / 2).roundToInt()
@@ -126,34 +129,34 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
     @RequiresApi(29)
     override fun setTintBlendMode(blendMode: BlendMode?) = drawable.setTintBlendMode(blendMode)
 
-    override fun isRunning() = drawable.isRunning
-
-    override fun registerAnimationCallback(callback: AnimationCallback) {
-        requiredMainThread()    // Consistent with AnimatedImageDrawable
-        drawable.registerAnimationCallback(callback)
+    override fun registerAnimationCallback(callback: Animatable2Compat.AnimationCallback) {
+        callbackHelper?.registerAnimationCallback(callback)
     }
 
-    override fun unregisterAnimationCallback(callback: AnimationCallback): Boolean {
-        requiredMainThread()    // Consistent with AnimatedImageDrawable
-        return drawable.unregisterAnimationCallback(callback)
+    override fun unregisterAnimationCallback(callback: Animatable2Compat.AnimationCallback): Boolean {
+        return callbackHelper?.unregisterAnimationCallback(callback) == true
     }
 
     override fun clearAnimationCallbacks() {
-        drawable.clearAnimationCallbacks()
+        callbackHelper?.clearAnimationCallbacks()
     }
 
     override fun start() {
-        drawable.start()
+        callbackHelper?.start()
     }
 
     override fun stop() {
-        drawable.stop()
+        callbackHelper?.stop()
     }
 
-    override fun mutate(): ScaledAnimatedImageDrawable {
+    override fun isRunning(): Boolean {
+        return callbackHelper?.isRunning == true
+    }
+
+    override fun mutate(): ScaledAnimatableDrawable {
         val mutateDrawable = drawable.mutate()
         return if (mutateDrawable !== drawable) {
-            ScaledAnimatedImageDrawable(drawable, fitScale)
+            ScaledAnimatableDrawable(drawable, fitScale)
         } else {
             this
         }
@@ -174,7 +177,7 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
-        other as ScaledAnimatedImageDrawable
+        other as ScaledAnimatableDrawable
         if (drawable != other.drawable) return false
         if (fitScale != other.fitScale) return false
         return true
@@ -187,6 +190,6 @@ class ScaledAnimatedImageDrawable @JvmOverloads constructor(
     }
 
     override fun toString(): String {
-        return "ScaledAnimatedImageDrawable(drawable=${drawable.toLogString()}, fitScale=$fitScale)"
+        return "ScaledAnimatableDrawable(drawable=${drawable.toLogString()}, fitScale=$fitScale)"
     }
 }
