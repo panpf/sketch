@@ -264,7 +264,7 @@ fun Drawable.toLogString(): String = when {
     this is GradientDrawable -> "GradientDrawable(size=${toSizeString()})"
 //    VERSION.SDK_INT >= VERSION_CODES.M && this is DrawableWrapper -> "DrawableWrapper(drawable=${drawable?.toLogString()})"
 //    this is DrawableWrapperCompat -> "DrawableWrapperCompat(drawable=${drawable?.toLogString()})"
-    else -> toString()
+    else -> "${toString()}(size=${toSizeString()})"
 }
 
 /**

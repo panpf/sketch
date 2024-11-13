@@ -429,7 +429,7 @@ class DrawablesTest {
         context.getDrawableCompat(com.github.panpf.sketch.test.R.drawable.test)
             .asEquitable("key123").apply {
             assertEquals(
-                expected = "EquitableDrawable(drawable=${drawable.toLogString()}, equalityKey=key123)",
+                expected = "EquitableDrawable(drawable=${drawable.toLogString()}, equalityKey=key123)(size=${toSizeString()})",
                 actual = toLogString()
             )
         }
@@ -547,7 +547,7 @@ class DrawablesTest {
             context.getDrawableCompat(android.R.drawable.ic_delete)
         ) {}.apply {
             assertEquals(
-                expected = this.toString(),
+                expected = "${this}(size=${toSizeString()})",
                 actual = toLogString()
             )
         }
@@ -559,7 +559,7 @@ class DrawablesTest {
             )
         ).apply {
             assertEquals(
-                expected = toString(),
+                expected = "${toString()}(size=${toSizeString()})",
                 actual = toLogString()
             )
         }
