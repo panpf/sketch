@@ -12,6 +12,12 @@ supported platforms and differences are as follows:
 | sketch-animated-webp      | [AnimatedWebpDecoderProvider]             | android api 28+: [ImageDecoderAnimatedWebpDecoder]</br>android api 27-: Not supported</br>non android: [SkiaAnimatedWebpDecoder] | ✅(API 28) | ✅   | ✅       | ✅   |
 | sketch-animated-heif      | [ImageDecoderAnimatedHeifDecoderProvider] | [ImageDecoderAnimatedHeifDecoder]                                                                                                | ✅(API 30) | ❌   | ❌       | ❌   |
 
+> [!TIP]
+> The webp animation decoder that comes with the sketch-animated-webp module does not support
+> android api 27 and below. If necessary, please refer to [PenfeizhouAnimatedWebpDecoder] in the
+> sample and combine it with the https://github.com/penfeizhou/APNG4Android library for android
+> Supported by api 27 and below
+
 ## Install component
 
 Before loading animations, you need to select one of the above components and configure
@@ -156,6 +162,8 @@ ImageRequest(context, "https://www.example.com/image.gif") {
 [AnimatedWebpDecoderProvider]: ../../sketch-animated-webp/src/commonMain/kotlin/com/github/panpf/sketch/decode/internal/AnimatedWebpDecoderProvider.common.kt
 
 [ImageDecoderAnimatedHeifDecoderProvider]: ../../sketch-animated-heif/src/main/kotlin/com/github/panpf/sketch/decode/internal/ImageDecoderAnimatedHeifDecoderProvider.kt
+
+[PenfeizhouAnimatedWebpDecoder]: ../../sample/src/androidMain/kotlin/com/github/panpf/sketch/sample/util/PenfeizhouAnimatedWebpDecoder.kt
 
 [comment]: <> (wiki)
 

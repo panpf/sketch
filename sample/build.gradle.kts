@@ -120,6 +120,7 @@ kotlin {
             implementation(libs.panpf.tools4j.security)
             implementation(libs.panpf.tools4k)
             implementation(libs.panpf.zoomimage.view)
+            implementation(libs.penfeizhou.animation.awebp)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

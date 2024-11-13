@@ -11,6 +11,11 @@ Sketch 提供了 `sketch-animated-*` 系列模块以支持动图，所支持的�
 | sketch-animated-webp      | [AnimatedWebpDecoderProvider]             | android api 28+: [ImageDecoderAnimatedWebpDecoder]</br>android api 27-: Not supported</br>non android: [SkiaAnimatedWebpDecoder] | ✅(API 28) | ✅   | ✅       | ✅   |
 | sketch-animated-heif      | [ImageDecoderAnimatedHeifDecoderProvider] | [ImageDecoderAnimatedHeifDecoder]                                                                                                | ✅(API 30) | ❌   | ❌       | ❌   |
 
+> [!TIP]
+> sketch-animated-webp 模块自带的 webp 动图解码器不支持 android api 27 及以下版本，如果有需要请参考
+> sample 中的 [PenfeizhouAnimatedWebpDecoder] 并结合 https://github.com/penfeizhou/APNG4Android 库为
+> android api 27 及以下版本提供支持
+
 ## 安装组件
 
 加载动图前需要先从上述组件中选择一个并安装依赖，以 `sketch-animated-gif` 为例：
@@ -146,6 +151,8 @@ ImageRequest(context, "https://www.example.com/image.gif") {
 [AnimatedWebpDecoderProvider]: ../../sketch-animated-webp/src/commonMain/kotlin/com/github/panpf/sketch/decode/internal/AnimatedWebpDecoderProvider.common.kt
 
 [ImageDecoderAnimatedHeifDecoderProvider]: ../../sketch-animated-heif/src/main/kotlin/com/github/panpf/sketch/decode/internal/ImageDecoderAnimatedHeifDecoderProvider.kt
+
+[PenfeizhouAnimatedWebpDecoder]: ../../sample/src/androidMain/kotlin/com/github/panpf/sketch/sample/util/PenfeizhouAnimatedWebpDecoder.kt
 
 [comment]: <> (wiki)
 

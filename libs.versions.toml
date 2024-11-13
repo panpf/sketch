@@ -57,6 +57,8 @@ panpf-tools4j = "1.0.0"
 panpf-tools4k = "1.0.0"
 panpf-zoomimage = "1.1.0-rc01"
 
+penfeizhou-animation = "3.0.1"
+
 skiko = "0.8.15"    # sync with jetbrains-compose
 
 voyager = "1.1.0-alpha03"
@@ -170,6 +172,8 @@ panpf-tools4k = { module = "io.github.panpf.tools4k:tools4k", version.ref = "pan
 
 panpf-zoomimage-view = { module = "io.github.panpf.zoomimage:zoomimage-view", version.ref = "panpf-zoomimage" }
 panpf-zoomimage-compose = { module = "io.github.panpf.zoomimage:zoomimage-compose", version.ref = "panpf-zoomimage" }
+
+penfeizhou-animation-awebp = { module = "com.github.penfeizhou.android.animation:awebp", version.ref = "penfeizhou-animation" }
 
 skiko = { module = "org.jetbrains.skiko:skiko", version.ref = "skiko" }
 

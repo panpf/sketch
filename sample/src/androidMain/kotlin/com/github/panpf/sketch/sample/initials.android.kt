@@ -18,6 +18,7 @@ import com.github.panpf.sketch.fetch.internal.OkHttpHttpUriFetcherProvider
 import com.github.panpf.sketch.fetch.supportHurlHttpUri
 import com.github.panpf.sketch.fetch.supportKtorHttpUri
 import com.github.panpf.sketch.fetch.supportOkHttpHttpUri
+import com.github.panpf.sketch.sample.util.PenfeizhouAnimatedWebpDecoder
 
 actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
     addIgnoreFetcherProvider(
@@ -56,6 +57,10 @@ actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
             "Movie" -> supportMovieGif()
             "Movie+ImageDecoder" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) supportImageDecoderGif() else supportMovieGif()
             else -> throw IllegalArgumentException("Unknown animatedDecoder: ${appSettings.gifDecoder.value}")
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            addDecoder(PenfeizhouAnimatedWebpDecoder.Factory())
         }
     }
 }
