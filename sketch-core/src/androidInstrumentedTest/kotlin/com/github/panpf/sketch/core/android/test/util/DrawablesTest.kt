@@ -537,7 +537,7 @@ class DrawablesTest {
                 context.getDrawableCompat(android.R.drawable.ic_delete)
             ) {}.apply {
                 assertEquals(
-                    expected = this.toString(),
+                    expected = "${this}(size=${toSizeString()})",
                     actual = toLogString()
                 )
             }
