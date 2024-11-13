@@ -42,7 +42,7 @@ suspend fun readImageInfoOrNull(
         decoder.imageInfo
     }.apply {
         if (isFailure) {
-            exceptionOrNull()?.printStackTrace()
+            Exception("uri='$uri'", exceptionOrNull()).printStackTrace()
         }
     }.getOrNull()
 }
