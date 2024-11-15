@@ -36,9 +36,9 @@ class ConditionStateImageComposeResourcesTest {
                 }
 
                 ComposableConditionStateImage {}.apply {
-                    assertEquals(1, stateList.size)
+                    assertEquals(0, stateList.size)
                     assertEquals(
-                        expected = PainterStateImage(equitablePainterResource(Res.drawable.moon)),
+                        expected = null,
                         actual = stateList.find { it.first == DefaultCondition }?.second
                     )
                 }
@@ -49,6 +49,20 @@ class ConditionStateImageComposeResourcesTest {
                     assertEquals(2, stateList.size)
                     assertEquals(
                         expected = PainterStateImage(equitablePainterResource(Res.drawable.moon)),
+                        actual = stateList.find { it.first == DefaultCondition }?.second
+                    )
+                    assertEquals(
+                        expected = PainterStateImage(equitablePainterResource(Res.drawable.desert)),
+                        actual = stateList.find { it.first == UriInvalidCondition }?.second
+                    )
+                }
+
+                ComposableConditionStateImage {
+                    addState(UriInvalidCondition, Res.drawable.desert)
+                }.apply {
+                    assertEquals(1, stateList.size)
+                    assertEquals(
+                        expected = null,
                         actual = stateList.find { it.first == DefaultCondition }?.second
                     )
                     assertEquals(
