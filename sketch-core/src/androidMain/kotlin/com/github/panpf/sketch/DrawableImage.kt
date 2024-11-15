@@ -31,15 +31,23 @@ fun Drawable.asImage(shareable: Boolean = this !is Animatable): DrawableImage {
 }
 
 /**
+ * Convert [Image] to [Drawable], if the conversion fails, return null
+ *
+ * @see com.github.panpf.sketch.core.android.test.DrawableImageTest.testAsDrawableOrNull
+ */
+fun Image.asDrawableOrNull(): Drawable? = when (this) {
+    is DrawableImage -> drawable
+    is BitmapImage -> BitmapDrawable(null, bitmap)
+    else -> null
+}
+
+/**
  * Convert [Image] to [Drawable], if the conversion fails, throw an exception
  *
  * @see com.github.panpf.sketch.core.android.test.DrawableImageTest.testAsDrawable
  */
-fun Image.asDrawable(): Drawable = when (this) {
-    is DrawableImage -> drawable
-    is BitmapImage -> BitmapDrawable(null, bitmap)
-    else -> throw IllegalArgumentException("'$this' can't be converted to Drawable")
-}
+fun Image.asDrawable(): Drawable =
+    asDrawableOrNull() ?: throw IllegalArgumentException("Unable to convert '$this' to Drawable")
 
 /**
  * Drawable Image

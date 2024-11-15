@@ -24,11 +24,11 @@ import com.github.panpf.sketch.painter.asPainter
 /**
  * Convert the Image to a Painter
  *
- * @see com.github.panpf.sketch.compose.core.android.test.PainterImageAndroidTest.testImageAsPainter
+ * @see com.github.panpf.sketch.compose.core.android.test.PainterImageAndroidTest.testImageAsPainterOrNull
  */
-actual fun Image.asPainter(filterQuality: FilterQuality): Painter = when (this) {
+actual fun Image.asPainterOrNull(filterQuality: FilterQuality): Painter? = when (this) {
     is PainterImage -> painter
     is BitmapImage -> bitmap.asImageBitmap().asPainter(filterQuality)
     is DrawableImage -> drawable.asPainter()
-    else -> throw IllegalArgumentException("Not supported conversion to Painter from Image '$this'")
+    else -> null
 }

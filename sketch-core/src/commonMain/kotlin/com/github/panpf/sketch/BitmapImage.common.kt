@@ -27,6 +27,21 @@ package com.github.panpf.sketch
 expect fun Bitmap.asImage(shareable: Boolean = true): BitmapImage
 
 /**
+ * Convert the Image to a Bitmap, returns null if it cannot be converted
+ *
+ * @see com.github.panpf.sketch.core.common.test.BitmapImageTest.testImageAsBitmapOrNull
+ */
+fun Image.asBitmapOrNull(): Bitmap? = if (this is BitmapImage) bitmap else null
+
+/**
+ * Convert the Image to a Bitmap, throws an exception if it cannot be converted
+ *
+ * @see com.github.panpf.sketch.core.common.test.BitmapImageTest.testImageAsBitmap
+ */
+fun Image.asBitmap(): Bitmap =
+    asBitmapOrNull() ?: throw IllegalArgumentException("Unable to convert '$this' to Bitmap")
+
+/**
  * Bitmap image, which is a wrapper for [Bitmap]
  *
  * @see com.github.panpf.sketch.core.android.test.BitmapImageAndroidTest

@@ -8,6 +8,10 @@
 
 # new
 
+core:
+
+* new: 新增 Image.asBitmap(), asBitmapOrNull(), asDrawableOrNull(), asPainterOrNull() 扩展函数
+
 decode:
 
 * improve: 改进根据 mimeType 判断是否支持区域解码，非 image 类型直接返回 false，非 Android 平台上根据

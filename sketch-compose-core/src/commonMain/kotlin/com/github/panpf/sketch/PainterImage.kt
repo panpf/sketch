@@ -35,12 +35,22 @@ fun Painter.asImage(shareable: Boolean = this !is AnimatablePainter): PainterIma
 }
 
 /**
- * Convert the Image to a Painter
+ * Convert the Image to a Painter, returns null if it cannot be converted
+ *
+ * @see com.github.panpf.sketch.compose.core.android.test.PainterImageAndroidTest.testImageAsPainterOrNull
+ * @see com.github.panpf.sketch.compose.core.nonandroid.test.PainterImageNonAndroidTest.testImageAsPainterOrNull
+ */
+expect fun Image.asPainterOrNull(filterQuality: FilterQuality = DrawScope.DefaultFilterQuality): Painter?
+
+/**
+ * Convert the Image to a Painter, throws an exception if it cannot be converted
  *
  * @see com.github.panpf.sketch.compose.core.android.test.PainterImageAndroidTest.testImageAsPainter
  * @see com.github.panpf.sketch.compose.core.nonandroid.test.PainterImageNonAndroidTest.testImageAsPainter
  */
-expect fun Image.asPainter(filterQuality: FilterQuality = DrawScope.DefaultFilterQuality): Painter
+fun Image.asPainter(filterQuality: FilterQuality = DrawScope.DefaultFilterQuality): Painter =
+    asPainterOrNull(filterQuality)
+        ?: throw IllegalArgumentException("Unable to convert '$this' to Painter")
 
 /**
  * Painter image

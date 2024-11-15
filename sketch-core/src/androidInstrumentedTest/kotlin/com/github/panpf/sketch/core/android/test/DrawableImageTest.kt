@@ -7,6 +7,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.asDrawable
+import com.github.panpf.sketch.asDrawableOrNull
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.images.ResourceImages
@@ -46,6 +47,27 @@ class DrawableImageTest {
                     .asOrThrow<AnimatedImageDrawable>()
             assertFalse(animatedDrawable.asImage().shareable)
         }
+    }
+
+    @Test
+    fun testAsDrawableOrNull() {
+        val context = getTestContext()
+
+        val bitmapDrawable =
+            context.getDrawableCompat(android.R.drawable.ic_delete) as BitmapDrawable
+        assertSame(
+            expected = bitmapDrawable,
+            actual = bitmapDrawable.asImage().asDrawableOrNull()
+        )
+
+        createBitmap(100, 100).asImage().asDrawableOrNull().also { drawable ->
+            assertTrue(actual = drawable is BitmapDrawable, message = "drawable=$drawable")
+        }
+
+        assertEquals(
+            expected = null,
+            actual = FakeImage(100, 100).asDrawableOrNull()
+        )
     }
 
     @Test

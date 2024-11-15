@@ -10,6 +10,11 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 # new
 
+core:
+
+* new: Added Image.asBitmap(), asBitmapOrNull(), asDrawableOrNull(), asPainterOrNull() extension
+  functions
+
 decode:
 
 * improve: Improve to determine whether regional decoding is supported based on mimeType. Non-image

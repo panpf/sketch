@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.ColorPainter
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.asPainter
+import com.github.panpf.sketch.asPainterOrNull
 import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.painter.DrawableAnimatablePainter
 import com.github.panpf.sketch.painter.DrawablePainter
@@ -25,6 +26,56 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class PainterImageAndroidTest {
+
+    @Test
+    fun testImageAsPainterOrNull() {
+        val colorPainter = ColorPainter(Color.Green)
+
+        assertSame(
+            expected = colorPainter,
+            actual = colorPainter.asImage().asPainterOrNull()
+        )
+
+        val bitmap = createBitmap(100, 100)
+        assertEquals(
+            expected = FilterQuality.Low,
+            actual = bitmap.asImage().asPainterOrNull()
+                ?.asOrThrow<ImageBitmapPainter>()?.filterQuality
+        )
+        assertEquals(
+            expected = FilterQuality.High,
+            actual = bitmap.asImage().asPainterOrNull(FilterQuality.High)
+                ?.asOrThrow<ImageBitmapPainter>()?.filterQuality
+        )
+
+        val animatableDrawable = TestAnimatableDrawable(ColorDrawable(TestColor.RED))
+        assertEquals(
+            expected = DrawableAnimatablePainter(animatableDrawable),
+            actual = animatableDrawable.asImage().asPainter()
+        )
+
+        val bitmapDrawable = BitmapDrawable(null, bitmap)
+        assertTrue(
+            actual = bitmapDrawable.asImage().asPainterOrNull() is BitmapPainter,
+        )
+
+        val colorDrawable = ColorDrawable(TestColor.RED)
+        assertEquals(
+            expected = ColorPainter(Color(TestColor.RED)),
+            actual = colorDrawable.asImage().asPainterOrNull()
+        )
+
+        val layerDrawable = LayerDrawable(arrayOf())
+        assertEquals(
+            expected = DrawablePainter(layerDrawable),
+            actual = layerDrawable.asImage().asPainterOrNull()
+        )
+
+        assertEquals(
+            expected = null,
+            actual = FakeImage(SketchSize(100, 100)).asPainterOrNull()
+        )
+    }
 
     @Test
     fun testImageAsPainter() {

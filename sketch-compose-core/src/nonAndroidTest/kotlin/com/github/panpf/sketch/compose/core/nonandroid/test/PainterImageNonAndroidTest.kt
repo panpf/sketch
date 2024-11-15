@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import com.github.panpf.sketch.AnimatedImage
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.asPainter
+import com.github.panpf.sketch.asPainterOrNull
 import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
@@ -25,6 +26,44 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertSame
 
 class PainterImageNonAndroidTest {
+
+    @Test
+    fun testImageAsPainterOrNull() {
+        val colorPainter = ColorPainter(Color.Green)
+
+        assertSame(
+            expected = colorPainter,
+            actual = colorPainter.asImage().asPainterOrNull()
+        )
+
+        val bitmap = createBitmap(100, 100)
+        assertEquals(
+            expected = FilterQuality.Low,
+            actual = bitmap.asImage().asPainterOrNull()
+                ?.asOrThrow<ImageBitmapPainter>()?.filterQuality
+        )
+        assertEquals(
+            expected = FilterQuality.High,
+            actual = bitmap.asImage().asPainterOrNull(FilterQuality.High)
+                ?.asOrThrow<ImageBitmapPainter>()?.filterQuality
+        )
+
+        val context = getTestContext()
+        val codec = ResourceImages.animGif.toDataSource(context)
+            .openSource().buffer().use { it.readByteArray() }
+            .let { Data.makeFromBytes(it) }
+            .let { Codec.makeFromData(it) }
+        val animatedImage = AnimatedImage(codec)
+        assertEquals(
+            expected = AnimatedImagePainter(animatedImage),
+            actual = animatedImage.asPainterOrNull()
+        )
+
+        assertEquals(
+            expected = null,
+            actual = FakeImage(SketchSize(100, 100)).asPainterOrNull()
+        )
+    }
 
     @Test
     fun testImageAsPainter() {
