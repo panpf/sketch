@@ -247,6 +247,7 @@ Basic functions:
 * [Download images][download]
 * [Lifecycle][lifecycle]
 * [Log][log]
+* [Migrate][migrate]
 
 Featured functions:
 
@@ -413,6 +414,8 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 [transition]: docs/wiki/transition.md
 
 [video_frame]: docs/wiki/video_frame.md
+
+[migrate]: docs/wiki/migrate.md
 
 
 [comment]: <> (links)

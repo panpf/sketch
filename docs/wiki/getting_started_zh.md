@@ -442,6 +442,7 @@ val imageResult: ImageResult? = imageView.imageResult
 * [下载图片][download]
 * [Lifecycle][lifecycle]
 * [日志][log]
+* [迁移][migrate]
 
 特色功能：
 
@@ -553,3 +554,5 @@ val imageResult: ImageResult? = imageView.imageResult
 [transition]: transition_zh.md
 
 [video_frame]: video_frame_zh.md
+
+[migrate]: migrate_zh.md

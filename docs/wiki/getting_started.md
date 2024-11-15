@@ -464,6 +464,7 @@ Basic functions:
 * [Download images][download]
 * [Lifecycle][lifecycle]
 * [Log][log]
+* [Migrate][migrate]
 
 Featured functions:
 
@@ -575,3 +576,5 @@ Featured functions:
 [transition]: transition.md
 
 [video_frame]: video_frame.md
+
+[migrate]: migrate.md

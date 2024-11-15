@@ -232,6 +232,7 @@ context.sketch.enqueue(request)
 * [下载图片][download]
 * [Lifecycle][lifecycle]
 * [日志][log]
+* [迁移][migrate]
 
 特色功能：
 
@@ -388,6 +389,8 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 [transition]: docs/wiki/transition_zh.md
 
 [video_frame]: docs/wiki/video_frame_zh.md
+
+[migrate]: docs/wiki/migrate_zh.md
 
 
 [comment]: <> (links)

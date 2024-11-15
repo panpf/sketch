@@ -1,0 +1,11 @@
+# Migrate
+
+Translations: [简体中文](migrate_zh.md)
+
+The [sketch3compat] directory provides some utility functions, utility classes, and alias classes
+that are compatible with the sketch3 API, which can help you adapt to sketch4 more easily. You can
+copy them directly into your project.
+
+Other migration details are being gradually improved.
+
+[sketch3compat]: ../../sample/src/androidMain/kotlin/com/github/panpf/sketch/sample/util/sketch3compat
