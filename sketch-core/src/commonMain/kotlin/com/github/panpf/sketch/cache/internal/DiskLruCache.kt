@@ -25,7 +25,6 @@ import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -145,7 +144,6 @@ internal class DiskLruCache(
     private val journalFileBackup = directory / JOURNAL_FILE_BACKUP
     private val lruEntries = LruMutableMap<String, Entry>()
     private val cleanupScope =
-        @OptIn(ExperimentalCoroutinesApi::class)
         CoroutineScope(SupervisorJob() + cleanupDispatcher.limitedParallelism(1))
     private val lock = SynchronizedObject()
     private var size = 0L
@@ -186,7 +184,6 @@ internal class DiskLruCache(
             try {
                 readJournal()
                 processJournal()
-                filterFileNotExistEntry()
                 initialized = true
                 return
             } catch (_: IOException) {
@@ -205,17 +202,6 @@ internal class DiskLruCache(
 
         writeJournal()
         initialized = true
-    }
-
-    private fun filterFileNotExistEntry() {
-        for (entry in lruEntries.values.toTypedArray()) {
-            if (entry.readable && entry.currentEditor == null && !entry.zombie) {
-                val allExist = entry.cleanFiles.all { fileSystem.exists(it) }
-                if (!allExist) {
-                    removeEntry(entry)
-                }
-            }
-        }
     }
 
     /**
@@ -393,6 +379,7 @@ internal class DiskLruCache(
             writeByte(' '.code)
             writeUtf8(key)
             writeByte('\n'.code)
+            flush()
         }
 
         if (journalRewriteRequired()) {
@@ -542,7 +529,9 @@ internal class DiskLruCache(
 
         val entry = lruEntries[key] ?: return false
         val removed = removeEntry(entry)
-        if (removed && size <= maxSize) mostRecentTrimFailed = false
+        if (removed && size <= maxSize) {
+            mostRecentTrimFailed = false
+        }
         return removed
     }
 
@@ -576,6 +565,7 @@ internal class DiskLruCache(
             writeByte(' '.code)
             writeUtf8(entry.key)
             writeByte('\n'.code)
+            flush()
         }
         lruEntries.remove(entry.key)
 
