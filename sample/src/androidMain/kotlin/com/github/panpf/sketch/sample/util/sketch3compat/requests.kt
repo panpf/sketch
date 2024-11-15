@@ -4,13 +4,12 @@ package com.github.panpf.sketch.request
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import com.github.panpf.sketch.BitmapImage
+import com.github.panpf.sketch.asBitmap
 import com.github.panpf.sketch.asDrawable
 import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.resize.LongImagePrecisionDecider
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
-import com.github.panpf.tools4k.lang.asOrThrow
 
 @Deprecated(
     message = "Use LongImagePrecisionDecider instead",
@@ -177,16 +176,11 @@ fun ImageOptionsProvider.updateDisplayImageOptions(configBlock: (ImageOptions.Bu
     updateImageOptions(configBlock)
 
 @Deprecated(
-    message = "Use image.asOrThrow<BitmapImage>().bitmap instead",
-    replaceWith = ReplaceWith(
-        expression = "image.asOrThrow<BitmapImage>().bitmap",
-        "com.github.panpf.tools4k.lang.asOrThrow",
-        "com.github.panpf.sketch.BitmapImage"
-    )
+    message = "Use asBitmap() instead",
+    replaceWith = ReplaceWith(expression = "asBitmap()", "com.github.panpf.sketch.asBitmap")
 )
 val ImageResult.Success.bitmap: Bitmap
-    // TODO sketch 4.0.0-beta03 will support Image.asBitmap()
-    get() = image.asOrThrow<BitmapImage>().bitmap
+    get() = image.asBitmap()
 
 @Deprecated(
     message = "Use asDrawable() instead",
