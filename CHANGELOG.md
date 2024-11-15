@@ -23,6 +23,10 @@ decode:
   types directly return false. On non-Android platforms, based on the skiko version, it is
   determined whether heic, heif, and avi types are supported.
 
+fetch:
+
+* improve: AssetUriFetcher and ResourceUriFetcher are now compatible with the sketch3 protocol
+
 # 4.0.0-beta02
 
 core:

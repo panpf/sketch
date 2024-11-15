@@ -187,6 +187,22 @@ class AssetUriFetcherTest {
                     .toRequestContext(sketch, Size.Empty)
             )
         )
+
+        // sketch3 asset uri
+        assertEquals(
+            expected = "test.png",
+            actual = fetcherFactory.create(
+                ImageRequest(context, "asset://test.png")
+                    .toRequestContext(sketch, Size.Empty)
+            )?.fileName
+        )
+        assertEquals(
+            expected = "login/test.png",
+            actual = fetcherFactory.create(
+                ImageRequest(context, "asset://login/test.png")
+                    .toRequestContext(sketch, Size.Empty)
+            )?.fileName
+        )
     }
 
     @Test

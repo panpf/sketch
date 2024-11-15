@@ -24,6 +24,7 @@ import android.content.pm.PackageManager.NameNotFoundException
 import android.content.res.Resources
 import android.util.TypedValue
 import androidx.annotation.WorkerThread
+import androidx.core.net.toUri
 import com.github.panpf.sketch.drawable.ResDrawableFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
@@ -112,9 +113,27 @@ class ResourceUriFetcher constructor(
     @WorkerThread
     @SuppressLint("DiscouragedApi")
     override suspend fun fetch(): Result<FetchResult> = kotlin.runCatching {
-        val packageName = resourceUri.authority
-            ?.takeIf { it.isNotEmpty() }
-            ?: context.packageName
+        /* Compatible with sketch 3.x version of android.resource protocol
+         *
+         * 'android.resource://resource?resType=drawable&resName=ic_launcher'
+         * 'android.resource://resource?resId=1031232'
+         * 'android.resource://resource?packageName=com.github.panpf.sketch.sample&resType=drawable&resName=ic_launcher'
+         * 'android.resource://resource?packageName=com.github.panpf.sketch.sample&resId=1031232'
+         */
+
+        val newProtocol = resourceUri.authority != "resource"
+        val androidResourceUri by lazy { resourceUri.toString().toUri() }
+
+        val packageName = if (newProtocol) {
+            resourceUri.authority
+                ?.takeIf { it.isNotEmpty() }
+                ?: context.packageName
+        } else {
+            androidResourceUri.getQueryParameters("packageName")
+                .firstOrNull()
+                ?.takeIf { it.isNotEmpty() }
+                ?: context.packageName
+        }
 
         val resources: Resources = try {
             context.packageManager.getResourcesForApplication(packageName)
@@ -123,16 +142,35 @@ class ResourceUriFetcher constructor(
         }
 
         val paths = resourceUri.pathSegments
-        val resId = when (paths.size) {
-            1 -> paths.first().toInt()
-            2 -> resources.getIdentifier(
-                /* name= */ paths.last(),
-                /* defType= */ paths.first(),
-                /* defPackage= */ packageName
-            ).takeIf { it != 0 }
-                ?: throw Resources.NotFoundException("No found resource identifier by resType, resName: $resourceUri")
+        val resId = if (newProtocol) {
+            when (paths.size) {
+                1 -> paths.first().toInt()
+                2 -> resources.getIdentifier(
+                    /* name= */ paths.last(),
+                    /* defType= */ paths.first(),
+                    /* defPackage= */ packageName
+                ).takeIf { it != 0 }
+                    ?: throw Resources.NotFoundException("No found resource identifier by resType, resName: $resourceUri")
 
-            else -> throw Resources.NotFoundException("Invalid resource uri: $resourceUri")
+                else -> throw Resources.NotFoundException("Invalid resource uri: $resourceUri")
+            }
+        } else {
+            val resId = androidResourceUri.getQueryParameters("resId").firstOrNull()?.toIntOrNull()
+            if (resId != null) {
+                resId
+            } else {
+                val resType =
+                    androidResourceUri.getQueryParameters("resType").firstOrNull()
+                        ?.takeIf { it.isNotEmpty() }
+                val resName =
+                    androidResourceUri.getQueryParameters("resName").firstOrNull()
+                        ?.takeIf { it.isNotEmpty() }
+                if (resType == null || resName == null) {
+                    throw Resources.NotFoundException("Invalid resource uri: $androidResourceUri")
+                }
+                resources.getIdentifier(resName, resType, packageName).takeIf { it != 0 }
+                    ?: throw Resources.NotFoundException("No found resource identifier by resType, resName: $androidResourceUri")
+            }
         }
 
         val path =

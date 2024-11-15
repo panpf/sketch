@@ -87,9 +87,15 @@ class AssetUriFetcher constructor(
         override fun create(requestContext: RequestContext): AssetUriFetcher? {
             val request = requestContext.request
             val uri = request.uri
-            if (!isAssetUri(uri)) return null
-            val fileName = uri.pathSegments.drop(1).joinToString("/")
-            return AssetUriFetcher(context = request.context, fileName = fileName)
+            if (isAssetUri(uri)) {
+                val fileName = uri.pathSegments.drop(1).joinToString("/")
+                return AssetUriFetcher(context = request.context, fileName = fileName)
+            } else if ("asset".equals(uri.scheme, ignoreCase = true)) {
+                // Asset uri compatible with sketch3: 'asset://test.png'
+                val fileName = listOf(uri.authority).plus(uri.pathSegments).joinToString("/")
+                return AssetUriFetcher(context = request.context, fileName = fileName)
+            }
+            return null
         }
 
         override fun equals(other: Any?): Boolean {

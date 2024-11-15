@@ -18,6 +18,10 @@ decode:
 * improve: 改进根据 mimeType 判断是否支持区域解码，非 image 类型直接返回 false，非 Android 平台上根据
   skiko 版本判断是否支持 heic、heif、avif 类型
 
+fetch:
+
+* improve: AssetUriFetcher 和 ResourceUriFetcher 现在兼容 sketch3 的协议
+
 # 4.0.0-beta02
 
 core:

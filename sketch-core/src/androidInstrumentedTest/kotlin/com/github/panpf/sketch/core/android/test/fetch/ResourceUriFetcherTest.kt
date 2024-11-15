@@ -81,9 +81,13 @@ class ResourceUriFetcherTest {
     fun testFetch() = runTest {
         val context = getTestContext()
         val resId = com.github.panpf.sketch.test.R.drawable.ic_launcher
+        val rawResId = com.github.panpf.sketch.test.R.raw.sample
+        val resType = "drawable"
+        val resName = "ic_launcher"
+        val packageName = context.packageName
 
         assertTrue(
-            newResourceUri("drawable", "ic_launcher")
+            newResourceUri(resType, resName)
                 .let { ResourceUriFetcher(context, it.toUri()) }
                 .fetch()
                 .getOrThrow().dataSource is DrawableDataSource
@@ -96,20 +100,46 @@ class ResourceUriFetcherTest {
         )
 
         assertTrue(
-            newResourceUri(context.packageName, "drawable", "ic_launcher")
+            newResourceUri(packageName, resType, resName)
                 .let { ResourceUriFetcher(context, it.toUri()) }
                 .fetch()
                 .getOrThrow().dataSource is DrawableDataSource
         )
         assertTrue(
-            newResourceUri(context.packageName, resId)
+            newResourceUri(packageName, resId)
                 .let { ResourceUriFetcher(context, it.toUri()) }
                 .fetch()
                 .getOrThrow().dataSource is DrawableDataSource
         )
 
         assertTrue(
-            newResourceUri(com.github.panpf.sketch.test.R.raw.sample)
+            newResourceUri(rawResId)
+                .let { ResourceUriFetcher(context, it.toUri()) }
+                .fetch()
+                .getOrThrow().dataSource is ResourceDataSource
+        )
+
+        // sketch3
+        assertTrue(
+            "android.resource://resource?resType=$resType&resName=$resName"
+                .let { ResourceUriFetcher(context, it.toUri()) }
+                .fetch()
+                .getOrThrow().dataSource is DrawableDataSource
+        )
+        assertTrue(
+            "android.resource://resource?resId=$resId"
+                .let { ResourceUriFetcher(context, it.toUri()) }
+                .fetch()
+                .getOrThrow().dataSource is DrawableDataSource
+        )
+        assertTrue(
+            "android.resource://resource?packageName=$packageName&resType=$resType&resName=$resName"
+                .let { ResourceUriFetcher(context, it.toUri()) }
+                .fetch()
+                .getOrThrow().dataSource is DrawableDataSource
+        )
+        assertTrue(
+            "android.resource://resource?packageName=$packageName&resId=$rawResId"
                 .let { ResourceUriFetcher(context, it.toUri()) }
                 .fetch()
                 .getOrThrow().dataSource is ResourceDataSource
@@ -135,20 +165,20 @@ class ResourceUriFetcherTest {
                 .getOrThrow()
         }
         assertFailsWith(NumberFormatException::class) {
-            "${ResourceUriFetcher.SCHEME}://${context.packageName}/errorResId"
+            "${ResourceUriFetcher.SCHEME}://$packageName/errorResId"
                 .let { ResourceUriFetcher(context, it.toUri()) }
                 .fetch()
                 .getOrThrow()
         }
 
         assertFailsWith(Resources.NotFoundException::class) {
-            newResourceUri("drawable1", "ic_launcher")
+            newResourceUri("drawable1", resName)
                 .let { ResourceUriFetcher(context, it.toUri()) }
                 .fetch()
                 .getOrThrow()
         }
         assertFailsWith(Resources.NotFoundException::class) {
-            newResourceUri("drawable", "ic_launcher1")
+            newResourceUri(resType, "ic_launcher1")
                 .let { ResourceUriFetcher(context, it.toUri()) }
                 .fetch()
                 .getOrThrow()
@@ -161,7 +191,7 @@ class ResourceUriFetcherTest {
                 .getOrThrow()
         }
         assertFailsWith(Resources.NotFoundException::class) {
-            "${ResourceUriFetcher.SCHEME}://${context.packageName}/drawable/ic_launcher/error"
+            "${ResourceUriFetcher.SCHEME}://$packageName/drawable/ic_launcher/error"
                 .let { ResourceUriFetcher(context, it.toUri()) }
                 .fetch()
                 .getOrThrow()
@@ -208,23 +238,21 @@ class ResourceUriFetcherTest {
     @Test
     fun testFactoryCreate() {
         val (context, sketch) = getTestContextAndSketch()
-        val testAppPackage = context.packageName
+        val packageName = context.packageName
         val fetcherFactory = ResourceUriFetcher.Factory()
-        val resourceUriByName = newResourceUri(
-            resType = "drawable",
-            resName = "ic_launcher"
-        )
-        val resourceUriById = newResourceUri(
-            resId = com.github.panpf.sketch.test.R.drawable.ic_launcher
-        )
+        val resType = "drawable"
+        val resName = "ic_launcher"
+        val resId = com.github.panpf.sketch.test.R.drawable.ic_launcher
+        val resourceUriByName = newResourceUri(resType = resType, resName = resName)
+        val resourceUriById = newResourceUri(resId = resId)
         val resourceUriByName2 = newResourceUri(
-            packageName = testAppPackage,
-            resType = "drawable",
-            resName = "ic_launcher"
+            packageName = packageName,
+            resType = resType,
+            resName = resName
         )
         val resourceUriById2 = newResourceUri(
-            packageName = testAppPackage,
-            resId = com.github.panpf.sketch.test.R.drawable.ic_launcher
+            packageName = packageName,
+            resId = resId
         )
         val httpUri = "http://sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
@@ -262,6 +290,40 @@ class ResourceUriFetcherTest {
         assertNull(
             fetcherFactory.create(
                 ImageRequest(context, contentUri)
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+
+        assertNotNull(
+            fetcherFactory.create(
+                ImageRequest(
+                    context,
+                    "android.resource://resource?resType=$resType&resName=$resName"
+                )
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+        assertNotNull(
+            fetcherFactory.create(
+                ImageRequest(context, "android.resource://resource?resId=$resId")
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+        assertNotNull(
+            fetcherFactory.create(
+                ImageRequest(
+                    context,
+                    "android.resource://resource?packageName=$packageName&resType=$resType&resName=$resName"
+                )
+                    .toRequestContext(sketch, Size.Empty)
+            )
+        )
+        assertNotNull(
+            fetcherFactory.create(
+                ImageRequest(
+                    context,
+                    "android.resource://resource?packageName=$packageName&resId=$resId"
+                )
                     .toRequestContext(sketch, Size.Empty)
             )
         )
