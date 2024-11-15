@@ -35,6 +35,14 @@ class ConditionStateImageComposeResourcesTest {
                     )
                 }
 
+                ComposableConditionStateImage {}.apply {
+                    assertEquals(1, stateList.size)
+                    assertEquals(
+                        expected = PainterStateImage(equitablePainterResource(Res.drawable.moon)),
+                        actual = stateList.find { it.first == DefaultCondition }?.second
+                    )
+                }
+
                 ComposableConditionStateImage(Res.drawable.moon) {
                     addState(UriInvalidCondition, Res.drawable.desert)
                 }.apply {

@@ -14,6 +14,8 @@ core:
 
 * new: Added Image.asBitmap(), asBitmapOrNull(), asDrawableOrNull(), asPainterOrNull() extension
   functions
+* improve: The defaultImage property of ConditionStateImage and ComposableConditionStateImage is now
+  nullable
 
 decode:
 

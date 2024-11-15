@@ -29,7 +29,7 @@ import com.github.panpf.sketch.util.Key
  * @see com.github.panpf.sketch.core.common.test.state.ConditionStateImageTest.testConditionStateImage
  */
 fun ConditionStateImage(
-    defaultImage: StateImage,
+    defaultImage: StateImage? = null,
     conditionBlock: ConditionStateImage.Builder.() -> Unit
 ): ConditionStateImage = ConditionStateImage.Builder(defaultImage).apply {
     conditionBlock.invoke(this)
@@ -66,7 +66,7 @@ data class ConditionStateImage(
         return "ConditionStateImage($states)"
     }
 
-    class Builder constructor(private val defaultImage: StateImage) {
+    class Builder constructor(private val defaultImage: StateImage?) {
 
         private val stateList = mutableListOf<Pair<Condition, StateImage>>()
 
@@ -75,7 +75,11 @@ data class ConditionStateImage(
         }
 
         fun build(): ConditionStateImage {
-            val list = stateList.plus(DefaultCondition to defaultImage)
+            val list = if (defaultImage != null) {
+                stateList.plus(DefaultCondition to defaultImage)
+            } else {
+                stateList
+            }
             return ConditionStateImage(list)
         }
     }

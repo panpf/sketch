@@ -20,6 +20,14 @@ class ConditionStateImageComposeTest {
     fun testComposableConditionStateImage() {
         runComposeUiTest {
             setContent {
+                ComposableConditionStateImage {}.apply {
+                    assertEquals(0, stateList.size)
+                    assertEquals(
+                        expected = null,
+                        actual = stateList.find { it.first == DefaultCondition }?.second
+                    )
+                }
+
                 ComposableConditionStateImage(FakeStateImage()) {}.apply {
                     assertEquals(1, stateList.size)
                     assertEquals(
@@ -34,6 +42,20 @@ class ConditionStateImageComposeTest {
                     assertEquals(2, stateList.size)
                     assertEquals(
                         expected = FakeStateImage(),
+                        actual = stateList.find { it.first == DefaultCondition }?.second
+                    )
+                    assertEquals(
+                        expected = ColorPainterStateImage(Color.Red),
+                        actual = stateList.find { it.first == UriInvalidCondition }?.second
+                    )
+                }
+
+                ComposableConditionStateImage {
+                    addState(UriInvalidCondition, Color.Red)
+                }.apply {
+                    assertEquals(1, stateList.size)
+                    assertEquals(
+                        expected = null,
                         actual = stateList.find { it.first == DefaultCondition }?.second
                     )
                     assertEquals(

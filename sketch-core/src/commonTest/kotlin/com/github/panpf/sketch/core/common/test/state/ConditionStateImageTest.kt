@@ -41,6 +41,13 @@ class ConditionStateImageTest {
         val stateImage = FakeStateImage()
         val stateImage2 = FakeStateImage(FakeImage(SketchSize(200, 200)))
 
+        ConditionStateImage {
+        }.apply {
+            assertTrue(stateList.isEmpty())
+            assertEquals(null, getImage(sketch, request, null))
+            assertEquals(null, getImage(sketch, request, UriInvalidException("")))
+        }
+
         ConditionStateImage(stateImage) {}.apply {
             assertFalse(stateList.isEmpty())
             assertEquals(stateImage.image, getImage(sketch, request, null))
@@ -52,6 +59,14 @@ class ConditionStateImageTest {
         }.apply {
             assertFalse(stateList.isEmpty())
             assertEquals(stateImage.image, getImage(sketch, request, null))
+            assertEquals(stateImage2.image, getImage(sketch, request, UriInvalidException("")))
+        }
+
+        ConditionStateImage {
+            addState(UriInvalidCondition, stateImage2)
+        }.apply {
+            assertFalse(stateList.isEmpty())
+            assertEquals(null, getImage(sketch, request, null))
             assertEquals(stateImage2.image, getImage(sketch, request, UriInvalidException("")))
         }
     }

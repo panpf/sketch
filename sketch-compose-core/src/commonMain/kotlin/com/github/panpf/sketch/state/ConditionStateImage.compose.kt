@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Color
  */
 @Composable
 inline fun ComposableConditionStateImage(
-    defaultImage: StateImage,
+    defaultImage: StateImage? = null,
     crossinline conditionBlock: @Composable (ConditionStateImage.Builder.() -> Unit)
 ): ConditionStateImage = ConditionStateImage.Builder(defaultImage).apply {
     conditionBlock.invoke(this)

@@ -11,6 +11,7 @@
 core:
 
 * new: 新增 Image.asBitmap(), asBitmapOrNull(), asDrawableOrNull(), asPainterOrNull() 扩展函数
+* improve: ConditionStateImage 和 ComposableConditionStateImage 的 defaultImage 属性现在可空
 
 decode:
 
