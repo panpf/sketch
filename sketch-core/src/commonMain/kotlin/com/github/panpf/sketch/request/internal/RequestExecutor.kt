@@ -152,6 +152,8 @@ class RequestExecutor constructor(val sketch: Sketch) {
             val resultString = "image=${result.image}, " +
                     "imageInfo=${result.imageInfo}, " +
                     "dataFrom=${result.dataFrom}, " +
+                    "cacheKey=${result.cacheKey}, " +
+                    "resize=${result.resize}, " +
                     "transformeds=${result.transformeds}, " +
                     "extras=${result.extras}"
             "RequestExecutor. Request Successful. Result($resultString). '${requestContext.logKey}'"
