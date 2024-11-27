@@ -20,8 +20,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.NonRestartableComposable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -186,10 +186,16 @@ fun SketchZoomAsyncImage(
     LaunchedEffect(zoomState.subsampling) {
         zoomState.subsampling.tileImageCache = SketchTileImageCache(sketch)
     }
+
     val coroutineScope = rememberCoroutineScope()
-    LaunchedEffect(Unit) {
-        snapshotFlow { state.painterState }.collect { painterState ->
-            onState(coroutineScope, sketch, zoomState, request, painterState)
+    // Why not use 'snapshotFlow { state.painterState }' but onPainterState ?
+    // Because onPainterState is more timely than 'snapshotFlow { state.painterState }'.
+    // onPainterState is executed together with setting the painter, while 'snapshotFlow { state.painterState }' will be delayed for a short while.
+    // onPainterState can avoid the problem that the user first sees the image displayed in the upper left corner due to delayed setting of contentSize,
+    // and then quickly changes to the middle of the screen.
+    state.onPainterState = remember {
+        {
+            onPainterState(coroutineScope, sketch, zoomState, request, it)
         }
     }
 
@@ -225,7 +231,7 @@ fun SketchZoomAsyncImage(
     }
 }
 
-private fun onState(
+private fun onPainterState(
     coroutineScope: CoroutineScope,
     sketch: Sketch,
     zoomState: SketchZoomState,
