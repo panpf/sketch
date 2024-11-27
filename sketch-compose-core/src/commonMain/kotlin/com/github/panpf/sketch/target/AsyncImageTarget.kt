@@ -74,6 +74,13 @@ class AsyncImageTarget(
     val resultState: State<ImageResult?> = listener.resultState
     val progressState: State<Progress?> = listener.progressState
 
+    var onPainterStateState: ((PainterState) -> Unit)? = null
+    var onLoadStateState: ((LoadState) -> Unit)?
+        get() = listener.onLoadState
+        set(value) {
+            listener.onLoadState = value
+        }
+
     override val painter: Painter?
         get() = painterMutableState.value
 
@@ -144,7 +151,9 @@ class AsyncImageTarget(
 
     override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) {
         super.onStart(sketch, request, placeholder)
-        painterStateMutableState.value = Loading(painter)
+        val loading = Loading(painter)
+        painterStateMutableState.value = loading
+        onPainterStateState?.invoke(loading)
     }
 
     override fun onSuccess(
@@ -154,7 +163,9 @@ class AsyncImageTarget(
         image: Image
     ) {
         super.onSuccess(sketch, request, result, image)
-        painterStateMutableState.value = PainterState.Success(result, painter!!)
+        val success = PainterState.Success(result, painter!!)
+        painterStateMutableState.value = success
+        onPainterStateState?.invoke(success)
     }
 
     override fun onError(
@@ -164,7 +175,9 @@ class AsyncImageTarget(
         image: Image?
     ) {
         super.onError(sketch, request, error, image)
-        painterStateMutableState.value = PainterState.Error(error, painter)
+        val error1 = PainterState.Error(error, painter)
+        painterStateMutableState.value = error1
+        onPainterStateState?.invoke(error1)
     }
 
     override fun equals(other: Any?): Boolean {

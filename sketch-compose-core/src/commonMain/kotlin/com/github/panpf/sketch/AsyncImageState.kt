@@ -124,6 +124,17 @@ class AsyncImageState internal constructor(
     val loadState: LoadState? by target.loadStateState
     val progress: Progress? by target.progressState
 
+    var onPainterState: ((PainterState) -> Unit)?
+        get() = target.onPainterStateState
+        set(value) {
+            target.onPainterStateState = value
+        }
+    var onLoadState: ((LoadState) -> Unit)?
+        get() = target.onLoadStateState
+        set(value) {
+            target.onLoadStateState = value
+        }
+
     fun setSize(size: IntSize) {
         target.setSize(size)
     }

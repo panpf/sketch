@@ -46,24 +46,34 @@ class AsyncImageListener : Listener, ProgressListener {
     val resultState: State<ImageResult?> = resultMutableState
     val progressState: State<Progress?> = progressMutableState
 
+    var onLoadState: ((LoadState) -> Unit)? = null
+
     override fun onStart(request: ImageRequest) {
         resultMutableState.value = null
         progressMutableState.value = null
-        loadStateMutableState.value = LoadState.Started(request)
+        val startState = LoadState.Started(request)
+        loadStateMutableState.value = startState
+        onLoadState?.invoke(startState)
     }
 
     override fun onSuccess(request: ImageRequest, result: Success) {
         resultMutableState.value = result
-        loadStateMutableState.value = LoadState.Success(request, result)
+        val successState = LoadState.Success(request, result)
+        loadStateMutableState.value = successState
+        onLoadState?.invoke(successState)
     }
 
     override fun onError(request: ImageRequest, error: Error) {
         resultMutableState.value = error
-        loadStateMutableState.value = LoadState.Error(request, error)
+        val errorState = LoadState.Error(request, error)
+        loadStateMutableState.value = errorState
+        onLoadState?.invoke(errorState)
     }
 
     override fun onCancel(request: ImageRequest) {
-        loadStateMutableState.value = Canceled(request)
+        val cancelState = Canceled(request)
+        loadStateMutableState.value = cancelState
+        onLoadState?.invoke(cancelState)
     }
 
     override fun onUpdateProgress(request: ImageRequest, progress: Progress) {

@@ -8,6 +8,13 @@ Translations: [简体中文](CHANGELOG_zh.md)
 > 2. The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
      prompt for upgrade.
 
+# new
+
+compose:
+
+* new: AsyncImageState adds onPainterState and onLoadState properties, which are used to receive
+  PainterState and LoadState updates in the form of callbacks.
+
 # v4.0.0-beta03
 
 core:
