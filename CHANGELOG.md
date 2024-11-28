@@ -7,8 +7,9 @@ Translations: [简体中文](CHANGELOG_zh.md)
      compatible with Compose Multiplatform, and is not compatible with the 3.x version.
 > 2. The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
      prompt for upgrade.
+> 3. Reference [《Migration Documentation》](docs/wiki/migrate.md) migrating from 3.x to 4.x
 
-# new
+# v4.0.0-rc01
 
 compose:
 
