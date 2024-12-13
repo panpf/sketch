@@ -7,6 +7,138 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/wiki/migrate_zh.md) 从 3.x 版本迁移 4.x 版本
 
+# 4.0.0 Stable
+
+Sketch:
+
+* change: SketchSingleton 重构为 SingletonSketch
+* change: Sketch 的 execute(DownloadRequest) 和 enqueue(DownloadRequest) 方法重构为 executeDownload(
+  ImageRequest) 和 enqueueDownload(ImageRequest)
+* new: Sketch.Builder 和 ComponentRegistry.Builder 新增 addComponents() 函数
+* new: Sketch.Builder 增加 networkParallelismLimited() 和 decodeParallelismLimited()
+  方法控制网络和解码并发数量 [#200](https://github.com/panpf/sketch/issues/200)
+* new: 新增 ComponentLoader，支持自动探测并注册 Fetcher 和 Decoder 组件，所有自带模块里的组件都已支持
+
+request:
+
+* change: 不再区分 Display、Load、Download，现在只有一个 ImageRequest、ImageResult、ImageListener
+* change: ImageResult 的 requestKey 属性被移除、requestCacheKey 属性重命名为 cacheKey
+* change: 现在 Target、ImageResult、DecodeResult 都使用 Image
+* change: SketchDrawable 的
+  imageUri、requestKey、requestCacheKey、imageInfo、dataFrom、transformedList、extras 等属性被移除，现在请从
+  ImageResult 中获取它们
+* change: depth 和 depthFrom 属性合并成 DepthHolder
+* change: bitmapConfig、colorSpace、preferQualityOverSpeed、placeholder(Int)、fallback(Int)、error(Int) 等
+  Android 平台特有 API 以扩展函数的形式提供
+* change: resizeApplyToDrawable 重命名为 resizeOnDraw
+* change: Parameters 重命名为 Extras
+* change: LongImageClipPrecisionDecider 重命名为 LongImagePrecisionDecider,
+  LongImageStartCropScaleDecider 重命名为 LongImageScaleDecider
+* remove: 移除 listener() 和 progressListener() 方法，现在请使用 addListener() 和
+  addProgressListener() 方法
+* new: 新增 'sizeMultiplier: Float' 属性，用于设置图片大小的缩放比例
+* new: 新增 'allowNullImage: Boolean' 属性
+
+fetch:
+
+* change: Fetcher.Factory.create() 的传参改为 RequestContext
+* new: ResourceUriFetcher 支持 'android.resource:///drawable/ic_launcher' 和 'android.resource:
+  ///1031232' uri
+* new: AssetUriFetcher 支持 'file:///android_asset/' uri
+
+source:
+
+* change: 重构 DataSource
+
+decode:
+
+* change: Decoder 的 decode() 方法移除 suspend 修饰符并且返回类型从 Result<DecodeResult> 改为
+  DecodeResult
+* change: BitmapDecoder 和 DrawableDecoder 合并为 Decoder
+* change: BitmapDecodeInterceptor 和 DrawableDecodeInterceptor 合并为 DecodeInterceptor
+* change: BitmapConfig 重构为 BitmapColorType
+* improve: 改进动图相关 Decoder 在判断图片类型时的准确性，不再依赖 FetchResult 的 mimeType
+  属性，因为它可能不准确
+* new: DrawableDecoder 支持 colorSpace
+
+transformation:
+
+* fix: 修复 CircleCrop、Rotate、RoundedCorners Transformation 在 RGB_565 时不工作的
+  bug。 [#209](https://github.com/panpf/sketch/issues/209)
+* fix: 修复 Android 平台上 blur、rotate 等 Transformation 没有保持 ColorSpace 不变的
+  bug。 [#213](https://github.com/panpf/sketch/issues/213)
+* change: Transformation 的 transform() 方法移除 suspend 修饰符
+
+cache:
+
+* remove: 移除 BitmapPool 以及和它相关的 disallowReuseBitmap
+  属性、CountBitmap、SketchCountBitmapDrawable 类
+* change: 重构 DiskCache SnapShot 和 Editor，get() 和 edit() 改为 openSnapShot() 和 openEditor()
+  ，并且同一个 key 的 openSnapShot() 和 openEditor() 现在是互相冲突的, openSnapshot 未关闭前
+  openEditor 始终返回 null
+* change: 重构 MemoryCache.Value
+
+state:
+
+* change: ImageRequest 和 ImageOptions 的 uriEmpty 属性重命名为 fallback
+* change: ImageRequest 和 ImageOptions 的 error 属性的类型从 ErrorStateImage 改为 StateImage
+* change: ErrorStateImage 移除 ErrorStateImage.Builder.uriEmptyError() 方法并重构为
+  ConditionStateImage
+* improve: 改进 IconDrawable，支持有固定大小的 background 并且限制 icon 必须有固定尺寸或指定 iconSize
+
+animated:
+
+* fix: 修复 GifDrawable 和 MovieDrawable 无法正确应用 animatedTransformation 的
+  bug。 [#214](https://github.com/panpf/sketch/issues/214)
+* fix: 修复 GifDrawableDecoder 的 repeatCount 设置错误应该加 1 的
+  bug。 [#215](https://github.com/panpf/sketch/issues/215)
+* change: 拆分 sketch-animated 模块为 sketch-animated-core 和
+  sketch-animated-gif、sketch-animated-webp、sketch-animated-heif, sketch-animated-koralgif 模块重命名为
+  sketch-animated-gif-koral
+
+http:
+
+* remove: 移除 DisplayRequest.Builder 和 DisplayOptions.Builder 的 setHttpHeader() 和
+  addHttpHeader() 方法
+* change: http 功能拆分成单独的模块提供，增加
+  sketch-http、sketch-http-hurl、sketch-http-ktor2、sketch-http-ktor3 模块，sketch-okhttp 模块重命名为
+  sketch-http-okhttp
+
+compose:
+
+* fix: 修复 AsyncImage 的 filterQuality 参数无效的
+  bug。 [#211](https://github.com/panpf/sketch/issues/211)
+* remove: AsyncImage 可组合函数移除 placeholder、error、uriEmpty、onLoading、onSuccess、onError 参数
+* new: AsyncImageState 现在可以设置 ImageOptions 了，例如：'rememberAsyncImageState {
+  ImageOptions() }'
+* new: 新增 ErrorStateImage.Builder.saveCellularTrafficError(DrawableResource) 扩展函数
+* new: ImageRequest.Builder 和 ImageOptions.Builder 新增 size(IntSize) 扩展函数
+* new: AsyncImageState 新增 onPainterState 和 onLoadState 属性，用于以回调的方式接收 PainterState 和
+  LoadState 更新
+* new: 新增 ComposableImageRequest() 和 ComposableImageOptions() 函数，可以直接在
+  placeholder、error、fallback 方法上使用使用 DrawableResource
+
+view:
+
+* fix: 修复当 ImageView 已附到窗口但是因 padding 导致 size 为 null 时无法加载图片的
+  bug。 [#208](https://github.com/panpf/sketch/issues/208)
+* change: displayImage 重命名为 loadImage
+* change: ImageView.disposeDisplay() 重命名为 ImageView.disposeLoad()
+* new: ImageRequest.Builder 和 ImageOptions.Builder 新增 sizeWithView()、sizeWithDisplay() 扩展函数
+
+extensions:
+
+* fix: 修复 AppIconUriFetcher.Factory 解析 versionCode 时异常的
+  bug。[#204](https://github.com/panpf/sketch/issues/204)
+* change: 从 sketch-extensions-core 模块中拆分出 sketch-extensions-apkicon 和
+  sketch-extensions-appicon 模块
+
+other:
+
+* upgrade：Android 最低 API 升到了 API 21
+* depend: 升级 kotlin 2.0.21, kotlinx coroutines 1.9.0
+* depend: 升级 jetbrains compose 1.7.0, jetbrains lifecycle 2.8.3
+
 # v4.0.0-rc01
 
 compose:
@@ -119,8 +251,8 @@ transformation:
 
 state:
 
-* change: ImageRequest 和 ImageOptions 的 error 属性的类型从 ErrorImageState 改为 StateImage
-* change: ErrorImageState 重构为 ConditionStateImage，并且 ConditionStateImage 可以用在 placeholder 和
+* change: ImageRequest 和 ImageOptions 的 error 属性的类型从 ErrorStateImage 改为 StateImage
+* change: ErrorStateImage 重构为 ConditionStateImage，并且 ConditionStateImage 可以用在 placeholder 和
   fallback
 * improve: 改进 IconDrawable，支持有固定大小的 background 并且限制 icon 必须有固定尺寸或指定 iconSize
 * improve: 改进 IconPainter，支持有固定大小的 background 并且限制 icon 必须有固定尺寸或指定 iconSize
@@ -141,8 +273,7 @@ other:
 # 4.0.0-alpha08
 
 * fix: 修复 ComposableImageRequest() 和 ComposableImageOptions() 函数内部无法监听并更新 Compose
-  State 的
-  bug。 [#207](https://github.com/panpf/sketch/issues/207)
+  State 的 bug。 [#207](https://github.com/panpf/sketch/issues/207)
 * remove: 移除 SkiaExifOrientationHelper
 * remove: DataSource 移除 sketch 和 request 属性
 * change: DataSource 的 getFile() 和 getFileOrNull() 方法增加 Sketch 参数
@@ -212,13 +343,15 @@ other:
 
 # 4.0.0-alpha02
 
-* change: ImageView.disposeLoad() 重命名为 ImageView.disposeLoad()
+* change: ImageView.disposeDisplay() 重命名为 ImageView.disposeLoad()
 * new: 新增 ImageRequest.Builder.composableError() 和 ImageOptions.Builder.composableError() 扩展函数
 * new: 新增 ErrorStateImage.Builder.saveCellularTrafficError(DrawableResource) 扩展函数
 
 # 4.0.0-alpha01
 
-### sketch-core
+Sketch:
+
+* change: SketchSingleton 重构为 SingletonSketch
 
 request:
 
@@ -243,7 +376,7 @@ decode:
 
 cache:
 
-* delete: 移除 BitmapPool 以及和它相关的 disallowReuseBitmap
+* remove: 移除 BitmapPool 以及和它相关的 disallowReuseBitmap
   属性、CountBitmap、SketchCountBitmapDrawable 类
 * change: 重构 DiskCache SnapShot 和 Editor，get() 和 edit() 改为 openSnapShot() 和 openEditor()
   ，并且同一个 key 的 openSnapShot() 和 openEditor() 现在是互相冲突的, openSnapshot 未关闭前
@@ -253,21 +386,20 @@ cache:
 state:
 
 * change: ImageRequest 和 ImageOptions 的 uriEmpty 属性重命名为 fallback
-* delete: 移除 ErrorStateImage.Builder.uriEmptyError()
+* remove: 移除 ErrorStateImage.Builder.uriEmptyError()
 
-other:
+compose:
 
-* change: SketchSingleton 重构为 SingletonSketch
-* change: displayImage 重命名为 loadImage
-
-### sketch-compose
-
-* delete: AsyncImage 可组合函数移除 placeholder、error、uriEmpty、onLoading、onSuccess、onError 参数
+* remove: AsyncImage 可组合函数移除 placeholder、error、uriEmpty、onLoading、onSuccess、onError 参数
 * upgrade：Compose Multiplatform 升级到 1.6.10
 * new: AsyncImageState 现在可以设置 ImageOptions 了，例如：'rememberAsyncImageState {
   ImageOptions() }'
 
-### other
+view:
+
+* change: displayImage 重命名为 loadImage
+
+other:
 
 * upgrade：Android 最低 API 升到了 API 21
 * upgrade：kotlin 升级到 2.0.0，主要是为了支持 Compose Multiplatform 1.6.10

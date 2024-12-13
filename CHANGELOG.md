@@ -9,6 +9,146 @@ Translations: [简体中文](CHANGELOG_zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/wiki/migrate.md) migrating from 3.x to 4.x
 
+# 4.0.0 Stable
+
+Sketch:
+
+* change: SketchSingleton refactored into SingletonSketch
+* change: Sketch's execute(DownloadRequest) and enqueue(DownloadRequest) methods are refactored into
+  executeDownload(ImageRequest) and enqueueDownload(ImageRequest)
+* new: Sketch.Builder and ComponentRegistry.Builder added addComponents() function
+* new: Sketch.Builder adds networkParallelismLimited() and decodeParallelismLimited()
+  Method to control the number of network and decoding
+  concurrency. [#200](https://github.com/panpf/sketch/issues/200)
+* new: Added ComponentLoader, which supports automatic detection and registration of Fetcher and
+  Decoder components. All components in the built-in module are supported.
+
+request:
+
+* change: There is no longer a distinction between Display, Load and Download, now there is only one
+  ImageRequest, ImageResult and ImageListener
+* change: The requestKey attribute of ImageResult has been removed, and the requestCacheKey
+  attribute has been renamed to cacheKey.
+* change: Now Target, ImageResult, DecodeResult all use Image
+* change: SketchDrawable's imageUri, requestKey, requestCacheKey, imageInfo, dataFrom,
+  transformedList, extras and other attributes have been removed, now please get them from
+  ImageResult
+* change: depth and depthFrom properties merged into DepthHolder
+* change: Android platform-specific APIs such as bitmapConfig, colorSpace, preferQualityOverSpeed,
+  placeholder(Int), fallback(Int), error(Int), etc. are provided in the form of extension functions
+* change: resizeApplyToDrawable renamed to resizeOnDraw
+* change: Parameters renamed to Extras
+* change: LongImageClipPrecisionDecider renamed to LongImagePrecisionDecider,
+  LongImageStartCropScaleDecider renamed to LongImageScaleDecider
+* remove: Removed listener() and progressListener() methods, now use addListener() and
+  addProgressListener() methods
+* new: Added 'sizeMultiplier: Float' attribute for setting the scaling ratio of image size
+* new: Added 'allowNullImage: Boolean' attribute
+
+fetch:
+
+* change: The parameter passed in Fetcher.Factory.create() is changed to RequestContext
+* new: ResourceUriFetcher supports 'android.resource:///drawable/ic_launcher' and 'android.resource:
+  ///1031232' uris
+* new: AssetUriFetcher supports 'file:///android_asset/' uri
+
+source:
+
+* change: Refactor DataSource
+
+decode:
+
+* change: BitmapDecoder and DrawableDecoder merged into Decoder
+* change: Decoder's decode() method removes the suspend modifier and changes the return type from
+  Result<DecodeResult> to DecodeResult
+* change: BitmapDecodeInterceptor and DrawableDecodeInterceptor merged into DecodeInterceptor
+* change: BitmapConfig refactored to BitmapColorType
+* improve: Improve the accuracy of animation-related Decoder in determining the image type. No
+  longer rely on the mimeType attribute of FetchResult because it may be inaccurate.
+* new: DrawableDecoder supports colorSpace
+
+transformation:
+
+* fix: Fix the bug that CircleCrop, Rotate, RoundedCorners Transformation does not work at
+  RGB_565. [#209](https://github.com/panpf/sketch/issues/209)
+* fix: Fixed the bug that Transformations such as blur and rotate on the Android platform did not
+  keep the ColorSpace unchanged. [#213](https://github.com/panpf/sketch/issues/213)
+* change: Transformation's transform() method removes the suspend modifier
+
+cache:
+
+* remove: Remove BitmapPool and its related disallowReuseBitmap attribute, CountBitmap, and
+  SketchCountBitmapDrawable classes
+* change: Refactor DiskCache SnapShot and Editor, get() and edit() are changed to openSnapShot() and
+  openEditor(), and openSnapShot() and openEditor() of the same key now conflict with each other,
+  openEditor always returns null before openSnapshot is closed.
+* change: Refactor MemoryCache.Value
+
+state:
+
+* change: uriEmpty property of ImageRequest and ImageOptions renamed to fallback
+* change: The type of error attribute of ImageRequest and ImageOptions changed from ErrorStateImage
+  to StateImage
+* change: ErrorStateImage removes ErrorStateImage.Builder.uriEmptyError() method and refactors it
+  into ConditionStateImage
+* improve: Improve IconDrawable, support fixed-size background and restrict icons to have fixed
+  sizes or specify iconSize
+
+animated:
+
+* fix: Fixed the bug that GifDrawable and MovieDrawable could not apply animatedTransformation
+  correctly. [#214](https://github.com/panpf/sketch/issues/214)
+* fix: Fixed the bug that the repeatCount setting of GifDrawableDecoder should be increased by 1 by
+  mistake. [#215](https://github.com/panpf/sketch/issues/215)
+* change: Split the sketch-animated module into sketch-animated-core and sketch-animated-gif,
+  sketch-animated-webp, sketch-animated-heif, sketch-animated-koralgif module and rename it to
+  sketch-animated-gif-koral
+
+http:
+
+* remove: Removed setHttpHeader() and addHttpHeader() methods of DisplayRequest.Builder and
+  DisplayOptions.Builder
+* change: The http function is split into separate modules. The sketch-http, sketch-http-hurl,
+  sketch-http-ktor2, and sketch-http-ktor3 modules are added. The sketch-okhttp module is renamed
+  sketch-http-okhttp.
+
+compose:
+
+* fix: Fix the bug that the filterQuality parameter of AsyncImage is
+  invalid. [#211](https://github.com/panpf/sketch/issues/211)
+* remove: AsyncImage composable function removes placeholder, error, uriEmpty, onLoading, onSuccess,
+  onError parameters
+* new: AsyncImageState can now set ImageOptions, for example: 'rememberAsyncImageState {
+  ImageOptions() }'
+* new: Added ErrorStateImage.Builder.saveCellularTrafficError(DrawableResource) extension function
+* new: ImageRequest.Builder and ImageOptions.Builder add size(IntSize) extension function
+* new: AsyncImageState adds onPainterState and onLoadState properties, which are used to receive
+  PainterState and LoadState updates in the form of callbacks.
+* new: Added ComposableImageRequest() and ComposableImageOptions() functions, which can be used
+  directly on placeholder, error, and fallback methods using DrawableResource
+
+view:
+
+* fix: Fix the bug that the image cannot be loaded when the ImageView is attached to the window but
+  size is null due to padding. [#208](https://github.com/panpf/sketch/issues/208)
+* change: displayImage renamed to loadImage
+* change: ImageView.disposeDisplay() renamed to ImageView.disposeLoad()
+* new: ImageRequest.Builder and ImageOptions.Builder add sizeWithView() and sizeWithDisplay()
+  extension functions
+
+extensions:
+
+* fix: Fix the bug of exception when AppIconUriFetcher.Factory parses
+  versionCode. [#204](https://github.com/panpf/sketch/issues/204)
+* change: Split the sketch-extensions-apkicon and sketch-extensions-appicon modules from the
+  sketch-extensions-core module
+
+other:
+
+* upgrade: Android minimum API raised to API 21
+* depend: Upgrade kotlin 2.0.21, kotlinx coroutines 1.9.0
+* depend: Upgrade jetbrains compose 1.7.0, jetbrains lifecycle 2.8.3
+
 # v4.0.0-rc01
 
 compose:
@@ -132,9 +272,9 @@ transformation:
 
 state:
 
-* change: The type of error attribute of ImageRequest and ImageOptions changed from ErrorImageState
+* change: The type of error attribute of ImageRequest and ImageOptions changed from ErrorStateImage
   to StateImage
-* change: ErrorImageState is refactored into ConditionStateImage, and ConditionStateImage can be
+* change: ErrorStateImage is refactored into ConditionStateImage, and ConditionStateImage can be
   used in placeholder and fallback
 * improve: Improve IconDrawable, support fixed-size background and restrict icons to have fixed
   sizes or specify iconSize
@@ -236,14 +376,16 @@ other:
 
 # 4.0.0-alpha02
 
-* change: ImageView.disposeLoad() renamed to ImageView.disposeLoad()
+* change: ImageView.disposeDisplay() renamed to ImageView.disposeLoad()
 * new: Added ImageRequest.Builder.composableError() and ImageOptions.Builder.composableError()
   extension functions
 * new: Added ErrorStateImage.Builder.saveCellularTrafficError(DrawableResource) extension function
 
 # 4.0.0-alpha01
 
-### sketch-core
+Sketch:
+
+* change: SketchSingleton refactored into SingletonSketch
 
 request:
 
@@ -270,7 +412,7 @@ decode:
 
 cache:
 
-* delete: Remove BitmapPool and its related disallowReuseBitmap attribute, CountBitmap, and
+* remove: Remove BitmapPool and its related disallowReuseBitmap attribute, CountBitmap, and
   SketchCountBitmapDrawable classes
 * change: Refactor DiskCache SnapShot and Editor, get() and edit() are changed to openSnapShot() and
   openEditor(), and openSnapShot() and openEditor() of the same key now conflict with each other,
@@ -280,22 +422,21 @@ cache:
 state:
 
 * change: uriEmpty attribute of ImageRequest and ImageOptions renamed to fallback
-* delete: Delete ErrorStateImage.Builder.uriEmptyError()
+* remove: Delete ErrorStateImage.Builder.uriEmptyError()
 
-other:
+compose:
 
-* change: SketchSingleton refactored into SingletonSketch
-* change: displayImage renamed to loadImage
-
-### sketch-compose
-
-* delete: AsyncImage composable function removes placeholder, error, uriEmpty, onLoading, onSuccess,
+* remove: AsyncImage composable function removes placeholder, error, uriEmpty, onLoading, onSuccess,
   onError parameters
 * upgrade：Compose Multiplatform upgraded to 1.6.10
 * new: AsyncImageState can now set ImageOptions, for example: 'rememberAsyncImageState {
   ImageOptions() }'
 
-### other
+view:
+
+* change: displayImage renamed to loadImage
+
+other:
 
 * upgrade：Android minimum API raised to API 21
 * upgrade：kotlin is upgraded to 2.0.0, mainly to support Compose Multiplatform 1.6.10
