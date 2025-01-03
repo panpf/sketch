@@ -9,7 +9,7 @@ Translations: [简体中文](CHANGELOG_zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/wiki/migrate.md) migrating from 3.x to 4.x
 
-# new
+# 4.0.1
 
 android:
 
