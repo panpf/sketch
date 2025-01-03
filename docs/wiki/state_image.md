@@ -146,7 +146,7 @@ ImageRequest(context, "https://example.com/image.jpg") {
 }
 
 // Compose
-ImageRequest(context, "https://example.com/image.jpg") {
+ComposableImageRequest(context, "https://example.com/image.jpg") {
     error(ComposableConditionStateImage(Res.drawable.error) {
         addState(condition = MyCondition, stateImage = DrawableStateImage(Res.drawable.mystate))
     })
