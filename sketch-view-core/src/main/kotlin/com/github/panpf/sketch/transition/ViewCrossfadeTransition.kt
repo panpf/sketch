@@ -52,7 +52,7 @@ class ViewCrossfadeTransition @JvmOverloads constructor(
 
     override fun transition() {
         val startDrawable = target.drawable?.asOrNull<CrossfadeDrawable>()?.end ?: target.drawable
-        val endDrawable = result.image?.asDrawable()
+        val endDrawable = result.image?.asDrawable(result.request.context.resources)
         if (startDrawable === endDrawable) {
             return
         }

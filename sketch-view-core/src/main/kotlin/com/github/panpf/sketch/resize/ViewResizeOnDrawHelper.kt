@@ -35,7 +35,7 @@ data object ViewResizeOnDrawHelper : ResizeOnDrawHelper {
 
     override fun resize(request: ImageRequest, size: Size, image: Image): Image {
         val scale = request.scaleDecider.get(imageSize = image.size, targetSize = size)
-        val drawable = image.asDrawable()
+        val drawable = image.asDrawable(request.context.resources)
         val resizeDrawable = drawable.resize(size, scale)
         return resizeDrawable.asImage()
     }

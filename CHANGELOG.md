@@ -9,6 +9,14 @@ Translations: [简体中文](CHANGELOG_zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/wiki/migrate.md) migrating from 3.x to 4.x
 
+# new
+
+android:
+
+* fix: Fixed a bug where Resources were not set when BitmapImage was converted to BitmapDrawable,
+  causing the Intrinsic size of BitmapDrawable to be inconsistent with
+  Bitmap. [#226](https://github.com/panpf/sketch/issues/226)
+
 # 4.0.0 Stable
 
 Sketch:

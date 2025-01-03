@@ -99,7 +99,7 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
         // It makes it easier to implement crossfade animation between old and new drawables.
         // com.github.panpf.sketch.sample.ui.gallery.PhotoPagerViewFragment.loadBgImage() is an example.
         if (image != null || request.allowNullImage == true) {
-            val newDrawable = image?.asDrawable()
+            val newDrawable = image?.asDrawable(request.context.resources)
             updateDrawable(newDrawable)
         }
     }

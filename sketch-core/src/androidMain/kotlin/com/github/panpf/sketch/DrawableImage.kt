@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch
 
+import android.content.res.Resources
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -35,9 +36,9 @@ fun Drawable.asImage(shareable: Boolean = this !is Animatable): DrawableImage {
  *
  * @see com.github.panpf.sketch.core.android.test.DrawableImageTest.testAsDrawableOrNull
  */
-fun Image.asDrawableOrNull(): Drawable? = when (this) {
+fun Image.asDrawableOrNull(resources: Resources = Resources.getSystem()): Drawable? = when (this) {
     is DrawableImage -> drawable
-    is BitmapImage -> BitmapDrawable(null, bitmap)
+    is BitmapImage -> BitmapDrawable(resources, bitmap)
     else -> null
 }
 
@@ -46,8 +47,9 @@ fun Image.asDrawableOrNull(): Drawable? = when (this) {
  *
  * @see com.github.panpf.sketch.core.android.test.DrawableImageTest.testAsDrawable
  */
-fun Image.asDrawable(): Drawable =
-    asDrawableOrNull() ?: throw IllegalArgumentException("Unable to convert '$this' to Drawable")
+fun Image.asDrawable(resources: Resources = Resources.getSystem()): Drawable =
+    asDrawableOrNull(resources)
+        ?: throw IllegalArgumentException("Unable to convert '$this' to Drawable")
 
 /**
  * Drawable Image

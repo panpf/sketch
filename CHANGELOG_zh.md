@@ -7,6 +7,13 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/wiki/migrate_zh.md) 从 3.x 版本迁移 4.x 版本
 
+# new
+
+android:
+
+* fix: 修复 BitmapImage 转为 BitmapDrawable 时没有设置 Resources 导致 BitmapDrawable 的 Intrinsic
+  尺寸和 Bitmap 不一致的 bug。 [#226](https://github.com/panpf/sketch/issues/226)
+
 # 4.0.0 Stable
 
 Sketch:

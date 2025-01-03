@@ -6,16 +6,23 @@ import android.graphics.drawable.BitmapDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.DrawableImage
+import com.github.panpf.sketch.asBitmap
 import com.github.panpf.sketch.asDrawable
 import com.github.panpf.sketch.asDrawableOrNull
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.utils.ByteCountProviderDrawableWrapper
 import com.github.panpf.sketch.test.utils.FakeImage
+import com.github.panpf.sketch.test.utils.createCustomDensityResources
+import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.intrinsicSize
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
+import com.github.panpf.sketch.util.div
 import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.sketch.util.toLogString
 import okio.buffer
@@ -64,6 +71,24 @@ class DrawableImageTest {
             assertTrue(actual = drawable is BitmapDrawable, message = "drawable=$drawable")
         }
 
+        createBitmap(100, 100).asImage().asDrawableOrNull()!!.apply {
+            assertEquals(expected = Size(100, 100), actual = intrinsicSize)
+        }
+
+        val jpegResource = ResourceImages.jpeg
+        val jpegImage = jpegResource.decode()
+        assertEquals(expected = jpegResource.size, actual = jpegImage.size)
+        assertEquals(
+            expected = jpegResource.size,
+            actual = jpegImage.asDrawableOrNull()!!.intrinsicSize
+        )
+
+        val newResources = createCustomDensityResources(context, jpegImage.asBitmap().density / 2)
+        assertEquals(
+            expected = jpegResource.size / 2f,
+            actual = jpegImage.asDrawableOrNull(newResources)!!.intrinsicSize
+        )
+
         assertEquals(
             expected = null,
             actual = FakeImage(100, 100).asDrawableOrNull()
@@ -84,6 +109,21 @@ class DrawableImageTest {
         createBitmap(100, 100).asImage().asDrawable().also { drawable ->
             assertTrue(actual = drawable is BitmapDrawable, message = "drawable=$drawable")
         }
+
+        createBitmap(100, 100).asImage().asDrawable().apply {
+            assertEquals(expected = Size(100, 100), actual = intrinsicSize)
+        }
+
+        val jpegResource = ResourceImages.jpeg
+        val jpegImage = jpegResource.decode()
+        assertEquals(expected = jpegResource.size, actual = jpegImage.size)
+        assertEquals(expected = jpegResource.size, actual = jpegImage.asDrawable().intrinsicSize)
+
+        val newResources = createCustomDensityResources(context, jpegImage.asBitmap().density / 2)
+        assertEquals(
+            expected = jpegResource.size / 2f,
+            actual = jpegImage.asDrawable(newResources).intrinsicSize
+        )
 
         assertFailsWith(IllegalArgumentException::class) {
             FakeImage(100, 100).asDrawable()

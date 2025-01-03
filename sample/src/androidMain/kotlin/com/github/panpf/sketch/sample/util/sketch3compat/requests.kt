@@ -183,8 +183,8 @@ val ImageResult.Success.bitmap: Bitmap
     get() = image.asBitmap()
 
 @Deprecated(
-    message = "Use asDrawable() instead",
-    replaceWith = ReplaceWith("asDrawable()", "com.github.panpf.sketch.asDrawable")
+    message = "Use asDrawable(Resources) instead",
+    replaceWith = ReplaceWith("asDrawable(resources)", "com.github.panpf.sketch.asDrawable")
 )
 val ImageResult.Success.drawable: Drawable
     get() = image.asDrawable()
