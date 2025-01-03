@@ -23,6 +23,8 @@ import kotlinx.serialization.Serializable
 class PexelsCurated(
     @SerialName("page") val page: Int,
     @SerialName("per_page") val pageSize: Int,
+    @SerialName("total_results") val count: Int,
+    @SerialName("next_page") val nextPageUrl: String,
     @SerialName("photos") val photos: List<PexelsPhoto>,
 )
 
@@ -34,7 +36,7 @@ class PexelsPhoto(
     @SerialName("url") val url: String,
     @SerialName("photographer") val photographer: String,
     @SerialName("photographer_url") val photographerUrl: String,
-    @SerialName("photographer_id") val photographerId: Int,
+    @SerialName("photographer_id") val photographerId: Long,
     @SerialName("avg_color") val avgColor: String,
     @SerialName("src") val src: PexelsPhotoSrc,
 )
