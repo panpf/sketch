@@ -32,7 +32,7 @@ Sketch 是专为 Compose Multiplatform 和 Android View 设计的图片加载库
 
 ### Compose Multiplatform:
 
-Import the required Compose and network modules:
+导入必需的 Compose 和网络模块：
 
 ```kotlin
 // 提供了 Sketch 的核心功能以及单例和依赖单例实现的扩展函数
@@ -47,6 +47,8 @@ implementation("io.github.panpf.sketch4:sketch-http:${LAST_VERSION}")
 > 文件到您的项目中，然后按照  [Compose Stability Configuration][stability_configuration] 文档配置它
 
 ### Android View:
+
+导入必需的 View 和网络模块：
 
 ```kotlin
 // 提供了 Sketch 的核心功能以及单例和依赖单例实现的扩展函数
