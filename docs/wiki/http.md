@@ -9,7 +9,7 @@ supported platforms and differences are as follows:
 
 | Module             | FetcherProvider                                                            | Fetcher                                                                         | Android | iOS | Desktop | Js | WasmJs |
 |:-------------------|:---------------------------------------------------------------------------|:--------------------------------------------------------------------------------|:--------|:----|:--------|:---|--------|
-| sketch-http        | jvm: [HurlHttpUriFetcherProvider]<br/>nonJvm: [KtorHttpUriFetcherProvider] | jvm: [HurlHttpUriFetcher]<br/>nonJvm: [KtorHttpUriFetcher][Ktor3HttpUriFetcher] | ✅       | ✅   | ✅       | ✅  | ✅      |
+| sketch-http        | jvm: [HurlHttpUriFetcherProvider]<br/>nonJvm: [KtorHttpUriFetcherProvider][Ktor3HttpUriFetcherProvider] | jvm: [HurlHttpUriFetcher]<br/>nonJvm: [KtorHttpUriFetcher][Ktor3HttpUriFetcher] | ✅       | ✅   | ✅       | ✅  | ✅      |
 | sketch-http-hurl   | [HurlHttpUriFetcherProvider]                                               | [HurlHttpUriFetcher]                                                            | ✅       | ❌   | ✅       | ❌  | ❌      |
 | sketch-http-okhttp | [OkHttpHttpUriFetcherProvider]                                             | [OkHttpHttpUriFetcher]                                                          | ✅       | ❌   | ✅       | ❌  | ❌      |
 | sketch-http-ktor2  | [KtorHttpUriFetcherProvider][Ktor2HttpUriFetcherProvider]                  | [KtorHttpUriFetcher][Ktor2HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅  | ❌      |
