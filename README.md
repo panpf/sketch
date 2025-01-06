@@ -40,6 +40,8 @@ has the following features:
 
 ### Compose Multiplatform:
 
+Import the required Compose and network modules:
+
 ```kotlin
 // Provides the core functions of Sketch as well as singletons and extension 
 // functions that rely on singleton implementations
@@ -55,6 +57,8 @@ implementation("io.github.panpf.sketch4:sketch-http:${LAST_VERSION}")
 > the [Compose Stability Configuration][stability_configuration] documentation
 
 ### Android View:
+
+Import the required View and network modules:
 
 ```kotlin
 // Provides the core functions of Sketch as well as singletons and extension 
