@@ -11,4 +11,8 @@
     <external-cache-path
         name="cache"
         path="." />
+
+    <external-files-path
+        name="asset_images"
+        path="assets/" />
 </paths>
