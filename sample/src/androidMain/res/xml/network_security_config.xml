@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <!-- 允许所有连接使用 http -->
+    <!-- Allow all connections to use http -->
     <base-config cleartextTrafficPermitted="true" />
 </network-security-config>
