@@ -22,13 +22,20 @@ abstract class BaseActivity : AppCompatActivity() {
 
     private var resumeCount = 0
 
+    var resumed = false
+
     override fun onResume() {
         super.onResume()
-
+        resumed = true
         resumeCount++
         if (resumeCount == 1) {
             onFirstResume()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        resumed = false
     }
 
     protected open fun onFirstResume() {

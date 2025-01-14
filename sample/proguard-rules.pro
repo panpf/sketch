@@ -73,6 +73,8 @@
 -keep class * extends com.github.panpf.sketch.sample.ui.base.BaseBindingDialogFragment
 -keep class com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 -keep class * extends com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
+-keep class com.github.panpf.sketch.sample.ui.base.BaseBindingPermissionFragment
+-keep class * extends com.github.panpf.sketch.sample.ui.base.BaseBindingPermissionFragment
 -keep class com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 -keep class * extends com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 -keep class com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory

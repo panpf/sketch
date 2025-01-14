@@ -30,7 +30,6 @@ import com.github.panpf.sketch.sample.applyDarkMode
 import com.github.panpf.sketch.sample.databinding.FragmentViewHomeBinding
 import com.github.panpf.sketch.sample.platformSupportedDarkModes
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
-import com.github.panpf.sketch.sample.ui.base.PermissionContainerFragment
 import com.github.panpf.sketch.sample.ui.gallery.GiphyPhotoListFragment
 import com.github.panpf.sketch.sample.ui.gallery.LocalPhotoListFragment
 import com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoListFragment
@@ -43,11 +42,7 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
     private val fragments = listOf(
         "Pexels" to PexelsPhotoListFragment(),
         "Giphy" to GiphyPhotoListFragment(),
-        "Local" to PermissionContainerFragment.newInstance(
-            fragment = LocalPhotoListFragment(),
-            permission = android.Manifest.permission.READ_EXTERNAL_STORAGE,
-            permissionRequired = false
-        ),
+        "Local" to LocalPhotoListFragment(),
         "Test" to TestHomeFragment(),
     )
 

@@ -40,6 +40,11 @@ fun BaseBindingFragment<*>.createViewBinding(
     parent: ViewGroup?
 ): ViewBinding = createViewBinding(this::class.java, inflater, parent)
 
+fun BaseBindingPermissionFragment<*>.createViewBinding(
+    inflater: LayoutInflater,
+    parent: ViewGroup?
+): ViewBinding = createViewBinding(this::class.java, inflater, parent)
+
 fun BaseToolbarBindingFragment<*>.createViewBinding(
     inflater: LayoutInflater,
     parent: ViewGroup?

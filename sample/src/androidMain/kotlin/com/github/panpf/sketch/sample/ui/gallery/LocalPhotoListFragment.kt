@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.Flow
 
 class LocalPhotoListFragment : BasePhotoListFragment() {
 
+    override val permission: String = "android.Manifest.permission.READ_EXTERNAL_STORAGE"
+
     private val localPhotoListViewModel by viewModels<LocalPhotoListViewModel>()
 
     override val animatedPlaceholder: Boolean

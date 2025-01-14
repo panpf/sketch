@@ -18,13 +18,11 @@ package com.github.panpf.sketch.sample
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import com.github.panpf.sketch.sample.service.NotificationService
-import com.github.panpf.sketch.sample.ui.MainFragment
+import com.github.panpf.sketch.sample.ui.ComposeMainActivity
+import com.github.panpf.sketch.sample.ui.ViewMainActivity
 import com.github.panpf.sketch.sample.ui.base.BaseActivity
-import com.google.android.material.internal.EdgeToEdgeUtils
 
 class MainActivity : BaseActivity() {
 
@@ -33,22 +31,17 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         applyDarkMode(this)
 
-        EdgeToEdgeUtils.applyEdgeToEdge(/* window = */ window,/* edgeToEdgeEnabled = */ true)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            window.statusBarColor = Color.parseColor("#60000000")
+        if (appSettings.composePage.value) {
+            startActivity(Intent(this, ComposeMainActivity::class.java))
+        } else {
+            startActivity(Intent(this, ViewMainActivity::class.java))
         }
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
-            window.navigationBarColor = Color.TRANSPARENT
-        }
-
-        supportFragmentManager
-            .beginTransaction()
-            .replace(android.R.id.content, MainFragment())
-            .commit()
+        finish()
     }
 
     override fun onFirstResume() {
         super.onFirstResume()
+        // TODO Unable to execute because finish is in onCreate
         // It can only be executed here, not in onCreate.
         // Because when the app is started when the phone is locked, the app is in the background state in the onCreate method, so the app will crash when the service is started.
         startService(Intent(this@MainActivity, NotificationService::class.java))
