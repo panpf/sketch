@@ -16,23 +16,24 @@
 
 package com.github.panpf.sketch.sample.util
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
 import com.github.panpf.sketch.PlatformContext
-import okio.Path.Companion.toPath
-import platform.Foundation.NSPreferencePanesDirectory
-import platform.Foundation.NSSearchPathForDirectoriesInDomains
-import platform.Foundation.NSUserDomainMask
+import com.russhwolf.settings.NSUserDefaultsSettings
+import com.russhwolf.settings.Settings
+import platform.Foundation.NSUserDefaults
 
-actual fun createDataStore(context: PlatformContext): DataStore<Preferences> {
-    val configDir = getPreferenceDirectory().toPath().resolve("sketch4")
-    val preferencesPath = configDir.resolve("dice.preferences_pb")
-    return PreferenceDataStoreFactory.createWithPath { preferencesPath }
-}
+//actual fun createDataStore(context: PlatformContext): DataStore<Preferences> {
+//    val configDir = getPreferenceDirectory().toPath().resolve("sketch4")
+//    val preferencesPath = configDir.resolve("dice.preferences_pb")
+//    return PreferenceDataStoreFactory.createWithPath { preferencesPath }
+//}
+//
+//private fun getPreferenceDirectory(): String {
+//    val paths =
+//        NSSearchPathForDirectoriesInDomains(NSPreferencePanesDirectory, NSUserDomainMask, true)
+//    return paths.first() as String
+//}
 
-private fun getPreferenceDirectory(): String {
-    val paths =
-        NSSearchPathForDirectoriesInDomains(NSPreferencePanesDirectory, NSUserDomainMask, true)
-    return paths.first() as String
+actual fun createSettings(context: PlatformContext): Settings {
+    val delegate = NSUserDefaults.standardUserDefaults
+    return NSUserDefaultsSettings(delegate)
 }

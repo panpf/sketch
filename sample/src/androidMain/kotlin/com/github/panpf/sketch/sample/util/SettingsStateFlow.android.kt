@@ -16,14 +16,21 @@
 
 package com.github.panpf.sketch.sample.util
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
+import android.content.Context
 import com.github.panpf.sketch.PlatformContext
-import okio.Path.Companion.toOkioPath
+import com.russhwolf.settings.Settings
+import com.russhwolf.settings.SharedPreferencesSettings
 
-actual fun createDataStore(context: PlatformContext): DataStore<Preferences> {
-    return PreferenceDataStoreFactory.createWithPath {
-        context.filesDir.resolve("dice.preferences_pb").toOkioPath()
-    }
+//actual fun createDataStore(context: PlatformContext): DataStore<Preferences> {
+//    return PreferenceDataStoreFactory.createWithPath {
+//        context.filesDir.resolve("dice.preferences_pb").toOkioPath()
+//    }
+//}
+
+actual fun createSettings(context: PlatformContext): Settings {
+    val delegate = context.getSharedPreferences(
+        /* name = */ "app_preferences",
+        /* mode = */ Context.MODE_PRIVATE
+    )
+    return SharedPreferencesSettings(delegate)
 }

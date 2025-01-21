@@ -73,6 +73,7 @@ kotlin {
             implementation(compose.material3)
             implementation(libs.ktor3.client.contentNegotiation)
             implementation(libs.ktor3.serialization.kotlinxJson)
+            implementation(libs.multiplatformsettings)
             implementation(libs.panpf.zoomimage.compose)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.screenModel)
@@ -139,8 +140,6 @@ kotlin {
             }
         }
         nonJsCommonMain.dependencies {
-            implementation(libs.androidx.datastore.core.okio)
-            implementation(libs.androidx.datastore.preferences.core)
             implementation(libs.cashapp.paging.compose.common)
         }
 
