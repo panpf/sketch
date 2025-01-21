@@ -62,8 +62,10 @@ fun rememberAsyncImageState(options: ImageOptions? = null): AsyncImageState {
     val inspectionMode = LocalInspectionMode.current
     val lifecycle = if (inspectionMode) GlobalLifecycle else LocalLifecycleOwner.current.lifecycle
     val windowContainerSize = windowContainerSize()
-    return remember(inspectionMode, lifecycle, windowContainerSize, options) {
-        AsyncImageState(inspectionMode, lifecycle, windowContainerSize, options)
+    return remember(inspectionMode, lifecycle, options) {
+        AsyncImageState(inspectionMode, lifecycle, options)
+    }.apply {
+        this@apply.target.windowContainerSize = windowContainerSize
     }
 }
 
@@ -77,9 +79,11 @@ fun rememberAsyncImageState(optionsLazy: () -> ImageOptions): AsyncImageState {
     val inspectionMode = LocalInspectionMode.current
     val lifecycle = if (inspectionMode) GlobalLifecycle else LocalLifecycleOwner.current.lifecycle
     val windowContainerSize = windowContainerSize()
-    return remember(inspectionMode, lifecycle, windowContainerSize) {
+    return remember(inspectionMode, lifecycle) {
         val options = optionsLazy.invoke()
-        AsyncImageState(inspectionMode, lifecycle, windowContainerSize, options)
+        AsyncImageState(inspectionMode, lifecycle, options)
+    }.apply {
+        this@apply.target.windowContainerSize = windowContainerSize
     }
 }
 
@@ -92,11 +96,10 @@ fun rememberAsyncImageState(optionsLazy: () -> ImageOptions): AsyncImageState {
 class AsyncImageState internal constructor(
     val inspectionMode: Boolean,
     val lifecycle: Lifecycle,
-    val windowContainerSize: IntSize,
     val imageOptions: ImageOptions?,
 ) : RememberObserver {
 
-    internal val target = AsyncImageTarget(lifecycle, imageOptions, windowContainerSize)
+    internal val target = AsyncImageTarget(lifecycle, imageOptions)
     internal var lastRequest: ImageRequest? = null
     internal var loadImageJob: Job? = null
     internal var coroutineScope: CoroutineScope? = null

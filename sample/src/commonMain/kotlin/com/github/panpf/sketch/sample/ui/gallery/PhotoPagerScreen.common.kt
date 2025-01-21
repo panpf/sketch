@@ -140,7 +140,6 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
     }
 }
 
-
 @Composable
 fun PhotoPagerBackground(
     imageUri: String,
@@ -159,7 +158,10 @@ fun PhotoPagerBackground(
     var imageSize by remember { mutableStateOf(IntSize.Zero) }
     Box(
         modifier = Modifier.fillMaxSize().onSizeChanged {
-            imageSize = IntSize(it.width / 4, it.height / 4)
+            // Avoid reloading images when window size changes on desktop platforms
+            if (imageSize.isEmpty()) {
+                imageSize = IntSize(it.width / 4, it.height / 4)
+            }
         }
     ) {
         val context = LocalPlatformContext.current

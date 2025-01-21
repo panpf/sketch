@@ -9,6 +9,13 @@ Translations: [简体中文](CHANGELOG_zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/wiki/migrate.md) migrating from 3.x to 4.x
 
+# new
+
+desktop:
+
+* fix: The AsyncImage component is reloaded when the current window size
+  changes. [#231](https://github.com/panpf/sketch/issues/231)
+
 # 4.0.1
 
 android:

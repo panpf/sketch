@@ -35,10 +35,57 @@ class AsyncImageTargetTest {
         AsyncImageTarget(
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
-            windowContainerSize = IntSize(1080, 720),
         )
+    }
+
+    @Test
+    fun testWindowContainerSize() {
+        AsyncImageTarget(
+            lifecycle = TestLifecycle(),
+            imageOptions = ImageOptions(),
+        ).apply {
+            assertEquals(expected = IntSize(500, 500), actual = windowContainerSize)
+        }
+
         assertFailsWith(IllegalArgumentException::class) {
-            AsyncImageTarget(TestLifecycle(), ImageOptions(), IntSize.Zero)
+            AsyncImageTarget(
+                lifecycle = TestLifecycle(),
+                imageOptions = ImageOptions(),
+            ).apply {
+                windowContainerSize = IntSize(0, 1000)
+            }
+        }
+        assertFailsWith(IllegalArgumentException::class) {
+            AsyncImageTarget(
+                lifecycle = TestLifecycle(),
+                imageOptions = ImageOptions(),
+            ).apply {
+                windowContainerSize = IntSize(-1, 1000)
+            }
+        }
+        assertFailsWith(IllegalArgumentException::class) {
+            AsyncImageTarget(
+                lifecycle = TestLifecycle(),
+                imageOptions = ImageOptions(),
+            ).apply {
+                windowContainerSize = IntSize(1000, 0)
+            }
+        }
+        assertFailsWith(IllegalArgumentException::class) {
+            AsyncImageTarget(
+                lifecycle = TestLifecycle(),
+                imageOptions = ImageOptions(),
+            ).apply {
+                windowContainerSize = IntSize(1000, -1)
+            }
+        }
+        AsyncImageTarget(
+            lifecycle = TestLifecycle(),
+            imageOptions = ImageOptions(),
+        ).apply {
+            windowContainerSize = IntSize(3000, 2000)
+        }.apply {
+            assertEquals(expected = IntSize(3000, 2000), actual = windowContainerSize)
         }
     }
 
@@ -49,7 +96,6 @@ class AsyncImageTargetTest {
         val target = AsyncImageTarget(
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
-            windowContainerSize = IntSize(1080, 720),
         )
         assertEquals(expected = null, actual = target.painterState.value)
         assertEquals(expected = null, actual = target.painter)
@@ -109,7 +155,6 @@ class AsyncImageTargetTest {
         val target = AsyncImageTarget(
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
-            windowContainerSize = IntSize(1080, 720),
         )
         assertEquals(expected = null, actual = target.painterState.value)
         assertEquals(expected = null, actual = target.painter)
@@ -136,7 +181,6 @@ class AsyncImageTargetTest {
         val target = AsyncImageTarget(
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
-            windowContainerSize = IntSize(1080, 720),
         )
         assertEquals(expected = null, actual = target.contentScaleMutableState.value)
         assertEquals(expected = true, actual = target.fitScale)
@@ -186,7 +230,6 @@ class AsyncImageTargetTest {
         val target = AsyncImageTarget(
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
-            windowContainerSize = IntSize(1080, 720),
         )
         assertEquals(expected = FilterQuality.Low, actual = target.filterQuality)
         assertEquals(expected = null, actual = target.filterQualityMutableState.value)
@@ -220,11 +263,10 @@ class AsyncImageTargetTest {
 
     @Test
     fun testSize() {
-        val windowContainerSize = IntSize(1080, 720)
+        val windowContainerSize = IntSize(500, 500)
         val target = AsyncImageTarget(
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
-            windowContainerSize = windowContainerSize,
         )
         assertEquals(expected = null, actual = target.sizeState.value)
         assertEquals(expected = null, actual = target.getSizeResolver().sizeState.value)
@@ -272,7 +314,6 @@ class AsyncImageTargetTest {
         val target = AsyncImageTarget(
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
-            windowContainerSize = IntSize(1080, 720),
         )
         assertSame(expected = target.getRequestManager(), actual = target.getRequestManager())
         assertEquals(expected = 0, actual = target.getRequestManager().rememberedCounter.count)
@@ -298,7 +339,6 @@ class AsyncImageTargetTest {
         val target = AsyncImageTarget(
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
-            windowContainerSize = IntSize(1080, 720),
         )
         assertSame(expected = target.getListener(), actual = target.getListener())
         assertSame(expected = target.getProgressListener(), actual = target.getProgressListener())
@@ -310,7 +350,6 @@ class AsyncImageTargetTest {
         val target = AsyncImageTarget(
             lifecycle = lifecycle,
             imageOptions = ImageOptions(),
-            windowContainerSize = IntSize(1080, 720),
         )
         assertEquals(
             expected = LifecycleResolver(lifecycle),
@@ -324,7 +363,6 @@ class AsyncImageTargetTest {
         val target = AsyncImageTarget(
             lifecycle = lifecycle,
             imageOptions = ImageOptions(),
-            windowContainerSize = IntSize(1080, 720),
         )
         assertSame(
             expected = target.getSizeResolver(),
@@ -338,7 +376,6 @@ class AsyncImageTargetTest {
         val target = AsyncImageTarget(
             lifecycle = lifecycle,
             imageOptions = ImageOptions(),
-            windowContainerSize = IntSize(1080, 720),
         )
         assertEquals(expected = null, actual = target.getScaleDecider())
 
@@ -369,7 +406,6 @@ class AsyncImageTargetTest {
         val target1 = AsyncImageTarget(
             lifecycle = TestLifecycle(),
             imageOptions = null,
-            windowContainerSize = IntSize(1080, 720),
         )
         assertEquals(
             expected = null,
@@ -379,7 +415,6 @@ class AsyncImageTargetTest {
         val target2 = AsyncImageTarget(
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
-            windowContainerSize = IntSize(1080, 720),
         )
         assertEquals(
             expected = ImageOptions(),
@@ -394,7 +429,6 @@ class AsyncImageTargetTest {
         val target = AsyncImageTarget(
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
-            windowContainerSize = IntSize(1080, 720),
         )
 
         assertEquals(expected = null, actual = target.painter)
@@ -437,45 +471,31 @@ class AsyncImageTargetTest {
         val element1 = AsyncImageTarget(
             lifecycle = lifecycle1,
             imageOptions = ImageOptions(),
-            windowContainerSize = IntSize(1080, 720),
         )
         val element11 = AsyncImageTarget(
             lifecycle = lifecycle1,
             imageOptions = ImageOptions(),
-            windowContainerSize = IntSize(1080, 720),
         )
         val element2 = AsyncImageTarget(
             lifecycle = lifecycle2,
             imageOptions = ImageOptions(),
-            windowContainerSize = IntSize(1080, 720),
         )
         val element3 = AsyncImageTarget(
             lifecycle = lifecycle1,
             imageOptions = ImageOptions { size(101, 202) },
-            windowContainerSize = IntSize(1080, 720),
-        )
-        val element4 = AsyncImageTarget(
-            lifecycle = lifecycle1,
-            imageOptions = ImageOptions(),
-            windowContainerSize = IntSize(720, 1080),
         )
 
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
         assertNotEquals(element1, element3)
-        assertNotEquals(element1, element4)
         assertNotEquals(element2, element3)
-        assertNotEquals(element2, element4)
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
         assertNotEquals(element1.hashCode(), element3.hashCode())
-        assertNotEquals(element1.hashCode(), element4.hashCode())
         assertNotEquals(element2.hashCode(), element3.hashCode())
-        assertNotEquals(element2.hashCode(), element4.hashCode())
-        assertNotEquals(element3.hashCode(), element4.hashCode())
     }
 
     @Test
@@ -485,10 +505,9 @@ class AsyncImageTargetTest {
         val target = AsyncImageTarget(
             lifecycle = lifecycle,
             imageOptions = options,
-            windowContainerSize = IntSize(1080, 720),
         )
         assertEquals(
-            expected = "AsyncImageTarget(lifecycle=$lifecycle, options=$options, containerSize=1080x720)",
+            expected = "AsyncImageTarget(lifecycle=$lifecycle, options=$options)",
             actual = target.toString()
         )
     }

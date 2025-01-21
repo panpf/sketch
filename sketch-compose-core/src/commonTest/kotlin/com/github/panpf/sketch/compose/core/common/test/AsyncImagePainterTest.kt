@@ -7,7 +7,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQ
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
-import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.AsyncImagePainter
 import com.github.panpf.sketch.AsyncImageState
 import com.github.panpf.sketch.asImage
@@ -143,7 +142,6 @@ class AsyncImagePainterTest {
         val asyncImageState = AsyncImageState(
             inspectionMode = false,
             lifecycle = TestLifecycle(),
-            windowContainerSize = IntSize(1024, 768),
             imageOptions = null
         )
         val asyncImagePainter = AsyncImagePainter(asyncImageState)
@@ -171,13 +169,11 @@ class AsyncImagePainterTest {
         val asyncImageState1 = AsyncImageState(
             inspectionMode = false,
             lifecycle = TestLifecycle(),
-            windowContainerSize = IntSize(1024, 768),
             imageOptions = null
         )
         val asyncImageState2 = AsyncImageState(
             inspectionMode = false,
             lifecycle = TestLifecycle(),
-            windowContainerSize = IntSize(1024, 768),
             imageOptions = null
         )
         val element1 = AsyncImagePainter(asyncImageState1)
@@ -198,7 +194,6 @@ class AsyncImagePainterTest {
         val asyncImageState = AsyncImageState(
             inspectionMode = false,
             lifecycle = TestLifecycle(),
-            windowContainerSize = IntSize(1024, 768),
             imageOptions = null
         )
         val element = AsyncImagePainter(asyncImageState)
