@@ -79,14 +79,6 @@ class AsyncImageTarget(
             listener.onLoadState = value
         }
 
-    var windowContainerSize: IntSize = IntSize(500, 500)
-        set(value) {
-            require(!value.isEmpty()) {
-                "windowContainerSize must not be empty: $value"
-            }
-            field = value
-        }
-
     override val painter: Painter?
         get() = painterMutableState.value
 
@@ -111,14 +103,10 @@ class AsyncImageTarget(
     }
 
     fun setSize(size: IntSize) {
-        // If the width or height is 0, it means that the constraint of the component is to wrap content.
-        // In this case, the size of the window container can be used instead.
-        val limitedSize = IntSize(
-            width = if (size.width > 0) size.width else windowContainerSize.width,
-            height = if (size.height > 0) size.height else windowContainerSize.height
-        )
-        this.sizeMutableState.value = limitedSize
-        this.sizeResolver.sizeState.value = limitedSize
+        if (!size.isEmpty()) {
+            this.sizeMutableState.value = size
+            this.sizeResolver.sizeState.value = size
+        }
     }
 
     fun onRemembered() {

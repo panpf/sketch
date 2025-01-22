@@ -9,8 +9,6 @@
 
 # new
 
-desktop:
-
 * fix: 当前窗口大小改变时 AsyncImage
   组件会重新加载。 [#231](https://github.com/panpf/sketch/issues/231)
 

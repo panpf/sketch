@@ -41,7 +41,6 @@ import com.github.panpf.sketch.target.AsyncImageTarget
 import com.github.panpf.sketch.util.RememberedCounter
 import com.github.panpf.sketch.util.difference
 import com.github.panpf.sketch.util.toHexString
-import com.github.panpf.sketch.util.windowContainerSize
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -61,11 +60,8 @@ import kotlinx.coroutines.launch
 fun rememberAsyncImageState(options: ImageOptions? = null): AsyncImageState {
     val inspectionMode = LocalInspectionMode.current
     val lifecycle = if (inspectionMode) GlobalLifecycle else LocalLifecycleOwner.current.lifecycle
-    val windowContainerSize = windowContainerSize()
     return remember(inspectionMode, lifecycle, options) {
         AsyncImageState(inspectionMode, lifecycle, options)
-    }.apply {
-        this@apply.target.windowContainerSize = windowContainerSize
     }
 }
 
@@ -78,12 +74,9 @@ fun rememberAsyncImageState(options: ImageOptions? = null): AsyncImageState {
 fun rememberAsyncImageState(optionsLazy: () -> ImageOptions): AsyncImageState {
     val inspectionMode = LocalInspectionMode.current
     val lifecycle = if (inspectionMode) GlobalLifecycle else LocalLifecycleOwner.current.lifecycle
-    val windowContainerSize = windowContainerSize()
     return remember(inspectionMode, lifecycle) {
         val options = optionsLazy.invoke()
         AsyncImageState(inspectionMode, lifecycle, options)
-    }.apply {
-        this@apply.target.windowContainerSize = windowContainerSize
     }
 }
 

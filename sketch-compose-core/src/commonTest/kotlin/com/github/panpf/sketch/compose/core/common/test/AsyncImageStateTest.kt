@@ -60,7 +60,6 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.div
 import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.toSize
-import com.github.panpf.sketch.util.windowContainerSize
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -81,10 +80,6 @@ class AsyncImageStateTest {
                     rememberAsyncImageState().apply {
                         assertEquals(expected = testLifecycle, actual = lifecycle)
                         assertEquals(expected = false, actual = inspectionMode)
-                        assertEquals(
-                            expected = windowContainerSize(),
-                            actual = target.windowContainerSize
-                        )
                         assertEquals(expected = null, actual = imageOptions)
                     }
 
@@ -92,10 +87,6 @@ class AsyncImageStateTest {
                         rememberAsyncImageState().apply {
                             assertEquals(expected = GlobalLifecycle, actual = lifecycle)
                             assertEquals(expected = true, actual = inspectionMode)
-                            assertEquals(
-                                expected = windowContainerSize(),
-                                actual = target.windowContainerSize
-                            )
                             assertEquals(expected = null, actual = imageOptions)
                         }
                     }
@@ -103,10 +94,6 @@ class AsyncImageStateTest {
                     rememberAsyncImageState(ImageOptions { size(101, 202) }).apply {
                         assertEquals(expected = testLifecycle, actual = lifecycle)
                         assertEquals(expected = false, actual = inspectionMode)
-                        assertEquals(
-                            expected = windowContainerSize(),
-                            actual = target.windowContainerSize
-                        )
                         assertEquals(
                             expected = ImageOptions { size(101, 202) },
                             actual = imageOptions
@@ -118,10 +105,6 @@ class AsyncImageStateTest {
                     }.apply {
                         assertEquals(expected = testLifecycle, actual = lifecycle)
                         assertEquals(expected = false, actual = inspectionMode)
-                        assertEquals(
-                            expected = windowContainerSize(),
-                            actual = target.windowContainerSize
-                        )
                         assertEquals(
                             expected = ImageOptions { size(202, 101) },
                             actual = imageOptions
@@ -357,7 +340,6 @@ class AsyncImageStateTest {
 
     @Test
     fun testSize() {
-        val windowContainerSize = IntSize(500, 500)
         val asyncImageState = AsyncImageState(
             inspectionMode = false,
             lifecycle = GlobalLifecycle,
@@ -370,53 +352,53 @@ class AsyncImageStateTest {
             actual = asyncImageState.target.getSizeResolver().sizeState.value
         )
 
-        asyncImageState.setSize(IntSize(300, 400))
-        assertEquals(expected = IntSize(300, 400), actual = asyncImageState.size)
-        assertEquals(expected = IntSize(300, 400), actual = asyncImageState.target.sizeState.value)
-        assertEquals(
-            expected = IntSize(300, 400),
-            actual = asyncImageState.target.getSizeResolver().sizeState.value
-        )
-
         asyncImageState.setSize(IntSize(0, 1000))
         assertEquals(
-            expected = IntSize(windowContainerSize.width, 1000),
+            expected = null,
             actual = asyncImageState.size
         )
         assertEquals(
-            expected = IntSize(windowContainerSize.width, 1000),
+            expected = null,
             actual = asyncImageState.target.sizeState.value
         )
         assertEquals(
-            expected = IntSize(windowContainerSize.width, 1000),
+            expected = null,
             actual = asyncImageState.target.getSizeResolver().sizeState.value
         )
 
         asyncImageState.setSize(IntSize(1000, 0))
         assertEquals(
-            expected = IntSize(1000, windowContainerSize.height),
+            expected = null,
             actual = asyncImageState.size
         )
         assertEquals(
-            expected = IntSize(1000, windowContainerSize.height),
+            expected = null,
             actual = asyncImageState.target.sizeState.value
         )
         assertEquals(
-            expected = IntSize(1000, windowContainerSize.height),
+            expected = null,
             actual = asyncImageState.target.getSizeResolver().sizeState.value
         )
 
         asyncImageState.setSize(IntSize(0, 0))
         assertEquals(
-            expected = IntSize(windowContainerSize.width, windowContainerSize.height),
+            expected = null,
             actual = asyncImageState.size
         )
         assertEquals(
-            expected = IntSize(windowContainerSize.width, windowContainerSize.height),
+            expected = null,
             actual = asyncImageState.target.sizeState.value
         )
         assertEquals(
-            expected = windowContainerSize,
+            expected = null,
+            actual = asyncImageState.target.getSizeResolver().sizeState.value
+        )
+
+        asyncImageState.setSize(IntSize(300, 400))
+        assertEquals(expected = IntSize(300, 400), actual = asyncImageState.size)
+        assertEquals(expected = IntSize(300, 400), actual = asyncImageState.target.sizeState.value)
+        assertEquals(
+            expected = IntSize(300, 400),
             actual = asyncImageState.target.getSizeResolver().sizeState.value
         )
     }

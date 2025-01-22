@@ -24,7 +24,6 @@ import com.github.panpf.sketch.test.utils.fakeErrorImageResult
 import com.github.panpf.sketch.test.utils.fakeSuccessImageResult
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertSame
 
@@ -36,57 +35,6 @@ class AsyncImageTargetTest {
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
         )
-    }
-
-    @Test
-    fun testWindowContainerSize() {
-        AsyncImageTarget(
-            lifecycle = TestLifecycle(),
-            imageOptions = ImageOptions(),
-        ).apply {
-            assertEquals(expected = IntSize(500, 500), actual = windowContainerSize)
-        }
-
-        assertFailsWith(IllegalArgumentException::class) {
-            AsyncImageTarget(
-                lifecycle = TestLifecycle(),
-                imageOptions = ImageOptions(),
-            ).apply {
-                windowContainerSize = IntSize(0, 1000)
-            }
-        }
-        assertFailsWith(IllegalArgumentException::class) {
-            AsyncImageTarget(
-                lifecycle = TestLifecycle(),
-                imageOptions = ImageOptions(),
-            ).apply {
-                windowContainerSize = IntSize(-1, 1000)
-            }
-        }
-        assertFailsWith(IllegalArgumentException::class) {
-            AsyncImageTarget(
-                lifecycle = TestLifecycle(),
-                imageOptions = ImageOptions(),
-            ).apply {
-                windowContainerSize = IntSize(1000, 0)
-            }
-        }
-        assertFailsWith(IllegalArgumentException::class) {
-            AsyncImageTarget(
-                lifecycle = TestLifecycle(),
-                imageOptions = ImageOptions(),
-            ).apply {
-                windowContainerSize = IntSize(1000, -1)
-            }
-        }
-        AsyncImageTarget(
-            lifecycle = TestLifecycle(),
-            imageOptions = ImageOptions(),
-        ).apply {
-            windowContainerSize = IntSize(3000, 2000)
-        }.apply {
-            assertEquals(expected = IntSize(3000, 2000), actual = windowContainerSize)
-        }
     }
 
     @Test
@@ -263,7 +211,6 @@ class AsyncImageTargetTest {
 
     @Test
     fun testSize() {
-        val windowContainerSize = IntSize(500, 500)
         val target = AsyncImageTarget(
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
@@ -271,40 +218,40 @@ class AsyncImageTargetTest {
         assertEquals(expected = null, actual = target.sizeState.value)
         assertEquals(expected = null, actual = target.getSizeResolver().sizeState.value)
 
-        target.setSize(IntSize(300, 400))
-        assertEquals(expected = IntSize(300, 400), actual = target.sizeState.value)
-        assertEquals(
-            expected = IntSize(300, 400),
-            actual = target.getSizeResolver().sizeState.value
-        )
-
         target.setSize(IntSize(0, 1000))
         assertEquals(
-            expected = IntSize(windowContainerSize.width, 1000),
+            expected = null,
             actual = target.sizeState.value
         )
         assertEquals(
-            expected = IntSize(windowContainerSize.width, 1000),
+            expected = null,
             actual = target.getSizeResolver().sizeState.value
         )
 
         target.setSize(IntSize(1000, 0))
         assertEquals(
-            expected = IntSize(1000, windowContainerSize.height),
+            expected = null,
             actual = target.sizeState.value
         )
         assertEquals(
-            expected = IntSize(1000, windowContainerSize.height),
+            expected = null,
             actual = target.getSizeResolver().sizeState.value
         )
 
         target.setSize(IntSize(0, 0))
         assertEquals(
-            expected = IntSize(windowContainerSize.width, windowContainerSize.height),
+            expected = null,
             actual = target.sizeState.value
         )
         assertEquals(
-            expected = windowContainerSize,
+            expected = null,
+            actual = target.getSizeResolver().sizeState.value
+        )
+
+        target.setSize(IntSize(300, 400))
+        assertEquals(expected = IntSize(300, 400), actual = target.sizeState.value)
+        assertEquals(
+            expected = IntSize(300, 400),
             actual = target.getSizeResolver().sizeState.value
         )
     }

@@ -11,8 +11,6 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 # new
 
-desktop:
-
 * fix: The AsyncImage component is reloaded when the current window size
   changes. [#231](https://github.com/panpf/sketch/issues/231)
 
