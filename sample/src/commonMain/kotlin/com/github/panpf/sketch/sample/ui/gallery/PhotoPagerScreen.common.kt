@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.sample.ui.gallery
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
@@ -39,11 +38,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -52,7 +49,7 @@ import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.rememberAsyncImageState
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
@@ -71,11 +68,12 @@ import com.github.panpf.sketch.sample.ui.components.TurnPageIndicator
 import com.github.panpf.sketch.sample.ui.components.rememberMyDialogState
 import com.github.panpf.sketch.sample.ui.setting.AppSettingsList
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
-import com.github.panpf.sketch.sample.ui.util.isEmpty
 import com.github.panpf.sketch.sample.util.Platform
 import com.github.panpf.sketch.sample.util.current
 import com.github.panpf.sketch.sample.util.isMobile
 import com.github.panpf.sketch.transform.BlurTransformation
+import com.github.panpf.sketch.util.toSketchSize
+import com.github.panpf.sketch.util.windowContainerSize
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 
@@ -84,7 +82,6 @@ expect fun getTopMargin(context: PlatformContext): Int
 class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
 
     @Composable
-    @OptIn(ExperimentalFoundationApi::class)
     override fun DrawContent() {
         val coroutineScope = rememberCoroutineScope()
         val focusRequest = remember { androidx.compose.ui.focus.FocusRequester() }
@@ -155,57 +152,31 @@ fun PhotoPagerBackground(
             }
         }
     }
-    var imageSize by remember { mutableStateOf(IntSize.Zero) }
-    Box(
-        modifier = Modifier.fillMaxSize().onSizeChanged {
-            // Avoid reloading images when window size changes on desktop platforms
-            if (imageSize.isEmpty()) {
-                imageSize = IntSize(it.width / 4, it.height / 4)
-            }
-        }
-    ) {
-        val context = LocalPlatformContext.current
-        val request by remember(imageUri) {
-            derivedStateOf {
-                if (imageSize.isEmpty()) {
-                    null
-                } else {
-                    ImageRequest(context, imageUri) {
-                        resize(
-                            width = imageSize.width,
-                            height = imageSize.height,
-                            precision = SMALLER_SIZE
-                        )
-                        addTransformations(
-                            BlurTransformation(radius = 20, maskColor = 0x63000000)
-                        )
-                        memoryCachePolicy(DISABLED)
-                        resultCachePolicy(DISABLED)
-                        disallowAnimatedImage()
-                        crossfade(alwaysUse = true, durationMillis = 400)
-                        resizeOnDraw()
-                        components {
-                            addDecodeInterceptor(PaletteDecodeInterceptor())
-                        }
-                    }
-                }
-            }
-        }
-        val request1 = request
-        if (request1 != null) {
-            AsyncImage(
-                request = request1,
-                state = imageState,
-                contentDescription = "Background",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
+    // Cache the image size to prevent reloading the image when the window size changes
+    val windowsSize = windowContainerSize()
+    val imageSize = remember { (windowsSize / 4).toSketchSize() }
+    val request = ComposableImageRequest(imageUri) {
+        resize(size = imageSize, precision = SMALLER_SIZE)
+        addTransformations(BlurTransformation(radius = 20, maskColor = 0x63000000))
+        memoryCachePolicy(DISABLED)
+        resultCachePolicy(DISABLED)
+        disallowAnimatedImage()
+        crossfade(alwaysUse = true, durationMillis = 400)
+        resizeOnDraw()
+        components {
+            addDecodeInterceptor(PaletteDecodeInterceptor())
         }
     }
+    AsyncImage(
+        request = request,
+        state = imageState,
+        contentDescription = "Background",
+        contentScale = ContentScale.Crop,
+        modifier = Modifier.fillMaxSize()
+    )
 }
 
 @Composable
-@OptIn(ExperimentalFoundationApi::class)
 fun PhotoPagerHeaders(
     params: PhotoPagerParams,
     pagerState: PagerState,
