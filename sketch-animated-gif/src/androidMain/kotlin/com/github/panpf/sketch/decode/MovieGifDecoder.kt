@@ -162,14 +162,13 @@ class MovieGifDecoder(
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): Decoder? {
-            val dataSource = fetchResult.dataSource
-            if (
-                requestContext.request.disallowAnimatedImage != true
-                && fetchResult.headerBytes.isGif()
-            ) {
-                return MovieGifDecoder(requestContext, dataSource)
-            }
-            return null
+            if (requestContext.request.disallowAnimatedImage == true) return null
+            if (!isApplicable(fetchResult)) return null
+            return MovieGifDecoder(requestContext, fetchResult.dataSource)
+        }
+
+        private fun isApplicable(fetchResult: FetchResult): Boolean {
+            return fetchResult.headerBytes.isGif()
         }
 
         override fun equals(other: Any?): Boolean {

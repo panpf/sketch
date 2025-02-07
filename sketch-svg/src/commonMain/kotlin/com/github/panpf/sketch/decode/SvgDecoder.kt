@@ -90,20 +90,18 @@ class SvgDecoder(
         override val key: String =
             "SvgDecoder(useViewBoundsAsIntrinsicSize=$useViewBoundsAsIntrinsicSize)"
 
-        override fun create(
-            requestContext: RequestContext,
-            fetchResult: FetchResult
-        ): SvgDecoder? {
-            val dataSource = fetchResult.dataSource
-            return if (fetchResult.headerBytes.isSvg()) {
-                SvgDecoder(
-                    requestContext = requestContext,
-                    dataSource = dataSource,
-                    useViewBoundsAsIntrinsicSize = useViewBoundsAsIntrinsicSize,
-                )
-            } else {
-                null
-            }
+        override fun create(requestContext: RequestContext, fetchResult: FetchResult): SvgDecoder? {
+            if (!isApplicable(fetchResult)) return null
+            return SvgDecoder(
+                requestContext = requestContext,
+                dataSource = fetchResult.dataSource,
+                useViewBoundsAsIntrinsicSize = useViewBoundsAsIntrinsicSize,
+            )
+        }
+
+        private fun isApplicable(fetchResult: FetchResult): Boolean {
+//            return fetchResult.mimeType == MIME_TYPE || fetchResult.headerBytes.isSvg()
+            return fetchResult.headerBytes.isSvg()
         }
 
         override fun equals(other: Any?): Boolean {

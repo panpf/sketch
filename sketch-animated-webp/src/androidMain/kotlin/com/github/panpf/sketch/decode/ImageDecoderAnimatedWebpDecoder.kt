@@ -72,15 +72,14 @@ class ImageDecoderAnimatedWebpDecoder(
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): Decoder? {
-            val dataSource = fetchResult.dataSource
-            if (
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
-                && requestContext.request.disallowAnimatedImage != true
-                && fetchResult.headerBytes.isAnimatedWebP()
-            ) {
-                return ImageDecoderAnimatedWebpDecoder(requestContext, dataSource)
-            }
-            return null
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return null
+            if (requestContext.request.disallowAnimatedImage == true) return null
+            if (!isApplicable(fetchResult)) return null
+            return ImageDecoderAnimatedWebpDecoder(requestContext, fetchResult.dataSource)
+        }
+
+        private fun isApplicable(fetchResult: FetchResult): Boolean {
+            return fetchResult.headerBytes.isAnimatedWebP()
         }
 
         override fun equals(other: Any?): Boolean {

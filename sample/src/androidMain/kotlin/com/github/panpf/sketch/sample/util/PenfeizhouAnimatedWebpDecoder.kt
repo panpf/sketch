@@ -21,6 +21,7 @@ import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.isAnimatedWebP
 import com.github.panpf.sketch.decode.internal.resize
@@ -62,7 +63,7 @@ class PenfeizhouAnimatedWebpDecoder(
         ImageInfo(
             width = bounds.width(),
             height = bounds.height(),
-            mimeType = "image/webp"
+            mimeType = ImageFormat.WEBP.mimeType
         )
     }
 
@@ -74,7 +75,7 @@ class PenfeizhouAnimatedWebpDecoder(
         val imageInfo = ImageInfo(
             width = bounds.width(),
             height = bounds.height(),
-            mimeType = "image/webp"
+            mimeType = ImageFormat.WEBP.mimeType
         )
         val resize = requestContext.computeResize(imageInfo.size)
 
@@ -117,15 +118,16 @@ class PenfeizhouAnimatedWebpDecoder(
         override val key: String = "PenfeizhouAnimatedWebpDecoder"
 
         override fun create(requestContext: RequestContext, fetchResult: FetchResult): Decoder? {
-            val dataSource = fetchResult.dataSource
-            if (fetchResult.headerBytes.isAnimatedWebP()) {
-                return PenfeizhouAnimatedWebpDecoder(
-                    requestContext = requestContext,
-                    dataSource = dataSource,
-                    disallowAnimatedImage = requestContext.request.disallowAnimatedImage ?: false
-                )
-            }
-            return null
+            if (!isApplicable(fetchResult)) return null
+            return PenfeizhouAnimatedWebpDecoder(
+                requestContext = requestContext,
+                dataSource = fetchResult.dataSource,
+                disallowAnimatedImage = requestContext.request.disallowAnimatedImage ?: false
+            )
+        }
+
+        private fun isApplicable(fetchResult: FetchResult): Boolean {
+            return fetchResult.headerBytes.isAnimatedWebP()
         }
 
         override fun equals(other: Any?): Boolean {

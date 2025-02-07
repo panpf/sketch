@@ -75,16 +75,13 @@ class ApkIconDecoder(
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): Decoder? {
-            val dataSource = fetchResult.dataSource
-            return if (MIME_TYPE.equals(fetchResult.mimeType, ignoreCase = true)) {
-                ApkIconDecoder(
-                    requestContext = requestContext,
-                    dataFrom = fetchResult.dataFrom,
-                    file = dataSource.getFile(requestContext.sketch).toFile()
-                )
-            } else {
-                null
-            }
+            if (!isApplicable(fetchResult)) return null
+            val file = fetchResult.dataSource.getFile(requestContext.sketch).toFile()
+            return ApkIconDecoder(requestContext, fetchResult.dataFrom, file)
+        }
+
+        private fun isApplicable(fetchResult: FetchResult): Boolean {
+            return MIME_TYPE == fetchResult.mimeType
         }
 
         override fun equals(other: Any?): Boolean {

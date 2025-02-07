@@ -111,12 +111,8 @@ open class DrawableDecoder(
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): Decoder? {
-            val dataSource = fetchResult.dataSource
-            return if (dataSource is DrawableDataSource) {
-                DrawableDecoder(requestContext, dataSource, fetchResult.mimeType)
-            } else {
-                null
-            }
+            if (fetchResult.dataSource !is DrawableDataSource) return null
+            return DrawableDecoder(requestContext, fetchResult.dataSource, fetchResult.mimeType)
         }
 
         override fun equals(other: Any?): Boolean {

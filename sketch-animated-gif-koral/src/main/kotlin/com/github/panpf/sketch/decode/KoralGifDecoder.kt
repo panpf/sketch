@@ -188,13 +188,13 @@ class KoralGifDecoder(
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): Decoder? {
-            if (
-                requestContext.request.disallowAnimatedImage != true
-                && fetchResult.headerBytes.isGif()
-            ) {
-                return KoralGifDecoder(requestContext, fetchResult.dataSource)
-            }
-            return null
+            if (requestContext.request.disallowAnimatedImage == true) return null
+            if (!isApplicable(fetchResult)) return null
+            return KoralGifDecoder(requestContext, fetchResult.dataSource)
+        }
+
+        private fun isApplicable(fetchResult: FetchResult): Boolean {
+            return fetchResult.headerBytes.isGif()
         }
 
         override fun equals(other: Any?): Boolean {

@@ -72,15 +72,14 @@ class ImageDecoderAnimatedHeifDecoder(
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): Decoder? {
-            val dataSource = fetchResult.dataSource
-            if (
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
-                && requestContext.request.disallowAnimatedImage != true
-                && fetchResult.headerBytes.isAnimatedHeif()
-            ) {
-                return ImageDecoderAnimatedHeifDecoder(requestContext, dataSource)
-            }
-            return null
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return null
+            if (requestContext.request.disallowAnimatedImage == true) return null
+            if (!isApplicable(fetchResult)) return null
+            return ImageDecoderAnimatedHeifDecoder(requestContext, fetchResult.dataSource)
+        }
+
+        private fun isApplicable(fetchResult: FetchResult): Boolean {
+            return fetchResult.headerBytes.isAnimatedHeif()
         }
 
         override fun equals(other: Any?): Boolean {

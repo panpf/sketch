@@ -27,7 +27,7 @@ enum class ImageFormat(val mimeType: String) {
     WEBP("image/webp"),
     GIF("image/gif"),
     BMP("image/bmp"),
-    HEIC("image/heic"),
+    HEIC("image/heic"), // Variants of HEIF format, dedicated to Apple devices
     HEIF("image/heif"),
     AVIF("image/avif"),
     SVG("image/svg+xml"),

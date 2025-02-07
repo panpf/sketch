@@ -51,10 +51,7 @@ open class BitmapFactoryDecoder(
         override fun create(
             requestContext: RequestContext,
             fetchResult: FetchResult
-        ): Decoder {
-            val dataSource = fetchResult.dataSource
-            return BitmapFactoryDecoder(requestContext, dataSource)
-        }
+        ): Decoder = BitmapFactoryDecoder(requestContext, fetchResult.dataSource)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

@@ -66,13 +66,13 @@ class SkiaGifDecoder(
         override val key: String = "SkiaGifDecoder"
 
         override fun create(requestContext: RequestContext, fetchResult: FetchResult): Decoder? {
-            if (
-                requestContext.request.disallowAnimatedImage != true
-                && fetchResult.headerBytes.isGif()
-            ) {
-                return SkiaGifDecoder(requestContext, fetchResult.dataSource)
-            }
-            return null
+            if (requestContext.request.disallowAnimatedImage == true) return null
+            if (!isApplicable(fetchResult)) return null
+            return SkiaGifDecoder(requestContext, fetchResult.dataSource)
+        }
+
+        private fun isApplicable(fetchResult: FetchResult): Boolean {
+            return fetchResult.headerBytes.isGif()
         }
 
         override fun equals(other: Any?): Boolean {

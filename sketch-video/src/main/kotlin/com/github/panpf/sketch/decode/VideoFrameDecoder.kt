@@ -87,16 +87,17 @@ class VideoFrameDecoder constructor(
             requestContext: RequestContext,
             fetchResult: FetchResult
         ): VideoFrameDecoder? {
-            val dataSource = fetchResult.dataSource
-            val mimeType = fetchResult.mimeType
-            if (mimeType?.startsWith("video/") == true) {
-                return VideoFrameDecoder(
-                    requestContext = requestContext,
-                    dataSource = dataSource,
-                    mimeType = mimeType
-                )
-            }
-            return null
+            val mimeType = fetchResult.mimeType ?: return null
+            if (!isApplicable(mimeType)) return null
+            return VideoFrameDecoder(
+                requestContext = requestContext,
+                dataSource = fetchResult.dataSource,
+                mimeType = mimeType
+            )
+        }
+
+        private fun isApplicable(mimeType: String): Boolean {
+            return mimeType.startsWith("video/")
         }
 
         override fun equals(other: Any?): Boolean {
