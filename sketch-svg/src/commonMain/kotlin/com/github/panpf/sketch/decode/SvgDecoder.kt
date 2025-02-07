@@ -100,8 +100,8 @@ class SvgDecoder(
         }
 
         private fun isApplicable(fetchResult: FetchResult): Boolean {
-//            return fetchResult.mimeType == MIME_TYPE || fetchResult.headerBytes.isSvg()
-            return fetchResult.headerBytes.isSvg()
+            // Some svg files have comments at the header, which causes the svg tag to be found within 1024 bytes, so first detect mimeType
+            return fetchResult.mimeType == MIME_TYPE || fetchResult.headerBytes.isSvg()
         }
 
         override fun equals(other: Any?): Boolean {

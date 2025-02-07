@@ -9,6 +9,11 @@ Translations: [简体中文](CHANGELOG_zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/wiki/migrate.md) migrating from 3.x to 4.x
 
+# new
+
+* fix: Fixed a bug that SvgDecoder could not recognize when there was comment on the head of the svg
+  file. [#232](https://github.com/panpf/sketch/issues/232)
+
 # 4.0.2
 
 * fix: The AsyncImage component is reloaded when the current window size

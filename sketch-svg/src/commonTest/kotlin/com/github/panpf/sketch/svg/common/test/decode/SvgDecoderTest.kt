@@ -322,7 +322,7 @@ class SvgDecoderTest {
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/svg+xml")
             }.apply {
-                assertNull(this)
+                assertTrue(this is SvgDecoder)
             }
     }
 
