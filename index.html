@@ -1,15 +1,250 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sketch Pages</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sketch Image Loader</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto Mono', monospace;
+      color: #333;
+      overflow: hidden;
+      background-color: #f5f5f5;
+    }
+
+    #particles-js {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #ffffff, #f0f0f0);
+      z-index: -1;
+    }
+
+    .container {
+      position: relative;
+      text-align: center;
+      max-width: 800px;
+      padding: 20px;
+      margin: 0 auto;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      color: #007bff;
+    }
+
+    @keyframes glow {
+      0% {
+        text-shadow: 0 0 10px rgba(0, 123, 255, 0.3), 0 0 20px rgba(0, 123, 255, 0.3), 0 0 30px rgba(0, 123, 255, 0.3);
+      }
+      100% {
+        text-shadow: 0 0 20px rgba(0, 123, 255, 0.5), 0 0 40px rgba(0, 123, 255, 0.5), 0 0 60px rgba(0, 123, 255, 0.5);
+      }
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 40px;
+      color: #666;
+    }
+
+    .nav-cards {
+      display: flex;
+      justify-content: space-around;
+      gap: 20px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      padding: 20px;
+      width: 200px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 12px rgba(0, 123, 255, 0.3);
+    }
+
+    .card i {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      color: #007bff;
+    }
+
+    .card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .card p {
+      font-size: 1rem;
+      color: #666;
+    }
+
+    footer {
+        position: absolute;
+        bottom: 20px;
+        width: 100%;
+        text-align: center;
+        color: #999;
+        font-size: 1rem;
+    }
+
+    .github-link {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        color: black;
+        text-decoration: none;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+    }
+    .github-link img {
+        width: 24px;
+        height: 24px;
+        margin-right: 8px;
+    }
+  </style>
 </head>
 <body>
-<h1>Pages</h1>
-<ul>
-    <li><a href="app/">app</a></li>
-    <li><a href="docs/">docs</a></li>
-</ul>
+  <div id="particles-js"></div>
+  <div class="container">
+    <h1>Sketch Image Loader</h1>
+    <p>A image loading library specially designed for Compose Multiplatform and Android View.</p>
+    <div class="nav-cards">
+      <div class="card" onclick="window.location.href='app'">
+        <i class="fas fa-laptop-code"></i>
+        <h2>Sample</h2>
+        <p>Web version actual application example</p>
+      </div>
+      <div class="card" onclick="window.location.href='wiki'">
+        <i class="fas fa-book-open"></i>
+        <h2>WIKI</h2>
+        <p>Quick start</p>
+      </div>
+      <div class="card" onclick="window.location.href='api'">
+        <i class="fas fa-book"></i>
+        <h2>API</h2>
+        <p>Learn more about the API interface</p>
+      </div>
+    </div>
+    <a class="github-link" href="https://github.com/panpf/sketch" target="_blank">
+        <img src="https://github.githubassets.com/favicons/favicon.png" alt="GitHub">
+        GitHub
+    </a>
+  </div>
+  <footer>
+      &copy; 2023 Sketch Image Loader. All rights reserved.
+  </footer>
+  <script>
+    // 粒子效果配置
+    particlesJS("particles-js", {
+      "particles": {
+        "number": {
+          "value": 80,
+          "density": {
+            "enable": true,
+            "value_area": 800
+          }
+        },
+        "color": {
+          "value": "#007bff"
+        },
+        "shape": {
+          "type": "circle",
+          "stroke": {
+            "width": 0,
+            "color": "#000000"
+          },
+          "polygon": {
+            "nb_sides": 5
+          }
+        },
+        "opacity": {
+          "value": 0.5,
+          "random": false,
+          "anim": {
+            "enable": false,
+            "speed": 1,
+            "opacity_min": 0.1,
+            "sync": false
+          }
+        },
+        "size": {
+          "value": 3,
+          "random": true,
+          "anim": {
+            "enable": false,
+            "speed": 40,
+            "size_min": 0.1,
+            "sync": false
+          }
+        },
+        "line_linked": {
+          "enable": true,
+          "distance": 150,
+          "color": "#007bff",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 6,
+          "direction": "none",
+          "random": false,
+          "straight": false,
+          "out_mode": "out",
+          "bounce": false,
+          "attract": {
+            "enable": false,
+            "rotateX": 600,
+            "rotateY": 1200
+          }
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": {
+            "enable": true,
+            "mode": "repulse"
+          },
+          "onclick": {
+            "enable": true,
+            "mode": "push"
+          },
+          "resize": true
+        },
+        "modes": {
+          "repulse": {
+            "distance": 100,
+            "duration": 0.4
+          },
+          "push": {
+            "particles_nb": 4
+          }
+        }
+      },
+      "retina_detect": true
+    });
+  </script>
 </body>
 </html>
