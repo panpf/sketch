@@ -1,0 +1,21 @@
+name: Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-desktop:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: desktopTest
+        run: ./gradlew desktopTest
