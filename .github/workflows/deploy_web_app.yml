@@ -21,7 +21,7 @@ jobs:
           java-version: 17
 
       - name: Build the web app
-        run: ./gradlew composeApp:wasmJsBrowserDistribution
+        run: ./gradlew sample:wasmJsBrowserDistribution
 
       - name: Check out the gh-pages branch
         run: |
@@ -37,7 +37,7 @@ jobs:
 
       - name: Move build artifacts to app directory
         run: |
-          mv composeApp/build/dist/wasmJs/productionExecutable/* app/
+          mv sample/build/dist/wasmJs/productionExecutable/* app/
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v4
