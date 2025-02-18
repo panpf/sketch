@@ -1,0 +1,59 @@
+name: Build and deploy web app
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build the web app
+        run: ./gradlew composeApp:wasmJsBrowserDistribution
+
+      - name: Check out the gh-pages branch
+        run: |
+          git fetch origin gh-pages:gh-pages
+          git checkout gh-pages
+
+      - name: Remove old app directory
+        run: |
+          rm -rf app/*
+
+      - name: Create app directory
+        run: mkdir -p app
+
+      - name: Move build artifacts to app directory
+        run: |
+          mv composeApp/build/dist/wasmJs/productionExecutable/* app/
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          commit_message: "Update web app"
+          branch: gh-pages
+          file_pattern: app/*
+
+#      - name: Commit and push changes
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        run: |
+#          git config --global user.name "github-actions[bot]"
+#          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+#          git add app/
+#          git commit -m "Update web app"
+#          git push origin gh-pages
