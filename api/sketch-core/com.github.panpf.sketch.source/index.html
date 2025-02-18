@@ -1,0 +1,296 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>com.github.panpf.sketch.source</title>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../index.html">
+                            sketch
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":sketch-core:dokkaHtmlPartial/androidMain">android</button>
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":sketch-core:dokkaHtmlPartial/commonMain">common</button>
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":sketch-core:dokkaHtmlPartial/desktopMain">desktop</button>
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":sketch-core:dokkaHtmlPartial/iosMain">ios</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="package" id="content" pageids="sketch-core::com.github.panpf.sketch.source////PointingToDeclaration//144957722">
+  <div class="breadcrumbs"><a href="../index.html">sketch-core</a><span class="delimiter">/</span><span class="current">com.github.panpf.sketch.source</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button><button class="section-tab" data-togglable="FUNCTION,EXTENSION_FUNCTION">Functions</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="1942705895%2FClasslikes%2F1418613877" anchor-label="AssetDataSource" id="1942705895%2FClasslikes%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-asset-data-source/index.html"><span>Asset</span><wbr><span>Data</span><wbr><span><span>Source</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1942705895%2FClasslikes%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-asset-data-source/index.html">AssetDataSource</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>fileName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Provides access to image data in asset resources</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1304096390%2FClasslikes%2F685531333" anchor-label="ByteArrayDataSource" id="1304096390%2FClasslikes%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-byte-array-data-source/index.html"><span>Byte</span><wbr><span>Array</span><wbr><span>Data</span><wbr><span><span>Source</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1304096390%2FClasslikes%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-byte-array-data-source/index.html">ByteArrayDataSource</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>data<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-byte-array/index.html">ByteArray</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>dataFrom<span class="token operator">: </span><a href="-data-from/index.html">DataFrom</a></span></span><span class="token punctuation">)</span> : <a href="-data-source/index.html">DataSource</a></div><div class="brief "><p class="paragraph">Provides access to byte array image data.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1369252350%2FClasslikes%2F1418613877" anchor-label="ContentDataSource" id="1369252350%2FClasslikes%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-content-data-source/index.html"><span>Content</span><wbr><span>Data</span><wbr><span><span>Source</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1369252350%2FClasslikes%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-content-data-source/index.html">ContentDataSource</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>contentUri<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/net/Uri.html">Uri</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Provides access to image data in content resources</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1578252782%2FClasslikes%2F685531333" anchor-label="DataFrom" id="-1578252782%2FClasslikes%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-data-from/index.html"><span>Data</span><wbr><span><span>From</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1578252782%2FClasslikes%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-data-from/index.html">DataFrom</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><a href="-data-from/index.html">DataFrom</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">Where image comes from</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1302937601%2FClasslikes%2F685531333" anchor-label="DataSource" id="1302937601%2FClasslikes%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-data-source/index.html"><span>Data</span><wbr><span><span>Source</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1302937601%2FClasslikes%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-data-source/index.html">DataSource</a> : <a href="../com.github.panpf.sketch.util/-key/index.html">Key</a></div><div class="brief "><p class="paragraph">Provides access to the image data.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1127993981%2FClasslikes%2F1418613877" anchor-label="DrawableDataSource" id="-1127993981%2FClasslikes%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-drawable-data-source/index.html"><span>Drawable</span><wbr><span>Data</span><wbr><span><span>Source</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1127993981%2FClasslikes%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-drawable-data-source/index.html">DrawableDataSource</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>drawableFetcher<span class="token operator">: </span><a href="../com.github.panpf.sketch.drawable/-drawable-fetcher/index.html">DrawableFetcher</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>dataFrom<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Provides access to local file image data</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1036308891%2FClasslikes%2F685531333" anchor-label="FileDataSource" id="-1036308891%2FClasslikes%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-file-data-source/index.html"><span>File</span><wbr><span>Data</span><wbr><span><span>Source</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1036308891%2FClasslikes%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-file-data-source/index.html">FileDataSource</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>path<span class="token operator">: </span><span data-unresolved-link="okio/Path///PointingToDeclaration/">Path</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>fileSystem<span class="token operator">: </span><span data-unresolved-link="okio/FileSystem///PointingToDeclaration/">FileSystem</span><span class="token operator"> = </span>defaultFileSystem()<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>dataFrom<span class="token operator">: </span><a href="-data-from/index.html">DataFrom</a><span class="token operator"> = </span>LOCAL</span></span><span class="token punctuation">)</span> : <a href="-data-source/index.html">DataSource</a></div><div class="brief "><p class="paragraph">Provides access to local file image data</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1730459502%2FClasslikes%2F-201110532" anchor-label="KotlinResourceDataSource" id="-1730459502%2FClasslikes%2F-201110532" data-filterable-set=":sketch-core:dokkaHtmlPartial/desktopMain,:sketch-core:dokkaHtmlPartial/iosMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/desktopMain,:sketch-core:dokkaHtmlPartial/iosMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/desktopMain,:sketch-core:dokkaHtmlPartial/iosMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../sketch-core/com.github.panpf.sketch.source/[ios]-kotlin-resource-data-source/index.html"><span>Kotlin</span><wbr><span>Resource</span><wbr><span>Data</span><wbr><span><span>Source</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1730459502%2FClasslikes%2F-201110532"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/desktopMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/desktopMain">desktop</button><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/iosMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/iosMain" data-toggle=":sketch-core:dokkaHtmlPartial/iosMain">ios</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="[desktop]-kotlin-resource-data-source/index.html">KotlinResourceDataSource</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>resourcePath<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Kotlin resource data source, used to load pictures from the resources of the Kotlin project</p></div></div><div class="content sourceset-dependent-content" data-togglable=":sketch-core:dokkaHtmlPartial/iosMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="[ios]-kotlin-resource-data-source/index.html">KotlinResourceDataSource</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>resourcePath<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>fileSystem<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator"> = </span>defaultFileSystem()</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Kotlin resource data source, used to load pictures from the resources of the Kotlin project</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="685683731%2FClasslikes%2F1418613877" anchor-label="ResourceDataSource" id="685683731%2FClasslikes%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-resource-data-source/index.html"><span>Resource</span><wbr><span>Data</span><wbr><span><span>Source</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="685683731%2FClasslikes%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-resource-data-source/index.html">ResourceDataSource</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>resources<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/res/Resources.html">Resources</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>packageName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/RawRes.html"><span class="token annotation builtin">RawRes</span></a>&nbsp;<span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/DrawableRes.html"><span class="token annotation builtin">DrawableRes</span></a>&nbsp;</span><span class="token keyword">val </span>resId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Provides access to image data in android resources</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="EXTENSION_FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="823849939%2FFunctions%2F685531333" anchor-label="cacheFile" id="823849939%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="cache-file.html"><span>cache</span><wbr><span><span>File</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="823849939%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="-data-source/index.html">DataSource</a><span class="token punctuation">.</span><a href="cache-file.html"><span class="token function">cacheFile</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">sketch<span class="token operator">: </span><a href="../com.github.panpf.sketch/-sketch/index.html">Sketch</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="okio/Path///PointingToDeclaration/">Path</span></div><div class="brief "><p class="paragraph">Get the cache file of the data source</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="876495485%2FFunctions%2F685531333" anchor-label="cacheFileOrNull" id="876495485%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="cache-file-or-null.html"><span>cache</span><wbr><span>File</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="876495485%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="-data-source/index.html">DataSource</a><span class="token punctuation">.</span><a href="cache-file-or-null.html"><span class="token function">cacheFileOrNull</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">sketch<span class="token operator">: </span><a href="../com.github.panpf.sketch/-sketch/index.html">Sketch</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="okio/Path///PointingToDeclaration/">Path</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get the cache file of the data source, returns null if an exception occurs</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1988845487%2FFunctions%2F685531333" anchor-label="getFileOrNull" id="-1988845487%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-file-or-null.html"><span>get</span><wbr><span>File</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1988845487%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="-data-source/index.html">DataSource</a><span class="token punctuation">.</span><a href="get-file-or-null.html"><span class="token function">getFileOrNull</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">sketch<span class="token operator">: </span><a href="../com.github.panpf.sketch/-sketch/index.html">Sketch</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="okio/Path///PointingToDeclaration/">Path</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get the file of the DataSource, returns null if an exception occurs</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-794484863%2FFunctions%2F685531333" anchor-label="openSourceOrNull" id="-794484863%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="open-source-or-null.html"><span>open</span><wbr><span>Source</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-794484863%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="-data-source/index.html">DataSource</a><span class="token punctuation">.</span><a href="open-source-or-null.html"><span class="token function">openSourceOrNull</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="okio/Source///PointingToDeclaration/">Source</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Open the Source of the DataSource, returns null if an exception occurs</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2025 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

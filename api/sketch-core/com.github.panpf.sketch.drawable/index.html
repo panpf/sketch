@@ -1,0 +1,394 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>com.github.panpf.sketch.drawable</title>
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../index.html">
+                            sketch
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":sketch-core:dokkaHtmlPartial/androidMain">android</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="package" id="content" pageids="sketch-core::com.github.panpf.sketch.drawable////PointingToDeclaration//1418613877">
+  <div class="breadcrumbs"><a href="../index.html">sketch-core</a><span class="delimiter">/</span><span class="current">com.github.panpf.sketch.drawable</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button><button class="section-tab" data-togglable="FUNCTION,EXTENSION_FUNCTION">Functions</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="11384045%2FClasslikes%2F1418613877" anchor-label="AnimatableDrawable" id="11384045%2FClasslikes%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-animatable-drawable/index.html"><span>Animatable</span><wbr><span><span>Drawable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="11384045%2FClasslikes%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-animatable-drawable/index.html">AnimatableDrawable</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">drawable<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/graphics/drawable/Drawable.html">Drawable</a></span></span><span class="token punctuation">)</span> : <a href="https://developer.android.com/reference/kotlin/androidx/appcompat/graphics/drawable/DrawableWrapperCompat.html">DrawableWrapperCompat</a>, <a href="https://developer.android.com/reference/kotlin/androidx/vectordrawable/graphics/drawable/Animatable2Compat.html">Animatable2Compat</a>, <a href="-sketch-drawable/index.html">SketchDrawable</a></div><div class="brief "><p class="paragraph">Provide unified Callback support for Animatable2, Animatable2Compat, Animatable</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2146511796%2FClasslikes%2F1418613877" anchor-label="ColorFetcherDrawableFetcher" id="2146511796%2FClasslikes%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-color-fetcher-drawable-fetcher/index.html"><span>Color</span><wbr><span>Fetcher</span><wbr><span>Drawable</span><wbr><span><span>Fetcher</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2146511796%2FClasslikes%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-color-fetcher-drawable-fetcher/index.html">ColorFetcherDrawableFetcher</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>color<span class="token operator">: </span><a href="../com.github.panpf.sketch.util/-color-fetcher/index.html">ColorFetcher</a></span></span><span class="token punctuation">)</span> : <a href="-drawable-fetcher/index.html">DrawableFetcher</a></div><div class="brief "><p class="paragraph">Get Drawable from ColorFetcher</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1017665648%2FClasslikes%2F1418613877" anchor-label="DrawableFetcher" id="-1017665648%2FClasslikes%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-drawable-fetcher/index.html"><span>Drawable</span><wbr><span><span>Fetcher</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1017665648%2FClasslikes%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-drawable-fetcher/index.html">DrawableFetcher</a></div><div class="brief "><p class="paragraph">For getting the Drawable</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-199323441%2FClasslikes%2F1418613877" anchor-label="EquitableAnimatableDrawable" id="-199323441%2FClasslikes%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-equitable-animatable-drawable/index.html"><span>Equitable</span><wbr><span>Animatable</span><wbr><span><span>Drawable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-199323441%2FClasslikes%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-equitable-animatable-drawable/index.html">EquitableAnimatableDrawable</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">drawable<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/graphics/drawable/Drawable.html">Drawable</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>equalityKey<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span> : <a href="-equitable-drawable/index.html">EquitableDrawable</a>, <a href="https://developer.android.com/reference/kotlin/androidx/vectordrawable/graphics/drawable/Animatable2Compat.html">Animatable2Compat</a></div><div class="brief "><p class="paragraph">Animatable version of EquitableDrawable</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="131878669%2FClasslikes%2F1418613877" anchor-label="EquitableDrawable" id="131878669%2FClasslikes%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-equitable-drawable/index.html"><span>Equitable</span><wbr><span><span>Drawable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="131878669%2FClasslikes%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-equitable-drawable/index.html">EquitableDrawable</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">drawable<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/graphics/drawable/Drawable.html">Drawable</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>equalityKey<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span> : <a href="https://developer.android.com/reference/kotlin/androidx/appcompat/graphics/drawable/DrawableWrapperCompat.html">DrawableWrapperCompat</a></div><div class="brief "><p class="paragraph">Using Resources.getDrawable() for the same drawable resource and calling it twice in a row returns Drawable equals as false.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-785939788%2FClasslikes%2F1418613877" anchor-label="IconAnimatableDrawable" id="-785939788%2FClasslikes%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-icon-animatable-drawable/index.html"><span>Icon</span><wbr><span>Animatable</span><wbr><span><span>Drawable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-785939788%2FClasslikes%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-icon-animatable-drawable/index.html">IconAnimatableDrawable</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>icon<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/graphics/drawable/Drawable.html">Drawable</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>background<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/graphics/drawable/Drawable.html">Drawable</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>iconSize<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/ColorInt.html"><span class="token annotation builtin">ColorInt</span></a>&nbsp;</span><span class="token keyword">val </span>iconTint<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="-icon-drawable/index.html">IconDrawable</a>, <a href="https://developer.android.com/reference/kotlin/android/graphics/drawable/Drawable.Callback.html">Drawable.Callback</a>, <a href="https://developer.android.com/reference/kotlin/androidx/vectordrawable/graphics/drawable/Animatable2Compat.html">Animatable2Compat</a>, <a href="-sketch-drawable/index.html">SketchDrawable</a></div><div class="brief "><p class="paragraph">It consists of two parts: icon and bg. bg is scaled to fill bounds, the icon size is unchanged always centered. It is suitable for use as a placeholder image for waterfall flow.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1841982258%2FClasslikes%2F1418613877" anchor-label="IconDrawable" id="1841982258%2FClasslikes%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-icon-drawable/index.html"><span>Icon</span><wbr><span><span>Drawable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1841982258%2FClasslikes%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-icon-drawable/index.html">IconDrawable</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>icon<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/graphics/drawable/Drawable.html">Drawable</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>background<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/graphics/drawable/Drawable.html">Drawable</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>iconSize<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/ColorInt.html"><span class="token annotation builtin">ColorInt</span></a>&nbsp;</span><span class="token keyword">val </span>iconTint<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="https://developer.android.com/reference/kotlin/android/graphics/drawable/Drawable.html">Drawable</a>, <a href="https://developer.android.com/reference/kotlin/android/graphics/drawable/Drawable.Callback.html">Drawable.Callback</a>, <a href="-sketch-drawable/index.html">SketchDrawable</a></div><div class="brief "><p class="paragraph">It consists of two parts: icon and bg. bg is scaled to fill bounds, the icon size is unchanged always centered. It is suitable for use as a placeholder image for waterfall flow.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-267470651%2FClasslikes%2F1418613877" anchor-label="RealColorDrawableFetcher" id="-267470651%2FClasslikes%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-real-color-drawable-fetcher/index.html"><span>Real</span><wbr><span>Color</span><wbr><span>Drawable</span><wbr><span><span>Fetcher</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-267470651%2FClasslikes%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-real-color-drawable-fetcher/index.html">RealColorDrawableFetcher</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/ColorInt.html"><span class="token annotation builtin">ColorInt</span></a>&nbsp;</span><span class="token keyword">val </span>color<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span> : <a href="-drawable-fetcher/index.html">DrawableFetcher</a></div><div class="brief "><p class="paragraph">Get Drawable from real Color</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-394503346%2FClasslikes%2F1418613877" anchor-label="RealDrawableFetcher" id="-394503346%2FClasslikes%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-real-drawable-fetcher/index.html"><span>Real</span><wbr><span>Drawable</span><wbr><span><span>Fetcher</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-394503346%2FClasslikes%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-real-drawable-fetcher/index.html">RealDrawableFetcher</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>drawable<span class="token operator">: </span><a href="-equitable-drawable/index.html">EquitableDrawable</a></span></span><span class="token punctuation">)</span> : <a href="-drawable-fetcher/index.html">DrawableFetcher</a></div><div class="brief "><p class="paragraph">Get Drawable from real EquitableDrawable</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="336179027%2FClasslikes%2F1418613877" anchor-label="ResColorDrawableFetcher" id="336179027%2FClasslikes%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-res-color-drawable-fetcher/index.html"><span>Res</span><wbr><span>Color</span><wbr><span>Drawable</span><wbr><span><span>Fetcher</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="336179027%2FClasslikes%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-res-color-drawable-fetcher/index.html">ResColorDrawableFetcher</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/ColorRes.html"><span class="token annotation builtin">ColorRes</span></a>&nbsp;</span><span class="token keyword">val </span>resId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span> : <a href="-drawable-fetcher/index.html">DrawableFetcher</a></div><div class="brief "><p class="paragraph">Get Drawable from resource color</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="636027904%2FClasslikes%2F1418613877" anchor-label="ResDrawableFetcher" id="636027904%2FClasslikes%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-res-drawable-fetcher/index.html"><span>Res</span><wbr><span>Drawable</span><wbr><span><span>Fetcher</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="636027904%2FClasslikes%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-res-drawable-fetcher/index.html">ResDrawableFetcher</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/DrawableRes.html"><span class="token annotation builtin">DrawableRes</span></a>&nbsp;</span><span class="token keyword">val </span>resId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>resources<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/res/Resources.html">Resources</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>packageName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="-drawable-fetcher/index.html">DrawableFetcher</a></div><div class="brief "><p class="paragraph">Get Drawable from resource</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1417533535%2FClasslikes%2F1418613877" anchor-label="SketchDrawable" id="1417533535%2FClasslikes%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-sketch-drawable/index.html"><span>Sketch</span><wbr><span><span>Drawable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1417533535%2FClasslikes%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-sketch-drawable/index.html">SketchDrawable</a></div><div class="brief "><p class="paragraph">Mark this Drawable as coming from Sketch, and it implements equals(), hashCode(), toString() methods</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="-1577913328%2FFunctions%2F1418613877" anchor-label="asEquitable" id="-1577913328%2FFunctions%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="as-equitable.html"><span>as</span><wbr><span><span>Equitable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1577913328%2FFunctions%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/android/graphics/drawable/ColorDrawable.html">ColorDrawable</a><span class="token punctuation">.</span><a href="as-equitable.html"><span class="token function">asEquitable</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-equitable-drawable/index.html">EquitableDrawable</a></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/android/graphics/drawable/Drawable.html">Drawable</a><span class="token punctuation">.</span><a href="as-equitable.html"><span class="token function">asEquitable</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">equalityKey<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-any/index.html">Any</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-equitable-drawable/index.html">EquitableDrawable</a></div><div class="brief "><p class="paragraph">Wrap the Drawable with a EquitableDrawable, equalityKey will be used as the comparison key</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-228714645%2FFunctions%2F1418613877" anchor-label="ColorEquitableDrawable" id="-228714645%2FFunctions%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-color-equitable-drawable.html"><span>Color</span><wbr><span>Equitable</span><wbr><span><span>Drawable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-228714645%2FFunctions%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="-color-equitable-drawable.html"><span class="token function">ColorEquitableDrawable</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/ColorInt.html"><span class="token annotation builtin">ColorInt</span></a>&nbsp;</span>color<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-equitable-drawable/index.html">EquitableDrawable</a></div><div class="brief "><p class="paragraph">Wrap the ColorDrawable with a EquitableDrawable, color will be used as the comparison key</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-379331415%2FFunctions%2F1418613877" anchor-label="getEquitableDrawable" id="-379331415%2FFunctions%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-equitable-drawable.html"><span>get</span><wbr><span>Equitable</span><wbr><span><span>Drawable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-379331415%2FFunctions%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">.</span><a href="get-equitable-drawable.html"><span class="token function">getEquitableDrawable</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/DrawableRes.html"><span class="token annotation builtin">DrawableRes</span></a>&nbsp;</span>resId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-equitable-drawable/index.html">EquitableDrawable</a></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/android/content/res/Resources.html">Resources</a><span class="token punctuation">.</span><a href="get-equitable-drawable.html"><span class="token function"><strike>getEquitableDrawable</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/DrawableRes.html"><span class="token annotation builtin">DrawableRes</span></a>&nbsp;</span>resId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-equitable-drawable/index.html">EquitableDrawable</a></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/android/content/res/Resources.html">Resources</a><span class="token punctuation">.</span><a href="get-equitable-drawable.html"><span class="token function">getEquitableDrawable</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/DrawableRes.html"><span class="token annotation builtin">DrawableRes</span></a>&nbsp;</span>resId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">theme<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/res/Resources.Theme.html">Resources.Theme</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-equitable-drawable/index.html">EquitableDrawable</a></div><div class="brief "><p class="paragraph">Get a comparable Drawable, resId will be used as the comparison key</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1914374444%2FFunctions%2F1418613877" anchor-label="getEquitableDrawableCompat" id="-1914374444%2FFunctions%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-equitable-drawable-compat.html"><span>get</span><wbr><span>Equitable</span><wbr><span>Drawable</span><wbr><span><span>Compat</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1914374444%2FFunctions%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">.</span><a href="get-equitable-drawable-compat.html"><span class="token function">getEquitableDrawableCompat</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/DrawableRes.html"><span class="token annotation builtin">DrawableRes</span></a>&nbsp;</span>resId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-equitable-drawable/index.html">EquitableDrawable</a></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/android/content/res/Resources.html">Resources</a><span class="token punctuation">.</span><a href="get-equitable-drawable-compat.html"><span class="token function">getEquitableDrawableCompat</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/DrawableRes.html"><span class="token annotation builtin">DrawableRes</span></a>&nbsp;</span>resId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">theme<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/res/Resources.Theme.html">Resources.Theme</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-equitable-drawable/index.html">EquitableDrawable</a></div><div class="brief "><p class="paragraph">Get a comparable Drawable, resId will be used as the comparison key</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1984725921%2FFunctions%2F1418613877" anchor-label="getEquitableDrawableCompatForDensity" id="-1984725921%2FFunctions%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-equitable-drawable-compat-for-density.html"><span>get</span><wbr><span>Equitable</span><wbr><span>Drawable</span><wbr><span>Compat</span><wbr><span>For</span><wbr><span><span>Density</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1984725921%2FFunctions%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/android/content/res/Resources.html">Resources</a><span class="token punctuation">.</span><a href="get-equitable-drawable-compat-for-density.html"><span class="token function">getEquitableDrawableCompatForDensity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/DrawableRes.html"><span class="token annotation builtin">DrawableRes</span></a>&nbsp;</span>resId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">density<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">theme<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/res/Resources.Theme.html">Resources.Theme</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-equitable-drawable/index.html">EquitableDrawable</a></div><div class="brief "><p class="paragraph">Get a comparable Drawable, resId will be used as the comparison key</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-172196496%2FFunctions%2F1418613877" anchor-label="getEquitableDrawableForDensity" id="-172196496%2FFunctions%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-equitable-drawable-for-density.html"><span>get</span><wbr><span>Equitable</span><wbr><span>Drawable</span><wbr><span>For</span><wbr><span><span>Density</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-172196496%2FFunctions%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/android/content/res/Resources.html">Resources</a><span class="token punctuation">.</span><a href="get-equitable-drawable-for-density.html"><span class="token function"><strike>getEquitableDrawableForDensity</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/DrawableRes.html"><span class="token annotation builtin">DrawableRes</span></a>&nbsp;</span>resId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">density<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-equitable-drawable/index.html">EquitableDrawable</a></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="https://developer.android.com/reference/kotlin/android/content/res/Resources.html">Resources</a><span class="token punctuation">.</span><a href="get-equitable-drawable-for-density.html"><span class="token function">getEquitableDrawableForDensity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><a href="https://developer.android.com/reference/kotlin/androidx/annotation/DrawableRes.html"><span class="token annotation builtin">DrawableRes</span></a>&nbsp;</span>resId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">density<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">theme<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/res/Resources.Theme.html">Resources.Theme</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-equitable-drawable/index.html">EquitableDrawable</a></div><div class="brief "><p class="paragraph">Get a comparable Drawable, resId will be used as the comparison key</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2025 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

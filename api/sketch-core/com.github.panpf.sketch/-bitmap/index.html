@@ -1,0 +1,574 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Bitmap</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            sketch
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":sketch-core:dokkaHtmlPartial/androidMain">android</button>
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":sketch-core:dokkaHtmlPartial/commonMain">common</button>
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":sketch-core:dokkaHtmlPartial/nonAndroidMain">nonAndroid</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="sketch-core::com.github.panpf.sketch/Bitmap///PointingToDeclaration//1610609927">
+  <div class="breadcrumbs"><a href="../../index.html">sketch-core</a><span class="delimiter">/</span><a href="../index.html">com.github.panpf.sketch</a><span class="delimiter">/</span><span class="current">Bitmap</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Bitmap</span></span></h1>
+    <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain" data-toggle=":sketch-core:dokkaHtmlPartial/commonMain">common</button><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/nonAndroidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/nonAndroidMain" data-toggle=":sketch-core:dokkaHtmlPartial/nonAndroidMain">nonAndroid</button></div>
+<div class="content sourceset-dependent-content" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">typealias </span><a href="index.html">Bitmap</a><span class="token operator"> = </span><a href="https://developer.android.com/reference/kotlin/android/graphics/Bitmap.html">android.graphics.Bitmap</a></div><p class="paragraph">Bitmap, which is a alias of <a href="https://developer.android.com/reference/kotlin/android/graphics/Bitmap.html">android.graphics.Bitmap</a></p><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span>com.</span><wbr><span>github.</span><wbr><span>panpf.</span><wbr><span>sketch.</span><wbr><span>core.</span><wbr><span>android.</span><wbr><span>test.</span><wbr><span>Bitmap</span><wbr><span>Android</span><wbr><span>Test.</span><wbr><span>test</span><wbr><span>Bitmap</span><wbr><span><span>Typealias</span></span></div></span></div><div></div></div></div></div></div><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">class </span><a href="index.html">Bitmap</a></div><p class="paragraph">Bitmap, which is a alias of platform Bitmap</p><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span>com.</span><wbr><span>github.</span><wbr><span>panpf.</span><wbr><span>sketch.</span><wbr><span>core.</span><wbr><span>android.</span><wbr><span>test.</span><wbr><span>Bitmap</span><wbr><span>Android</span><wbr><span>Test.</span><wbr><span>test</span><wbr><span>Bitmap</span><wbr><span><span>Typealias</span></span></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span>com.</span><wbr><span>github.</span><wbr><span>panpf.</span><wbr><span>sketch.</span><wbr><span>core.</span><wbr><span>nonandroid.</span><wbr><span>test.</span><wbr><span>Bitmap</span><wbr><span>Non</span><wbr><span>Android</span><wbr><span>Test.</span><wbr><span>test</span><wbr><span>Bitmap</span><wbr><span><span>Typealias</span></span></div></span></div><div></div></div></div></div></div><div class="content sourceset-dependent-content" data-togglable=":sketch-core:dokkaHtmlPartial/nonAndroidMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">typealias </span><a href="index.html">Bitmap</a><span class="token operator"> = </span><span data-unresolved-link="org.jetbrains.skia/Bitmap///PointingToDeclaration/">org.jetbrains.skia.Bitmap</span></div><p class="paragraph">Bitmap, which is a alias of <span data-unresolved-link="org.jetbrains.skia/Bitmap///PointingToDeclaration/">org.jetbrains.skia.Bitmap</span></p><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/nonAndroidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/nonAndroidMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span>com.</span><wbr><span>github.</span><wbr><span>panpf.</span><wbr><span>sketch.</span><wbr><span>core.</span><wbr><span>android.</span><wbr><span>test.</span><wbr><span>Bitmap</span><wbr><span>Android</span><wbr><span>Test.</span><wbr><span>test</span><wbr><span>Bitmap</span><wbr><span><span>Typealias</span></span></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/nonAndroidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/nonAndroidMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span>com.</span><wbr><span>github.</span><wbr><span>panpf.</span><wbr><span>sketch.</span><wbr><span>core.</span><wbr><span>nonandroid.</span><wbr><span>test.</span><wbr><span>Bitmap</span><wbr><span>Non</span><wbr><span>Android</span><wbr><span>Test.</span><wbr><span>test</span><wbr><span>Bitmap</span><wbr><span><span>Typealias</span></span></div></span></div><div></div></div></div></div></div>    </div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="EXTENSION_PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-1932639565%2FProperties%2F685531333" anchor-label="byteCount" id="-1932639565%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../byte-count.html"><span>byte</span><wbr><span><span>Count</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1932639565%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">val </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../byte-count.html">byteCount</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-long/index.html">Long</a></div><div class="brief "><p class="paragraph">Returns the minimum number of bytes that can be used to store this bitmap's pixels.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-275467414%2FProperties%2F1418613877" anchor-label="colorType" id="-275467414%2FProperties%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../color-type.html"><span>color</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-275467414%2FProperties%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../color-type.html">colorType</a><span class="token operator">: </span><a href="../-color-type/index.html">ColorType</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get the <a href="../-color-type/index.html">ColorType</a> of the bitmap</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1667132937%2FProperties%2F1418613877" anchor-label="configOrNull" id="1667132937%2FProperties%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/config-or-null.html"><span>config</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1667132937%2FProperties%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/config-or-null.html">configOrNull</a><span class="token operator">: </span><a href="../-color-type/index.html">ColorType</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get the configuration of the bitmap, if it is null, return null</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="692290953%2FProperties%2F685531333" anchor-label="height" id="692290953%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../height.html"><span><span>height</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="692290953%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">val </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../height.html">height</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">Get the height of the bitmap</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1922519102%2FProperties%2F685531333" anchor-label="isImmutable" id="-1922519102%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../is-immutable.html"><span>is</span><wbr><span><span>Immutable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1922519102%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">val </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../is-immutable.html">isImmutable</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Returns true if the bitmap is immutable</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-943169186%2FProperties%2F685531333" anchor-label="isMutable" id="-943169186%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../is-mutable.html"><span>is</span><wbr><span><span>Mutable</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-943169186%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">val </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../is-mutable.html">isMutable</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Returns true if the bitmap is mutable</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1044529164%2FProperties%2F1418613877" anchor-label="safeConfig" id="1044529164%2FProperties%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/safe-config.html"><span>safe</span><wbr><span><span>Config</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1044529164%2FProperties%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/safe-config.html">safeConfig</a><span class="token operator">: </span><a href="../-color-type/index.html">ColorType</a></div><div class="brief "><p class="paragraph">Get the configuration of the bitmap, if it is null, return <a href="../-color-type/index.html">ColorType</a>.ARGB_8888</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1994126383%2FProperties%2F685531333" anchor-label="size" id="1994126383%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../size.html"><span><span>size</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1994126383%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../size.html">size</a><span class="token operator">: </span><a href="../../com.github.panpf.sketch.util/-size/index.html">Size</a></div><div class="brief "><p class="paragraph">Get image size</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1413559668%2FProperties%2F685531333" anchor-label="width" id="1413559668%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../width.html"><span><span>width</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1413559668%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">val </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../width.html">width</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">Get the width of the bitmap</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="EXTENSION_FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1808082902%2FFunctions%2F685531333" anchor-label="asImage" id="1808082902%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../as-image.html"><span>as</span><wbr><span><span>Image</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1808082902%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../as-image.html"><span class="token function">asImage</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">shareable<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">true</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-bitmap-image/index.html">BitmapImage</a></div><div class="brief "><p class="paragraph">Convert <a href="index.html">Bitmap</a> to <a href="../-bitmap-image/index.html">BitmapImage</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1081028998%2FFunctions%2F685531333" anchor-label="background" id="-1081028998%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/background.html"><span><span>background</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1081028998%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/background.html"><span class="token function">background</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">color<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Bitmap</a></div><div class="brief "><p class="paragraph">Add a background color to the current Bitmap</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-802359485%2FFunctions%2F685531333" anchor-label="blur" id="-802359485%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/blur.html"><span><span>blur</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-802359485%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/blur.html"><span class="token function">blur</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">radius<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">firstReuseSelf<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Bitmap</a></div><div class="brief "><p class="paragraph">Apply a blur effect to the Bitmap</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="314465489%2FFunctions%2F685531333" anchor-label="circleCrop" id="314465489%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/circle-crop.html"><span>circle</span><wbr><span><span>Crop</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="314465489%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/circle-crop.html"><span class="token function">circleCrop</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">scale<span class="token operator">: </span><a href="../../com.github.panpf.sketch.resize/-scale/index.html">Scale</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Bitmap</a></div><div class="brief "><p class="paragraph">Crop the Bitmap into a circle</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-195079080%2FFunctions%2F-776246066" anchor-label="copyWith" id="-195079080%2FFunctions%2F-776246066" data-filterable-set=":sketch-core:dokkaHtmlPartial/nonAndroidMain,:sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/nonAndroidMain,:sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/nonAndroidMain,:sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/copy-with.html"><span>copy</span><wbr><span><span>With</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-195079080%2FFunctions%2F-776246066"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/nonAndroidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/nonAndroidMain" data-toggle=":sketch-core:dokkaHtmlPartial/nonAndroidMain">nonAndroid</button></div>
+<div class="content sourceset-dependent-content" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/copy-with.html"><span class="token function">copyWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">config<span class="token operator">: </span><a href="../-color-type/index.html">ColorType</a><span class="token operator"> = </span>safeConfig<span class="token punctuation">, </span></span><span class="parameter ">isMutable<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span>isMutable()</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Bitmap</a></div><div class="brief "><p class="paragraph">Get a copy of the bitmap</p></div></div><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/nonAndroidMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/copy-with.html"><span class="token function">copyWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">colorInfo<span class="token operator">: </span><span data-unresolved-link="org.jetbrains.skia/ColorInfo///PointingToDeclaration/">ColorInfo</span><span class="token operator"> = </span>imageInfo.colorInfo</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Bitmap</a></div><div class="brief "><p class="paragraph">Returns a new Bitmap that is a copy of this Bitmap.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-31536512%2FFunctions%2F1418613877" anchor-label="createEmptyBitmapWith" id="-31536512%2FFunctions%2F1418613877" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../create-empty-bitmap-with.html"><span>create</span><wbr><span>Empty</span><wbr><span>Bitmap</span><wbr><span><span>With</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-31536512%2FFunctions%2F1418613877"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../create-empty-bitmap-with.html"><span class="token function">createEmptyBitmapWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">size<span class="token operator">: </span><span data-unresolved-link="/<Error class: unknown class>///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator"> = </span>this.size<span class="token punctuation">, </span></span><span class="parameter ">colorType<span class="token operator">: </span><a href="../-color-type/index.html">ColorType</a><span class="token operator"> = </span>this.colorType ?: ColorType.ARGB_8888<span class="token punctuation">, </span></span><span class="parameter ">hasAlpha<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span>this.hasAlpha()</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Bitmap</a></div><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../create-empty-bitmap-with.html"><span class="token function">createEmptyBitmapWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">width<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>this.width<span class="token punctuation">, </span></span><span class="parameter ">height<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>this.height<span class="token punctuation">, </span></span><span class="parameter ">colorType<span class="token operator">: </span><a href="../-color-type/index.html">ColorType</a><span class="token operator"> = </span>this.colorType ?: ColorType.ARGB_8888<span class="token punctuation">, </span></span><span class="parameter ">hasAlpha<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span>this.hasAlpha()</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Bitmap</a></div><div class="brief "><p class="paragraph">Create a blank Bitmap based on the width, height, transparency, and color type of the original Bitmap</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-222110206%2FFunctions%2F685531333" anchor-label="flip" id="-222110206%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/flip.html"><span><span>flip</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-222110206%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/flip.html"><span class="token function">flip</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">horizontal<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Bitmap</a></div><div class="brief "><p class="paragraph">Returns a new Bitmap that is a copy of this Bitmap flip horizontally or vertically.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="153597049%2FFunctions%2F685531333" anchor-label="hasAlphaPixels" id="153597049%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/has-alpha-pixels.html"><span>has</span><wbr><span>Alpha</span><wbr><span><span>Pixels</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="153597049%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/has-alpha-pixels.html"><span class="token function">hasAlphaPixels</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Returns true if there are transparent pixels</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-303959710%2FFunctions%2F685531333" anchor-label="installIntPixels" id="-303959710%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/install-int-pixels.html"><span>install</span><wbr><span>Int</span><wbr><span><span>Pixels</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-303959710%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/install-int-pixels.html"><span class="token function">installIntPixels</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">intPixels<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int-array/index.html">IntArray</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Install integer pixels in the format ARGB_8888</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-807855607%2FFunctions%2F685531333" anchor-label="mapping" id="-807855607%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/mapping.html"><span><span>mapping</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-807855607%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/mapping.html"><span class="token function">mapping</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">mapping<span class="token operator">: </span><a href="../../com.github.panpf.sketch.resize/-resize-mapping/index.html">ResizeMapping</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Bitmap</a></div><div class="brief "><p class="paragraph">Create a new Bitmap based on the mapping relationship represented by <a href="../../com.github.panpf.sketch.resize/-resize-mapping/index.html">ResizeMapping</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="891255752%2FFunctions%2F685531333" anchor-label="mask" id="891255752%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/mask.html"><span><span>mask</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="891255752%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/mask.html"><span class="token function">mask</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">maskColor<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">firstReuseSelf<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Bitmap</a></div><div class="brief "><p class="paragraph">Apply a mask effect to the Bitmap</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1468359589%2FFunctions%2F685531333" anchor-label="mutableCopy" id="1468359589%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/mutable-copy.html"><span>mutable</span><wbr><span><span>Copy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1468359589%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/mutable-copy.html"><span class="token function">mutableCopy</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Bitmap</a></div><div class="brief "><p class="paragraph">Get a mutable copy of the bitmap</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1845578454%2FFunctions%2F685531333" anchor-label="mutableCopyOrSelf" id="1845578454%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/mutable-copy-or-self.html"><span>mutable</span><wbr><span>Copy</span><wbr><span>Or</span><wbr><span><span>Self</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1845578454%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/mutable-copy-or-self.html"><span class="token function">mutableCopyOrSelf</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Bitmap</a></div><div class="brief "><p class="paragraph">Get a mutable copy of the bitmap, if it is already mutable, return itself</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-887176254%2FFunctions%2F685531333" anchor-label="readIntPixel" id="-887176254%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/read-int-pixel.html"><span>read</span><wbr><span>Int</span><wbr><span><span>Pixel</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-887176254%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/read-int-pixel.html"><span class="token function">readIntPixel</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">x<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">y<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">Returns the Color at the specified location. Format ARGB_8888</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1169864101%2FFunctions%2F685531333" anchor-label="readIntPixels" id="1169864101%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/read-int-pixels.html"><span>read</span><wbr><span>Int</span><wbr><span><span>Pixels</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1169864101%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/read-int-pixels.html"><span class="token function">readIntPixels</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">x<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span><span class="token punctuation">, </span></span><span class="parameter ">y<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span><span class="token punctuation">, </span></span><span class="parameter ">width<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>this.width<span class="token punctuation">, </span></span><span class="parameter ">height<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span>this.height</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int-array/index.html">IntArray</a></div><div class="brief "><p class="paragraph">Read an integer pixel array in the format ARGB_8888</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="116704877%2FFunctions%2F685531333" anchor-label="rotate" id="116704877%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/rotate.html"><span><span>rotate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="116704877%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/rotate.html"><span class="token function">rotate</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">angle<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Bitmap</a></div><div class="brief "><p class="paragraph">Rotate the Bitmap</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2044010367%2FFunctions%2F685531333" anchor-label="roundedCorners" id="2044010367%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/rounded-corners.html"><span>rounded</span><wbr><span><span>Corners</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2044010367%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/rounded-corners.html"><span class="token function">roundedCorners</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">radiusArray<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-float-array/index.html">FloatArray</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Bitmap</a></div><div class="brief "><p class="paragraph">Apply rounded corners to the Bitmap</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="133131783%2FFunctions%2F685531333" anchor-label="scale" id="133131783%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/scale.html"><span><span>scale</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="133131783%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/scale.html"><span class="token function">scale</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">scaleFactor<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-float/index.html">Float</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Bitmap</a></div><div class="brief "><p class="paragraph">Zoom Bitmap</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="623053675%2FFunctions%2F685531333" anchor-label="thumbnail" id="623053675%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/thumbnail.html"><span><span>thumbnail</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="623053675%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/thumbnail.html"><span class="token function">thumbnail</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">width<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">height<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Bitmap</a></div><div class="brief "><p class="paragraph">Create thumbnails with specified width and height</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-325238790%2FFunctions%2F-776246066" anchor-label="toInfoString" id="-325238790%2FFunctions%2F-776246066" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain,:sketch-core:dokkaHtmlPartial/nonAndroidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain,:sketch-core:dokkaHtmlPartial/nonAndroidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain,:sketch-core:dokkaHtmlPartial/nonAndroidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/to-info-string.html"><span>to</span><wbr><span>Info</span><wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-325238790%2FFunctions%2F-776246066"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/nonAndroidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/nonAndroidMain" data-toggle=":sketch-core:dokkaHtmlPartial/nonAndroidMain">nonAndroid</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/to-info-string.html"><span class="token function">toInfoString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Get an information string suitable for display</p></div></div><div class="content sourceset-dependent-content" data-togglable=":sketch-core:dokkaHtmlPartial/nonAndroidMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/to-info-string.html"><span class="token function">toInfoString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Get an information string suitable for display</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="828415812%2FFunctions%2F-776246066" anchor-label="toLogString" id="828415812%2FFunctions%2F-776246066" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain,:sketch-core:dokkaHtmlPartial/nonAndroidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain,:sketch-core:dokkaHtmlPartial/nonAndroidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain,:sketch-core:dokkaHtmlPartial/nonAndroidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/to-log-string.html"><span>to</span><wbr><span>Log</span><wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="828415812%2FFunctions%2F-776246066"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/nonAndroidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/nonAndroidMain" data-toggle=":sketch-core:dokkaHtmlPartial/nonAndroidMain">nonAndroid</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/to-log-string.html"><span class="token function">toLogString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Get the string applicable to the log</p></div></div><div class="content sourceset-dependent-content" data-togglable=":sketch-core:dokkaHtmlPartial/nonAndroidMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/to-log-string.html"><span class="token function">toLogString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Returns a log string of this Bitmap.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1548536892%2FFunctions%2F-776246066" anchor-label="toShortInfoString" id="-1548536892%2FFunctions%2F-776246066" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain,:sketch-core:dokkaHtmlPartial/nonAndroidMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain,:sketch-core:dokkaHtmlPartial/nonAndroidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain,:sketch-core:dokkaHtmlPartial/nonAndroidMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/to-short-info-string.html"><span>to</span><wbr><span>Short</span><wbr><span>Info</span><wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1548536892%2FFunctions%2F-776246066"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/androidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/androidMain" data-active="" data-toggle=":sketch-core:dokkaHtmlPartial/androidMain">android</button><button class="platform-bookmark" data-filterable-current=":sketch-core:dokkaHtmlPartial/nonAndroidMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/nonAndroidMain" data-toggle=":sketch-core:dokkaHtmlPartial/nonAndroidMain">nonAndroid</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/androidMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/to-short-info-string.html"><span class="token function">toShortInfoString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Get a short information string suitable for display</p></div></div><div class="content sourceset-dependent-content" data-togglable=":sketch-core:dokkaHtmlPartial/nonAndroidMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html">Bitmap</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/to-short-info-string.html"><span class="token function">toShortInfoString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Get a short information string suitable for display</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2025 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

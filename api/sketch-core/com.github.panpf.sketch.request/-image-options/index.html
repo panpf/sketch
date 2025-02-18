@@ -1,0 +1,517 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ImageOptions</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            sketch
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":sketch-core:dokkaHtmlPartial/commonMain">common</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="sketch-core::com.github.panpf.sketch.request/ImageOptions///PointingToDeclaration//685531333">
+  <div class="breadcrumbs"><a href="../../index.html">sketch-core</a><span class="delimiter">/</span><a href="../index.html">com.github.panpf.sketch.request</a><span class="delimiter">/</span><span class="current">ImageOptions</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Image</span><wbr><span><span>Options</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">ImageOptions</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>depthHolder<span class="token operator">: </span><a href="../-depth-holder/index.html">DepthHolder</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>extras<span class="token operator">: </span><a href="../-extras/index.html">Extras</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>downloadCachePolicy<span class="token operator">: </span><a href="../../com.github.panpf.sketch.cache/-cache-policy/index.html">CachePolicy</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>colorType<span class="token operator">: </span><a href="../../com.github.panpf.sketch.decode/-bitmap-color-type/index.html">BitmapColorType</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>colorSpace<span class="token operator">: </span><a href="../../com.github.panpf.sketch.decode/-bitmap-color-space/index.html">BitmapColorSpace</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>sizeResolver<span class="token operator">: </span><a href="../../com.github.panpf.sketch.resize/-size-resolver/index.html">SizeResolver</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>sizeMultiplier<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>precisionDecider<span class="token operator">: </span><a href="../../com.github.panpf.sketch.resize/-precision-decider/index.html">PrecisionDecider</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>scaleDecider<span class="token operator">: </span><a href="../../com.github.panpf.sketch.resize/-scale-decider/index.html">ScaleDecider</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>transformations<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../com.github.panpf.sketch.transform/-transformation/index.html">Transformation</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>resultCachePolicy<span class="token operator">: </span><a href="../../com.github.panpf.sketch.cache/-cache-policy/index.html">CachePolicy</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>placeholder<span class="token operator">: </span><a href="../../com.github.panpf.sketch.state/-state-image/index.html">StateImage</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>fallback<span class="token operator">: </span><a href="../../com.github.panpf.sketch.state/-state-image/index.html">StateImage</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>error<span class="token operator">: </span><a href="../../com.github.panpf.sketch.state/-state-image/index.html">StateImage</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>transitionFactory<span class="token operator">: </span><a href="../../com.github.panpf.sketch.transition/-transition/-factory/index.html">Transition.Factory</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>resizeOnDraw<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>allowNullImage<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>memoryCachePolicy<span class="token operator">: </span><a href="../../com.github.panpf.sketch.cache/-cache-policy/index.html">CachePolicy</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>componentRegistry<span class="token operator">: </span><a href="../../com.github.panpf.sketch/-component-registry/index.html">ComponentRegistry</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><p class="paragraph">Stores parameters required to download, load, display images</p><p class="paragraph">IMPORTANT: It is necessary to ensure compliance with the consistency principle, that is, the equals() and hashCode() methods of instances created with the same construction parameters return consistent results. This is important in Compose</p><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span>com.</span><wbr><span>github.</span><wbr><span>panpf.</span><wbr><span>sketch.</span><wbr><span>core.</span><wbr><span>common.</span><wbr><span>test.</span><wbr><span>request.</span><wbr><span>Image</span><wbr><span>Options</span><wbr><span><span>Test</span></span></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-310208794%2FConstructors%2F685531333" anchor-label="ImageOptions" id="-310208794%2FConstructors%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-image-options.html"><span>Image</span><wbr><span><span>Options</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-310208794%2FConstructors%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">depthHolder<span class="token operator">: </span><a href="../-depth-holder/index.html">DepthHolder</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">extras<span class="token operator">: </span><a href="../-extras/index.html">Extras</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">downloadCachePolicy<span class="token operator">: </span><a href="../../com.github.panpf.sketch.cache/-cache-policy/index.html">CachePolicy</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">colorType<span class="token operator">: </span><a href="../../com.github.panpf.sketch.decode/-bitmap-color-type/index.html">BitmapColorType</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">colorSpace<span class="token operator">: </span><a href="../../com.github.panpf.sketch.decode/-bitmap-color-space/index.html">BitmapColorSpace</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">sizeResolver<span class="token operator">: </span><a href="../../com.github.panpf.sketch.resize/-size-resolver/index.html">SizeResolver</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">sizeMultiplier<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">precisionDecider<span class="token operator">: </span><a href="../../com.github.panpf.sketch.resize/-precision-decider/index.html">PrecisionDecider</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">scaleDecider<span class="token operator">: </span><a href="../../com.github.panpf.sketch.resize/-scale-decider/index.html">ScaleDecider</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">transformations<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../com.github.panpf.sketch.transform/-transformation/index.html">Transformation</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">resultCachePolicy<span class="token operator">: </span><a href="../../com.github.panpf.sketch.cache/-cache-policy/index.html">CachePolicy</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">placeholder<span class="token operator">: </span><a href="../../com.github.panpf.sketch.state/-state-image/index.html">StateImage</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">fallback<span class="token operator">: </span><a href="../../com.github.panpf.sketch.state/-state-image/index.html">StateImage</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">error<span class="token operator">: </span><a href="../../com.github.panpf.sketch.state/-state-image/index.html">StateImage</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">transitionFactory<span class="token operator">: </span><a href="../../com.github.panpf.sketch.transition/-transition/-factory/index.html">Transition.Factory</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">resizeOnDraw<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">allowNullImage<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">memoryCachePolicy<span class="token operator">: </span><a href="../../com.github.panpf.sketch.cache/-cache-policy/index.html">CachePolicy</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">componentRegistry<span class="token operator">: </span><a href="../../com.github.panpf.sketch/-component-registry/index.html">ComponentRegistry</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-3535624%2FClasslikes%2F685531333" anchor-label="Builder" id="-3535624%2FClasslikes%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-builder/index.html"><span><span>Builder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-3535624%2FClasslikes%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-builder/index.html">Builder</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="1899323407%2FProperties%2F685531333" anchor-label="allowNullImage" id="1899323407%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="allow-null-image.html"><span>allow</span><wbr><span>Null</span><wbr><span><span>Image</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1899323407%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="allow-null-image.html">allowNullImage</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Allow setting null Image to ImageView or AsyncImage</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-969306271%2FProperties%2F685531333" anchor-label="base64UriSpec" id="-969306271%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_PROPERTY" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.fetch/base64-uri-spec.html"><span>base64Uri</span><wbr><span><span>Spec</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-969306271%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="index.html">ImageOptions</a><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.fetch/base64-uri-spec.html">base64UriSpec</a><span class="token operator">: </span><a href="../../com.github.panpf.sketch.fetch/-base64-spec/index.html">Base64Spec</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get the specification when decoding base64 uri</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1786386679%2FProperties%2F685531333" anchor-label="colorSpace" id="1786386679%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="color-space.html"><span>color</span><wbr><span><span>Space</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1786386679%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="color-space.html">colorSpace</a><span class="token operator">: </span><a href="../../com.github.panpf.sketch.decode/-bitmap-color-space/index.html">BitmapColorSpace</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Bitmap color space</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="300025411%2FProperties%2F685531333" anchor-label="colorType" id="300025411%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="color-type.html"><span>color</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="300025411%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="color-type.html">colorType</a><span class="token operator">: </span><a href="../../com.github.panpf.sketch.decode/-bitmap-color-type/index.html">BitmapColorType</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Bitmap color type</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1314233658%2FProperties%2F685531333" anchor-label="componentRegistry" id="-1314233658%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="component-registry.html"><span>component</span><wbr><span><span>Registry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1314233658%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="component-registry.html">componentRegistry</a><span class="token operator">: </span><a href="../../com.github.panpf.sketch/-component-registry/index.html">ComponentRegistry</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Components that are only valid for the current request</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1736940367%2FProperties%2F685531333" anchor-label="depthHolder" id="-1736940367%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="depth-holder.html"><span>depth</span><wbr><span><span>Holder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1736940367%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="depth-holder.html">depthHolder</a><span class="token operator">: </span><a href="../-depth-holder/index.html">DepthHolder</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The processing depth of the request.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1153775860%2FProperties%2F685531333" anchor-label="downloadCachePolicy" id="1153775860%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="download-cache-policy.html"><span>download</span><wbr><span>Cache</span><wbr><span><span>Policy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1153775860%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="download-cache-policy.html">downloadCachePolicy</a><span class="token operator">: </span><a href="../../com.github.panpf.sketch.cache/-cache-policy/index.html">CachePolicy</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Http download cache policy</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-772279976%2FProperties%2F685531333" anchor-label="error" id="-772279976%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="error.html"><span><span>error</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-772279976%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="error.html">error</a><span class="token operator">: </span><a href="../../com.github.panpf.sketch.state/-state-image/index.html">StateImage</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Image to display when loading fails</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="622733431%2FProperties%2F685531333" anchor-label="extras" id="622733431%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="extras.html"><span><span>extras</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="622733431%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="extras.html">extras</a><span class="token operator">: </span><a href="../-extras/index.html">Extras</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">A map of generic values that can be used to pass custom data to <a href="../../com.github.panpf.sketch.fetch/-fetcher/index.html">Fetcher</a> and <a href="../../com.github.panpf.sketch.decode/-decoder/index.html">Decoder</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="780939672%2FProperties%2F685531333" anchor-label="fallback" id="780939672%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="fallback.html"><span><span>fallback</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="780939672%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="fallback.html">fallback</a><span class="token operator">: </span><a href="../../com.github.panpf.sketch.state/-state-image/index.html">StateImage</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Image to display when uri is invalid</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="365437357%2FProperties%2F685531333" anchor-label="memoryCachePolicy" id="365437357%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="memory-cache-policy.html"><span>memory</span><wbr><span>Cache</span><wbr><span><span>Policy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="365437357%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="memory-cache-policy.html">memoryCachePolicy</a><span class="token operator">: </span><a href="../../com.github.panpf.sketch.cache/-cache-policy/index.html">CachePolicy</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Bitmap memory caching policy</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-273377779%2FProperties%2F685531333" anchor-label="placeholder" id="-273377779%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="placeholder.html"><span><span>placeholder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-273377779%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="placeholder.html">placeholder</a><span class="token operator">: </span><a href="../../com.github.panpf.sketch.state/-state-image/index.html">StateImage</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Placeholder image when loading</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1735800590%2FProperties%2F685531333" anchor-label="precisionDecider" id="1735800590%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="precision-decider.html"><span>precision</span><wbr><span><span>Decider</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1735800590%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="precision-decider.html">precisionDecider</a><span class="token operator">: </span><a href="../../com.github.panpf.sketch.resize/-precision-decider/index.html">PrecisionDecider</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Decide what Precision to use with <a href="size-resolver.html">sizeResolver</a> to calculate the size of the final Bitmap</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1875934723%2FProperties%2F685531333" anchor-label="resizeOnDraw" id="1875934723%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="resize-on-draw.html"><span>resize</span><wbr><span>On</span><wbr><span><span>Draw</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1875934723%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="resize-on-draw.html">resizeOnDraw</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Use ResizeDrawable or ResizePainter to wrap an Image to resize it while drawing, it will act on placeholder, fallback, error and the decoded image</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1363463881%2FProperties%2F685531333" anchor-label="resultCachePolicy" id="1363463881%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="result-cache-policy.html"><span>result</span><wbr><span>Cache</span><wbr><span><span>Policy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1363463881%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="result-cache-policy.html">resultCachePolicy</a><span class="token operator">: </span><a href="../../com.github.panpf.sketch.cache/-cache-policy/index.html">CachePolicy</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Disk caching policy for Bitmaps affected by <a href="size-resolver.html">sizeResolver</a> or <a href="transformations.html">transformations</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1544936870%2FProperties%2F685531333" anchor-label="scaleDecider" id="-1544936870%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="scale-decider.html"><span>scale</span><wbr><span><span>Decider</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1544936870%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="scale-decider.html">scaleDecider</a><span class="token operator">: </span><a href="../../com.github.panpf.sketch.resize/-scale-decider/index.html">ScaleDecider</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Which part of the original image to keep when <a href="precision-decider.html">precisionDecider</a> returns <a href="../../com.github.panpf.sketch.resize/-precision/-e-x-a-c-t-l-y/index.html">Precision.EXACTLY</a> or <a href="../../com.github.panpf.sketch.resize/-precision/-s-a-m-e_-a-s-p-e-c-t_-r-a-t-i-o/index.html">Precision.SAME_ASPECT_RATIO</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="460018200%2FProperties%2F685531333" anchor-label="sizeMultiplier" id="460018200%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="size-multiplier.html"><span>size</span><wbr><span><span>Multiplier</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="460018200%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="size-multiplier.html">sizeMultiplier</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-float/index.html">Float</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">val finalSize = sizeResolver.size() * sizeMultiplier</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1956885901%2FProperties%2F685531333" anchor-label="sizeResolver" id="-1956885901%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="size-resolver.html"><span>size</span><wbr><span><span>Resolver</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1956885901%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="size-resolver.html">sizeResolver</a><span class="token operator">: </span><a href="../../com.github.panpf.sketch.resize/-size-resolver/index.html">SizeResolver</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Lazy calculation of resize size. If resize size is null at runtime, size is calculated and assigned to size</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1390576810%2FProperties%2F685531333" anchor-label="transformations" id="-1390576810%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="transformations.html"><span><span>transformations</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1390576810%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="transformations.html">transformations</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../com.github.panpf.sketch.transform/-transformation/index.html">Transformation</a><span class="token operator">&gt;</span><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The list of <a href="../../com.github.panpf.sketch.transform/-transformation/index.html">Transformation</a>s to be applied to this request</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="640817547%2FProperties%2F685531333" anchor-label="transitionFactory" id="640817547%2FProperties%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="transition-factory.html"><span>transition</span><wbr><span><span>Factory</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="640817547%2FProperties%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">val </span><a href="transition-factory.html">transitionFactory</a><span class="token operator">: </span><a href="../../com.github.panpf.sketch.transition/-transition/-factory/index.html">Transition.Factory</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">How the current image and the new image transition</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="242524531%2FFunctions%2F685531333" anchor-label="difference" id="242524531%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../com.github.panpf.sketch.util/difference.html"><span><span>difference</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="242524531%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html">ImageOptions</a><span class="token operator">?</span><span class="token punctuation">.</span><a href="../../com.github.panpf.sketch.util/difference.html"><span class="token function">difference</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="index.html">ImageOptions</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-string/index.html">String</a></div><div class="brief "><p class="paragraph">Get the difference between two ImageOptions</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="110927037%2FFunctions%2F685531333" anchor-label="isEmpty" id="110927037%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="is-empty.html"><span>is</span><wbr><span><span>Empty</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="110927037%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="is-empty.html"><span class="token function">isEmpty</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Returns true if all properties are empty</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1675931870%2FFunctions%2F685531333" anchor-label="isNotEmpty" id="1675931870%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../is-not-empty.html"><span>is</span><wbr><span>Not</span><wbr><span><span>Empty</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1675931870%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="index.html">ImageOptions</a><span class="token punctuation">.</span><a href="../is-not-empty.html"><span class="token function">isNotEmpty</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Returns true as long as any property is not empty</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-193028960%2FFunctions%2F685531333" anchor-label="merged" id="-193028960%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="merged.html"><span><span>merged</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-193028960%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="merged.html"><span class="token function">merged</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">options<span class="token operator">: </span><a href="index.html">ImageOptions</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ImageOptions</a></div><div class="brief "><p class="paragraph">Merge the current <a href="index.html">ImageOptions</a> and the new <a href="index.html">ImageOptions</a> into a new <a href="index.html">ImageOptions</a>. Currently <a href="index.html">ImageOptions</a> takes precedence</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-421017675%2FFunctions%2F685531333" anchor-label="newBuilder" id="-421017675%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="new-builder.html"><span>new</span><wbr><span><span>Builder</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-421017675%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="new-builder.html"><span class="token function">newBuilder</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">configBlock<span class="token operator">: </span><a href="-builder/index.html">ImageOptions.Builder</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-builder/index.html">ImageOptions.Builder</a></div><div class="brief "><p class="paragraph">Create a new <a href="-builder/index.html">ImageOptions.Builder</a> based on the current <a href="index.html">ImageOptions</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1028689464%2FFunctions%2F685531333" anchor-label="newOptions" id="1028689464%2FFunctions%2F685531333" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain"></a>
+          <div class="table-row" data-filterable-current=":sketch-core:dokkaHtmlPartial/commonMain" data-filterable-set=":sketch-core:dokkaHtmlPartial/commonMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="new-options.html"><span>new</span><wbr><span><span>Options</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1028689464%2FFunctions%2F685531333"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="new-options.html"><span class="token function">newOptions</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">configBlock<span class="token operator">: </span><a href="-builder/index.html">ImageOptions.Builder</a><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-unit/index.html">Unit</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">ImageOptions</a></div><div class="brief "><p class="paragraph">Create a new <a href="index.html">ImageOptions</a> based on the current <a href="index.html">ImageOptions</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2025 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

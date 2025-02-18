@@ -1,0 +1,184 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:com.github.panpf.sketch.decode/DecodeConfig///PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/[non-android]-decode-config/index.html
+$dokka.location:com.github.panpf.sketch.decode/DecodeConfig/DecodeConfig/#kotlin.Int?#android.graphics.Bitmap.Config?#android.graphics.ColorSpace?#kotlin.Boolean?/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/[android]-decode-config/-decode-config.html
+$dokka.location:com.github.panpf.sketch.decode/DecodeConfig/DecodeConfig/#kotlin.Int?#org.jetbrains.skia.ColorType?#org.jetbrains.skia.ColorSpace?/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/[non-android]-decode-config/-decode-config.html
+$dokka.location:com.github.panpf.sketch.decode/DecodeConfig/colorSpace/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/[non-android]-decode-config/color-space.html
+$dokka.location:com.github.panpf.sketch.decode/DecodeConfig/colorType/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/[non-android]-decode-config/color-type.html
+$dokka.location:com.github.panpf.sketch.decode/DecodeConfig/preferQualityOverSpeed/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/[android]-decode-config/prefer-quality-over-speed.html
+$dokka.location:com.github.panpf.sketch.decode/DecodeConfig/sampleSize/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/[non-android]-decode-config/sample-size.html
+$dokka.location:com.github.panpf.sketch.decode/DecodeConfig/toString/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/[non-android]-decode-config/to-string.html
+$dokka.location:com.github.panpf.sketch.decode/FixedColorSpace/value/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/-fixed-color-space/[non-android]value.html
+$dokka.location:com.github.panpf.sketch.decode/FixedColorType/value/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/-fixed-color-type/[non-android]value.html
+$dokka.location:com.github.panpf.sketch.decode/PlatformColorSpace/colorSpace/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/-platform-color-space/[non-android]color-space.html
+$dokka.location:com.github.panpf.sketch.decode/PlatformColorType/colorType/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/-platform-color-type/[non-android]color-type.html
+$dokka.location:com.github.panpf.sketch.fetch//isKotlinResourceUri/#[Error type: Unresolved type for Uri]/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]is-kotlin-resource-uri.html
+$dokka.location:com.github.panpf.sketch.fetch//newKotlinResourceUri/#kotlin.String/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]new-kotlin-resource-uri.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion///PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-companion/index.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion/PATH_ROOT/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-companion/-p-a-t-h_-r-o-o-t.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion/SCHEME/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-companion/-s-c-h-e-m-e.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory///PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-factory/index.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory/Factory/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-factory/-factory.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory/create/#[Error type: Unresolved type for RequestContext]/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-factory/create.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory/equals/#kotlin.Any?/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-factory/equals.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory/hashCode/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-factory/hash-code.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory/toString/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-factory/to-string.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher///PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/index.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher/KotlinResourceUriFetcher/#kotlin.String#[Error type: Unresolved type for FileSystem]/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-kotlin-resource-uri-fetcher.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher/KotlinResourceUriFetcher/#kotlin.String/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[desktop]-kotlin-resource-uri-fetcher/-kotlin-resource-uri-fetcher.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher/equals/#kotlin.Any?/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/equals.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher/fetch/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/fetch.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher/fileSystem/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/file-system.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher/hashCode/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/hash-code.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher/resourcePath/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/resource-path.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher/toString/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/to-string.html
+$dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource///PointingToDeclaration/sketch-core/com.github.panpf.sketch.source/[ios]-kotlin-resource-data-source/index.html
+$dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource/KotlinResourceDataSource/#kotlin.String#[Error type: Unresolved type for FileSystem]/PointingToDeclaration/sketch-core/com.github.panpf.sketch.source/[ios]-kotlin-resource-data-source/-kotlin-resource-data-source.html
+$dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource/KotlinResourceDataSource/#kotlin.String/PointingToDeclaration/sketch-core/com.github.panpf.sketch.source/[desktop]-kotlin-resource-data-source/-kotlin-resource-data-source.html
+$dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource/dataFrom/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.source/[ios]-kotlin-resource-data-source/data-from.html
+$dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource/equals/#kotlin.Any?/PointingToDeclaration/sketch-core/com.github.panpf.sketch.source/[ios]-kotlin-resource-data-source/equals.html
+$dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource/fileSystem/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.source/[ios]-kotlin-resource-data-source/file-system.html
+$dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource/getFile/#[Error type: Unresolved type for Sketch]/PointingToDeclaration/sketch-core/com.github.panpf.sketch.source/[ios]-kotlin-resource-data-source/get-file.html
+$dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource/hashCode/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.source/[ios]-kotlin-resource-data-source/hash-code.html
+$dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource/key/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.source/[ios]-kotlin-resource-data-source/key.html
+$dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource/openSource/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.source/[ios]-kotlin-resource-data-source/open-source.html
+$dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource/resourcePath/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.source/[ios]-kotlin-resource-data-source/resource-path.html
+$dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource/toString/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.source/[ios]-kotlin-resource-data-source/to-string.html
+module:sketch-animated-core
+com.github.panpf.sketch.decode.internal
+com.github.panpf.sketch.drawable
+com.github.panpf.sketch.request
+com.github.panpf.sketch.transform
+com.github.panpf.sketch.util
+module:sketch-animated-gif
+com.github.panpf.sketch.decode
+com.github.panpf.sketch.decode.internal
+com.github.panpf.sketch.drawable
+module:sketch-animated-gif-koral
+com.github.panpf.sketch.decode
+com.github.panpf.sketch.decode.internal
+com.github.panpf.sketch.drawable
+pl.droidsonroids.gif
+module:sketch-animated-heif
+com.github.panpf.sketch.decode
+com.github.panpf.sketch.decode.internal
+module:sketch-animated-webp
+com.github.panpf.sketch.decode
+com.github.panpf.sketch.decode.internal
+module:sketch-compose
+com.github.panpf.sketch
+module:sketch-compose-core
+com.github.panpf.sketch
+com.github.panpf.sketch.internal
+com.github.panpf.sketch.painter
+com.github.panpf.sketch.request
+com.github.panpf.sketch.request.internal
+com.github.panpf.sketch.resize
+com.github.panpf.sketch.state
+com.github.panpf.sketch.target
+com.github.panpf.sketch.target.internal
+com.github.panpf.sketch.transition
+com.github.panpf.sketch.util
+module:sketch-compose-resources
+com.github.panpf.sketch.fetch
+com.github.panpf.sketch.fetch.internal
+com.github.panpf.sketch.painter
+com.github.panpf.sketch.request
+com.github.panpf.sketch.state
+module:sketch-core
+com.github.panpf.sketch
+com.github.panpf.sketch.annotation
+com.github.panpf.sketch.cache
+com.github.panpf.sketch.cache.internal
+com.github.panpf.sketch.decode
+com.github.panpf.sketch.decode.internal
+com.github.panpf.sketch.drawable
+com.github.panpf.sketch.drawable.internal
+com.github.panpf.sketch.fetch
+com.github.panpf.sketch.request
+com.github.panpf.sketch.request.internal
+com.github.panpf.sketch.resize
+com.github.panpf.sketch.source
+com.github.panpf.sketch.state
+com.github.panpf.sketch.target
+com.github.panpf.sketch.transform
+com.github.panpf.sketch.transform.internal
+com.github.panpf.sketch.transition
+com.github.panpf.sketch.util
+module:sketch-extensions-apkicon
+com.github.panpf.sketch.decode
+com.github.panpf.sketch.decode.internal
+com.github.panpf.sketch.drawable
+module:sketch-extensions-appicon
+com.github.panpf.sketch.drawable
+com.github.panpf.sketch.fetch
+com.github.panpf.sketch.fetch.internal
+module:sketch-extensions-compose
+com.github.panpf.sketch.ability
+com.github.panpf.sketch.painter
+com.github.panpf.sketch.painter.internal
+com.github.panpf.sketch.state
+module:sketch-extensions-compose-resources
+com.github.panpf.sketch.state
+module:sketch-extensions-core
+com.github.panpf.sketch.ability
+com.github.panpf.sketch.drawable
+com.github.panpf.sketch.drawable.internal
+com.github.panpf.sketch.request
+com.github.panpf.sketch.state
+module:sketch-extensions-view
+com.github.panpf.sketch
+com.github.panpf.sketch.ability
+com.github.panpf.sketch.internal
+com.github.panpf.sketch.util
+module:sketch-extensions-viewability
+com.github.panpf.sketch.ability
+com.github.panpf.sketch.ability.internal
+module:sketch-http-core
+com.github.panpf.sketch.fetch
+com.github.panpf.sketch.http
+com.github.panpf.sketch.request
+module:sketch-http-hurl
+com.github.panpf.sketch.fetch
+com.github.panpf.sketch.fetch.internal
+com.github.panpf.sketch.http
+com.github.panpf.sketch.http.internal
+module:sketch-http-ktor2-core
+com.github.panpf.sketch.fetch
+com.github.panpf.sketch.fetch.internal
+com.github.panpf.sketch.http
+module:sketch-http-ktor3-core
+com.github.panpf.sketch.fetch
+com.github.panpf.sketch.fetch.internal
+com.github.panpf.sketch.http
+module:sketch-http-okhttp
+com.github.panpf.sketch.fetch
+com.github.panpf.sketch.fetch.internal
+com.github.panpf.sketch.http
+module:sketch-singleton
+com.github.panpf.sketch
+com.github.panpf.sketch.request
+module:sketch-svg
+com.github.panpf.sketch.decode
+com.github.panpf.sketch.decode.internal
+com.github.panpf.sketch.request
+module:sketch-video
+com.github.panpf.sketch.decode
+com.github.panpf.sketch.decode.internal
+module:sketch-video-core
+com.github.panpf.sketch.request
+module:sketch-video-ffmpeg
+com.github.panpf.sketch.decode
+com.github.panpf.sketch.decode.internal
+module:sketch-view
+com.github.panpf.sketch
+module:sketch-view-core
+com.github.panpf.sketch
+com.github.panpf.sketch.drawable
+com.github.panpf.sketch.request
+com.github.panpf.sketch.request.internal
+com.github.panpf.sketch.resize
+com.github.panpf.sketch.resize.internal
+com.github.panpf.sketch.target
+com.github.panpf.sketch.transition
+com.github.panpf.sketch.util

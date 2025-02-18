@@ -1,0 +1,468 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>RealViewAbilityManager</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../index.html">
+                            sketch
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":sketch-extensions-viewability:dokkaHtmlPartial/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="sketch-extensions-viewability::com.github.panpf.sketch.ability.internal/RealViewAbilityManager///PointingToDeclaration//-1489235560">
+  <div class="breadcrumbs"><a href="../../index.html">sketch-extensions-viewability</a><span class="delimiter">/</span><a href="../index.html">com.github.panpf.sketch.ability.internal</a><span class="delimiter">/</span><span class="current">RealViewAbilityManager</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Real</span><wbr><span>View</span><wbr><span>Ability</span><wbr><span><span>Manager</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">RealViewAbilityManager</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">container<span class="token operator">: </span><a href="../../com.github.panpf.sketch.ability/-view-ability-container/index.html">ViewAbilityContainer</a><span class="token punctuation">, </span></span><span class="parameter ">view<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a></span></span><span class="token punctuation">)</span> : <a href="../../com.github.panpf.sketch.ability/-view-ability-manager/index.html">ViewAbilityManager</a></div><p class="paragraph">Real ViewAbilityManager</p><h4 class="">See also</h4><div class="table"><div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span>com.</span><wbr><span>github.</span><wbr><span>panpf.</span><wbr><span>sketch.</span><wbr><span>extensions.</span><wbr><span>view.</span><wbr><span>ability.</span><wbr><span>test.</span><wbr><span>internal.</span><wbr><span>Real</span><wbr><span>View</span><wbr><span>Ability</span><wbr><span>Manager</span><wbr><span><span>Test</span></span></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-1393385890%2FConstructors%2F-1489235560" anchor-label="RealViewAbilityManager" id="-1393385890%2FConstructors%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-real-view-ability-manager.html"><span>Real</span><wbr><span>View</span><wbr><span>Ability</span><wbr><span><span>Manager</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1393385890%2FConstructors%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">container<span class="token operator">: </span><a href="../../com.github.panpf.sketch.ability/-view-ability-container/index.html">ViewAbilityContainer</a><span class="token punctuation">, </span></span><span class="parameter ">view<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-1994207906%2FProperties%2F-1489235560" anchor-label="viewAbilityList" id="-1994207906%2FProperties%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="view-ability-list.html"><span>view</span><wbr><span>Ability</span><wbr><span><span>List</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1994207906%2FProperties%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="view-ability-list.html">viewAbilityList</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="../../com.github.panpf.sketch.ability/-view-ability/index.html">ViewAbility</a><span class="token operator">&gt;</span></div><div class="brief "><p class="paragraph">ViewAbility List</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="528653365%2FFunctions%2F-1489235560" anchor-label="addViewAbility" id="528653365%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="add-view-ability.html"><span>add</span><wbr><span>View</span><wbr><span><span>Ability</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="528653365%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="add-view-ability.html"><span class="token function">addViewAbility</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">viewAbility<span class="token operator">: </span><a href="../../com.github.panpf.sketch.ability/-view-ability/index.html">ViewAbility</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.github.panpf.sketch.ability/-view-ability-manager/index.html">ViewAbilityManager</a></div><div class="brief "><p class="paragraph">Add a ViewAbility and run it</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-479377165%2FFunctions%2F-1489235560" anchor-label="getImageMatrix" id="-479377165%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-image-matrix.html"><span>get</span><wbr><span>Image</span><wbr><span><span>Matrix</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-479377165%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="get-image-matrix.html"><span class="token function">getImageMatrix</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/graphics/Matrix.html">Matrix</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Proxy getImageMatrix()</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2013745772%2FFunctions%2F-1489235560" anchor-label="getRequestListener" id="2013745772%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-request-listener.html"><span>get</span><wbr><span>Request</span><wbr><span><span>Listener</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2013745772%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="get-request-listener.html"><span class="token function">getRequestListener</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../sketch-core/com.github.panpf.sketch.request/-listener/index.html">Listener</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get request Listener</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-878758209%2FFunctions%2F-1489235560" anchor-label="getRequestProgressListener" id="-878758209%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-request-progress-listener.html"><span>get</span><wbr><span>Request</span><wbr><span>Progress</span><wbr><span><span>Listener</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-878758209%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="get-request-progress-listener.html"><span class="token function">getRequestProgressListener</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../../sketch-core/com.github.panpf.sketch.request/-progress-listener/index.html">ProgressListener</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Get request progress Listener</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2144518197%2FFunctions%2F-1489235560" anchor-label="getScaleType" id="-2144518197%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-scale-type.html"><span>get</span><wbr><span>Scale</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2144518197%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="get-scale-type.html"><span class="token function">getScaleType</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/widget/ImageView.ScaleType.html">ImageView.ScaleType</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Proxy getScaleType()</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-826413141%2FFunctions%2F-1489235560" anchor-label="onAttachedToWindow" id="-826413141%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-attached-to-window.html"><span>on</span><wbr><span>Attached</span><wbr><span>To</span><wbr><span><span>Window</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-826413141%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="on-attached-to-window.html"><span class="token function">onAttachedToWindow</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Handling the AttachedToWindow event</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1132338638%2FFunctions%2F-1489235560" anchor-label="onDetachedFromWindow" id="1132338638%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-detached-from-window.html"><span>on</span><wbr><span>Detached</span><wbr><span>From</span><wbr><span><span>Window</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1132338638%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="on-detached-from-window.html"><span class="token function">onDetachedFromWindow</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Handling the DetachedToWindow event</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="521371312%2FFunctions%2F-1489235560" anchor-label="onDraw" id="521371312%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-draw.html"><span>on</span><wbr><span><span>Draw</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="521371312%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="on-draw.html"><span class="token function">onDraw</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">canvas<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/graphics/Canvas.html">Canvas</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Handling the Draw event</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1978746289%2FFunctions%2F-1489235560" anchor-label="onDrawableChanged" id="1978746289%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-drawable-changed.html"><span>on</span><wbr><span>Drawable</span><wbr><span><span>Changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1978746289%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="on-drawable-changed.html"><span class="token function">onDrawableChanged</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">oldDrawable<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/graphics/drawable/Drawable.html">Drawable</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter ">newDrawable<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/graphics/drawable/Drawable.html">Drawable</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Handling the DrawableChanged event</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1457983729%2FFunctions%2F-1489235560" anchor-label="onDrawBefore" id="-1457983729%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-draw-before.html"><span>on</span><wbr><span>Draw</span><wbr><span><span>Before</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1457983729%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="on-draw-before.html"><span class="token function">onDrawBefore</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">canvas<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/graphics/Canvas.html">Canvas</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Handling the DrawBefore event</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1464781485%2FFunctions%2F-1489235560" anchor-label="onDrawForeground" id="-1464781485%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-draw-foreground.html"><span>on</span><wbr><span>Draw</span><wbr><span><span>Foreground</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1464781485%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="on-draw-foreground.html"><span class="token function">onDrawForeground</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">canvas<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/graphics/Canvas.html">Canvas</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Handling the DrawForeground event</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="632151922%2FFunctions%2F-1489235560" anchor-label="onDrawForegroundBefore" id="632151922%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-draw-foreground-before.html"><span>on</span><wbr><span>Draw</span><wbr><span>Foreground</span><wbr><span><span>Before</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="632151922%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="on-draw-foreground-before.html"><span class="token function">onDrawForegroundBefore</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">canvas<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/graphics/Canvas.html">Canvas</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Handling the DrawForegroundBefore event</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1719309131%2FFunctions%2F-1489235560" anchor-label="onLayout" id="-1719309131%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-layout.html"><span>on</span><wbr><span><span>Layout</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1719309131%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="on-layout.html"><span class="token function">onLayout</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">changed<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token punctuation">, </span></span><span class="parameter ">left<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">top<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">right<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">bottom<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Handling the Layout event</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1537668774%2FFunctions%2F-1489235560" anchor-label="onRestoreInstanceState" id="-1537668774%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-restore-instance-state.html"><span>on</span><wbr><span>Restore</span><wbr><span>Instance</span><wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1537668774%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="on-restore-instance-state.html"><span class="token function">onRestoreInstanceState</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">state<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/os/Bundle.html">Bundle</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-414534495%2FFunctions%2F-1489235560" anchor-label="onSaveInstanceState" id="-414534495%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-save-instance-state.html"><span>on</span><wbr><span>Save</span><wbr><span>Instance</span><wbr><span><span>State</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-414534495%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="on-save-instance-state.html"><span class="token function">onSaveInstanceState</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/os/Bundle.html">Bundle</a><span class="token operator">?</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-147050222%2FFunctions%2F-1489235560" anchor-label="onSizeChanged" id="-147050222%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-size-changed.html"><span>on</span><wbr><span>Size</span><wbr><span><span>Changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-147050222%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="on-size-changed.html"><span class="token function">onSizeChanged</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">width<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">height<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">oldWidth<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">oldHeight<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Handling the SizeChanged event</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1433101541%2FFunctions%2F-1489235560" anchor-label="onTouchEvent" id="1433101541%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-touch-event.html"><span>on</span><wbr><span>Touch</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1433101541%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="on-touch-event.html"><span class="token function">onTouchEvent</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">event<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/MotionEvent.html">MotionEvent</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Handling the TouchEvent event</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2097921096%2FFunctions%2F-1489235560" anchor-label="onVisibilityChanged" id="2097921096%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="on-visibility-changed.html"><span>on</span><wbr><span>Visibility</span><wbr><span><span>Changed</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2097921096%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="on-visibility-changed.html"><span class="token function">onVisibilityChanged</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">changedView<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/View.html">View</a><span class="token punctuation">, </span></span><span class="parameter ">visibility<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Handling the VisibilityChanged event</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2034799338%2FFunctions%2F-1489235560" anchor-label="removeViewAbility" id="2034799338%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="remove-view-ability.html"><span>remove</span><wbr><span>View</span><wbr><span><span>Ability</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2034799338%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="remove-view-ability.html"><span class="token function">removeViewAbility</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">viewAbility<span class="token operator">: </span><a href="../../com.github.panpf.sketch.ability/-view-ability/index.html">ViewAbility</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../com.github.panpf.sketch.ability/-view-ability-manager/index.html">ViewAbilityManager</a></div><div class="brief "><p class="paragraph">Delete a ViewAbility</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-553012475%2FFunctions%2F-1489235560" anchor-label="setImageMatrix" id="-553012475%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-image-matrix.html"><span>set</span><wbr><span>Image</span><wbr><span><span>Matrix</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-553012475%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="set-image-matrix.html"><span class="token function">setImageMatrix</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">imageMatrix<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/graphics/Matrix.html">Matrix</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Proxy setImageMatrix()</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1913234525%2FFunctions%2F-1489235560" anchor-label="setOnClickListener" id="1913234525%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-on-click-listener.html"><span>set</span><wbr><span>On</span><wbr><span>Click</span><wbr><span><span>Listener</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1913234525%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="set-on-click-listener.html"><span class="token function">setOnClickListener</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">l<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/View.OnClickListener.html">View.OnClickListener</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Proxy setOnClickListener()</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-65395235%2FFunctions%2F-1489235560" anchor-label="setOnLongClickListener" id="-65395235%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-on-long-click-listener.html"><span>set</span><wbr><span>On</span><wbr><span>Long</span><wbr><span>Click</span><wbr><span><span>Listener</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-65395235%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="set-on-long-click-listener.html"><span class="token function">setOnLongClickListener</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">l<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/view/View.OnLongClickListener.html">View.OnLongClickListener</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Proxy setOnLongClickListener()</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1906109908%2FFunctions%2F-1489235560" anchor-label="setScaleType" id="-1906109908%2FFunctions%2F-1489235560" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release"></a>
+          <div class="table-row" data-filterable-current=":sketch-extensions-viewability:dokkaHtmlPartial/release" data-filterable-set=":sketch-extensions-viewability:dokkaHtmlPartial/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="set-scale-type.html"><span>set</span><wbr><span>Scale</span><wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1906109908%2FFunctions%2F-1489235560"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-extensions-viewability:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="set-scale-type.html"><span class="token function">setScaleType</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">scaleType<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/widget/ImageView.ScaleType.html">ImageView.ScaleType</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin-stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Proxy setScaleType()</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2025 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
