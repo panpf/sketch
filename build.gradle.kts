@@ -26,7 +26,12 @@ buildscript {
         classpath(libs.gradlePlugin.kotlinxAtomicfu)
         classpath(libs.gradlePlugin.kotlinxCover)
         classpath(libs.gradlePlugin.mavenPublish)
+//        classpath(libs.gradlePlugin.dokka)
     }
+}
+
+plugins {
+    alias(libs.plugins.dokka)
 }
 
 allprojects {
@@ -51,6 +56,7 @@ allprojects {
     jvmTargetConfig()
     composeConfig()
     publishConfig()
+    dokkaConfig()
     applyOkioJsTestWorkaround()
     androidTestConfig()
 }
@@ -135,6 +141,15 @@ fun Project.publishConfig() {
         }
     }
 }
+
+fun Project.dokkaConfig() {
+    if (
+        hasProperty("POM_ARTIFACT_ID")    // configured in the module/gradle.properties file
+    ) {
+        apply { plugin("org.jetbrains.dokka") }
+    }
+}
+
 
 // https://github.com/square/okio/issues/1163
 fun Project.applyOkioJsTestWorkaround() {

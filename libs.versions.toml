@@ -24,6 +24,8 @@ buildkonfig = "0.15.2"
 
 cashapp-paging = "3.3.0-alpha02-0.5.1"
 
+dokka = "1.9.20"
+
 ffmpegMediaMetadataRetriever = "1.0.16"
 
 google-material = "1.12.0"
@@ -74,6 +76,7 @@ gradlePlugin-kotlinSerialization = { module = "org.jetbrains.kotlin:kotlin-seria
 gradlePlugin-kotlinxAtomicfu = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref = "kotlinx-atomicfu" }
 gradlePlugin-kotlinxCover = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kotlinx-cover" }
 gradlePlugin-mavenPublish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "mavenpublish" }
+gradlePlugin-dokka = { module = "org.jetbrains.dokka:org.jetbrains.dokka.gradle.plugin", version.ref = "dokka" }
 
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
@@ -187,3 +190,6 @@ voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", vers
 #voyager-hilt = { module = "cafe.adriel.voyager:voyager-hilt", version.ref = "voyager" }
 #voyager-kodein = { module = "cafe.adriel.voyager:voyager-kodein", version.ref = "voyager" }
 #voyager-rxjava = { module = "cafe.adriel.voyager:voyager-rxjava", version.ref = "voyager" }
+
+[plugins]
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
