@@ -4,8 +4,8 @@ on: workflow_dispatch
 
 jobs:
   publish:
+    name: Publish and release to maven central
     runs-on: macos-latest
-
     steps:
       - name: Checkout
         id: check

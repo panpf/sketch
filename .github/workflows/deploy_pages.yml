@@ -1,0 +1,95 @@
+name: Deploy api docs and web app
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  deploy-api-docs:
+    name: Deploy API docs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build the api docs
+        run: ./gradlew dokkaHtmlMultiModule
+
+      - name: Check out the gh-pages branch
+        run: |
+          git fetch origin gh-pages:gh-pages
+          git checkout gh-pages
+
+      - name: Remove old api directory
+        run: |
+          rm -rf api/*
+
+      - name: Create api directory
+        run: mkdir -p api
+
+      - name: Move build artifacts to api directory
+        run: |
+          mv build/dokka/htmlMultiModule/* api/
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          commit_message: "Update api docs"
+          branch: gh-pages
+          file_pattern: api/*
+
+  deploy-web-app:
+    name: Deploy web app
+    needs: deploy-api-docs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build the web app
+        run: ./gradlew sample:wasmJsBrowserDistribution
+
+      - name: Check out the gh-pages branch
+        run: |
+          git fetch origin gh-pages:gh-pages
+          git checkout gh-pages
+
+      - name: Remove old app directory
+        run: |
+          rm -rf app/*
+
+      - name: Create app directory
+        run: mkdir -p app
+
+      - name: Move build artifacts to app directory
+        run: |
+          mv sample/build/dist/wasmJs/productionExecutable/* app/
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          commit_message: "Update web app"
+          branch: gh-pages
+          file_pattern: app/*

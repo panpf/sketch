@@ -1,0 +1,200 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  #  test:
+  #    name: Unit tests
+  #    runs-on: ubuntu-latest
+  #    steps:
+  #      - name: Check out the repository
+  #        uses: actions/checkout@v2
+  #
+  #      - name: Set up JDK
+  #        uses: actions/setup-java@v4
+  #        with:
+  #          distribution: temurin
+  #          java-version: 17
+  #
+  #      - name: Run desktop test
+  #        run: ./gradlew desktopTest
+
+  package-android:
+    name: Package android
+    #    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Package android
+        run: ./gradlew sample:assembleRelease
+
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-files
+          path: sample/build/outputs/apk/release/*.apk
+
+  package-linux:
+    name: Package linux desktop
+    #    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Package linux desktop
+        run: ./gradlew sample:packageReleaseDeb
+
+  package-macos:
+    name: Package macos desktop
+    #    needs: test
+    runs-on: macos-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Package macos desktop
+        run: ./gradlew sample:packageReleaseDmg
+
+  package-windows:
+    name: Package windows desktop
+    #    needs: test
+    runs-on: windows-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Package windows desktop
+        run: ./gradlew sample:packageReleaseMsi
+
+  package-js:
+    name: Package js browser
+    #    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Package js browser
+        run: ./gradlew sample:jsBrowserDistribution
+
+  package-wasm-js:
+    name: Package wasm js browser
+    #    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Package wasm js browser
+        run: ./gradlew sample:wasmJsBrowserDistribution
+
+  publish:
+    name: Publish and release to maven central
+    needs: [ package-android, package-linux, package-macos, package-windows, package-js, package-wasm-js ]
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        id: check
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Run publish and release to maven central
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_IN_MEMORY_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_IN_MEMORY_KEY_PASSWORD }}
+        #        run: ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
+        run: ./gradlew publishToMavenCentral --no-configuration-cache
+
+  release:
+    name: Release new version
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download APK artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: apk-files
+          path: ./downloaded-apks
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: startsWith(github.ref, 'refs/tags/') # Only run on tag push
+        with:
+          body: |
+            Please check the [CHANGELOG.md](https://github.com/panpf/sketch/blob/main/CHANGELOG.md) file for updated log
+
+            Sample App：
+            * Android：For the Android platform sample app, please see the attachment. 
+            * Web：https://panpf.github.io/sketch/app
+            * For other platform sample apps, please refer to the document [Run Sample App](https://github.com/panpf/sketch?tab=readme-ov-file#run-sample-app) running source code experience
+
+            \----------
+
+            更新日志请查看 [CHANGELOG.md](https://github.com/panpf/sketch/blob/main/CHANGELOG_zh.md) 文件
+
+            示例 App：
+            * Android：Android 平台示例 App 见附件
+            * Web：https://panpf.github.io/sketch/app
+            * 其它平台示例 App 请参考文档 [运行示例 App](https://github.com/panpf/sketch/blob/main/README_zh.md#%E8%BF%90%E8%A1%8C%E7%A4%BA%E4%BE%8B-app) 运行源代码体验
+          files: ./downloaded-apks/*.apk
+          make_latest: true
