@@ -1,4 +1,4 @@
-name: Release
+name: Deploy Publish Release
 
 on:
   push:
@@ -133,11 +133,53 @@ jobs:
       - name: Package wasm js browser
         run: ./gradlew sample:wasmJsBrowserDistribution
 
+  deploy-api-docs:
+    name: Deploy API docs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build the api docs
+        run: ./gradlew dokkaHtmlMultiModule
+
+      - name: Check out the gh-pages branch
+        run: |
+          git fetch origin gh-pages:gh-pages
+          git checkout gh-pages
+
+      - name: Remove old api directory
+        run: |
+          rm -rf api/*
+
+      - name: Create api directory
+        run: mkdir -p api
+
+      - name: Move build artifacts to api directory
+        run: |
+          mv build/dokka/htmlMultiModule/* api/
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          commit_message: "Update api docs"
+          branch: gh-pages
+          file_pattern: api/*
+
   publish:
     name: Publish and release to maven central
-    needs: [ package-android, package-linux, package-macos, package-windows, package-js, package-wasm-js ]
+    needs: [ package-android, package-linux, package-macos, package-windows, package-js, package-wasm-js, deploy-api-docs ]
     runs-on: macos-latest
-
     steps:
       - name: Checkout
         id: check
