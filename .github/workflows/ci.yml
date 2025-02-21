@@ -135,6 +135,7 @@ jobs:
 
   deploy-api-docs:
     name: Deploy API docs
+    needs: [ package-android, package-linux, package-macos, package-windows, package-js, package-wasm-js ]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -178,7 +179,7 @@ jobs:
 
   publish:
     name: Publish and release to maven central
-    needs: [ package-android, package-linux, package-macos, package-windows, package-js, package-wasm-js, deploy-api-docs ]
+    needs: deploy-api-docs
     runs-on: macos-latest
     steps:
       - name: Checkout
@@ -200,8 +201,8 @@ jobs:
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_IN_MEMORY_KEY }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_IN_MEMORY_KEY_PASSWORD }}
-        #        run: ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
-        run: ./gradlew publishToMavenCentral --no-configuration-cache
+        run: ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
+  #        run: ./gradlew publishToMavenCentral --no-configuration-cache
 
   release:
     name: Release new version
