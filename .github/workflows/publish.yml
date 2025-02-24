@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   publish:
-    name: Publish and release to maven central
+    name: Publish to maven central
     runs-on: macos-latest
     steps:
       - name: Checkout
@@ -20,7 +20,7 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Run publish and release to maven central
+      - name: Run publish
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}

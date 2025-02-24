@@ -39,7 +39,7 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Package android
+      - name: Run package
         run: ./gradlew sample:assembleRelease
 
       - name: Upload APK artifacts
@@ -47,6 +47,23 @@ jobs:
         with:
           name: apk-files
           path: sample/build/outputs/apk/release/*.apk
+
+  package-ios:
+    name: Package ios
+    #    needs: test
+    runs-on: macos-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Run package
+        run: xcodebuild -project sample/iosApp/iosApp.xcodeproj -scheme iosApp -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
 
   package-linux:
     name: Package linux desktop
@@ -62,7 +79,7 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Package linux desktop
+      - name: Run package
         run: ./gradlew sample:packageReleaseDeb
 
   package-macos:
@@ -79,7 +96,7 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Package macos desktop
+      - name: Run package
         run: ./gradlew sample:packageReleaseDmg
 
   package-windows:
@@ -96,7 +113,7 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Package windows desktop
+      - name: Run package
         run: ./gradlew sample:packageReleaseMsi
 
   package-js:
@@ -113,7 +130,7 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Package js browser
+      - name: Run package
         run: ./gradlew sample:jsBrowserDistribution
 
   package-wasm-js:
@@ -130,12 +147,12 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Package wasm js browser
+      - name: Run package
         run: ./gradlew sample:wasmJsBrowserDistribution
 
   deploy-api-docs:
     name: Deploy API docs
-    needs: [ package-android, package-linux, package-macos, package-windows, package-js, package-wasm-js ]
+    needs: [ package-android, package-ios, package-linux, package-macos, package-windows, package-js, package-wasm-js ]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -195,7 +212,7 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Run publish and release to maven central
+      - name: Run publish
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
