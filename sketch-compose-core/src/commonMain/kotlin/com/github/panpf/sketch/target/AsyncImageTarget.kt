@@ -41,7 +41,6 @@ import com.github.panpf.sketch.resize.AsyncImageSizeResolver
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.target.internal.AsyncImageListener
 import com.github.panpf.sketch.util.fitScale
-import com.github.panpf.sketch.util.isEmpty
 import com.github.panpf.sketch.util.toScale
 
 /**
@@ -103,10 +102,8 @@ class AsyncImageTarget(
     }
 
     fun setSize(size: IntSize) {
-        if (!size.isEmpty()) {
-            this.sizeMutableState.value = size
-            this.sizeResolver.sizeState.value = size
-        }
+        this.sizeMutableState.value = size
+        this.sizeResolver.sizeState.value = size
     }
 
     fun onRemembered() {

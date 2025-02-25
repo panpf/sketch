@@ -26,6 +26,7 @@ import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.toIntSize
 import com.github.panpf.sketch.util.toIntSizeOrNull
 import com.github.panpf.sketch.util.toLogString
+import com.github.panpf.sketch.util.toRequestSize
 import com.github.panpf.sketch.util.toScale
 import com.github.panpf.sketch.util.toSize
 import com.github.panpf.sketch.util.toSketchSize
@@ -201,6 +202,38 @@ class ComposeCoreUtilsTest {
         assertEquals(
             expected = IntSize(2, 2),
             actual = Constraints(maxWidth = 2, maxHeight = 2).toIntSizeOrNull()
+        )
+    }
+
+    @Test
+    fun testConstraintsToRequestSize() {
+        assertEquals(
+            expected = IntSize(0, 0),
+            actual = Constraints(maxWidth = 0, maxHeight = 0).toRequestSize()
+        )
+        assertEquals(
+            expected = IntSize(1, 0),
+            actual = Constraints(maxWidth = 1, maxHeight = 0).toRequestSize()
+        )
+        assertEquals(
+            expected = IntSize(0, 1),
+            actual = Constraints(maxWidth = 0, maxHeight = 1).toRequestSize()
+        )
+        assertEquals(
+            expected = IntSize(1, 0),
+            actual = Constraints(maxWidth = 1, maxHeight = Constraints.Infinity).toRequestSize()
+        )
+        assertEquals(
+            expected = IntSize(0, 1),
+            actual = Constraints(maxWidth = Constraints.Infinity, maxHeight = 1).toRequestSize()
+        )
+        assertEquals(
+            expected = IntSize(1, 1),
+            actual = Constraints(maxWidth = 1, maxHeight = 1).toRequestSize()
+        )
+        assertEquals(
+            expected = IntSize(2, 2),
+            actual = Constraints(maxWidth = 2, maxHeight = 2).toRequestSize()
         )
     }
 

@@ -17,6 +17,7 @@
 
 package com.github.panpf.sketch.util
 
+import com.github.panpf.sketch.util.Size as SketchSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
@@ -34,7 +35,6 @@ import com.github.panpf.sketch.painter.CrossfadePainter
 import com.github.panpf.sketch.painter.PainterWrapper
 import com.github.panpf.sketch.resize.Scale
 import kotlin.math.roundToInt
-import com.github.panpf.sketch.util.Size as SketchSize
 
 /**
  * Get window container size
@@ -171,6 +171,19 @@ internal fun Constraints.toIntSizeOrNull(): IntSize? = when {
     isZero -> null
     hasBoundedWidth && hasBoundedHeight -> IntSize(maxWidth, maxHeight)
     else -> null
+}
+
+/**
+ * Convert [Constraints] to Resize
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testConstraintsToRequestSize
+ */
+@Stable
+internal fun Constraints.toRequestSize(): IntSize {
+    return IntSize(
+        width = if (hasBoundedWidth) maxWidth else 0,
+        height = if (hasBoundedHeight) maxHeight else 0
+    )
 }
 
 /**

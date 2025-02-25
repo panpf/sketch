@@ -38,7 +38,7 @@ import com.github.panpf.sketch.PainterState.Loading
 import com.github.panpf.sketch.PainterState.Success
 import com.github.panpf.sketch.internal.AsyncImageContent
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.util.toIntSizeOrNull
+import com.github.panpf.sketch.util.toRequestSize
 
 /**
  * A composable that executes an [ImageRequest] asynchronously and renders the result.
@@ -136,7 +136,7 @@ fun SubcomposeAsyncImage(
     filterQuality: FilterQuality = DefaultFilterQuality,
     content: @Composable SubcomposeAsyncImageScope.() -> Unit,
 ) = SubcomposeAsyncImage(
-    request = ImageRequest(LocalPlatformContext.current, uri),
+    request = ImageRequest(LocalPlatformContext.current, uri),  // TODO remember
     contentDescription = contentDescription,
     sketch = sketch,
     modifier = modifier,
@@ -260,7 +260,7 @@ fun SubcomposeAsyncImage(
             propagateMinConstraints = true
         ) {
             // Ensure images are prepared before content is drawn when in-memory cache exists
-            constraints.toIntSizeOrNull()?.let { state.setSize(it) }
+            state.setSize(constraints.toRequestSize())
 
             RealSubcomposeAsyncImageScope(
                 parentScope = this,

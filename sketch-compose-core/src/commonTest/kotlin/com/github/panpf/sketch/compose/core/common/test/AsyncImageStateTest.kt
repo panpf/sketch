@@ -354,43 +354,43 @@ class AsyncImageStateTest {
 
         asyncImageState.setSize(IntSize(0, 1000))
         assertEquals(
-            expected = null,
+            expected = IntSize(0, 1000),
             actual = asyncImageState.size
         )
         assertEquals(
-            expected = null,
+            expected = IntSize(0, 1000),
             actual = asyncImageState.target.sizeState.value
         )
         assertEquals(
-            expected = null,
+            expected = IntSize(0, 1000),
             actual = asyncImageState.target.getSizeResolver().sizeState.value
         )
 
         asyncImageState.setSize(IntSize(1000, 0))
         assertEquals(
-            expected = null,
+            expected = IntSize(1000, 0),
             actual = asyncImageState.size
         )
         assertEquals(
-            expected = null,
+            expected = IntSize(1000, 0),
             actual = asyncImageState.target.sizeState.value
         )
         assertEquals(
-            expected = null,
+            expected = IntSize(1000, 0),
             actual = asyncImageState.target.getSizeResolver().sizeState.value
         )
 
         asyncImageState.setSize(IntSize(0, 0))
         assertEquals(
-            expected = null,
+            expected = IntSize(0, 0),
             actual = asyncImageState.size
         )
         assertEquals(
-            expected = null,
+            expected = IntSize(0, 0),
             actual = asyncImageState.target.sizeState.value
         )
         assertEquals(
-            expected = null,
+            expected = IntSize(0, 0),
             actual = asyncImageState.target.getSizeResolver().sizeState.value
         )
 

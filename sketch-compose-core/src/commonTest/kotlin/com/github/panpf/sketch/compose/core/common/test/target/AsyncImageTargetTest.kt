@@ -220,31 +220,31 @@ class AsyncImageTargetTest {
 
         target.setSize(IntSize(0, 1000))
         assertEquals(
-            expected = null,
+            expected = IntSize(0, 1000),
             actual = target.sizeState.value
         )
         assertEquals(
-            expected = null,
+            expected = IntSize(0, 1000),
             actual = target.getSizeResolver().sizeState.value
         )
 
         target.setSize(IntSize(1000, 0))
         assertEquals(
-            expected = null,
+            expected = IntSize(1000, 0),
             actual = target.sizeState.value
         )
         assertEquals(
-            expected = null,
+            expected = IntSize(1000, 0),
             actual = target.getSizeResolver().sizeState.value
         )
 
         target.setSize(IntSize(0, 0))
         assertEquals(
-            expected = null,
+            expected = IntSize(0, 0),
             actual = target.sizeState.value
         )
         assertEquals(
-            expected = null,
+            expected = IntSize(0, 0),
             actual = target.getSizeResolver().sizeState.value
         )
 

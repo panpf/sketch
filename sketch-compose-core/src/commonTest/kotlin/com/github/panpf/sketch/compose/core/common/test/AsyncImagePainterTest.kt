@@ -1,5 +1,10 @@
 package com.github.panpf.sketch.compose.core.common.test
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
@@ -7,22 +12,28 @@ import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQ
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
+import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.AsyncImagePainter
 import com.github.panpf.sketch.AsyncImageState
 import com.github.panpf.sketch.asImage
+import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.rememberAsyncImagePainter
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.LifecycleContainer
 import com.github.panpf.sketch.test.utils.SizeColorPainter
 import com.github.panpf.sketch.test.utils.TestLifecycle
 import com.github.panpf.sketch.test.utils.fakeSuccessImageResult
+import com.github.panpf.sketch.util.toIntSize
+import com.github.panpf.sketch.util.windowContainerSize
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertSame
+import kotlin.test.assertTrue
 
 @OptIn(ExperimentalTestApi::class)
 class AsyncImagePainterTest {
@@ -201,5 +212,313 @@ class AsyncImagePainterTest {
             expected = "AsyncImagePainter(state=${asyncImageState})",
             actual = element.toString()
         )
+    }
+
+    @Test
+    fun testImageNoBounded() {
+        val (_, sketch) = getTestContextAndSketch()
+
+        // has bounded
+        runComposeUiTest {
+            var stateHolder: AsyncImageState? = null
+            var windowContainerSizeHolder: IntSize? = null
+            setContent {
+                windowContainerSizeHolder = windowContainerSize()
+                LifecycleContainer {
+                    Box(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        val state = rememberAsyncImageState().apply {
+                            stateHolder = this
+                        }
+                        Image(
+                            painter = rememberAsyncImagePainter(
+                                uri = ResourceImages.jpeg.uri,
+                                sketch = sketch,
+                                state = state
+                            ),
+                            contentDescription = "test image",
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                }
+            }
+            waitUntil(timeoutMillis = 5000) {
+                stateHolder?.result is ImageResult.Success
+            }
+            assertTrue(actual = stateHolder?.result is ImageResult.Success)
+            assertEquals(
+                expected = IntSize(
+                    windowContainerSizeHolder!!.width,
+                    windowContainerSizeHolder!!.height
+                ),
+                actual = (stateHolder?.result as ImageResult.Success).resize.size.toIntSize()
+            )
+        }
+
+        /*
+         * AsyncImagePainter requires the drawing size to load the image as the request size when drawing,
+         * but the image here is 0 when width or height is 0, and it will not go to the drawing stage, so the request will never be executed.
+         */
+//        // width is not bounded
+//        runComposeUiTest {
+//            var stateHolder: AsyncImageState? = null
+//            var windowContainerSizeHolder: IntSize? = null
+//            setContent {
+//                windowContainerSizeHolder = windowContainerSize()
+//                LifecycleContainer {
+//                    Box(
+//                        modifier = Modifier.fillMaxSize().horizontalScroll(rememberScrollState())
+//                    ) {
+//                        val state = rememberAsyncImageState().apply {
+//                            stateHolder = this
+//                        }
+//                        Image(
+//                            painter = rememberAsyncImagePainter(
+//                                uri = ResourceImages.jpeg.uri,
+//                                sketch = sketch,
+//                                state = state
+//                            ),
+//                            contentDescription = "test image",
+//                            modifier = Modifier.fillMaxSize()
+//                        )
+//                    }
+//                }
+//            }
+//            waitUntil(timeoutMillis = 5000) {
+//                stateHolder?.result is ImageResult.Success
+//            }
+//            assertTrue(actual = stateHolder?.result is ImageResult.Success)
+//            assertEquals(
+//                expected = IntSize(0, windowContainerSizeHolder!!.height),
+//                actual = (stateHolder?.result as ImageResult.Success).resize.size.toIntSize()
+//            )
+//        }
+//
+//        // height is not bounded
+//        runComposeUiTest {
+//            var stateHolder: AsyncImageState? = null
+//            var windowContainerSizeHolder: IntSize? = null
+//            setContent {
+//                windowContainerSizeHolder = windowContainerSize()
+//                LifecycleContainer {
+//                    Box(
+//                        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+//                    ) {
+//                        val state = rememberAsyncImageState().apply {
+//                            stateHolder = this
+//                        }
+//                        Image(
+//                            painter = rememberAsyncImagePainter(
+//                                uri = ResourceImages.jpeg.uri,
+//                                sketch = sketch,
+//                                state = state
+//                            ),
+//                            contentDescription = "test image",
+//                            modifier = Modifier.fillMaxSize()
+//                        )
+//                    }
+//                }
+//            }
+//            waitUntil(timeoutMillis = 5000) {
+//                stateHolder?.result is ImageResult.Success
+//            }
+//            assertTrue(actual = stateHolder?.result is ImageResult.Success)
+//            assertEquals(
+//                expected = IntSize(windowContainerSizeHolder!!.width, 0),
+//                actual = (stateHolder?.result as ImageResult.Success).resize.size.toIntSize()
+//            )
+//        }
+//
+//        // width height is not bounded
+//        runComposeUiTest {
+//            var stateHolder: AsyncImageState? = null
+//            var windowContainerSizeHolder: IntSize? = null
+//            setContent {
+//                windowContainerSizeHolder = windowContainerSize()
+//                LifecycleContainer {
+//                    Box(
+//                        modifier = Modifier.fillMaxSize().horizontalScroll(rememberScrollState()).verticalScroll(
+//                            rememberScrollState()
+//                        )
+//                    ) {
+//                        val state = rememberAsyncImageState().apply {
+//                            stateHolder = this
+//                        }
+//                        Image(
+//                            painter = rememberAsyncImagePainter(
+//                                uri = ResourceImages.jpeg.uri,
+//                                sketch = sketch,
+//                                state = state
+//                            ),
+//                            contentDescription = "test image",
+//                            modifier = Modifier.fillMaxSize()
+//                        )
+//                    }
+//                }
+//            }
+//            waitUntil(timeoutMillis = 5000) {
+//                stateHolder?.result is ImageResult.Success
+//            }
+//            assertTrue(actual = stateHolder?.result is ImageResult.Success)
+//            assertEquals(
+//                expected = IntSize(0, 0),
+//                actual = (stateHolder?.result as ImageResult.Success).resize.size.toIntSize()
+//            )
+//        }
+    }
+
+    @Test
+    fun testImageNoBounded2() {
+        val (_, sketch) = getTestContextAndSketch()
+
+        // has bounded
+        runComposeUiTest {
+            var stateHolder: AsyncImageState? = null
+            var windowContainerSizeHolder: IntSize? = null
+            setContent {
+                windowContainerSizeHolder = windowContainerSize()
+                LifecycleContainer {
+                    Box(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        val state = rememberAsyncImageState().apply {
+                            stateHolder = this
+                        }
+                        Image(
+                            painter = rememberAsyncImagePainter(
+                                uri = ResourceImages.jpeg.uri,
+                                sketch = sketch,
+                                state = state
+                            ),
+                            contentDescription = "test image",
+                            modifier = Modifier.wrapContentSize()
+                        )
+                    }
+                }
+            }
+            waitUntil(timeoutMillis = 5000) {
+                stateHolder?.result is ImageResult.Success
+            }
+            assertTrue(actual = stateHolder?.result is ImageResult.Success)
+            assertEquals(
+                expected = IntSize(
+                    windowContainerSizeHolder!!.width,
+                    windowContainerSizeHolder!!.height
+                ),
+                actual = (stateHolder?.result as ImageResult.Success).resize.size.toIntSize()
+            )
+        }
+
+        /*
+         * AsyncImagePainter requires the drawing size to load the image as the request size when drawing,
+         * but the image here is 0 when width or height is 0, and it will not go to the drawing stage, so the request will never be executed.
+         */
+//        // width is not bounded
+//        runComposeUiTest {
+//            var stateHolder: AsyncImageState? = null
+//            var windowContainerSizeHolder: IntSize? = null
+//            setContent {
+//                windowContainerSizeHolder = windowContainerSize()
+//                LifecycleContainer {
+//                    Box(
+//                        modifier = Modifier.fillMaxSize().horizontalScroll(rememberScrollState())
+//                    ) {
+//                        val state = rememberAsyncImageState().apply {
+//                            stateHolder = this
+//                        }
+//                        Image(
+//                            painter = rememberAsyncImagePainter(
+//                                uri = ResourceImages.jpeg.uri,
+//                                sketch = sketch,
+//                                state = state
+//                            ),
+//                            contentDescription = "test image",
+//                            modifier = Modifier.wrapContentSize()
+//                        )
+//                    }
+//                }
+//            }
+//            waitUntil(timeoutMillis = 5000) {
+//                stateHolder?.result is ImageResult.Success
+//            }
+//            assertTrue(actual = stateHolder?.result is ImageResult.Success)
+//            assertEquals(
+//                expected = IntSize(0, 0),
+//                actual = (stateHolder?.result as ImageResult.Success).resize.size.toIntSize()
+//            )
+//        }
+//
+//        // height is not bounded
+//        runComposeUiTest {
+//            var stateHolder: AsyncImageState? = null
+//            var windowContainerSizeHolder: IntSize? = null
+//            setContent {
+//                windowContainerSizeHolder = windowContainerSize()
+//                LifecycleContainer {
+//                    Box(
+//                        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+//                    ) {
+//                        val state = rememberAsyncImageState().apply {
+//                            stateHolder = this
+//                        }
+//                        Image(
+//                            painter = rememberAsyncImagePainter(
+//                                uri = ResourceImages.jpeg.uri,
+//                                sketch = sketch,
+//                                state = state
+//                            ),
+//                            contentDescription = "test image",
+//                            modifier = Modifier.wrapContentSize()
+//                        )
+//                    }
+//                }
+//            }
+//            waitUntil(timeoutMillis = 5000) {
+//                stateHolder?.result is ImageResult.Success
+//            }
+//            assertTrue(actual = stateHolder?.result is ImageResult.Success)
+//            assertEquals(
+//                expected = IntSize(0, 0),
+//                actual = (stateHolder?.result as ImageResult.Success).resize.size.toIntSize()
+//            )
+//        }
+//
+//        // width height is not bounded
+//        runComposeUiTest {
+//            var stateHolder: AsyncImageState? = null
+//            var windowContainerSizeHolder: IntSize? = null
+//            setContent {
+//                windowContainerSizeHolder = windowContainerSize()
+//                LifecycleContainer {
+//                    Box(
+//                        modifier = Modifier.fillMaxSize().horizontalScroll(rememberScrollState()).verticalScroll(
+//                            rememberScrollState()
+//                        )
+//                    ) {
+//                        val state = rememberAsyncImageState().apply {
+//                            stateHolder = this
+//                        }
+//                        Image(
+//                            painter = rememberAsyncImagePainter(
+//                                uri = ResourceImages.jpeg.uri,
+//                                sketch = sketch,
+//                                state = state
+//                            ),
+//                            contentDescription = "test image",
+//                            modifier = Modifier.wrapContentSize()
+//                        )
+//                    }
+//                }
+//            }
+//            waitUntil(timeoutMillis = 5000) {
+//                stateHolder?.result is ImageResult.Success
+//            }
+//            assertTrue(actual = stateHolder?.result is ImageResult.Success)
+//            assertEquals(
+//                expected = IntSize(0, 0),
+//                actual = (stateHolder?.result as ImageResult.Success).resize.size.toIntSize()
+//            )
+//        }
     }
 }
