@@ -53,13 +53,17 @@ import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.fakeSuccessImageResult
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.test.utils.similarity
 import com.github.panpf.sketch.test.utils.toPreviewBitmap
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.div
+import com.github.panpf.sketch.util.screenSize
 import com.github.panpf.sketch.util.toHexString
+import com.github.panpf.sketch.util.toIntSize
 import com.github.panpf.sketch.util.toSize
+import com.github.panpf.sketch.util.windowContainerSize
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -80,6 +84,10 @@ class AsyncImageStateTest {
                     rememberAsyncImageState().apply {
                         assertEquals(expected = testLifecycle, actual = lifecycle)
                         assertEquals(expected = false, actual = inspectionMode)
+                        assertEquals(
+                            expected = windowContainerSize(),
+                            actual = target.windowContainerSize
+                        )
                         assertEquals(expected = null, actual = imageOptions)
                     }
 
@@ -87,6 +95,10 @@ class AsyncImageStateTest {
                         rememberAsyncImageState().apply {
                             assertEquals(expected = GlobalLifecycle, actual = lifecycle)
                             assertEquals(expected = true, actual = inspectionMode)
+                            assertEquals(
+                                expected = windowContainerSize(),
+                                actual = target.windowContainerSize
+                            )
                             assertEquals(expected = null, actual = imageOptions)
                         }
                     }
@@ -94,6 +106,10 @@ class AsyncImageStateTest {
                     rememberAsyncImageState(ImageOptions { size(101, 202) }).apply {
                         assertEquals(expected = testLifecycle, actual = lifecycle)
                         assertEquals(expected = false, actual = inspectionMode)
+                        assertEquals(
+                            expected = windowContainerSize(),
+                            actual = target.windowContainerSize
+                        )
                         assertEquals(
                             expected = ImageOptions { size(101, 202) },
                             actual = imageOptions
@@ -106,6 +122,10 @@ class AsyncImageStateTest {
                         assertEquals(expected = testLifecycle, actual = lifecycle)
                         assertEquals(expected = false, actual = inspectionMode)
                         assertEquals(
+                            expected = windowContainerSize(),
+                            actual = target.windowContainerSize
+                        )
+                        assertEquals(
                             expected = ImageOptions { size(202, 101) },
                             actual = imageOptions
                         )
@@ -117,19 +137,36 @@ class AsyncImageStateTest {
 
     @Test
     fun testConstructor() {
-        AsyncImageState(true, GlobalLifecycle, ImageOptions())
-
-        AsyncImageState(
-            inspectionMode = false,
-            lifecycle = GlobalLifecycle,
-            imageOptions = ImageOptions()
-        )
+        val context = getTestContext()
+        runComposeUiTest {
+            setContent {
+                AsyncImageState(
+                    context = context,
+                    inspectionMode = false,
+                    lifecycle = GlobalLifecycle,
+                    imageOptions = ImageOptions()
+                ).apply {
+                    assertEquals(expected = GlobalLifecycle, actual = lifecycle)
+                    assertEquals(expected = false, actual = inspectionMode)
+                    assertEquals(
+                        expected = context.screenSize().toIntSize(),
+                        actual = target.windowContainerSize
+                    )
+                    assertEquals(
+                        expected = ImageOptions(),
+                        actual = imageOptions
+                    )
+                }
+            }
+        }
     }
 
     @Test
     fun testLifecycle() {
+        val context = getTestContext()
         val lifecycle = GlobalLifecycle
         val asyncImageState = AsyncImageState(
+            context = context,
             inspectionMode = false,
             lifecycle = lifecycle,
             imageOptions = ImageOptions()
@@ -142,7 +179,9 @@ class AsyncImageStateTest {
 
     @Test
     fun testImageOptions() {
+        val context = getTestContext()
         val asyncImageState1 = AsyncImageState(
+            context = context,
             inspectionMode = false,
             lifecycle = GlobalLifecycle,
             imageOptions = null
@@ -153,6 +192,7 @@ class AsyncImageStateTest {
         )
 
         val asyncImageState2 = AsyncImageState(
+            context = context,
             inspectionMode = false,
             lifecycle = GlobalLifecycle,
             imageOptions = ImageOptions()
@@ -165,7 +205,9 @@ class AsyncImageStateTest {
 
     @Test
     fun testContentScale() {
+        val context = getTestContext()
         val asyncImageState = AsyncImageState(
+            context = context,
             inspectionMode = false,
             lifecycle = GlobalLifecycle,
             imageOptions = ImageOptions()
@@ -301,6 +343,7 @@ class AsyncImageStateTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "http://sample.com/sample.jpeg")
         val asyncImageState = AsyncImageState(
+            context = context,
             inspectionMode = false,
             lifecycle = GlobalLifecycle,
             imageOptions = ImageOptions()
@@ -340,7 +383,10 @@ class AsyncImageStateTest {
 
     @Test
     fun testSize() {
+        val context = getTestContext()
+        val windowContainerSize = context.screenSize()
         val asyncImageState = AsyncImageState(
+            context = context,
             inspectionMode = false,
             lifecycle = GlobalLifecycle,
             imageOptions = ImageOptions()
@@ -354,43 +400,43 @@ class AsyncImageStateTest {
 
         asyncImageState.setSize(IntSize(0, 1000))
         assertEquals(
-            expected = IntSize(0, 1000),
+            expected = IntSize(windowContainerSize.width, 1000),
             actual = asyncImageState.size
         )
         assertEquals(
-            expected = IntSize(0, 1000),
+            expected = IntSize(windowContainerSize.width, 1000),
             actual = asyncImageState.target.sizeState.value
         )
         assertEquals(
-            expected = IntSize(0, 1000),
+            expected = IntSize(windowContainerSize.width, 1000),
             actual = asyncImageState.target.getSizeResolver().sizeState.value
         )
 
         asyncImageState.setSize(IntSize(1000, 0))
         assertEquals(
-            expected = IntSize(1000, 0),
+            expected = IntSize(1000, windowContainerSize.height),
             actual = asyncImageState.size
         )
         assertEquals(
-            expected = IntSize(1000, 0),
+            expected = IntSize(1000, windowContainerSize.height),
             actual = asyncImageState.target.sizeState.value
         )
         assertEquals(
-            expected = IntSize(1000, 0),
+            expected = IntSize(1000, windowContainerSize.height),
             actual = asyncImageState.target.getSizeResolver().sizeState.value
         )
 
         asyncImageState.setSize(IntSize(0, 0))
         assertEquals(
-            expected = IntSize(0, 0),
+            expected = IntSize(windowContainerSize.width, windowContainerSize.height),
             actual = asyncImageState.size
         )
         assertEquals(
-            expected = IntSize(0, 0),
+            expected = IntSize(windowContainerSize.width, windowContainerSize.height),
             actual = asyncImageState.target.sizeState.value
         )
         assertEquals(
-            expected = IntSize(0, 0),
+            expected = IntSize(windowContainerSize.width, windowContainerSize.height),
             actual = asyncImageState.target.getSizeResolver().sizeState.value
         )
 
@@ -405,7 +451,9 @@ class AsyncImageStateTest {
 
     @Test
     fun testRemembered() {
+        val context = getTestContext()
         val asyncImageState = AsyncImageState(
+            context = context,
             inspectionMode = false,
             lifecycle = GlobalLifecycle,
             imageOptions = ImageOptions()
@@ -454,6 +502,7 @@ class AsyncImageStateTest {
         val (context, sketch) = getTestContextAndSketch()
         var throwable: Throwable?
         val asyncImageState = AsyncImageState(
+            context = context,
             inspectionMode = true,
             lifecycle = GlobalLifecycle,
             imageOptions = ImageOptions()
@@ -587,6 +636,7 @@ class AsyncImageStateTest {
         }
         val (context, sketch) = getTestContextAndSketch()
         val asyncImageState = AsyncImageState(
+            context = context,
             inspectionMode = true,
             lifecycle = GlobalLifecycle,
             imageOptions = ImageOptions()
@@ -640,6 +690,7 @@ class AsyncImageStateTest {
 
         val resourceImage = ResourceImages.jpeg
         val asyncImageState = AsyncImageState(
+            context = context,
             inspectionMode = false,
             lifecycle = GlobalLifecycle,
             imageOptions = ImageOptions {
@@ -790,6 +841,7 @@ class AsyncImageStateTest {
 
         val resourceImage = ResourceImages.jpeg
         val asyncImageState = AsyncImageState(
+            context = context,
             inspectionMode = false,
             lifecycle = GlobalLifecycle,
             imageOptions = ImageOptions {
@@ -852,6 +904,7 @@ class AsyncImageStateTest {
             // success
             runComposeUiTest {
                 val asyncImageState = AsyncImageState(
+                    context = context,
                     inspectionMode = false,
                     lifecycle = GlobalLifecycle,
                     imageOptions = ImageOptions {
@@ -989,6 +1042,7 @@ class AsyncImageStateTest {
             // error
             runComposeUiTest {
                 val asyncImageState = AsyncImageState(
+                    context = context,
                     inspectionMode = false,
                     lifecycle = GlobalLifecycle,
                     imageOptions = ImageOptions {
@@ -1118,12 +1172,11 @@ class AsyncImageStateTest {
 
     @Test
     fun testEqualsAndHashCode() = runTest {
+        val context = getTestContext()
         val lifecycle = GlobalLifecycle
         val imageOptions = ImageOptions()
-        val element1 =
-            AsyncImageState(true, lifecycle, imageOptions)
-        val element11 =
-            AsyncImageState(true, lifecycle, imageOptions)
+        val element1 = AsyncImageState(context, true, lifecycle, imageOptions)
+        val element11 = AsyncImageState(context, true, lifecycle, imageOptions)
 
         assertNotEquals(illegal = element1, actual = element11)
         assertNotEquals(illegal = element1, actual = null as Any?)
@@ -1134,8 +1187,8 @@ class AsyncImageStateTest {
 
     @Test
     fun testToString() = runTest {
-        val asyncImageState =
-            AsyncImageState(true, GlobalLifecycle, ImageOptions())
+        val context = getTestContext()
+        val asyncImageState = AsyncImageState(context, true, GlobalLifecycle, ImageOptions())
         assertEquals(
             expected = "AsyncImageState@${asyncImageState.toHexString()}",
             actual = asyncImageState.toString()

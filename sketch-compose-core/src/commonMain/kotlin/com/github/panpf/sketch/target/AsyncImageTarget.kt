@@ -29,6 +29,7 @@ import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.PainterState
 import com.github.panpf.sketch.PainterState.Loading
+import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
@@ -41,6 +42,9 @@ import com.github.panpf.sketch.resize.AsyncImageSizeResolver
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.target.internal.AsyncImageListener
 import com.github.panpf.sketch.util.fitScale
+import com.github.panpf.sketch.util.isEmpty
+import com.github.panpf.sketch.util.screenSize
+import com.github.panpf.sketch.util.toIntSize
 import com.github.panpf.sketch.util.toScale
 
 /**
@@ -48,7 +52,8 @@ import com.github.panpf.sketch.util.toScale
  *
  * @see com.github.panpf.sketch.compose.core.common.test.target.AsyncImageTargetTest
  */
-class AsyncImageTarget(
+class AsyncImageTarget constructor(
+    private val context: PlatformContext,
     private val lifecycle: Lifecycle,
     private val imageOptions: ImageOptions?,
 ) : GenericComposeTarget() {
@@ -78,6 +83,14 @@ class AsyncImageTarget(
             listener.onLoadState = value
         }
 
+    var windowContainerSize: IntSize = context.screenSize().toIntSize()
+        set(value) {
+            require(!value.isEmpty()) {
+                "windowContainerSize must not be empty: $value"
+            }
+            field = value
+        }
+
     override val painter: Painter?
         get() = painterMutableState.value
 
@@ -102,8 +115,14 @@ class AsyncImageTarget(
     }
 
     fun setSize(size: IntSize) {
-        this.sizeMutableState.value = size
-        this.sizeResolver.sizeState.value = size
+        // If the width or height is 0, it means that the constraint of the component is to wrap content.
+        // In this case, the size of the window container can be used instead.
+        val limitedSize = IntSize(
+            width = if (size.width > 0) size.width else windowContainerSize.width,
+            height = if (size.height > 0) size.height else windowContainerSize.height
+        )
+        this.sizeMutableState.value = limitedSize
+        this.sizeResolver.sizeState.value = limitedSize
     }
 
     fun onRemembered() {
@@ -169,18 +188,20 @@ class AsyncImageTarget(
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as AsyncImageTarget
+        if (context != other.context) return false
         if (lifecycle != other.lifecycle) return false
         if (imageOptions != other.imageOptions) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = lifecycle.hashCode()
+        var result = context.hashCode()
+        result = 31 * result + (lifecycle.hashCode())
         result = 31 * result + (imageOptions?.hashCode() ?: 0)
         return result
     }
 
     override fun toString(): String {
-        return "AsyncImageTarget(lifecycle=$lifecycle, options=$imageOptions)"
+        return "AsyncImageTarget(context=$context, lifecycle=$lifecycle, options=$imageOptions)"
     }
 }

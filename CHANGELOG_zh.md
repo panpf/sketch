@@ -9,8 +9,11 @@
 
 # new
 
+compose:
+
 * fix: 修复 AsyncImage 和 SubcomposeAsyncImage 在组件大小为 0 时无法加载图片的
   bug。 [#236](https://github.com/panpf/sketch/issues/236)
+* improve: 恢复 AsyncImage 和 SubcomposeAsyncImage 在设置 size 时如果宽或高为 0 就替换为窗口容器大小的功能
 
 # 4.0.3
 
@@ -18,6 +21,8 @@
   bug。 [#232](https://github.com/panpf/sketch/issues/232)
 
 # 4.0.2
+
+compose:
 
 * fix: 当前窗口大小改变时 AsyncImage
   组件会重新加载。 [#231](https://github.com/panpf/sketch/issues/231)

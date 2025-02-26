@@ -11,8 +11,12 @@ Translations: [简体中文](CHANGELOG_zh.md)
 
 # new
 
+compose:
+
 * fix: Fixed a bug where AsyncImage and SubcomposeAsyncImage could not load images when component
   size is 0. [#236](https://github.com/panpf/sketch/issues/236)
+* improve: Restore AsyncImage and SubcomposeAsyncImage function to replace window container size if
+  width or height is 0 when setting size
 
 # 4.0.3
 
@@ -20,6 +24,8 @@ Translations: [简体中文](CHANGELOG_zh.md)
   file. [#232](https://github.com/panpf/sketch/issues/232)
 
 # 4.0.2
+
+compose:
 
 * fix: The AsyncImage component is reloaded when the current window size
   changes. [#231](https://github.com/panpf/sketch/issues/231)

@@ -41,6 +41,7 @@ import com.github.panpf.sketch.target.AsyncImageTarget
 import com.github.panpf.sketch.util.RememberedCounter
 import com.github.panpf.sketch.util.difference
 import com.github.panpf.sketch.util.toHexString
+import com.github.panpf.sketch.util.windowContainerSize
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -58,10 +59,14 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun rememberAsyncImageState(options: ImageOptions? = null): AsyncImageState {
+    val context = LocalPlatformContext.current
     val inspectionMode = LocalInspectionMode.current
     val lifecycle = if (inspectionMode) GlobalLifecycle else LocalLifecycleOwner.current.lifecycle
-    return remember(inspectionMode, lifecycle, options) {
-        AsyncImageState(inspectionMode, lifecycle, options)
+    val windowContainerSize = windowContainerSize()
+    return remember(context, inspectionMode, lifecycle, options) {
+        AsyncImageState(context, inspectionMode, lifecycle, options)
+    }.apply {
+        this@apply.target.windowContainerSize = windowContainerSize
     }
 }
 
@@ -72,11 +77,15 @@ fun rememberAsyncImageState(options: ImageOptions? = null): AsyncImageState {
  */
 @Composable
 fun rememberAsyncImageState(optionsLazy: () -> ImageOptions): AsyncImageState {
+    val context = LocalPlatformContext.current
     val inspectionMode = LocalInspectionMode.current
     val lifecycle = if (inspectionMode) GlobalLifecycle else LocalLifecycleOwner.current.lifecycle
-    return remember(inspectionMode, lifecycle) {
+    val windowContainerSize = windowContainerSize()
+    return remember(context, inspectionMode, lifecycle) {
         val options = optionsLazy.invoke()
-        AsyncImageState(inspectionMode, lifecycle, options)
+        AsyncImageState(context, inspectionMode, lifecycle, options)
+    }.apply {
+        this@apply.target.windowContainerSize = windowContainerSize
     }
 }
 
@@ -87,12 +96,13 @@ fun rememberAsyncImageState(optionsLazy: () -> ImageOptions): AsyncImageState {
  */
 @Stable
 class AsyncImageState internal constructor(
+    val context: PlatformContext,
     val inspectionMode: Boolean,
     val lifecycle: Lifecycle,
     val imageOptions: ImageOptions?,
 ) : RememberObserver {
 
-    internal val target = AsyncImageTarget(lifecycle, imageOptions)
+    internal val target = AsyncImageTarget(context, lifecycle, imageOptions)
     internal var lastRequest: ImageRequest? = null
     internal var loadImageJob: Job? = null
     internal var coroutineScope: CoroutineScope? = null

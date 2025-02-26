@@ -27,6 +27,7 @@ import com.github.panpf.sketch.test.utils.LifecycleContainer
 import com.github.panpf.sketch.test.utils.SizeColorPainter
 import com.github.panpf.sketch.test.utils.TestLifecycle
 import com.github.panpf.sketch.test.utils.fakeSuccessImageResult
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.toIntSize
 import com.github.panpf.sketch.util.windowContainerSize
 import kotlin.test.Test
@@ -151,6 +152,7 @@ class AsyncImagePainterTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "http://sample.com/sample.jpeg")
         val asyncImageState = AsyncImageState(
+            context = context,
             inspectionMode = false,
             lifecycle = TestLifecycle(),
             imageOptions = null
@@ -177,12 +179,15 @@ class AsyncImagePainterTest {
 
     @Test
     fun testEqualsAndHashCode() {
+        val context = getTestContext()
         val asyncImageState1 = AsyncImageState(
+            context = context,
             inspectionMode = false,
             lifecycle = TestLifecycle(),
             imageOptions = null
         )
         val asyncImageState2 = AsyncImageState(
+            context = context,
             inspectionMode = false,
             lifecycle = TestLifecycle(),
             imageOptions = null
@@ -202,7 +207,9 @@ class AsyncImagePainterTest {
 
     @Test
     fun testToString() {
+        val context = getTestContext()
         val asyncImageState = AsyncImageState(
+            context = context,
             inspectionMode = false,
             lifecycle = TestLifecycle(),
             imageOptions = null

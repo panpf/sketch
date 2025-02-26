@@ -22,8 +22,12 @@ import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.test.utils.fakeErrorImageResult
 import com.github.panpf.sketch.test.utils.fakeSuccessImageResult
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.util.screenSize
+import com.github.panpf.sketch.util.toIntSize
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertSame
 
@@ -31,10 +35,70 @@ class AsyncImageTargetTest {
 
     @Test
     fun testConstructor() {
+        val context = getTestContext()
         AsyncImageTarget(
+            context = context,
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
         )
+    }
+
+    @Test
+    fun testWindowContainerSize() {
+        val context = getTestContext()
+        AsyncImageTarget(
+            context = context,
+            lifecycle = TestLifecycle(),
+            imageOptions = ImageOptions(),
+        ).apply {
+            assertEquals(expected = context.screenSize().toIntSize(), actual = windowContainerSize)
+        }
+
+        assertFailsWith(IllegalArgumentException::class) {
+            AsyncImageTarget(
+                context = context,
+                lifecycle = TestLifecycle(),
+                imageOptions = ImageOptions(),
+            ).apply {
+                windowContainerSize = IntSize(0, 1000)
+            }
+        }
+        assertFailsWith(IllegalArgumentException::class) {
+            AsyncImageTarget(
+                context = context,
+                lifecycle = TestLifecycle(),
+                imageOptions = ImageOptions(),
+            ).apply {
+                windowContainerSize = IntSize(-1, 1000)
+            }
+        }
+        assertFailsWith(IllegalArgumentException::class) {
+            AsyncImageTarget(
+                context = context,
+                lifecycle = TestLifecycle(),
+                imageOptions = ImageOptions(),
+            ).apply {
+                windowContainerSize = IntSize(1000, 0)
+            }
+        }
+        assertFailsWith(IllegalArgumentException::class) {
+            AsyncImageTarget(
+                context = context,
+                lifecycle = TestLifecycle(),
+                imageOptions = ImageOptions(),
+            ).apply {
+                windowContainerSize = IntSize(1000, -1)
+            }
+        }
+        AsyncImageTarget(
+            context = context,
+            lifecycle = TestLifecycle(),
+            imageOptions = ImageOptions(),
+        ).apply {
+            windowContainerSize = IntSize(3000, 2000)
+        }.apply {
+            assertEquals(expected = IntSize(3000, 2000), actual = windowContainerSize)
+        }
     }
 
     @Test
@@ -42,6 +106,7 @@ class AsyncImageTargetTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "http://sample.com/sample.jpeg")
         val target = AsyncImageTarget(
+            context = context,
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
         )
@@ -101,6 +166,7 @@ class AsyncImageTargetTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "http://sample.com/sample.jpeg")
         val target = AsyncImageTarget(
+            context = context,
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
         )
@@ -126,7 +192,9 @@ class AsyncImageTargetTest {
 
     @Test
     fun testContentScale() {
+        val context = getTestContext()
         val target = AsyncImageTarget(
+            context = context,
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
         )
@@ -176,6 +244,7 @@ class AsyncImageTargetTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "http://sample.com/sample.jpeg")
         val target = AsyncImageTarget(
+            context = context,
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
         )
@@ -211,7 +280,10 @@ class AsyncImageTargetTest {
 
     @Test
     fun testSize() {
+        val context = getTestContext()
+        val windowContainerSize = context.screenSize()
         val target = AsyncImageTarget(
+            context = context,
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
         )
@@ -220,31 +292,31 @@ class AsyncImageTargetTest {
 
         target.setSize(IntSize(0, 1000))
         assertEquals(
-            expected = IntSize(0, 1000),
+            expected = IntSize(windowContainerSize.width, 1000),
             actual = target.sizeState.value
         )
         assertEquals(
-            expected = IntSize(0, 1000),
+            expected = IntSize(windowContainerSize.width, 1000),
             actual = target.getSizeResolver().sizeState.value
         )
 
         target.setSize(IntSize(1000, 0))
         assertEquals(
-            expected = IntSize(1000, 0),
+            expected = IntSize(1000, windowContainerSize.height),
             actual = target.sizeState.value
         )
         assertEquals(
-            expected = IntSize(1000, 0),
+            expected = IntSize(1000, windowContainerSize.height),
             actual = target.getSizeResolver().sizeState.value
         )
 
         target.setSize(IntSize(0, 0))
         assertEquals(
-            expected = IntSize(0, 0),
+            expected = IntSize(windowContainerSize.width, windowContainerSize.height),
             actual = target.sizeState.value
         )
         assertEquals(
-            expected = IntSize(0, 0),
+            expected = IntSize(windowContainerSize.width, windowContainerSize.height),
             actual = target.getSizeResolver().sizeState.value
         )
 
@@ -258,7 +330,9 @@ class AsyncImageTargetTest {
 
     @Test
     fun testRequestManagerAndRemembered() {
+        val context = getTestContext()
         val target = AsyncImageTarget(
+            context = context,
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
         )
@@ -283,7 +357,9 @@ class AsyncImageTargetTest {
 
     @Test
     fun testListenerAndProgressListener() {
+        val context = getTestContext()
         val target = AsyncImageTarget(
+            context = context,
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
         )
@@ -293,8 +369,10 @@ class AsyncImageTargetTest {
 
     @Test
     fun testLifecycleResolver() {
+        val context = getTestContext()
         val lifecycle = TestLifecycle()
         val target = AsyncImageTarget(
+            context = context,
             lifecycle = lifecycle,
             imageOptions = ImageOptions(),
         )
@@ -306,8 +384,10 @@ class AsyncImageTargetTest {
 
     @Test
     fun testSizeResolver() {
+        val context = getTestContext()
         val lifecycle = TestLifecycle()
         val target = AsyncImageTarget(
+            context = context,
             lifecycle = lifecycle,
             imageOptions = ImageOptions(),
         )
@@ -319,8 +399,10 @@ class AsyncImageTargetTest {
 
     @Test
     fun testScaleDecider() {
+        val context = getTestContext()
         val lifecycle = TestLifecycle()
         val target = AsyncImageTarget(
+            context = context,
             lifecycle = lifecycle,
             imageOptions = ImageOptions(),
         )
@@ -350,7 +432,9 @@ class AsyncImageTargetTest {
 
     @Test
     fun testImageOptions() {
+        val context = getTestContext()
         val target1 = AsyncImageTarget(
+            context = context,
             lifecycle = TestLifecycle(),
             imageOptions = null,
         )
@@ -360,6 +444,7 @@ class AsyncImageTargetTest {
         )
 
         val target2 = AsyncImageTarget(
+            context = context,
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
         )
@@ -374,6 +459,7 @@ class AsyncImageTargetTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "http://sample.com/sample.jpeg")
         val target = AsyncImageTarget(
+            context = context,
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
         )
@@ -413,21 +499,26 @@ class AsyncImageTargetTest {
 
     @Test
     fun testEqualsAndHashCode() {
+        val context = getTestContext()
         val lifecycle1 = TestLifecycle()
         val lifecycle2 = TestLifecycle()
         val element1 = AsyncImageTarget(
+            context = context,
             lifecycle = lifecycle1,
             imageOptions = ImageOptions(),
         )
         val element11 = AsyncImageTarget(
+            context = context,
             lifecycle = lifecycle1,
             imageOptions = ImageOptions(),
         )
         val element2 = AsyncImageTarget(
+            context = context,
             lifecycle = lifecycle2,
             imageOptions = ImageOptions(),
         )
         val element3 = AsyncImageTarget(
+            context = context,
             lifecycle = lifecycle1,
             imageOptions = ImageOptions { size(101, 202) },
         )
@@ -447,14 +538,16 @@ class AsyncImageTargetTest {
 
     @Test
     fun testToString() {
+        val context = getTestContext()
         val lifecycle = TestLifecycle()
         val options = ImageOptions()
         val target = AsyncImageTarget(
+            context = context,
             lifecycle = lifecycle,
             imageOptions = options,
         )
         assertEquals(
-            expected = "AsyncImageTarget(lifecycle=$lifecycle, options=$options)",
+            expected = "AsyncImageTarget(context=$context, lifecycle=$lifecycle, options=$options)",
             actual = target.toString()
         )
     }

@@ -283,7 +283,10 @@ class SubcomposeAsyncImageTest {
             }
             assertTrue(actual = stateHolder?.result is ImageResult.Success)
             assertEquals(
-                expected = IntSize(0, windowContainerSizeHolder!!.height),
+                expected = IntSize(
+                    windowContainerSizeHolder!!.width,
+                    windowContainerSizeHolder!!.height
+                ),
                 actual = (stateHolder?.result as ImageResult.Success).resize.size.toIntSize()
             )
         }
@@ -316,7 +319,10 @@ class SubcomposeAsyncImageTest {
             }
             assertTrue(actual = stateHolder?.result is ImageResult.Success)
             assertEquals(
-                expected = IntSize(windowContainerSizeHolder!!.width, 0),
+                expected = IntSize(
+                    windowContainerSizeHolder!!.width,
+                    windowContainerSizeHolder!!.height
+                ),
                 actual = (stateHolder?.result as ImageResult.Success).resize.size.toIntSize()
             )
         }
@@ -324,7 +330,9 @@ class SubcomposeAsyncImageTest {
         // width height is not bounded
         runComposeUiTest {
             var stateHolder: AsyncImageState? = null
+            var windowContainerSizeHolder: IntSize? = null
             setContent {
+                windowContainerSizeHolder = windowContainerSize()
                 LifecycleContainer {
                     Box(
                         modifier = Modifier.fillMaxSize().horizontalScroll(rememberScrollState())
@@ -350,7 +358,10 @@ class SubcomposeAsyncImageTest {
             }
             assertTrue(actual = stateHolder?.result is ImageResult.Success)
             assertEquals(
-                expected = IntSize(0, 0),
+                expected = IntSize(
+                    windowContainerSizeHolder!!.width,
+                    windowContainerSizeHolder!!.height
+                ),
                 actual = (stateHolder?.result as ImageResult.Success).resize.size.toIntSize()
             )
         }
@@ -424,7 +435,10 @@ class SubcomposeAsyncImageTest {
             }
             assertTrue(actual = stateHolder?.result is ImageResult.Success)
             assertEquals(
-                expected = IntSize(0, windowContainerSizeHolder!!.height),
+                expected = IntSize(
+                    windowContainerSizeHolder!!.width,
+                    windowContainerSizeHolder!!.height
+                ),
                 actual = (stateHolder?.result as ImageResult.Success).resize.size.toIntSize()
             )
         }
@@ -457,7 +471,10 @@ class SubcomposeAsyncImageTest {
             }
             assertTrue(actual = stateHolder?.result is ImageResult.Success)
             assertEquals(
-                expected = IntSize(windowContainerSizeHolder!!.width, 0),
+                expected = IntSize(
+                    windowContainerSizeHolder!!.width,
+                    windowContainerSizeHolder!!.height
+                ),
                 actual = (stateHolder?.result as ImageResult.Success).resize.size.toIntSize()
             )
         }
@@ -465,7 +482,9 @@ class SubcomposeAsyncImageTest {
         // width height is not bounded
         runComposeUiTest {
             var stateHolder: AsyncImageState? = null
+            var windowContainerSizeHolder: IntSize? = null
             setContent {
+                windowContainerSizeHolder = windowContainerSize()
                 LifecycleContainer {
                     Box(
                         modifier = Modifier.fillMaxSize().horizontalScroll(rememberScrollState())
@@ -489,7 +508,10 @@ class SubcomposeAsyncImageTest {
             }
             assertTrue(actual = stateHolder?.result is ImageResult.Success)
             assertEquals(
-                expected = IntSize(0, 0),
+                expected = IntSize(
+                    windowContainerSizeHolder!!.width,
+                    windowContainerSizeHolder!!.height
+                ),
                 actual = (stateHolder?.result as ImageResult.Success).resize.size.toIntSize()
             )
         }
