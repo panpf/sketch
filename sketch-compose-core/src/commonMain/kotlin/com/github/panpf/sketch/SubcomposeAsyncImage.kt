@@ -37,6 +37,7 @@ import com.github.panpf.sketch.PainterState.Error
 import com.github.panpf.sketch.PainterState.Loading
 import com.github.panpf.sketch.PainterState.Success
 import com.github.panpf.sketch.internal.AsyncImageContent
+import com.github.panpf.sketch.internal.requestOf
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.toRequestSize
 
@@ -84,7 +85,7 @@ fun SubcomposeAsyncImage(
     filterQuality: FilterQuality = DefaultFilterQuality,
     clipToBounds: Boolean = true,
 ) = SubcomposeAsyncImage(
-    request = ImageRequest(LocalPlatformContext.current, uri),
+    request = requestOf(LocalPlatformContext.current, uri),
     contentDescription = contentDescription,
     sketch = sketch,
     modifier = modifier,
@@ -136,7 +137,7 @@ fun SubcomposeAsyncImage(
     filterQuality: FilterQuality = DefaultFilterQuality,
     content: @Composable SubcomposeAsyncImageScope.() -> Unit,
 ) = SubcomposeAsyncImage(
-    request = ImageRequest(LocalPlatformContext.current, uri),  // TODO remember
+    request = requestOf(LocalPlatformContext.current, uri),
     contentDescription = contentDescription,
     sketch = sketch,
     modifier = modifier,

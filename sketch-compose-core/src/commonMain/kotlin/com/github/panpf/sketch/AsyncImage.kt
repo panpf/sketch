@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQ
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import com.github.panpf.sketch.internal.AsyncImageContent
+import com.github.panpf.sketch.internal.requestOf
 import com.github.panpf.sketch.request.ImageRequest
 
 /**
@@ -67,7 +68,7 @@ fun AsyncImage(
     filterQuality: FilterQuality = DefaultFilterQuality,
     clipToBounds: Boolean = true,
 ) = AsyncImage(
-    request = ImageRequest(LocalPlatformContext.current, uri),
+    request = requestOf(LocalPlatformContext.current, uri),
     contentDescription = contentDescription,
     sketch = sketch,
     modifier = modifier,

@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.toIntSize
+import com.github.panpf.sketch.internal.requestOf
 import com.github.panpf.sketch.painter.SketchPainter
 import com.github.panpf.sketch.request.ImageRequest
 
@@ -73,7 +74,7 @@ fun rememberAsyncImagePainter(
     contentScale: ContentScale = ContentScale.Fit,
     filterQuality: FilterQuality = DefaultFilterQuality,
 ): AsyncImagePainter = rememberAsyncImagePainter(
-    request = ImageRequest(LocalPlatformContext.current, uri),
+    request = requestOf(LocalPlatformContext.current, uri),
     sketch = sketch,
     state = state,
     contentScale = contentScale,
