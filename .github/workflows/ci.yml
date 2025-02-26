@@ -63,7 +63,13 @@ jobs:
           java-version: 17
 
       - name: Run package
-        run: xcodebuild -project sample/iosApp/iosApp.xcodeproj -scheme iosApp -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+        run: xcodebuild -project sample/iosApp/iosApp.xcodeproj -scheme iosApp -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO -derivedDataPath sample/build/ios/outputs/
+
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-files
+          path: sample/build/ios/outputs/Build/Products/Debug-iphonesimulator/*.app
 
   package-linux:
     name: Package linux desktop
@@ -82,6 +88,12 @@ jobs:
       - name: Run package
         run: ./gradlew sample:packageReleaseDeb
 
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: deb-files
+          path: sample/build/compose/binaries/main-release/deb/*.deb
+
   package-macos:
     name: Package macos desktop
     #    needs: test
@@ -98,6 +110,12 @@ jobs:
 
       - name: Run package
         run: ./gradlew sample:packageReleaseDmg
+
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dmg-files
+          path: sample/build/compose/binaries/main-release/dmg/*.dmg
 
   package-windows:
     name: Package windows desktop
@@ -116,6 +134,12 @@ jobs:
       - name: Run package
         run: ./gradlew sample:packageReleaseMsi
 
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: msi-files
+          path: sample/build/compose/binaries/main-release/msi/*.msi
+
   package-js:
     name: Package js browser
     #    needs: test
@@ -133,6 +157,12 @@ jobs:
       - name: Run package
         run: ./gradlew sample:jsBrowserDistribution
 
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: js-browser-files
+          path: sample/build/dist/js/productionExecutable/*
+
   package-wasm-js:
     name: Package wasm js browser
     #    needs: test
@@ -149,6 +179,12 @@ jobs:
 
       - name: Run package
         run: ./gradlew sample:wasmJsBrowserDistribution
+
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: wasm-js-browser-files
+          path: sample/build/dist/wasmJs/productionExecutable/*
 
   deploy-api-docs:
     name: Deploy API docs
