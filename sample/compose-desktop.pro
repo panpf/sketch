@@ -76,3 +76,7 @@
 -keepclassmembers class com.github.panpf.sketch.sample.<1>$Companion {
     kotlinx.serialization.KSerializer serializer(...);
 }
+
+# ----------------------------------------- Sketch Privider --------------------------------------------- #
+-keep class * implements com.github.panpf.sketch.util.DecoderProvider { *; }
+-keep class * implements com.github.panpf.sketch.util.FetcherProvider { *; }
