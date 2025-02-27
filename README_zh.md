@@ -123,8 +123,14 @@ Sketch 支持自动发现并注册 Fetcher 和 Decoder 组件，在 jvm 平台�
 
 ### R8 / Proguard
 
-Sketch 自己不需要配置任何混淆规则，但你可能需要为间接依赖的 [Kotlin Coroutines], [OkHttp], [Okio]
-添加混淆配置
+1. Android、iOS、Web 等平台不需要配置任何混淆规则
+2. 桌面平台需要配置以下混淆规则：
+    ```proguard
+    # -------------------------- Sketch Privider ---------------------------- #
+    -keep class * implements com.github.panpf.sketch.util.DecoderProvider { *; }
+    -keep class * implements com.github.panpf.sketch.util.FetcherProvider { *; }
+    ```
+3. 可能还需要为间接依赖的 [Kotlin Coroutines], [OkHttp], [Okio] 等三方库添加混淆配置
 
 ## 快速上手
 

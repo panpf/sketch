@@ -140,8 +140,15 @@ registration: [《Register component》][register_component]
 
 ### R8 / Proguard
 
-Sketch itself does not need to configure any obfuscation rules, but you may need to configure it for
-the indirectly dependent [Kotlin Coroutines], [OkHttp], [Okio] Add obfuscation configuration
+1. Android, iOS, Web and other platforms do not need to configure any obfuscation rules
+2. The following obfuscation rules are required for desktop platforms:
+    ```proguard
+    # -------------------------- Sketch Privider ---------------------------- #
+    -keep class * implements com.github.panpf.sketch.util.DecoderProvider { *; }
+    -keep class * implements com.github.panpf.sketch.util.FetcherProvider { *; }
+    ```
+3. It may also be necessary to add obfuscation configurations to the indirect dependencies of
+   three-party libraries such as [Kotlin Coroutines], [OkHttp], [Okio]
 
 ## Quickly Started
 
