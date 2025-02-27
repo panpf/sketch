@@ -1,0 +1,144 @@
+# Built with https://github.com/squidfunk/mkdocs-material
+
+site_name: 'Sketch Image Loader'
+site_url: 'https://github.com/panpf/sketch'
+site_author: '2024 panpf'
+site_description: 'An image loading library designed for Compose Multiplatform and Android View. It is powerful and rich in functions. In addition to basic functions, it also supports GIF, SVG, video thumbnails, Exif Orientation, etc.'
+
+repo_name: 'Sketch'
+repo_url: 'https://github.com/panpf/sketch'
+
+copyright: 'Copyright &copy; 2024 panpf'
+
+theme:
+  name: 'material'
+  language: 'en'
+  favicon: 'images/logo.ico'
+  logo: 'images/logo.png'
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: white
+      accent: white
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: black
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: 'JetBrains'
+    code: 'JetBrains Mono'
+  features:
+    - content.tabs
+    - content.code.annotate
+    - content.code.copy
+    #    - navigation.tabs
+    #    - navigation.top
+    - navigation.indexes
+    - navigation.sections
+    - navigation.expand
+    - navigation.footer
+    - navigation.instant
+    - navigation.tracking
+    - search.highlight
+    - search.suggest
+    - search.share
+
+extra:
+  social:
+    - icon: 'fontawesome/brands/github'
+      link: 'https://github.com/panpf/sketch'
+
+nav:
+  - 'Overview': index.md
+  - 'Getting Started': getting_started.md
+  - 'Register Component': register_component.md
+  - 'Compose': compose.md
+  - 'Http': http.md
+  - 'Animated Image': animated_image.md
+  - 'Resize': resize.md
+  - 'Transformation': transformation.md
+  - 'Transition': transition.md
+  - 'StateImage': state_image.md
+  - 'Listener': listener.md
+  - 'DownloadCache': download_cache.md
+  - 'ResultCache': result_cache.md
+  - 'MemoryCache': memory_cache.md
+  - 'Fetcher': fetcher.md
+  - 'Decoder': decoder.md
+  - 'Target': target.md
+  - 'SVG': svg.md
+  - 'Video Frames': video_frame.md
+  - 'Exif Orientation': exif_orientation.md
+  - 'ImageOptions': image_options.md
+  - 'RequestInterceptor': request_interceptor.md
+  - 'DecodeInterceptor': decode_interceptor.md
+  - 'Preload': preload.md
+  - 'Download Image': download_image.md
+  - 'Lifecycle': lifecycle.md
+  - 'SketchImageView': sketch_image_view.md
+  - 'Clearer Thumbnail': long_image_grid_thumbnails.md
+  - 'Progress Indicator': progress_indicator.md
+  - 'Mime Type Logo': mime_type_logo.md
+  - 'Save Cellular Data': save_cellular_traffic.md
+  - 'Pause Load When Scrolling': pause_load_when_scrolling.md
+  - 'Apk/App Icon': apk_app_icon.md
+  - 'Log': log.md
+  - 'Migrate': migrate.md
+  - 'Change Log': CHANGELOG.md
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences  # 支持代码块嵌套
+  - pymdownx.tabbed       # 支持选项卡
+  - pymdownx.tasklist     # 支持任务列表
+  - pymdownx.emoji        # 支持 Emoji
+  - pymdownx.details      # 支持折叠内容
+  - pymdownx.highlight    # 支持代码高亮
+  - tables                # 支持表格
+  - footnotes             # 支持脚注
+  - attr_list             # 支持属性列表
+  - md_in_html            # 支持在 HTML 中嵌入 Markdown
+
+plugins:
+  - i18n:
+      docs_structure: suffix
+      default_language: en
+      languages:
+        - locale: en
+          default: true
+          name: English
+          build: true
+        - locale: zh
+          default: false
+          name: 中文
+          build: true
+  - search
+  - minify:
+      minify_html: true
+
+validation:
+  #  links:
+  #    absolute_links: ignore
+  nav:
+    omitted_files: ignore

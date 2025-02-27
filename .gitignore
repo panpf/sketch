@@ -44,3 +44,10 @@ webpack.config.d/
 # Xcode
 *.xcuserstate
 **/xcuserdata
+
+# docs
+site/
+docs/index.md
+docs/index.zh.md
+docs/CHANGELOG.md
+docs/CHANGELOG.zh.md
