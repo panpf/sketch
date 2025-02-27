@@ -5,7 +5,7 @@
 [![version_icon]][version_link]
 ![QQ Group][qq_group_image]
 
-Translations: [简体中文](README_zh.md)
+Translations: [简体中文](README.zh.md)
 
 Sketch is an image loading library specially designed for Compose Multiplatform and Android View. It
 has the following features:
@@ -360,73 +360,73 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 
 [comment]: <> (wiki)
 
-[animated_image]: docs/wiki/animated_image.md
+[animated_image]: docs/animated_image.md
 
-[apk_app_icon]: docs/wiki/apk_app_icon.md
+[apk_app_icon]: docs/apk_app_icon.md
 
-[compose]: docs/wiki/compose.md
+[compose]: docs/compose.md
 
-[decoder]: docs/wiki/decoder.md
+[decoder]: docs/decoder.md
 
-[download_cache]: docs/wiki/download_cache.md
+[download_cache]: docs/download_cache.md
 
-[exif_orientation]: docs/wiki/exif_orientation.md
+[exif_orientation]: docs/exif_orientation.md
 
-[fetcher]: docs/wiki/fetcher.md
+[fetcher]: docs/fetcher.md
 
-[getting_started]: docs/wiki/getting_started.md
+[getting_started]: docs/getting_started.md
 
-[register_component]: docs/wiki/register_component.md
+[register_component]: docs/register_component.md
 
-[http]: docs/wiki/http.md
+[http]: docs/http.md
 
-[image_options]: docs/wiki/image_options.md
+[image_options]: docs/image_options.md
 
-[lifecycle]: docs/wiki/lifecycle.md
+[lifecycle]: docs/lifecycle.md
 
-[listener]: docs/wiki/listener.md
+[listener]: docs/listener.md
 
-[log]: docs/wiki/log.md
+[log]: docs/log.md
 
-[long_image_grid_thumbnails]: docs/wiki/long_image_grid_thumbnails.md
+[long_image_grid_thumbnails]: docs/long_image_grid_thumbnails.md
 
-[memory_cache]: docs/wiki/memory_cache.md
+[memory_cache]: docs/memory_cache.md
 
-[mime_type_logo]: docs/wiki/mime_type_logo.md
+[mime_type_logo]: docs/mime_type_logo.md
 
-[pause_load_when_scrolling]: docs/wiki/pause_load_when_scrolling.md
+[pause_load_when_scrolling]: docs/pause_load_when_scrolling.md
 
-[preload]: docs/wiki/preload.md
+[preload]: docs/preload.md
 
-[download]: docs/wiki/download_image.md
+[download]: docs/download_image.md
 
-[progress_indicator]: docs/wiki/progress_indicator.md
+[progress_indicator]: docs/progress_indicator.md
 
-[request_interceptor]: docs/wiki/request_interceptor.md
+[request_interceptor]: docs/request_interceptor.md
 
-[decode_interceptor]: docs/wiki/decode_interceptor.md
+[decode_interceptor]: docs/decode_interceptor.md
 
-[resize]: docs/wiki/resize.md
+[resize]: docs/resize.md
 
-[result_cache]: docs/wiki/result_cache.md
+[result_cache]: docs/result_cache.md
 
-[save_cellular_traffic]: docs/wiki/save_cellular_traffic.md
+[save_cellular_traffic]: docs/save_cellular_traffic.md
 
-[sketch_image_view]: docs/wiki/sketch_image_view.md
+[sketch_image_view]: docs/sketch_image_view.md
 
-[state_image]: docs/wiki/state_image.md
+[state_image]: docs/state_image.md
 
-[svg]: docs/wiki/svg.md
+[svg]: docs/svg.md
 
-[target]: docs/wiki/target.md
+[target]: docs/target.md
 
-[transformation]: docs/wiki/transformation.md
+[transformation]: docs/transformation.md
 
-[transition]: docs/wiki/transition.md
+[transition]: docs/transition.md
 
-[video_frame]: docs/wiki/video_frame.md
+[video_frame]: docs/video_frame.md
 
-[migrate]: docs/wiki/migrate.md
+[migrate]: docs/migrate.md
 
 
 [comment]: <> (links)

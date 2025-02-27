@@ -286,11 +286,11 @@ jobs:
 
             \----------
 
-            更新日志请查看 [CHANGELOG.md](https://github.com/panpf/sketch/blob/main/CHANGELOG_zh.md) 文件
+            更新日志请查看 [CHANGELOG.md](https://github.com/panpf/sketch/blob/main/CHANGELOG.zh.md) 文件
 
             示例 App：
             * Android：Android 平台示例 App 见附件
             * Web：https://panpf.github.io/sketch/app
-            * 其它平台示例 App 请参考文档 [运行示例 App](https://github.com/panpf/sketch/blob/main/README_zh.md#%E8%BF%90%E8%A1%8C%E7%A4%BA%E4%BE%8B-app) 运行源代码体验
+            * 其它平台示例 App 请参考文档 [运行示例 App](https://github.com/panpf/sketch/blob/main/README.zh.md#%E8%BF%90%E8%A1%8C%E7%A4%BA%E4%BE%8B-app) 运行源代码体验
           files: ./downloaded-apks/*.apk
           make_latest: true

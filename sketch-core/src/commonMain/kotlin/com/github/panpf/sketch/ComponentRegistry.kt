@@ -110,7 +110,7 @@ open class ComponentRegistry private constructor(
             ?: throw IllegalArgumentException(
                 "No Fetcher can handle this uri '${requestContext.request.uri}', " +
                         "Please add a new Fetcher to support it, " +
-                        "refer to the documentation: https://github.com/panpf/sketch/blob/main/docs/wiki/fetcher.md"
+                        "refer to the documentation: https://github.com/panpf/sketch/blob/main/docs/fetcher.md"
             )
     }
 
@@ -138,7 +138,7 @@ open class ComponentRegistry private constructor(
     ): Decoder {
         return newDecoderOrNull(requestContext, fetchResult)
             ?: throw IllegalArgumentException(
-                "No Decoder can handle this uri '${requestContext.request.uri}', Please add a new Decoder to support it, refer to the documentation: https://github.com/panpf/sketch/blob/main/docs/wiki/decoder.md"
+                "No Decoder can handle this uri '${requestContext.request.uri}', Please add a new Decoder to support it, refer to the documentation: https://github.com/panpf/sketch/blob/main/docs/decoder.md"
             )
     }
 

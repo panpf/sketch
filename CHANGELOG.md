@@ -1,13 +1,13 @@
 # Change Log
 
-Translations: [简体中文](CHANGELOG_zh.md)
+Translations: [简体中文](CHANGELOG.zh.md)
 
 > [!CAUTION]
 > 1. The 4.x version has undergone a lot of destructive reconstruction and simplification to be
      compatible with Compose Multiplatform, and is not compatible with the 3.x version.
 > 2. The maven groupId is upgraded to `io.github.panpf.sketch4`, so versions 2.\* and 3.\* will not
      prompt for upgrade.
-> 3. Reference [《Migration Documentation》](docs/wiki/migrate.md) migrating from 3.x to 4.x
+> 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
 # 4.0.4
 

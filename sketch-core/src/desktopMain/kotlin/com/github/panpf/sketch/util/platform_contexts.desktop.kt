@@ -42,7 +42,7 @@ actual fun PlatformContext.appCacheDirectory(): Path? {
         ?.md5()
         ?: throw UnsupportedOperationException(
             "Unable to generate application aliases to automatically initialize downloadCache and resultCache, " +
-                    "please configure them manually. Documentation address 'https://github.com/panpf/sketch/blob/main/docs/wiki/getting_started.md'"
+                    "please configure them manually. Documentation address 'https://github.com/panpf/sketch/blob/main/docs/getting_started.md'"
         )
     val fakeAppName = "SketchImageLoader${File.separator}${appFlag}"
     val cacheDir = AppDirsFactory.getInstance()
