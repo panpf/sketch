@@ -4,11 +4,11 @@ Translations: [简体中文](progress_indicator_zh.md)
 
 Sketch provides extended functions for view and Compose to display download progress, as follows:
 
-![sample_progress_indicator.png](../res/sample_progress_indicator.png)
+![sample_progress_indicator.png](../images/sample_progress_indicator.png)
 
 Three styles are provided to choose from, as follows:
 
-![sample_progress_drawable.png](../res/sample_progress_drawable.png)
+![sample_progress_drawable.png](../images/sample_progress_drawable.png)
 
 > [!TIP]
 > They can also adjust color, size and behavior

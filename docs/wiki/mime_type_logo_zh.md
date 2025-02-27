@@ -4,7 +4,7 @@
 
 Sketch 为 view 和 Compose 提供了显示图片类型角标的扩展功能，如下：
 
-![sample_mime_type_logo.png](../res/sample_mime_type_logo.png)
+![sample_mime_type_logo.png](../images/sample_mime_type_logo.png)
 
 ### Compose
 

@@ -317,7 +317,7 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 
 [license_image]: https://img.shields.io/badge/License-Apache%202-blue.svg
 
-[logo_image]: docs/res/logo.png
+[logo_image]: docs/images/logo.png
 
 [license_link]: https://www.apache.org/licenses/LICENSE-2.0
 

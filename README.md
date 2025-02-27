@@ -345,7 +345,7 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 
 [license_image]: https://img.shields.io/badge/License-Apache%202-blue.svg
 
-[logo_image]: docs/res/logo.png
+[logo_image]: docs/images/logo.png
 
 [license_link]: https://www.apache.org/licenses/LICENSE-2.0
 

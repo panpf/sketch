@@ -4,7 +4,7 @@ Translations: [简体中文](mime_type_logo_zh.md)
 
 Sketch provides extended functions for displaying image type logo for view and Compose, as follows:
 
-![sample_mime_type_logo.png](../res/sample_mime_type_logo.png)
+![sample_mime_type_logo.png](../images/sample_mime_type_logo.png)
 
 ### Compose
 
