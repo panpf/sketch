@@ -1,0 +1,50 @@
+name: Deploy wiki
+
+on:
+  workflow_dispatch:
+  push:
+    branches: main
+
+jobs:
+  deploy-web-app:
+    name: Deploy wiki
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Build wiki
+        run: ./build_docs.sh
+
+      - name: Check out the gh-pages branch
+        run: |
+          git fetch origin gh-pages:gh-pages
+          git checkout gh-pages
+
+      - name: Remove old app directory
+        run: |
+          rm -rf wiki/*
+
+      - name: Create app directory
+        run: mkdir -p wiki
+
+      - name: Move build artifacts to wiki directory
+        run: |
+          mv site/* wiki/
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          commit_message: "Update wiki"
+          branch: gh-pages
+          file_pattern: wiki/*

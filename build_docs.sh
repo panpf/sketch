@@ -26,4 +26,4 @@ perl -pi -e 's|\(docs/|\(|g' docs/CHANGELOG.zh.md
 find docs -type f -name "*.md" -exec perl -pi -e 's|]: ../|]: https://github.com/panpf/sketch/blob/main/|g' {} +
 find docs -type f -name "*.md" -exec perl -pi -e 's|\(../|\(https://github.com/panpf/sketch/blob/main/|g' {} +
 
-#mkdocs build
+mkdocs build
