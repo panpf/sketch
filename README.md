@@ -24,13 +24,9 @@ has the following features:
 
 ## Sample App
 
-* Android: Please go to the [Releases](https://github.com/panpf/sketch/releases) page to download
-  the latest version of the installation package
-* Web: https://panpf.github.io/sketch/app
-* Desktop: Use [kdoctor] to check the running environment, and follow the prompts to install the
-  required software, and then execute the `./package_desktop.sh` command in the project root
-  directory to package. The installation package location is included in the output.
-* iOS: Please refer to the [Run Sample App](#Run-Sample-app) section to compile and run it yourself
+* For Android, iOS, desktop version, and web deployable packages, please go to
+  the [Releases](https://github.com/panpf/sketch/releases) page to download.
+* Web example：https://panpf.github.io/sketch/app
 
 ## Install
 
