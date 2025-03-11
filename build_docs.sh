@@ -27,3 +27,6 @@ find docs -type f -name "*.md" -exec perl -pi -e 's|]: ../|]: https://github.com
 find docs -type f -name "*.md" -exec perl -pi -e 's|\(../|\(https://github.com/panpf/sketch/blob/main/|g' {} +
 
 mkdocs build
+
+git checkout -- docs
+git clean -f -d docs
