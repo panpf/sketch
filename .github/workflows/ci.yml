@@ -342,7 +342,7 @@ jobs:
           body: |
             Please check the [CHANGELOG.md](https://github.com/panpf/sketch/blob/main/CHANGELOG.md) file for updated log.
             
-            Mobile app, desktop app and web deployable packages, see the Assets attachment.
+            Android, iOS, desktop and web packages, see the Assets attachment.
             
             Web example：https://panpf.github.io/sketch/app.
           files: ./downloaded/*
