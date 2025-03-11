@@ -148,7 +148,7 @@ jobs:
           echo "version_name=$versionName" >> $GITHUB_OUTPUT
 
       - name: Compress
-        run: cd sample/build/dist/js/productionExecutable; zip -r "sketch-sample-${{ steps.version_name_step.outputs.version_name }}-js.zip" *; cd -
+        run: cd sample/build/dist/js/productionExecutable; zip -r "sketch-sample-js-${{ steps.version_name_step.outputs.version_name }}.zip" *; cd -
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
@@ -179,7 +179,7 @@ jobs:
           echo "version_name=$versionName" >> $GITHUB_OUTPUT
 
       - name: Compress
-        run: cd sample/build/dist/wasmJs/productionExecutable; zip -r "sketch-sample-${{ steps.version_name_step.outputs.version_name }}-wasmJs.zip" *; cd -
+        run: cd sample/build/dist/wasmJs/productionExecutable; zip -r "sketch-sample-wasmJs-${{ steps.version_name_step.outputs.version_name }}.zip" *; cd -
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
