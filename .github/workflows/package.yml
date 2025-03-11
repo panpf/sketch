@@ -132,11 +132,14 @@ jobs:
       - name: Run package
         run: ./gradlew sample:jsBrowserDistribution
 
+      - name: Compress
+        run: cd sample/build/dist/js/productionExecutable; zip -r "sketch-sample-${{ github.ref }}-js.zip" *; cd -
+
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
           name: js-browser-files
-          path: sample/build/dist/js/productionExecutable/*
+          path: sample/build/dist/js/productionExecutable/*.zip
 
   package-wasm-js:
     name: Package wasm js browser
@@ -154,8 +157,11 @@ jobs:
       - name: Run package
         run: ./gradlew sample:wasmJsBrowserDistribution
 
+      - name: Compress
+        run: cd sample/build/dist/wasmJs/productionExecutable; zip -r "sketch-sample-${{ github.ref }}-wasmJs.zip" *; cd -
+
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
           name: wasm-js-browser-files
-          path: sample/build/dist/wasmJs/productionExecutable/*
+          path: sample/build/dist/js/productionExecutable/*.zip
