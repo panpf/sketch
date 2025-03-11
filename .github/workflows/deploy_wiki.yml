@@ -23,7 +23,7 @@ jobs:
 
       - name: Build wiki
         run: |
-          pip3 install --upgrade pip && pip3 install mkdocs-material mkdocs-material-extensions mkdocs-minify-plugin mkdocs-i18n-plugin
+          pip3 install --upgrade pip && pip3 install mkdocs-material mkdocs-material-extensions mkdocs-minify-plugin mkdocs-static-i18n
           ./build_docs.sh
 
       - name: Check out the gh-pages branch
