@@ -44,6 +44,15 @@ jobs:
       - name: Run package
         run: xcodebuild -project sample/iosApp/iosApp.xcodeproj -scheme iosApp -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO -derivedDataPath sample/build/ios/outputs/
 
+      - name: Read version name
+        id: version_name_step
+        run: |
+          versionName=$(grep '^versionName=' gradle.properties | awk -F'=' '{print $2}')
+          echo "version_name=$versionName" >> $GITHUB_OUTPUT
+
+      - name: File name add version
+        run: mv "sample/build/ios/outputs/Build/Products/Debug-iphonesimulator/Sketch4 Sample.app" "sample/build/ios/outputs/Build/Products/Debug-iphonesimulator/Sketch4 Sample-${{ steps.version_name_step.outputs.version_name }}.app"
+
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -132,8 +141,14 @@ jobs:
       - name: Run package
         run: ./gradlew sample:jsBrowserDistribution
 
+      - name: Read version name
+        id: version_name_step
+        run: |
+          versionName=$(grep '^versionName=' gradle.properties | awk -F'=' '{print $2}')
+          echo "version_name=$versionName" >> $GITHUB_OUTPUT
+
       - name: Compress
-        run: cd sample/build/dist/js/productionExecutable; zip -r "sketch-sample-$(git describe --tags --abbrev=0)-js.zip" *; cd -
+        run: cd sample/build/dist/js/productionExecutable; zip -r "sketch-sample-${{ steps.version_name_step.outputs.version_name }}-js.zip" *; cd -
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
@@ -157,11 +172,17 @@ jobs:
       - name: Run package
         run: ./gradlew sample:wasmJsBrowserDistribution
 
+      - name: Read version name
+        id: version_name_step
+        run: |
+          versionName=$(grep '^versionName=' gradle.properties | awk -F'=' '{print $2}')
+          echo "version_name=$versionName" >> $GITHUB_OUTPUT
+
       - name: Compress
-        run: cd sample/build/dist/wasmJs/productionExecutable; zip -r "sketch-sample-$(git describe --tags --abbrev=0)-wasmJs.zip" *; cd -
+        run: cd sample/build/dist/wasmJs/productionExecutable; zip -r "sketch-sample-${{ steps.version_name_step.outputs.version_name }}-wasmJs.zip" *; cd -
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
           name: wasm-js-browser-files
-          path: sample/build/dist/js/productionExecutable/*.zip
+          path: sample/build/dist/wasmJs/productionExecutable/*.zip
