@@ -512,37 +512,41 @@ fun <T> DropdownSetting(settingItem: DropdownSettingItem<T>) {
                 }
 
                 Spacer(modifier = Modifier.width(10.dp))
-                val value by settingItem.state.collectAsState()
-                Text(text = value.toString(), fontSize = 10.sp)
-                Icon(
-                    painter = painterResource(drawable.ic_expand_more),
-                    contentDescription = "more"
-                )
-            }
 
-            DropdownMenu(
-                expanded = expanded,
-                modifier = Modifier.align(Alignment.CenterEnd),
-                onDismissRequest = { expanded = false },
-            ) {
-                settingItem.values.forEachIndexed { index, value ->
-                    if (index > 0) {
-                        HorizontalDivider(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 14.dp)
+                Box {
+                    Row {
+                        val value by settingItem.state.collectAsState()
+                        Text(text = value.toString(), fontSize = 10.sp)
+                        Icon(
+                            painter = painterResource(drawable.ic_expand_more),
+                            contentDescription = "more"
                         )
                     }
-                    DropdownMenuItem(
-                        text = { Text(text = value.toString()) },
-                        onClick = {
-                            settingItem.state.value = value
-                            expanded = false
-                            coroutineScope.launch {
-                                settingItem.onItemClick?.invoke(value)
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                    ) {
+                        settingItem.values.forEachIndexed { index, value ->
+                            if (index > 0) {
+                                HorizontalDivider(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 14.dp)
+                                )
                             }
+                            DropdownMenuItem(
+                                text = { Text(text = value.toString()) },
+                                onClick = {
+                                    settingItem.state.value = value
+                                    expanded = false
+                                    coroutineScope.launch {
+                                        settingItem.onItemClick?.invoke(value)
+                                    }
+                                }
+                            )
                         }
-                    )
+                    }
                 }
             }
         }
