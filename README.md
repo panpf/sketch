@@ -439,9 +439,9 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 
 [Kotlin Coroutines]: https://github.com/Kotlin/kotlinx.coroutines/blob/master/kotlinx-coroutines-core/jvm/resources/META-INF/proguard/coroutines.pro
 
-[OkHttp]: https://github.com/square/okhttp/blob/master/okhttp/src/jvmMain/resources/META-INF/proguard/okhttp3.pro
+[OkHttp]: https://square.github.io/okhttp/features/r8_proguard/
 
-[Okio]: https://github.com/square/okio/blob/master/okio/src/jvmMain/resources/META-INF/proguard/okio.pro
+[Okio]: https://square.github.io/okio/
 
 
 [compose_compiler_config.conf]: sketch-core/compose_compiler_config.conf
