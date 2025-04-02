@@ -17,23 +17,77 @@
 
 package com.github.panpf.sketch.util
 
+import okio.Path
+
 /**
  * Parse this [String] into a [Uri].
  *
  * This method will not throw if the URI is malformed.
  *
+ * @param separator The path separator used to separate URI path elements. By default, this
+ *  will be '/' on UNIX systems and '\' on Windows systems.
  * @see com.github.panpf.sketch.core.common.test.util.UriTest.testToUri
  */
-fun String.toUri(): Uri = Uri(this)
+fun String.toUri(separator: String = Path.DIRECTORY_SEPARATOR): Uri {
+    var data = this
+    if (separator != "/") {
+        data = data.replace(separator, "/")
+    }
+    return Uri(
+        data = data,
+        separator = separator,
+        elementsLazy = lazyOf(parseUriElements(data = data, original = this))
+    )
+}
+
+/**
+ * Create a [Uri] from parts without parsing.
+ *
+ * @see toUri
+ */
+fun buildUri(
+    scheme: String? = null,
+    authority: String? = null,
+    path: String? = null,
+    query: String? = null,
+    fragment: String? = null,
+    separator: String = Path.DIRECTORY_SEPARATOR,
+): Uri {
+    require(scheme != null || authority != null || path != null || query != null || fragment != null) {
+        "At least one of scheme, authority, path, query, or fragment must be non-null."
+    }
+
+    return Uri(
+        data = buildData(scheme, authority, path, query, fragment),
+        separator = separator,
+        elements = Uri.Elements(
+            scheme = scheme,
+            authority = authority,
+            path = path,
+            query = query,
+            fragment = fragment,
+        )
+    )
+}
 
 /**
  * A uniform resource locator.
  *
  * @see com.github.panpf.sketch.core.common.test.util.UriTest
  */
-class Uri internal constructor(private val data: String) {
+class Uri internal constructor(
+    private val data: String,
+    val separator: String,
+    elementsLazy: Lazy<Elements>
+) {
 
-    private val elements: Elements by lazy { parseUri(data) }
+    private val elements: Elements by elementsLazy
+
+    constructor(data: String, separator: String, elements: Elements) : this(
+        data = data,
+        separator = separator,
+        elementsLazy = lazyOf(elements)
+    )
 
     val scheme: String?
         get() = elements.scheme
@@ -53,7 +107,7 @@ class Uri internal constructor(private val data: String) {
         val path = path
         if (path != null) {
             val segments = mutableListOf<String>()
-            var index = 0
+            var index = -1
             while (index < path.length) {
                 val startIndex = index + 1
                 index = path.indexOf('/', startIndex)
@@ -69,6 +123,19 @@ class Uri internal constructor(private val data: String) {
             segments
         } else {
             emptyList()
+        }
+    }
+
+    /**
+     * Returns the URI's [Uri.path] formatted according to the URI's native [Uri.separator].
+     */
+    val filePath: String? by lazy {
+        val pathSegments = pathSegments
+        if (pathSegments.isEmpty()) {
+            null
+        } else {
+            val prefix = if (path!!.startsWith(separator)) separator else ""
+            pathSegments.joinToString(prefix = prefix, separator = separator)
         }
     }
 
@@ -97,7 +164,40 @@ class Uri internal constructor(private val data: String) {
     )
 }
 
-private fun parseUri(data: String): Uri.Elements {
+private fun buildData(
+    scheme: String?,
+    authority: String?,
+    path: String?,
+    query: String?,
+    fragment: String?,
+) = buildString {
+    if (scheme != null) {
+        append(scheme)
+        append(':')
+    }
+    if (authority != null) {
+        append("//")
+        append(authority)
+    }
+    if (path != null) {
+        append(path)
+    }
+    if (query != null) {
+        append('?')
+        append(query)
+    }
+    if (fragment != null) {
+        append('#')
+        append(fragment)
+    }
+}
+
+private fun parseUriElements(
+    data: String,
+    original: String,
+): Uri.Elements {
+    var openScheme = true
+    var schemeEndIndex = -1
     var authorityStartIndex = -1
     var pathStartIndex = -1
     var queryStartIndex = -1
@@ -107,31 +207,42 @@ private fun parseUri(data: String): Uri.Elements {
     while (index < data.length) {
         when (data[index]) {
             ':' -> {
-                if (queryStartIndex == -1 &&
-                    fragmentStartIndex == -1 &&
-                    pathStartIndex == -1 &&
-                    authorityStartIndex == -1 &&
-                    index + 2 < data.length &&
-                    data[index + 1] == '/' &&
-                    data[index + 2] == '/'
+                if (openScheme &&
+                    queryStartIndex == -1 &&
+                    fragmentStartIndex == -1
                 ) {
-                    authorityStartIndex = index + 3
-                    index += 2
+                    if (index + 2 < original.length &&
+                        original[index + 1] == '/' &&
+                        original[index + 2] == '/'
+                    ) {
+                        // Standard URI with an authority (e.g. "file:///path/image.jpg").
+                        openScheme = false
+                        schemeEndIndex = index
+                        authorityStartIndex = index + 3
+                        index += 2
+                    } else if (data == original) {
+                        // Special URI that has no authority (e.g. "file:/path/image.jpg").
+                        schemeEndIndex = index
+                        authorityStartIndex = index + 1
+                        pathStartIndex = index + 1
+                        index += 1
+                    }
                 }
             }
 
             '/' -> {
-                if (queryStartIndex == -1 &&
-                    fragmentStartIndex == -1 &&
-                    pathStartIndex == -1
+                if (pathStartIndex == -1 &&
+                    queryStartIndex == -1 &&
+                    fragmentStartIndex == -1
                 ) {
-                    pathStartIndex = index
+                    openScheme = false
+                    pathStartIndex = if (authorityStartIndex == -1) 0 else index
                 }
             }
 
             '?' -> {
-                if (fragmentStartIndex == -1 &&
-                    queryStartIndex == -1
+                if (queryStartIndex == -1 &&
+                    fragmentStartIndex == -1
                 ) {
                     queryStartIndex = index + 1
                 }
@@ -162,7 +273,7 @@ private fun parseUri(data: String): Uri.Elements {
     )
 
     if (authorityStartIndex != -1) {
-        scheme = data.substring(0, authorityStartIndex - 3)
+        scheme = data.substring(0, schemeEndIndex)
 
         val authorityEndIndex = minOf(
             if (pathStartIndex == -1) Int.MAX_VALUE else pathStartIndex,
@@ -181,16 +292,19 @@ private fun parseUri(data: String): Uri.Elements {
         fragment = data.substring(fragmentStartIndex, data.length)
     }
 
-    val size = maxOf(
-        scheme?.length ?: 0,
-        authority?.length ?: 0,
+    val maxLength = maxOf(
+        0,
         maxOf(
-            path?.length ?: 0,
-            query?.length ?: 0,
-            fragment?.length ?: 0,
-        ),
+            scheme.length,
+            authority.length,
+            maxOf(
+                path.length,
+                query.length,
+                fragment.length,
+            ),
+        ) - 2,
     )
-    val bytes = ByteArray(size)
+    val bytes = ByteArray(maxLength)
     return Uri.Elements(
         scheme = scheme?.percentDecode(bytes),
         authority = authority?.percentDecode(bytes),
@@ -203,9 +317,19 @@ private fun parseUri(data: String): Uri.Elements {
 private fun String.percentDecode(bytes: ByteArray): String {
     var size = 0
     var index = 0
+    val length = length
+    val searchLength = maxOf(0, length - 2)
 
-    while (index < length) {
-        if (get(index) == '%' && index + 2 < length) {
+    while (true) {
+        if (index >= searchLength) {
+            if (index == size) {
+                // Fast path: the string doesn't have any encoded characters.
+                return this
+            } else if (index >= length) {
+                // Slow path: decode the byte array.
+                return bytes.decodeToString(endIndex = size)
+            }
+        } else if (get(index) == '%') {
             try {
                 val hex = substring(index + 1, index + 3)
                 bytes[size] = hex.toInt(16).toByte()
@@ -220,12 +344,7 @@ private fun String.percentDecode(bytes: ByteArray): String {
         size++
         index++
     }
-
-    if (size == length) {
-        // Fast path: the string doesn't have any encoded characters.
-        return this
-    } else {
-        // Slow path: decode the byte array.
-        return bytes.decodeToString(endIndex = size)
-    }
 }
+
+private val String?.length: Int
+    get() = this?.length ?: 0

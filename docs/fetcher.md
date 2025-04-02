@@ -12,7 +12,7 @@ following table:
 | http://, https://         | [HurlHttpUriFetcher]        | -                       | sketch-http-hurl          | ✅       | ❌   | ✅       | ❌   |
 | http://, https://         | [OkHttpHttpUriFetcher]      | -                       | sketch-http-okhttp        | ✅       | ❌   | ✅       | ❌   |
 | http://, https://         | [KtorHttpUriFetcher]        | -                       | sketch-http-ktor3         | ✅       | ✅   | ✅       | ✅   |
-| file://, /                | [FileUriFetcher]            | newFileUri()            | -                         | ✅       | ✅   | ✅       | ✅   |
+| file://, /, D:/           | [FileUriFetcher]            | newFileUri()            | -                         | ✅       | ✅   | ✅       | ✅   |
 | file:///compose_resource/ | [ComposeResourceUriFetcher] | newComposeResourceUri() | sketch-compose-resources  | ✅       | ✅   | ✅       | ✅   |
 | data:image/, data:img/    | [Base64UriFetcher]          | newBase64Uri()          | -                         | ✅       | ✅   | ✅       | ✅   |
 | file:///android_asset/    | [AssetUriFetcher]           | newAssetUri()           | -                         | ✅       | ❌   | ❌       | ❌   |

@@ -30,23 +30,28 @@ import okio.Path
 import okio.Path.Companion.toPath
 
 /**
- * Sample: 'file:///sdcard/sample.jpg'
+ * Return sample: 'file:///sdcard/sample.jpg', 'D:\test\relative\image.jpg'
  *
  * @see com.github.panpf.sketch.core.common.test.fetch.FileUriFetcherTest.testNewFileUri
  */
-fun newFileUri(path: String): String = "${FileUriFetcher.SCHEME}://$path"
+fun newFileUri(path: String): String =
+    if (Path.DIRECTORY_SEPARATOR == "/" && !path.startsWith("${FileUriFetcher.SCHEME}://")) {
+        "${FileUriFetcher.SCHEME}://$path"
+    } else {
+        path
+    }
 
 /**
- * Sample: 'file:///sdcard/sample.jpg'
+ * Return sample: 'file:///sdcard/sample.jpg', 'D:\test\relative\image.jpg'
  *
- * @see com.github.panpf.sketch.core.common.test.fetch.FileUriFetcherTest.testNewFileUri
+ * @see com.github.panpf.sketch.core.common.test.fetch.FileUriFetcherTest.testNewFileUri2
  */
-fun newFileUri(path: Path): String = "${FileUriFetcher.SCHEME}://$path"
+fun newFileUri(path: Path): String = newFileUri(path.toString())
 
 /**
  * Check if the uri is a file uri
  *
- * Support 'file:///sdcard/sample.jpg', '/sdcard/sample.jpg' uri
+ * Support 'file:///sdcard/sample.jpg', '/sdcard/sample.jpg', 'D:\test\relative\image.jpg' uri
  *
  * @see com.github.panpf.sketch.core.common.test.fetch.FileUriFetcherTest.testIsFileUri
  */
@@ -56,7 +61,7 @@ fun isFileUri(uri: Uri): Boolean =
             && uri.path?.takeIf { it.isNotEmpty() } != null
 
 /**
- * Support 'file:///sdcard/sample.jpg', '/sdcard/sample.jpg' uri
+ * Support 'file:///sdcard/sample.jpg', '/sdcard/sample.jpg', 'D:\test\relative\image.jpg' uri
  *
  * @see com.github.panpf.sketch.core.common.test.fetch.FileUriFetcherTest
  */

@@ -117,7 +117,7 @@ context.sketch.enqueue(request)
 | URI                       | 描述                       | 创建函数                    | 依赖模块                                                                             |
 |:--------------------------|:-------------------------|:------------------------|:---------------------------------------------------------------------------------|
 | http://, https://         | File in network          | _                       | sketch-http-hurl<br>sketch-http-okhttp<br>sketch-http-ktor2<br>sketch-http-ktor3 |
-| file://, /                | File in SDCard           | newFileUri()            | _                                                                                |
+| file://, /, D:/           | File in SDCard           | newFileUri()            | _                                                                                |
 | content://                | Android Content Resolver | _                       | _                                                                                |
 | file:///android_asset/    | Android Asset            | newAssetUri()           | _                                                                                |
 | android.resource://       | Android Resource         | newResourceUri()        | _                                                                                |

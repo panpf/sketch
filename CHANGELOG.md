@@ -9,6 +9,13 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
+# new
+
+fetch:
+
+* fix: Fixed a bug in FileUriFetcher that failed to load the windows file
+  path. [#239](https://github.com/panpf/sketch/issues/239)
+
 # 4.0.4
 
 compose:

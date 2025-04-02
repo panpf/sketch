@@ -27,6 +27,7 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.defaultFileSystem
 import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.test.runTest
+import okio.Path
 import okio.Path.Companion.toPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -39,14 +40,36 @@ class FileUriFetcherTest {
 
     @Test
     fun testNewFileUri() {
-        assertEquals(
-            expected = "file:///sdcard/sample.jpg",
-            actual = newFileUri("/sdcard/sample.jpg")
-        )
-        assertEquals(
-            expected = "file:///sdcard1/sample1.jpg",
-            actual = newFileUri("/sdcard1/sample1.jpg".toPath())
-        )
+        if (Path.DIRECTORY_SEPARATOR == "/") {
+            assertEquals(
+                expected = "file:///sdcard/sample.jpg",
+                actual = newFileUri("/sdcard/sample.jpg")
+            )
+            assertEquals(
+                expected = "file:///sdcard1/sample1.jpg",
+                actual = newFileUri("file:///sdcard1/sample1.jpg")
+            )
+        } else {
+            assertEquals(
+                expected = "D:\\test\\relative\\image.jpg",
+                actual = newFileUri("D:\\test\\relative\\image.jpg")
+            )
+        }
+    }
+
+    @Test
+    fun testNewFileUri2() {
+        if (Path.DIRECTORY_SEPARATOR == "/") {
+            assertEquals(
+                expected = "file:///sdcard1/sample1.jpg",
+                actual = newFileUri("/sdcard1/sample1.jpg".toPath())
+            )
+        } else {
+            assertEquals(
+                expected = "D:\\test\\relative\\image.jpg",
+                actual = newFileUri("D:\\test\\relative\\image.jpg".toPath())
+            )
+        }
     }
 
     @Test
