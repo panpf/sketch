@@ -16,12 +16,11 @@
 
 package com.github.panpf.sketch.fetch
 
-import com.github.panpf.sketch.fetch.FileUriFetcher.Companion.SCHEME
 import java.io.File
 
 /**
- * Sample: 'file:///sdcard/sample.jpg'
+ * Return sample: 'file:///sdcard/sample.jpg', 'D:\test\relative\image.jpg'
  *
  * @see com.github.panpf.sketch.core.jvmcommon.test.fetch.FileUriFetcherJvmTest.testNewFileUri
  */
-fun newFileUri(file: File): String = "$SCHEME://${file.path}"
+fun newFileUri(file: File): String = newFileUri(file.path)
