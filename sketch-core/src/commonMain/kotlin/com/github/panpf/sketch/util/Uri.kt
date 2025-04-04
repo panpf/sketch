@@ -33,10 +33,11 @@ fun String.toUri(separator: String = Path.DIRECTORY_SEPARATOR): Uri {
     if (separator != "/") {
         data = data.replace(separator, "/")
     }
+    val original = this
     return Uri(
-        data = data,
+        data = original,
         separator = separator,
-        elementsLazy = lazyOf(parseUriElements(data = data, original = this))
+        elementsLazy = lazyOf(parseUriElements(data = data, original = original))
     )
 }
 

@@ -27,7 +27,7 @@ class UriTest {
             actual = "D:\\test\\relative\\image.jpg".toUri(separator = "/").toString()
         )
         assertEquals(
-            expected = "D:/test/relative/image.jpg",
+            expected = "D:\\test\\relative\\image.jpg",
             actual = "D:\\test\\relative\\image.jpg".toUri(separator = "\\").toString()
         )
     }
@@ -88,6 +88,17 @@ class UriTest {
             expected = "/sdcard/sample s.jpeg",
             actual = "file:///sdcard/sample%20s.jpeg".toUri().path
         )
+    }
+
+    @Test
+    fun testToString() {
+        val uriString = "C:\\Users\\tiger\\Pictures\\P.jpg"
+
+        val uri = uriString.toUri("/")
+        assertEquals(expected = uriString, actual = uri.toString())
+
+        val uri2 = uriString.toUri("\\")
+        assertEquals(expected = uriString, actual = uri2.toString())
     }
 
     @Test
