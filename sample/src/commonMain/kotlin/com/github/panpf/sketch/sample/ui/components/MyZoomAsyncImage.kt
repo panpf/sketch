@@ -41,17 +41,18 @@ fun MyZoomAsyncImage(
     val context = LocalPlatformContext.current
     val appSettings = context.appSettings
 
-    zoomState.apply {
-        LaunchedEffect(Unit) {
-            appSettings.showTileBounds.collect {
-                subsampling.showTileBounds = it
-            }
+    LaunchedEffect(zoomState) {
+        appSettings.showTileBounds.collect {
+            zoomState.subsampling.showTileBounds = it
         }
-        LaunchedEffect(Unit) {
-            appSettings.readModeEnabled.collect {
-                zoomable.readMode = if (it) ReadMode.Default else null
-            }
+    }
+    LaunchedEffect(zoomState) {
+        appSettings.readModeEnabled.collect {
+            zoomState.zoomable.readMode = if (it) ReadMode.Default else null
         }
+    }
+    LaunchedEffect(zoomState) {
+        zoomState.zoomable.keepTransformWhenSameAspectRatioContentSizeChanged = true
     }
 
     val request = ComposableImageRequest(uri) {
