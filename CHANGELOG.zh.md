@@ -7,6 +7,13 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
+# new
+
+compose:
+
+* improve: 现在 AsyncImage 在窗口大小为 0 时不再崩溃，而是最小为
+  100。 [#244](https://github.com/panpf/sketch/issues/244)
+
 # 4.0.5
 
 fetch:

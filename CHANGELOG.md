@@ -9,6 +9,13 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
+# new
+
+compose:
+ 
+* improve: AsyncImage now no longer crashes when the window size is 0, but is a minimum of
+  100. [#244](https://github.com/panpf/sketch/issues/244
+
 # 4.0.5
 
 fetch:

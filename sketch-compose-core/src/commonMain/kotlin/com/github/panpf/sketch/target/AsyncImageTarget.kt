@@ -42,7 +42,6 @@ import com.github.panpf.sketch.resize.AsyncImageSizeResolver
 import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.target.internal.AsyncImageListener
 import com.github.panpf.sketch.util.fitScale
-import com.github.panpf.sketch.util.isEmpty
 import com.github.panpf.sketch.util.screenSize
 import com.github.panpf.sketch.util.toIntSize
 import com.github.panpf.sketch.util.toScale
@@ -85,10 +84,12 @@ class AsyncImageTarget constructor(
 
     var windowContainerSize: IntSize = context.screenSize().toIntSize()
         set(value) {
-            require(!value.isEmpty()) {
-                "windowContainerSize must not be empty: $value"
+            val finalValue = if (value.width < 100 || value.height < 100) {
+                IntSize(value.width.coerceAtLeast(100), value.height.coerceAtLeast(100))
+            } else {
+                value
             }
-            field = value
+            field = finalValue
         }
 
     override val painter: Painter?

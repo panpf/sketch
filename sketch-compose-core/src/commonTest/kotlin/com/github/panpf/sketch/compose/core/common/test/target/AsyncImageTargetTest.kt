@@ -27,7 +27,6 @@ import com.github.panpf.sketch.util.screenSize
 import com.github.panpf.sketch.util.toIntSize
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertSame
 
@@ -54,42 +53,42 @@ class AsyncImageTargetTest {
             assertEquals(expected = context.screenSize().toIntSize(), actual = windowContainerSize)
         }
 
-        assertFailsWith(IllegalArgumentException::class) {
-            AsyncImageTarget(
-                context = context,
-                lifecycle = TestLifecycle(),
-                imageOptions = ImageOptions(),
-            ).apply {
-                windowContainerSize = IntSize(0, 1000)
-            }
+        AsyncImageTarget(
+            context = context,
+            lifecycle = TestLifecycle(),
+            imageOptions = ImageOptions(),
+        ).apply {
+            windowContainerSize = IntSize(0, 1000)
+            assertEquals(expected = IntSize(100, 1000), actual = windowContainerSize)
         }
-        assertFailsWith(IllegalArgumentException::class) {
-            AsyncImageTarget(
-                context = context,
-                lifecycle = TestLifecycle(),
-                imageOptions = ImageOptions(),
-            ).apply {
-                windowContainerSize = IntSize(-1, 1000)
-            }
+
+        AsyncImageTarget(
+            context = context,
+            lifecycle = TestLifecycle(),
+            imageOptions = ImageOptions(),
+        ).apply {
+            windowContainerSize = IntSize(-1, 1000)
+            assertEquals(expected = IntSize(100, 1000), actual = windowContainerSize)
         }
-        assertFailsWith(IllegalArgumentException::class) {
-            AsyncImageTarget(
-                context = context,
-                lifecycle = TestLifecycle(),
-                imageOptions = ImageOptions(),
-            ).apply {
-                windowContainerSize = IntSize(1000, 0)
-            }
+
+        AsyncImageTarget(
+            context = context,
+            lifecycle = TestLifecycle(),
+            imageOptions = ImageOptions(),
+        ).apply {
+            windowContainerSize = IntSize(1000, 0)
+            assertEquals(expected = IntSize(1000, 100), actual = windowContainerSize)
         }
-        assertFailsWith(IllegalArgumentException::class) {
-            AsyncImageTarget(
-                context = context,
-                lifecycle = TestLifecycle(),
-                imageOptions = ImageOptions(),
-            ).apply {
-                windowContainerSize = IntSize(1000, -1)
-            }
+
+        AsyncImageTarget(
+            context = context,
+            lifecycle = TestLifecycle(),
+            imageOptions = ImageOptions(),
+        ).apply {
+            windowContainerSize = IntSize(1000, -1)
+            assertEquals(expected = IntSize(1000, 100), actual = windowContainerSize)
         }
+
         AsyncImageTarget(
             context = context,
             lifecycle = TestLifecycle(),
