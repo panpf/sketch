@@ -97,6 +97,7 @@ class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                         alignmentState.value = AlignmentCompat.valueOf(it)
                     }
+                keepTransformWhenSameAspectRatioContentSizeChangedState.value = true
             }
             subsampling.apply {
                 appSettings.showTileBounds
