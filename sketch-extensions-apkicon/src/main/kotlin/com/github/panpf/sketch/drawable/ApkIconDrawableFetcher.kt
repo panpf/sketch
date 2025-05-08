@@ -36,9 +36,11 @@ class ApkIconDrawableFetcher(private val file: File) : DrawableFetcher {
         val packageInfo =
             packageManager.getPackageArchiveInfo(file.path, PackageManager.GET_ACTIVITIES)
                 ?: throw IOException("getPackageArchiveInfo return null. ${file.path}")
-        packageInfo.applicationInfo.sourceDir = file.path
-        packageInfo.applicationInfo.publicSourceDir = file.path
-        return packageManager.getApplicationIcon(packageInfo.applicationInfo)
+        val applicationInfo = packageInfo.applicationInfo
+            ?: throw IOException("applicationInfo is null. ${file.path}")
+        applicationInfo.sourceDir = file.path
+        applicationInfo.publicSourceDir = file.path
+        return packageManager.getApplicationIcon(applicationInfo)
     }
 
     override fun equals(other: Any?): Boolean {

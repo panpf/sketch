@@ -202,7 +202,7 @@ actual suspend fun buildDecoderTestItems(
     add(
         DecoderTestItem(
             name = "APK_ICON",
-            imageUri = headerUserPackageInfo.applicationInfo.publicSourceDir,
+            imageUri = headerUserPackageInfo.applicationInfo!!.publicSourceDir,
             imageDecoder = ApkIconDecoder.Factory()
         )
     )
@@ -217,11 +217,11 @@ private suspend fun loadUserAppPackageInfo(
             context.packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS)
         (if (fromHeader) {
             packageList.find {
-                it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0
+                it.applicationInfo!!.flags and ApplicationInfo.FLAG_SYSTEM == 0
             }
         } else {
             packageList.findLast {
-                it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0
+                it.applicationInfo!!.flags and ApplicationInfo.FLAG_SYSTEM == 0
             }
         } ?: context.packageManager.getPackageInfo(context.packageName, 0))
     }

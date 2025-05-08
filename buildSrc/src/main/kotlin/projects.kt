@@ -18,7 +18,11 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestExtension
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+import org.gradle.api.JavaVersion
 import org.gradle.api.Project
+import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 fun Project.androidLibrary(
     nameSpace: String,
@@ -99,6 +103,19 @@ private fun <T : BaseExtension> Project.androidBase(
 //                "VectorRaster",
 //            )
 //        }
+        // Compose Multiplatform 1.8.0 must use JVM target 11+, and Android View also requires 1.8+
+        val (version, target) = if (plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null) {
+            JavaVersion.VERSION_11 to JvmTarget.JVM_11
+        } else {
+            JavaVersion.VERSION_1_8 to JvmTarget.JVM_1_8
+        }
+        compileOptions {
+            sourceCompatibility = version
+            targetCompatibility = version
+        }
+        tasks.withType<KotlinCompile>().configureEach {
+            compilerOptions.jvmTarget.set(target)
+        }
         action()
     }
 //    plugins.withId("org.jetbrains.kotlin.multiplatform") {

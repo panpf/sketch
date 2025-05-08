@@ -9,6 +9,14 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
+# new
+
+> [!CAUTION]
+> The compose multiplatform version 1.8.0 must be jvm 11 to compile. Please modify the configuration
+> of sourceCompatibility, targetCompatibility, jvmTarget, etc. to 11+
+
+* depend: Upgrade kotlin 2.1.10, compose multiplatform 1.8.0
+
 # 4.0.6
 
 compose:

@@ -71,6 +71,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.material)    // pull refresh
             implementation(compose.material3)
+            implementation(libs.jetbrains.compose.material.icons.core)
             implementation(libs.ktor3.client.contentNegotiation)
             implementation(libs.ktor3.serialization.kotlinxJson)
             implementation(libs.multiplatformsettings)

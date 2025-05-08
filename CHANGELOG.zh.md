@@ -7,6 +7,14 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
+# new
+
+> [!CAUTION]
+> compose multiplatform 1.8.0 版本必须 jvm 11 才能编译，请修改
+> sourceCompatibility、targetCompatibility、jvmTarget 等配置为 11+
+
+* depend: 升级 kotlin 2.1.10, compose multiplatform 1.8.0
+
 # 4.0.6
 
 compose:

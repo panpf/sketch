@@ -86,14 +86,22 @@ fun Project.kotlinDependenciesConfig() {
 }
 
 fun Project.jvmTargetConfig() {
-    // Target JVM 8.
-    tasks.withType<JavaCompile>().configureEach {
-        sourceCompatibility = JavaVersion.VERSION_1_8.toString()
-        targetCompatibility = JavaVersion.VERSION_1_8.toString()
-        options.compilerArgs = options.compilerArgs + "-Xlint:-options"
-    }
-    tasks.withType<KotlinJvmCompile>().configureEach {
-        compilerOptions.jvmTarget = JvmTarget.JVM_1_8
+    // Must be included in afterEvaluate to find the plugin
+    afterEvaluate {
+        // Compose Multiplatform 1.8.0 must use JVM target 11+, and Android View also requires 1.8+
+        val (version, target) = if (plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null) {
+            JavaVersion.VERSION_11 to JvmTarget.JVM_11
+        } else {
+            JavaVersion.VERSION_1_8 to JvmTarget.JVM_1_8
+        }
+        tasks.withType<JavaCompile>().configureEach {
+            sourceCompatibility = version.toString()
+            targetCompatibility = version.toString()
+            options.compilerArgs = options.compilerArgs + "-Xlint:-options"
+        }
+        tasks.withType<KotlinJvmCompile>().configureEach {
+            compilerOptions.jvmTarget = target
+        }
     }
 }
 
@@ -103,7 +111,7 @@ fun Project.composeConfig() {
             featureFlags.addAll(
                 ComposeFeatureFlag.OptimizeNonSkippingGroups
             )
-            stabilityConfigurationFile = rootDir.resolve("sketch-core/compose_compiler_config.conf")
+            stabilityConfigurationFiles.add { rootDir.resolve("sketch-core/compose_compiler_config.conf") }
 
             /**
              * Run the `./gradlew clean :sketch-compose:assembleRelease -PcomposeCompilerReports=true` command to generate a report,

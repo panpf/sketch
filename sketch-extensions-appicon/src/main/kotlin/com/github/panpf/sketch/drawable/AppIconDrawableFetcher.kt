@@ -44,7 +44,9 @@ class AppIconDrawableFetcher(
         if (appVersionCode != versionCode) {
             throw Exception("App versionCode mismatch, $appVersionCode != $versionCode")
         }
-        return packageInfo.applicationInfo.loadIcon(packageManager)
+        val applicationInfo = packageInfo.applicationInfo
+            ?: throw Exception("applicationInfo is null '$packageName'")
+        return applicationInfo.loadIcon(packageManager)
             ?: throw Exception("loadIcon return null '$packageName'")
     }
 

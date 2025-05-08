@@ -15,7 +15,6 @@ import com.github.panpf.sketch.AnimatedImage
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.painter.AnimatedImagePainter
-import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.getTestContext
 import kotlinx.coroutines.isActive
 import okio.buffer
@@ -148,10 +147,11 @@ class AnimatedImagePainterTest {
                 remember { animatedImagePainter }
                 Image(painter = animatedImagePainter, contentDescription = "")
             }
-            waitForIdle()
-            block(1000)
-            assertTrue(animatedTransformationCalled)
+            waitUntil {
+                animatedTransformationCalled
+            }
         }
+        assertTrue(animatedTransformationCalled)
     }
 
     @Test
