@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.sample.appSettings
@@ -31,14 +32,12 @@ import org.jetbrains.compose.resources.painterResource
 fun MainMenu(modifier: Modifier = Modifier) {
     val colorScheme = MaterialTheme.colorScheme
     Row(
-        modifier = modifier.background(
-            color = colorScheme.tertiaryContainer,
-            shape = RoundedCornerShape(50)
-        )
+        modifier = modifier
+            .clip(RoundedCornerShape(50))
+            .background(color = colorScheme.tertiaryContainer)
     ) {
         val context = LocalPlatformContext.current
         val appSettings = context.appSettings
-        val modifier1 = Modifier.size(40.dp).padding(10.dp)
         val disallowAnimatedImageInList by appSettings.disallowAnimatedImageInList.collectAsState()
         val staggeredGridMode by appSettings.staggeredGridMode.collectAsState()
         val playIcon = if (disallowAnimatedImageInList) {
@@ -54,26 +53,33 @@ fun MainMenu(modifier: Modifier = Modifier) {
         Icon(
             painter = playIcon,
             contentDescription = null,
-            modifier = modifier1.clickable {
-                appSettings.disallowAnimatedImageInList.value = !disallowAnimatedImageInList
-            },
+            modifier = Modifier
+                .size(40.dp)
+                .clickable {
+                    appSettings.disallowAnimatedImageInList.value = !disallowAnimatedImageInList
+                }
+                .padding(10.dp),
             tint = colorScheme.onTertiaryContainer
         )
         Icon(
             painter = staggeredGridModeIcon,
             contentDescription = null,
-            modifier = modifier1.clickable {
-                appSettings.staggeredGridMode.value = !staggeredGridMode
-            },
+            modifier = Modifier.size(40.dp)
+                .clickable {
+                    appSettings.staggeredGridMode.value = !staggeredGridMode
+                }
+                .padding(10.dp),
             tint = colorScheme.onTertiaryContainer
         )
         val settingsDialogState = rememberMyDialogState()
         Icon(
             painter = painterResource(drawable.ic_settings),
             contentDescription = null,
-            modifier = modifier1.clickable {
-                settingsDialogState.show()
-            },
+            modifier = Modifier.size(40.dp)
+                .clickable {
+                    settingsDialogState.show()
+                }
+                .padding(10.dp),
             tint = colorScheme.onTertiaryContainer
         )
         MyDialog(settingsDialogState) {
