@@ -1,58 +1,58 @@
 [versions]
 android-plugin = "8.10.0"
-androidx-activity = "1.9.0"
+androidx-activity = "1.10.1"
 androidx-appcompat = "1.7.0"
 androidx-compose = "1.8.0" # sync with jetbrains-compose
-androidx-constraintlayout = "2.1.4"
-androidx-constraintlayout-compose = "1.0.1"
-androidx-core = "1.13.1"
-androidx-exifinterface = "1.3.7"
-androidx-fragment = "1.8.1"
+androidx-constraintlayout = "2.2.1"
+androidx-constraintlayout-compose = "1.1.1"
+androidx-core = "1.16.0"
+androidx-exifinterface = "1.4.1"
+androidx-fragment = "1.8.6"
 androidx-lifecycle = "2.8.5" # sync with jetbrains-lifecycle
-androidx-navigation = "2.8.0"
-androidx-recyclerview = "1.3.2"
+androidx-navigation = "2.9.0"
+androidx-recyclerview = "1.4.0"
 androidx-swiperefreshlayout = "1.1.0"
 androidx-test-ext-junit = "1.2.1"
 androidx-test-rules = "1.6.1"
 androidx-test-runner = "1.6.2"
 
-androidgifdrawable = "1.2.15"
+androidgifdrawable = "1.2.29"
 androidsvg = "1.4"
-appdirs = "1.2.2"
+appdirs = "1.4.0"
 
-buildkonfig = "0.15.2"
+buildkonfig = "0.17.1"
 
-cashapp-paging = "3.3.0-alpha02-0.5.1"
+multiplatform-paging = "3.3.0-alpha02-0.5.1"
 
-dokka = "1.9.20"
+dokka = "1.9.20"    # 2.0.0 There is a problem with the version configuration, so I won't upgrade it yet
 
-ffmpegMediaMetadataRetriever = "1.0.16"
+ffmpegMediaMetadataRetriever = "1.0.19"
 
 google-material = "1.12.0"
 google-flexbox = "3.0.0"
 
 jetbrains-compose = "1.8.0"
-jetbrains-lifecycle = "2.8.3"
+jetbrains-lifecycle = "2.8.4"
 jetbrains-compose-material-icons-core = "1.7.3"
 
 kotlin = "2.1.10" # 2.1.20 version will report an error when sync 'kotlin-project-structure-metadata.json (No such file or directory)', but it does not affect the compilation
 kotlinx-atomicfu = "0.27.0" # sync with kotlin
-kotlinx-coroutines = "1.9.0"
-kotlinx-cover = "0.8.3"
-kotlinx-datetime = "0.6.1"
-kotlinx-serialization-json = "1.7.3"
+kotlinx-coroutines = "1.10.2"
+kotlinx-cover = "0.9.1"
+kotlinx-datetime = "0.6.2"
+kotlinx-serialization-json = "1.8.1"
 #noinspection GradleDependency
-ktor2 = "2.3.12"
-ktor3 = "3.0.0"
+ktor2 = "2.3.13"
+ktor3 = "3.1.3"
 
 leakcanary = "2.14"
 
-mavenpublish = "0.29.0"
-moko-permissions = "0.18.0"
-multiplatformsettings = "1.2.0"
+gradle-maven-publish-plugin = "0.31.0"
+moko-permissions = "0.19.1"
+multiplatform-settings = "1.3.0"
 
 okhttp3 = "4.12.0"
-okio = "3.9.1"
+okio = "3.11.0"
 
 panpf-assemblyadapter4 = "4.1.0"
 panpf-tools4a = "1.0.0"
@@ -60,11 +60,11 @@ panpf-tools4j = "1.0.0"
 panpf-tools4k = "1.0.0"
 panpf-zoomimage = "1.2.0"
 
-penfeizhou-animation = "3.0.1"
+penfeizhou-animation = "3.0.4"
 
 skiko = "0.9.4"    # sync with jetbrains-compose. 'decodes.nonAndroid#supportDecodeRegion()' must be modified
 
-voyager = "1.1.0-alpha03"
+voyager = "1.1.0-beta03"
 
 [libraries]
 gradlePlugin-android = { module = "com.android.tools.build:gradle", version.ref = "android-plugin" }
@@ -76,7 +76,7 @@ gradlePlugin-kotlinComposeCompiler = { module = "org.jetbrains.kotlin:compose-co
 gradlePlugin-kotlinSerialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
 gradlePlugin-kotlinxAtomicfu = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref = "kotlinx-atomicfu" }
 gradlePlugin-kotlinxCover = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kotlinx-cover" }
-gradlePlugin-mavenPublish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "mavenpublish" }
+gradlePlugin-mavenPublish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "gradle-maven-publish-plugin" }
 #gradlePlugin-dokka = { module = "org.jetbrains.dokka:org.jetbrains.dokka.gradle.plugin", version.ref = "dokka" }
 
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
@@ -105,7 +105,7 @@ androidgifdrawable = { module = "pl.droidsonroids.gif:android-gif-drawable", ver
 androidsvg = { module = "com.caverock:androidsvg-aar", version.ref = "androidsvg" }
 appdirs = { module = "net.harawata:appdirs", version.ref = "appdirs" }
 
-cashapp-paging-compose-common = { module = "app.cash.paging:paging-compose-common", version.ref = "cashapp-paging" }
+multiplatform-paging = { module = "app.cash.paging:paging-compose-common", version.ref = "multiplatform-paging" }
 
 ffmpegMediaMetadataRetriever-core = { module = "com.github.wseemann:FFmpegMediaMetadataRetriever-core", version.ref = "ffmpegMediaMetadataRetriever" }
 ffmpegMediaMetadataRetriever-native = { module = "com.github.wseemann:FFmpegMediaMetadataRetriever-native", version.ref = "ffmpegMediaMetadataRetriever" }
@@ -146,9 +146,10 @@ ktor3-serialization-kotlinxJson = { module = "io.ktor:ktor-serialization-kotlinx
 leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
 
 moko-permissions = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko-permissions" }
-multiplatformsettings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatformsettings" }
-#multiplatformsettings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatformsettings" }
-#multiplatformsettings-observable = { module = "com.russhwolf:multiplatform-settings-make-observable", version.ref = "multiplatformsettings" }
+moko-permissions-storage = { module = "dev.icerock.moko:permissions-storage", version.ref = "moko-permissions" }
+multiplatformsettings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
+#multiplatformsettings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatform-settings" }
+#multiplatformsettings-observable = { module = "com.russhwolf:multiplatform-settings-make-observable", version.ref = "multiplatform-settings" }
 
 okhttp3 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp3" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }

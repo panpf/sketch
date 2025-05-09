@@ -15,7 +15,16 @@ Translations: [简体中文](CHANGELOG.zh.md)
 > The compose multiplatform version 1.8.0 must be jvm 11 to compile. Please modify the configuration
 > of sourceCompatibility, targetCompatibility, jvmTarget, etc. to 11+
 
-* depend: Upgrade kotlin 2.1.10, compose multiplatform 1.8.0
+* depend: Upgrade the following dependencies
+  * kotlin: 2.1.10
+  * compose multiplatform: 1.8.0
+  * android-gif-drawable: 1.2.29
+  * ffmpegMediaMetadataRetriever: 1.0.19
+  * jetbrains-lifecycle: 2.8.4
+  * kotlinx-coroutines: 1.10.2
+  * ktor2: 2.3.13
+  * ktor3: 3.1.3
+  * okio: 3.11.0
 
 # 4.0.6
 

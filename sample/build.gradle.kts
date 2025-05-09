@@ -106,6 +106,7 @@ kotlin {
             implementation(libs.google.flexbox)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.moko.permissions)
+            implementation(libs.moko.permissions.storage)
             implementation(libs.panpf.assemblyadapter4.pager2)
             implementation(libs.panpf.assemblyadapter4.recycler)
             implementation(libs.panpf.assemblyadapter4.recycler.paging)
@@ -138,10 +139,11 @@ kotlin {
             resources.srcDirs("../internal/images/files")
             dependencies {
                 implementation(libs.moko.permissions)
+                implementation(libs.moko.permissions.storage)
             }
         }
         nonJsCommonMain.dependencies {
-            implementation(libs.cashapp.paging.compose.common)
+            implementation(libs.multiplatform.paging)
         }
 
         commonTest.dependencies {
