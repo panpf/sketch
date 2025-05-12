@@ -13,16 +13,15 @@
 > compose multiplatform 1.8.0 版本必须 jvm 11 才能编译，请修改
 > sourceCompatibility、targetCompatibility、jvmTarget 等配置为 11+
 
-* depend: 升级以下依赖
-  * kotlin: 2.1.10
-  * compose multiplatform: 1.8.0
-  * android-gif-drawable: 1.2.29
-  * ffmpegMediaMetadataRetriever: 1.0.19
-  * jetbrains-lifecycle: 2.8.4
-  * kotlinx-coroutines: 1.10.2
-  * ktor2: 2.3.13
-  * ktor3: 3.1.3
-  * okio: 3.11.0
+* depend: 更新 kotlin 2.1.10
+* depend: 更新 compose multiplatform 1.8.0
+* depend: 更新 android-gif-drawable 1.2.29
+* depend: 更新 ffmpegMediaMetadataRetriever 1.0.19
+* depend: 更新 jetbrains-lifecycle 2.8.4
+* depend: 更新 kotlinx-coroutines 1.10.2
+* depend: 更新 ktor2 2.3.13
+* depend: 更新 ktor3 3.1.3
+* depend: 更新 okio 3.11.0
 
 # 4.0.6
 
