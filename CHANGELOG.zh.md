@@ -22,6 +22,7 @@
 * depend: 更新 ktor2 2.3.13
 * depend: 更新 ktor3 3.1.3
 * depend: 更新 okio 3.11.0
+* depend: 不再替换 `kotlin-stdlib-jdk7` 和 `kotlin-stdlib-jdk8` 为 `kotlin-stdlib`
 
 # 4.0.6
 

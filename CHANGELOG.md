@@ -24,6 +24,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
 * depend: Update to ktor2 2.3.13
 * depend: Update to ktor3 3.1.3
 * depend: Update to okio 3.11.0
+* depend: Don't replace `kotlin-stdlib-jdk7` and `kotlin-stdlib-jdk8` with `kotlin-stdlib`
 
 # 4.0.6
 

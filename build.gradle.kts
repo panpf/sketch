@@ -52,7 +52,6 @@ tasks.register("cleanRootBuild", Delete::class) {
 }
 
 allprojects {
-    kotlinDependenciesConfig()
     jvmTargetConfig()
     composeConfig()
     publishConfig()
@@ -67,19 +66,6 @@ allprojects {
         resolutionStrategy.eachDependency {
             if (requested.group == "org.jetbrains.kotlinx" && requested.name == "atomicfu") {
                 useVersion(libs.versions.kotlinx.atomicfu.get())
-            }
-        }
-    }
-}
-
-fun Project.kotlinDependenciesConfig() {
-    dependencies {
-        modules {
-            module("org.jetbrains.kotlin:kotlin-stdlib-jdk7") {
-                replacedBy("org.jetbrains.kotlin:kotlin-stdlib")
-            }
-            module("org.jetbrains.kotlin:kotlin-stdlib-jdk8") {
-                replacedBy("org.jetbrains.kotlin:kotlin-stdlib")
             }
         }
     }
