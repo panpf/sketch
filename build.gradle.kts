@@ -21,17 +21,20 @@ buildscript {
         classpath(libs.gradlePlugin.buildkonfig)
         classpath(libs.gradlePlugin.jetbrainsCompose)
         classpath(libs.gradlePlugin.kotlin)
-        classpath(libs.gradlePlugin.kotlinSerialization)
         classpath(libs.gradlePlugin.kotlinComposeCompiler)
+        classpath(libs.gradlePlugin.kotlinSerialization)
         classpath(libs.gradlePlugin.kotlinxAtomicfu)
         classpath(libs.gradlePlugin.kotlinxCover)
         classpath(libs.gradlePlugin.mavenPublish)
-//        classpath(libs.gradlePlugin.dokka)
     }
 }
 
 plugins {
     alias(libs.plugins.dokka)
+}
+
+tasks.register("cleanRootBuild", Delete::class) {
+    delete(rootProject.project.layout.buildDirectory.get().asFile.absolutePath)
 }
 
 allprojects {
@@ -45,35 +48,10 @@ allprojects {
 //        maven { setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots") }
 //        mavenLocal()
     }
-}
 
-tasks.register("cleanRootBuild", Delete::class) {
-    delete(rootProject.project.layout.buildDirectory.get().asFile.absolutePath)
-}
-
-allprojects {
-    jvmTargetConfig()
-    composeConfig()
-    publishConfig()
-    dokkaConfig()
-    applyOkioJsTestWorkaround()
-    androidTestConfig()
-}
-
-// TODO jetbrains-compose bug https://youtrack.jetbrains.com/issue/CMP-5831
-allprojects {
-    configurations.all {
-        resolutionStrategy.eachDependency {
-            if (requested.group == "org.jetbrains.kotlinx" && requested.name == "atomicfu") {
-                useVersion(libs.versions.kotlinx.atomicfu.get())
-            }
-        }
-    }
-}
-
-fun Project.jvmTargetConfig() {
-    // Must be included in afterEvaluate to find the plugin
+    // Minimum compatible Java version
     afterEvaluate {
+        // Must be included in afterEvaluate to find the plugin
         // Compose Multiplatform 1.8.0 must use JVM target 11+, and Android View also requires 1.8+
         val (version, target) = if (plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null) {
             JavaVersion.VERSION_11 to JvmTarget.JVM_11
@@ -89,15 +67,16 @@ fun Project.jvmTargetConfig() {
             compilerOptions.jvmTarget = target
         }
     }
-}
 
-fun Project.composeConfig() {
+    // Add compilation configuration for Compose module
     plugins.withId("org.jetbrains.kotlin.plugin.compose") {
         extensions.configure<ComposeCompilerGradlePluginExtension> {
             featureFlags.addAll(
                 ComposeFeatureFlag.OptimizeNonSkippingGroups
             )
-            stabilityConfigurationFiles.add { rootDir.resolve("sketch-core/compose_compiler_config.conf") }
+            stabilityConfigurationFiles.add {
+                rootDir.resolve("sketch-core/compose_compiler_config.conf")
+            }
 
             /**
              * Run the `./gradlew clean :sketch-compose:assembleRelease -PcomposeCompilerReports=true` command to generate a report,
@@ -112,9 +91,24 @@ fun Project.composeConfig() {
             }
         }
     }
-}
 
-fun Project.publishConfig() {
+    // TODO jetbrains-compose bug https://youtrack.jetbrains.com/issue/CMP-5831
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "org.jetbrains.kotlinx" && requested.name == "atomicfu") {
+                useVersion(libs.versions.kotlinx.atomicfu.get())
+            }
+        }
+    }
+
+    // Uninstall test APKs after running instrumentation tests.
+    tasks.configureEach {
+        if (name == "connectedDebugAndroidTest") {
+            finalizedBy("uninstallDebugAndroidTest")
+        }
+    }
+
+    // Configure publish plugin for all publishable library modules
     if (
 //        && hasProperty("mavenCentralUsername")    // configured in the ~/.gradle/gradle.properties file
 //        && hasProperty("mavenCentralPassword")    // configured in the ~/.gradle/gradle.properties file
@@ -141,16 +135,14 @@ fun Project.publishConfig() {
             }
         }
     }
-}
 
-fun Project.dokkaConfig() {
-    if (
-        hasProperty("POM_ARTIFACT_ID")    // configured in the module/gradle.properties file
-    ) {
+    // Configure Dokka plugin for all publishable library modules
+    if (hasProperty("POM_ARTIFACT_ID")) {   // configured in the module/gradle.properties file
         apply { plugin("org.jetbrains.dokka") }
     }
-}
 
+    applyOkioJsTestWorkaround()
+}
 
 // https://github.com/square/okio/issues/1163
 fun Project.applyOkioJsTestWorkaround() {
@@ -194,15 +186,6 @@ fun Project.applyOkioJsTestWorkaround() {
                     }
                 }
             }
-        }
-    }
-}
-
-fun Project.androidTestConfig() {
-    // Uninstall test APKs after running instrumentation tests.
-    tasks.configureEach {
-        if (name == "connectedDebugAndroidTest") {
-            finalizedBy("uninstallDebugAndroidTest")
         }
     }
 }

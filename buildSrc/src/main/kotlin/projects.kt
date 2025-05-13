@@ -20,6 +20,7 @@ import com.android.build.gradle.TestExtension
 import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -34,9 +35,15 @@ fun Project.androidLibrary(
             enableAndroidTestCoverage = true
         }
     }
-    @Suppress("UnstableApiUsage")
     testOptions {
-        targetSdk = project.targetSdk
+        unitTests.all { test ->
+            test.testLogging {
+                exceptionFormat = TestExceptionFormat.FULL
+                showExceptions = true
+                showStackTraces = true
+                showCauses = false
+            }
+        }
     }
     action()
 }
@@ -57,12 +64,8 @@ fun Project.androidApplication(
 
 fun Project.androidTest(
     name: String,
-    config: Boolean = false,
     action: TestExtension.() -> Unit = {},
 ) = androidBase<TestExtension>(name) {
-    buildFeatures {
-        buildConfig = config
-    }
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
     }

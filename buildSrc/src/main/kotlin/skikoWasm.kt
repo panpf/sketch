@@ -9,8 +9,8 @@ import org.gradle.api.artifacts.ResolvedDependency
 import org.gradle.api.artifacts.UnresolvedDependency
 import org.gradle.api.provider.Provider
 import org.gradle.kotlin.dsl.findByType
+import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.support.uppercaseFirstChar
-import org.gradle.kotlin.dsl.task
 import org.jetbrains.compose.web.tasks.UnpackSkikoWasmRuntimeTask
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
@@ -44,12 +44,13 @@ private fun Collection<KotlinJsIrTarget>.configureExperimentalWebApplication(pro
     forEach {
         val mainCompilation = it.compilations.getByName("main")
         val testCompilation = it.compilations.getByName("test")
-        val unpackedRuntimeDir = project.layout.buildDirectory.dir("compose/skiko-wasm/${it.targetName}")
+        val unpackedRuntimeDir =
+            project.layout.buildDirectory.dir("compose/skiko-wasm/${it.targetName}")
         mainCompilation.defaultSourceSet.resources.srcDir(unpackedRuntimeDir)
         testCompilation.defaultSourceSet.resources.srcDir(unpackedRuntimeDir)
 
         val taskName = "unpackSkikoWasmRuntime${it.targetName.uppercaseFirstChar()}"
-        val unpackRuntime = project.task<UnpackSkikoWasmRuntimeTask>(taskName) {
+        val unpackRuntime = project.tasks.register<UnpackSkikoWasmRuntimeTask>(taskName) {
             skikoRuntimeFiles = skikoJsWasmRuntimeConfiguration
             outputDir.set(unpackedRuntimeDir)
         }

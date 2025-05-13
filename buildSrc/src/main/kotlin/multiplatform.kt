@@ -15,15 +15,13 @@
  * limitations under the License.
  */
 
-@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
-@file:Suppress("unused")
-
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.NamedDomainObjectProvider
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.invoke
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 
@@ -76,6 +74,7 @@ fun Project.addAllMultiplatformTargets(vararg targets: MultiplatformTargets) {
             }
 
             if (targets.isEmpty() || targets.contains(MultiplatformTargets.WasmJs)) {
+                @OptIn(ExperimentalWasmDsl::class)
                 wasmJs {
                     // TODO: Fix wasm tests.
                     browser {
@@ -120,7 +119,7 @@ fun Project.addAllMultiplatformTargets(vararg targets: MultiplatformTargets) {
         // An error occurs when compiling js or wasmJs:
         // Resolving dependency configuration 'androidDebugAndroidTestCompilationApi' is not allowed as it is defined as 'canBeResolved=false'.
         //Instead, a resolvable ('canBeResolved=true') dependency configuration that extends 'androidDebugAndroidTestCompilationApi' should be resolved.
-//        if (targets.isEmpty() || targets.contains(MultiplatformTargets.Js) || targets.contains(MultiplatformTargets.WasmJs)) {
+//        if (targets.isEmpty() || targets.contains(MultiplatformTargets.WasmJs)) {
 //            createSkikoWasmJsRuntimeDependency()
 //        }
     }
