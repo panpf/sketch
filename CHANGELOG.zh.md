@@ -7,7 +7,7 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
-# new
+# 4.1.0
 
 > [!CAUTION]
 > compose multiplatform 1.8.0 版本必须 jvm 11 才能编译，请修改

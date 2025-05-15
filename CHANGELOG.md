@@ -9,7 +9,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
-# new
+# 4.1.0
 
 > [!CAUTION]
 > The compose multiplatform version 1.8.0 must be jvm 11 to compile. Please modify the configuration
