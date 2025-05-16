@@ -39,7 +39,7 @@ import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.shortInfoColorSpace
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
+import com.github.panpf.sketch.util.calculateScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.times
 import com.github.panpf.sketch.util.toShortInfoString
 import kotlinx.coroutines.test.runTest
@@ -127,7 +127,7 @@ class ApkIconDecoderTest {
         ImageRequest(context, apkFilePath)
             .decode(sketch, factory)
             .apply {
-                val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, screenSize)
+                val sizeMultiplier = calculateScaleMultiplierWithOneSide(imageInfo.size, screenSize)
                 val bitmapSize = imageInfo.size.times(sizeMultiplier)
                 assertEquals(
                     expected = "Bitmap(${bitmapSize},ARGB_8888${shortInfoColorSpace("SRGB")})",
@@ -147,7 +147,7 @@ class ApkIconDecoderTest {
         ImageRequest(context, apkFilePath) {
             colorType(Bitmap.Config.RGB_565)
         }.decode(sketch, factory).apply {
-            val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, screenSize)
+            val sizeMultiplier = calculateScaleMultiplierWithOneSide(imageInfo.size, screenSize)
             val bitmapSize = imageInfo.size.times(sizeMultiplier)
             assertEquals(
                 expected = "Bitmap(${bitmapSize},RGB_565${shortInfoColorSpace("SRGB")})",
@@ -185,7 +185,7 @@ class ApkIconDecoderTest {
         }.decode(sketch, factory)
             .apply {
                 val sizeMultiplier =
-                    computeScaleMultiplierWithOneSide(imageInfo.size, Size(100, 100))
+                    calculateScaleMultiplierWithOneSide(imageInfo.size, Size(100, 100))
                 val bitmapSize = imageInfo.size.times(sizeMultiplier)
                 assertEquals(
                     expected = "Bitmap(${bitmapSize},ARGB_8888${shortInfoColorSpace("SRGB")})",

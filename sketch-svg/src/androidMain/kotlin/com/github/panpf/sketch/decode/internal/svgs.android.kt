@@ -35,7 +35,7 @@ import com.github.panpf.sketch.request.svgBackgroundColor
 import com.github.panpf.sketch.request.svgCss
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
+import com.github.panpf.sketch.util.calculateScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.isNotEmpty
 import com.github.panpf.sketch.util.safeToSoftware
 import com.github.panpf.sketch.util.times
@@ -100,7 +100,7 @@ internal actual fun DataSource.decodeSvg(
 
     val imageInfo = ImageInfo(size = imageSize, mimeType = SvgDecoder.MIME_TYPE)
     val resize = requestContext.computeResize(imageInfo.size)
-    val targetScale = computeScaleMultiplierWithOneSide(
+    val targetScale = calculateScaleMultiplierWithOneSide(
         sourceSize = imageSize,
         targetSize = resize.size
     )

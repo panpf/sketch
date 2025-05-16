@@ -34,7 +34,7 @@ import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.TransitionPainter
-import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
+import com.github.panpf.sketch.util.calculateScaleMultiplierWithFit
 import kotlin.js.JsName
 import kotlin.math.max
 import kotlin.time.TimeSource
@@ -184,7 +184,7 @@ class CrossfadePainter constructor(
     private fun computeScaledSize(srcSize: Size, dstSize: Size): Size {
         if (srcSize.isUnspecified || srcSize.isEmpty()) return dstSize
         if (dstSize.isUnspecified || dstSize.isEmpty()) return dstSize
-        val sizeMultiplier = computeScaleMultiplierWithFit(
+        val sizeMultiplier = calculateScaleMultiplierWithFit(
             srcWidth = srcSize.width,
             srcHeight = srcSize.height,
             dstWidth = dstSize.width,

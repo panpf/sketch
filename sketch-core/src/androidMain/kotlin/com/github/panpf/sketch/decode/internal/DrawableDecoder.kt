@@ -28,7 +28,7 @@ import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DrawableDataSource
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
+import com.github.panpf.sketch.util.calculateScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.safeToSoftware
 import com.github.panpf.sketch.util.toBitmap
 import kotlinx.atomicfu.locks.SynchronizedObject
@@ -73,7 +73,7 @@ open class DrawableDecoder(
         val imageInfo = imageInfo
         val resize = requestContext.computeResize(imageInfo.size)
         var transformeds: List<String>? = null
-        val scale: Float = computeScaleMultiplierWithOneSide(
+        val scale: Float = calculateScaleMultiplierWithOneSide(
             sourceSize = imageInfo.size,
             targetSize = resize.size
         )

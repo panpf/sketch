@@ -32,7 +32,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.withSave
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.drawable.internal.AnimatableCallbackHelper
-import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
+import com.github.panpf.sketch.util.calculateScaleMultiplierWithFit
 import com.github.panpf.sketch.util.toLogString
 import kotlin.math.roundToInt
 
@@ -97,11 +97,11 @@ class ScaledAnimatableDrawable @JvmOverloads constructor(
 
         val targetWidth = bounds.width()
         val targetHeight = bounds.height()
-        val multiplier = computeScaleMultiplierWithFit(
-            srcWidth = width,
-            srcHeight = height,
-            dstWidth = targetWidth,
-            dstHeight = targetHeight,
+        val multiplier = calculateScaleMultiplierWithFit(
+            srcWidth = width.toFloat(),
+            srcHeight = height.toFloat(),
+            dstWidth = targetWidth.toFloat(),
+            dstHeight = targetHeight.toFloat(),
             fitScale = fitScale
         )
 

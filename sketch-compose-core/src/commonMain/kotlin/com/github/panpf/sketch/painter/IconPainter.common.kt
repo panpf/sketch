@@ -32,14 +32,9 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
 import com.github.panpf.sketch.util.Key
-import com.github.panpf.sketch.util.Rect
-import com.github.panpf.sketch.util.calculateCropBounds
-import com.github.panpf.sketch.util.calculateInsideBounds
-import com.github.panpf.sketch.util.size
-import com.github.panpf.sketch.util.toIntSizeOrNull
+import com.github.panpf.sketch.util.calculateScaleMultiplierWithCrop
+import com.github.panpf.sketch.util.calculateScaleMultiplierWithInside
 import com.github.panpf.sketch.util.toLogString
-import com.github.panpf.sketch.util.toSize
-import com.github.panpf.sketch.util.toSketchSize
 
 /**
  * Create a [IconPainter] and remember it.
@@ -250,43 +245,45 @@ open class IconPainter constructor(
     }
 
     override fun DrawScope.onDraw() {
-        val containerSize = this@onDraw.size
-        val containerBounds = Rect(0, 0, containerSize.width.toInt(), containerSize.height.toInt())
+        val dstSize = this@onDraw.size
         if (background != null) {
             val backgroundSize = background.intrinsicSize
-            val backgroundBounds = if (backgroundSize.isSpecified) {
-                calculateCropBounds(
-                    contentSize = backgroundSize.toIntSizeOrNull()!!.toSketchSize(),
-                    containerBounds = containerBounds
+            if (backgroundSize.isSpecified) {
+                val backgroundScaleFactor = calculateScaleMultiplierWithCrop(
+                    srcWidth = backgroundSize.width,
+                    srcHeight = backgroundSize.height,
+                    dstWidth = dstSize.width,
+                    dstHeight = dstSize.height
                 )
+                val scaledBackgroundSize = backgroundSize * backgroundScaleFactor
+                val backgroundLeft = (dstSize.width - scaledBackgroundSize.width) / 2f
+                val backgroundTop = (dstSize.height - scaledBackgroundSize.height) / 2f
+                translate(left = backgroundLeft, top = backgroundTop) {
+                    with(background) {
+                        draw(size = scaledBackgroundSize, colorFilter = colorFilter)
+                    }
+                }
             } else {
-                containerBounds
-            }
-            translate(
-                left = backgroundBounds.left.toFloat(),
-                top = backgroundBounds.top.toFloat()
-            ) {
                 with(background) {
-                    draw(
-                        size = backgroundBounds.size.toSize(),
-                        colorFilter = colorFilter
-                    )
+                    draw(size = dstSize, colorFilter = colorFilter)
                 }
             }
         }
 
         val realIconSize = iconSize ?: icon.intrinsicSize
-        val iconBounds = calculateInsideBounds(
-            contentSize = realIconSize.toIntSizeOrNull()!!.toSketchSize(),
-            containerBounds = containerBounds
+        val iconScaleFactor = calculateScaleMultiplierWithInside(
+            srcWidth = realIconSize.width,
+            srcHeight = realIconSize.height,
+            dstWidth = dstSize.width,
+            dstHeight = dstSize.height
         )
-        translate(left = iconBounds.left.toFloat(), top = iconBounds.top.toFloat()) {
+        val scaledRealIconSize = realIconSize * iconScaleFactor
+        val iconLeft = (dstSize.width - scaledRealIconSize.width) / 2f
+        val iconTop = (dstSize.height - scaledRealIconSize.height) / 2f
+        translate(left = iconLeft, top = iconTop) {
             with(icon) {
                 val filter = iconTint?.let { ColorFilter.tint(it) } ?: colorFilter
-                draw(
-                    size = iconBounds.size.toSize(),
-                    colorFilter = filter
-                )
+                draw(size = scaledRealIconSize, colorFilter = filter)
             }
         }
     }

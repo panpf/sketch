@@ -250,9 +250,9 @@ internal fun ceilRoundPow2(number: Int): Int {
 /**
  * Calculate the scale multiplier according to the fit scale
  *
- * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testComputeScaleMultiplierWithFit
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testCalculateScaleMultiplierWithFit
  */
-fun computeScaleMultiplierWithFit(
+fun calculateScaleMultiplierWithFit(
     srcWidth: Float,
     srcHeight: Float,
     dstWidth: Float,
@@ -270,16 +270,18 @@ fun computeScaleMultiplierWithFit(
 
 /**
  * Calculate the scale multiplier according to the fit scale
- *
- * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testComputeScaleMultiplierWithFit
  */
+@Deprecated(
+    message = "Use calculateScaleMultiplierWithFit(Float, Float, Float, Float, Boolean) instead",
+    replaceWith = ReplaceWith("calculateScaleMultiplierWithFit(srcWidth, srcHeight, dstWidth, dstHeight, fitScale)")
+)
 fun computeScaleMultiplierWithFit(
     srcWidth: Int,
     srcHeight: Int,
     dstWidth: Int,
     dstHeight: Int,
     fitScale: Boolean
-): Float = computeScaleMultiplierWithFit(
+): Float = calculateScaleMultiplierWithFit(
     srcWidth = srcWidth.toFloat(),
     srcHeight = srcHeight.toFloat(),
     dstWidth = dstWidth.toFloat(),
@@ -288,11 +290,49 @@ fun computeScaleMultiplierWithFit(
 )
 
 /**
+ * Calculate the scale multiplier according to the inside scale
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testCalculateScaleMultiplierWithInside
+ */
+fun calculateScaleMultiplierWithInside(
+    srcWidth: Float,
+    srcHeight: Float,
+    dstWidth: Float,
+    dstHeight: Float
+): Float {
+    if (srcWidth <= dstWidth && srcHeight <= dstHeight) {
+        // center
+        return 1f
+    } else {
+        // fit
+        val widthScale = dstWidth / srcWidth
+        val heightScale = dstHeight / srcHeight
+        return min(widthScale, heightScale)
+    }
+}
+
+/**
+ * Calculate the scale multiplier according to the inside scale
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testCalculateScaleMultiplierWithCrop
+ */
+fun calculateScaleMultiplierWithCrop(
+    srcWidth: Float,
+    srcHeight: Float,
+    dstWidth: Float,
+    dstHeight: Float
+): Float {
+    val widthScale = dstWidth / srcWidth
+    val heightScale = dstHeight / srcHeight
+    return max(widthScale, heightScale)
+}
+
+/**
  * Calculate the scale multiplier according to the one side scale
  *
- * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testComputeScaleMultiplierWithOneSide
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testCalculateScaleMultiplierWithOneSide
  */
-fun computeScaleMultiplierWithOneSide(sourceSize: SketchSize, targetSize: SketchSize): Float {
+fun calculateScaleMultiplierWithOneSide(sourceSize: SketchSize, targetSize: SketchSize): Float {
     if (targetSize.isNotEmpty) {
         val widthScaleFactor = targetSize.width.toFloat() / sourceSize.width
         val heightScaleFactor = targetSize.height.toFloat() / sourceSize.height
@@ -310,12 +350,26 @@ fun computeScaleMultiplierWithOneSide(sourceSize: SketchSize, targetSize: Sketch
     return 1f
 }
 
+/**
+ * Calculate the scale multiplier according to the one side scale
+ */
+@Deprecated(
+    message = "Use calculateScaleMultiplierWithOneSide(SketchSize, SketchSize) instead",
+    replaceWith = ReplaceWith("calculateScaleMultiplierWithOneSide(sourceSize, targetSize)")
+)
+fun computeScaleMultiplierWithOneSide(sourceSize: SketchSize, targetSize: SketchSize): Float =
+    calculateScaleMultiplierWithOneSide(
+        sourceSize = sourceSize,
+        targetSize = targetSize
+    )
+
 
 /**
  * Calculate the bounds of the Drawable to inside the container.
  *
  * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testCalculateInsideBounds
  */
+@Deprecated("No longer used")
 fun calculateInsideBounds(contentSize: Size, containerBounds: Rect): Rect {
     val containerWidth = containerBounds.width()
     val containerHeight = containerBounds.height()
@@ -346,6 +400,7 @@ fun calculateInsideBounds(contentSize: Size, containerBounds: Rect): Rect {
  *
  * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testCalculateCropBounds
  */
+@Deprecated("No longer used")
 fun calculateCropBounds(contentSize: Size, containerBounds: Rect): Rect {
     val containerWidth = containerBounds.width()
     val containerHeight = containerBounds.height()

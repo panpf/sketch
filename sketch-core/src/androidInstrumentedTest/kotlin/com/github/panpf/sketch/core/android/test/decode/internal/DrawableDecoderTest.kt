@@ -49,7 +49,7 @@ import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
+import com.github.panpf.sketch.util.calculateScaleMultiplierWithOneSide
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
@@ -157,7 +157,7 @@ class DrawableDecoderTest {
 
         // resize: scale, EXACTLY, START_CROP
         val targetSize = Size(100, 100)
-        val targetScale = computeScaleMultiplierWithOneSide(
+        val targetScale = calculateScaleMultiplierWithOneSide(
             sourceSize = imageSize,
             targetSize = targetSize
         )

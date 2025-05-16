@@ -37,7 +37,7 @@ import com.github.panpf.sketch.test.utils.fetch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchSize
-import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
+import com.github.panpf.sketch.util.calculateScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.screenSize
 import com.github.panpf.sketch.util.times
 import kotlinx.coroutines.test.runTest
@@ -144,7 +144,7 @@ class SvgDecoderTest {
                     actual = imageInfo.toShortString()
                 )
                 val size = context.screenSize()
-                val sizeMultiplier = computeScaleMultiplierWithOneSide(imageInfo.size, size)
+                val sizeMultiplier = calculateScaleMultiplierWithOneSide(imageInfo.size, size)
                 val bitmapSize = imageInfo.size.times(sizeMultiplier)
                 assertEquals(expected = bitmapSize, actual = image.size)
                 assertEquals(expected = LOCAL, actual = dataFrom)

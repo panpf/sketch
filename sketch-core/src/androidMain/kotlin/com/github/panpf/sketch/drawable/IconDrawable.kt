@@ -32,12 +32,12 @@ import android.os.Build.VERSION_CODES
 import androidx.annotation.ColorInt
 import androidx.core.graphics.drawable.DrawableCompat
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.calculateCropBounds
-import com.github.panpf.sketch.util.calculateInsideBounds
+import com.github.panpf.sketch.util.calculateScaleMultiplierWithCrop
+import com.github.panpf.sketch.util.calculateScaleMultiplierWithInside
 import com.github.panpf.sketch.util.isNotEmpty
-import com.github.panpf.sketch.util.toAndroidRect
 import com.github.panpf.sketch.util.toLogString
-import com.github.panpf.sketch.util.toSketchRect
+import kotlin.math.ceil
+import kotlin.math.floor
 
 /**
  * It consists of two parts: icon and bg. bg is scaled to fill bounds, the icon size is unchanged always centered.
@@ -75,22 +75,55 @@ open class IconDrawable constructor(
     override fun onBoundsChange(bounds: Rect) {
         super.onBoundsChange(bounds)
 
+        val containerWidth = bounds.width()
+        val containerHeight = bounds.height()
         val background = background
         if (background != null) {
             val backgroundSize = Size(background.intrinsicWidth, background.intrinsicHeight)
             val backgroundBounds = if (backgroundSize.isNotEmpty) {
-                calculateCropBounds(
-                    contentSize = backgroundSize,
-                    containerBounds = bounds.toSketchRect()
-                ).toAndroidRect()
+                val backgroundScaleFactor = calculateScaleMultiplierWithCrop(
+                    srcWidth = backgroundSize.width.toFloat(),
+                    srcHeight = backgroundSize.height.toFloat(),
+                    dstWidth = containerWidth.toFloat(),
+                    dstHeight = containerHeight.toFloat()
+                )
+                val scaledWidth = backgroundSize.width * backgroundScaleFactor
+                val scaledHeight = backgroundSize.height * backgroundScaleFactor
+                val left = bounds.left + (containerWidth - scaledWidth) / 2f
+                val top = bounds.top + (containerHeight - scaledHeight) / 2f
+                val right = left + scaledWidth
+                val bottom = top + scaledHeight
+                Rect(
+                    /* left = */ floor(left).toInt(),
+                    /* top = */ floor(top).toInt(),
+                    /* right = */ ceil(right).toInt(),
+                    /* bottom = */ ceil(bottom).toInt()
+                )
             } else {
                 bounds
             }
             background.bounds = backgroundBounds
         }
 
-        val iconSize = iconSize ?: Size(icon.intrinsicWidth, icon.intrinsicHeight)
-        val iconBounds = calculateInsideBounds(iconSize, bounds.toSketchRect()).toAndroidRect()
+        val realIconSize = iconSize ?: Size(icon.intrinsicWidth, icon.intrinsicHeight)
+        val backgroundScaleFactor = calculateScaleMultiplierWithInside(
+            srcWidth = realIconSize.width.toFloat(),
+            srcHeight = realIconSize.height.toFloat(),
+            dstWidth = containerWidth.toFloat(),
+            dstHeight = containerHeight.toFloat()
+        )
+        val scaledWidth = realIconSize.width * backgroundScaleFactor
+        val scaledHeight = realIconSize.height * backgroundScaleFactor
+        val left = bounds.left + (containerWidth - scaledWidth) / 2f
+        val top = bounds.top + (containerHeight - scaledHeight) / 2f
+        val right = left + scaledWidth
+        val bottom = top + scaledHeight
+        val iconBounds = Rect(
+            /* left = */ floor(left).toInt(),
+            /* top = */ floor(top).toInt(),
+            /* right = */ ceil(right).toInt(),
+            /* bottom = */ ceil(bottom).toInt()
+        )
         icon.bounds = iconBounds
     }
 

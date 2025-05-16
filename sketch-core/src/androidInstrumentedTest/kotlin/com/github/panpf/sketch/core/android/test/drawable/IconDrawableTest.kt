@@ -43,11 +43,13 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
-import com.github.panpf.sketch.util.calculateInsideBounds
 import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.sketch.util.toSketchRect
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 import org.junit.runner.RunWith
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -875,5 +877,48 @@ class IconDrawableTest {
                 iconTint = TestColor.BLUE
             ).toString()
         )
+    }
+
+    /**
+     * Calculate the bounds of the Drawable to inside the container.
+     *
+     * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testCalculateInsideBounds
+     */
+    private fun calculateInsideBounds(
+        contentSize: Size,
+        containerBounds: com.github.panpf.sketch.util.Rect
+    ): com.github.panpf.sketch.util.Rect {
+        val containerWidth = containerBounds.width()
+        val containerHeight = containerBounds.height()
+        if (contentSize.width <= containerWidth && contentSize.height <= containerHeight) {
+            // center
+            val left = containerBounds.left + (containerWidth - contentSize.width) / 2f
+            val top = containerBounds.top + (containerHeight - contentSize.height) / 2f
+            val right = left + contentSize.width
+            val bottom = top + contentSize.height
+            return com.github.panpf.sketch.util.Rect(
+                /* left = */ floor(left).toInt(),
+                /* top = */ floor(top).toInt(),
+                /* right = */ ceil(right).toInt(),
+                /* bottom = */ ceil(bottom).toInt()
+            )
+        } else {
+            // fit
+            val widthScale = containerWidth.toFloat() / contentSize.width
+            val heightScale = containerHeight.toFloat() / contentSize.height
+            val scale = min(widthScale, heightScale)
+            val scaledWidth = contentSize.width * scale
+            val scaledHeight = contentSize.height * scale
+            val left = containerBounds.left + (containerWidth - scaledWidth) / 2f
+            val top = containerBounds.top + (containerHeight - scaledHeight) / 2f
+            val right = left + scaledWidth
+            val bottom = top + scaledHeight
+            return com.github.panpf.sketch.util.Rect(
+                /* left = */ floor(left).toInt(),
+                /* top = */ floor(top).toInt(),
+                /* right = */ ceil(right).toInt(),
+                /* bottom = */ ceil(bottom).toInt()
+            )
+        }
     }
 }

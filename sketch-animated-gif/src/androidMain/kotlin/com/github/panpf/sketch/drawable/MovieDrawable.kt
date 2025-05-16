@@ -40,7 +40,7 @@ import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.transform.PixelOpacity.OPAQUE
 import com.github.panpf.sketch.transform.PixelOpacity.UNCHANGED
-import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
+import com.github.panpf.sketch.util.calculateScaleMultiplierWithFit
 
 /**
  * A [Drawable] that supports rendering [Movie]s (i.e. GIFs).
@@ -236,11 +236,11 @@ class MovieDrawable(
         val movieHeight = movie.height()
         if (movieWidth <= 0 || movieHeight <= 0) return
 
-        softwareScale = computeScaleMultiplierWithFit(
-            srcWidth = movieWidth,
-            srcHeight = movieHeight,
-            dstWidth = boundsWidth,
-            dstHeight = boundsHeight,
+        softwareScale = calculateScaleMultiplierWithFit(
+            srcWidth = movieWidth.toFloat(),
+            srcHeight = movieHeight.toFloat(),
+            dstWidth = boundsWidth.toFloat(),
+            dstHeight = boundsHeight.toFloat(),
             fitScale = true
         ).run {
 //                    if (isSoftwareScalingEnabled) this else
@@ -259,11 +259,11 @@ class MovieDrawable(
 //            hardwareDx = 0f
 //            hardwareDy = 0f
 //        } else {
-        hardwareScale = computeScaleMultiplierWithFit(
-            srcWidth = bitmapWidth,
-            srcHeight = bitmapHeight,
-            dstWidth = boundsWidth,
-            dstHeight = boundsHeight,
+        hardwareScale = calculateScaleMultiplierWithFit(
+            srcWidth = bitmapWidth.toFloat(),
+            srcHeight = bitmapHeight.toFloat(),
+            dstWidth = boundsWidth.toFloat(),
+            dstHeight = boundsHeight.toFloat(),
             fitScale = true
         )
         hardwareDx = bounds.left + (boundsWidth - hardwareScale * bitmapWidth) / 2f

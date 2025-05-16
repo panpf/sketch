@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.graphics.painter.Painter
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
+import com.github.panpf.sketch.util.calculateScaleMultiplierWithFit
 
 /**
  * Create a [ResizePainter] and remember it
@@ -117,7 +117,7 @@ open class ResizePainter(
     private fun computeScaledSize(srcSize: Size, dstSize: Size): Size {
         if (srcSize.isUnspecified || srcSize.isEmpty()) return dstSize
         if (dstSize.isUnspecified || dstSize.isEmpty()) return dstSize
-        val sizeMultiplier = computeScaleMultiplierWithFit(
+        val sizeMultiplier = calculateScaleMultiplierWithFit(
             srcWidth = srcSize.width,
             srcHeight = srcSize.height,
             dstWidth = dstSize.width,

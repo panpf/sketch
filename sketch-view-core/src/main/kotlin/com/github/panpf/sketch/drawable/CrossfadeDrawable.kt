@@ -39,11 +39,12 @@ import androidx.core.graphics.withSave
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.TransitionDrawable
-import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
+import com.github.panpf.sketch.util.calculateScaleMultiplierWithFit
 import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.util.toLogString
+import kotlin.math.ceil
+import kotlin.math.floor
 import kotlin.math.max
-import kotlin.math.roundToInt
 
 /**
  * A [Drawable] that crossfades from [start] to [end].
@@ -323,21 +324,26 @@ class CrossfadeDrawable @JvmOverloads constructor(
 
         val targetWidth = targetBounds.width()
         val targetHeight = targetBounds.height()
-        val multiplier = computeScaleMultiplierWithFit(
-            srcWidth = width,
-            srcHeight = height,
-            dstWidth = targetWidth,
-            dstHeight = targetHeight,
+        val multiplier = calculateScaleMultiplierWithFit(
+            srcWidth = width.toFloat(),
+            srcHeight = height.toFloat(),
+            dstWidth = targetWidth.toFloat(),
+            dstHeight = targetHeight.toFloat(),
             fitScale = fitScale
         )
-        val dx = ((targetWidth - multiplier * width) / 2).roundToInt()
-        val dy = ((targetHeight - multiplier * height) / 2).roundToInt()
+        val dx = (targetWidth - multiplier * width) / 2f
+        val dy = (targetHeight - multiplier * height) / 2f
 
         val left = targetBounds.left + dx
         val top = targetBounds.top + dy
         val right = targetBounds.right - dx
         val bottom = targetBounds.bottom - dy
-        drawable.setBounds(left, top, right, bottom)
+        drawable.setBounds(
+            /* left = */ floor(left).toInt(),
+            /* top = */ floor(top).toInt(),
+            /* right = */ ceil(right).toInt(),
+            /* bottom = */ ceil(bottom).toInt()
+        )
     }
 
     private fun computeIntrinsicDimension(startSize: Int?, endSize: Int?): Int {

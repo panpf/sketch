@@ -29,10 +29,12 @@ import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.calculateCropBounds
 import com.github.panpf.sketch.util.calculateInsideBounds
+import com.github.panpf.sketch.util.calculateScaleMultiplierWithCrop
+import com.github.panpf.sketch.util.calculateScaleMultiplierWithFit
+import com.github.panpf.sketch.util.calculateScaleMultiplierWithInside
+import com.github.panpf.sketch.util.calculateScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.ceilRoundPow2
 import com.github.panpf.sketch.util.compareVersions
-import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
-import com.github.panpf.sketch.util.computeScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.difference
 import com.github.panpf.sketch.util.floorRoundPow2
 import com.github.panpf.sketch.util.format
@@ -283,56 +285,100 @@ class CoreUtilsTest {
     }
 
     @Test
-    fun testComputeScaleMultiplierWithFit() {
-        assertEquals(0.2, computeScaleMultiplierWithFit(1000, 600, 200, 400, true), 0.1)
-        assertEquals(0.6, computeScaleMultiplierWithFit(1000, 600, 200, 400, false), 0.1)
-        assertEquals(0.3, computeScaleMultiplierWithFit(1000, 600, 400, 200, true), 0.1)
-        assertEquals(0.4, computeScaleMultiplierWithFit(1000, 600, 400, 200, false), 0.1)
+    fun testCalculateScaleMultiplierWithFit() {
+        assertEquals(0.2f, calculateScaleMultiplierWithFit(1000f, 600f, 200f, 400f, true), 0f)
+        assertEquals(
+            0.666f,
+            calculateScaleMultiplierWithFit(1000f, 600f, 200f, 400f, false),
+            0.001f
+        )
+        assertEquals(0.333f, calculateScaleMultiplierWithFit(1000f, 600f, 400f, 200f, true), 0.001f)
+        assertEquals(0.4f, calculateScaleMultiplierWithFit(1000f, 600f, 400f, 200f, false), 0f)
 
-        assertEquals(0.6, computeScaleMultiplierWithFit(1000, 600, 2000, 400, true), 0.1)
-        assertEquals(2.0, computeScaleMultiplierWithFit(1000, 600, 2000, 400, false), 0.1)
-        assertEquals(0.4, computeScaleMultiplierWithFit(1000, 600, 400, 2000, true), 0.1)
-        assertEquals(3.3, computeScaleMultiplierWithFit(1000, 600, 400, 2000, false), 0.1)
+        assertEquals(
+            0.666f,
+            calculateScaleMultiplierWithFit(1000f, 600f, 2000f, 400f, true),
+            0.001f
+        )
+        assertEquals(2.0f, calculateScaleMultiplierWithFit(1000f, 600f, 2000f, 400f, false), 0f)
+        assertEquals(0.4f, calculateScaleMultiplierWithFit(1000f, 600f, 400f, 2000f, true), 0f)
+        assertEquals(
+            3.333f,
+            calculateScaleMultiplierWithFit(1000f, 600f, 400f, 2000f, false),
+            0.001f
+        )
 
-        assertEquals(2.0, computeScaleMultiplierWithFit(1000, 600, 2000, 4000, true), 0.1)
-        assertEquals(6.6, computeScaleMultiplierWithFit(1000, 600, 2000, 4000, false), 0.1)
-        assertEquals(3.3, computeScaleMultiplierWithFit(1000, 600, 4000, 2000, true), 0.1)
-        assertEquals(4.0, computeScaleMultiplierWithFit(1000, 600, 4000, 2000, false), 0.1)
+        assertEquals(2.0f, calculateScaleMultiplierWithFit(1000f, 600f, 2000f, 4000f, true), 0f)
+        assertEquals(
+            6.666f,
+            calculateScaleMultiplierWithFit(1000f, 600f, 2000f, 4000f, false),
+            0.001f
+        )
+        assertEquals(
+            3.333f,
+            calculateScaleMultiplierWithFit(1000f, 600f, 4000f, 2000f, true),
+            0.001f
+        )
+        assertEquals(4.0f, calculateScaleMultiplierWithFit(1000f, 600f, 4000f, 2000f, false), 0f)
     }
 
     @Test
-    fun testComputeScaleMultiplierWithOneSide() {
+    fun testCalculateScaleMultiplierWithInside() {
+        assertEquals(0.2f, calculateScaleMultiplierWithInside(1000f, 600f, 200f, 400f), 0f)
+        assertEquals(0.333f, calculateScaleMultiplierWithInside(1000f, 600f, 400f, 200f), 0.001f)
+
+        assertEquals(0.666f, calculateScaleMultiplierWithInside(1000f, 600f, 2000f, 400f), 0.001f)
+        assertEquals(0.4f, calculateScaleMultiplierWithInside(1000f, 600f, 400f, 2000f), 0f)
+
+        assertEquals(1f, calculateScaleMultiplierWithInside(1000f, 600f, 2000f, 4000f), 0f)
+        assertEquals(1f, calculateScaleMultiplierWithInside(1000f, 600f, 4000f, 2000f), 0f)
+    }
+
+    @Test
+    fun testCalculateScaleMultiplierWithCrop() {
+        assertEquals(0.666f, calculateScaleMultiplierWithCrop(1000f, 600f, 200f, 400f), 0.001f)
+        assertEquals(0.4f, calculateScaleMultiplierWithCrop(1000f, 600f, 400f, 200f), 0f)
+
+        assertEquals(2.0f, calculateScaleMultiplierWithCrop(1000f, 600f, 2000f, 400f), 0f)
+        assertEquals(3.333f, calculateScaleMultiplierWithCrop(1000f, 600f, 400f, 2000f), 0.001f)
+
+        assertEquals(6.666f, calculateScaleMultiplierWithCrop(1000f, 600f, 2000f, 4000f), 0.001f)
+        assertEquals(4.0f, calculateScaleMultiplierWithCrop(1000f, 600f, 4000f, 2000f), 0f)
+    }
+
+    @Test
+    fun testCalculateScaleMultiplierWithOneSide() {
         assertEquals(
             expected = 1.5f,
-            actual = computeScaleMultiplierWithOneSide(
+            actual = calculateScaleMultiplierWithOneSide(
                 sourceSize = Size(100, 100),
                 targetSize = Size(150, 200)
             )
         )
         assertEquals(
             expected = 0.2f,
-            actual = computeScaleMultiplierWithOneSide(
+            actual = calculateScaleMultiplierWithOneSide(
                 sourceSize = Size(100, 100),
                 targetSize = Size(50, 20)
             )
         )
         assertEquals(
             expected = 2.0f,
-            actual = computeScaleMultiplierWithOneSide(
+            actual = calculateScaleMultiplierWithOneSide(
                 sourceSize = Size(100, 100),
                 targetSize = Size(0, 200)
             )
         )
         assertEquals(
             expected = 0.5f,
-            actual = computeScaleMultiplierWithOneSide(
+            actual = calculateScaleMultiplierWithOneSide(
                 sourceSize = Size(100, 100),
                 targetSize = Size(50, 0)
             )
         )
         assertEquals(
             expected = 1.0f,
-            actual = computeScaleMultiplierWithOneSide(
+            actual = calculateScaleMultiplierWithOneSide(
                 sourceSize = Size(100, 100),
                 targetSize = Size(0, 0)
             )
