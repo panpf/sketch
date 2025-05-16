@@ -68,6 +68,7 @@ fun TestPage() {
 
             add(TestGroup("Other"))
             add(TestItem("DisplayInsanity", DisplayInsanityTestScreen()))
+            add(TestItem("UserZoom", UserZoomTestScreen()))
             add(TestItem("Temp", TempTestScreen()))
 
             add(ProjectInfo)
