@@ -149,6 +149,12 @@ object ResourceImages {
         size = Size(30000, 926),
         mimeType = "image/jpeg"
     )
+    val longCOMIC: ResourceImageFile = ResourceImageFile(
+        resourceName = "sample_long_comic.jpg",
+        name = "COMIC",
+        size = Size(690, 12176),
+        mimeType = "image/jpeg"
+    )
 
     val clockExifFlipHorizontal: ResourceImageFile = ResourceImageFile(
         resourceName = "clock_exif_flip_horizontal.jpeg",
@@ -303,7 +309,7 @@ object ResourceImages {
     )
 
     val values: Array<ResourceImageFile> = arrayOf(
-        bmp, heic, jpeg, png, svg, webp, animGif, animHeif, animWebp, mp4, longQMSHT,
+        bmp, heic, jpeg, png, svg, webp, animGif, animHeif, animWebp, mp4, longQMSHT, longCOMIC,
         clockExifFlipHorizontal, clockExifFlipVertical, clockExifNormal, clockExifRotate90,
         clockExifRotate180, clockExifRotate270, clockExifTranspose, clockExifTransverse,
         clockExifUndefined, number1, number2, number3, number4, number5, number6, number7, number8,
