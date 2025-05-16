@@ -46,6 +46,8 @@ import com.github.panpf.sketch.request.ImageRequest
  *  rendered onscreen.
  * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
  *  destination.
+ *  @param clipToBounds Whether to clip the content to the bounds of this layout. Defaults to true.
+ *  @param keepContentNoneStartWhenDraw Whether to always draw the content as none on the left when drawing, even if LayoutDirection is Rtl.
  *
  * @see com.github.panpf.sketch.compose.common.test.SingletonAsyncImageTest.testAsyncImage1
  */
@@ -62,6 +64,7 @@ fun AsyncImage(
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
     clipToBounds: Boolean = true,
+    keepContentNoneStartWhenDraw: Boolean = false,
 ) = AsyncImage(
     uri = uri,
     contentDescription = contentDescription,
@@ -74,6 +77,7 @@ fun AsyncImage(
     colorFilter = colorFilter,
     filterQuality = filterQuality,
     clipToBounds = clipToBounds,
+    keepContentNoneStartWhenDraw = keepContentNoneStartWhenDraw,
 )
 
 /**
@@ -95,6 +99,8 @@ fun AsyncImage(
  *  rendered onscreen.
  * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
  *  destination.
+ *  @param clipToBounds Whether to clip the content to the bounds of this layout. Defaults to true.
+ *  @param keepContentNoneStartWhenDraw Whether to always draw the content as none on the left when drawing, even if LayoutDirection is Rtl.
  *
  * @see com.github.panpf.sketch.compose.common.test.SingletonAsyncImageTest.testAsyncImage2
  */
@@ -111,6 +117,7 @@ fun AsyncImage(
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
     clipToBounds: Boolean = true,
+    keepContentNoneStartWhenDraw: Boolean = false,
 ) = AsyncImage(
     request = request,
     contentDescription = contentDescription,
@@ -123,4 +130,5 @@ fun AsyncImage(
     colorFilter = colorFilter,
     filterQuality = filterQuality,
     clipToBounds = clipToBounds,
+    keepContentNoneStartWhenDraw = keepContentNoneStartWhenDraw,
 )

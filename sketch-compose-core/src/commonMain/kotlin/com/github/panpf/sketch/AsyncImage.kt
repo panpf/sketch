@@ -18,6 +18,7 @@ package com.github.panpf.sketch
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NonRestartableComposable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -26,6 +27,8 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQuality
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import com.github.panpf.sketch.internal.AsyncImageContent
 import com.github.panpf.sketch.internal.requestOf
 import com.github.panpf.sketch.request.ImageRequest
@@ -50,6 +53,8 @@ import com.github.panpf.sketch.request.ImageRequest
  *  rendered onscreen.
  * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
  *  destination.
+ *  @param clipToBounds Whether to clip the content to the bounds of this layout. Defaults to true.
+ *  @param keepContentNoneStartWhenDraw Whether to always draw the content as none on the left when drawing, even if LayoutDirection is Rtl.
  *
  * @see com.github.panpf.sketch.compose.core.common.test.AsyncImageTest.testAsyncImage1
  */
@@ -67,6 +72,7 @@ fun AsyncImage(
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
     clipToBounds: Boolean = true,
+    keepContentNoneStartWhenDraw: Boolean = false,
 ) = AsyncImage(
     request = requestOf(LocalPlatformContext.current, uri),
     contentDescription = contentDescription,
@@ -79,6 +85,7 @@ fun AsyncImage(
     colorFilter = colorFilter,
     filterQuality = filterQuality,
     clipToBounds = clipToBounds,
+    keepContentNoneStartWhenDraw = keepContentNoneStartWhenDraw,
 )
 
 /**
@@ -101,6 +108,8 @@ fun AsyncImage(
  *  rendered onscreen.
  * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
  *  destination.
+ *  @param clipToBounds Whether to clip the content to the bounds of this layout. Defaults to true.
+ *  @param keepContentNoneStartWhenDraw Whether to always draw the content as none on the left when drawing, even if LayoutDirection is Rtl.
  *
  * @see com.github.panpf.sketch.compose.core.common.test.AsyncImageTest.testAsyncImage2
  */
@@ -117,6 +126,7 @@ fun AsyncImage(
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
     clipToBounds: Boolean = true,
+    keepContentNoneStartWhenDraw: Boolean = false,
 ) {
     val painter = rememberAsyncImagePainter(
         request = request,
@@ -125,6 +135,13 @@ fun AsyncImage(
         contentScale = contentScale,
         filterQuality = filterQuality
     )
+    val drawAlignment = if (keepContentNoneStartWhenDraw) {
+        Alignment.TopStart.rtlFlipped(LocalLayoutDirection.current)
+    } else {
+        alignment
+    }
+    val drawContentScale =
+        if (keepContentNoneStartWhenDraw) ContentScale.None else contentScale
     AsyncImageContent(
         modifier = modifier.onSizeChanged { size ->
             // Ensure images are prepared before content is drawn when in-memory cache exists
@@ -132,10 +149,30 @@ fun AsyncImage(
         },
         painter = painter,
         contentDescription = contentDescription,
-        alignment = alignment,
-        contentScale = contentScale,
+        alignment = drawAlignment,
+        contentScale = drawContentScale,
         alpha = alpha,
         colorFilter = colorFilter,
         clipToBounds = clipToBounds,
     )
+}
+
+/**
+ * If [layoutDirection] is [LayoutDirection.Rtl], returns the horizontally flipped [Alignment], otherwise returns itself
+ */
+@Stable
+private fun Alignment.rtlFlipped(layoutDirection: LayoutDirection): Alignment {
+    if (layoutDirection != LayoutDirection.Rtl) return this
+    return when (this) {
+        Alignment.TopStart -> Alignment.TopEnd
+        Alignment.TopCenter -> Alignment.TopCenter
+        Alignment.TopEnd -> Alignment.TopStart
+        Alignment.CenterStart -> Alignment.CenterEnd
+        Alignment.Center -> Alignment.Center
+        Alignment.CenterEnd -> Alignment.CenterStart
+        Alignment.BottomStart -> Alignment.BottomEnd
+        Alignment.BottomCenter -> Alignment.BottomCenter
+        Alignment.BottomEnd -> Alignment.BottomStart
+        else -> this
+    }
 }

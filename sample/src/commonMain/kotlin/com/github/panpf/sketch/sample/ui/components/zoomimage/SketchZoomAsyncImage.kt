@@ -32,16 +32,14 @@ import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntSize
+import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.AsyncImagePainter
 import com.github.panpf.sketch.AsyncImageState
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PainterState
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.internal.AsyncImageContent
 import com.github.panpf.sketch.name
-import com.github.panpf.sketch.rememberAsyncImagePainter
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.zoomimage.compose.subsampling.subsampling
@@ -201,7 +199,7 @@ fun SketchZoomAsyncImage(
 
     // moseZoom directly acts on ZoomAsyncImage, causing the zoom center to be abnormal.
     Box(modifier = modifier.mouseZoom(zoomState.zoomable)) {
-        BaseZoomAsyncImage(
+        AsyncImage(
             request = request,
             contentDescription = contentDescription,
             sketch = sketch,
@@ -210,6 +208,8 @@ fun SketchZoomAsyncImage(
             alpha = alpha,
             colorFilter = colorFilter,
             filterQuality = filterQuality,
+            clipToBounds = false,
+            keepContentNoneStartWhenDraw = true,
             modifier = Modifier
                 .matchParentSize()
                 .zoom(
@@ -274,42 +274,3 @@ private fun Size.roundToIntSize(): IntSize {
 }
 
 private fun IntSize.isNotEmpty(): Boolean = width > 0 && height > 0
-
-/**
- * 1. Disabled clipToBounds
- * 2. alignment = Alignment.TopStart
- * 3. contentScale = ContentScale.None
- */
-@Composable
-private fun BaseZoomAsyncImage(
-    request: ImageRequest,
-    contentDescription: String?,
-    sketch: Sketch,
-    modifier: Modifier = Modifier,
-    state: AsyncImageState = rememberAsyncImageState(),
-    contentScale: ContentScale = ContentScale.Fit,
-    alpha: Float = DefaultAlpha,
-    colorFilter: ColorFilter? = null,
-    filterQuality: FilterQuality = DrawScope.DefaultFilterQuality,
-) {
-    val painter = rememberAsyncImagePainter(
-        request = request,
-        sketch = sketch,
-        state = state,
-        contentScale = contentScale,
-        filterQuality = filterQuality
-    )
-    AsyncImageContent(
-        modifier = modifier.onSizeChanged { size ->
-            // Ensure images are prepared before content is drawn when in-memory cache exists
-            state.setSize(size)
-        },
-        painter = painter,
-        contentDescription = contentDescription,
-        alignment = Alignment.TopStart,
-        contentScale = ContentScale.None,
-        alpha = alpha,
-        colorFilter = colorFilter,
-        clipToBounds = false,
-    )
-}
