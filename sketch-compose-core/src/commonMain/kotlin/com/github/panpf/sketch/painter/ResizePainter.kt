@@ -26,12 +26,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ScaleFactor
-import androidx.compose.ui.layout.times
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
-import kotlin.math.roundToInt
 
 /**
  * Create a [ResizePainter] and remember it
@@ -99,21 +96,19 @@ open class ResizePainter(
 
     override fun DrawScope.onDraw() {
         with(painter) {
-            val drawSize = this@onDraw.size
-            val painterScaledSize = computeScaledSize(this@with.intrinsicSize, drawSize)
-            if (drawSize.isUnspecified || drawSize.isEmpty()) {
-                draw(painterScaledSize, alpha, colorFilter)
+            val dstSize: Size = this@onDraw.size
+            val srcSize: Size = this@with.intrinsicSize
+            val scaledSrcSize = computeScaledSize(srcSize, dstSize)
+            if (dstSize.isUnspecified || dstSize.isEmpty()) {
+                draw(scaledSrcSize, alpha, colorFilter)
             } else {
                 val (horizontal, vertical) = when (scale) {
                     Scale.START_CROP -> 0f to 0f
-                    Scale.END_CROP -> drawSize.width - painterScaledSize.width to drawSize.height - painterScaledSize.height
-                    else -> (drawSize.width - painterScaledSize.width) / 2 to (drawSize.height - painterScaledSize.height) / 2
+                    Scale.END_CROP -> dstSize.width - scaledSrcSize.width to dstSize.height - scaledSrcSize.height
+                    else -> (dstSize.width - scaledSrcSize.width) / 2f to (dstSize.height - scaledSrcSize.height) / 2f
                 }
-                inset(
-                    horizontal = horizontal,
-                    vertical = vertical
-                ) {
-                    draw(painterScaledSize, alpha, colorFilter)
+                inset(horizontal = horizontal, vertical = vertical) {
+                    draw(scaledSrcSize, alpha, colorFilter)
                 }
             }
         }
@@ -123,13 +118,16 @@ open class ResizePainter(
         if (srcSize.isUnspecified || srcSize.isEmpty()) return dstSize
         if (dstSize.isUnspecified || dstSize.isEmpty()) return dstSize
         val sizeMultiplier = computeScaleMultiplierWithFit(
-            srcWidth = srcSize.width.roundToInt(),
-            srcHeight = srcSize.height.roundToInt(),
-            dstWidth = dstSize.width.roundToInt(),
-            dstHeight = dstSize.height.roundToInt(),
+            srcWidth = srcSize.width,
+            srcHeight = srcSize.height,
+            dstWidth = dstSize.width,
+            dstHeight = dstSize.height,
             fitScale = false
         )
-        return srcSize * ScaleFactor(sizeMultiplier.toFloat(), sizeMultiplier.toFloat())
+        return Size(
+            width = srcSize.width * sizeMultiplier,
+            height = srcSize.height * sizeMultiplier
+        )
     }
 
     override fun equals(other: Any?): Boolean {

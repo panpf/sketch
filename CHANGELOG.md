@@ -15,6 +15,8 @@ Translations: [简体中文](CHANGELOG.zh.md)
 > The compose multiplatform version 1.8.0 must be jvm 11 to compile. Please modify the configuration
 > of sourceCompatibility, targetCompatibility, jvmTarget, etc. to 11+
 
+* fix: Fixed a bug where CrossfadePainter, ResizePainter, ImageBitmapPainter and DrawablePainter
+  cannot fill the canvas due to loss of floating point precision
 * depend: Update to kotlin 2.1.10
 * depend: Update to compose multiplatform 1.8.0
 * depend: Update to android-gif-drawable 1.2.29

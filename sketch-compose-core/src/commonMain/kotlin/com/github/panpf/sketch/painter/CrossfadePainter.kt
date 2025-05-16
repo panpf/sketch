@@ -32,14 +32,11 @@ import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ScaleFactor
-import androidx.compose.ui.layout.times
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.TransitionPainter
 import com.github.panpf.sketch.util.computeScaleMultiplierWithFit
 import kotlin.js.JsName
 import kotlin.math.max
-import kotlin.math.roundToInt
 import kotlin.time.TimeSource
 
 /**
@@ -169,16 +166,16 @@ class CrossfadePainter constructor(
         if (painter == null || alpha <= 0) return
 
         with(painter) {
-            val drawSize = this@drawPainter.size
-            val painterScaledSize = computeScaledSize(this@with.intrinsicSize, drawSize)
-            if (drawSize.isUnspecified || drawSize.isEmpty()) {
-                draw(painterScaledSize, alpha, colorFilter)
+            val dstSize: Size = this@drawPainter.size
+            val srcSize: Size = this@with.intrinsicSize
+            val scaledSrcSize = computeScaledSize(srcSize, dstSize)
+            if (dstSize.isUnspecified || dstSize.isEmpty()) {
+                draw(scaledSrcSize, alpha, colorFilter)
             } else {
-                inset(
-                    horizontal = (drawSize.width - painterScaledSize.width) / 2,
-                    vertical = (drawSize.height - painterScaledSize.height) / 2
-                ) {
-                    draw(painterScaledSize, alpha, colorFilter)
+                val horizontal = (dstSize.width - scaledSrcSize.width) / 2f
+                val vertical = (dstSize.height - scaledSrcSize.height) / 2f
+                inset(horizontal = horizontal, vertical = vertical) {
+                    draw(scaledSrcSize, alpha, colorFilter)
                 }
             }
         }
@@ -188,13 +185,16 @@ class CrossfadePainter constructor(
         if (srcSize.isUnspecified || srcSize.isEmpty()) return dstSize
         if (dstSize.isUnspecified || dstSize.isEmpty()) return dstSize
         val sizeMultiplier = computeScaleMultiplierWithFit(
-            srcWidth = srcSize.width.roundToInt(),
-            srcHeight = srcSize.height.roundToInt(),
-            dstWidth = dstSize.width.roundToInt(),
-            dstHeight = dstSize.height.roundToInt(),
+            srcWidth = srcSize.width,
+            srcHeight = srcSize.height,
+            dstWidth = dstSize.width,
+            dstHeight = dstSize.height,
             fitScale = fitScale
         )
-        return srcSize * ScaleFactor(sizeMultiplier.toFloat(), sizeMultiplier.toFloat())
+        return Size(
+            width = srcSize.width * sizeMultiplier,
+            height = srcSize.height * sizeMultiplier
+        )
     }
 
     override fun onRemembered() {

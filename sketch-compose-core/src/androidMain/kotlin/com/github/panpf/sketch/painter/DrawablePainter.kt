@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.LayoutDirection.Rtl
 import com.github.panpf.sketch.drawable.EquitableDrawable
 import com.github.panpf.sketch.util.RememberedCounter
 import com.github.panpf.sketch.util.toLogString
+import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 /**
@@ -179,7 +180,7 @@ open class DrawablePainter(
             drawInvalidateTick
 
             // Update the Drawable's bounds
-            drawable.setBounds(0, 0, size.width.roundToInt(), size.height.roundToInt())
+            drawable.setBounds(0, 0, ceil(size.width).toInt(), ceil(size.height).toInt())
 
             canvas.withSave {
                 drawable.draw(canvas.nativeCanvas)

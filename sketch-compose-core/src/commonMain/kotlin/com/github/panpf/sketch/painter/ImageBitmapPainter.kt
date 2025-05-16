@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.util.toLogString
+import kotlin.math.ceil
 
 /**
  * [ImageBitmap] converted to [ImageBitmapPainter]
@@ -47,8 +48,12 @@ class ImageBitmapPainter(
     override val intrinsicSize = Size(bitmap.width.toFloat(), bitmap.height.toFloat())
 
     override fun DrawScope.onDraw() {
-        val intSize = IntSize(size.width.toInt(), size.height.toInt())
-        drawImage(bitmap, dstSize = intSize, filterQuality = filterQuality)
+        // ceil must be used here instead of round, because when size is a decimal and downward round, the image cannot completely overwrite dst
+        val dstSize = IntSize(
+            width = ceil(size.width).toInt(),
+            height = ceil(size.height).toInt()
+        )
+        drawImage(bitmap, dstSize = dstSize, filterQuality = filterQuality)
     }
 
     override fun equals(other: Any?): Boolean {

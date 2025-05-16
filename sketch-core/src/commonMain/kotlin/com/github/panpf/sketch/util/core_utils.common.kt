@@ -253,20 +253,39 @@ internal fun ceilRoundPow2(number: Int): Int {
  * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testComputeScaleMultiplierWithFit
  */
 fun computeScaleMultiplierWithFit(
+    srcWidth: Float,
+    srcHeight: Float,
+    dstWidth: Float,
+    dstHeight: Float,
+    fitScale: Boolean
+): Float {
+    val widthScaleFactor: Float = dstWidth / srcWidth
+    val heightScaleFactor: Float = dstHeight / srcHeight
+    return if (fitScale) {
+        min(widthScaleFactor, heightScaleFactor)
+    } else {
+        max(widthScaleFactor, heightScaleFactor)
+    }
+}
+
+/**
+ * Calculate the scale multiplier according to the fit scale
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testComputeScaleMultiplierWithFit
+ */
+fun computeScaleMultiplierWithFit(
     srcWidth: Int,
     srcHeight: Int,
     dstWidth: Int,
     dstHeight: Int,
     fitScale: Boolean
-): Double {
-    val widthPercent = dstWidth / srcWidth.toDouble()
-    val heightPercent = dstHeight / srcHeight.toDouble()
-    return if (fitScale) {
-        min(widthPercent, heightPercent)
-    } else {
-        max(widthPercent, heightPercent)
-    }
-}
+): Float = computeScaleMultiplierWithFit(
+    srcWidth = srcWidth.toFloat(),
+    srcHeight = srcHeight.toFloat(),
+    dstWidth = dstWidth.toFloat(),
+    dstHeight = dstHeight.toFloat(),
+    fitScale = fitScale
+)
 
 /**
  * Calculate the scale multiplier according to the one side scale
