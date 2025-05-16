@@ -236,13 +236,16 @@ class MovieDrawable(
         val movieHeight = movie.height()
         if (movieWidth <= 0 || movieHeight <= 0) return
 
-        softwareScale =
-            computeScaleMultiplierWithFit(movieWidth, movieHeight, boundsWidth, boundsHeight, true)
-                .run {
+        softwareScale = computeScaleMultiplierWithFit(
+            srcWidth = movieWidth,
+            srcHeight = movieHeight,
+            dstWidth = boundsWidth,
+            dstHeight = boundsHeight,
+            fitScale = true
+        ).run {
 //                    if (isSoftwareScalingEnabled) this else
-                    coerceAtMost(1.0)
-                }
-                .toFloat()
+            coerceAtMost(1f)
+        }
         val bitmapWidth = (softwareScale * movieWidth).toInt()
         val bitmapHeight = (softwareScale * movieHeight).toInt()
 
@@ -256,17 +259,15 @@ class MovieDrawable(
 //            hardwareDx = 0f
 //            hardwareDy = 0f
 //        } else {
-        hardwareScale =
-            computeScaleMultiplierWithFit(
-                bitmapWidth,
-                bitmapHeight,
-                boundsWidth,
-                boundsHeight,
-                true
-            )
-                .toFloat()
-        hardwareDx = bounds.left + (boundsWidth - hardwareScale * bitmapWidth) / 2
-        hardwareDy = bounds.top + (boundsHeight - hardwareScale * bitmapHeight) / 2
+        hardwareScale = computeScaleMultiplierWithFit(
+            srcWidth = bitmapWidth,
+            srcHeight = bitmapHeight,
+            dstWidth = boundsWidth,
+            dstHeight = boundsHeight,
+            fitScale = true
+        )
+        hardwareDx = bounds.left + (boundsWidth - hardwareScale * bitmapWidth) / 2f
+        hardwareDy = bounds.top + (boundsHeight - hardwareScale * bitmapHeight) / 2f
 //        }
     }
 

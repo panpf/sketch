@@ -97,18 +97,23 @@ class ScaledAnimatableDrawable @JvmOverloads constructor(
 
         val targetWidth = bounds.width()
         val targetHeight = bounds.height()
-        val multiplier =
-            computeScaleMultiplierWithFit(width, height, targetWidth, targetHeight, fitScale)
+        val multiplier = computeScaleMultiplierWithFit(
+            srcWidth = width,
+            srcHeight = height,
+            dstWidth = targetWidth,
+            dstHeight = targetHeight,
+            fitScale = fitScale
+        )
 
-        val left = ((targetWidth - multiplier * width) / 2).roundToInt()
-        val top = ((targetHeight - multiplier * height) / 2).roundToInt()
+        val left = ((targetWidth - multiplier * width) / 2f).roundToInt()
+        val top = ((targetHeight - multiplier * height) / 2f).roundToInt()
         val right = left + width
         val bottom = top + height
         drawable.setBounds(left, top, right, bottom)
 
         childDx = bounds.left.toFloat()
         childDy = bounds.top.toFloat()
-        childScale = multiplier.toFloat()
+        childScale = multiplier
     }
 
     override fun onLevelChange(level: Int) = drawable.setLevel(level)
