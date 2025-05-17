@@ -23,7 +23,7 @@
 * depend: 更新 jetbrains-lifecycle 2.8.4
 * depend: 更新 kotlinx-coroutines 1.10.2
 * depend: 更新 ktor2 2.3.13
-* depend: 更新 ktor3 3.1.3
+* depend: 更新 ktor3 3.0.3
 * depend: 更新 okio 3.11.0
 * depend: 不再替换 `kotlin-stdlib-jdk7` 和 `kotlin-stdlib-jdk8` 为 `kotlin-stdlib`
 
