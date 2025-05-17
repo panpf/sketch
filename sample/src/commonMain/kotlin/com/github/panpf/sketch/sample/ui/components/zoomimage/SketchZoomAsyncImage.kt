@@ -209,7 +209,7 @@ fun SketchZoomAsyncImage(
             colorFilter = colorFilter,
             filterQuality = filterQuality,
             clipToBounds = false,
-            keepContentNoneStartWhenDraw = true,
+            keepContentNoneStartOnDraw = true,
             modifier = Modifier
                 .matchParentSize()
                 .zoom(

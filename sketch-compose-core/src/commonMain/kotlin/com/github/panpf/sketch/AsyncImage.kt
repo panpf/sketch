@@ -54,7 +54,7 @@ import com.github.panpf.sketch.request.ImageRequest
  * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
  *  destination.
  *  @param clipToBounds Whether to clip the content to the bounds of this layout. Defaults to true.
- *  @param keepContentNoneStartWhenDraw Whether to always draw the content as none on the left when drawing, even if LayoutDirection is Rtl.
+ *  @param keepContentNoneStartOnDraw Whether to always draw the content as none on the left on drawing, even if LayoutDirection is Rtl.
  *
  * @see com.github.panpf.sketch.compose.core.common.test.AsyncImageTest.testAsyncImage1
  */
@@ -72,7 +72,7 @@ fun AsyncImage(
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
     clipToBounds: Boolean = true,
-    keepContentNoneStartWhenDraw: Boolean = false,
+    keepContentNoneStartOnDraw: Boolean = false,
 ) = AsyncImage(
     request = requestOf(LocalPlatformContext.current, uri),
     contentDescription = contentDescription,
@@ -85,7 +85,7 @@ fun AsyncImage(
     colorFilter = colorFilter,
     filterQuality = filterQuality,
     clipToBounds = clipToBounds,
-    keepContentNoneStartWhenDraw = keepContentNoneStartWhenDraw,
+    keepContentNoneStartOnDraw = keepContentNoneStartOnDraw,
 )
 
 /**
@@ -109,7 +109,7 @@ fun AsyncImage(
  * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
  *  destination.
  *  @param clipToBounds Whether to clip the content to the bounds of this layout. Defaults to true.
- *  @param keepContentNoneStartWhenDraw Whether to always draw the content as none on the left when drawing, even if LayoutDirection is Rtl.
+ *  @param keepContentNoneStartOnDraw Whether to always draw the content as none on the left on drawing, even if LayoutDirection is Rtl.
  *
  * @see com.github.panpf.sketch.compose.core.common.test.AsyncImageTest.testAsyncImage2
  */
@@ -126,7 +126,7 @@ fun AsyncImage(
     colorFilter: ColorFilter? = null,
     filterQuality: FilterQuality = DefaultFilterQuality,
     clipToBounds: Boolean = true,
-    keepContentNoneStartWhenDraw: Boolean = false,
+    keepContentNoneStartOnDraw: Boolean = false,
 ) {
     val painter = rememberAsyncImagePainter(
         request = request,
@@ -135,13 +135,13 @@ fun AsyncImage(
         contentScale = contentScale,
         filterQuality = filterQuality
     )
-    val drawAlignment = if (keepContentNoneStartWhenDraw) {
+    val drawAlignment = if (keepContentNoneStartOnDraw) {
         Alignment.TopStart.rtlFlipped(LocalLayoutDirection.current)
     } else {
         alignment
     }
     val drawContentScale =
-        if (keepContentNoneStartWhenDraw) ContentScale.None else contentScale
+        if (keepContentNoneStartOnDraw) ContentScale.None else contentScale
     AsyncImageContent(
         modifier = modifier.onSizeChanged { size ->
             // Ensure images are prepared before content is drawn when in-memory cache exists

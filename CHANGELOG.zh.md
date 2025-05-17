@@ -15,7 +15,7 @@
 
 * fix: 修复 CrossfadePainter, ResizePainter, ImageBitmapPainter 和 DrawablePainter
   因丢失浮点精度导致内容无法充满画布的 bug
-* new: AsyncImage 增加 keepContentNoneStartWhenDraw 参数
+* new: AsyncImage 增加 keepContentNoneStartOnDraw 参数
 * depend: 更新 kotlin 2.1.10
 * depend: 更新 compose multiplatform 1.8.0
 * depend: 更新 android-gif-drawable 1.2.29
