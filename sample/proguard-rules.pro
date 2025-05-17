@@ -28,6 +28,7 @@
 # ----------------------------------------- Okio ------------------------------------------------- #
 # Animal Sniffer compileOnly dependency to ensure APIs are compatible with older versions of Java.
 -dontwarn org.codehaus.mojo.animal_sniffer.*
+-keep class okio.** { *; }
 
 
 # ----------------------------------------- kotlinx serialization -------------------------------- #
@@ -40,6 +41,9 @@
 }
 -keepclasseswithmembers class kotlinx.serialization.json.** {
     kotlinx.serialization.KSerializer serializer(...);
+}
+-keepclassmembers public class **$$serializer {
+    private ** descriptor;
 }
 
 
