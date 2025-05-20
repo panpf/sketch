@@ -25,7 +25,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
@@ -39,6 +38,7 @@ import com.github.panpf.sketch.AsyncImageState
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PainterState
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.internal.requestOf
 import com.github.panpf.sketch.name
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
@@ -107,7 +107,7 @@ fun SketchZoomAsyncImage(
     onLongPress: ((Offset) -> Unit)? = null,
     onTap: ((Offset) -> Unit)? = null,
 ) = SketchZoomAsyncImage(
-    request = ImageRequest(LocalPlatformContext.current, uri),
+    request = requestOf(LocalPlatformContext.current, uri),
     contentDescription = contentDescription,
     sketch = sketch,
     modifier = modifier,
@@ -244,8 +244,8 @@ private fun onPainterState(
     val painterSize = painterState?.painter
         ?.intrinsicSize
         ?.takeIf { it.isSpecified }
-        ?.roundToIntSize()
-        ?.takeIf { it.isNotEmpty() }
+        ?.let { IntSize(it.width.roundToInt(), it.height.roundToInt()) }
+        ?.takeIf { it.width > 0 && it.height > 0 }
     zoomState.zoomable.contentSize = painterSize ?: IntSize.Zero
 
     if (painterState is PainterState.Success) {
@@ -268,9 +268,3 @@ private fun onPainterState(
         zoomState.setSubsamplingImage(null as SubsamplingImage?)
     }
 }
-
-private fun Size.roundToIntSize(): IntSize {
-    return IntSize(width.roundToInt(), height.roundToInt())
-}
-
-private fun IntSize.isNotEmpty(): Boolean = width > 0 && height > 0
