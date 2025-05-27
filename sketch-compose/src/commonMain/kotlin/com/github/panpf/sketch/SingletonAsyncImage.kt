@@ -47,12 +47,113 @@ import com.github.panpf.sketch.request.ImageRequest
  * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
  *  destination.
  *  @param clipToBounds Whether to clip the content to the bounds of this layout. Defaults to true.
+ *
+ * @see com.github.panpf.sketch.compose.common.test.SingletonAsyncImageTest.testAsyncImage1
+ */
+@Composable
+@NonRestartableComposable
+fun AsyncImage(
+    uri: String?,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    state: AsyncImageState = rememberAsyncImageState(),
+    alignment: Alignment = Alignment.Center,
+    contentScale: ContentScale = ContentScale.Fit,
+    alpha: Float = DefaultAlpha,
+    colorFilter: ColorFilter? = null,
+    filterQuality: FilterQuality = DefaultFilterQuality,
+    clipToBounds: Boolean = true,
+) = AsyncImage(
+    uri = uri,
+    contentDescription = contentDescription,
+    sketch = SingletonSketch.get(LocalPlatformContext.current),
+    modifier = modifier,
+    state = state,
+    alignment = alignment,
+    contentScale = contentScale,
+    alpha = alpha,
+    colorFilter = colorFilter,
+    filterQuality = filterQuality,
+    clipToBounds = clipToBounds,
+)
+
+/**
+ * A composable that executes an [ImageRequest] asynchronously and renders the result.
+ *
+ * @param request [ImageRequest].
+ * @param contentDescription Text used by accessibility services to describe what this image
+ *  represents. This should always be provided unless this image is used for decorative purposes,
+ *  and does not represent a meaningful action that a user can take.
+ * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
+ * @param state [AsyncImageState] that will be used to store the state of the request.
+ * @param alignment Optional alignment parameter used to place the [AsyncImagePainter] in the given
+ *  bounds defined by the width and height.
+ * @param contentScale Optional scale parameter used to determine the aspect ratio scaling to be
+ *  used if the bounds are a different size from the intrinsic size of the [AsyncImagePainter].
+ * @param alpha Optional opacity to be applied to the [AsyncImagePainter] when it is rendered
+ *  onscreen.
+ * @param colorFilter Optional [ColorFilter] to apply for the [AsyncImagePainter] when it is
+ *  rendered onscreen.
+ * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
+ *  destination.
+ *  @param clipToBounds Whether to clip the content to the bounds of this layout. Defaults to true.
+ *
+ * @see com.github.panpf.sketch.compose.common.test.SingletonAsyncImageTest.testAsyncImage2
+ */
+@Composable
+@NonRestartableComposable
+fun AsyncImage(
+    request: ImageRequest,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    state: AsyncImageState = rememberAsyncImageState(),
+    alignment: Alignment = Alignment.Center,
+    contentScale: ContentScale = ContentScale.Fit,
+    alpha: Float = DefaultAlpha,
+    colorFilter: ColorFilter? = null,
+    filterQuality: FilterQuality = DefaultFilterQuality,
+    clipToBounds: Boolean = true,
+) = AsyncImage(
+    request = request,
+    contentDescription = contentDescription,
+    sketch = SingletonSketch.get(LocalPlatformContext.current),
+    modifier = modifier,
+    state = state,
+    alignment = alignment,
+    contentScale = contentScale,
+    alpha = alpha,
+    colorFilter = colorFilter,
+    filterQuality = filterQuality,
+    clipToBounds = clipToBounds,
+)
+
+/**
+ * A composable that executes an [ImageRequest] asynchronously and renders the result.
+ *
+ * @param uri [ImageRequest.uri] value.
+ * @param contentDescription Text used by accessibility services to describe what this image
+ *  represents. This should always be provided unless this image is used for decorative purposes,
+ *  and does not represent a meaningful action that a user can take.
+ * @param modifier Modifier used to adjust the layout algorithm or draw decoration content.
+ * @param state [AsyncImageState] that will be used to store the state of the request.
+ * @param alignment Optional alignment parameter used to place the [AsyncImagePainter] in the given
+ *  bounds defined by the width and height.
+ * @param contentScale Optional scale parameter used to determine the aspect ratio scaling to be
+ *  used if the bounds are a different size from the intrinsic size of the [AsyncImagePainter].
+ * @param alpha Optional opacity to be applied to the [AsyncImagePainter] when it is rendered
+ *  onscreen.
+ * @param colorFilter Optional [ColorFilter] to apply for the [AsyncImagePainter] when it is
+ *  rendered onscreen.
+ * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
+ *  destination.
+ *  @param clipToBounds Whether to clip the content to the bounds of this layout. Defaults to true.
  *  @param keepContentNoneStartOnDraw Whether to always draw the content as none on the left on drawing, even if LayoutDirection is Rtl.
  *
  * @see com.github.panpf.sketch.compose.common.test.SingletonAsyncImageTest.testAsyncImage1
  */
 @Composable
 @NonRestartableComposable
+@Deprecated("Please use an overload function without the keepContentNoneStartOnDraw parameter instead. Will be removed in the future")
 fun AsyncImage(
     uri: String?,
     contentDescription: String?,
@@ -106,6 +207,7 @@ fun AsyncImage(
  */
 @Composable
 @NonRestartableComposable
+@Deprecated("Please use an overload function without the keepContentNoneStartOnDraw parameter instead. Will be removed in the future")
 fun AsyncImage(
     request: ImageRequest,
     contentDescription: String?,
