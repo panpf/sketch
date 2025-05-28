@@ -80,6 +80,22 @@ actual class AppSettings actual constructor(val context: PlatformContext) {
 
     // -------------------------------------- list image --------------------------------------
 
+    actual val listContentScaleName: SettingsStateFlow<String> by lazy {
+        stringSettingsStateFlow(context, "listContentScaleName", "Fit")
+    }
+    actual val listContentScale: StateFlow<ContentScale> =
+        listContentScaleName.stateMap { ContentScale.valueOf(it) }
+
+    actual val listAlignmentName: SettingsStateFlow<String> by lazy {
+        stringSettingsStateFlow(context, "listAlignmentName", "Center")
+    }
+    actual val listAlignment: StateFlow<Alignment> =
+        listAlignmentName.stateMap { Alignment.valueOf(it) }
+
+    actual val resizeOnDrawEnabled: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow(context, "resizeOnDrawEnabled", true)
+    }
+
     actual val precisionName: SettingsStateFlow<String> by lazy {
         stringSettingsStateFlow(context, "precision1", "LongImageMode")
     }

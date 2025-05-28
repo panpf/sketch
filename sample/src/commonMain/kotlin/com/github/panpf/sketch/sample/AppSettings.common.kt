@@ -40,6 +40,14 @@ expect class AppSettings(context: PlatformContext) {
 
     // -------------------------------------- list image --------------------------------------
 
+    val listContentScaleName: SettingsStateFlow<String>
+    val listContentScale: StateFlow<ContentScale>
+
+    val listAlignmentName: SettingsStateFlow<String>
+    val listAlignment: StateFlow<Alignment>
+
+    val resizeOnDrawEnabled: SettingsStateFlow<Boolean>
+
     val precisionName: SettingsStateFlow<String>
     val precision: StateFlow<PrecisionDecider>
 

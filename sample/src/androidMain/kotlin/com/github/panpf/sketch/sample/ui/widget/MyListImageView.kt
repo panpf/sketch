@@ -22,6 +22,9 @@ import android.graphics.drawable.Drawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.util.AttributeSet
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.layout.ContentScale
+import androidx.core.graphics.toColorInt
 import com.github.panpf.sketch.ability.removeDataFromLogo
 import com.github.panpf.sketch.ability.removeMimeTypeLogo
 import com.github.panpf.sketch.ability.removeProgressIndicator
@@ -44,6 +47,7 @@ import com.github.panpf.sketch.sample.buildScale
 import com.github.panpf.sketch.sample.ui.components.NewMoonLoadingDrawable
 import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.util.lifecycleOwner
+import com.github.panpf.sketch.sample.ui.util.toScaleType
 import com.github.panpf.sketch.sample.util.collectWithLifecycle
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.state.ConditionStateImage
@@ -53,7 +57,8 @@ import com.github.panpf.sketch.state.saveCellularTrafficError
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.tools4a.dimen.ktx.dp2px
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 
 class MyListImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
@@ -69,7 +74,7 @@ class MyListImageView @JvmOverloads constructor(
                 .bold()
                 .textColor(Color.WHITE)
                 .endConfig()
-                .buildRoundRect(it, Color.parseColor("#88000000"), 10.dp2px)
+                .buildRoundRect(it, "#88000000".toColorInt(), 10.dp2px)
         }
         mapOf(
             "image/gif" to newLogoDrawable("GIF"),
@@ -113,13 +118,15 @@ class MyListImageView @JvmOverloads constructor(
                 }
             )
             crossfade()
-            resizeOnDraw()
+            resizeOnDraw(appSettings.resizeOnDrawEnabled.value)
             sizeMultiplier(2f)  // To get a clearer thumbnail
 
             memoryCachePolicy(appSettings.memoryCache.value)
             resultCachePolicy(appSettings.resultCache.value)
             downloadCachePolicy(appSettings.downloadCache.value)
 
+            scaleType =
+                toScaleType(appSettings.listContentScale.value, appSettings.listAlignment.value)
             precision(appSettings.precision.value)
 //            scale(appSettings.scale.value)
             scale(
@@ -193,6 +200,25 @@ class MyListImageView @JvmOverloads constructor(
         }
         listenSettings(appSettings.downloadCache) { cachePolicy ->
             downloadCachePolicy(cachePolicy)
+        }
+
+        listenSettings(
+            combine(
+                flows = listOf(appSettings.listContentScale, appSettings.listAlignment),
+                transform = { it }
+            )
+        ) { values ->
+            val contentScale: ContentScale = values[0] as ContentScale
+            val alignment: Alignment = values[1] as Alignment
+            scaleType = toScaleType(contentScale, alignment)
+        }
+
+        listenSettings(appSettings.resizeOnDrawEnabled) { enabled ->
+            resizeOnDraw(enabled)
+        }
+
+        listenSettings(appSettings.precision) { precision ->
+            precision(precision)
         }
 
         listenSettings(appSettings.precision) { precision ->
@@ -296,7 +322,7 @@ class MyListImageView @JvmOverloads constructor(
     }
 
     private fun <T> listenSettings(
-        state: StateFlow<T>,
+        state: Flow<T>,
         configBlock: (ImageOptions.Builder.(T) -> Unit)
     ) {
         state.ignoreFirst()

@@ -118,6 +118,56 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
     }
 
     private fun makeListMenuList(): List<Any> = buildList {
+        val contentScales = listOf(
+            ContentScaleCompat.Fit,
+            ContentScaleCompat.Crop,
+            ContentScaleCompat.Inside,
+            ContentScaleCompat.FillWidth,
+            ContentScaleCompat.FillHeight,
+            ContentScaleCompat.FillBounds,
+            ContentScaleCompat.None,
+        )
+        add(
+            MultiSelectMenu(
+                title = "Content Scale",
+                desc = null,
+                values = contentScales.map { it.name },
+                getValue = { appSettings.listContentScaleName.value },
+                onSelect = { _, value ->
+                    appSettings.listContentScaleName.value = value
+                }
+            )
+        )
+
+        val alignments = listOf(
+            AlignmentCompat.TopStart,
+            AlignmentCompat.TopCenter,
+            AlignmentCompat.TopEnd,
+            AlignmentCompat.CenterStart,
+            AlignmentCompat.Center,
+            AlignmentCompat.CenterEnd,
+            AlignmentCompat.BottomStart,
+            AlignmentCompat.BottomCenter,
+            AlignmentCompat.BottomEnd,
+        )
+        add(
+            MultiSelectMenu(
+                title = "Alignment",
+                desc = null,
+                values = alignments.map { it.name },
+                getValue = { appSettings.listAlignmentName.value },
+                onSelect = { _, value ->
+                    appSettings.listAlignmentName.value = value
+                }
+            )
+        )
+        add(
+            SwitchMenuFlow(
+                title = "Resize On Draw",
+                data = appSettings.resizeOnDrawEnabled,
+                desc = null
+            )
+        )
         add(
             SwitchMenuFlow(
                 title = "MimeType Logo",

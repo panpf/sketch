@@ -121,6 +121,50 @@ fun createSettingItems(
 
 
 private fun listMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
+    val contentScales = listOf(
+        ContentScaleCompat.Fit,
+        ContentScaleCompat.Crop,
+        ContentScaleCompat.Inside,
+        ContentScaleCompat.FillWidth,
+        ContentScaleCompat.FillHeight,
+        ContentScaleCompat.FillBounds,
+        ContentScaleCompat.None,
+    )
+    add(
+        DropdownSettingItem(
+            title = "Content Scale",
+            desc = null,
+            values = contentScales.map { it.name },
+            state = appSettings.listContentScaleName,
+        )
+    )
+
+    val alignments = listOf(
+        AlignmentCompat.TopStart,
+        AlignmentCompat.TopCenter,
+        AlignmentCompat.TopEnd,
+        AlignmentCompat.CenterStart,
+        AlignmentCompat.Center,
+        AlignmentCompat.CenterEnd,
+        AlignmentCompat.BottomStart,
+        AlignmentCompat.BottomCenter,
+        AlignmentCompat.BottomEnd,
+    )
+    add(
+        DropdownSettingItem(
+            title = "Alignment",
+            desc = null,
+            values = alignments.map { it.name },
+            state = appSettings.listAlignmentName,
+        )
+    )
+    add(
+        SwitchSettingItem(
+            title = "Resize On Draw",
+            desc = null,
+            state = appSettings.resizeOnDrawEnabled,
+        )
+    )
     add(
         SwitchSettingItem(
             title = "MimeType Logo",

@@ -10,7 +10,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.AsyncImage
@@ -53,6 +52,10 @@ fun MyListAsyncImage(
     animatedPlaceholder: Boolean = false,
     onClick: () -> Unit
 ) {
+    val context = LocalPlatformContext.current
+    val appSettings = context.appSettings
+    val contentScale by appSettings.listContentScale.collectAsState()
+    val alignment by appSettings.listAlignment.collectAsState()
     val infoDialogState = rememberMyDialogState()
     val imageState = rememberAsyncImageState()
     val modifier1 = modifier
@@ -67,7 +70,8 @@ fun MyListAsyncImage(
         request = request,
         state = imageState,
         modifier = modifier1,
-        contentScale = ContentScale.Crop,
+        contentScale = contentScale,
+        alignment = alignment,
         contentDescription = contentDescription
     )
     MyDialog(infoDialogState) {
@@ -83,6 +87,10 @@ fun MyListSubcomposeAsyncImage(
     animatedPlaceholder: Boolean = false,
     onClick: () -> Unit
 ) {
+    val context = LocalPlatformContext.current
+    val appSettings = context.appSettings
+    val contentScale by appSettings.listContentScale.collectAsState()
+    val alignment by appSettings.listAlignment.collectAsState()
     val infoDialogState = rememberMyDialogState()
     val imageState = rememberAsyncImageState()
     val modifier1 = modifier
@@ -97,7 +105,8 @@ fun MyListSubcomposeAsyncImage(
         request = request,
         state = imageState,
         modifier = modifier1,
-        contentScale = ContentScale.Crop,
+        contentScale = contentScale,
+        alignment = alignment,
         contentDescription = contentDescription
     )
     MyDialog(infoDialogState) {
@@ -113,6 +122,10 @@ fun MyListAsyncImagePainterImage(
     animatedPlaceholder: Boolean = false,
     onClick: () -> Unit
 ) {
+    val context = LocalPlatformContext.current
+    val appSettings = context.appSettings
+    val contentScale by appSettings.listContentScale.collectAsState()
+    val alignment by appSettings.listAlignment.collectAsState()
     val infoDialogState = rememberMyDialogState()
     val imageState = rememberAsyncImageState()
     val modifier1 = modifier
@@ -127,10 +140,11 @@ fun MyListAsyncImagePainterImage(
         painter = rememberAsyncImagePainter(
             request = request,
             state = imageState,
-            contentScale = ContentScale.Crop
+            contentScale = contentScale
         ),
         modifier = modifier1,
-        contentScale = ContentScale.Crop,
+        contentScale = contentScale,
+        alignment = alignment,
         contentDescription = contentDescription
     )
     MyDialog(infoDialogState) {
@@ -247,7 +261,9 @@ private fun buildListImageRequest(
         )
 
         crossfade()
-        resizeOnDraw()
+
+        val resizeOnDrawEnabled by appSettings.resizeOnDrawEnabled.collectAsState()
+        resizeOnDraw(resizeOnDrawEnabled)
 
         sizeMultiplier(2f)  // To get a clearer thumbnail
 
