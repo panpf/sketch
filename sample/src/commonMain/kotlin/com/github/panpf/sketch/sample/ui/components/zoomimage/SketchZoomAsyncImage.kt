@@ -42,10 +42,11 @@ import com.github.panpf.sketch.internal.requestOf
 import com.github.panpf.sketch.name
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.sample.ui.components.zoomimage.zoom2
+import com.github.panpf.sketch.sample.ui.components.zoomimage.zooming2
 import com.github.panpf.zoomimage.compose.subsampling.subsampling
 import com.github.panpf.zoomimage.compose.zoom.ScrollBarSpec
 import com.github.panpf.zoomimage.compose.zoom.mouseZoom
-import com.github.panpf.zoomimage.compose.zoom.zoom
 import com.github.panpf.zoomimage.compose.zoom.zoomScrollBar
 import com.github.panpf.zoomimage.sketch.SketchTileImageCache
 import com.github.panpf.zoomimage.subsampling.SubsamplingImage
@@ -209,16 +210,22 @@ fun SketchZoomAsyncImage(
             colorFilter = colorFilter,
             filterQuality = filterQuality,
             clipToBounds = false,
-            keepContentNoneStartOnDraw = true,
             modifier = Modifier
                 .matchParentSize()
-                .zoom(
+                .zoom2(
                     zoomable = zoomState.zoomable,
                     userSetupContentSize = true,
+                    firstRestoreContentBaseTransform = true,
                     onLongPress = onLongPress,
                     onTap = onTap
-                )
-                .subsampling(zoomState.zoomable, zoomState.subsampling),
+                ),
+        )
+
+        Box(
+            Modifier
+                .matchParentSize()
+                .zooming2(zoomable = zoomState.zoomable, firstRestoreContentBaseTransform = false)
+                .subsampling(zoomState.zoomable, zoomState.subsampling)
         )
 
         if (scrollBar != null) {
