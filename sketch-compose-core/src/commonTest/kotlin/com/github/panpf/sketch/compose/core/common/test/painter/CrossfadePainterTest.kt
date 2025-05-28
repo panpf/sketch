@@ -2,6 +2,7 @@ package com.github.panpf.sketch.compose.core.common.test.painter
 
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import com.github.panpf.sketch.painter.AnimatablePainter
 import com.github.panpf.sketch.painter.CrossfadePainter
 import com.github.panpf.sketch.painter.toLogString
@@ -23,6 +24,7 @@ class CrossfadePainterTest {
         val endPainter = SizeColorPainter(Color.Yellow, Size(200f, 100f))
 
         CrossfadePainter(start = startPainter, end = endPainter).apply {
+            assertEquals(ContentScale.Fit, contentScale)
             assertTrue(fitScale)
             assertEquals(200, durationMillis)
             assertTrue(fadeStart)
@@ -37,6 +39,22 @@ class CrossfadePainterTest {
             fadeStart = false,
             preferExactIntrinsicSize = true
         ).apply {
+            assertEquals(ContentScale.Crop, contentScale)
+            assertFalse(fitScale)
+            assertEquals(2000, durationMillis)
+            assertFalse(fadeStart)
+            assertTrue(preferExactIntrinsicSize)
+        }
+
+        CrossfadePainter(
+            start = startPainter,
+            end = endPainter,
+            contentScale = ContentScale.FillBounds,
+            durationMillis = 2000,
+            fadeStart = false,
+            preferExactIntrinsicSize = true
+        ).apply {
+            assertEquals(ContentScale.FillBounds, contentScale)
             assertFalse(fitScale)
             assertEquals(2000, durationMillis)
             assertFalse(fadeStart)
@@ -242,7 +260,7 @@ class CrossfadePainterTest {
         val endPainter = SizeColorPainter(Color.Yellow, Size(200f, 100f))
         val crossfadePainter = CrossfadePainter(startPainter, endPainter)
         assertEquals(
-            expected = "CrossfadePainter(start=${startPainter.toLogString()}, end=${endPainter.toLogString()}, fitScale=true, durationMillis=200, fadeStart=true, preferExactIntrinsicSize=false)",
+            expected = "CrossfadePainter(start=${startPainter.toLogString()}, end=${endPainter.toLogString()}, contentScale=Fit, durationMillis=200, fadeStart=true, preferExactIntrinsicSize=false)",
             actual = crossfadePainter.toString()
         )
     }

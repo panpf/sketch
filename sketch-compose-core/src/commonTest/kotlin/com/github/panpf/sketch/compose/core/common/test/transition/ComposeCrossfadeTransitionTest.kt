@@ -2,6 +2,7 @@ package com.github.panpf.sketch.compose.core.common.test.transition
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.compose.core.common.test.target.TestGenericComposeTarget
 import com.github.panpf.sketch.decode.ImageInfo
@@ -50,11 +51,14 @@ class ComposeCrossfadeTransitionTest {
             transformeds = null,
             extras = null,
         )
+
         ComposeCrossfadeTransition(sketch, request, imageViewTarget, result).apply {
+            assertEquals(ContentScale.Fit, contentScale)
             assertEquals(200, durationMillis)
             assertEquals(false, preferExactIntrinsicSize)
             assertEquals(true, fitScale)
         }
+
         ComposeCrossfadeTransition(
             sketch = sketch,
             request = request,
@@ -64,10 +68,27 @@ class ComposeCrossfadeTransitionTest {
             preferExactIntrinsicSize = true,
             fitScale = false
         ).apply {
+            assertEquals(ContentScale.Crop, contentScale)
             assertEquals(300, durationMillis)
             assertEquals(true, preferExactIntrinsicSize)
             assertEquals(false, fitScale)
         }
+
+        ComposeCrossfadeTransition(
+            sketch = sketch,
+            request = request,
+            target = imageViewTarget,
+            result = result,
+            durationMillis = 300,
+            preferExactIntrinsicSize = true,
+            contentScale = ContentScale.FillBounds
+        ).apply {
+            assertEquals(ContentScale.FillBounds, contentScale)
+            assertEquals(300, durationMillis)
+            assertEquals(true, preferExactIntrinsicSize)
+            assertEquals(false, fitScale)
+        }
+
         assertFailsWith(IllegalArgumentException::class) {
             ComposeCrossfadeTransition(sketch, request, imageViewTarget, result, durationMillis = 0)
         }
@@ -78,23 +99,23 @@ class ComposeCrossfadeTransitionTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, ResourceImages.jpeg.uri)
 
-        val imageViewTarget = TestGenericComposeTarget()
+        val composeTarget = TestGenericComposeTarget()
 
-        assertNull(imageViewTarget.painter)
-        assertEquals(false, imageViewTarget.isStarted)
-        imageViewTarget.isStarted = true
-        assertEquals(true, imageViewTarget.isStarted)
+        assertNull(composeTarget.painter)
+        assertEquals(false, composeTarget.isStarted)
+        composeTarget.isStarted = true
+        assertEquals(true, composeTarget.isStarted)
 
         // success
         withContext(Dispatchers.Main) {
-            imageViewTarget.onSuccess(
-                sketch,
-                request,
-                fakeSuccessImageResult(context),
-                ColorPainter(Color.Green).asImage()
+            composeTarget.onSuccess(
+                sketch = sketch,
+                request = request,
+                result = fakeSuccessImageResult(context),
+                image = ColorPainter(Color.Green).asImage()
             )
         }
-        assertEquals(Color.Green, (imageViewTarget.painter as ColorPainter).color)
+        assertEquals(Color.Green, (composeTarget.painter as ColorPainter).color)
         val resultBitmap = createBitmap(100, 200)
         val success = ImageResult.Success(
             request = request,
@@ -106,8 +127,8 @@ class ComposeCrossfadeTransitionTest {
             transformeds = null,
             extras = null,
         )
-        ComposeCrossfadeTransition(sketch, request, imageViewTarget, success).transition()
-        (imageViewTarget.painter as CrossfadePainter).apply {
+        ComposeCrossfadeTransition(sketch, request, composeTarget, success).transition()
+        (composeTarget.painter as CrossfadePainter).apply {
             assertEquals(Color.Green, (start as ColorPainter).color)
             assertTrue(end is ImageBitmapPainter, message = "end is $end")
             assertTrue(fitScale)
@@ -115,42 +136,42 @@ class ComposeCrossfadeTransitionTest {
 
         // error
         withContext(Dispatchers.Main) {
-            imageViewTarget.onSuccess(
+            composeTarget.onSuccess(
                 sketch,
                 request,
                 fakeSuccessImageResult(context),
                 ColorPainter(Color.Green).asImage()
             )
         }
-        assertEquals(Color.Green, (imageViewTarget.painter as ColorPainter).color)
+        assertEquals(Color.Green, (composeTarget.painter as ColorPainter).color)
         val error = ImageResult.Error(
             request = request,
             image = resultBitmap.asImage(),
             throwable = Exception(""),
         )
-        ComposeCrossfadeTransition(sketch, request, imageViewTarget, error).transition()
-        (imageViewTarget.painter as CrossfadePainter).apply {
+        ComposeCrossfadeTransition(sketch, request, composeTarget, error).transition()
+        (composeTarget.painter as CrossfadePainter).apply {
             assertEquals(Color.Green, (start as ColorPainter).color)
         }
 
         // start end same
         withContext(Dispatchers.Main) {
-            imageViewTarget.onSuccess(
+            composeTarget.onSuccess(
                 sketch,
                 request,
                 fakeSuccessImageResult(context),
                 ColorPainter(Color.Green).asImage()
             )
         }
-        assertTrue(imageViewTarget.painter!! is ColorPainter)
+        assertTrue(composeTarget.painter!! is ColorPainter)
         ComposeCrossfadeTransition(
             sketch = sketch,
             request = request,
-            target = imageViewTarget,
+            target = composeTarget,
             result = ImageResult.Success(
                 request = request,
                 cacheKey = request.toRequestContext(sketch).cacheKey,
-                image = imageViewTarget.painter!!.asImage(),
+                image = composeTarget.painter!!.asImage(),
                 imageInfo = ImageInfo(100, 200, "image/jpeg"),
                 dataFrom = LOCAL,
                 resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
@@ -158,7 +179,7 @@ class ComposeCrossfadeTransitionTest {
                 extras = null,
             )
         ).transition()
-        assertTrue(imageViewTarget.painter!! is ColorPainter)
+        assertTrue(composeTarget.painter!! is ColorPainter)
     }
 
     @Test

@@ -19,6 +19,7 @@
 package com.github.panpf.sketch.transition
 
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.asPainter
@@ -27,7 +28,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.util.asOrNull
-import com.github.panpf.sketch.util.fitScale
 import kotlin.jvm.JvmOverloads
 
 /**
@@ -40,11 +40,35 @@ class ComposeCrossfadeTransition constructor(
     private val request: ImageRequest,
     private val target: TransitionComposeTarget,
     private val result: ImageResult,
+    val contentScale: ContentScale = ContentScale.Fit,
     val durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
     val fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
     val preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
-    val fitScale: Boolean = true,
 ) : Transition {
+
+    @Deprecated("Please use a constructor containing the contentScale parameter instead")
+    constructor(
+        sketch: Sketch,
+        request: ImageRequest,
+        target: TransitionComposeTarget,
+        result: ImageResult,
+        durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
+        fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
+        preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
+        fitScale: Boolean,
+    ) : this(
+        sketch = sketch,
+        request = request,
+        target = target,
+        result = result,
+        durationMillis = durationMillis,
+        fadeStart = fadeStart,
+        preferExactIntrinsicSize = preferExactIntrinsicSize,
+        contentScale = if (fitScale) ContentScale.Fit else ContentScale.Crop
+    )
+
+    @Deprecated("Use contentScale instead.", ReplaceWith("contentScale"))
+    val fitScale: Boolean = contentScale == ContentScale.Fit
 
     init {
         require(durationMillis > 0) { "durationMillis must be > 0." }
@@ -61,7 +85,7 @@ class ComposeCrossfadeTransition constructor(
         val crossfadePainter = CrossfadePainter(
             start = startPainter,
             end = endPainter,
-            fitScale = fitScale,
+            contentScale = contentScale,
             durationMillis = durationMillis,
             fadeStart = fadeStart,
             preferExactIntrinsicSize = preferExactIntrinsicSize
@@ -110,16 +134,16 @@ class ComposeCrossfadeTransition constructor(
             if (!alwaysUse && fromMemoryCache) {
                 return null
             }
-            val fitScale = target.contentScale.fitScale
+            val contentScale = target.contentScale
             return ComposeCrossfadeTransition(
                 sketch = sketch,
                 request = request,
                 target = target,
                 result = result,
+                contentScale = contentScale,
                 durationMillis = durationMillis,
                 fadeStart = fadeStart,
                 preferExactIntrinsicSize = preferExactIntrinsicSize,
-                fitScale = fitScale
             )
         }
 

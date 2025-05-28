@@ -30,11 +30,13 @@ import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.inset
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.times
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.TransitionPainter
-import com.github.panpf.sketch.util.calculateScaleMultiplierWithFit
+import com.github.panpf.sketch.util.name
 import kotlin.js.JsName
 import kotlin.math.max
 import kotlin.time.TimeSource
@@ -60,7 +62,7 @@ import kotlin.time.TimeSource
 class CrossfadePainter constructor(
     @JsName("startPainter") val start: Painter?,
     @JsName("endPainter") val end: Painter?,
-    val fitScale: Boolean = true,
+    val contentScale: ContentScale = ContentScale.Fit,
     val durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
     val fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
     val preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
@@ -82,6 +84,26 @@ class CrossfadePainter constructor(
     private val endPainter1: Painter? = end
 
     override val intrinsicSize: Size = computeIntrinsicSize()
+
+    @Deprecated("Use contentScale instead.", ReplaceWith("contentScale"))
+    val fitScale: Boolean = contentScale == ContentScale.Fit
+
+    @Deprecated("Please use a constructor containing the contentScale parameter instead")
+    constructor(
+        start: Painter?,
+        end: Painter?,
+        fitScale: Boolean,
+        durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
+        fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
+        preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
+    ) : this(
+        start = start,
+        end = end,
+        contentScale = if (fitScale) ContentScale.Fit else ContentScale.Crop,
+        durationMillis = durationMillis,
+        fadeStart = fadeStart,
+        preferExactIntrinsicSize = preferExactIntrinsicSize
+    )
 
     init {
         require(durationMillis > 0) { "durationMillis must be > 0." }
@@ -168,14 +190,14 @@ class CrossfadePainter constructor(
         with(painter) {
             val dstSize: Size = this@drawPainter.size
             val srcSize: Size = this@with.intrinsicSize
-            val scaledSrcSize = computeScaledSize(srcSize, dstSize)
             if (dstSize.isUnspecified || dstSize.isEmpty()) {
-                draw(scaledSrcSize, alpha, colorFilter)
+                draw(size = srcSize, alpha = alpha, colorFilter = colorFilter)
             } else {
-                val horizontal = (dstSize.width - scaledSrcSize.width) / 2f
-                val vertical = (dstSize.height - scaledSrcSize.height) / 2f
-                inset(horizontal = horizontal, vertical = vertical) {
-                    draw(scaledSrcSize, alpha, colorFilter)
+                val drawSize = computeScaledSize(srcSize = srcSize, dstSize = dstSize)
+                val dx = (dstSize.width - drawSize.width) / 2f
+                val dy = (dstSize.height - drawSize.height) / 2f
+                translate(left = dx, top = dy) {
+                    draw(size = drawSize, alpha = alpha, colorFilter = colorFilter)
                 }
             }
         }
@@ -184,17 +206,9 @@ class CrossfadePainter constructor(
     private fun computeScaledSize(srcSize: Size, dstSize: Size): Size {
         if (srcSize.isUnspecified || srcSize.isEmpty()) return dstSize
         if (dstSize.isUnspecified || dstSize.isEmpty()) return dstSize
-        val sizeMultiplier = calculateScaleMultiplierWithFit(
-            srcWidth = srcSize.width,
-            srcHeight = srcSize.height,
-            dstWidth = dstSize.width,
-            dstHeight = dstSize.height,
-            fitScale = fitScale
-        )
-        return Size(
-            width = srcSize.width * sizeMultiplier,
-            height = srcSize.height * sizeMultiplier
-        )
+        val sizeMultiplier = contentScale
+            .computeScaleFactor(srcSize = srcSize, dstSize = dstSize)
+        return srcSize * sizeMultiplier
     }
 
     override fun onRemembered() {
@@ -254,7 +268,7 @@ class CrossfadePainter constructor(
     override fun toString(): String = "CrossfadePainter(" +
             "start=${start?.toLogString()}, " +
             "end=${end?.toLogString()}, " +
-            "fitScale=$fitScale, " +
+            "contentScale=${contentScale.name}, " +
             "durationMillis=$durationMillis, " +
             "fadeStart=$fadeStart, " +
             "preferExactIntrinsicSize=$preferExactIntrinsicSize" +
