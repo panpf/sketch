@@ -3,6 +3,7 @@ package com.github.panpf.sketch.compose.core.common.test.target
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.asPainter
@@ -244,7 +245,8 @@ class GenericComposeTargetTest {
     }
 }
 
-class TestGenericComposeTarget(override val fitScale: Boolean = true) : GenericComposeTarget() {
+class TestGenericComposeTarget constructor(override val contentScale: ContentScale = ContentScale.Fit) :
+    GenericComposeTarget() {
 
     private var _painter: Painter? = null
 
@@ -265,15 +267,15 @@ class TestGenericComposeTarget(override val fitScale: Boolean = true) : GenericC
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as TestGenericComposeTarget
-        if (fitScale != other.fitScale) return false
+        if (contentScale != other.contentScale) return false
         return true
     }
 
     override fun hashCode(): Int {
-        return fitScale.hashCode()
+        return contentScale.hashCode()
     }
 
     override fun toString(): String {
-        return "TestComposeTarget(fitScale=$fitScale)"
+        return "TestComposeTarget(contentScale=$contentScale)"
     }
 }

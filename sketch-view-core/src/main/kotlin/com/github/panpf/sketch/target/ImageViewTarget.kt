@@ -23,9 +23,6 @@ import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.util.fitScale
 import java.lang.ref.WeakReference
 
 /**
@@ -45,15 +42,12 @@ open class ImageViewTarget constructor(
     override val drawable: Drawable?
         get() = view?.drawable
 
-    override val fitScale: Boolean
-        get() = view?.scaleType?.fitScale ?: true
+    override val scaleType: ScaleType
+        get() = view?.scaleType ?: ScaleType.FIT_CENTER
 
     override fun setDrawable(drawable: Drawable?) {
         view?.setImageDrawable(drawable)
     }
-
-    override fun getScaleDecider(): ScaleDecider? =
-        view?.scaleType?.toScale()?.let { ScaleDecider(it) }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -69,15 +63,5 @@ open class ImageViewTarget constructor(
 
     override fun toString(): String {
         return "ImageViewTarget($view)"
-    }
-
-    private fun ScaleType.toScale(): Scale = when (this) {
-        ScaleType.FIT_START -> Scale.START_CROP
-        ScaleType.FIT_CENTER -> Scale.CENTER_CROP
-        ScaleType.FIT_END -> Scale.END_CROP
-        ScaleType.CENTER_INSIDE -> Scale.CENTER_CROP
-        ScaleType.CENTER -> Scale.CENTER_CROP
-        ScaleType.CENTER_CROP -> Scale.CENTER_CROP
-        else -> Scale.FILL
     }
 }

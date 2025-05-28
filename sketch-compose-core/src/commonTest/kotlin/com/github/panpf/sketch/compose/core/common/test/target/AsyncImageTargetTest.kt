@@ -197,26 +197,32 @@ class AsyncImageTargetTest {
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
         )
+        assertEquals(expected = ContentScale.Fit, actual = target.contentScale)
         assertEquals(expected = null, actual = target.contentScaleMutableState.value)
         assertEquals(expected = true, actual = target.fitScale)
 
         target.contentScaleMutableState.value = ContentScale.Inside
+        assertEquals(expected = ContentScale.Inside, actual = target.contentScale)
         assertEquals(expected = ContentScale.Inside, actual = target.contentScaleMutableState.value)
         assertEquals(expected = true, actual = target.fitScale)
 
         target.contentScaleMutableState.value = ContentScale.Fit
+        assertEquals(expected = ContentScale.Fit, actual = target.contentScale)
         assertEquals(expected = ContentScale.Fit, actual = target.contentScaleMutableState.value)
         assertEquals(expected = true, actual = target.fitScale)
 
         target.contentScaleMutableState.value = ContentScale.Crop
+        assertEquals(expected = ContentScale.Crop, actual = target.contentScale)
         assertEquals(expected = ContentScale.Crop, actual = target.contentScaleMutableState.value)
         assertEquals(expected = false, actual = target.fitScale)
 
         target.contentScaleMutableState.value = ContentScale.None
+        assertEquals(expected = ContentScale.None, actual = target.contentScale)
         assertEquals(expected = ContentScale.None, actual = target.contentScaleMutableState.value)
         assertEquals(expected = false, actual = target.fitScale)
 
         target.contentScaleMutableState.value = ContentScale.FillWidth
+        assertEquals(expected = ContentScale.FillWidth, actual = target.contentScale)
         assertEquals(
             expected = ContentScale.FillWidth,
             actual = target.contentScaleMutableState.value
@@ -224,6 +230,7 @@ class AsyncImageTargetTest {
         assertEquals(expected = false, actual = target.fitScale)
 
         target.contentScaleMutableState.value = ContentScale.FillHeight
+        assertEquals(expected = ContentScale.FillHeight, actual = target.contentScale)
         assertEquals(
             expected = ContentScale.FillHeight,
             actual = target.contentScaleMutableState.value
@@ -231,6 +238,7 @@ class AsyncImageTargetTest {
         assertEquals(expected = false, actual = target.fitScale)
 
         target.contentScaleMutableState.value = ContentScale.FillBounds
+        assertEquals(expected = ContentScale.FillBounds, actual = target.contentScale)
         assertEquals(
             expected = ContentScale.FillBounds,
             actual = target.contentScaleMutableState.value

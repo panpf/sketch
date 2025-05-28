@@ -48,33 +48,41 @@ class ImageViewTargetTest {
     }
 
     @Test
-    fun testFitScale() {
+    fun testScaleType() {
         val context = getTestContext()
         val imageView = ImageView(context)
         val target = ImageViewTarget(imageView)
 
         assertEquals(ScaleType.FIT_CENTER, imageView.scaleType)
+        assertEquals(ScaleType.FIT_CENTER, target.scaleType)
         assertTrue(target.fitScale)
 
         imageView.scaleType = ScaleType.FIT_START
+        assertEquals(ScaleType.FIT_START, target.scaleType)
         assertTrue(target.fitScale)
 
         imageView.scaleType = ScaleType.FIT_END
+        assertEquals(ScaleType.FIT_END, target.scaleType)
         assertTrue(target.fitScale)
 
         imageView.scaleType = ScaleType.CENTER_INSIDE
+        assertEquals(ScaleType.CENTER_INSIDE, target.scaleType)
         assertTrue(target.fitScale)
 
         imageView.scaleType = ScaleType.FIT_XY
+        assertEquals(ScaleType.FIT_XY, target.scaleType)
         assertFalse(target.fitScale)
 
         imageView.scaleType = ScaleType.MATRIX
+        assertEquals(ScaleType.MATRIX, target.scaleType)
         assertFalse(target.fitScale)
 
         imageView.scaleType = ScaleType.CENTER
+        assertEquals(ScaleType.CENTER, target.scaleType)
         assertFalse(target.fitScale)
 
         imageView.scaleType = ScaleType.CENTER_CROP
+        assertEquals(ScaleType.CENTER_CROP, target.scaleType)
         assertFalse(target.fitScale)
     }
 

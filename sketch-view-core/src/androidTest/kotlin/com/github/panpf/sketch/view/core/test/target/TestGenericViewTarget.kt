@@ -2,8 +2,8 @@ package com.github.panpf.sketch.view.core.test.target
 
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
+import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.target.GenericViewTarget
-import com.github.panpf.sketch.util.fitScale
 
 class TestGenericViewTarget(override val view: ImageView) : GenericViewTarget<ImageView>(view) {
 
@@ -14,8 +14,8 @@ class TestGenericViewTarget(override val view: ImageView) : GenericViewTarget<Im
     override val drawable: Drawable?
         get() = view.drawable
 
-    override val fitScale: Boolean
-        get() = view.scaleType.fitScale
+    override val scaleType: ScaleType
+        get() = view.scaleType ?: ScaleType.FIT_CENTER
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

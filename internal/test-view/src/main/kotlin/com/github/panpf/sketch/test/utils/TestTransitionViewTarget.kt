@@ -17,6 +17,7 @@
 package com.github.panpf.sketch.test.utils
 
 import android.graphics.drawable.Drawable
+import android.widget.ImageView
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asDrawable
@@ -33,7 +34,8 @@ class TestTransitionViewTarget : TransitionViewTarget {
 
     override var drawable: Drawable? = null
 
-    override val fitScale: Boolean get() = true
+    override val scaleType: ImageView.ScaleType
+        get() = ImageView.ScaleType.FIT_CENTER
 
     override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) {
         this.drawable = placeholder?.asDrawable()

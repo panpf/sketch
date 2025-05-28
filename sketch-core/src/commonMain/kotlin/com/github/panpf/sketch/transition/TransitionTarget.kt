@@ -23,5 +23,6 @@ import com.github.panpf.sketch.target.Target
  * A [Target] that supports applying [Transition]s.
  */
 interface TransitionTarget : Target {
+    @Deprecated("Please use TransitionComposeTarget.contentScale or TransitionViewTarget.scaleType instead and will be deleted in the future")
     val fitScale: Boolean
 }

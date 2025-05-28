@@ -183,3 +183,13 @@ internal fun calculateBounds(srcSize: Size, dstSize: Size, scale: Scale): Rect {
         }
     }
 }
+
+fun ScaleType.toScale(): Scale = when (this) {
+    ScaleType.FIT_START -> Scale.START_CROP
+    ScaleType.FIT_CENTER -> Scale.CENTER_CROP
+    ScaleType.FIT_END -> Scale.END_CROP
+    ScaleType.CENTER_INSIDE -> Scale.CENTER_CROP
+    ScaleType.CENTER -> Scale.CENTER_CROP
+    ScaleType.CENTER_CROP -> Scale.CENTER_CROP
+    else -> Scale.FILL
+}

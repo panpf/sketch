@@ -26,6 +26,7 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.target.TransitionViewTarget
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.fitScale
 
 /**
  * A [Transition] that crossfades from the current drawable to a new one.
@@ -109,7 +110,7 @@ class ViewCrossfadeTransition @JvmOverloads constructor(
             if (!alwaysUse && fromMemoryCache) {
                 return null
             }
-            val fitScale = target.fitScale
+            val fitScale = target.scaleType.fitScale
             return ViewCrossfadeTransition(
                 sketch = sketch,
                 request = request,

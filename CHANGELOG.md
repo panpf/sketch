@@ -12,6 +12,8 @@ Translations: [简体中文](CHANGELOG.zh.md)
 # new
 
 * change: Deprecate AsyncImage with keepContentNoneStartOnDraw parameter
+* change: Deprecate the fitScale property of TransitionTarget, adding TransitionViewTarget.scaleType
+  and TransitionComposeTarget.contentsScale instead of fitScale
 
 # 4.1.0
 

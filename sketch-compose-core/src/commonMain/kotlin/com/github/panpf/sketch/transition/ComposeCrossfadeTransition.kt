@@ -27,6 +27,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.fitScale
 import kotlin.jvm.JvmOverloads
 
 /**
@@ -109,7 +110,7 @@ class ComposeCrossfadeTransition constructor(
             if (!alwaysUse && fromMemoryCache) {
                 return null
             }
-            val fitScale = target.fitScale
+            val fitScale = target.contentScale.fitScale
             return ComposeCrossfadeTransition(
                 sketch = sketch,
                 request = request,

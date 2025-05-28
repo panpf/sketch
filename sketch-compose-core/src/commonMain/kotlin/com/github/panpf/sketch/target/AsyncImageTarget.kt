@@ -39,12 +39,9 @@ import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.internal.ComposeRequestManager
 import com.github.panpf.sketch.resize.AsyncImageSizeResolver
-import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.target.internal.AsyncImageListener
-import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.screenSize
 import com.github.panpf.sketch.util.toIntSize
-import com.github.panpf.sketch.util.toScale
 
 /**
  * A [Target] that handles setting [Image] on an [AsyncImage]
@@ -95,8 +92,8 @@ class AsyncImageTarget constructor(
     override val painter: Painter?
         get() = painterMutableState.value
 
-    override val fitScale: Boolean
-        get() = contentScaleMutableState.value?.fitScale ?: true
+    override val contentScale: ContentScale
+        get() = contentScaleMutableState.value ?: ContentScale.Fit
 
     override val filterQuality: FilterQuality
         get() = filterQualityMutableState.value ?: super.filterQuality
@@ -147,9 +144,6 @@ class AsyncImageTarget constructor(
 
 
     override fun getSizeResolver(): AsyncImageSizeResolver = sizeResolver
-
-    override fun getScaleDecider(): ScaleDecider? =
-        contentScaleMutableState.value?.toScale()?.let { ScaleDecider(it) }
 
     override fun getImageOptions(): ImageOptions? = imageOptions
 
