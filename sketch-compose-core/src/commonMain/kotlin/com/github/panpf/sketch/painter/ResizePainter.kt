@@ -61,6 +61,7 @@ fun Painter.resize(size: Size, scale: Scale = CENTER_CROP): ResizePainter {
  * @see com.github.panpf.sketch.compose.core.common.test.painter.ResizePainterTest
  */
 @Stable
+// TODO Support ContentScale and Alignment
 open class ResizePainter(
     val painter: Painter,
     val size: Size,

@@ -63,6 +63,7 @@ import kotlin.math.max
  *
  * @see com.github.panpf.sketch.view.core.test.drawable.CrossfadeDrawableTest
  */
+// TODO Support ScaleType
 class CrossfadeDrawable @JvmOverloads constructor(
     val start: Drawable?,
     val end: Drawable?,

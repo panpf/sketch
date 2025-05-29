@@ -95,6 +95,7 @@ fun Drawable?.asPainter(): Painter {
  * @see com.github.panpf.sketch.compose.core.android.test.painter.DrawablePainterTest
  */
 @Stable
+// TODO Synchronize from accompanyist-drawablepainter
 open class DrawablePainter(
     val drawable: Drawable
 ) : Painter(), RememberObserver, SketchPainter {

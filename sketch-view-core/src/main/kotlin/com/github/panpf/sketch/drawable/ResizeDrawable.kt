@@ -45,6 +45,7 @@ fun Drawable.resize(size: Size, scale: Scale = CENTER_CROP): ResizeDrawable {
  *
  * @see com.github.panpf.sketch.view.core.test.drawable.ResizeDrawableTest
  */
+// TODO Support ScaleType
 open class ResizeDrawable(
     drawable: Drawable,
     val size: Size,

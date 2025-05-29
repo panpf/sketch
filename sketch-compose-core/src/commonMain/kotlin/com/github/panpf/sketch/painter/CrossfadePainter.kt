@@ -59,6 +59,7 @@ import kotlin.time.TimeSource
  * @see com.github.panpf.sketch.compose.core.common.test.painter.CrossfadePainterTest
  */
 @Stable
+// TODO Support ContentScale and Alignment
 class CrossfadePainter constructor(
     @JsName("startPainter") val start: Painter?,
     @JsName("endPainter") val end: Painter?,
