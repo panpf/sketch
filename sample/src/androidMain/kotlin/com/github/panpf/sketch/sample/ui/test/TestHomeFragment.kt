@@ -101,6 +101,10 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
             navDirections = NavMainDirections.actionIconDrawableTestFragment()
         ),
         Link(
+            title = "Drawable ScaleType",
+            navDirections = NavMainDirections.actionDrawableScaleTypeTestFragment()
+        ),
+        Link(
             title = "ProgressIndicator",
             navDirections = NavMainDirections.actionProgressIndicatorTestViewFragment()
         ),

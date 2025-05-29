@@ -59,7 +59,7 @@ internal fun requiredMainThread() {
  *
  * @see com.github.panpf.sketch.view.core.test.util.ViewCoreUtilsTest.testFitScale
  */
-internal val ScaleType.fitScale: Boolean
+val ScaleType.fitScale: Boolean
     get() = this == ScaleType.FIT_START
             || this == ScaleType.FIT_CENTER
             || this == ScaleType.FIT_END

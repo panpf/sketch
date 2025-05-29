@@ -260,6 +260,18 @@
         app:popEnterAnim="@anim/nav_pop_enter"
         app:popExitAnim="@anim/nav_pop_exit" />
 
+    <fragment
+        android:id="@+id/drawableScaleTypeTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.DrawableScaleTypeTestFragment"
+        android:label="ProgressIndicatorTestViewFragment" />
+    <action
+        android:id="@+id/action_drawableScaleTypeTestFragment"
+        app:destination="@id/drawableScaleTypeTestFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+
     <!-- Dialog -->
 
     <dialog

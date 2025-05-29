@@ -17,7 +17,6 @@
 
 package com.github.panpf.sketch.util
 
-import com.github.panpf.sketch.util.Size as SketchSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
@@ -34,6 +33,7 @@ import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.painter.CrossfadePainter
 import com.github.panpf.sketch.painter.PainterWrapper
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.util.Size as SketchSize
 import kotlin.math.roundToInt
 
 /**
@@ -51,7 +51,7 @@ expect fun windowContainerSize(): IntSize
  * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testContentScaleToScale
  */
 @Stable
-internal fun ContentScale.toScale(): Scale {
+fun ContentScale.toScale(): Scale {
     return when (this) {
         ContentScale.FillBounds,
         ContentScale.FillWidth,
@@ -88,7 +88,7 @@ internal val ContentScale.name: String
  *
  * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testContentScaleFitScale
  */
-internal val ContentScale.fitScale: Boolean
+val ContentScale.fitScale: Boolean
     get() = this == ContentScale.Fit || this == Companion.Inside
 
 /**
