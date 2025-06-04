@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -118,6 +119,8 @@ class AsyncImageState internal constructor(
         internal set
     var contentScale: ContentScale? by target.contentScaleMutableState
         internal set
+    var alignment: Alignment? by target.alignmentMutableState
+        internal set
     var filterQuality: FilterQuality? by target.filterQualityMutableState
         internal set
 
@@ -186,6 +189,7 @@ class AsyncImageState internal constructor(
                     snapshotFlow { sketch }.filterNotNull(),
                     snapshotFlow { request }.filterNotNull(),
                     snapshotFlow { contentScale }.filterNotNull(),
+                    snapshotFlow { alignment }.filterNotNull(),
                     snapshotFlow { filterQuality }.filterNotNull(),
                 ),
                 transform = { it }
@@ -193,15 +197,16 @@ class AsyncImageState internal constructor(
                 val sketch = it[0] as Sketch
                 val request = it[1] as ImageRequest
                 val contentScale = it[2] as ContentScale
-                val filterQuality = it[3] as FilterQuality
+                val alignment = it[3] as Alignment
+                val filterQuality = it[4] as FilterQuality
                 checkRequest(request, this@AsyncImageState.lastRequest)
                 this@AsyncImageState.lastRequest = request
 
                 if (inspectionMode) {
-                    loadPreviewImage(sketch, request, contentScale, filterQuality)
+                    loadPreviewImage(sketch, request, contentScale, alignment, filterQuality)
                 } else {
                     cancelLoadImageJob()
-                    loadImage(sketch, request, contentScale, filterQuality)
+                    loadImage(sketch, request, contentScale, alignment, filterQuality)
                 }
             }
         }
@@ -244,6 +249,7 @@ class AsyncImageState internal constructor(
         sketch: Sketch,
         request: ImageRequest,
         @Suppress("UNUSED_PARAMETER") contentScale: ContentScale,
+        @Suppress("UNUSED_PARAMETER") alignment: Alignment,
         @Suppress("UNUSED_PARAMETER") filterQuality: FilterQuality,
     ) {
         val globalImageOptions = sketch.globalImageOptions
@@ -265,6 +271,7 @@ class AsyncImageState internal constructor(
         sketch: Sketch,
         request: ImageRequest,
         @Suppress("UNUSED_PARAMETER") contentScale: ContentScale,
+        @Suppress("UNUSED_PARAMETER") alignment: Alignment,
         @Suppress("UNUSED_PARAMETER") filterQuality: FilterQuality,
     ) {
         // No need to care about contentScale and filterQuality since they are managed by AsyncImageTarget
@@ -281,10 +288,11 @@ class AsyncImageState internal constructor(
         val request = request ?: return
         val sketch = sketch ?: return
         val contentScale = contentScale ?: return
+        val alignment = alignment ?: return
         val filterQuality = filterQuality ?: return
         coroutineScope ?: return
         cancelLoadImageJob()
-        loadImage(sketch, request, contentScale, filterQuality)
+        loadImage(sketch, request, contentScale, alignment, filterQuality)
     }
 
     private fun cancelLoadImageJob() {

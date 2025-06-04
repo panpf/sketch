@@ -17,6 +17,7 @@
 
 package com.github.panpf.sketch.transition
 
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import com.github.panpf.sketch.resize.ScaleDecider
@@ -35,10 +36,14 @@ interface TransitionComposeTarget : TransitionTarget {
      */
     val contentScale: ContentScale
 
+    /**
+     * The [Alignment] of the component that this target is applied to.
+     */
+    val alignment: Alignment
+
     @Deprecated("Please use contentScale instead and will be deleted in the future")
     override val fitScale: Boolean
         get() = contentScale.fitScale
 
-    // TODO Combined with alignment to convert more precisely Scale
-    override fun getScaleDecider(): ScaleDecider? = ScaleDecider(contentScale.toScale())
+    override fun getScaleDecider(): ScaleDecider? = ScaleDecider(toScale(contentScale, alignment))
 }

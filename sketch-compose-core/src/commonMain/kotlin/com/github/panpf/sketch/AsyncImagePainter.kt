@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("UnusedImport")
+
 package com.github.panpf.sketch
 
 import androidx.compose.foundation.Image
@@ -27,6 +29,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
@@ -35,11 +38,54 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQuality
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.toIntSize
 import com.github.panpf.sketch.internal.requestOf
 import com.github.panpf.sketch.painter.SketchPainter
 import com.github.panpf.sketch.request.ImageRequest
+
+/**
+ * Return an [AsyncImagePainter] that executes an [ImageRequest] asynchronously and renders the result.
+ *
+ * **This is a lower-level API than [AsyncImage] and may not work as expected in all situations. **
+ *
+ * - [AsyncImagePainter] will not finish loading if [AsyncImagePainter.onDraw] is not called.
+ *   This can occur if a composable has an unbounded (i.e. [Constraints.Infinity]) width/height
+ *   constraint. For example, to use [AsyncImagePainter] with [LazyRow] or [LazyColumn], you must
+ *   set a bounded width or height respectively using `Modifier.width` or `Modifier.height`.
+ * - [AsyncImageState.painterState] will not transition to [PainterState.Success] synchronously during the
+ *   composition phase. Use [SubcomposeAsyncImage] or set a custom [ImageRequest.Builder.size] value
+ *   (e.g. `size(Size(100, 100))`) if you need this.
+ *
+ * @param uri [ImageRequest.uri] value.
+ * @param sketch The [Sketch] that will be used to execute the request.
+ * @param state [AsyncImageState] that will be used to store the state of the request.
+ * @param alignment Optional alignment parameter used to place the [AsyncImagePainter] in the given
+ *  bounds defined by the width and height.
+ * @param contentScale Used to determine the aspect ratio scaling to be used if the canvas bounds
+ *  are a different size from the intrinsic size of the image loaded by [uri]. This should be set
+ *  to the same value that's passed to [Image].
+ * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
+ *  destination.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.AsyncImagePainterTest.testRememberAsyncImagePainter
+ */
+@Composable
+@NonRestartableComposable
+fun rememberAsyncImagePainter(
+    uri: String?,
+    sketch: Sketch,
+    state: AsyncImageState = rememberAsyncImageState(),
+    alignment: Alignment = Alignment.Center,
+    contentScale: ContentScale = ContentScale.Fit,
+    filterQuality: FilterQuality = DefaultFilterQuality,
+): AsyncImagePainter = rememberAsyncImagePainter(
+    request = requestOf(LocalPlatformContext.current, uri),
+    sketch = sketch,
+    state = state,
+    alignment = alignment,
+    contentScale = contentScale,
+    filterQuality = filterQuality
+)
 
 /**
  * Return an [AsyncImagePainter] that executes an [ImageRequest] asynchronously and renders the result.
@@ -67,6 +113,7 @@ import com.github.panpf.sketch.request.ImageRequest
  */
 @Composable
 @NonRestartableComposable
+@Deprecated("Please use a version containing the alignment parameter instead")
 fun rememberAsyncImagePainter(
     uri: String?,
     sketch: Sketch,
@@ -78,8 +125,54 @@ fun rememberAsyncImagePainter(
     sketch = sketch,
     state = state,
     contentScale = contentScale,
+    alignment = Alignment.Center,
     filterQuality = filterQuality
 )
+
+/**
+ * Return an [AsyncImagePainter] that executes an [ImageRequest] asynchronously and renders the result.
+ *
+ * **This is a lower-level API than [AsyncImage] and may not work as expected in all situations. **
+ *
+ * - [AsyncImagePainter] will not finish loading if [AsyncImagePainter.onDraw] is not called.
+ *   This can occur if a composable has an unbounded (i.e. [Constraints.Infinity]) width/height
+ *   constraint. For example, to use [AsyncImagePainter] with [LazyRow] or [LazyColumn], you must
+ *   set a bounded width or height respectively using `Modifier.width` or `Modifier.height`.
+ * - [AsyncImageState.painterState] will not transition to [PainterState.Success] synchronously during the
+ *   composition phase. Use [SubcomposeAsyncImage] or set a custom [ImageRequest.Builder.size] value
+ *   (e.g. `size(Size(100, 100))`) if you need this.
+ *
+ * @param request [ImageRequest].
+ * @param sketch The [Sketch] that will be used to execute the request.
+ * @param state [AsyncImageState] that will be used to store the state of the request.
+ * @param alignment Optional alignment parameter used to place the [AsyncImagePainter] in the given
+ *  bounds defined by the width and height.
+ * @param contentScale Used to determine the aspect ratio scaling to be used if the canvas bounds
+ *  are a different size from the intrinsic size of the image loaded by [request]. This should be set
+ *  to the same value that's passed to [Image].
+ * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
+ *  destination.
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.AsyncImagePainterTest.testRememberAsyncImagePainter2
+ */
+@Composable
+fun rememberAsyncImagePainter(
+    request: ImageRequest,
+    sketch: Sketch,
+    state: AsyncImageState = rememberAsyncImageState(),
+    alignment: Alignment = Alignment.Center,
+    contentScale: ContentScale = ContentScale.Fit,
+    filterQuality: FilterQuality = DefaultFilterQuality,
+): AsyncImagePainter {
+    state.request = request
+    state.sketch = sketch
+    state.contentScale = contentScale
+    state.alignment = alignment
+    state.filterQuality = filterQuality
+    return remember(state) {
+        AsyncImagePainter(state)
+    }
+}
 
 /**
  * Return an [AsyncImagePainter] that executes an [ImageRequest] asynchronously and renders the result.
@@ -106,21 +199,22 @@ fun rememberAsyncImagePainter(
  * @see com.github.panpf.sketch.compose.core.common.test.AsyncImagePainterTest.testRememberAsyncImagePainter2
  */
 @Composable
+@NonRestartableComposable
+@Deprecated("Please use a version containing the alignment parameter instead")
 fun rememberAsyncImagePainter(
     request: ImageRequest,
     sketch: Sketch,
     state: AsyncImageState = rememberAsyncImageState(),
     contentScale: ContentScale = ContentScale.Fit,
     filterQuality: FilterQuality = DefaultFilterQuality,
-): AsyncImagePainter {
-    state.request = request
-    state.sketch = sketch
-    state.contentScale = contentScale
-    state.filterQuality = filterQuality
-    return remember(state) {
-        AsyncImagePainter(state)
-    }
-}
+): AsyncImagePainter = rememberAsyncImagePainter(
+    request = request,
+    sketch = sketch,
+    state = state,
+    contentScale = contentScale,
+    alignment = Alignment.Center,
+    filterQuality = filterQuality
+)
 
 /**
  * A [Painter] that reads 'painter' from [AsyncImageState] and renders

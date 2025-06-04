@@ -19,6 +19,9 @@ package com.github.panpf.sketch.util
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.geometry.isUnspecified
@@ -51,6 +54,7 @@ expect fun windowContainerSize(): IntSize
  * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testContentScaleToScale
  */
 @Stable
+@Deprecated("Use `toScale(ContentScale, Alignment)` instead")
 fun ContentScale.toScale(): Scale {
     return when (this) {
         ContentScale.FillBounds,
@@ -62,6 +66,34 @@ fun ContentScale.toScale(): Scale {
         ContentScale.Inside -> Scale.CENTER_CROP
         ContentScale.None -> Scale.CENTER_CROP
         else -> Scale.CENTER_CROP
+    }
+}
+
+/**
+ * Convert [ContentScale] to [Scale]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testContentScaleToScale
+ */
+@Stable
+fun toScale(contentScale: ContentScale, alignment: Alignment): Scale = when (contentScale) {
+    ContentScale.FillBounds, ContentScale.FillWidth, ContentScale.FillHeight -> {
+        Scale.FILL
+    }
+
+    else -> {
+        // ContentScale.Fit, ContentScale.Crop, ContentScale.Inside, ContentScale.None
+        when (alignment) {
+            Alignment.TopStart -> Scale.START_CROP
+            Alignment.TopCenter -> Scale.CENTER_CROP
+            Alignment.TopEnd -> Scale.END_CROP
+            Alignment.CenterStart -> Scale.CENTER_CROP
+            Alignment.Center -> Scale.CENTER_CROP
+            Alignment.CenterEnd -> Scale.CENTER_CROP
+            Alignment.BottomStart -> Scale.START_CROP
+            Alignment.BottomCenter -> Scale.CENTER_CROP
+            Alignment.BottomEnd -> Scale.END_CROP
+            else -> Scale.CENTER_CROP
+        }
     }
 }
 
@@ -90,6 +122,36 @@ internal val ContentScale.name: String
  */
 val ContentScale.fitScale: Boolean
     get() = this == ContentScale.Fit || this == Companion.Inside
+
+/**
+ * Returns the name of [Alignment]
+ */
+@Stable
+internal val Alignment.name: String
+    get() = when (this) {
+        Alignment.TopStart -> "TopStart"
+        Alignment.TopCenter -> "TopCenter"
+        Alignment.TopEnd -> "TopEnd"
+        Alignment.CenterStart -> "CenterStart"
+        Alignment.Center -> "Center"
+        Alignment.CenterEnd -> "CenterEnd"
+        Alignment.BottomStart -> "BottomStart"
+        Alignment.BottomCenter -> "BottomCenter"
+        Alignment.BottomEnd -> "BottomEnd"
+        else -> "Unknown Alignment: $this"
+    }
+
+internal fun Alignment.floatAlign(size: Size, space: Size): Offset {
+    val horizontalBias = if (this is BiasAlignment) this.horizontalBias else 0f
+    val verticalBias = if (this is BiasAlignment) this.verticalBias else 0f
+    // Convert to Px first and only round at the end, to avoid rounding twice while calculating
+    // the new positions
+    val centerX = (space.width - size.width) / 2f
+    val centerY = (space.height - size.height) / 2f
+    val x = centerX * (1 + horizontalBias)
+    val y = centerY * (1 + verticalBias)
+    return Offset(x, y)
+}
 
 /**
  * Convert [Size] to [IntSize] or return null if it is [Size.isUnspecified]

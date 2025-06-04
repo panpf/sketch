@@ -60,6 +60,8 @@ class CrossfadePainterTest {
             assertFalse(fadeStart)
             assertTrue(preferExactIntrinsicSize)
         }
+
+        // TODO teest alignment
     }
 
     @Test

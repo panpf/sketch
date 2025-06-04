@@ -140,7 +140,8 @@ fun MyListAsyncImagePainterImage(
         painter = rememberAsyncImagePainter(
             request = request,
             state = imageState,
-            contentScale = contentScale
+            contentScale = contentScale,
+            alignment = alignment
         ),
         modifier = modifier1,
         contentScale = contentScale,

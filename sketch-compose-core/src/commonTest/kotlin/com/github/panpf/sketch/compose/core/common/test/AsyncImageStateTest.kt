@@ -338,6 +338,7 @@ class AsyncImageStateTest {
         )
     }
 
+    // TODO teest alignment
     @Test
     fun testFilterQuality() {
         val (context, sketch) = getTestContextAndSketch()

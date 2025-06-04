@@ -18,6 +18,7 @@
 
 package com.github.panpf.sketch.transition
 
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import com.github.panpf.sketch.Sketch
@@ -41,6 +42,7 @@ class ComposeCrossfadeTransition constructor(
     private val target: TransitionComposeTarget,
     private val result: ImageResult,
     val contentScale: ContentScale = ContentScale.Fit,
+    val alignment: Alignment = Alignment.Center,
     val durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
     val fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
     val preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
@@ -86,6 +88,7 @@ class ComposeCrossfadeTransition constructor(
             start = startPainter,
             end = endPainter,
             contentScale = contentScale,
+            alignment = alignment,
             durationMillis = durationMillis,
             fadeStart = fadeStart,
             preferExactIntrinsicSize = preferExactIntrinsicSize
@@ -134,13 +137,13 @@ class ComposeCrossfadeTransition constructor(
             if (!alwaysUse && fromMemoryCache) {
                 return null
             }
-            val contentScale = target.contentScale
             return ComposeCrossfadeTransition(
                 sketch = sketch,
                 request = request,
                 target = target,
                 result = result,
-                contentScale = contentScale,
+                contentScale = target.contentScale,
+                alignment = target.alignment,
                 durationMillis = durationMillis,
                 fadeStart = fadeStart,
                 preferExactIntrinsicSize = preferExactIntrinsicSize,

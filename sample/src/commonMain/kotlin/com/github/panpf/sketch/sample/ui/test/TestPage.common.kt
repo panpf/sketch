@@ -57,6 +57,7 @@ fun TestPage() {
             add(TestGroup("UI"))
             add(TestItem("AnimatablePlaceholder", AnimatablePlaceholderTestScreen()))
             add(TestItem("IconPainter", IconPainterTestScreen()))
+            add(TestItem("CrossfadePainter", CrossfadePainterTestScreen()))
             add(TestItem("Painter ContentScale", PainterContentScaleTestScreen()))
             add(TestItem("Preview", PreviewTestScreen()))
             add(TestItem("ProgressIndicator", ProgressIndicatorTestScreen()))

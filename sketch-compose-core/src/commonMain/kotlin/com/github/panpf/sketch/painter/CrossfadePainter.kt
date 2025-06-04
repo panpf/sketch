@@ -24,9 +24,11 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.geometry.isUnspecified
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -36,6 +38,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.times
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.TransitionPainter
+import com.github.panpf.sketch.util.floatAlign
 import com.github.panpf.sketch.util.name
 import kotlin.js.JsName
 import kotlin.math.max
@@ -59,11 +62,11 @@ import kotlin.time.TimeSource
  * @see com.github.panpf.sketch.compose.core.common.test.painter.CrossfadePainterTest
  */
 @Stable
-// TODO Support ContentScale and Alignment
 class CrossfadePainter constructor(
     @JsName("startPainter") val start: Painter?,
     @JsName("endPainter") val end: Painter?,
     val contentScale: ContentScale = ContentScale.Fit,
+    val alignment: Alignment = Alignment.Center,
     val durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
     val fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
     val preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
@@ -112,6 +115,7 @@ class CrossfadePainter constructor(
 
     override fun DrawScope.onDraw() {
         invalidateTick // Invalidate the scope when invalidateTick changes.
+        drawRect(color = Color.Green, alpha = 0.5f, colorFilter = colorFilter)
 
         if (state == STATE_START) {
             drawPainter(startPainter1, maxAlpha)
@@ -195,9 +199,9 @@ class CrossfadePainter constructor(
                 draw(size = srcSize, alpha = alpha, colorFilter = colorFilter)
             } else {
                 val drawSize = computeScaledSize(srcSize = srcSize, dstSize = dstSize)
-                val dx = (dstSize.width - drawSize.width) / 2f
-                val dy = (dstSize.height - drawSize.height) / 2f
-                translate(left = dx, top = dy) {
+                val offset = alignment.floatAlign(size = drawSize, space = dstSize)
+                println("drawPainter. contentScale=${contentScale.name}, alignment=${alignment.name}, dstSize=$dstSize, srcSize=$srcSize, drawSize=$drawSize, offset=$offset")
+                translate(left = offset.x, top = offset.y) {
                     draw(size = drawSize, alpha = alpha, colorFilter = colorFilter)
                 }
             }
@@ -270,6 +274,7 @@ class CrossfadePainter constructor(
             "start=${start?.toLogString()}, " +
             "end=${end?.toLogString()}, " +
             "contentScale=${contentScale.name}, " +
+            "alignment=${alignment.name}, " +
             "durationMillis=$durationMillis, " +
             "fadeStart=$fadeStart, " +
             "preferExactIntrinsicSize=$preferExactIntrinsicSize" +

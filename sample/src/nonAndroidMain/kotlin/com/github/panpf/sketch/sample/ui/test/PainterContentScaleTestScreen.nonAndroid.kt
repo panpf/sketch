@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.sample.ui.test
 
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -17,7 +18,8 @@ import com.github.panpf.sketch.util.toScale
 
 actual suspend fun buildPainterContentScaleTestPainters(
     context: PlatformContext,
-    contentScale: ContentScale
+    contentScale: ContentScale,
+    alignment: Alignment,
 ): List<Pair<String, Painter>> {
     val list = mutableListOf<Pair<String, Painter>>()
 
@@ -37,7 +39,8 @@ actual suspend fun buildPainterContentScaleTestPainters(
     ImageRequest(context, ResourceImages.clockHor.uri).execute()
         .let { it as ImageResult.Success }
         .image.asPainter().apply {
-            val crossfadePainter = CrossfadePainter(null, this, contentScale = contentScale)
+            val crossfadePainter =
+                CrossfadePainter(null, this, contentScale = contentScale, alignment = alignment)
             list.add("CrossfadePainter\nImageBitmapPainter\nImageBitmap" to crossfadePainter)
         }
 

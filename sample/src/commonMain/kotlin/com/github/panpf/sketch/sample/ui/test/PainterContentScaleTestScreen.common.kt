@@ -44,7 +44,8 @@ import com.github.panpf.sketch.sample.ui.util.name
 
 expect suspend fun buildPainterContentScaleTestPainters(
     context: PlatformContext,
-    contentScale: ContentScale
+    contentScale: ContentScale,
+    alignment: Alignment,
 ): List<Pair<String, Painter>>
 
 class PainterContentScaleTestScreen : BaseScreen() {
@@ -59,11 +60,13 @@ class PainterContentScaleTestScreen : BaseScreen() {
             ) {
                 val context = LocalPlatformContext.current
                 var contentScale by remember { mutableStateOf(ContentScale.Fit) }
+                var alignment by remember { mutableStateOf(Alignment.Center) }
                 var painterList by remember {
                     mutableStateOf<List<Pair<String, Painter>>?>(null)
                 }
-                LaunchedEffect(contentScale) {
-                    painterList = buildPainterContentScaleTestPainters(context, contentScale)
+                LaunchedEffect(contentScale, alignment) {
+                    painterList =
+                        buildPainterContentScaleTestPainters(context, contentScale, alignment)
                 }
 
                 val painterList1 = painterList
@@ -90,11 +93,12 @@ class PainterContentScaleTestScreen : BaseScreen() {
                                     color = { colorScheme.onTertiaryContainer },
                                     autoSize = TextAutoSize.StepBased(minFontSize = 8.sp)
                                 )
-                                val painter = remember { pair.second }
+                                val painter = remember(pair.second) { pair.second }
                                 Image(
                                     painter = painter,
                                     contentDescription = pair.first,
                                     contentScale = contentScale,
+                                    alignment = alignment,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .aspectRatio(0.75f)
@@ -127,6 +131,34 @@ class PainterContentScaleTestScreen : BaseScreen() {
                                 contentPadding = PaddingValues(4.dp),
                             ) {
                                 Text(text = contentScaleItem.name, fontSize = 12.sp)
+                            }
+                        }
+                    }
+
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        val alignments = remember {
+                            listOf(
+                                Alignment.TopStart,
+                                Alignment.TopCenter,
+                                Alignment.TopEnd,
+                                Alignment.CenterStart,
+                                Alignment.Center,
+                                Alignment.CenterEnd,
+                                Alignment.BottomStart,
+                                Alignment.BottomCenter,
+                                Alignment.BottomEnd,
+                            )
+                        }
+                        alignments.forEach { alignmentItem ->
+                            Button(
+                                onClick = { alignment = alignmentItem },
+                                enabled = alignmentItem != alignment,
+                                contentPadding = PaddingValues(4.dp),
+                            ) {
+                                Text(text = alignmentItem.name, fontSize = 12.sp)
                             }
                         }
                     }

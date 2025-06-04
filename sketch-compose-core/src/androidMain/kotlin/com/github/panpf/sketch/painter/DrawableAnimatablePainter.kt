@@ -27,7 +27,6 @@ import com.github.panpf.sketch.util.toLogString
  * @see com.github.panpf.sketch.compose.core.android.test.painter.DrawableAnimatablePainterTest
  */
 @Stable
-// TODO rename to AnimatableDrawablePainter
 class DrawableAnimatablePainter(
     drawable: Drawable
 ) : DrawablePainter(drawable), AnimatablePainter {

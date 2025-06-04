@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.compose.core.common.test.target
 
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
@@ -245,7 +246,10 @@ class GenericComposeTargetTest {
     }
 }
 
-class TestGenericComposeTarget constructor(override val contentScale: ContentScale = ContentScale.Fit) :
+class TestGenericComposeTarget constructor(
+    override val contentScale: ContentScale = ContentScale.Fit,
+    override val alignment: Alignment = Alignment.Center
+) :
     GenericComposeTarget() {
 
     private var _painter: Painter? = null

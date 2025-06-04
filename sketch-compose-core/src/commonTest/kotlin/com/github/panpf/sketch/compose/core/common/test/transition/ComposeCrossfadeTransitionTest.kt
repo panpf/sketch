@@ -92,6 +92,8 @@ class ComposeCrossfadeTransitionTest {
         assertFailsWith(IllegalArgumentException::class) {
             ComposeCrossfadeTransition(sketch, request, imageViewTarget, result, durationMillis = 0)
         }
+
+        // TODO teest alignment
     }
 
     @Test

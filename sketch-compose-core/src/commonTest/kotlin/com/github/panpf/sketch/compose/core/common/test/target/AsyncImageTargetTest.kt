@@ -246,6 +246,7 @@ class AsyncImageTargetTest {
         assertEquals(expected = false, actual = target.fitScale)
     }
 
+    // TODO teest alignment
     @Test
     fun testFilterQuality() {
         val (context, sketch) = getTestContextAndSketch()
