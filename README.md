@@ -281,24 +281,18 @@ Please review the [CHANGELOG.md] file
 
 Prepare the environment:
 
-1. Android Studio: Koala+ (2024.1.1+)
+1. Android Studio: Norwhal+ (2025.1.1+)
 2. JDK: 17+
 3. Use [kdoctor] to check the running environment and follow the prompts to install the required
    software
-4. Android Studio installs the `Kotlin Multiplatform` and `Compose Multiplatform IDE Support`plugins
+4. Android Studio installs the `Kotlin Multiplatform` plugin
 
 Run the sample app:
 
 1. Clone the project and open it using Android Studio
-2. The running configurations of each platform have been added to the `.run` directory. After
-   synchronization is completed, directly select the running configuration of the corresponding
-   platform in the running configuration drop-down box at the top of Android Studio and click Run.
-3. The running configuration of the ios platform requires you to manually create it according to the
-   template, as follows:
-    1. Copy the `.run/iosSample.run.template.xml` file and remove the `.template` suffix.
-       The `.ignore` file has been configured to ignore `iosSample.run.xml`
-    2. Click `Edit Configurations` in the run configuration drop-down box at the top,
-       select `iosSample` and then configure `Execute target`
+2. After synchronization is completed, the `Kotlin Multiplatform` plug-in will automatically create
+   a running configuration for each platform.
+3. Select the corresponding platform's running configuration, and then click Run
 
 ## About version 4.0
 
