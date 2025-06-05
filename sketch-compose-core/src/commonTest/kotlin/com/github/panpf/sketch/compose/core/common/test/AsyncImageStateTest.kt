@@ -7,6 +7,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -221,7 +222,7 @@ class AsyncImageStateTest {
             actual = asyncImageState.target.fitScale
         )
         assertEquals(
-            expected = null,
+            expected = ScaleDecider(Scale.CENTER_CROP),
             actual = asyncImageState.target.getScaleDecider()
         )
 
@@ -338,7 +339,8 @@ class AsyncImageStateTest {
         )
     }
 
-    // TODO teest alignment
+    // TODO test alignment
+
     @Test
     fun testFilterQuality() {
         val (context, sketch) = getTestContextAndSketch()
@@ -522,6 +524,7 @@ class AsyncImageStateTest {
                 asyncImageState.sketch = sketch
                 asyncImageState.request = ImageRequest(context, ResourceImages.jpeg.uri)
                 asyncImageState.contentScale = ContentScale.Fit
+                asyncImageState.alignment = Alignment.Center
                 asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
             }
             waitForIdle()
@@ -543,6 +546,7 @@ class AsyncImageStateTest {
                     )
                 }
                 asyncImageState.contentScale = ContentScale.Fit
+                asyncImageState.alignment = Alignment.Center
                 asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
             }
             waitForIdle()
@@ -560,6 +564,7 @@ class AsyncImageStateTest {
                     addProgressListener { _, _ -> }
                 }
                 asyncImageState.contentScale = ContentScale.Fit
+                asyncImageState.alignment = Alignment.Center
                 asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
             }
             waitForIdle()
@@ -577,6 +582,7 @@ class AsyncImageStateTest {
                     target(TestTarget())
                 }
                 asyncImageState.contentScale = ContentScale.Fit
+                asyncImageState.alignment = Alignment.Center
                 asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
             }
             waitForIdle()
@@ -594,6 +600,7 @@ class AsyncImageStateTest {
                     size(FixedSizeResolver(Size(100, 100)))
                 }
                 asyncImageState.contentScale = ContentScale.Fit
+                asyncImageState.alignment = Alignment.Center
                 asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
             }
             waitForIdle()
@@ -616,6 +623,7 @@ class AsyncImageStateTest {
                     size(TestErrorEqualsSizeResolver(Size(100, 100)))
                 }
                 asyncImageState.contentScale = ContentScale.Fit
+                asyncImageState.alignment = Alignment.Center
                 asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
             }
             waitForIdle()
@@ -658,6 +666,7 @@ class AsyncImageStateTest {
                 asyncImageState.sketch = sketch
                 asyncImageState.request = request
                 asyncImageState.contentScale = ContentScale.Fit
+                asyncImageState.alignment = Alignment.Center
                 asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
             }
             waitForIdle()
@@ -713,6 +722,7 @@ class AsyncImageStateTest {
                 asyncImageState.sketch = sketch
                 asyncImageState.request = request0
                 asyncImageState.contentScale = ContentScale.Fit
+                asyncImageState.alignment = Alignment.Center
                 asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
             }
             waitForIdle()
@@ -857,6 +867,7 @@ class AsyncImageStateTest {
                 asyncImageState.sketch = sketch
                 asyncImageState.request = request
                 asyncImageState.contentScale = ContentScale.Fit
+                asyncImageState.alignment = Alignment.Center
                 asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
             }
             waitForIdle()
@@ -955,6 +966,7 @@ class AsyncImageStateTest {
                     asyncImageState.sketch = sketch
                     asyncImageState.request = request
                     asyncImageState.contentScale = ContentScale.Fit
+                    asyncImageState.alignment = Alignment.Center
                     asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
                 }
                 waitForIdle()
@@ -1092,6 +1104,7 @@ class AsyncImageStateTest {
                     asyncImageState.sketch = sketch
                     asyncImageState.request = request
                     asyncImageState.contentScale = ContentScale.Fit
+                    asyncImageState.alignment = Alignment.Center
                     asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
                 }
                 waitForIdle()
