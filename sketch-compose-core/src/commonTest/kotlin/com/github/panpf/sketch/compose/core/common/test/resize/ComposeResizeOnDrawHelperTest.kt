@@ -3,6 +3,7 @@ package com.github.panpf.sketch.compose.core.common.test.resize
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import com.github.panpf.sketch.asImage
+import com.github.panpf.sketch.compose.core.common.test.target.TestGenericComposeTarget
 import com.github.panpf.sketch.painter.ResizePainter
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.ComposeResizeOnDrawHelper
@@ -42,6 +43,7 @@ class ComposeResizeOnDrawHelperTest {
         helper.resize(
             request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                 scale(LongImageScaleDecider())
+                target(TestGenericComposeTarget())
             },
             size = SketchSize(200, 200),
             image = SizeColorPainter(Color.Red, Size(300f, 500f)).asImage()
@@ -50,7 +52,6 @@ class ComposeResizeOnDrawHelperTest {
                 expected = ResizePainter(
                     painter = SizeColorPainter(Color.Red, Size(300f, 500f)),
                     size = Size(200f, 200f),
-                    scale = Scale.CENTER_CROP
                 ).asImage(),
                 actual = this
             )
@@ -59,6 +60,7 @@ class ComposeResizeOnDrawHelperTest {
         helper.resize(
             request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                 scale(LongImageScaleDecider())
+                target(TestGenericComposeTarget())
             },
             size = SketchSize(200, 200),
             image = SizeColorPainter(Color.Red, Size(300f, 1500f)).asImage()
@@ -67,7 +69,6 @@ class ComposeResizeOnDrawHelperTest {
                 expected = ResizePainter(
                     painter = SizeColorPainter(Color.Red, Size(300f, 1500f)),
                     size = Size(200f, 200f),
-                    scale = Scale.START_CROP
                 ).asImage(),
                 actual = this
             )
@@ -76,6 +77,7 @@ class ComposeResizeOnDrawHelperTest {
         helper.resize(
             request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                 scale(Scale.END_CROP)
+                target(TestGenericComposeTarget())
             },
             size = SketchSize(200, 200),
             image = SizeColorPainter(Color.Red, Size(300f, 500f)).asImage()
@@ -84,7 +86,6 @@ class ComposeResizeOnDrawHelperTest {
                 expected = ResizePainter(
                     painter = SizeColorPainter(Color.Red, Size(300f, 500f)),
                     size = Size(200f, 200f),
-                    scale = Scale.END_CROP
                 ).asImage(),
                 actual = this
             )
@@ -93,6 +94,7 @@ class ComposeResizeOnDrawHelperTest {
         helper.resize(
             request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                 scale(Scale.END_CROP)
+                target(TestGenericComposeTarget())
             },
             size = SketchSize(200, 200),
             image = SizeColorPainter(Color.Red, Size(300f, 1500f)).asImage()
@@ -101,7 +103,6 @@ class ComposeResizeOnDrawHelperTest {
                 expected = ResizePainter(
                     painter = SizeColorPainter(Color.Red, Size(300f, 1500f)),
                     size = Size(200f, 200f),
-                    scale = Scale.END_CROP
                 ).asImage(),
                 actual = this
             )

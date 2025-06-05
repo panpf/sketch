@@ -21,8 +21,9 @@ import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.asPainter
 import com.github.panpf.sketch.painter.resize
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.size
+import com.github.panpf.sketch.transition.TransitionComposeTarget
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toSize
 
 /**
  * [ResizeOnDrawHelper] implementation based on Compose
@@ -34,13 +35,14 @@ data object ComposeResizeOnDrawHelper : ResizeOnDrawHelper {
     override val key: String = "ComposeResizeOnDrawHelper"
 
     override fun resize(request: ImageRequest, size: Size, image: Image): Image {
-        val scale = request.scaleDecider.get(imageSize = image.size, targetSize = size)
+        val target = (request.target as? TransitionComposeTarget) ?: return image
         val painter = image.asPainter()
-        val composeSize = androidx.compose.ui.geometry.Size(
-            width = size.width.toFloat(),
-            height = size.height.toFloat()
+        val composeSize = size.toSize()
+        val resizePainter = painter.resize(
+            size = composeSize,
+            contentScale = target.contentScale,
+            alignment = target.alignment
         )
-        val resizePainter = painter.resize(composeSize, scale)
         return resizePainter.asImage()
     }
 

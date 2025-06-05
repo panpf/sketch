@@ -58,6 +58,7 @@ fun TestPage() {
             add(TestItem("AnimatablePlaceholder", AnimatablePlaceholderTestScreen()))
             add(TestItem("IconPainter", IconPainterTestScreen()))
             add(TestItem("CrossfadePainter", CrossfadePainterTestScreen()))
+            add(TestItem("ResizePainter", ResizePainterTestScreen()))
             add(TestItem("Painter ContentScale", PainterContentScaleTestScreen()))
             add(TestItem("Preview", PreviewTestScreen()))
             add(TestItem("ProgressIndicator", ProgressIndicatorTestScreen()))

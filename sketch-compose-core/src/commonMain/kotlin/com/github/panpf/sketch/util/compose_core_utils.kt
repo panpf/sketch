@@ -98,6 +98,21 @@ fun toScale(contentScale: ContentScale, alignment: Alignment): Scale = when (con
 }
 
 /**
+ * Convert [ContentScale] to [Scale]
+ *
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testFromScale
+ */
+@Suppress("REDUNDANT_ELSE_IN_WHEN")
+@Stable
+fun fromScale(scale: Scale): Pair<ContentScale, Alignment> = when (scale) {
+    Scale.START_CROP -> ContentScale.Fit to Alignment.TopStart
+    Scale.CENTER_CROP -> ContentScale.Fit to Alignment.TopCenter
+    Scale.END_CROP -> ContentScale.Fit to Alignment.TopEnd
+    Scale.FILL -> ContentScale.FillBounds to Alignment.Center
+    else -> ContentScale.Fit to Alignment.Center
+}
+
+/**
  * Get the name of the [ContentScale]
  *
  * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testContentScaleName

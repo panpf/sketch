@@ -2,8 +2,10 @@
 
 package com.github.panpf.sketch.compose.core.common.test.painter
 
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
 import com.github.panpf.sketch.painter.ResizeAnimatablePainter
@@ -14,8 +16,6 @@ import com.github.panpf.sketch.painter.rememberResizePainter
 import com.github.panpf.sketch.painter.resize
 import com.github.panpf.sketch.painter.toLogString
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.test.utils.TestAnimatablePainter
 import com.github.panpf.sketch.test.utils.asAnimatablePainter
 import com.github.panpf.sketch.test.utils.createBitmap
@@ -79,6 +79,8 @@ class ResizePainterTest {
                 }
             }
         }
+
+        // TODO test contentScale and alignment
     }
 
     @Test
@@ -90,6 +92,8 @@ class ResizePainterTest {
         ColorPainter(Color.Green).asAnimatablePainter().resize(Size(100, 100).toSize()).apply {
             assertTrue(this is ResizeAnimatablePainter)
         }
+
+        // TODO test contentScale and alignment
     }
 
     @Test
@@ -98,7 +102,6 @@ class ResizePainterTest {
         ResizePainter(
             bitmapPainter,
             androidx.compose.ui.geometry.Size(500f, 300f),
-            CENTER_CROP
         ).apply {
             assertEquals(androidx.compose.ui.geometry.Size(500f, 300f), intrinsicSize)
             assertEquals(androidx.compose.ui.geometry.Size(500f, 300f), size)
@@ -116,36 +119,41 @@ class ResizePainterTest {
         val element1 = ResizePainter(
             painter = ColorPainter(Color.Red).asEquitable(),
             size = androidx.compose.ui.geometry.Size(100f, 500f),
-            scale = CENTER_CROP,
         )
         val element11 = ResizePainter(
             painter = ColorPainter(Color.Red).asEquitable(),
             size = androidx.compose.ui.geometry.Size(100f, 500f),
-            scale = CENTER_CROP,
         )
         val element2 = ResizePainter(
             painter = ColorPainter(Color.Green).asEquitable(),
             size = androidx.compose.ui.geometry.Size(100f, 500f),
-            scale = CENTER_CROP,
         )
         val element3 = ResizePainter(
             painter = ColorPainter(Color.Red).asEquitable(),
             size = androidx.compose.ui.geometry.Size(500f, 100f),
-            scale = CENTER_CROP,
         )
         val element4 = ResizePainter(
             painter = ColorPainter(Color.Red).asEquitable(),
             size = androidx.compose.ui.geometry.Size(100f, 500f),
-            scale = START_CROP,
+            contentScale = ContentScale.FillBounds,
+        )
+        val element5 = ResizePainter(
+            painter = ColorPainter(Color.Red).asEquitable(),
+            size = androidx.compose.ui.geometry.Size(100f, 500f),
+            alignment = Alignment.BottomCenter,
         )
 
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
         assertNotEquals(element1, element3)
         assertNotEquals(element1, element4)
+        assertNotEquals(element1, element5)
         assertNotEquals(element2, element3)
         assertNotEquals(element2, element4)
+        assertNotEquals(element2, element5)
         assertNotEquals(element3, element4)
+        assertNotEquals(element3, element5)
+        assertNotEquals(element4, element5)
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
@@ -153,9 +161,13 @@ class ResizePainterTest {
         assertNotEquals(element1.hashCode(), element2.hashCode())
         assertNotEquals(element1.hashCode(), element3.hashCode())
         assertNotEquals(element1.hashCode(), element4.hashCode())
+        assertNotEquals(element1.hashCode(), element5.hashCode())
         assertNotEquals(element2.hashCode(), element3.hashCode())
         assertNotEquals(element2.hashCode(), element4.hashCode())
+        assertNotEquals(element2.hashCode(), element5.hashCode())
         assertNotEquals(element3.hashCode(), element4.hashCode())
+        assertNotEquals(element3.hashCode(), element5.hashCode())
+        assertNotEquals(element4.hashCode(), element5.hashCode())
     }
 
     @Test
@@ -164,10 +176,9 @@ class ResizePainterTest {
         ResizePainter(
             painter = bitmapPainter,
             size = androidx.compose.ui.geometry.Size(500f, 300f),
-            scale = CENTER_CROP
         ).apply {
             assertEquals(
-                "ResizePainter(painter=${bitmapPainter.toLogString()}, size=500.0x300.0, scale=CENTER_CROP)",
+                "ResizePainter(painter=${bitmapPainter.toLogString()}, size=500.0x300.0, contentScale=Fit, alignment=Center)",
                 toString()
             )
         }

@@ -20,6 +20,7 @@ import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.findDeepestPainter
 import com.github.panpf.sketch.util.findLeafPainter
 import com.github.panpf.sketch.util.fitScale
+import com.github.panpf.sketch.util.fromScale
 import com.github.panpf.sketch.util.isEmpty
 import com.github.panpf.sketch.util.name
 import com.github.panpf.sketch.util.simpleName
@@ -118,6 +119,14 @@ class ComposeCoreUtilsTest {
         assertEquals(Scale.START_CROP, toScale(ContentScale.None, Alignment.BottomStart))
         assertEquals(Scale.CENTER_CROP, toScale(ContentScale.None, Alignment.BottomCenter))
         assertEquals(Scale.END_CROP, toScale(ContentScale.None, Alignment.BottomEnd))
+    }
+
+    @Test
+    fun testFromScale() {
+        assertEquals(ContentScale.FillBounds to Alignment.Center, fromScale(Scale.FILL))
+        assertEquals(ContentScale.Fit to Alignment.TopStart, fromScale(Scale.START_CROP))
+        assertEquals(ContentScale.Fit to Alignment.TopCenter, fromScale(Scale.CENTER_CROP))
+        assertEquals(ContentScale.Fit to Alignment.TopEnd, fromScale(Scale.END_CROP))
     }
 
     @Test

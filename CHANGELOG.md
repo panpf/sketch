@@ -15,6 +15,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
 * change: Deprecate the fitScale property of TransitionTarget, adding TransitionViewTarget.scaleType
   and TransitionComposeTarget.contentsScale instead of fitScale
 * new: CrossfadePainter now supports contentScale and alignment
+* new: ResizePainter now supports contentScale and alignment
 
 # 4.1.0
 
