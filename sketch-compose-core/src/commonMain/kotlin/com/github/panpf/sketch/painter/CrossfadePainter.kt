@@ -28,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.geometry.isUnspecified
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -115,7 +114,6 @@ class CrossfadePainter constructor(
 
     override fun DrawScope.onDraw() {
         invalidateTick // Invalidate the scope when invalidateTick changes.
-        drawRect(color = Color.Green, alpha = 0.5f, colorFilter = colorFilter)
 
         if (state == STATE_START) {
             drawPainter(startPainter1, maxAlpha)
@@ -200,7 +198,6 @@ class CrossfadePainter constructor(
             } else {
                 val drawSize = computeScaledSize(srcSize = srcSize, dstSize = dstSize)
                 val offset = alignment.floatAlign(size = drawSize, space = dstSize)
-                println("drawPainter. contentScale=${contentScale.name}, alignment=${alignment.name}, dstSize=$dstSize, srcSize=$srcSize, drawSize=$drawSize, offset=$offset")
                 translate(left = offset.x, top = offset.y) {
                     draw(size = drawSize, alpha = alpha, colorFilter = colorFilter)
                 }
@@ -263,11 +260,28 @@ class CrossfadePainter constructor(
     }
 
     override fun equals(other: Any?): Boolean {
-        return super.equals(other)
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        other as CrossfadePainter
+        if (durationMillis != other.durationMillis) return false
+        if (fadeStart != other.fadeStart) return false
+        if (preferExactIntrinsicSize != other.preferExactIntrinsicSize) return false
+        if (start != other.start) return false
+        if (end != other.end) return false
+        if (contentScale != other.contentScale) return false
+        if (alignment != other.alignment) return false
+        return true
     }
 
     override fun hashCode(): Int {
-        return super.hashCode()
+        var result = durationMillis
+        result = 31 * result + fadeStart.hashCode()
+        result = 31 * result + preferExactIntrinsicSize.hashCode()
+        result = 31 * result + (start?.hashCode() ?: 0)
+        result = 31 * result + (end?.hashCode() ?: 0)
+        result = 31 * result + contentScale.hashCode()
+        result = 31 * result + alignment.hashCode()
+        return result
     }
 
     override fun toString(): String = "CrossfadePainter(" +

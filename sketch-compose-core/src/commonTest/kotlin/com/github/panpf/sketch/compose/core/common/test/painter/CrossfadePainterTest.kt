@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.compose.core.common.test.painter
 
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -246,14 +247,60 @@ class CrossfadePainterTest {
         val element1 = CrossfadePainter(startPainter, endPainter)
         val element11 = CrossfadePainter(startPainter, endPainter)
         val element2 = CrossfadePainter(startPainter, endPainter2)
+        val element3 =
+            CrossfadePainter(startPainter, endPainter2, contentScale = ContentScale.FillBounds)
+        val element4 = CrossfadePainter(startPainter, endPainter2, alignment = Alignment.BottomEnd)
+        val element5 = CrossfadePainter(startPainter, endPainter2, durationMillis = 2000)
+        val element6 = CrossfadePainter(startPainter, endPainter2, fadeStart = false)
+        val element7 = CrossfadePainter(startPainter, endPainter2, preferExactIntrinsicSize = true)
 
-        assertNotEquals(element1, element11)
+        assertEquals(element1, element11)
         assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element1, element4)
+        assertNotEquals(element1, element5)
+        assertNotEquals(element1, element6)
+        assertNotEquals(element1, element7)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element2, element4)
+        assertNotEquals(element2, element5)
+        assertNotEquals(element2, element6)
+        assertNotEquals(element2, element7)
+        assertNotEquals(element3, element4)
+        assertNotEquals(element3, element5)
+        assertNotEquals(element3, element6)
+        assertNotEquals(element3, element7)
+        assertNotEquals(element4, element5)
+        assertNotEquals(element4, element6)
+        assertNotEquals(element4, element7)
+        assertNotEquals(element5, element6)
+        assertNotEquals(element5, element7)
+        assertNotEquals(element6, element7)
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
-        assertNotEquals(element1.hashCode(), element11.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element1.hashCode(), element4.hashCode())
+        assertNotEquals(element1.hashCode(), element5.hashCode())
+        assertNotEquals(element1.hashCode(), element6.hashCode())
+        assertNotEquals(element1.hashCode(), element7.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element4.hashCode())
+        assertNotEquals(element2.hashCode(), element5.hashCode())
+        assertNotEquals(element2.hashCode(), element6.hashCode())
+        assertNotEquals(element2.hashCode(), element7.hashCode())
+        assertNotEquals(element3.hashCode(), element4.hashCode())
+        assertNotEquals(element3.hashCode(), element5.hashCode())
+        assertNotEquals(element3.hashCode(), element6.hashCode())
+        assertNotEquals(element3.hashCode(), element7.hashCode())
+        assertNotEquals(element4.hashCode(), element5.hashCode())
+        assertNotEquals(element4.hashCode(), element6.hashCode())
+        assertNotEquals(element4.hashCode(), element7.hashCode())
+        assertNotEquals(element5.hashCode(), element6.hashCode())
+        assertNotEquals(element5.hashCode(), element7.hashCode())
+        assertNotEquals(element6.hashCode(), element7.hashCode())
     }
 
     @Test
@@ -262,7 +309,7 @@ class CrossfadePainterTest {
         val endPainter = SizeColorPainter(Color.Yellow, Size(200f, 100f))
         val crossfadePainter = CrossfadePainter(startPainter, endPainter)
         assertEquals(
-            expected = "CrossfadePainter(start=${startPainter.toLogString()}, end=${endPainter.toLogString()}, contentScale=Fit, durationMillis=200, fadeStart=true, preferExactIntrinsicSize=false)",
+            expected = "CrossfadePainter(start=${startPainter.toLogString()}, end=${endPainter.toLogString()}, contentScale=Fit, alignment=Center, durationMillis=200, fadeStart=true, preferExactIntrinsicSize=false)",
             actual = crossfadePainter.toString()
         )
     }
