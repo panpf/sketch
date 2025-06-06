@@ -35,7 +35,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.panpf.sketch.LocalPlatformContext
@@ -49,17 +48,11 @@ abstract class BasePainterTestScreen : BaseScreen() {
     @Composable
     abstract fun getTitle(): String
 
-    @Composable
-    open fun BuildInitial() {
-    }
-
     abstract suspend fun buildPainters(
         context: PlatformContext,
         contentScale: ContentScale,
         alignment: Alignment,
-        containerSize: IntSize,
-        cells: Int,
-        gridDividerSizePx: Float,
+        itemWidth: Float,
     ): List<Pair<String, Painter>>
 
     @Composable
@@ -74,26 +67,25 @@ abstract class BasePainterTestScreen : BaseScreen() {
                 var contentScale by remember { mutableStateOf(ContentScale.Fit) }
                 var alignment by remember { mutableStateOf(Alignment.Center) }
                 val containerSize = LocalWindowInfo.current.containerSize
-                val cells = if (containerSize.width > containerSize.height) 5 else 3
+                val gridCells = if (containerSize.width > containerSize.height) 5 else 3
                 val gridDividerSizeDp = 8.dp
                 val gridDividerSizePx = with(LocalDensity.current) { gridDividerSizeDp.toPx() }
+                val gridWidth =
+                    (containerSize.width - (gridCells + 1) * gridDividerSizePx) / gridCells
                 var painterList by remember {
                     mutableStateOf<List<Pair<String, Painter>>>(emptyList())
                 }
-                BuildInitial()
                 LaunchedEffect(contentScale, alignment) {
                     painterList = buildPainters(
-                        context,
-                        contentScale,
-                        alignment,
-                        containerSize,
-                        cells,
-                        gridDividerSizePx
+                        context = context,
+                        contentScale = contentScale,
+                        alignment = alignment,
+                        itemWidth = gridWidth,
                     )
                 }
 
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(cells),
+                    columns = GridCells.Fixed(gridCells),
                     modifier = Modifier.fillMaxWidth().weight(1f),
                     contentPadding = PaddingValues(gridDividerSizeDp),
                     horizontalArrangement = Arrangement.spacedBy(gridDividerSizeDp),

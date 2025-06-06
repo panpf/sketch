@@ -93,16 +93,24 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
 
         ListSeparator("UI"),
         Link(
-            title = "AnimatablePlaceholder",
-            navDirections = NavMainDirections.actionAnimatablePlaceholderTestViewFragment(),
+            title = "CrossfadeDrawable",
+            navDirections = NavMainDirections.actionCrossfadeDrawableTestFragment()
+        ),
+        Link(
+            title = "ResizeDrawable",
+            navDirections = NavMainDirections.actionResizeDrawableTestFragment()
+        ),
+        Link(
+            title = "Drawable Mix",
+            navDirections = NavMainDirections.actionMixDrawableTestFragment()
         ),
         Link(
             title = "IconDrawable",
             navDirections = NavMainDirections.actionIconDrawableTestFragment()
         ),
         Link(
-            title = "Drawable ScaleType",
-            navDirections = NavMainDirections.actionDrawableScaleTypeTestFragment()
+            title = "AnimatablePlaceholder",
+            navDirections = NavMainDirections.actionAnimatablePlaceholderTestViewFragment(),
         ),
         Link(
             title = "ProgressIndicator",

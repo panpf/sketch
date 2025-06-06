@@ -55,11 +55,11 @@ fun TestPage() {
             add(TestItem("Transformation", TransformationTestScreen()))
 
             add(TestGroup("UI"))
-            add(TestItem("AnimatablePlaceholder", AnimatablePlaceholderTestScreen()))
-            add(TestItem("IconPainter", IconPainterTestScreen()))
             add(TestItem("CrossfadePainter", CrossfadePainterTestScreen()))
             add(TestItem("ResizePainter", ResizePainterTestScreen()))
-            add(TestItem("Mix Painter", MixPainterTestScreen()))
+            add(TestItem("Painter Mix", MixPainterTestScreen()))
+            add(TestItem("IconPainter", IconPainterTestScreen()))
+            add(TestItem("AnimatablePlaceholder", AnimatablePlaceholderTestScreen()))
             add(TestItem("Preview", PreviewTestScreen()))
             add(TestItem("ProgressIndicator", ProgressIndicatorTestScreen()))
 
@@ -134,7 +134,7 @@ fun TestGridItem(item: TestItem) {
     Box(
         modifier = Modifier
             .widthIn(100.dp, 1000.dp)
-            .heightIn(80.dp, 1000.dp)
+            .heightIn(60.dp, 1000.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(colorScheme.primaryContainer)
             .clickable { navigator.push(item.screen) }

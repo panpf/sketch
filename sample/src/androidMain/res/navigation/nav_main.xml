@@ -261,12 +261,36 @@
         app:popExitAnim="@anim/nav_pop_exit" />
 
     <fragment
-        android:id="@+id/drawableScaleTypeTestFragment"
-        android:name="com.github.panpf.sketch.sample.ui.test.DrawableScaleTypeTestFragment"
+        android:id="@+id/mixDrawableTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.MixDrawableTestFragment"
         android:label="ProgressIndicatorTestViewFragment" />
     <action
-        android:id="@+id/action_drawableScaleTypeTestFragment"
-        app:destination="@id/drawableScaleTypeTestFragment"
+        android:id="@+id/action_mixDrawableTestFragment"
+        app:destination="@id/mixDrawableTestFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+
+    <fragment
+        android:id="@+id/resizeDrawableTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.ResizeDrawableTestFragment"
+        android:label="ProgressIndicatorTestViewFragment" />
+    <action
+        android:id="@+id/action_resizeDrawableTestFragment"
+        app:destination="@id/resizeDrawableTestFragment"
+        app:enterAnim="@anim/nav_enter"
+        app:exitAnim="@anim/nav_exit"
+        app:popEnterAnim="@anim/nav_pop_enter"
+        app:popExitAnim="@anim/nav_pop_exit" />
+
+    <fragment
+        android:id="@+id/crossfadeDrawableTestFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.CrossfadeDrawableTestFragment"
+        android:label="ProgressIndicatorTestViewFragment" />
+    <action
+        android:id="@+id/action_crossfadeDrawableTestFragment"
+        app:destination="@id/crossfadeDrawableTestFragment"
         app:enterAnim="@anim/nav_enter"
         app:exitAnim="@anim/nav_exit"
         app:popEnterAnim="@anim/nav_pop_enter"

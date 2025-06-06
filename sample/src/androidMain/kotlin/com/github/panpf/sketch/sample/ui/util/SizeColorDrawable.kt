@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.test.utils
+package com.github.panpf.sketch.sample.ui.util
 
 import android.graphics.Canvas
 import android.graphics.ColorFilter

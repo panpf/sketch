@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 
-class WrapperPainter(val wrapped: Painter, val bgColor: Color? = null) : Painter(),
+class BackgroundPainter(val wrapped: Painter, val bgColor: Color? = null) : Painter(),
     RememberObserver {
 
     private var alpha: Float = 1.0f
@@ -53,7 +53,7 @@ class WrapperPainter(val wrapped: Painter, val bgColor: Color? = null) : Painter
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
-        other as WrapperPainter
+        other as BackgroundPainter
         if (wrapped != other.wrapped) return false
         if (bgColor != other.bgColor) return false
         return true
