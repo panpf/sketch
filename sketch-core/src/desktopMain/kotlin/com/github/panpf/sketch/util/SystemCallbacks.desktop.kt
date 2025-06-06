@@ -41,7 +41,7 @@ internal class DesktopSystemCallbacks : SystemCallbacks {
     override fun register() {
         // TODO Listen for memory-pressure events to trim the memory cache on desktop platforms.
         // TODO Implement network type detection for desktop platforms.
-        //  https://github.com/jordond/connectivity/blob/main/connectivity-apple/src/appleMain/kotlin/dev/jordond/connectivity/internal/AppleConnectivityProvider.kt
+        //  https://github.com/jordond/connectivity/blob/main/connectivity-http/src/commonMain/kotlin/dev/jordond/connectivity/internal/HttpConnectivity.kt
     }
 
     override fun shutdown() {

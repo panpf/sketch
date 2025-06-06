@@ -128,7 +128,7 @@ class MyListImageView @JvmOverloads constructor(
             scaleType =
                 toScaleType(appSettings.listContentScale.value, appSettings.listAlignment.value)
             precision(appSettings.precision.value)
-//            scale(appSettings.scale.value)
+//            scale(appSettings.scale.value)   // stateCombine will cause UI lag
             scale(
                 buildScale(
                     appSettings.scaleName.value,

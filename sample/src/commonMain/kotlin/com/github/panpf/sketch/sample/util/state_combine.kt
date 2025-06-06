@@ -10,7 +10,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.resumeWithException
 
-
 inline fun <reified T, R> stateCombine(
     sources: Iterable<StateFlow<T>>,
     crossinline transform: (Array<T>) -> R
@@ -25,7 +24,7 @@ inline fun <reified T, R> stateCombine(
         get() = transform(sources.map { it.value }.toTypedArray())
 
     override suspend fun collect(collector: FlowCollector<R>): Nothing = coroutineScope {
-        // TODO collectAsState in compose will cause UI lag
+        // collectAsState in compose will cause UI lag
         suspendCancellableCoroutine<Nothing> { continuation ->
             val flow: Flow<R> = combine(flows = sources, transform)
             val job = launch {
