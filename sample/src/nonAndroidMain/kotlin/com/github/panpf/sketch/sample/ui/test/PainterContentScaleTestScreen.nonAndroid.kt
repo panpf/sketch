@@ -14,7 +14,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.execute
 import com.github.panpf.sketch.sample.image.decode
-import com.github.panpf.sketch.util.toScale
 
 actual suspend fun buildPainterContentScaleTestPainters(
     context: PlatformContext,
@@ -32,7 +31,7 @@ actual suspend fun buildPainterContentScaleTestPainters(
     ImageRequest(context, ResourceImages.clockHor.uri).execute()
         .let { it as ImageResult.Success }
         .image.asPainter().apply {
-            val resizePainter = ResizePainter(this, Size(300f, 300f), contentScale.toScale())
+            val resizePainter = ResizePainter(this, Size(300f, 300f), contentScale, alignment)
             list.add("ResizePainter\nImageBitmapPainter\nImageBitmap" to resizePainter)
         }
 

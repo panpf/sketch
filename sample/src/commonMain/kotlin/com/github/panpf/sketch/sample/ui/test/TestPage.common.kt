@@ -59,7 +59,7 @@ fun TestPage() {
             add(TestItem("IconPainter", IconPainterTestScreen()))
             add(TestItem("CrossfadePainter", CrossfadePainterTestScreen()))
             add(TestItem("ResizePainter", ResizePainterTestScreen()))
-            add(TestItem("Painter ContentScale", PainterContentScaleTestScreen()))
+            add(TestItem("Mix Painter", MixPainterTestScreen()))
             add(TestItem("Preview", PreviewTestScreen()))
             add(TestItem("ProgressIndicator", ProgressIndicatorTestScreen()))
 
