@@ -32,6 +32,7 @@ import android.os.Build.VERSION
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.widget.ImageView.ScaleType
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.TintAwareDrawable
@@ -39,11 +40,11 @@ import androidx.core.graphics.withSave
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.TransitionDrawable
-import com.github.panpf.sketch.util.calculateScaleMultiplierWithFit
+import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.calculateBoundsWithScaleType
+import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.util.toLogString
-import kotlin.math.ceil
-import kotlin.math.floor
 import kotlin.math.max
 
 /**
@@ -63,11 +64,10 @@ import kotlin.math.max
  *
  * @see com.github.panpf.sketch.view.core.test.drawable.CrossfadeDrawableTest
  */
-// TODO Support ScaleType
 class CrossfadeDrawable @JvmOverloads constructor(
     val start: Drawable?,
     val end: Drawable?,
-    val fitScale: Boolean = true,
+    val scaleType: ScaleType = ScaleType.FIT_CENTER,
     val durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
     val fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
     val preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
@@ -93,6 +93,27 @@ class CrossfadeDrawable @JvmOverloads constructor(
 
     private var startDrawable: Drawable? = start?.mutate()
     private val endDrawable: Drawable? = end?.mutate()
+
+    @Deprecated("Use scaleType instead.", ReplaceWith("scaleType"))
+    val fitScale: Boolean = scaleType.fitScale
+
+    @JvmOverloads
+    @Deprecated("Please use a constructor containing the fitScale parameter instead")
+    constructor(
+        start: Drawable?,
+        end: Drawable?,
+        fitScale: Boolean,
+        durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
+        fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
+        preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
+    ) : this(
+        start = start,
+        end = end,
+        scaleType = if (fitScale) ScaleType.FIT_CENTER else ScaleType.CENTER_CROP,
+        durationMillis = durationMillis,
+        fadeStart = fadeStart,
+        preferExactIntrinsicSize = preferExactIntrinsicSize
+    )
 
     init {
         require(durationMillis > 0) { "durationMillis must be > 0." }
@@ -188,6 +209,7 @@ class CrossfadeDrawable @JvmOverloads constructor(
         }
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     override fun getColorFilter(): ColorFilter? =
         if (VERSION.SDK_INT >= 21) {
             when (state) {
@@ -244,7 +266,7 @@ class CrossfadeDrawable @JvmOverloads constructor(
         endDrawable?.let { DrawableCompat.setTintList(it, tint) }
     }
 
-    @SuppressLint("RestrictedApi")
+    @SuppressLint("RestrictedApi", "ObsoleteSdkInt")
     override fun setTintMode(tintMode: PorterDuff.Mode?) {
         if (VERSION.SDK_INT >= 21) {
             startDrawable?.setTintMode(tintMode)
@@ -316,34 +338,28 @@ class CrossfadeDrawable @JvmOverloads constructor(
 
     /** Update the [Drawable]'s bounds inside [targetBounds] preserving aspect ratio. */
     private fun updateBounds(drawable: Drawable, targetBounds: Rect) {
-        val width = drawable.intrinsicWidth
-        val height = drawable.intrinsicHeight
-        if (width <= 0 || height <= 0) {
+        val srcSize = Size(
+            width = drawable.intrinsicWidth,
+            height = drawable.intrinsicHeight
+        )
+        if (srcSize.isEmpty) {
             drawable.bounds = targetBounds
             return
         }
 
-        val targetWidth = targetBounds.width()
-        val targetHeight = targetBounds.height()
-        val multiplier = calculateScaleMultiplierWithFit(
-            srcWidth = width.toFloat(),
-            srcHeight = height.toFloat(),
-            dstWidth = targetWidth.toFloat(),
-            dstHeight = targetHeight.toFloat(),
-            fitScale = fitScale
+        val drawableBounds = calculateBoundsWithScaleType(
+            srcSize = srcSize,
+            dstSize = Size(
+                width = targetBounds.width(),
+                height = targetBounds.height()
+            ),
+            scaleType = scaleType
         )
-        val dx = (targetWidth - multiplier * width) / 2f
-        val dy = (targetHeight - multiplier * height) / 2f
-
-        val left = targetBounds.left + dx
-        val top = targetBounds.top + dy
-        val right = targetBounds.right - dx
-        val bottom = targetBounds.bottom - dy
         drawable.setBounds(
-            /* left = */ floor(left).toInt(),
-            /* top = */ floor(top).toInt(),
-            /* right = */ ceil(right).toInt(),
-            /* bottom = */ ceil(bottom).toInt()
+            /* left = */ targetBounds.left + drawableBounds.left,
+            /* top = */ targetBounds.top + drawableBounds.top,
+            /* right = */ targetBounds.left + drawableBounds.right,
+            /* bottom = */ targetBounds.top + drawableBounds.bottom
         )
     }
 
@@ -361,7 +377,7 @@ class CrossfadeDrawable @JvmOverloads constructor(
             CrossfadeDrawable(
                 start = mutateStart,
                 end = mutateEnd,
-                fitScale = fitScale,
+                scaleType = scaleType,
                 durationMillis = durationMillis,
                 fadeStart = fadeStart,
                 preferExactIntrinsicSize = preferExactIntrinsicSize
@@ -384,17 +400,32 @@ class CrossfadeDrawable @JvmOverloads constructor(
     }
 
     override fun equals(other: Any?): Boolean {
-        return super.equals(other)
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        other as CrossfadeDrawable
+        if (start != other.start) return false
+        if (end != other.end) return false
+        if (scaleType != other.scaleType) return false
+        if (durationMillis != other.durationMillis) return false
+        if (fadeStart != other.fadeStart) return false
+        if (preferExactIntrinsicSize != other.preferExactIntrinsicSize) return false
+        return true
     }
 
     override fun hashCode(): Int {
-        return super.hashCode()
+        var result = start?.hashCode() ?: 0
+        result = 31 * result + (end?.hashCode() ?: 0)
+        result = 31 * result + (scaleType.hashCode())
+        result = 31 * result + durationMillis.hashCode()
+        result = 31 * result + fadeStart.hashCode()
+        result = 31 * result + preferExactIntrinsicSize.hashCode()
+        return result
     }
 
     override fun toString(): String = "CrossfadeDrawable(" +
             "start=${start?.toLogString()}, " +
             "end=${end?.toLogString()}, " +
-            "fitScale=$fitScale, " +
+            "scaleType=$scaleType, " +
             "durationMillis=$durationMillis, " +
             "fadeStart=$fadeStart, " +
             "preferExactIntrinsicSize=$preferExactIntrinsicSize" +

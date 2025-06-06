@@ -244,4 +244,7 @@ class ViewCoreUtilsTest {
             actual = calculateBounds(Size(120, 150), Size(100, 100), Scale.FILL)
         )
     }
+
+    // TODO calculateBoundsWithScaleType
+    // TODO test calculateBoundsWithScaleAndAlignment
 }

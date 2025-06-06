@@ -16,6 +16,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
   and TransitionComposeTarget.contentsScale instead of fitScale
 * new: CrossfadePainter now supports contentScale and alignment
 * new: ResizePainter now supports contentScale and alignment
+* new: CrossfadeDrawable now supports scaleType
 
 # 4.1.0
 

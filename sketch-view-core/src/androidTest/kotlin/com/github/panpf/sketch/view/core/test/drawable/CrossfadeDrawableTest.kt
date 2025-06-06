@@ -51,6 +51,8 @@ import kotlin.test.assertTrue
 @RunWith(AndroidJUnit4::class)
 class CrossfadeDrawableTest {
 
+    // TODO test scaleType
+
     @Test
     fun testConstructor() {
         val startDrawable = SizeColorDrawable(Color.RED, Size(100, 200))

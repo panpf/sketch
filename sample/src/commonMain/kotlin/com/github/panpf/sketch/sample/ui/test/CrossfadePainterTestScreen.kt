@@ -30,9 +30,10 @@ class CrossfadePainterTestScreen : BasePainterTestScreen() {
         itemWidth: Float,
     ): List<Pair<String, Painter>> {
         val startPainterWidth = itemWidth * 0.75f
+        val startDrawableHeight = itemWidth * 0.65f
         val startPainter = SizeColorPainter(
             color = Color.Blue,
-            size = Size(startPainterWidth, startPainterWidth)
+            size = Size(startPainterWidth, startDrawableHeight)
         )
         val bitmap = Res.readBytes("drawable/numbers.jpg").decodeToImageBitmap()
         val endPainterWidth = itemWidth * 0.5f

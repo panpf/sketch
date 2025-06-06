@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.util
 
+import android.graphics.PointF
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.DrawableWrapper
 import android.graphics.drawable.LayerDrawable
@@ -23,8 +24,12 @@ import android.os.Build
 import android.os.Looper
 import android.widget.ImageView.ScaleType
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
+import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.resize.Scale
+import kotlin.math.ceil
+import kotlin.math.floor
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
@@ -72,7 +77,7 @@ val ScaleType.fitScale: Boolean
  * @see com.github.panpf.sketch.view.core.test.util.ViewCoreUtilsTest.testFindLeafDrawable
  */
 fun Drawable.findLeafDrawable(): Drawable = when (val drawable = this) {
-    is com.github.panpf.sketch.drawable.CrossfadeDrawable -> {
+    is CrossfadeDrawable -> {
         drawable.end?.findLeafDrawable() ?: drawable
     }
 
@@ -96,7 +101,7 @@ fun Drawable.findLeafDrawable(): Drawable = when (val drawable = this) {
 fun Drawable.findDeepestDrawable(): Drawable {
     val drawable = this
     return when {
-        drawable is com.github.panpf.sketch.drawable.CrossfadeDrawable -> {
+        drawable is CrossfadeDrawable -> {
             drawable.end?.findDeepestDrawable() ?: drawable
         }
 
@@ -182,6 +187,113 @@ internal fun calculateBounds(srcSize: Size, dstSize: Size, scale: Scale): Rect {
             )
         }
     }
+}
+
+/**
+ * Calculate the bounds of the image after scaling
+ *
+ * @see com.github.panpf.sketch.view.core.test.util.ViewCoreUtilsTest.testCalculateBoundsWithScaleType
+ */
+internal fun calculateBoundsWithScaleType(
+    srcSize: Size,
+    dstSize: Size,
+    scaleType: ScaleType
+): Rect {
+    if (srcSize.isEmpty || dstSize.isEmpty) {
+        return Rect(
+            left = 0,
+            top = 0,
+            right = srcSize.width.takeIf { it > 0 } ?: dstSize.width,
+            bottom = srcSize.height.takeIf { it > 0 } ?: dstSize.height
+        )
+    }
+
+    val widthScaleFactor: Float = dstSize.width.toFloat() / srcSize.width
+    val heightScaleFactor: Float = dstSize.height.toFloat() / srcSize.height
+    val (scaleFactor: PointF, alignment: Int) = when {
+        scaleType == ScaleType.CENTER_CROP -> {
+            val maxScaleFactor = max(widthScaleFactor, heightScaleFactor)
+            PointF(/* x = */ maxScaleFactor, /* y = */ maxScaleFactor) to 0
+        }
+
+        scaleType == ScaleType.CENTER || (scaleType == ScaleType.CENTER_INSIDE && srcSize.width <= dstSize.width && srcSize.height <= dstSize.height) -> {
+            PointF(/* x = */ 1f, /* y = */ 1f) to 0
+        }
+
+        scaleType == ScaleType.FIT_XY -> {
+            PointF(widthScaleFactor, heightScaleFactor) to -1
+        }
+
+        scaleType == ScaleType.FIT_START -> {
+            val minScaleFactor: Float = min(widthScaleFactor, heightScaleFactor)
+            PointF(/* x = */ minScaleFactor, /* y = */ minScaleFactor) to -1
+        }
+
+        scaleType == ScaleType.FIT_END -> {
+            val minScaleFactor: Float = min(widthScaleFactor, heightScaleFactor)
+            PointF(/* x = */ minScaleFactor, /* y = */ minScaleFactor) to 1
+        }
+
+        scaleType == ScaleType.MATRIX -> {
+            PointF(/* x = */ 1f, /* y = */ 1f) to -1
+        }
+
+        else -> {
+            // scaleType == ScaleType.FIT_CENTER || (scaleType == ScaleType.CENTER_INSIDE && (srcSize.width > dstSize.width || srcSize.height > dstSize.height))
+            val minScaleFactor: Float = min(widthScaleFactor, heightScaleFactor)
+            PointF(/* x = */ minScaleFactor, /* y = */ minScaleFactor) to 0
+        }
+    }
+    return calculateBoundsWithScaleAndAlignment(
+        srcSize = srcSize,
+        dstSize = dstSize,
+        scaleFactor = scaleFactor,
+        alignment = alignment
+    )
+}
+
+/**
+ * Calculate the bounds of the image after scaling
+ *
+ * @see com.github.panpf.sketch.view.core.test.util.ViewCoreUtilsTest.testCalculateBoundsWithScaleAndAlignment
+ */
+fun calculateBoundsWithScaleAndAlignment(
+    srcSize: Size,
+    dstSize: Size,
+    scaleFactor: PointF,
+    alignment: Int, // -1: Start, 0: Center, 1: End
+): Rect {
+    if (srcSize.isEmpty || dstSize.isEmpty) {
+        return Rect(
+            left = 0,
+            top = 0,
+            right = srcSize.width.takeIf { it > 0 } ?: dstSize.width,
+            bottom = srcSize.height.takeIf { it > 0 } ?: dstSize.height
+        )
+    }
+
+    val scaledWidth: Float = srcSize.width * scaleFactor.x
+    val scaledHeight: Float = srcSize.height * scaleFactor.y
+    val left: Float = if (alignment < 0) {   // Start
+        0f
+    } else if (alignment > 0) {   // End
+        dstSize.width - scaledWidth
+    } else { // Center
+        (dstSize.width - scaledWidth) / 2f
+    }
+    val top: Float = if (alignment < 0) {   // Start
+        0f
+    } else if (alignment > 0) {   // End
+        dstSize.height - scaledHeight
+    } else { // Center
+        (dstSize.height - scaledHeight) / 2f
+    }
+    return Rect(
+        left = floor(left).toInt(),
+        top = floor(top).toInt(),
+        right = ceil(left + scaledWidth).toInt(),
+        bottom = ceil(top + scaledHeight).toInt(),
+    )
 }
 
 fun ScaleType.toScale(): Scale = when (this) {

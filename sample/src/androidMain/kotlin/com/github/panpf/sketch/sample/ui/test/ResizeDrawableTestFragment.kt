@@ -28,6 +28,8 @@ class ResizeDrawableTestFragment : BaseDrawableTestFragment() {
         itemWidth: Float,
     ): List<DrawableScaleType> {
         val containerWidth = itemWidth * 0.75f
+        val containerHeight = itemWidth * 0.65f
+        val containerSize = Size(containerWidth.fastRoundToInt(), containerHeight.fastRoundToInt())
         val numbersBitmap = Res.readBytes("drawable/numbers.jpg").decodeToImageBitmap()
         val smallImageWidth = itemWidth * 0.5f
         val smallImageBitmap = numbersBitmap.scale(
@@ -48,12 +50,12 @@ class ResizeDrawableTestFragment : BaseDrawableTestFragment() {
         return mutableListOf<Pair<String, Drawable>>(
             "Small" to ResizeDrawable(
                 drawable = smallDrawable,
-                size = Size(containerWidth.fastRoundToInt(), containerWidth.fastRoundToInt()),
+                size = containerSize,
                 scale = scaleType.toScale(),
             ),
             "Big" to ResizeDrawable(
                 drawable = bigDrawable,
-                size = Size(containerWidth.fastRoundToInt(), containerWidth.fastRoundToInt()),
+                size = containerSize,
                 scale = scaleType.toScale(),
             ),
         ).map {

@@ -17,6 +17,7 @@
 
 package com.github.panpf.sketch.transition
 
+import android.widget.ImageView.ScaleType
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asDrawable
 import com.github.panpf.sketch.asImage
@@ -41,15 +42,40 @@ class ViewCrossfadeTransition @JvmOverloads constructor(
     private val request: ImageRequest,
     private val target: TransitionViewTarget,
     private val result: ImageResult,
+    val scaleType: ScaleType = ScaleType.FIT_CENTER,
     val durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
     val fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
     val preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
-    val fitScale: Boolean = true,
 ) : Transition {
+
+    @Deprecated("Please use a constructor containing the scaleType parameter instead")
+    @JvmOverloads
+    constructor(
+        sketch: Sketch,
+        request: ImageRequest,
+        target: TransitionViewTarget,
+        result: ImageResult,
+        durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
+        fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
+        preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
+        fitScale: Boolean,
+    ) : this(
+        sketch = sketch,
+        request = request,
+        target = target,
+        result = result,
+        scaleType = if (fitScale) ScaleType.FIT_CENTER else ScaleType.CENTER_CROP,
+        durationMillis = durationMillis,
+        fadeStart = fadeStart,
+        preferExactIntrinsicSize = preferExactIntrinsicSize
+    )
 
     init {
         require(durationMillis > 0) { "durationMillis must be > 0." }
     }
+
+    @Deprecated("Use scaleType instead.", ReplaceWith("scaleType"))
+    val fitScale: Boolean = scaleType.fitScale
 
     override fun transition() {
         val startDrawable = target.drawable?.asOrNull<CrossfadeDrawable>()?.end ?: target.drawable
@@ -61,7 +87,7 @@ class ViewCrossfadeTransition @JvmOverloads constructor(
         val crossfadeDrawable = CrossfadeDrawable(
             start = startDrawable,
             end = endDrawable,
-            fitScale = fitScale,
+            scaleType = scaleType,
             fadeStart = fadeStart,
             durationMillis = durationMillis,
             preferExactIntrinsicSize = preferExactIntrinsicSize
@@ -110,16 +136,15 @@ class ViewCrossfadeTransition @JvmOverloads constructor(
             if (!alwaysUse && fromMemoryCache) {
                 return null
             }
-            val fitScale = target.scaleType.fitScale
             return ViewCrossfadeTransition(
                 sketch = sketch,
                 request = request,
                 target = target,
                 result = result,
+                scaleType = target.scaleType,
                 durationMillis = durationMillis,
                 fadeStart = fadeStart,
                 preferExactIntrinsicSize = preferExactIntrinsicSize,
-                fitScale = fitScale
             )
         }
 

@@ -15,7 +15,6 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.execute
 import com.github.panpf.sketch.sample.image.decode
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.toScale
 
 class MixDrawableTestFragment : BaseDrawableTestFragment() {
@@ -52,7 +51,7 @@ class MixDrawableTestFragment : BaseDrawableTestFragment() {
             .let { it as ImageResult.Success }
             .image.asDrawable().apply {
                 val crossfadeDrawable =
-                    CrossfadeDrawable(null, this, fitScale = scaleType.fitScale)
+                    CrossfadeDrawable(null, this, scaleType = scaleType)
                 list.add(
                     DrawableScaleType(
                         title = "CrossfadeDrawable\nBitmapDrawable",

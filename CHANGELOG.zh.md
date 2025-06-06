@@ -14,6 +14,7 @@
   TransitionComposeTarget.contentsScale 代替 fitScale
 * new: CrossfadePainter 现在支持 contentScale 和 alignment
 * new: ResizePainter 现在支持 contentScale 和 alignment
+* new: CrossfadeDrawable 现在支持 scaleType
 
 # 4.1.0
 

@@ -17,7 +17,6 @@ import com.github.panpf.sketch.sample.ui.util.scale
 import com.github.panpf.sketch.sample.ui.util.wrappedBackground
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.fitScale
 
 class CrossfadeDrawableTestFragment : BaseDrawableTestFragment() {
 
@@ -30,9 +29,10 @@ class CrossfadeDrawableTestFragment : BaseDrawableTestFragment() {
         itemWidth: Float
     ): List<DrawableScaleType> {
         val startDrawableWidth = itemWidth * 0.75f
+        val startDrawableHeight = itemWidth * 0.65f
         val startDrawable = SizeColorDrawable(
             color = Color.BLUE,
-            size = Size(startDrawableWidth.fastRoundToInt(), startDrawableWidth.fastRoundToInt())
+            size = Size(startDrawableWidth.fastRoundToInt(), startDrawableHeight.fastRoundToInt())
         )
         val numbersBitmap = Res.readBytes("drawable/numbers.jpg").decodeToImageBitmap()
         val endDrawableWidth = itemWidth * 0.5f
@@ -47,24 +47,24 @@ class CrossfadeDrawableTestFragment : BaseDrawableTestFragment() {
             "Default" to CrossfadeDrawable(
                 start = startDrawable,
                 end = endDrawable,
-                fitScale = scaleType.fitScale,
+                scaleType = scaleType,
             ),
             "Long Duration" to CrossfadeDrawable(
                 start = startDrawable,
                 end = endDrawable,
-                fitScale = scaleType.fitScale,
+                scaleType = scaleType,
                 durationMillis = CrossfadeTransition.DEFAULT_DURATION_MILLIS * 4
             ),
             "No fadeStart" to CrossfadeDrawable(
                 start = startDrawable,
                 end = endDrawable,
-                fitScale = scaleType.fitScale,
+                scaleType = scaleType,
                 fadeStart = !CrossfadeTransition.DEFAULT_FADE_START
             ),
             "PreferExactIntrinsicSize" to CrossfadeDrawable(
                 start = startDrawable,
                 end = endDrawable,
-                fitScale = scaleType.fitScale,
+                scaleType = scaleType,
                 preferExactIntrinsicSize = !CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE
             ),
         ).map {

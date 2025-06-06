@@ -28,6 +28,8 @@ class ResizePainterTestScreen : BasePainterTestScreen() {
         itemWidth: Float,
     ): List<Pair<String, Painter>> {
         val containerWidth = itemWidth * 0.75f
+        val containerHeight = itemWidth * 0.65f
+        val containerSize = Size(containerWidth, containerHeight)
         val numbersBitmap = Res.readBytes("drawable/numbers.jpg").decodeToImageBitmap()
         val smallImageWidth = itemWidth * 0.5f
         val smallImageBitmap = numbersBitmap.scale(
@@ -48,13 +50,13 @@ class ResizePainterTestScreen : BasePainterTestScreen() {
         return mutableListOf<Pair<String, Painter>>(
             "Small" to ResizePainter(
                 painter = smallPainter,
-                size = Size(containerWidth, containerWidth),
+                size = containerSize,
                 contentScale = contentScale,
                 alignment = alignment,
             ),
             "Big" to ResizePainter(
                 painter = bigPainter,
-                size = Size(containerWidth, containerWidth),
+                size = containerSize,
                 contentScale = contentScale,
                 alignment = alignment,
             ),

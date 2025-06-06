@@ -54,6 +54,8 @@ import kotlin.test.assertTrue
 @RunWith(AndroidJUnit4::class)
 class ViewCrossfadeTransitionTest {
 
+    // TODO test scaleType
+
     @Test
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
