@@ -37,6 +37,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.times
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.TransitionPainter
+import com.github.panpf.sketch.util.fitScale
 import com.github.panpf.sketch.util.floatAlign
 import com.github.panpf.sketch.util.name
 import kotlin.js.JsName
@@ -88,10 +89,10 @@ class CrossfadePainter constructor(
 
     override val intrinsicSize: Size = computeIntrinsicSize()
 
-    @Deprecated("Use contentScale instead.", ReplaceWith("contentScale"))
-    val fitScale: Boolean = contentScale == ContentScale.Fit
+    @Deprecated("Use contentScale and alignment instead.")
+    val fitScale: Boolean = contentScale.fitScale
 
-    @Deprecated("Please use a constructor containing the contentScale parameter instead")
+    @Deprecated("Please use a constructor containing the contentScale and alignment parameter instead")
     constructor(
         start: Painter?,
         end: Painter?,

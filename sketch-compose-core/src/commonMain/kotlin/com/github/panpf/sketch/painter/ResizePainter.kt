@@ -34,6 +34,7 @@ import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.util.floatAlign
 import com.github.panpf.sketch.util.fromScale
 import com.github.panpf.sketch.util.name
+import com.github.panpf.sketch.util.toScale
 
 /**
  * Create a [ResizePainter] and remember it
@@ -113,6 +114,9 @@ open class ResizePainter constructor(
 
     private var alpha: Float = 1.0f
     private var colorFilter: ColorFilter? = null
+
+    @Deprecated("Use contentScale and alignment instead.")
+    val scale: Scale = contentScale.toScale()
 
     @Deprecated(message = "Use ResizePainter(painter, size, contentScale, alignment) instead")
     constructor(

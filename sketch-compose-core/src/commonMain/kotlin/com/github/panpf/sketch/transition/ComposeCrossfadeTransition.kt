@@ -48,7 +48,7 @@ class ComposeCrossfadeTransition constructor(
     val preferExactIntrinsicSize: Boolean = CrossfadeTransition.DEFAULT_PREFER_EXACT_INTRINSIC_SIZE,
 ) : Transition {
 
-    @Deprecated("Please use a constructor containing the contentScale parameter instead")
+    @Deprecated("Please use a constructor containing the contentScale and alignment parameter instead")
     constructor(
         sketch: Sketch,
         request: ImageRequest,
@@ -69,7 +69,7 @@ class ComposeCrossfadeTransition constructor(
         contentScale = if (fitScale) ContentScale.Fit else ContentScale.Crop
     )
 
-    @Deprecated("Use contentScale instead.", ReplaceWith("contentScale"))
+    @Deprecated("Use contentScale and alignment instead.")
     val fitScale: Boolean = contentScale == ContentScale.Fit
 
     init {
