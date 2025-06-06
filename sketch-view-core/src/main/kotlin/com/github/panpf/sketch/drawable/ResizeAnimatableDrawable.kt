@@ -17,11 +17,13 @@
 package com.github.panpf.sketch.drawable
 
 import android.graphics.drawable.Drawable
+import android.widget.ImageView.ScaleType
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.drawable.internal.AnimatableCallbackHelper
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toLogString
+import com.github.panpf.sketch.util.toScaleType
 
 /**
  * Using [size] as the intrinsic size of [drawable], [drawable] will be scaled according to the scale of [size].
@@ -29,11 +31,22 @@ import com.github.panpf.sketch.util.toLogString
  *
  * @see com.github.panpf.sketch.view.core.test.drawable.ResizeAnimatableDrawableTest
  */
-open class ResizeAnimatableDrawable(
+open class ResizeAnimatableDrawable constructor(
     drawable: Drawable,
     size: Size,
-    scale: Scale
-) : ResizeDrawable(drawable, size, scale), Animatable2Compat, SketchDrawable {
+    scaleType: ScaleType = ScaleType.CENTER_CROP
+) : ResizeDrawable(drawable, size, scaleType), Animatable2Compat, SketchDrawable {
+
+    @Deprecated(message = "Use ResizeDrawable(painter, size, scaleType) instead")
+    constructor(
+        drawable: Drawable,
+        size: Size,
+        scale: Scale
+    ) : this(
+        drawable = drawable,
+        size = size,
+        scaleType = scale.toScaleType()
+    )
 
     internal var callbackHelper: AnimatableCallbackHelper? = null
 
@@ -73,7 +86,7 @@ open class ResizeAnimatableDrawable(
     override fun mutate(): ResizeAnimatableDrawable {
         val mutateDrawable = drawable?.mutate()
         return if (mutateDrawable != null && mutateDrawable !== drawable) {
-            ResizeAnimatableDrawable(mutateDrawable, size, scale)
+            ResizeAnimatableDrawable(mutateDrawable, size, scaleType)
         } else {
             this
         }
@@ -85,12 +98,12 @@ open class ResizeAnimatableDrawable(
         other as ResizeAnimatableDrawable
         if (size != other.size) return false
         if (drawable != other.drawable) return false
-        return scale == other.scale
+        return scaleType == other.scaleType
     }
 
     override fun hashCode(): Int {
         var result = size.hashCode()
-        result = 31 * result + scale.hashCode()
+        result = 31 * result + scaleType.hashCode()
         result = 31 * result + drawable.hashCode()
         return result
     }
@@ -99,7 +112,7 @@ open class ResizeAnimatableDrawable(
         return "ResizeAnimatableDrawable(" +
                 "drawable=${drawable?.toLogString()}, " +
                 "size=$size, " +
-                "scale=$scale" +
+                "scaleType=$scaleType" +
                 ")"
     }
 }

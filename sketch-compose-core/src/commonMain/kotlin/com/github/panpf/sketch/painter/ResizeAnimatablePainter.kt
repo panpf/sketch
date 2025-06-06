@@ -34,7 +34,7 @@ import com.github.panpf.sketch.util.name
 class ResizeAnimatablePainter(
     painter: Painter,
     size: Size,
-    contentScale: ContentScale = ContentScale.Fit,
+    contentScale: ContentScale = ContentScale.Crop,
     alignment: Alignment = Alignment.Center,
 ) : ResizePainter(painter, size, contentScale, alignment), AnimatablePainter {
 

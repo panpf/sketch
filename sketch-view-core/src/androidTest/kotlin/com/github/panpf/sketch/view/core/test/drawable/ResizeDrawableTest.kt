@@ -51,6 +51,8 @@ import kotlin.test.assertTrue
 @RunWith(AndroidJUnit4::class)
 class ResizeDrawableTest {
 
+    // TODO test scaleType
+
     @Test
     fun testResize() {
         ColorDrawable(Color.GREEN).resize(Size(100, 100)).apply {

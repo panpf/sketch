@@ -15,7 +15,6 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.execute
 import com.github.panpf.sketch.sample.image.decode
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.toScale
 
 class MixDrawableTestFragment : BaseDrawableTestFragment() {
 
@@ -38,7 +37,7 @@ class MixDrawableTestFragment : BaseDrawableTestFragment() {
         ImageRequest(context, ResourceImages.clockHor.uri).execute()
             .let { it as ImageResult.Success }
             .image.asDrawable().apply {
-                val resizeDrawable = ResizeDrawable(this, Size(300, 300), scaleType.toScale())
+                val resizeDrawable = ResizeDrawable(this, Size(300, 300), scaleType)
                 list.add(
                     DrawableScaleType(
                         title = "ResizeDrawable\nBitmapDrawable",

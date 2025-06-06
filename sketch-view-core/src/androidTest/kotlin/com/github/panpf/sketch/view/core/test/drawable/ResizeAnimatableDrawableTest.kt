@@ -57,6 +57,8 @@ import kotlin.test.assertTrue
 @RunWith(AndroidJUnit4::class)
 class ResizeAnimatableDrawableTest {
 
+    // TODO test scaleType
+
     @Test
     fun testDraw() {
         // TODO test: Screenshot test or draw to Bitmap, then compare Bitmap

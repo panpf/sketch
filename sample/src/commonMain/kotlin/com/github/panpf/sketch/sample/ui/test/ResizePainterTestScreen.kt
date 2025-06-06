@@ -27,9 +27,10 @@ class ResizePainterTestScreen : BasePainterTestScreen() {
         alignment: Alignment,
         itemWidth: Float,
     ): List<Pair<String, Painter>> {
-        val containerWidth = itemWidth * 0.75f
-        val containerHeight = itemWidth * 0.65f
-        val containerSize = Size(containerWidth, containerHeight)
+        val containerSize = Size(
+            width = itemWidth * 0.75f,
+            height = itemWidth * 0.65f
+        )
         val numbersBitmap = Res.readBytes("drawable/numbers.jpg").decodeToImageBitmap()
         val smallImageWidth = itemWidth * 0.5f
         val smallImageBitmap = numbersBitmap.scale(

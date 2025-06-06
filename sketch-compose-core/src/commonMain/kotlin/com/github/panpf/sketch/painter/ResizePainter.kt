@@ -30,7 +30,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.times
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.util.floatAlign
 import com.github.panpf.sketch.util.fromScale
 import com.github.panpf.sketch.util.name
@@ -45,7 +44,7 @@ import com.github.panpf.sketch.util.toScale
 fun rememberResizePainter(
     painter: Painter,
     size: Size,
-    contentScale: ContentScale = ContentScale.Fit,
+    contentScale: ContentScale = ContentScale.Crop,
     alignment: Alignment = Alignment.Center
 ): ResizePainter {
     return remember(painter, size, contentScale, alignment) {
@@ -60,7 +59,7 @@ fun rememberResizePainter(
  */
 @Composable
 @Deprecated("Use rememberResizePainter(painter, size, contentScale, alignment) instead")
-fun rememberResizePainter(painter: Painter, size: Size, scale: Scale = CENTER_CROP): ResizePainter {
+fun rememberResizePainter(painter: Painter, size: Size, scale: Scale): ResizePainter {
     return remember(painter, size, scale) {
         painter.resize(size, scale)
     }
@@ -73,7 +72,7 @@ fun rememberResizePainter(painter: Painter, size: Size, scale: Scale = CENTER_CR
  */
 fun Painter.resize(
     size: Size,
-    contentScale: ContentScale = ContentScale.Fit,
+    contentScale: ContentScale = ContentScale.Crop,
     alignment: Alignment = Alignment.Center
 ): ResizePainter {
     return if (this is AnimatablePainter) {
@@ -89,7 +88,7 @@ fun Painter.resize(
  * @see com.github.panpf.sketch.compose.core.common.test.painter.ResizePainterTest.testPainterResize
  */
 @Deprecated("Use resize(size, contentScale, alignment) instead")
-fun Painter.resize(size: Size, scale: Scale = CENTER_CROP): ResizePainter {
+fun Painter.resize(size: Size, scale: Scale): ResizePainter {
     return if (this is AnimatablePainter) {
         ResizeAnimatablePainter(this, size, scale)
     } else {
@@ -106,7 +105,7 @@ fun Painter.resize(size: Size, scale: Scale = CENTER_CROP): ResizePainter {
 open class ResizePainter constructor(
     val painter: Painter,
     val size: Size,
-    val contentScale: ContentScale = ContentScale.Fit,
+    val contentScale: ContentScale = ContentScale.Crop,
     val alignment: Alignment = Alignment.Center,
 ) : Painter(), RememberObserver, SketchPainter {
 

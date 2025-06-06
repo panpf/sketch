@@ -17,6 +17,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
 * new: CrossfadePainter now supports contentScale and alignment
 * new: ResizePainter now supports contentScale and alignment
 * new: CrossfadeDrawable now supports scaleType
+* new: ResizeDrawable now supports scaleType
 
 # 4.1.0
 

@@ -15,7 +15,6 @@ import com.github.panpf.sketch.sample.resources.Res
 import com.github.panpf.sketch.sample.ui.util.scale
 import com.github.panpf.sketch.sample.ui.util.wrappedBackground
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.toScale
 
 class ResizeDrawableTestFragment : BaseDrawableTestFragment() {
 
@@ -51,12 +50,12 @@ class ResizeDrawableTestFragment : BaseDrawableTestFragment() {
             "Small" to ResizeDrawable(
                 drawable = smallDrawable,
                 size = containerSize,
-                scale = scaleType.toScale(),
+                scaleType = scaleType,
             ),
             "Big" to ResizeDrawable(
                 drawable = bigDrawable,
                 size = containerSize,
-                scale = scaleType.toScale(),
+                scaleType = scaleType,
             ),
         ).map {
             DrawableScaleType(

@@ -305,3 +305,12 @@ fun ScaleType.toScale(): Scale = when (this) {
     ScaleType.CENTER_CROP -> Scale.CENTER_CROP
     else -> Scale.FILL
 }
+
+@Suppress("REDUNDANT_ELSE_IN_WHEN")
+fun Scale.toScaleType(): ScaleType = when (this) {
+    Scale.START_CROP -> ScaleType.FIT_START
+    Scale.CENTER_CROP -> ScaleType.CENTER_CROP
+    Scale.END_CROP -> ScaleType.FIT_END
+    Scale.FILL -> ScaleType.FIT_XY
+    else -> ScaleType.FIT_CENTER
+}

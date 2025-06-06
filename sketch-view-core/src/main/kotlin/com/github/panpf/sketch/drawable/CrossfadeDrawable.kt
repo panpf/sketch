@@ -356,10 +356,10 @@ class CrossfadeDrawable @JvmOverloads constructor(
             scaleType = scaleType
         )
         drawable.setBounds(
-            /* left = */ targetBounds.left + drawableBounds.left,
-            /* top = */ targetBounds.top + drawableBounds.top,
-            /* right = */ targetBounds.left + drawableBounds.right,
-            /* bottom = */ targetBounds.top + drawableBounds.bottom
+            /* left = */ drawableBounds.left,
+            /* top = */ drawableBounds.top,
+            /* right = */ drawableBounds.right,
+            /* bottom = */ drawableBounds.bottom
         )
     }
 
