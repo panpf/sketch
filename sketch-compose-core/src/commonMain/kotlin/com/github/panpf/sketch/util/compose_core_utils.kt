@@ -105,9 +105,9 @@ fun toScale(contentScale: ContentScale, alignment: Alignment): Scale = when (con
 @Suppress("REDUNDANT_ELSE_IN_WHEN")
 @Stable
 fun fromScale(scale: Scale): Pair<ContentScale, Alignment> = when (scale) {
-    Scale.START_CROP -> ContentScale.Fit to Alignment.TopStart
-    Scale.CENTER_CROP -> ContentScale.Fit to Alignment.TopCenter
-    Scale.END_CROP -> ContentScale.Fit to Alignment.TopEnd
+    Scale.START_CROP -> ContentScale.Crop to Alignment.TopStart
+    Scale.CENTER_CROP -> ContentScale.Crop to Alignment.Center
+    Scale.END_CROP -> ContentScale.Crop to Alignment.TopEnd
     Scale.FILL -> ContentScale.FillBounds to Alignment.Center
     else -> ContentScale.Fit to Alignment.Center
 }

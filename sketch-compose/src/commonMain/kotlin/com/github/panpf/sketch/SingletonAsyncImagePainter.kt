@@ -94,7 +94,6 @@ fun rememberAsyncImagePainter(
  */
 @Composable
 @NonRestartableComposable
-@Deprecated("Please use a version containing the alignment parameter instead")
 fun rememberAsyncImagePainter(
     uri: String?,
     state: AsyncImageState = rememberAsyncImageState(),
@@ -175,7 +174,6 @@ fun rememberAsyncImagePainter(
  */
 @Composable
 @NonRestartableComposable
-@Deprecated("Please use a version containing the alignment parameter instead")
 fun rememberAsyncImagePainter(
     request: ImageRequest,
     state: AsyncImageState = rememberAsyncImageState(),

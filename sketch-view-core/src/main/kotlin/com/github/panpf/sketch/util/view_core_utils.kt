@@ -199,13 +199,11 @@ internal fun calculateBoundsWithScaleType(
     dstSize: Size,
     scaleType: ScaleType
 ): Rect {
-    if (srcSize.isEmpty || dstSize.isEmpty) {
-        return Rect(
-            left = 0,
-            top = 0,
-            right = srcSize.width.takeIf { it > 0 } ?: dstSize.width,
-            bottom = srcSize.height.takeIf { it > 0 } ?: dstSize.height
-        )
+    if (dstSize.isEmpty) {
+        return Rect(left = 0, top = 0, 0, bottom = 0)
+    }
+    if (srcSize.isEmpty) {
+        return Rect(left = 0, top = 0, right = dstSize.width, bottom = dstSize.height)
     }
 
     val widthScaleFactor: Float = dstSize.width.toFloat() / srcSize.width
@@ -263,13 +261,11 @@ fun calculateBoundsWithScaleAndAlignment(
     scaleFactor: PointF,
     alignment: Int, // -1: Start, 0: Center, 1: End
 ): Rect {
-    if (srcSize.isEmpty || dstSize.isEmpty) {
-        return Rect(
-            left = 0,
-            top = 0,
-            right = srcSize.width.takeIf { it > 0 } ?: dstSize.width,
-            bottom = srcSize.height.takeIf { it > 0 } ?: dstSize.height
-        )
+    if (dstSize.isEmpty) {
+        return Rect(left = 0, top = 0, 0, bottom = 0)
+    }
+    if (srcSize.isEmpty) {
+        return Rect(left = 0, top = 0, right = dstSize.width, bottom = dstSize.height)
     }
 
     val scaledWidth: Float = srcSize.width * scaleFactor.x
@@ -296,6 +292,12 @@ fun calculateBoundsWithScaleAndAlignment(
     )
 }
 
+
+/**
+ * Convert [ScaleType] to [Scale]
+ *
+ * @see com.github.panpf.sketch.view.core.test.util.ViewCoreUtilsTest.testToScale
+ */
 fun ScaleType.toScale(): Scale = when (this) {
     ScaleType.FIT_START -> Scale.START_CROP
     ScaleType.FIT_CENTER -> Scale.CENTER_CROP
@@ -306,6 +308,12 @@ fun ScaleType.toScale(): Scale = when (this) {
     else -> Scale.FILL
 }
 
+
+/**
+ * Convert [Scale] to [ScaleType]
+ *
+ * @see com.github.panpf.sketch.view.core.test.util.ViewCoreUtilsTest.testToScaleType
+ */
 @Suppress("REDUNDANT_ELSE_IN_WHEN")
 fun Scale.toScaleType(): ScaleType = when (this) {
     Scale.START_CROP -> ScaleType.FIT_START

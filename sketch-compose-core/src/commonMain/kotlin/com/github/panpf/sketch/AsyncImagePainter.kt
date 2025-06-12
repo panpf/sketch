@@ -113,7 +113,6 @@ fun rememberAsyncImagePainter(
  */
 @Composable
 @NonRestartableComposable
-@Deprecated("Please use a version containing the alignment parameter instead")
 fun rememberAsyncImagePainter(
     uri: String?,
     sketch: Sketch,
@@ -200,7 +199,6 @@ fun rememberAsyncImagePainter(
  */
 @Composable
 @NonRestartableComposable
-@Deprecated("Please use a version containing the alignment parameter instead")
 fun rememberAsyncImagePainter(
     request: ImageRequest,
     sketch: Sketch,
