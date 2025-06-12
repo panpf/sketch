@@ -26,9 +26,6 @@ import com.github.panpf.sketch.util.Key
 
 /**
  * A class to animate between a [Target]'s current drawable and the result of an image request.
- *
- * NOTE: A [Target] must implement [TransitionTarget] to support applying [Transition]s.
- * If the [Target] does not implement [TransitionTarget], any [Transition]s will be ignored.
  */
 fun interface Transition {
 
@@ -54,7 +51,7 @@ fun interface Transition {
         fun create(
             sketch: Sketch,
             request: ImageRequest,
-            target: TransitionTarget,
+            target: Target,
             result: ImageResult,
         ): Transition?
 

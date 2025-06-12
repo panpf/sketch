@@ -6,7 +6,10 @@ import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.target.ViewTarget
 
-class TestViewTarget(override val view: ImageView?) : ViewTarget<ImageView> {
+class TestViewTarget(
+    override val view: ImageView? = null,
+    override val scaleType: ImageView.ScaleType = ImageView.ScaleType.FIT_CENTER
+) : ViewTarget<ImageView> {
 
     override var drawable: Drawable?
         get() = view?.drawable

@@ -18,10 +18,10 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.MediumImageViewTestActivity
 import com.github.panpf.sketch.test.utils.SizeColorDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
-import com.github.panpf.sketch.test.utils.TestTransitionViewTarget
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.view.core.test.target.TestViewTarget
 import com.github.panpf.tools4a.test.ktx.getActivitySync
 import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.test.runTest
@@ -67,7 +67,7 @@ class ViewResizeOnDrawHelperTest {
 
         helper.resize(
             request = ImageRequest(context, "http://sample.com/sample.jpeg") {
-                target(TestTransitionViewTarget())
+                target(TestViewTarget())
             },
             size = Size(200, 200),
             image = SizeColorDrawable(Color.RED, Size(300, 500)).asImage()
@@ -84,7 +84,7 @@ class ViewResizeOnDrawHelperTest {
 
         helper.resize(
             request = ImageRequest(context, "http://sample.com/sample.jpeg") {
-                target(TestTransitionViewTarget(ImageView.ScaleType.FIT_XY))
+                target(TestViewTarget(scaleType = ImageView.ScaleType.FIT_XY))
             },
             size = Size(200, 200),
             image = SizeColorDrawable(Color.RED, Size(300, 1500)).asImage()

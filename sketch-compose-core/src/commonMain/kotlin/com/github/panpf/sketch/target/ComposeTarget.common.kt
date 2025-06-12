@@ -17,7 +17,9 @@
 
 package com.github.panpf.sketch.target
 
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
@@ -26,9 +28,11 @@ import com.github.panpf.sketch.request.internal.ComposeRequestDelegate
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.resize.ComposeResizeOnDrawHelper
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper
+import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.transition.ComposeCrossfadeTransition
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
+import com.github.panpf.sketch.util.toScale
 import kotlinx.coroutines.Job
 
 /**
@@ -43,8 +47,20 @@ interface ComposeTarget : Target {
      */
     val painter: Painter?
 
+    /**
+     * The [ContentScale] of the component that this target is applied to.
+     */
+    val contentScale: ContentScale
+
+    /**
+     * The [Alignment] of the component that this target is applied to.
+     */
+    val alignment: Alignment
+
     override val currentImage: Image?
         get() = painter?.asImage()
+
+    override fun getScaleDecider(): ScaleDecider? = ScaleDecider(toScale(contentScale, alignment))
 
 
     override fun newRequestDelegate(

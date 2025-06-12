@@ -31,6 +31,7 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.AttachObserver
 import com.github.panpf.sketch.transition.TransitionComposeTarget
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.fitScale
 
 /**
  * An opinionated [ComposeTarget] that simplifies updating the [Image] attached to a Compose Component
@@ -48,6 +49,10 @@ abstract class GenericComposeTarget : ComposeTarget, TransitionComposeTarget,
     internal var isAttached = false
 
     open val filterQuality: FilterQuality = DrawScope.DefaultFilterQuality
+
+    @Deprecated("Please use contentScale instead and will be deleted in the future")
+    override val fitScale: Boolean
+        get() = contentScale.fitScale
 
     override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) =
         updateImage(request, placeholder)

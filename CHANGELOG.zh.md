@@ -9,9 +9,9 @@
 
 # new
 
-* change: 弃用带有keepContentNoneStartOnDraw 参数的 AsyncImage
-* change: 弃用 TransitionTarget 的 fitScale 属性，新增 TransitionViewTarget.scaleType 和
-  TransitionComposeTarget.contentsScale 代替 fitScale
+* change: 弃用带有 keepContentNoneStartOnDraw 参数的 AsyncImage
+* change: 弃用 TransitionTarget 的 fitScale 属性，新增 ViewTarget.scaleType 和
+  ComposeTarget.contentsScale 以及 ComposeTarget.alignment 代替 fitScale
 * new: CrossfadePainter 现在支持 contentScale 和 alignment
 * new: ResizePainter 现在支持 contentScale 和 alignment
 * new: CrossfadeDrawable 现在支持 scaleType

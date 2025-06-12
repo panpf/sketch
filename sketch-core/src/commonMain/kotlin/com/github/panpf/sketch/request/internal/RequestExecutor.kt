@@ -27,7 +27,6 @@ import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.resize.resizeOnDraw
 import com.github.panpf.sketch.target.Target
-import com.github.panpf.sketch.transition.TransitionTarget
 import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.awaitStarted
 import com.github.panpf.sketch.util.requiredMainThread
@@ -217,7 +216,7 @@ class RequestExecutor constructor(val sketch: Sketch) {
             return
         }
 
-        if (target !is TransitionTarget) {
+        if (target == null) {
             setImage()
             return
         }

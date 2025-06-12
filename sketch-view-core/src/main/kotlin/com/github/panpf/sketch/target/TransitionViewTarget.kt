@@ -18,32 +18,17 @@
 package com.github.panpf.sketch.target
 
 import android.graphics.drawable.Drawable
-import android.widget.ImageView
-import android.widget.ImageView.ScaleType
-import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.transition.TransitionTarget
-import com.github.panpf.sketch.util.fitScale
-import com.github.panpf.sketch.util.toScale
 
 /**
  * A [Target] that supports applying [Transition]s.
  */
+@Deprecated("Please use ViewTarget instead and will be deleted in the future")
 interface TransitionViewTarget : TransitionTarget {
 
     /**
      * The current [Drawable].
      */
     val drawable: Drawable?
-
-    /**
-     * The [ScaleType] of the [ImageView] that this target is applied to.
-     */
-    val scaleType: ScaleType
-
-    @Deprecated("Please use scaleType instead and will be deleted in the future")
-    override val fitScale: Boolean
-        get() = scaleType.fitScale
-
-    override fun getScaleDecider(): ScaleDecider? = ScaleDecider(scaleType.toScale())
 }

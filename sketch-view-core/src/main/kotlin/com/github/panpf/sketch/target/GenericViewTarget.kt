@@ -32,6 +32,7 @@ import com.github.panpf.sketch.request.internal.AttachObserver
 import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.request.internal.requestManager
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.fitScale
 
 /**
  * An opinionated [ViewTarget] that simplifies updating the [Image] attached to a [View]
@@ -49,6 +50,10 @@ abstract class GenericViewTarget<T : View>(view: T) : ViewTarget<T>, TransitionV
     internal var isAttached = false
 
     private val requestManager = view.requestManager
+
+    @Deprecated("Please use scaleType instead and will be deleted in the future")
+    override val fitScale: Boolean
+        get() = scaleType.fitScale
 
     override fun getRequestManager(): RequestManager = requestManager
 

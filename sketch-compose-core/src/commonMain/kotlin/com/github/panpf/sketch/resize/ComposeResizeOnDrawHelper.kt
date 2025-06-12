@@ -21,7 +21,7 @@ import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.asPainter
 import com.github.panpf.sketch.painter.resize
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.transition.TransitionComposeTarget
+import com.github.panpf.sketch.target.ComposeTarget
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toSize
 
@@ -35,7 +35,7 @@ data object ComposeResizeOnDrawHelper : ResizeOnDrawHelper {
     override val key: String = "ComposeResizeOnDrawHelper"
 
     override fun resize(request: ImageRequest, size: Size, image: Image): Image {
-        val target = (request.target as? TransitionComposeTarget) ?: return image
+        val target = (request.target as? ComposeTarget) ?: return image
         val painter = image.asPainter()
         val composeSize = size.toSize()
         val resizePainter = painter.resize(

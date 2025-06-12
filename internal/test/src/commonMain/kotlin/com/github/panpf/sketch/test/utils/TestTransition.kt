@@ -19,8 +19,8 @@ package com.github.panpf.sketch.test.utils
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.transition.Transition
-import com.github.panpf.sketch.transition.TransitionTarget
 
 class TestTransition : Transition {
 
@@ -35,7 +35,7 @@ class TestTransition : Transition {
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
-            target: TransitionTarget,
+            target: Target,
             result: ImageResult,
         ): Transition {
             return TestTransition()

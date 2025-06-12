@@ -21,6 +21,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
+import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.util.asOrNull
 import kotlin.jvm.JvmOverloads
 
@@ -29,9 +30,7 @@ import kotlin.jvm.JvmOverloads
  *
  * @see com.github.panpf.sketch.core.common.test.transition.CrossfadeTransitionTest
  */
-class CrossfadeTransition(
-    val wrappedTransition: Transition
-) : Transition by wrappedTransition {
+class CrossfadeTransition(val wrappedTransition: Transition) : Transition by wrappedTransition {
 
     companion object {
         const val DEFAULT_DURATION_MILLIS: Int = Transition.DEFAULT_DURATION
@@ -57,7 +56,7 @@ class CrossfadeTransition(
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
-            target: TransitionTarget,
+            target: Target,
             result: ImageResult,
         ): Transition? {
             val fromMemoryCache = result.asOrNull<ImageResult.Success>()?.dataFrom == MEMORY_CACHE

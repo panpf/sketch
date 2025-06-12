@@ -21,7 +21,7 @@ import com.github.panpf.sketch.asDrawable
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.drawable.resize
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.target.TransitionViewTarget
+import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.util.Size
 
 /**
@@ -34,7 +34,7 @@ data object ViewResizeOnDrawHelper : ResizeOnDrawHelper {
     override val key: String = "ViewResizeOnDrawHelper"
 
     override fun resize(request: ImageRequest, size: Size, image: Image): Image {
-        val target = (request.target as? TransitionViewTarget) ?: return image
+        val target = (request.target as? ViewTarget<*>) ?: return image
         val drawable = image.asDrawable(request.context.resources)
         val resizeDrawable = drawable.resize(size, target.scaleType)
         return resizeDrawable.asImage()

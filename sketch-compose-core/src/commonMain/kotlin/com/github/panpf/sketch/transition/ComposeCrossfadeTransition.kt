@@ -28,6 +28,8 @@ import com.github.panpf.sketch.painter.CrossfadePainter
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
+import com.github.panpf.sketch.target.ComposeTarget
+import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.util.asOrNull
 import kotlin.jvm.JvmOverloads
 
@@ -39,7 +41,7 @@ import kotlin.jvm.JvmOverloads
 class ComposeCrossfadeTransition constructor(
     private val sketch: Sketch,
     private val request: ImageRequest,
-    private val target: TransitionComposeTarget,
+    private val target: ComposeTarget,
     private val result: ImageResult,
     val contentScale: ContentScale = ContentScale.Fit,
     val alignment: Alignment = Alignment.Center,
@@ -52,7 +54,7 @@ class ComposeCrossfadeTransition constructor(
     constructor(
         sketch: Sketch,
         request: ImageRequest,
-        target: TransitionComposeTarget,
+        target: ComposeTarget,
         result: ImageResult,
         durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
         fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
@@ -127,10 +129,10 @@ class ComposeCrossfadeTransition constructor(
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
-            target: TransitionTarget,
+            target: Target,
             result: ImageResult,
         ): Transition? {
-            if (target !is TransitionComposeTarget) {
+            if (target !is ComposeTarget) {
                 return null
             }
             val fromMemoryCache = result.asOrNull<ImageResult.Success>()?.dataFrom == MEMORY_CACHE

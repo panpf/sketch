@@ -25,7 +25,8 @@ import com.github.panpf.sketch.drawable.CrossfadeDrawable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
-import com.github.panpf.sketch.target.TransitionViewTarget
+import com.github.panpf.sketch.target.Target
+import com.github.panpf.sketch.target.ViewTarget
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.fitScale
 
@@ -40,7 +41,7 @@ import com.github.panpf.sketch.util.fitScale
 class ViewCrossfadeTransition @JvmOverloads constructor(
     private val sketch: Sketch,
     private val request: ImageRequest,
-    private val target: TransitionViewTarget,
+    private val target: ViewTarget<*>,
     private val result: ImageResult,
     val scaleType: ScaleType = ScaleType.FIT_CENTER,
     val durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
@@ -53,7 +54,7 @@ class ViewCrossfadeTransition @JvmOverloads constructor(
     constructor(
         sketch: Sketch,
         request: ImageRequest,
-        target: TransitionViewTarget,
+        target: ViewTarget<*>,
         result: ImageResult,
         durationMillis: Int = CrossfadeTransition.DEFAULT_DURATION_MILLIS,
         fadeStart: Boolean = CrossfadeTransition.DEFAULT_FADE_START,
@@ -126,10 +127,10 @@ class ViewCrossfadeTransition @JvmOverloads constructor(
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
-            target: TransitionTarget,
+            target: Target,
             result: ImageResult,
         ): Transition? {
-            if (target !is TransitionViewTarget) {
+            if (target !is ViewTarget<*>) {
                 return null
             }
             val fromMemoryCache = result.asOrNull<ImageResult.Success>()?.dataFrom == MEMORY_CACHE

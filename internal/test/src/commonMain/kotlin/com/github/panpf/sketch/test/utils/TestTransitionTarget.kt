@@ -27,15 +27,12 @@ import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
-import com.github.panpf.sketch.transition.TransitionTarget
 import kotlinx.coroutines.Job
 
-class TestTransitionTarget : Target, TransitionTarget {
+class TestTransitionTarget : Target {
 
     var image: Image? = null
         private set
-
-    override val fitScale: Boolean get() = true
 
     override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) {
         this.image = placeholder

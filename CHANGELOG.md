@@ -12,8 +12,8 @@ Translations: [简体中文](CHANGELOG.zh.md)
 # new
 
 * change: Deprecate AsyncImage with keepContentNoneStartOnDraw parameter
-* change: Deprecate the fitScale property of TransitionTarget, adding TransitionViewTarget.scaleType
-  and TransitionComposeTarget.contentsScale instead of fitScale
+* change: Deprecate the fitScale property of TransitionTarget, adding ViewTarget.scaleType
+  and ComposeTarget.contentsScale and ComposeTarget.alignment instead of fitScale
 * new: CrossfadePainter now supports contentScale and alignment
 * new: ResizePainter now supports contentScale and alignment
 * new: CrossfadeDrawable now supports scaleType

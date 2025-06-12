@@ -21,14 +21,14 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
+import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
-import com.github.panpf.sketch.transition.TransitionTarget
 
 class TestCrossfadeTransition(
     private val sketch: Sketch,
     private val request: ImageRequest,
-    val target: TransitionTarget,
+    val target: Target,
     val result: ImageResult
 ) : Transition {
 
@@ -61,7 +61,7 @@ class TestCrossfadeTransition(
         override fun create(
             sketch: Sketch,
             request: ImageRequest,
-            target: TransitionTarget,
+            target: Target,
             result: ImageResult,
         ): Transition? {
             if (target !is TestTransitionTarget) {

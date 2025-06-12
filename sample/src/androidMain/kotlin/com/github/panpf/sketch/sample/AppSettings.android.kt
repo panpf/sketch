@@ -92,7 +92,7 @@ actual class AppSettings actual constructor(val context: PlatformContext) {
     // -------------------------------------- list image --------------------------------------
 
     actual val listContentScaleName: SettingsStateFlow<String> by lazy {
-        stringSettingsStateFlow(context, "listContentScaleName", "Fit")
+        stringSettingsStateFlow(context, "listContentScaleName", "Crop")
     }
     actual val listContentScale: StateFlow<ContentScale> =
         listContentScaleName.stateMap { ContentScale.valueOf(it) }

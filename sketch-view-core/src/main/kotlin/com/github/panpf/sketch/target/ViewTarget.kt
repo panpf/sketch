@@ -19,6 +19,8 @@ package com.github.panpf.sketch.target
 
 import android.graphics.drawable.Drawable
 import android.view.View
+import android.widget.ImageView
+import android.widget.ImageView.ScaleType
 import androidx.lifecycle.LifecycleObserver
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
@@ -33,6 +35,7 @@ import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.internal.RequestDelegate
 import com.github.panpf.sketch.request.internal.ViewRequestDelegate
 import com.github.panpf.sketch.resize.ResizeOnDrawHelper
+import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.resize.ViewResizeOnDrawHelper
 import com.github.panpf.sketch.resize.internal.ViewSizeResolver
@@ -40,6 +43,7 @@ import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
 import com.github.panpf.sketch.transition.ViewCrossfadeTransition
 import com.github.panpf.sketch.util.asOrNull
+import com.github.panpf.sketch.util.toScale
 import kotlinx.coroutines.Job
 
 /**
@@ -63,8 +67,15 @@ interface ViewTarget<T : View> : Target {
      */
     val drawable: Drawable?
 
+    /**
+     * The [ScaleType] of the [ImageView] that this target is applied to.
+     */
+    val scaleType: ScaleType
+
     override val currentImage: Image?
         get() = drawable?.asImage()
+
+    override fun getScaleDecider(): ScaleDecider? = ScaleDecider(scaleType.toScale())
 
 
     override fun newRequestDelegate(
