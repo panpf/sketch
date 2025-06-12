@@ -205,7 +205,7 @@ class AsyncImageStateTest {
     }
 
     @Test
-    fun testContentScale() {
+    fun testContentScaleAndAlignment() {
         val context = getTestContext()
         val asyncImageState = AsyncImageState(
             context = context,
@@ -216,6 +216,10 @@ class AsyncImageStateTest {
         assertEquals(
             expected = null,
             actual = asyncImageState.contentScale
+        )
+        assertEquals(
+            expected = null,
+            actual = asyncImageState.alignment
         )
         assertEquals(
             expected = true,
@@ -337,9 +341,19 @@ class AsyncImageStateTest {
             expected = ScaleDecider(Scale.FILL),
             actual = asyncImageState.target.getScaleDecider()
         )
-    }
 
-    // TODO test alignment
+        asyncImageState.alignment = Alignment.TopStart
+        assertEquals(
+            expected = Alignment.TopStart,
+            actual = asyncImageState.alignment
+        )
+
+        asyncImageState.alignment = Alignment.BottomEnd
+        assertEquals(
+            expected = Alignment.BottomEnd,
+            actual = asyncImageState.alignment
+        )
+    }
 
     @Test
     fun testFilterQuality() {
@@ -813,11 +827,11 @@ class AsyncImageStateTest {
             val bitmap4 =
                 asyncImageState.result!!.asOrThrow<ImageResult.Success>().image.asOrThrow<BitmapImage>().bitmap
 
-            @Suppress("UNUSED_VARIABLE") val bitmap0Preview = bitmap0.toPreviewBitmap()
-            @Suppress("UNUSED_VARIABLE") val bitmap1Preview = bitmap1.toPreviewBitmap()
-            @Suppress("UNUSED_VARIABLE") val bitmap2Preview = bitmap2.toPreviewBitmap()
-            @Suppress("UNUSED_VARIABLE") val bitmap3Preview = bitmap3.toPreviewBitmap()
-            @Suppress("UNUSED_VARIABLE") val bitmap4Preview = bitmap3.toPreviewBitmap()
+            @Suppress("UNUSED_VARIABLE", "unused") val bitmap0Preview = bitmap0.toPreviewBitmap()
+            @Suppress("UNUSED_VARIABLE", "unused") val bitmap1Preview = bitmap1.toPreviewBitmap()
+            @Suppress("UNUSED_VARIABLE", "unused") val bitmap2Preview = bitmap2.toPreviewBitmap()
+            @Suppress("UNUSED_VARIABLE", "unused") val bitmap3Preview = bitmap3.toPreviewBitmap()
+            @Suppress("UNUSED_VARIABLE", "unused") val bitmap4Preview = bitmap3.toPreviewBitmap()
             bitmap0.similarity(bitmap1).apply {
                 assertTrue(actual = this == 0, message = "similarity=$this")
             }

@@ -191,63 +191,63 @@ class AsyncImageTargetTest {
     }
 
     @Test
-    fun testContentScale() {
+    fun testContentScaleAndAlignment() {
         val context = getTestContext()
         val target = AsyncImageTarget(
             context = context,
             lifecycle = TestLifecycle(),
             imageOptions = ImageOptions(),
         )
+
         assertEquals(expected = ContentScale.Fit, actual = target.contentScale)
         assertEquals(expected = null, actual = target.contentScaleMutableState.value)
+
+        assertEquals(expected = Alignment.Center, actual = target.alignment)
+        assertEquals(expected = null, actual = target.alignmentMutableState.value)
+
         assertEquals(expected = true, actual = target.fitScale)
+
 
         target.contentScaleMutableState.value = ContentScale.Inside
         assertEquals(expected = ContentScale.Inside, actual = target.contentScale)
         assertEquals(expected = ContentScale.Inside, actual = target.contentScaleMutableState.value)
-        assertEquals(expected = true, actual = target.fitScale)
-
-        target.contentScaleMutableState.value = ContentScale.Fit
-        assertEquals(expected = ContentScale.Fit, actual = target.contentScale)
-        assertEquals(expected = ContentScale.Fit, actual = target.contentScaleMutableState.value)
-        assertEquals(expected = true, actual = target.fitScale)
-
-        target.contentScaleMutableState.value = ContentScale.Crop
-        assertEquals(expected = ContentScale.Crop, actual = target.contentScale)
-        assertEquals(expected = ContentScale.Crop, actual = target.contentScaleMutableState.value)
-        assertEquals(expected = false, actual = target.fitScale)
 
         target.contentScaleMutableState.value = ContentScale.None
         assertEquals(expected = ContentScale.None, actual = target.contentScale)
         assertEquals(expected = ContentScale.None, actual = target.contentScaleMutableState.value)
+
+
+        target.alignmentMutableState.value = Alignment.TopStart
+        assertEquals(expected = Alignment.TopStart, actual = target.alignment)
+        assertEquals(expected = Alignment.TopStart, actual = target.alignmentMutableState.value)
+
+        target.alignmentMutableState.value = Alignment.BottomEnd
+        assertEquals(expected = Alignment.BottomEnd, actual = target.alignment)
+        assertEquals(expected = Alignment.BottomEnd, actual = target.alignmentMutableState.value)
+
+
+        target.contentScaleMutableState.value = ContentScale.Inside
+        assertEquals(expected = true, actual = target.fitScale)
+
+        target.contentScaleMutableState.value = ContentScale.Fit
+        assertEquals(expected = true, actual = target.fitScale)
+
+        target.contentScaleMutableState.value = ContentScale.Crop
+        assertEquals(expected = false, actual = target.fitScale)
+
+        target.contentScaleMutableState.value = ContentScale.None
         assertEquals(expected = false, actual = target.fitScale)
 
         target.contentScaleMutableState.value = ContentScale.FillWidth
-        assertEquals(expected = ContentScale.FillWidth, actual = target.contentScale)
-        assertEquals(
-            expected = ContentScale.FillWidth,
-            actual = target.contentScaleMutableState.value
-        )
         assertEquals(expected = false, actual = target.fitScale)
 
         target.contentScaleMutableState.value = ContentScale.FillHeight
-        assertEquals(expected = ContentScale.FillHeight, actual = target.contentScale)
-        assertEquals(
-            expected = ContentScale.FillHeight,
-            actual = target.contentScaleMutableState.value
-        )
         assertEquals(expected = false, actual = target.fitScale)
 
         target.contentScaleMutableState.value = ContentScale.FillBounds
-        assertEquals(expected = ContentScale.FillBounds, actual = target.contentScale)
-        assertEquals(
-            expected = ContentScale.FillBounds,
-            actual = target.contentScaleMutableState.value
-        )
         assertEquals(expected = false, actual = target.fitScale)
     }
 
-    // TODO teest alignment
     @Test
     fun testFilterQuality() {
         val (context, sketch) = getTestContextAndSketch()

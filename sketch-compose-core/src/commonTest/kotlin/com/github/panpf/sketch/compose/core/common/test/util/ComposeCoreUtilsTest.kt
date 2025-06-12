@@ -124,9 +124,9 @@ class ComposeCoreUtilsTest {
     @Test
     fun testFromScale() {
         assertEquals(ContentScale.FillBounds to Alignment.Center, fromScale(Scale.FILL))
-        assertEquals(ContentScale.Fit to Alignment.TopStart, fromScale(Scale.START_CROP))
-        assertEquals(ContentScale.Fit to Alignment.TopCenter, fromScale(Scale.CENTER_CROP))
-        assertEquals(ContentScale.Fit to Alignment.TopEnd, fromScale(Scale.END_CROP))
+        assertEquals(ContentScale.Crop to Alignment.TopStart, fromScale(Scale.START_CROP))
+        assertEquals(ContentScale.Crop to Alignment.Center, fromScale(Scale.CENTER_CROP))
+        assertEquals(ContentScale.Crop to Alignment.TopEnd, fromScale(Scale.END_CROP))
     }
 
     @Test

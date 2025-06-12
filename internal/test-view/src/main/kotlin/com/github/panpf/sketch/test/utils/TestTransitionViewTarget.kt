@@ -30,12 +30,11 @@ import com.github.panpf.sketch.request.internal.RequestManager
 import com.github.panpf.sketch.target.TransitionViewTarget
 import kotlinx.coroutines.Job
 
-class TestTransitionViewTarget : TransitionViewTarget {
+class TestTransitionViewTarget(
+    override val scaleType: ImageView.ScaleType = ImageView.ScaleType.FIT_CENTER
+) : TransitionViewTarget {
 
     override var drawable: Drawable? = null
-
-    override val scaleType: ImageView.ScaleType
-        get() = ImageView.ScaleType.FIT_CENTER
 
     override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) {
         this.drawable = placeholder?.asDrawable()

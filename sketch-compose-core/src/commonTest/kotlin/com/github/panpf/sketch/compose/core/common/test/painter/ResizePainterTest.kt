@@ -17,7 +17,6 @@ import com.github.panpf.sketch.painter.resize
 import com.github.panpf.sketch.painter.toLogString
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.test.utils.TestAnimatablePainter
-import com.github.panpf.sketch.test.utils.asAnimatablePainter
 import com.github.panpf.sketch.test.utils.createBitmap
 import com.github.panpf.sketch.test.utils.toComposeBitmap
 import com.github.panpf.sketch.util.Size
@@ -38,14 +37,19 @@ class ResizePainterTest {
                     painter = ColorPainter(Color.Blue),
                     size = Size(100, 100).toSize()
                 ).apply {
-                    assertEquals(
-                        expected = ResizePainter(
-                            painter = ColorPainter(Color.Blue),
-                            size = Size(100, 100).toSize(),
-                            scale = Scale.CENTER_CROP
-                        ),
-                        actual = this
-                    )
+                    assertTrue(this !is ResizeAnimatablePainter)
+                    assertEquals(expected = ContentScale.Crop, actual = this.contentScale)
+                    assertEquals(expected = Alignment.Center, actual = this.alignment)
+                }
+                rememberResizePainter(
+                    painter = TestAnimatablePainter(ColorPainter(Color.Blue)),
+                    size = Size(100, 100).toSize(),
+                    contentScale = ContentScale.Fit,
+                    alignment = Alignment.BottomEnd
+                ).apply {
+                    assertTrue(this is ResizeAnimatablePainter)
+                    assertEquals(expected = ContentScale.Fit, actual = this.contentScale)
+                    assertEquals(expected = Alignment.BottomEnd, actual = this.alignment)
                 }
 
                 rememberResizePainter(
@@ -53,47 +57,145 @@ class ResizePainterTest {
                     size = Size(100, 100).toSize(),
                     scale = Scale.START_CROP
                 ).apply {
-                    assertEquals(
-                        expected = ResizePainter(
-                            painter = ColorPainter(Color.Blue),
-                            size = Size(100, 100).toSize(),
-                            scale = Scale.START_CROP
-                        ),
-                        actual = this
-                    )
+                    assertTrue(this !is ResizeAnimatablePainter)
+                    assertEquals(expected = ContentScale.Crop, actual = this.contentScale)
+                    assertEquals(expected = Alignment.TopStart, actual = this.alignment)
                 }
-
+                rememberResizePainter(
+                    painter = ColorPainter(Color.Blue),
+                    size = Size(100, 100).toSize(),
+                    scale = Scale.CENTER_CROP
+                ).apply {
+                    assertTrue(this !is ResizeAnimatablePainter)
+                    assertEquals(expected = ContentScale.Crop, actual = this.contentScale)
+                    assertEquals(expected = Alignment.Center, actual = this.alignment)
+                }
+                rememberResizePainter(
+                    painter = ColorPainter(Color.Blue),
+                    size = Size(100, 100).toSize(),
+                    scale = Scale.END_CROP
+                ).apply {
+                    assertTrue(this !is ResizeAnimatablePainter)
+                    assertEquals(expected = ContentScale.Crop, actual = this.contentScale)
+                    assertEquals(expected = Alignment.TopEnd, actual = this.alignment)
+                }
                 rememberResizePainter(
                     painter = TestAnimatablePainter(ColorPainter(Color.Blue)),
                     size = Size(100, 100).toSize(),
-                    scale = Scale.START_CROP
+                    scale = Scale.FILL
                 ).apply {
-                    assertEquals(
-                        expected = ResizeAnimatablePainter(
-                            painter = TestAnimatablePainter(ColorPainter(Color.Blue)),
-                            size = Size(100, 100).toSize(),
-                            scale = Scale.START_CROP
-                        ),
-                        actual = this
-                    )
+                    assertTrue(this is ResizeAnimatablePainter)
+                    assertEquals(expected = ContentScale.FillBounds, actual = this.contentScale)
+                    assertEquals(expected = Alignment.Center, actual = this.alignment)
                 }
             }
         }
-
-        // TODO test contentScale and alignment
     }
 
     @Test
     fun testPainterResize() {
-        ColorPainter(Color.Green).resize(Size(100, 100).toSize()).apply {
+        ColorPainter(Color.Blue).resize(
+            size = Size(100, 100).toSize()
+        ).apply {
             assertTrue(this !is ResizeAnimatablePainter)
+            assertEquals(expected = ContentScale.Crop, actual = this.contentScale)
+            assertEquals(expected = Alignment.Center, actual = this.alignment)
         }
-
-        ColorPainter(Color.Green).asAnimatablePainter().resize(Size(100, 100).toSize()).apply {
+        TestAnimatablePainter(ColorPainter(Color.Blue)).resize(
+            size = Size(100, 100).toSize(),
+            contentScale = ContentScale.Fit,
+            alignment = Alignment.BottomEnd
+        ).apply {
             assertTrue(this is ResizeAnimatablePainter)
+            assertEquals(expected = ContentScale.Fit, actual = this.contentScale)
+            assertEquals(expected = Alignment.BottomEnd, actual = this.alignment)
         }
 
-        // TODO test contentScale and alignment
+        ColorPainter(Color.Blue).resize(
+            size = Size(100, 100).toSize(),
+            scale = Scale.START_CROP
+        ).apply {
+            assertTrue(this !is ResizeAnimatablePainter)
+            assertEquals(expected = ContentScale.Crop, actual = this.contentScale)
+            assertEquals(expected = Alignment.TopStart, actual = this.alignment)
+        }
+        ColorPainter(Color.Blue).resize(
+            size = Size(100, 100).toSize(),
+            scale = Scale.CENTER_CROP
+        ).apply {
+            assertTrue(this !is ResizeAnimatablePainter)
+            assertEquals(expected = ContentScale.Crop, actual = this.contentScale)
+            assertEquals(expected = Alignment.Center, actual = this.alignment)
+        }
+        ColorPainter(Color.Blue).resize(
+            size = Size(100, 100).toSize(),
+            scale = Scale.END_CROP
+        ).apply {
+            assertTrue(this !is ResizeAnimatablePainter)
+            assertEquals(expected = ContentScale.Crop, actual = this.contentScale)
+            assertEquals(expected = Alignment.TopEnd, actual = this.alignment)
+        }
+        TestAnimatablePainter(ColorPainter(Color.Blue)).resize(
+            size = Size(100, 100).toSize(),
+            scale = Scale.FILL
+        ).apply {
+            assertTrue(this is ResizeAnimatablePainter)
+            assertEquals(expected = ContentScale.FillBounds, actual = this.contentScale)
+            assertEquals(expected = Alignment.Center, actual = this.alignment)
+        }
+    }
+
+    @Test
+    fun testConstructor() {
+        ResizePainter(
+            painter = ColorPainter(Color.Blue),
+            size = Size(100, 100).toSize()
+        ).apply {
+            assertEquals(expected = ContentScale.Crop, actual = this.contentScale)
+            assertEquals(expected = Alignment.Center, actual = this.alignment)
+        }
+        ResizePainter(
+            painter = TestAnimatablePainter(ColorPainter(Color.Blue)),
+            size = Size(100, 100).toSize(),
+            contentScale = ContentScale.Fit,
+            alignment = Alignment.BottomEnd
+        ).apply {
+            assertEquals(expected = ContentScale.Fit, actual = this.contentScale)
+            assertEquals(expected = Alignment.BottomEnd, actual = this.alignment)
+        }
+
+        ResizePainter(
+            painter = ColorPainter(Color.Blue),
+            size = Size(100, 100).toSize(),
+            scale = Scale.START_CROP
+        ).apply {
+            assertEquals(expected = ContentScale.Crop, actual = this.contentScale)
+            assertEquals(expected = Alignment.TopStart, actual = this.alignment)
+        }
+        ResizePainter(
+            painter = ColorPainter(Color.Blue),
+            size = Size(100, 100).toSize(),
+            scale = Scale.CENTER_CROP
+        ).apply {
+            assertEquals(expected = ContentScale.Crop, actual = this.contentScale)
+            assertEquals(expected = Alignment.Center, actual = this.alignment)
+        }
+        ResizePainter(
+            painter = ColorPainter(Color.Blue),
+            size = Size(100, 100).toSize(),
+            scale = Scale.END_CROP
+        ).apply {
+            assertEquals(expected = ContentScale.Crop, actual = this.contentScale)
+            assertEquals(expected = Alignment.TopEnd, actual = this.alignment)
+        }
+        ResizePainter(
+            painter = TestAnimatablePainter(ColorPainter(Color.Blue)),
+            size = Size(100, 100).toSize(),
+            scale = Scale.FILL
+        ).apply {
+            assertEquals(expected = ContentScale.FillBounds, actual = this.contentScale)
+            assertEquals(expected = Alignment.Center, actual = this.alignment)
+        }
     }
 
     @Test
@@ -178,7 +280,7 @@ class ResizePainterTest {
             size = androidx.compose.ui.geometry.Size(500f, 300f),
         ).apply {
             assertEquals(
-                "ResizePainter(painter=${bitmapPainter.toLogString()}, size=500.0x300.0, contentScale=Fit, alignment=Center)",
+                "ResizePainter(painter=${bitmapPainter.toLogString()}, size=500.0x300.0, contentScale=Crop, alignment=Center)",
                 toString()
             )
         }

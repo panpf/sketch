@@ -22,14 +22,14 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.drawable.ResizeAnimatableDrawable
 import com.github.panpf.sketch.drawable.asEquitable
 import com.github.panpf.sketch.drawable.internal.AnimatableCallbackHelper
-import com.github.panpf.sketch.resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.resize.Scale.START_CROP
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.test.utils.TestAnimatable2CompatDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatable2Drawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
@@ -57,7 +57,52 @@ import kotlin.test.assertTrue
 @RunWith(AndroidJUnit4::class)
 class ResizeAnimatableDrawableTest {
 
-    // TODO test scaleType
+    @Test
+    fun testConstructor() {
+        ResizeAnimatableDrawable(
+            drawable = TestAnimatableDrawable(ColorDrawable(Color.YELLOW)),
+            size = Size(100, 100)
+        ).apply {
+            assertEquals(ImageView.ScaleType.CENTER_CROP, scaleType)
+        }
+
+        ResizeAnimatableDrawable(
+            drawable = TestAnimatableDrawable(ColorDrawable(Color.YELLOW)),
+            size = Size(100, 100),
+            scaleType = ImageView.ScaleType.FIT_XY
+        ).apply {
+            assertEquals(ImageView.ScaleType.FIT_XY, scaleType)
+        }
+
+        ResizeAnimatableDrawable(
+            drawable = TestAnimatableDrawable(ColorDrawable(Color.YELLOW)),
+            size = Size(100, 100),
+            scale = Scale.START_CROP
+        ).apply {
+            assertEquals(ImageView.ScaleType.FIT_START, scaleType)
+        }
+        ResizeAnimatableDrawable(
+            drawable = TestAnimatableDrawable(ColorDrawable(Color.YELLOW)),
+            size = Size(100, 100),
+            scale = Scale.CENTER_CROP
+        ).apply {
+            assertEquals(ImageView.ScaleType.CENTER_CROP, scaleType)
+        }
+        ResizeAnimatableDrawable(
+            drawable = TestAnimatableDrawable(ColorDrawable(Color.YELLOW)),
+            size = Size(100, 100),
+            scale = Scale.END_CROP
+        ).apply {
+            assertEquals(ImageView.ScaleType.FIT_END, scaleType)
+        }
+        ResizeAnimatableDrawable(
+            drawable = TestAnimatableDrawable(ColorDrawable(Color.YELLOW)),
+            size = Size(100, 100),
+            scale = Scale.FILL
+        ).apply {
+            assertEquals(ImageView.ScaleType.FIT_XY, scaleType)
+        }
+    }
 
     @Test
     fun testDraw() {
@@ -69,7 +114,7 @@ class ResizeAnimatableDrawableTest {
         // Animatable2
         if (VERSION.SDK_INT >= VERSION_CODES.P) {
             val animatedDrawable = TestAnimatable2Drawable(ColorDrawable(Color.GREEN))
-            val wrapper = ResizeAnimatableDrawable(animatedDrawable, Size(100, 500), CENTER_CROP)
+            val wrapper = ResizeAnimatableDrawable(animatedDrawable, Size(100, 500))
             assertEquals(expected = 0, actual = animatedDrawable.callbacks?.size ?: 0)
             assertEquals(
                 expected = 0,
@@ -146,7 +191,7 @@ class ResizeAnimatableDrawableTest {
         // Animatable2Compat
         runBlock {
             val animatable2Drawable = TestAnimatable2CompatDrawable(ColorDrawable(Color.GREEN))
-            val wrapper = ResizeAnimatableDrawable(animatable2Drawable, Size(100, 500), CENTER_CROP)
+            val wrapper = ResizeAnimatableDrawable(animatable2Drawable, Size(100, 500))
             assertEquals(expected = 0, actual = animatable2Drawable.callbacks?.size ?: 0)
             assertEquals(
                 expected = 0,
@@ -223,7 +268,7 @@ class ResizeAnimatableDrawableTest {
         // Animatable
         runBlock {
             val animatableDrawable = TestAnimatableDrawable(ColorDrawable(Color.GREEN))
-            val wrapper = ResizeAnimatableDrawable(animatableDrawable, Size(100, 500), CENTER_CROP)
+            val wrapper = ResizeAnimatableDrawable(animatableDrawable, Size(100, 500))
             assertEquals(
                 expected = 0,
                 actual = wrapper.callbackHelper?.callbacksInternal?.size ?: 0
@@ -295,7 +340,7 @@ class ResizeAnimatableDrawableTest {
     @Test
     fun testStartStop() = runTest {
         val animatableDrawable = TestAnimatableDrawable(ColorDrawable(Color.YELLOW))
-        val wrapper = ResizeAnimatableDrawable(animatableDrawable, Size(100, 500), CENTER_CROP)
+        val wrapper = ResizeAnimatableDrawable(animatableDrawable, Size(100, 500))
 
         val callbackHistory = mutableListOf<String>()
         withContext(Dispatchers.Main) {
@@ -343,11 +388,10 @@ class ResizeAnimatableDrawableTest {
         val context = getTestContext()
 
         ResizeAnimatableDrawable(
-            AnimatableDrawable(
+            drawable = AnimatableDrawable(
                 TestAnimatableDrawable(context.getDrawableCompat(android.R.drawable.ic_lock_lock))
             ),
-            Size(500, 300),
-            CENTER_CROP
+            size = Size(500, 300),
         ).apply {
             val mutateDrawable = mutate()
             assertSame(this, mutateDrawable)
@@ -361,11 +405,10 @@ class ResizeAnimatableDrawableTest {
         }
 
         ResizeAnimatableDrawable(
-            TestAnimatableDrawable(
+            drawable = TestAnimatableDrawable(
                 TestNewMutateDrawable(context.getDrawableCompat(android.R.drawable.ic_lock_lock))
             ),
-            Size(500, 300),
-            CENTER_CROP
+            size = Size(500, 300),
         ).apply {
             val mutateDrawable = mutate()
             assertNotSame(this, mutateDrawable)
@@ -384,27 +427,23 @@ class ResizeAnimatableDrawableTest {
         val element1 = ResizeAnimatableDrawable(
             drawable = TestAnimatableDrawable(ColorDrawable(TestColor.RED).asEquitable()),
             size = Size(100, 500),
-            scale = CENTER_CROP,
         )
         val element11 = ResizeAnimatableDrawable(
             drawable = TestAnimatableDrawable(ColorDrawable(TestColor.RED).asEquitable()),
             size = Size(100, 500),
-            scale = CENTER_CROP,
         )
         val element2 = ResizeAnimatableDrawable(
             drawable = TestAnimatableDrawable(ColorDrawable(TestColor.GREEN).asEquitable()),
             size = Size(100, 500),
-            scale = CENTER_CROP,
         )
         val element3 = ResizeAnimatableDrawable(
             drawable = TestAnimatableDrawable(ColorDrawable(TestColor.RED).asEquitable()),
             size = Size(500, 100),
-            scale = CENTER_CROP,
         )
         val element4 = ResizeAnimatableDrawable(
             drawable = TestAnimatableDrawable(ColorDrawable(TestColor.RED).asEquitable()),
             size = Size(100, 500),
-            scale = START_CROP,
+            scaleType = ImageView.ScaleType.FIT_XY,
         )
 
         assertEquals(element1, element11)
@@ -429,13 +468,9 @@ class ResizeAnimatableDrawableTest {
     @Test
     fun testToString() {
         val animatableDrawable = TestAnimatableDrawable(ColorDrawable(Color.GREEN))
-        ResizeAnimatableDrawable(
-            animatableDrawable,
-            Size(100, 500),
-            CENTER_CROP
-        ).apply {
+        ResizeAnimatableDrawable(drawable = animatableDrawable, size = Size(100, 500)).apply {
             assertEquals(
-                "ResizeAnimatableDrawable(drawable=${animatableDrawable.toLogString()}, size=100x500, scale=CENTER_CROP)",
+                "ResizeAnimatableDrawable(drawable=${animatableDrawable.toLogString()}, size=100x500, scaleType=CENTER_CROP)",
                 toString()
             )
         }

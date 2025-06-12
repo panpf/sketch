@@ -25,6 +25,7 @@ import android.graphics.PorterDuffColorFilter
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.widget.ImageView.ScaleType
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
@@ -41,6 +42,7 @@ import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotSame
@@ -51,15 +53,25 @@ import kotlin.test.assertTrue
 @RunWith(AndroidJUnit4::class)
 class CrossfadeDrawableTest {
 
-    // TODO test scaleType
-
     @Test
     fun testConstructor() {
         val startDrawable = SizeColorDrawable(Color.RED, Size(100, 200))
         val endDrawable = SizeColorDrawable(Color.YELLOW, Size(200, 100))
 
         CrossfadeDrawable(start = startDrawable, end = endDrawable).apply {
+            assertEquals(ScaleType.FIT_CENTER, scaleType)
             assertTrue(fitScale)
+            assertEquals(200, durationMillis)
+            assertTrue(fadeStart)
+            assertFalse(preferExactIntrinsicSize)
+        }
+        CrossfadeDrawable(
+            start = startDrawable,
+            end = endDrawable,
+            scaleType = ScaleType.FIT_XY
+        ).apply {
+            assertEquals(ScaleType.FIT_XY, scaleType)
+            assertFalse(fitScale)
             assertEquals(200, durationMillis)
             assertTrue(fadeStart)
             assertFalse(preferExactIntrinsicSize)
@@ -68,15 +80,34 @@ class CrossfadeDrawableTest {
         CrossfadeDrawable(
             start = startDrawable,
             end = endDrawable,
+            fitScale = true,
+            durationMillis = 2000,
+            fadeStart = false,
+            preferExactIntrinsicSize = true
+        ).apply {
+            assertEquals(ScaleType.FIT_CENTER, scaleType)
+            assertTrue(fitScale)
+            assertEquals(2000, durationMillis)
+            assertFalse(fadeStart)
+            assertTrue(preferExactIntrinsicSize)
+        }
+        CrossfadeDrawable(
+            start = startDrawable,
+            end = endDrawable,
             fitScale = false,
             durationMillis = 2000,
             fadeStart = false,
             preferExactIntrinsicSize = true
         ).apply {
+            assertEquals(ScaleType.CENTER_CROP, scaleType)
             assertFalse(fitScale)
             assertEquals(2000, durationMillis)
             assertFalse(fadeStart)
             assertTrue(preferExactIntrinsicSize)
+        }
+
+        assertFailsWith(IllegalArgumentException::class) {
+            CrossfadeDrawable(start = startDrawable, end = endDrawable, durationMillis = 0)
         }
     }
 
@@ -394,14 +425,47 @@ class CrossfadeDrawableTest {
         val element1 = CrossfadeDrawable(startDrawable, endDrawable)
         val element11 = CrossfadeDrawable(startDrawable, endDrawable)
         val element2 = CrossfadeDrawable(startDrawable, endDrawable2)
+        val element3 = CrossfadeDrawable(startDrawable, endDrawable, scaleType = ScaleType.FIT_XY)
+        val element4 = CrossfadeDrawable(startDrawable, endDrawable, durationMillis = 100000)
+        val element5 = CrossfadeDrawable(startDrawable, endDrawable, fadeStart = false)
+        val element6 =
+            CrossfadeDrawable(startDrawable, endDrawable, preferExactIntrinsicSize = true)
 
-        assertNotEquals(element1, element11)
+        assertEquals(element1, element11)
         assertNotEquals(element1, element2)
+        assertNotEquals(element1, element3)
+        assertNotEquals(element1, element4)
+        assertNotEquals(element1, element5)
+        assertNotEquals(element1, element6)
+        assertNotEquals(element2, element3)
+        assertNotEquals(element2, element4)
+        assertNotEquals(element2, element5)
+        assertNotEquals(element2, element6)
+        assertNotEquals(element3, element4)
+        assertNotEquals(element3, element5)
+        assertNotEquals(element3, element6)
+        assertNotEquals(element4, element5)
+        assertNotEquals(element4, element6)
+        assertNotEquals(element5, element6)
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
-        assertNotEquals(element1.hashCode(), element11.hashCode())
+        assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
+        assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element1.hashCode(), element4.hashCode())
+        assertNotEquals(element1.hashCode(), element5.hashCode())
+        assertNotEquals(element1.hashCode(), element6.hashCode())
+        assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element4.hashCode())
+        assertNotEquals(element2.hashCode(), element5.hashCode())
+        assertNotEquals(element2.hashCode(), element6.hashCode())
+        assertNotEquals(element3.hashCode(), element4.hashCode())
+        assertNotEquals(element3.hashCode(), element5.hashCode())
+        assertNotEquals(element3.hashCode(), element6.hashCode())
+        assertNotEquals(element4.hashCode(), element5.hashCode())
+        assertNotEquals(element4.hashCode(), element6.hashCode())
+        assertNotEquals(element5.hashCode(), element6.hashCode())
     }
 
     @Test
@@ -410,7 +474,7 @@ class CrossfadeDrawableTest {
         val endDrawable = SizeColorDrawable(Color.YELLOW, Size(200, 100))
         val crossfadeDrawable = CrossfadeDrawable(startDrawable, endDrawable)
         assertEquals(
-            expected = "CrossfadeDrawable(start=${startDrawable.toLogString()}, end=${endDrawable.toLogString()}, fitScale=true, durationMillis=200, fadeStart=true, preferExactIntrinsicSize=false)",
+            expected = "CrossfadeDrawable(start=${startDrawable.toLogString()}, end=${endDrawable.toLogString()}, scaleType=FIT_CENTER, durationMillis=200, fadeStart=true, preferExactIntrinsicSize=false)",
             actual = crossfadeDrawable.toString()
         )
     }

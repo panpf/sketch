@@ -1,14 +1,14 @@
 package com.github.panpf.sketch.compose.core.common.test.resize
 
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.compose.core.common.test.target.TestGenericComposeTarget
 import com.github.panpf.sketch.painter.ResizePainter
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.ComposeResizeOnDrawHelper
-import com.github.panpf.sketch.resize.LongImageScaleDecider
-import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.test.utils.SizeColorPainter
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.SketchSize
@@ -42,7 +42,18 @@ class ComposeResizeOnDrawHelperTest {
 
         helper.resize(
             request = ImageRequest(context, "http://sample.com/sample.jpeg") {
-                scale(LongImageScaleDecider())
+            },
+            size = SketchSize(200, 200),
+            image = SizeColorPainter(Color.Red, Size(300f, 500f)).asImage()
+        ).apply {
+            assertEquals(
+                expected = SizeColorPainter(Color.Red, Size(300f, 500f)).asImage(),
+                actual = this
+            )
+        }
+
+        helper.resize(
+            request = ImageRequest(context, "http://sample.com/sample.jpeg") {
                 target(TestGenericComposeTarget())
             },
             size = SketchSize(200, 200),
@@ -52,6 +63,8 @@ class ComposeResizeOnDrawHelperTest {
                 expected = ResizePainter(
                     painter = SizeColorPainter(Color.Red, Size(300f, 500f)),
                     size = Size(200f, 200f),
+                    contentScale = ContentScale.Fit,
+                    alignment = Alignment.Center,
                 ).asImage(),
                 actual = this
             )
@@ -59,8 +72,12 @@ class ComposeResizeOnDrawHelperTest {
 
         helper.resize(
             request = ImageRequest(context, "http://sample.com/sample.jpeg") {
-                scale(LongImageScaleDecider())
-                target(TestGenericComposeTarget())
+                target(
+                    TestGenericComposeTarget(
+                        contentScale = ContentScale.None,
+                        alignment = Alignment.BottomEnd
+                    )
+                )
             },
             size = SketchSize(200, 200),
             image = SizeColorPainter(Color.Red, Size(300f, 1500f)).asImage()
@@ -69,40 +86,8 @@ class ComposeResizeOnDrawHelperTest {
                 expected = ResizePainter(
                     painter = SizeColorPainter(Color.Red, Size(300f, 1500f)),
                     size = Size(200f, 200f),
-                ).asImage(),
-                actual = this
-            )
-        }
-
-        helper.resize(
-            request = ImageRequest(context, "http://sample.com/sample.jpeg") {
-                scale(Scale.END_CROP)
-                target(TestGenericComposeTarget())
-            },
-            size = SketchSize(200, 200),
-            image = SizeColorPainter(Color.Red, Size(300f, 500f)).asImage()
-        ).apply {
-            assertEquals(
-                expected = ResizePainter(
-                    painter = SizeColorPainter(Color.Red, Size(300f, 500f)),
-                    size = Size(200f, 200f),
-                ).asImage(),
-                actual = this
-            )
-        }
-
-        helper.resize(
-            request = ImageRequest(context, "http://sample.com/sample.jpeg") {
-                scale(Scale.END_CROP)
-                target(TestGenericComposeTarget())
-            },
-            size = SketchSize(200, 200),
-            image = SizeColorPainter(Color.Red, Size(300f, 1500f)).asImage()
-        ).apply {
-            assertEquals(
-                expected = ResizePainter(
-                    painter = SizeColorPainter(Color.Red, Size(300f, 1500f)),
-                    size = Size(200f, 200f),
+                    contentScale = ContentScale.None,
+                    alignment = Alignment.BottomEnd,
                 ).asImage(),
                 actual = this
             )

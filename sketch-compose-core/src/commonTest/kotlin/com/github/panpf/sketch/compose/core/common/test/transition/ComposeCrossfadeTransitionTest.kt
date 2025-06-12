@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.compose.core.common.test.transition
 
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
@@ -52,13 +53,50 @@ class ComposeCrossfadeTransitionTest {
             extras = null,
         )
 
-        ComposeCrossfadeTransition(sketch, request, imageViewTarget, result).apply {
+        ComposeCrossfadeTransition(
+            sketch = sketch,
+            request = request,
+            target = imageViewTarget,
+            result = result
+        ).apply {
             assertEquals(ContentScale.Fit, contentScale)
+            assertEquals(Alignment.Center, alignment)
             assertEquals(200, durationMillis)
             assertEquals(false, preferExactIntrinsicSize)
             assertEquals(true, fitScale)
         }
+        ComposeCrossfadeTransition(
+            sketch = sketch,
+            request = request,
+            target = imageViewTarget,
+            result = result,
+            durationMillis = 300,
+            preferExactIntrinsicSize = true,
+            contentScale = ContentScale.FillBounds,
+            alignment = Alignment.BottomEnd
+        ).apply {
+            assertEquals(ContentScale.FillBounds, contentScale)
+            assertEquals(Alignment.BottomEnd, alignment)
+            assertEquals(300, durationMillis)
+            assertEquals(true, preferExactIntrinsicSize)
+            assertEquals(false, fitScale)
+        }
 
+        ComposeCrossfadeTransition(
+            sketch = sketch,
+            request = request,
+            target = imageViewTarget,
+            result = result,
+            durationMillis = 300,
+            preferExactIntrinsicSize = true,
+            fitScale = true
+        ).apply {
+            assertEquals(ContentScale.Fit, contentScale)
+            assertEquals(Alignment.Center, alignment)
+            assertEquals(300, durationMillis)
+            assertEquals(true, preferExactIntrinsicSize)
+            assertEquals(true, fitScale)
+        }
         ComposeCrossfadeTransition(
             sketch = sketch,
             request = request,
@@ -69,21 +107,7 @@ class ComposeCrossfadeTransitionTest {
             fitScale = false
         ).apply {
             assertEquals(ContentScale.Crop, contentScale)
-            assertEquals(300, durationMillis)
-            assertEquals(true, preferExactIntrinsicSize)
-            assertEquals(false, fitScale)
-        }
-
-        ComposeCrossfadeTransition(
-            sketch = sketch,
-            request = request,
-            target = imageViewTarget,
-            result = result,
-            durationMillis = 300,
-            preferExactIntrinsicSize = true,
-            contentScale = ContentScale.FillBounds
-        ).apply {
-            assertEquals(ContentScale.FillBounds, contentScale)
+            assertEquals(Alignment.Center, alignment)
             assertEquals(300, durationMillis)
             assertEquals(true, preferExactIntrinsicSize)
             assertEquals(false, fitScale)
@@ -92,8 +116,6 @@ class ComposeCrossfadeTransitionTest {
         assertFailsWith(IllegalArgumentException::class) {
             ComposeCrossfadeTransition(sketch, request, imageViewTarget, result, durationMillis = 0)
         }
-
-        // TODO teest alignment
     }
 
     @Test
@@ -133,7 +155,8 @@ class ComposeCrossfadeTransitionTest {
         (composeTarget.painter as CrossfadePainter).apply {
             assertEquals(Color.Green, (start as ColorPainter).color)
             assertTrue(end is ImageBitmapPainter, message = "end is $end")
-            assertTrue(fitScale)
+            assertEquals(ContentScale.Fit, contentScale)
+            assertEquals(Alignment.Center, alignment)
         }
 
         // error

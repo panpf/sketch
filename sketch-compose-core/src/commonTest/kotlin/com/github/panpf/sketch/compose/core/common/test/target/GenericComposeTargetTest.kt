@@ -249,8 +249,7 @@ class GenericComposeTargetTest {
 class TestGenericComposeTarget constructor(
     override val contentScale: ContentScale = ContentScale.Fit,
     override val alignment: Alignment = Alignment.Center
-) :
-    GenericComposeTarget() {
+) : GenericComposeTarget() {
 
     private var _painter: Painter? = null
 

@@ -8,8 +8,10 @@ import androidx.compose.ui.layout.ContentScale
 import com.github.panpf.sketch.painter.ResizeAnimatablePainter
 import com.github.panpf.sketch.painter.asEquitable
 import com.github.panpf.sketch.painter.toLogString
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.test.utils.TestAnimatablePainter
 import com.github.panpf.sketch.test.utils.block
+import com.github.panpf.sketch.util.toSize
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -19,7 +21,58 @@ import kotlin.test.assertTrue
 
 class ResizeAnimatablePainterTest {
 
-    // TODO test constructor
+    @Test
+    fun testConstructor() {
+        ResizeAnimatablePainter(
+            painter = TestAnimatablePainter(ColorPainter(Color.Blue)),
+            size = com.github.panpf.sketch.util.Size(100, 100).toSize()
+        ).apply {
+            assertEquals(expected = ContentScale.Crop, actual = this.contentScale)
+            assertEquals(expected = Alignment.Center, actual = this.alignment)
+        }
+        ResizeAnimatablePainter(
+            painter = TestAnimatablePainter(ColorPainter(Color.Blue)),
+            size = com.github.panpf.sketch.util.Size(100, 100).toSize(),
+            contentScale = ContentScale.Fit,
+            alignment = Alignment.BottomEnd
+        ).apply {
+            assertEquals(expected = ContentScale.Fit, actual = this.contentScale)
+            assertEquals(expected = Alignment.BottomEnd, actual = this.alignment)
+        }
+
+        ResizeAnimatablePainter(
+            painter = TestAnimatablePainter(ColorPainter(Color.Blue)),
+            size = com.github.panpf.sketch.util.Size(100, 100).toSize(),
+            scale = Scale.START_CROP
+        ).apply {
+            assertEquals(expected = ContentScale.Crop, actual = this.contentScale)
+            assertEquals(expected = Alignment.TopStart, actual = this.alignment)
+        }
+        ResizeAnimatablePainter(
+            painter = TestAnimatablePainter(ColorPainter(Color.Blue)),
+            size = com.github.panpf.sketch.util.Size(100, 100).toSize(),
+            scale = Scale.CENTER_CROP
+        ).apply {
+            assertEquals(expected = ContentScale.Crop, actual = this.contentScale)
+            assertEquals(expected = Alignment.Center, actual = this.alignment)
+        }
+        ResizeAnimatablePainter(
+            painter = TestAnimatablePainter(ColorPainter(Color.Blue)),
+            size = com.github.panpf.sketch.util.Size(100, 100).toSize(),
+            scale = Scale.END_CROP
+        ).apply {
+            assertEquals(expected = ContentScale.Crop, actual = this.contentScale)
+            assertEquals(expected = Alignment.TopEnd, actual = this.alignment)
+        }
+        ResizeAnimatablePainter(
+            painter = TestAnimatablePainter(ColorPainter(Color.Blue)),
+            size = com.github.panpf.sketch.util.Size(100, 100).toSize(),
+            scale = Scale.FILL
+        ).apply {
+            assertEquals(expected = ContentScale.FillBounds, actual = this.contentScale)
+            assertEquals(expected = Alignment.Center, actual = this.alignment)
+        }
+    }
 
     @Test
     fun testStartStop() = runTest {
@@ -109,7 +162,7 @@ class ResizeAnimatablePainterTest {
             size = Size(100f, 500f),
         ).apply {
             assertEquals(
-                expected = "ResizeAnimatablePainter(painter=${animatablePainter.toLogString()}, size=100.0x500.0, contentScale=Fit, alignment=Center)",
+                expected = "ResizeAnimatablePainter(painter=${animatablePainter.toLogString()}, size=100.0x500.0, contentScale=Crop, alignment=Center)",
                 actual = toString()
             )
         }

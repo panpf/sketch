@@ -22,6 +22,7 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.widget.ImageView
+import android.widget.ImageView.ScaleType
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.ImageInfo
@@ -54,8 +55,6 @@ import kotlin.test.assertTrue
 @RunWith(AndroidJUnit4::class)
 class ViewCrossfadeTransitionTest {
 
-    // TODO test scaleType
-
     @Test
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
@@ -74,9 +73,45 @@ class ViewCrossfadeTransitionTest {
             transformeds = null,
             extras = null,
         )
-        ViewCrossfadeTransition(sketch, request, imageViewTarget, result).apply {
+
+        ViewCrossfadeTransition(
+            sketch = sketch,
+            request = request,
+            target = imageViewTarget,
+            result = result
+        ).apply {
             assertEquals(200, durationMillis)
             assertEquals(false, preferExactIntrinsicSize)
+            assertEquals(ScaleType.FIT_CENTER, scaleType)
+            assertEquals(true, fitScale)
+        }
+        ViewCrossfadeTransition(
+            sketch = sketch,
+            request = request,
+            target = imageViewTarget,
+            result = result,
+            durationMillis = 300,
+            preferExactIntrinsicSize = true,
+            scaleType = ScaleType.FIT_XY
+        ).apply {
+            assertEquals(300, durationMillis)
+            assertEquals(true, preferExactIntrinsicSize)
+            assertEquals(ScaleType.FIT_XY, scaleType)
+            assertEquals(false, fitScale)
+        }
+
+        ViewCrossfadeTransition(
+            sketch = sketch,
+            request = request,
+            target = imageViewTarget,
+            result = result,
+            durationMillis = 300,
+            preferExactIntrinsicSize = true,
+            fitScale = true
+        ).apply {
+            assertEquals(300, durationMillis)
+            assertEquals(true, preferExactIntrinsicSize)
+            assertEquals(ScaleType.FIT_CENTER, scaleType)
             assertEquals(true, fitScale)
         }
         ViewCrossfadeTransition(
@@ -90,8 +125,10 @@ class ViewCrossfadeTransitionTest {
         ).apply {
             assertEquals(300, durationMillis)
             assertEquals(true, preferExactIntrinsicSize)
+            assertEquals(ScaleType.CENTER_CROP, scaleType)
             assertEquals(false, fitScale)
         }
+
         assertFailsWith(IllegalArgumentException::class) {
             ViewCrossfadeTransition(sketch, request, imageViewTarget, result, durationMillis = 0)
         }
@@ -137,7 +174,7 @@ class ViewCrossfadeTransitionTest {
         (imageView.drawable as CrossfadeDrawable).apply {
             assertEquals(Color.GREEN, (start as ColorDrawable).color)
             assertTrue(end is BitmapDrawable)
-            assertTrue(fitScale)
+            assertEquals(ScaleType.FIT_CENTER, scaleType)
         }
 
         // error

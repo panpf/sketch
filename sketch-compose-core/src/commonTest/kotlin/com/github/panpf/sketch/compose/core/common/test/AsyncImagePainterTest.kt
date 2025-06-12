@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -38,7 +39,7 @@ import kotlin.test.assertTrue
 
 @OptIn(ExperimentalTestApi::class)
 class AsyncImagePainterTest {
-    // TODO teest alignment
+
     @Test
     fun testRememberAsyncImagePainter() {
         val (_, sketch) = getTestContextAndSketch()
@@ -50,14 +51,17 @@ class AsyncImagePainterTest {
             var imageState3: AsyncImageState? = null
             setContent {
                 LifecycleContainer {
-                    painter1 = rememberAsyncImagePainter("https://www.test.com/test.jpg", sketch)
+                    painter1 = rememberAsyncImagePainter(
+                        uri = "https://www.test.com/test.jpg",
+                        sketch = sketch
+                    )
 
                     painter2 = rememberAsyncImagePainter(
-                        "https://www.test.com/test.jpg",
-                        sketch,
-                        rememberAsyncImageState().apply { imageState2 = this },
-                        ContentScale.Crop,
-                        FilterQuality.High
+                        uri = "https://www.test.com/test.jpg",
+                        sketch = sketch,
+                        state = rememberAsyncImageState().apply { imageState2 = this },
+                        contentScale = ContentScale.Crop,
+                        filterQuality = FilterQuality.High
                     )
 
                     painter3 = rememberAsyncImagePainter(
@@ -65,6 +69,7 @@ class AsyncImagePainterTest {
                         sketch = sketch,
                         state = rememberAsyncImageState().apply { imageState3 = this },
                         contentScale = ContentScale.Inside,
+                        alignment = Alignment.BottomEnd,
                         filterQuality = FilterQuality.Medium
                     )
                 }
@@ -74,18 +79,21 @@ class AsyncImagePainterTest {
             painter1!!.apply {
                 assertSame(expected = sketch, actual = state.sketch)
                 assertEquals(expected = ContentScale.Fit, actual = state.contentScale)
+                assertEquals(expected = Alignment.Center, actual = state.alignment)
                 assertEquals(expected = DefaultFilterQuality, actual = state.filterQuality)
             }
             painter2!!.apply {
                 assertSame(expected = imageState2, actual = state)
                 assertSame(expected = sketch, actual = state.sketch)
                 assertEquals(expected = ContentScale.Crop, actual = state.contentScale)
+                assertEquals(expected = Alignment.Center, actual = state.alignment)
                 assertEquals(expected = FilterQuality.High, actual = state.filterQuality)
             }
             painter3!!.apply {
                 assertSame(expected = imageState3, actual = state)
                 assertSame(expected = sketch, actual = state.sketch)
                 assertEquals(expected = ContentScale.Inside, actual = state.contentScale)
+                assertEquals(expected = Alignment.BottomEnd, actual = state.alignment)
                 assertEquals(expected = FilterQuality.Medium, actual = state.filterQuality)
             }
         }
@@ -104,16 +112,16 @@ class AsyncImagePainterTest {
                 LifecycleContainer {
                     painter1 =
                         rememberAsyncImagePainter(
-                            ComposableImageRequest("https://www.test.com/test.jpg"),
-                            sketch
+                            request = ComposableImageRequest(uri = "https://www.test.com/test.jpg"),
+                            sketch = sketch
                         )
 
                     painter2 = rememberAsyncImagePainter(
-                        ComposableImageRequest("https://www.test.com/test.jpg"),
-                        sketch,
-                        rememberAsyncImageState().apply { imageState2 = this },
-                        ContentScale.Crop,
-                        FilterQuality.High
+                        request = ComposableImageRequest(uri = "https://www.test.com/test.jpg"),
+                        sketch = sketch,
+                        state = rememberAsyncImageState().apply { imageState2 = this },
+                        contentScale = ContentScale.Crop,
+                        filterQuality = FilterQuality.High
                     )
 
                     painter3 = rememberAsyncImagePainter(
@@ -121,6 +129,7 @@ class AsyncImagePainterTest {
                         sketch = sketch,
                         state = rememberAsyncImageState().apply { imageState3 = this },
                         contentScale = ContentScale.Inside,
+                        alignment = Alignment.BottomEnd,
                         filterQuality = FilterQuality.Medium
                     )
                 }
@@ -130,18 +139,21 @@ class AsyncImagePainterTest {
             painter1!!.apply {
                 assertSame(expected = sketch, actual = state.sketch)
                 assertEquals(expected = ContentScale.Fit, actual = state.contentScale)
+                assertEquals(expected = Alignment.Center, actual = state.alignment)
                 assertEquals(expected = DefaultFilterQuality, actual = state.filterQuality)
             }
             painter2!!.apply {
                 assertSame(expected = imageState2, actual = state)
                 assertSame(expected = sketch, actual = state.sketch)
                 assertEquals(expected = ContentScale.Crop, actual = state.contentScale)
+                assertEquals(expected = Alignment.Center, actual = state.alignment)
                 assertEquals(expected = FilterQuality.High, actual = state.filterQuality)
             }
             painter3!!.apply {
                 assertSame(expected = imageState3, actual = state)
                 assertSame(expected = sketch, actual = state.sketch)
                 assertEquals(expected = ContentScale.Inside, actual = state.contentScale)
+                assertEquals(expected = Alignment.BottomEnd, actual = state.alignment)
                 assertEquals(expected = FilterQuality.Medium, actual = state.filterQuality)
             }
         }

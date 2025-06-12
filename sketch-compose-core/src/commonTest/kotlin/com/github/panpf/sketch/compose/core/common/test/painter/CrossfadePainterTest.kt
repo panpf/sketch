@@ -13,6 +13,7 @@ import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.block
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
@@ -26,12 +27,41 @@ class CrossfadePainterTest {
 
         CrossfadePainter(start = startPainter, end = endPainter).apply {
             assertEquals(ContentScale.Fit, contentScale)
+            assertEquals(Alignment.Center, alignment)
             assertTrue(fitScale)
             assertEquals(200, durationMillis)
             assertTrue(fadeStart)
             assertFalse(preferExactIntrinsicSize)
         }
+        CrossfadePainter(
+            start = startPainter,
+            end = endPainter,
+            contentScale = ContentScale.FillBounds,
+            alignment = Alignment.BottomEnd
+        ).apply {
+            assertEquals(ContentScale.FillBounds, contentScale)
+            assertEquals(Alignment.BottomEnd, alignment)
+            assertFalse(fitScale)
+            assertEquals(200, durationMillis)
+            assertTrue(fadeStart)
+            assertFalse(preferExactIntrinsicSize)
+        }
 
+        CrossfadePainter(
+            start = startPainter,
+            end = endPainter,
+            fitScale = true,
+            durationMillis = 2000,
+            fadeStart = false,
+            preferExactIntrinsicSize = true
+        ).apply {
+            assertEquals(ContentScale.Fit, contentScale)
+            assertEquals(Alignment.Center, alignment)
+            assertTrue(fitScale)
+            assertEquals(2000, durationMillis)
+            assertFalse(fadeStart)
+            assertTrue(preferExactIntrinsicSize)
+        }
         CrossfadePainter(
             start = startPainter,
             end = endPainter,
@@ -41,28 +71,16 @@ class CrossfadePainterTest {
             preferExactIntrinsicSize = true
         ).apply {
             assertEquals(ContentScale.Crop, contentScale)
+            assertEquals(Alignment.Center, alignment)
             assertFalse(fitScale)
             assertEquals(2000, durationMillis)
             assertFalse(fadeStart)
             assertTrue(preferExactIntrinsicSize)
         }
 
-        CrossfadePainter(
-            start = startPainter,
-            end = endPainter,
-            contentScale = ContentScale.FillBounds,
-            durationMillis = 2000,
-            fadeStart = false,
-            preferExactIntrinsicSize = true
-        ).apply {
-            assertEquals(ContentScale.FillBounds, contentScale)
-            assertFalse(fitScale)
-            assertEquals(2000, durationMillis)
-            assertFalse(fadeStart)
-            assertTrue(preferExactIntrinsicSize)
+        assertFailsWith(IllegalArgumentException::class) {
+            CrossfadePainter(start = startPainter, end = endPainter, durationMillis = 0)
         }
-
-        // TODO teest alignment
     }
 
     @Test

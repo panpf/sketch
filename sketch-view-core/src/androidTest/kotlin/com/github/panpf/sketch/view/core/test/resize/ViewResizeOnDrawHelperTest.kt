@@ -3,6 +3,7 @@ package com.github.panpf.sketch.view.core.test.resize
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.widget.ImageView
 import com.github.panpf.sketch.asDrawable
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.drawable.AnimatableDrawable
@@ -10,15 +11,14 @@ import com.github.panpf.sketch.drawable.ResizeAnimatableDrawable
 import com.github.panpf.sketch.drawable.ResizeDrawable
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.resize.LongImageScaleDecider
 import com.github.panpf.sketch.resize.Precision
-import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.ViewResizeOnDrawHelper
 import com.github.panpf.sketch.resize.resizeOnDraw
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.MediumImageViewTestActivity
 import com.github.panpf.sketch.test.utils.SizeColorDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
+import com.github.panpf.sketch.test.utils.TestTransitionViewTarget
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
@@ -55,7 +55,19 @@ class ViewResizeOnDrawHelperTest {
 
         helper.resize(
             request = ImageRequest(context, "http://sample.com/sample.jpeg") {
-                scale(LongImageScaleDecider())
+            },
+            size = Size(200, 200),
+            image = SizeColorDrawable(Color.RED, Size(300, 500)).asImage()
+        ).apply {
+            assertEquals(
+                expected = SizeColorDrawable(Color.RED, Size(300, 500)).asImage(),
+                actual = this
+            )
+        }
+
+        helper.resize(
+            request = ImageRequest(context, "http://sample.com/sample.jpeg") {
+                target(TestTransitionViewTarget())
             },
             size = Size(200, 200),
             image = SizeColorDrawable(Color.RED, Size(300, 500)).asImage()
@@ -64,7 +76,7 @@ class ViewResizeOnDrawHelperTest {
                 expected = ResizeDrawable(
                     drawable = SizeColorDrawable(Color.RED, Size(300, 500)),
                     size = Size(200, 200),
-                    scale = Scale.CENTER_CROP
+                    scaleType = ImageView.ScaleType.FIT_CENTER
                 ).asImage(),
                 actual = this
             )
@@ -72,7 +84,7 @@ class ViewResizeOnDrawHelperTest {
 
         helper.resize(
             request = ImageRequest(context, "http://sample.com/sample.jpeg") {
-                scale(LongImageScaleDecider())
+                target(TestTransitionViewTarget(ImageView.ScaleType.FIT_XY))
             },
             size = Size(200, 200),
             image = SizeColorDrawable(Color.RED, Size(300, 1500)).asImage()
@@ -81,41 +93,7 @@ class ViewResizeOnDrawHelperTest {
                 expected = ResizeDrawable(
                     drawable = SizeColorDrawable(Color.RED, Size(300, 1500)),
                     size = Size(200, 200),
-                    scale = Scale.START_CROP
-                ).asImage(),
-                actual = this
-            )
-        }
-
-        helper.resize(
-            request = ImageRequest(context, "http://sample.com/sample.jpeg") {
-                scale(Scale.END_CROP)
-            },
-            size = Size(200, 200),
-            image = SizeColorDrawable(Color.RED, Size(300, 500)).asImage()
-        ).apply {
-            assertEquals(
-                expected = ResizeDrawable(
-                    drawable = SizeColorDrawable(Color.RED, Size(300, 500)),
-                    size = Size(200, 200),
-                    scale = Scale.END_CROP
-                ).asImage(),
-                actual = this
-            )
-        }
-
-        helper.resize(
-            request = ImageRequest(context, "http://sample.com/sample.jpeg") {
-                scale(Scale.END_CROP)
-            },
-            size = Size(200, 200),
-            image = SizeColorDrawable(Color.RED, Size(300, 1500)).asImage()
-        ).apply {
-            assertEquals(
-                expected = ResizeDrawable(
-                    drawable = SizeColorDrawable(Color.RED, Size(300, 1500)),
-                    size = Size(200, 200),
-                    scale = Scale.END_CROP
+                    scaleType = ImageView.ScaleType.FIT_XY
                 ).asImage(),
                 actual = this
             )
