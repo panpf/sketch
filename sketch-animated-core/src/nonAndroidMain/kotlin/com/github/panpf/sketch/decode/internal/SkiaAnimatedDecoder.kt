@@ -16,7 +16,7 @@
 
 package com.github.panpf.sketch.decode.internal
 
-import com.github.panpf.sketch.AnimatedImage
+import com.github.panpf.sketch.SkiaAnimatedImage
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
@@ -94,17 +94,15 @@ open class SkiaAnimatedDecoder(
         val decodeConfig = DecodeConfig(request, imageInfo.mimeType, codec.isOpaque)
         val newColorType = decodeConfig.colorType ?: codec.imageInfo.colorType
         val newColorSpace = decodeConfig.colorSpace ?: codec.imageInfo.colorSpace
-        val skiaImageInfo = org.jetbrains.skia.ImageInfo(
-            width = codec.imageInfo.width,
-            height = codec.imageInfo.height,
+        val skiaColorInfo = org.jetbrains.skia.ColorInfo(
             colorType = newColorType,
             alphaType = codec.imageInfo.colorAlphaType,
             colorSpace = newColorSpace
         )
-        val animatedImage = AnimatedImage(
+        val animatedImage = SkiaAnimatedImage(
             codec = codec,
-            imageInfo = skiaImageInfo,
-            repeatCount = repeatCount,
+            colorInfo = skiaColorInfo,
+            repeatCount = repeatCount ?: codec.repetitionCount,
             cacheDecodeTimeoutFrame = cacheDecodeTimeoutFrame,
         ).apply {
             animatedTransformation = request.animatedTransformation?.asCompat()

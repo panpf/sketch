@@ -542,3 +542,39 @@ actual fun Bitmap.thumbnail(width: Int, height: Int): Bitmap {
     val outputBitmap = ThumbnailUtils.extractThumbnail(this, width, height)
     return outputBitmap
 }
+
+/**
+ * Replaces pixel values with color
+ */
+actual fun Bitmap.erase(color: Int) {
+    this.eraseColor(color)
+}
+
+/**
+ * Copy pixels from another Bitmap to this Bitmap.
+ */
+actual fun Bitmap.copyPixelsFrom(fromBitmap: Bitmap) {
+    require(this.width == fromBitmap.width && this.height == fromBitmap.height) {
+        "The width and height of the source Bitmap must be equal to the target Bitmap. " +
+                "Source: ${fromBitmap.width}x${fromBitmap.height}, Target: ${this.width}x${this.height}"
+    }
+    val pixels = IntArray(width * height)
+    fromBitmap.getPixels(
+        /* pixels = */ pixels,
+        /* offset = */ 0,
+        /* stride = */ width,
+        /* x = */ 0,
+        /* y = */ 0,
+        /* width = */ width,
+        /* height = */ height
+    )
+    this.setPixels(
+        /* pixels = */ pixels,
+        /* offset = */ 0,
+        /* stride = */ width,
+        /* x = */ 0,
+        /* y = */ 0,
+        /* width = */ width,
+        /* height = */ height
+    )
+}

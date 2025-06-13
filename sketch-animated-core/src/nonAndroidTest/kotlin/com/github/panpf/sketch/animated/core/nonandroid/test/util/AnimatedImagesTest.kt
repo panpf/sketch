@@ -1,9 +1,8 @@
-package com.github.panpf.sketch.core.nonandroid.test.util
+package com.github.panpf.sketch.animated.core.nonandroid.test.util
 
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.toLogString
 import okio.buffer
 import okio.use
@@ -20,10 +19,10 @@ class AnimatedImagesTest {
         val bytes = ResourceImages.jpeg.toDataSource(context)
             .openSource().buffer()
             .use { it.readByteArray() }
-        val data = Data.makeFromBytes(bytes)
-        val codec = Codec.makeFromData(data)
+        val data = Data.Companion.makeFromBytes(bytes)
+        val codec = Codec.Companion.makeFromData(data)
         assertEquals(
-            expected = "Codec@${codec.toHexString()}(1291x1936,RGBA_8888,sRGB)",
+            expected = "Codec@${codec.hashCode().toString(16)}(1291x1936,RGBA_8888,sRGB)",
             actual = codec.toLogString()
         )
     }

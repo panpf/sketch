@@ -19,6 +19,7 @@ package com.github.panpf.sketch
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
+import com.github.panpf.sketch.painter.AnimatedImagePainter
 import com.github.panpf.sketch.painter.asPainter
 
 /**
@@ -29,6 +30,7 @@ import com.github.panpf.sketch.painter.asPainter
 actual fun Image.asPainterOrNull(filterQuality: FilterQuality): Painter? = when (this) {
     is PainterImage -> painter
     is BitmapImage -> bitmap.asImageBitmap().asPainter(filterQuality)
+    is AnimatedImage -> AnimatedImagePainter(this)
     is DrawableImage -> drawable.asPainter()
     else -> null
 }

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-@file:Suppress("RedundantConstructorKeyword")
-
 package com.github.panpf.sketch.painter
 
 import androidx.compose.runtime.RememberObserver
@@ -24,23 +22,25 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Canvas
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.asComposeImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQuality
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.toSize
 import com.github.panpf.sketch.AnimatedImage
 import com.github.panpf.sketch.Bitmap
-import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.RememberedCounter
+import com.github.panpf.sketch.util.asComposeImageBitmap
+import com.github.panpf.sketch.util.copyPixelsFrom
+import com.github.panpf.sketch.util.erase
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,27 +51,23 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.jetbrains.skia.Codec
-import org.jetbrains.skia.Color
-import org.jetbrains.skia.ImageInfo
 import kotlin.math.roundToInt
 import kotlin.time.measureTime
 
 /**
- * Painter for drawing [AnimatedImage]
+ * Painter for drawing [com.github.panpf.sketch.AnimatedImage]
  *
  * @see com.github.panpf.sketch.compose.core.nonandroid.test.painter.AnimatedImagePainterTest
  */
 class AnimatedImagePainter constructor(
     private val animatedImage: AnimatedImage,
-    private val srcOffset: IntOffset = IntOffset.Zero,
+    private val srcOffset: IntOffset = IntOffset.Companion.Zero,
     private val srcSize: IntSize = IntSize(animatedImage.width, animatedImage.height),
-    private val filterQuality: FilterQuality = DefaultFilterQuality,
+    private val filterQuality: FilterQuality = DrawScope.Companion.DefaultFilterQuality,
 ) : Painter(), AnimatablePainter, RememberObserver {
 
     internal val rememberedCounter: RememberedCounter = RememberedCounter()
-    private val codec = animatedImage.codec
-    var coroutineScope: CoroutineScope? = null
+    internal var coroutineScope: CoroutineScope? = null
     private var alpha: Float = 1.0f
     private var colorFilter: ColorFilter? = null
     private var invalidateTick by mutableIntStateOf(0)
@@ -79,10 +75,7 @@ class AnimatedImagePainter constructor(
     private var composeBitmap: ImageBitmap? = null
     private val paint = Paint()
     private var animatedPlayer = AnimatedPlayer(
-        codec = codec,
-        imageInfo = animatedImage.imageInfo,
-        cacheDecodeTimeoutFrame = animatedImage.cacheDecodeTimeoutFrame,
-        repeatCount = animatedImage.repeatCount ?: codec.repetitionCount,
+        animatedImage = animatedImage,
         onFrame = {
             composeBitmap = it
             invalidateSelf()
@@ -114,7 +107,7 @@ class AnimatedImagePainter constructor(
                     image = composeBitmap,
                     srcOffset = srcOffset,
                     srcSize = srcSize,
-                    dstOffset = IntOffset.Zero,
+                    dstOffset = IntOffset.Companion.Zero,
                     dstSize = dstSize,
                     paint = paint,
                 )
@@ -134,8 +127,8 @@ class AnimatedImagePainter constructor(
         loadFirstFrameJob = GlobalScope.launch(Dispatchers.Main) {
             val bitmapResult = withContext(ioCoroutineDispatcher()) {
                 runCatching {
-                    createBitmap(animatedImage.imageInfo).apply {
-                        codec.readPixels(this@apply, 0)
+                    animatedImage.createFrameBitmap().apply {
+                        animatedImage.readFrame(this@apply, 0)
                     }
                 }
             }
@@ -193,8 +186,8 @@ class AnimatedImagePainter constructor(
                     srcOffset.y >= 0 &&
                     srcSize.width >= 0 &&
                     srcSize.height >= 0 &&
-                    srcSize.width <= codec.width &&
-                    srcSize.height <= codec.height
+                    srcSize.width <= animatedImage.width &&
+                    srcSize.height <= animatedImage.height
         )
         return srcSize
     }
@@ -253,15 +246,11 @@ class AnimatedImagePainter constructor(
     }
 
     private class AnimatedPlayer(
-        private val codec: Codec,
-        private val imageInfo: ImageInfo,
-        private val repeatCount: Int,
-        private val cacheDecodeTimeoutFrame: Boolean,
+        private val animatedImage: AnimatedImage,
         private val onFrame: (ImageBitmap) -> Unit,
         private val onRepeatEnd: () -> Unit,
     ) {
 
-        private val frameInfos = codec.framesInfo
         private var frameCaches: MutableMap<Int, Bitmap>? = null
         private val nextFrameChannel = Channel<Frame>()
         private val renderChannel = Channel<Frame>()
@@ -280,9 +269,9 @@ class AnimatedImagePainter constructor(
             if (running) {
                 return
             }
-            if (codec.frameCount <= 0) {
-                val blackBitmap = createBitmap(imageInfo).apply {
-                    erase(Color.BLACK)
+            if (animatedImage.frameCount <= 0) {
+                val blackBitmap = animatedImage.createFrameBitmap().apply {
+                    erase(Color.Black.toArgb())
                 }
                 onFrame(blackBitmap.asComposeImageBitmap())
                 return
@@ -296,10 +285,10 @@ class AnimatedImagePainter constructor(
                     onFrame(newFrame.frameBitmap.composeBitmap)
 
                     // Number of repeat plays. -1: Indicates infinite repetition. When it is greater than or equal to 0, the total number of plays is equal to '1 + repeatCount'
-                    if (repeatCount >= 0 && newFrame.index == codec.frameCount - 1) {
+                    if (animatedImage.repeatCount >= 0 && newFrame.index == animatedImage.frameCount - 1) {
                         repeatIndex++
                     }
-                    if ((repeatCount < 0 || repeatIndex <= repeatCount)) {
+                    if ((animatedImage.repeatCount < 0 || repeatIndex <= animatedImage.repeatCount)) {
                         /*
                          * Why use [nextFrameChannel] instead of sending the next frame directly in [renderChannel]?
                          * Because you have to wait for the onFrame callback to complete before decoding the next frame,
@@ -317,15 +306,15 @@ class AnimatedImagePainter constructor(
             }
             decodeJob = coroutineScope.launch(ioCoroutineDispatcher()) {
                 for (frame in decodeChannel) {
-                    frame.frameBitmap.bitmap.erase(Color.TRANSPARENT)
+                    frame.frameBitmap.bitmap.erase(Color.Transparent.toArgb())
 
                     val cacheBitmap = frameCaches?.get(frame.index)
                     if (cacheBitmap != null) {
-                        frame.frameBitmap.bitmap.installPixels(cacheBitmap.readPixels())
+                        frame.frameBitmap.bitmap.copyPixelsFrom(cacheBitmap)
                     } else {
                         val decodeElapsedTime = measureTime {
                             try {
-                                codec.readPixels(frame.frameBitmap.bitmap, frame.index)
+                                animatedImage.readFrame(frame.frameBitmap.bitmap, frame.index)
                             } catch (e: Throwable) {
                                 e.printStackTrace()
                                 stop()
@@ -338,16 +327,15 @@ class AnimatedImagePainter constructor(
                          * This will cause the animation playback speed to become slower and slower,
                          * so here the frames whose decoding time exceeds the duration of the previous frame are cached.
                          */
-                        if (cacheDecodeTimeoutFrame) {
+                        if (animatedImage.cacheDecodeTimeoutFrame) {
                             val lastFrameIndex = if (frame.index > 0)
-                                frame.index - 1 else codec.frameCount - 1
+                                frame.index - 1 else animatedImage.frameCount - 1
                             val lastFrameDuration = frameDuration(lastFrameIndex)
                             val needCache =
                                 decodeElapsedTime.inWholeMilliseconds > lastFrameDuration
                             if (needCache) {
-                                val byteArray = frame.frameBitmap.bitmap.readPixels()
-                                val bitmap = createBitmap(imageInfo)
-                                bitmap.installPixels(byteArray)
+                                val bitmap = animatedImage.createFrameBitmap()
+                                bitmap.copyPixelsFrom(frame.frameBitmap.bitmap)
                                 val frameCaches =
                                     frameCaches ?: mutableMapOf<Int, Bitmap>().apply {
                                         this@AnimatedPlayer.frameCaches = this
@@ -381,23 +369,19 @@ class AnimatedImagePainter constructor(
 
         private fun nextFrame(current: Frame?, last: Frame?): Frame {
             val nextFrameIndex = if (current != null) {
-                (current.index + 1) % codec.frameCount
+                (current.index + 1) % animatedImage.frameCount
             } else {
                 0
             }
             return last?.copy(index = nextFrameIndex)
                 ?: Frame(
                     index = nextFrameIndex,
-                    frameBitmap = FrameBitmap(createBitmap(imageInfo))
+                    frameBitmap = FrameBitmap(animatedImage.createFrameBitmap())
                 )
         }
 
         private fun frameDuration(index: Int): Long {
-            return if (index >= 0 && index < frameInfos.size) {
-                frameInfos[index].duration.toLong()
-            } else {
-                50
-            }
+            return animatedImage.frameDurations.getOrNull(index)?.toLong() ?: 50L
         }
 
         private class FrameBitmap(val bitmap: Bitmap) {

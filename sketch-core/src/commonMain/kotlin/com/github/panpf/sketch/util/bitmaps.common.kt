@@ -153,3 +153,13 @@ expect fun Bitmap.scale(scaleFactor: Float): Bitmap
  * Create thumbnails with specified width and height
  */
 expect fun Bitmap.thumbnail(width: Int, height: Int): Bitmap
+
+/**
+ * Replaces pixel values with color
+ */
+expect fun Bitmap.erase(color: Int)
+
+/**
+ * Copy pixels from another Bitmap to this Bitmap.
+ */
+expect fun Bitmap.copyPixelsFrom(fromBitmap: Bitmap)

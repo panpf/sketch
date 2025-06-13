@@ -11,9 +11,11 @@ import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.asPainter
 import com.github.panpf.sketch.asPainterOrNull
 import com.github.panpf.sketch.createBitmap
+import com.github.panpf.sketch.painter.AnimatedImagePainter
 import com.github.panpf.sketch.painter.DrawableAnimatablePainter
 import com.github.panpf.sketch.painter.DrawablePainter
 import com.github.panpf.sketch.painter.ImageBitmapPainter
+import com.github.panpf.sketch.test.TestAnimatedImage
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
 import com.github.panpf.sketch.test.utils.TestColor
@@ -46,6 +48,12 @@ class PainterImageAndroidTest {
             expected = FilterQuality.High,
             actual = bitmap.asImage().asPainterOrNull(FilterQuality.High)
                 ?.asOrThrow<ImageBitmapPainter>()?.filterQuality
+        )
+
+        val animatedImage = TestAnimatedImage(100, 100)
+        assertEquals(
+            expected = AnimatedImagePainter(animatedImage),
+            actual = animatedImage.asPainterOrNull()
         )
 
         val animatableDrawable = TestAnimatableDrawable(ColorDrawable(TestColor.RED))

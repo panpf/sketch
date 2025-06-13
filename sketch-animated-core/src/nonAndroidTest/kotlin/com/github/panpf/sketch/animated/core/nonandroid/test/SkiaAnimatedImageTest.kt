@@ -1,6 +1,6 @@
-package com.github.panpf.sketch.core.nonandroid.test
+package com.github.panpf.sketch.animated.core.nonandroid.test
 
-import com.github.panpf.sketch.AnimatedImage
+import com.github.panpf.sketch.SkiaAnimatedImage
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.test.utils.getTestContext
@@ -8,7 +8,7 @@ import com.github.panpf.sketch.util.toLogString
 import okio.buffer
 import okio.use
 import org.jetbrains.skia.Codec
-import org.jetbrains.skia.ColorType.GRAY_8
+import org.jetbrains.skia.ColorType
 import org.jetbrains.skia.Data
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -17,16 +17,16 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
-class AnimatedImageTest {
+class SkiaAnimatedImageTest {
 
     @Test
     fun testConstructor() {
         val context = getTestContext()
         val codec = ResourceImages.animGif.toDataSource(context)
             .openSource().buffer().use { it.readByteArray() }
-            .let { Data.makeFromBytes(it) }
-            .let { Codec.makeFromData(it) }
-        AnimatedImage(codec).apply {
+            .let { Data.Companion.makeFromBytes(it) }
+            .let { Codec.Companion.makeFromData(it) }
+        SkiaAnimatedImage(codec).apply {
             assertSame(expected = codec, actual = codec)
         }
     }
@@ -36,9 +36,9 @@ class AnimatedImageTest {
         val context = getTestContext()
         val codec = ResourceImages.animGif.toDataSource(context)
             .openSource().buffer().use { it.readByteArray() }
-            .let { Data.makeFromBytes(it) }
-            .let { Codec.makeFromData(it) }
-        AnimatedImage(codec).apply {
+            .let { Data.Companion.makeFromBytes(it) }
+            .let { Codec.Companion.makeFromData(it) }
+        SkiaAnimatedImage(codec).apply {
             assertEquals(expected = 480, actual = width)
             assertEquals(expected = 480, actual = height)
         }
@@ -49,9 +49,9 @@ class AnimatedImageTest {
         val context = getTestContext()
         val codec = ResourceImages.animGif.toDataSource(context)
             .openSource().buffer().use { it.readByteArray() }
-            .let { Data.makeFromBytes(it) }
-            .let { Codec.makeFromData(it) }
-        AnimatedImage(codec).apply {
+            .let { Data.Companion.makeFromBytes(it) }
+            .let { Codec.Companion.makeFromData(it) }
+        SkiaAnimatedImage(codec).apply {
             assertEquals(
                 expected = 480 * 480 * codec.imageInfo.bytesPerPixel.toLong(),
                 actual = byteCount
@@ -64,9 +64,9 @@ class AnimatedImageTest {
         val context = getTestContext()
         val codec = ResourceImages.animGif.toDataSource(context)
             .openSource().buffer().use { it.readByteArray() }
-            .let { Data.makeFromBytes(it) }
-            .let { Codec.makeFromData(it) }
-        AnimatedImage(codec).apply {
+            .let { Data.Companion.makeFromBytes(it) }
+            .let { Codec.Companion.makeFromData(it) }
+        SkiaAnimatedImage(codec).apply {
             assertFalse(actual = shareable)
         }
     }
@@ -76,9 +76,9 @@ class AnimatedImageTest {
         val context = getTestContext()
         val codec = ResourceImages.animGif.toDataSource(context)
             .openSource().buffer().use { it.readByteArray() }
-            .let { Data.makeFromBytes(it) }
-            .let { Codec.makeFromData(it) }
-        AnimatedImage(codec).apply {
+            .let { Data.Companion.makeFromBytes(it) }
+            .let { Codec.Companion.makeFromData(it) }
+        SkiaAnimatedImage(codec).apply {
             assertTrue(actual = checkValid())
             assertTrue(actual = checkValid())
             assertTrue(actual = checkValid())
@@ -90,18 +90,21 @@ class AnimatedImageTest {
         val context = getTestContext()
         val codec1 = ResourceImages.animGif.toDataSource(context)
             .openSource().buffer().use { it.readByteArray() }
-            .let { Data.makeFromBytes(it) }
-            .let { Codec.makeFromData(it) }
+            .let { Data.Companion.makeFromBytes(it) }
+            .let { Codec.Companion.makeFromData(it) }
         val codec2 = ResourceImages.animGif.toDataSource(context)
             .openSource().buffer().use { it.readByteArray() }
-            .let { Data.makeFromBytes(it) }
-            .let { Codec.makeFromData(it) }
-        val element1 = AnimatedImage(codec1)
-        val element11 = AnimatedImage(codec1)
-        val element2 = AnimatedImage(codec2)
-        val element3 = AnimatedImage(codec1, imageInfo = codec1.imageInfo.withColorType(GRAY_8))
-        val element4 = AnimatedImage(codec1, repeatCount = 5)
-        val element5 = AnimatedImage(codec1, cacheDecodeTimeoutFrame = true)
+            .let { Data.Companion.makeFromBytes(it) }
+            .let { Codec.Companion.makeFromData(it) }
+        val element1 = SkiaAnimatedImage(codec1)
+        val element11 = SkiaAnimatedImage(codec1)
+        val element2 = SkiaAnimatedImage(codec2)
+        val element3 = SkiaAnimatedImage(
+            codec = codec1,
+            colorInfo = codec1.imageInfo.withColorType(ColorType.GRAY_8).colorInfo
+        )
+        val element4 = SkiaAnimatedImage(codec1, repeatCount = 5)
+        val element5 = SkiaAnimatedImage(codec1, cacheDecodeTimeoutFrame = true)
 
         assertEquals(expected = element1, actual = element11)
         assertNotEquals(illegal = element1, actual = element2)
@@ -135,11 +138,11 @@ class AnimatedImageTest {
         val context = getTestContext()
         val codec = ResourceImages.animGif.toDataSource(context)
             .openSource().buffer().use { it.readByteArray() }
-            .let { Data.makeFromBytes(it) }
-            .let { Codec.makeFromData(it) }
-        val animatedImage = AnimatedImage(codec)
+            .let { Data.Companion.makeFromBytes(it) }
+            .let { Codec.Companion.makeFromData(it) }
+        val animatedImage = SkiaAnimatedImage(codec)
         assertEquals(
-            expected = "AnimatedImage(image=${codec.toLogString()}, imageInfo=${codec.imageInfo}, repeatCount=null, cacheDecodeTimeoutFrame=false)",
+            expected = "SkiaAnimatedImage(image=${codec.toLogString()}, colorInfo=${codec.colorInfo.toLogString()}, repeatCount=-1, cacheDecodeTimeoutFrame=false)",
             actual = animatedImage.toString()
         )
     }

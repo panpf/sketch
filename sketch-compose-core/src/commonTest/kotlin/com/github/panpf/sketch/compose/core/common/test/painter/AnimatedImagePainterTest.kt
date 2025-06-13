@@ -1,26 +1,17 @@
-@file:OptIn(ExperimentalTestApi::class)
-
-package com.github.panpf.sketch.compose.core.nonandroid.test.painter
+package com.github.panpf.sketch.compose.core.common.test.painter
 
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.FilterQuality
-import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQuality
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.toSize
-import com.github.panpf.sketch.AnimatedImage
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.painter.AnimatedImagePainter
-import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.TestAnimatedImage
 import kotlinx.coroutines.isActive
-import okio.buffer
-import okio.use
-import org.jetbrains.skia.Codec
-import org.jetbrains.skia.Data
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -31,12 +22,7 @@ class AnimatedImagePainterTest {
 
     @Test
     fun testIntrinsicSize() {
-        val context = getTestContext()
-        val codec1 = ResourceImages.animGif.toDataSource(context)
-            .openSource().buffer().use { it.readByteArray() }
-            .let { Data.makeFromBytes(it) }
-            .let { Codec.makeFromData(it) }
-        val animatedImage = AnimatedImage(codec1)
+        val animatedImage = TestAnimatedImage(100, 100)
         AnimatedImagePainter(animatedImage).apply {
             assertEquals(
                 expected = IntSize(animatedImage.width, animatedImage.height).toSize(),
@@ -56,12 +42,7 @@ class AnimatedImagePainterTest {
 
     @Test
     fun testRememberObserver() {
-        val context = getTestContext()
-        val codec1 = ResourceImages.animGif.toDataSource(context)
-            .openSource().buffer().use { it.readByteArray() }
-            .let { Data.makeFromBytes(it) }
-            .let { Codec.makeFromData(it) }
-        val animatedImage = AnimatedImage(codec1)
+        val animatedImage = TestAnimatedImage(100, 100)
         val animatedImagePainter = AnimatedImagePainter(animatedImage)
 
         assertEquals(expected = 0, actual = animatedImagePainter.rememberedCounter.count)
@@ -98,12 +79,7 @@ class AnimatedImagePainterTest {
 
     @Test
     fun testStartStopIsRunning() {
-        val context = getTestContext()
-        val codec1 = ResourceImages.animGif.toDataSource(context)
-            .openSource().buffer().use { it.readByteArray() }
-            .let { Data.makeFromBytes(it) }
-            .let { Codec.makeFromData(it) }
-        val animatedImage = AnimatedImage(codec1)
+        val animatedImage = TestAnimatedImage(100, 100)
         val animatedImagePainter = AnimatedImagePainter(animatedImage)
 
         assertEquals(false, animatedImagePainter.isRunning())
@@ -127,15 +103,11 @@ class AnimatedImagePainterTest {
         assertEquals(false, animatedImagePainter.isRunning())
     }
 
+    @OptIn(ExperimentalTestApi::class)
     @Test
     fun testAnimatedTransformation() {
-        val context = getTestContext()
-        val codec1 = ResourceImages.animGif.toDataSource(context)
-            .openSource().buffer().use { it.readByteArray() }
-            .let { Data.makeFromBytes(it) }
-            .let { Codec.makeFromData(it) }
         var animatedTransformationCalled = false
-        val animatedImage = AnimatedImage(codec1).apply {
+        val animatedImage = TestAnimatedImage(100, 100).apply {
             animatedTransformation = { _, _ ->
                 animatedTransformationCalled = true
             }
@@ -161,23 +133,15 @@ class AnimatedImagePainterTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val context = getTestContext()
-        val codec1 = ResourceImages.animGif.toDataSource(context)
-            .openSource().buffer().use { it.readByteArray() }
-            .let { Data.makeFromBytes(it) }
-            .let { Codec.makeFromData(it) }
-        val codec2 = ResourceImages.animGif.toDataSource(context)
-            .openSource().buffer().use { it.readByteArray() }
-            .let { Data.makeFromBytes(it) }
-            .let { Codec.makeFromData(it) }
-        val animatedImage1 = AnimatedImage(codec1)
-        val animatedImage2 = AnimatedImage(codec2)
+        val animatedImage1 = TestAnimatedImage(100, 100)
+        val animatedImage2 = TestAnimatedImage(200, 200)
         val element1 = AnimatedImagePainter(animatedImage1)
         val element11 = AnimatedImagePainter(animatedImage1)
         val element2 = AnimatedImagePainter(animatedImage2)
         val element3 = AnimatedImagePainter(animatedImage1, srcOffset = IntOffset(2, 2))
-        val element4 = AnimatedImagePainter(animatedImage1, srcSize = IntSize(100, 100))
-        val element5 = AnimatedImagePainter(animatedImage1, filterQuality = FilterQuality.High)
+        val element4 = AnimatedImagePainter(animatedImage1, srcSize = IntSize(50, 50))
+        val element5 =
+            AnimatedImagePainter(animatedImage1, filterQuality = FilterQuality.Companion.High)
 
         assertEquals(expected = element1, actual = element11)
         assertNotEquals(illegal = element1, actual = element2)
@@ -208,20 +172,15 @@ class AnimatedImagePainterTest {
 
     @Test
     fun testToString() {
-        val context = getTestContext()
-        val codec = ResourceImages.animGif.toDataSource(context)
-            .openSource().buffer().use { it.readByteArray() }
-            .let { Data.makeFromBytes(it) }
-            .let { Codec.makeFromData(it) }
-        val animatedImage = AnimatedImage(codec)
+        val animatedImage = TestAnimatedImage(100, 100)
         val animatedImagePainter = AnimatedImagePainter(animatedImage)
         assertEquals(
-            expected = "AnimatedImagePainter(animatedImage=$animatedImage, srcOffset=${IntOffset.Zero}, srcSize=${
+            expected = "AnimatedImagePainter(animatedImage=$animatedImage, srcOffset=${IntOffset.Companion.Zero}, srcSize=${
                 IntSize(
                     animatedImage.width,
                     animatedImage.height
                 )
-            }, filterQuality=${DefaultFilterQuality})",
+            }, filterQuality=${DrawScope.Companion.DefaultFilterQuality})",
             actual = animatedImagePainter.toString()
         )
     }

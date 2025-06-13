@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.animated.webp.nonandroid.test.decode
 
-import com.github.panpf.sketch.AnimatedImage
 import com.github.panpf.sketch.ComponentRegistry
+import com.github.panpf.sketch.SkiaAnimatedImage
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.SkiaAnimatedWebpDecoder
 import com.github.panpf.sketch.decode.SkiaAnimatedWebpDecoder.Factory
@@ -134,18 +134,18 @@ class SkiaAnimatedWebpDecoderTest {
             assertEquals(expected = Size(width = 480, height = 270), actual = image.size)
             assertEquals(expected = LOCAL, actual = this.dataFrom)
             assertEquals(expected = null, actual = this.transformeds)
-            assertEquals(expected = null, actual = image.asOrThrow<AnimatedImage>().repeatCount)
+            assertEquals(expected = -1, actual = image.asOrThrow<SkiaAnimatedImage>().repeatCount)
             assertNotEquals(
                 illegal = null,
-                actual = image.asOrThrow<AnimatedImage>().animatedTransformation
+                actual = image.asOrThrow<SkiaAnimatedImage>().animatedTransformation
             )
             assertNotEquals(
                 illegal = null,
-                actual = image.asOrThrow<AnimatedImage>().animationStartCallback
+                actual = image.asOrThrow<SkiaAnimatedImage>().animationStartCallback
             )
             assertNotEquals(
                 illegal = null,
-                actual = image.asOrThrow<AnimatedImage>().animationEndCallback
+                actual = image.asOrThrow<SkiaAnimatedImage>().animationEndCallback
             )
         }
 
@@ -157,18 +157,18 @@ class SkiaAnimatedWebpDecoderTest {
             assertEquals(expected = Size(width = 480, height = 270), actual = image.size)
             assertEquals(expected = LOCAL, actual = this.dataFrom)
             assertEquals(expected = null, actual = this.transformeds)
-            assertEquals(expected = 3, actual = image.asOrThrow<AnimatedImage>().repeatCount)
+            assertEquals(expected = 3, actual = image.asOrThrow<SkiaAnimatedImage>().repeatCount)
             assertEquals(
                 expected = null,
-                actual = image.asOrThrow<AnimatedImage>().animatedTransformation
+                actual = image.asOrThrow<SkiaAnimatedImage>().animatedTransformation
             )
             assertEquals(
                 expected = null,
-                actual = image.asOrThrow<AnimatedImage>().animationStartCallback
+                actual = image.asOrThrow<SkiaAnimatedImage>().animationStartCallback
             )
             assertEquals(
                 expected = null,
-                actual = image.asOrThrow<AnimatedImage>().animationEndCallback
+                actual = image.asOrThrow<SkiaAnimatedImage>().animationEndCallback
             )
         }
     }

@@ -22,7 +22,7 @@ import org.jetbrains.skia.Codec
 /**
  * Get the string applicable to the log
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.util.AnimatedImagesTest.testCodecToLogString
+ * @see com.github.panpf.sketch.animated.core.nonandroid.test.util.AnimatedImagesTest.testCodecToLogString
  */
 fun Codec.toLogString(): String =
-    "Codec@${toHexString()}(${width}x${height},${colorType},${colorSpace?.name()})"
+    "Codec@${this.hashCode().toString(16)}(${width}x${height},${colorType},${colorSpace?.name()})"

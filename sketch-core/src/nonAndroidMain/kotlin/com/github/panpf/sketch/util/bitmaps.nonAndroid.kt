@@ -565,3 +565,21 @@ actual fun Bitmap.thumbnail(width: Int, height: Int): Bitmap {
     }
     return outputBitmap
 }
+
+/**
+ * Replaces pixel values with color
+ */
+actual fun Bitmap.erase(color: Int) {
+    this.erase(color)
+}
+
+/**
+ * Copy pixels from another Bitmap to this Bitmap.
+ */
+actual fun Bitmap.copyPixelsFrom(fromBitmap: Bitmap) {
+    require(this.width == fromBitmap.width && this.height == fromBitmap.height) {
+        "The width and height of the source Bitmap must be equal to the target Bitmap. " +
+                "Source: ${fromBitmap.width}x${fromBitmap.height}, Target: ${this.width}x${this.height}"
+    }
+    this.installPixels(fromBitmap.readPixels())
+}

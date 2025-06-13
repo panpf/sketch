@@ -14,30 +14,43 @@
  * limitations under the License.
  */
 
-@file:Suppress("RedundantConstructorKeyword")
-
 package com.github.panpf.sketch
 
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.toLogString
 import org.jetbrains.skia.Codec
+import org.jetbrains.skia.ColorInfo
 import org.jetbrains.skia.ImageInfo
 
 /**
- * Animated [Codec] [Image]
+ * Skia Animated [Image]
  *
- * @see com.github.panpf.sketch.core.nonandroid.test.AnimatedImageTest
+ * @see com.github.panpf.sketch.animated.core.nonandroid.test.SkiaAnimatedImageTest
  */
-data class AnimatedImage constructor(
+data class SkiaAnimatedImage constructor(
     val codec: Codec,
-    val imageInfo: ImageInfo = codec.imageInfo,
-    val repeatCount: Int? = null,
-    val cacheDecodeTimeoutFrame: Boolean = false,
-) : Image {
+    val colorInfo: ColorInfo = codec.colorInfo,
+    override val repeatCount: Int = codec.repetitionCount,
+    override val cacheDecodeTimeoutFrame: Boolean = false,
+) : AnimatedImage {
 
-    var animatedTransformation: ((Any, Rect) -> Unit)? = null
-    var animationStartCallback: (() -> Unit)? = null
-    var animationEndCallback: (() -> Unit)? = null
+    private val imageInfo = ImageInfo(colorInfo, codec.width, codec.height)
+
+    override val frameCount: Int = codec.frameCount
+    override val frameDurations: Array<Int> by lazy {
+        codec.framesInfo.map { it.duration }.toTypedArray()
+    }
+
+    override var animatedTransformation: ((Any, Rect) -> Unit)? = null
+    override var animationStartCallback: (() -> Unit)? = null
+    override var animationEndCallback: (() -> Unit)? = null
+
+    override fun createFrameBitmap(width: Int, height: Int): Bitmap =
+        createBitmap(ImageInfo(colorInfo, width, height))
+
+    override fun readFrame(bitmap: Bitmap, frameIndex: Int) {
+        codec.readPixels(bitmap, frameIndex)
+    }
 
     override val width: Int = codec.width
 
@@ -49,9 +62,9 @@ data class AnimatedImage constructor(
 
     override fun checkValid(): Boolean = true
 
-    override fun toString(): String = "AnimatedImage(" +
+    override fun toString(): String = "SkiaAnimatedImage(" +
             "image=${codec.toLogString()}, " +
-            "imageInfo=$imageInfo, " +
+            "colorInfo=${colorInfo.toLogString()}, " +
             "repeatCount=$repeatCount, " +
             "cacheDecodeTimeoutFrame=$cacheDecodeTimeoutFrame" +
             ")"

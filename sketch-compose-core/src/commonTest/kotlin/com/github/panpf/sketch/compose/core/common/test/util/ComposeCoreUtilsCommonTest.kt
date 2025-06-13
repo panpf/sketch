@@ -40,7 +40,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertSame
 
-class ComposeCoreUtilsTest {
+class ComposeCoreUtilsCommonTest {
 
     @Test
     fun testContentScaleToScale() {

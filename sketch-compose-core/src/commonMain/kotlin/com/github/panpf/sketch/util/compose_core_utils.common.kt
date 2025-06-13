@@ -33,6 +33,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ContentScale.Companion
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntSize
+import com.github.panpf.sketch.Bitmap
 import com.github.panpf.sketch.painter.CrossfadePainter
 import com.github.panpf.sketch.painter.PainterWrapper
 import com.github.panpf.sketch.resize.Scale
@@ -51,7 +52,7 @@ expect fun windowContainerSize(): IntSize
 /**
  * Convert [ContentScale] to [Scale]
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testContentScaleToScale
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testContentScaleToScale
  */
 @Stable
 @Deprecated("Use `toScale(ContentScale, Alignment)` instead")
@@ -72,7 +73,7 @@ fun ContentScale.toScale(): Scale {
 /**
  * Convert [ContentScale] to [Scale]
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testContentScaleToScale
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testContentScaleToScale
  */
 @Stable
 fun toScale(contentScale: ContentScale, alignment: Alignment): Scale = when (contentScale) {
@@ -100,7 +101,7 @@ fun toScale(contentScale: ContentScale, alignment: Alignment): Scale = when (con
 /**
  * Convert [ContentScale] to [Scale]
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testFromScale
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testFromScale
  */
 @Suppress("REDUNDANT_ELSE_IN_WHEN")
 @Stable
@@ -115,7 +116,7 @@ fun fromScale(scale: Scale): Pair<ContentScale, Alignment> = when (scale) {
 /**
  * Get the name of the [ContentScale]
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testContentScaleName
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testContentScaleName
  */
 @Stable
 internal val ContentScale.name: String
@@ -133,7 +134,7 @@ internal val ContentScale.name: String
 /**
  * Whether the [ContentScale] is a fit scale
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testContentScaleFitScale
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testContentScaleFitScale
  */
 val ContentScale.fitScale: Boolean
     get() = this == ContentScale.Fit || this == Companion.Inside
@@ -171,7 +172,7 @@ internal fun Alignment.floatAlign(size: Size, space: Size): Offset {
 /**
  * Convert [Size] to [IntSize] or return null if it is [Size.isUnspecified]
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testSizeToIntSizeOrNull
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testSizeToIntSizeOrNull
  */
 internal fun Size.toIntSizeOrNull(): IntSize? = when {
     isUnspecified -> null
@@ -187,7 +188,7 @@ internal fun Size.toIntSizeOrNull(): IntSize? = when {
 /**
  * Get log string
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testToLogString
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testToLogString
  */
 fun Size.toLogString(): String {
     return if (this.isSpecified) {
@@ -200,7 +201,7 @@ fun Size.toLogString(): String {
 /**
  * Whether the [IntSize] is empty
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testIntSizeIsEmpty
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testIntSizeIsEmpty
  */
 @Stable
 internal fun IntSize.isEmpty(): Boolean = width <= 0 || height <= 0
@@ -208,7 +209,7 @@ internal fun IntSize.isEmpty(): Boolean = width <= 0 || height <= 0
 /**
  * Get log string
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testIntSizeToLogString
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testIntSizeToLogString
  */
 internal fun IntSize.toLogString(): String {
     return "${width}x$height"
@@ -217,7 +218,7 @@ internal fun IntSize.toLogString(): String {
 /**
  * Convert [IntSize] to [SketchSize]
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testIntSizeToSketchSize
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testIntSizeToSketchSize
  */
 @Stable
 fun IntSize.toSketchSize(): SketchSize = SketchSize(width, height)
@@ -225,7 +226,7 @@ fun IntSize.toSketchSize(): SketchSize = SketchSize(width, height)
 /**
  * Convert [SketchSize] to [IntSize]
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testSketchSizeToIntSize
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testSketchSizeToIntSize
  */
 @Stable
 fun SketchSize.toIntSize(): IntSize = IntSize(width, height)
@@ -233,7 +234,7 @@ fun SketchSize.toIntSize(): IntSize = IntSize(width, height)
 /**
  * Convert [SketchSize] to [Size]
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testSketchSizeToSize
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testSketchSizeToSize
  */
 @Stable
 fun SketchSize.toSize(): Size = Size(width.toFloat(), height.toFloat())
@@ -241,7 +242,7 @@ fun SketchSize.toSize(): Size = Size(width.toFloat(), height.toFloat())
 /**
  * Convert [Constraints] to [IntSize] or return null if it is zero or not bounded
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testConstraintsToIntSizeOrNull
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testConstraintsToIntSizeOrNull
  */
 @Stable
 internal fun Constraints.toIntSizeOrNull(): IntSize? = when {
@@ -253,7 +254,7 @@ internal fun Constraints.toIntSizeOrNull(): IntSize? = when {
 /**
  * Convert [Constraints] to Resize
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testConstraintsToRequestSize
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testConstraintsToRequestSize
  */
 @Stable
 internal fun Constraints.toRequestSize(): IntSize {
@@ -266,7 +267,7 @@ internal fun Constraints.toRequestSize(): IntSize {
 /**
  * Find the leaf [Painter] of the [Painter]
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testPainterFindLeafPainter
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testPainterFindLeafPainter
  */
 fun Painter.findLeafPainter(): Painter {
     return when (val painter = this) {
@@ -278,7 +279,7 @@ fun Painter.findLeafPainter(): Painter {
 /**
  * Find the deepest [Painter] of the [Painter]
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testPainterFindLeafPainter
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testPainterFindLeafPainter
  */
 fun Painter.findDeepestPainter(): Painter {
     return when (val painter = this) {
@@ -291,7 +292,7 @@ fun Painter.findDeepestPainter(): Painter {
 /**
  * Get the simple name of the [ColorSpace]
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testSimpleName
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testSimpleName
  */
 internal val ColorSpace.simpleName: String
     get() = when (this) {
@@ -318,7 +319,7 @@ internal val ColorSpace.simpleName: String
 /**
  * Convert to the type specified by the generic, if this is null or cannot be converted return null
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testAnyAsOrNull
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testAnyAsOrNull
  */
 internal inline fun <reified R> Any?.asOrNull(): R? {
     return if (this != null && this is R) this else null
@@ -327,14 +328,20 @@ internal inline fun <reified R> Any?.asOrNull(): R? {
 /**
  * Returns a string representation of this Int value in the specified radix.
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testToHexString
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testToHexString
  */
 internal fun Any.toHexString(): String = this.hashCode().toString(16)
 
 /**
  * Convert [ImageBitmap] to log string
  *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsTest.testImageBitmapToLogString
+ * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testImageBitmapToLogString
  */
 fun ImageBitmap.toLogString(): String =
     "ImageBitmap@${toHexString()}(${width}x${height},$config,${colorSpace.simpleName})"
+
+/**
+ * Create an [ImageBitmap] from the given [Bitmap]. Note this does not create a copy of the original
+ * [Bitmap] and changes to it will modify the returned [ImageBitmap]
+ */
+expect fun Bitmap.asComposeImageBitmap(): ImageBitmap
