@@ -34,6 +34,7 @@ import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build.VERSION
 import android.os.SystemClock
+import androidx.core.graphics.createBitmap
 import androidx.core.graphics.withSave
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
@@ -57,8 +58,7 @@ class MovieDrawable(
     private val callbacks = mutableListOf<Animatable2Compat.AnimationCallback>()
 
     private val currentBounds = Rect()
-
-    //    private val tempCanvasBounds = Rect()
+    private val tempCanvasBounds = Rect()
     private var softwareCanvas: Canvas? = null
     private var softwareBitmap: Bitmap? = null
 
@@ -77,7 +77,7 @@ class MovieDrawable(
     private var animatedTransformation: AnimatedTransformation? = null
     private var animatedTransformationPicture: Picture? = null
     private var pixelOpacity = UNCHANGED
-//    private var isSoftwareScalingEnabled = false
+    private var isSoftwareScalingEnabled = false
 
     init {
         require(!(VERSION.SDK_INT >= 26 && config == HARDWARE)) { "Bitmap config must not be hardware." }
@@ -88,17 +88,17 @@ class MovieDrawable(
         val invalidate = updateFrameTime()
 
         // Update the scaling properties and draw the current frame.
-//        if (isSoftwareScalingEnabled) {
-//            updateBounds(canvas.bounds)
-//            canvas.withSave {
-//                val scale = 1 / softwareScale
-//                scale(scale, scale)
-//                drawFrame(canvas)
-//            }
-//        } else {
-        updateBounds(bounds)
-        drawFrame(canvas)
-//        }
+        if (isSoftwareScalingEnabled) {
+            updateBounds(canvas.bounds)
+            canvas.withSave {
+                val scale = 1 / softwareScale
+                scale(scale, scale)
+                drawFrame(canvas)
+            }
+        } else {
+            updateBounds(bounds)
+            drawFrame(canvas)
+        }
 
         // Request a new draw pass for the next frame if necessary.
         if (isRunning && invalidate) {
@@ -188,12 +188,13 @@ class MovieDrawable(
             pixelOpacity = animatedTransformation.transform(canvas, bounds)
             picture.endRecording()
             animatedTransformationPicture = picture
+            // Disable software scaling because it will affect the drawing of animatedTransformation
 //            isSoftwareScalingEnabled = true
         } else {
             // If width/height are not positive, we're unable to draw the movie.
             animatedTransformationPicture = null
             pixelOpacity = UNCHANGED
-//            isSoftwareScalingEnabled = false
+            isSoftwareScalingEnabled = false
         }
 
         // Re-render the drawable.
@@ -242,33 +243,30 @@ class MovieDrawable(
             dstWidth = boundsWidth.toFloat(),
             dstHeight = boundsHeight.toFloat(),
             fitScale = true
-        ).run {
-//                    if (isSoftwareScalingEnabled) this else
-            coerceAtMost(1f)
-        }
+        ).run { if (isSoftwareScalingEnabled) this else coerceAtMost(1f) }
         val bitmapWidth = (softwareScale * movieWidth).toInt()
         val bitmapHeight = (softwareScale * movieHeight).toInt()
 
-        val bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, config)
+        val bitmap = createBitmap(bitmapWidth, bitmapHeight, config)
         softwareBitmap?.recycle()
         softwareBitmap = bitmap
         softwareCanvas = Canvas(bitmap)
 
-//        if (isSoftwareScalingEnabled) {
-//            hardwareScale = 1f
-//            hardwareDx = 0f
-//            hardwareDy = 0f
-//        } else {
-        hardwareScale = calculateScaleMultiplierWithFit(
-            srcWidth = bitmapWidth.toFloat(),
-            srcHeight = bitmapHeight.toFloat(),
-            dstWidth = boundsWidth.toFloat(),
-            dstHeight = boundsHeight.toFloat(),
-            fitScale = true
-        )
-        hardwareDx = bounds.left + (boundsWidth - hardwareScale * bitmapWidth) / 2f
-        hardwareDy = bounds.top + (boundsHeight - hardwareScale * bitmapHeight) / 2f
-//        }
+        if (isSoftwareScalingEnabled) {
+            hardwareScale = 1f
+            hardwareDx = 0f
+            hardwareDy = 0f
+        } else {
+            hardwareScale = calculateScaleMultiplierWithFit(
+                srcWidth = bitmapWidth.toFloat(),
+                srcHeight = bitmapHeight.toFloat(),
+                dstWidth = boundsWidth.toFloat(),
+                dstHeight = boundsHeight.toFloat(),
+                fitScale = true
+            )
+            hardwareDx = bounds.left + (boundsWidth - hardwareScale * bitmapWidth) / 2f
+            hardwareDy = bounds.top + (boundsHeight - hardwareScale * bitmapHeight) / 2f
+        }
     }
 
     override fun getIntrinsicWidth() = movie.width()
@@ -284,7 +282,9 @@ class MovieDrawable(
         loopIteration = 0
         startTimeMillis = SystemClock.uptimeMillis()
 
-        callbacks.forEach { it.onAnimationStart(this) }
+        for (index in callbacks.indices) {
+            callbacks[index].onAnimationStart(this)
+        }
         invalidateSelf()
     }
 
@@ -292,7 +292,9 @@ class MovieDrawable(
         if (!isRunning) return
         isRunning = false
 
-        callbacks.forEach { it.onAnimationEnd(this) }
+        for (index in callbacks.indices) {
+            callbacks[index].onAnimationEnd(this)
+        }
     }
 
     override fun registerAnimationCallback(callback: Animatable2Compat.AnimationCallback) {
@@ -324,5 +326,5 @@ class MovieDrawable(
         return "MovieDrawable(size=${movie.width()}x${movie.height()}, config=$config)"
     }
 
-//    private val Canvas.bounds get() = tempCanvasBounds.apply { set(0, 0, width, height) }
+    private val Canvas.bounds get() = tempCanvasBounds.apply { set(0, 0, width, height) }
 }

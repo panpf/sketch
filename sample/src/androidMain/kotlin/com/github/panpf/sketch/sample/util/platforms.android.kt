@@ -31,14 +31,8 @@ internal val PackageInfo.versionCodeCompat: Int
         versionCode
     }
 
-actual fun platformGifDecoders(): List<Decoder.Factory> {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-        listOf(
-            MovieGifDecoder.Factory(),
-            KoralGifDecoder.Factory(),
-            ImageDecoderGifDecoder.Factory()
-        )
-    } else {
-        listOf(MovieGifDecoder.Factory(), KoralGifDecoder.Factory())
-    }
-}
+actual fun platformGifDecoders(): List<Decoder.Factory> = listOfNotNull(
+    MovieGifDecoder.Factory(),
+    KoralGifDecoder.Factory(),
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) ImageDecoderGifDecoder.Factory() else null
+)
