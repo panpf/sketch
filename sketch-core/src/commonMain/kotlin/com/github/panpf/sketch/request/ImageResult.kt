@@ -54,7 +54,7 @@ interface ImageResult {
         override val image: Image,
 
         /**
-         * Cache key, it is used for memory cache reading and writing.
+         * Cache key, it is used for memory cache or result cache reading and writing.
          */
         val cacheKey: String,
 
