@@ -20,6 +20,8 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.content
+import com.github.panpf.sketch.images.slow
 import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.request.Extras
 import com.github.panpf.sketch.util.toUri

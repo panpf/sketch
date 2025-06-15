@@ -53,6 +53,7 @@ fun TestPage() {
             add(TestItem("AnimatedImage", AnimatedImageTestScreen()))
             add(TestItem("ExifOrientation", ExifOrientationTestScreen()))
             add(TestItem("Transformation", TransformationTestScreen()))
+            add(TestItem("Progress", ProgressTestScreen()))
 
             add(TestGroup("UI"))
             add(TestItem("CrossfadePainter", CrossfadePainterTestScreen()))

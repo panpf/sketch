@@ -3,10 +3,11 @@ package com.github.panpf.sketch.core.common.test.util
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.supportResourcesHttpUri
+import com.github.panpf.sketch.images.toResourceHttpUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
-import com.github.panpf.sketch.test.utils.supportMyImagesHttpUri
 import com.github.panpf.sketch.util.DownloadData
 import kotlinx.coroutines.test.runTest
 import okio.use
@@ -20,22 +21,22 @@ class DownloadTest {
     @Test
     fun test() = runTest {
         runInNewSketchWithUse({
-            val defaultSketch = getTestContextAndSketch().second
+            val context = getTestContextAndSketch().first
             components {
-                supportMyImagesHttpUri(defaultSketch)
+                supportResourcesHttpUri(context)
             }
         }) { context, sketch ->
             val downloadCache = sketch.downloadCache
             downloadCache.clear()
             assertEquals(expected = 0L, actual = downloadCache.size)
 
-            val imageUri1 = "http://${ResourceImages.jpeg.resourceName}"
+            val imageUri1 = ResourceImages.jpeg.toResourceHttpUri()
             assertFalse(downloadCache.existWithLock(imageUri1))
-            val imageUri2 = "http://${ResourceImages.png.resourceName}"
+            val imageUri2 = ResourceImages.png.toResourceHttpUri()
             assertFalse(downloadCache.existWithLock(imageUri2))
-            val imageUri3 = "http://${ResourceImages.webp.resourceName}"
+            val imageUri3 = ResourceImages.webp.toResourceHttpUri()
             assertFalse(downloadCache.existWithLock(imageUri3))
-            val imageUri4 = "http://${ResourceImages.bmp.resourceName}"
+            val imageUri4 = ResourceImages.bmp.toResourceHttpUri()
             assertFalse(downloadCache.existWithLock(imageUri4))
 
             val result1 = sketch.enqueueDownload(ImageRequest(context, imageUri1)).await()

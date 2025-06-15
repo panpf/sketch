@@ -2,6 +2,7 @@ package com.github.panpf.sketch.sample
 
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.images.supportResourcesHttpUri
 import com.github.panpf.sketch.request.supportPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.supportSaveCellularTraffic
 import com.github.panpf.sketch.sample.util.ignoreFirst
@@ -14,6 +15,7 @@ fun newSketch(context: PlatformContext): Sketch {
         components {
             supportSaveCellularTraffic()
             supportPauseLoadWhenScrolling()
+            supportResourcesHttpUri(context)
         }
 
         networkParallelismLimited(appSettings.networkParallelismLimited.value)

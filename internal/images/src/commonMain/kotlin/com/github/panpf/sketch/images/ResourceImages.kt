@@ -20,18 +20,6 @@ import com.github.panpf.sketch.util.Size
 
 object ResourceImages {
 
-    val bmp: ResourceImageFile = ResourceImageFile(
-        resourceName = "sample.bmp",
-        name = "BMP",
-        size = Size(700, 1012),
-        mimeType = "image/bmp"
-    )
-    val heic: ResourceImageFile = ResourceImageFile(
-        resourceName = "sample.heic",
-        name = "HEIC",
-        size = Size(750, 931),
-        mimeType = "image/heif"
-    )
     val jpeg: ResourceImageFile = ResourceImageFile(
         resourceName = "sample.jpeg",
         name = "JPEG",
@@ -44,17 +32,29 @@ object ResourceImages {
         size = Size(750, 719),
         mimeType = "image/png"
     )
+    val webp: ResourceImageFile = ResourceImageFile(
+        resourceName = "sample.webp",
+        name = "WEBP",
+        size = Size(1080, 1344),
+        mimeType = "image/webp"
+    )
+    val bmp: ResourceImageFile = ResourceImageFile(
+        resourceName = "sample.bmp",
+        name = "BMP",
+        size = Size(700, 1012),
+        mimeType = "image/bmp"
+    )
     val svg: ResourceImageFile = ResourceImageFile(
         resourceName = "sample.svg",
         name = "SVG",
         size = Size(256, 225),
         mimeType = "image/svg+xml"
     )
-    val webp: ResourceImageFile = ResourceImageFile(
-        resourceName = "sample.webp",
-        name = "WEBP",
-        size = Size(1080, 1344),
-        mimeType = "image/webp"
+    val heic: ResourceImageFile = ResourceImageFile(
+        resourceName = "sample.heic",
+        name = "HEIC",
+        size = Size(750, 931),
+        mimeType = "image/heif"
     )
     val avif: ResourceImageFile = ResourceImageFile(
         resourceName = "sample.avif",
@@ -64,50 +64,11 @@ object ResourceImages {
     )
     val statics = arrayOf(jpeg, png, webp, bmp, svg, heic, avif)
 
-//    val formatBmp: ResourceImageFile = ResourceImageFile(
-//        resourceName = "format.bmp",
-//        name = "BMP",
-//        size = Size(699, 1011),
-//        mimeType = "image/bmp"
-//    )
-//    val formatHeic: ResourceImageFile = ResourceImageFile(
-//        resourceName = "format.heic",
-//        name = "HEIC",
-//        size = Size(749, 931),
-//        mimeType = "image/heif"
-//    )
-//    val formatJpeg: ResourceImageFile = ResourceImageFile(
-//        resourceName = "format.jpeg",
-//        name = "JPEG",
-//        size = Size(1291, 1935),
-//        mimeType = "image/jpeg"
-//    )
-//    val formatPng: ResourceImageFile = ResourceImageFile(
-//        resourceName = "sample.png",
-//        name = "PNG",
-//        size = Size(749, 719),
-//        mimeType = "image/png"
-//    )
-//    val formatWebp: ResourceImageFile = ResourceImageFile(
-//        resourceName = "format.webp",
-//        name = "WEBP",
-//        size = Size(1079, 1343),
-//        mimeType = "image/webp"
-//    )
-//    val formats = arrayOf(formatJpeg, formatPng, formatWebp, formatBmp, svg, formatHeic)
-
     val animGif: ResourceImageFile = ResourceImageFile(
         resourceName = "sample_anim.gif",
         name = "GIF",
         size = Size(480, 480),
         mimeType = "image/gif",
-        animated = true
-    )
-    val animHeif: ResourceImageFile = ResourceImageFile(
-        resourceName = "sample_anim.heif",
-        name = "HEIF_ANIM",
-        size = Size(256, 144),
-        mimeType = "image/heif",
         animated = true
     )
     val animWebp: ResourceImageFile = ResourceImageFile(
@@ -117,23 +78,14 @@ object ResourceImages {
         mimeType = "image/webp",
         animated = true
     )
+    val animHeif: ResourceImageFile = ResourceImageFile(
+        resourceName = "sample_anim.heif",
+        name = "HEIF_ANIM",
+        size = Size(256, 144),
+        mimeType = "image/heif",
+        animated = true
+    )
     val anims = arrayOf(animGif, animWebp, animHeif)
-
-//    val formatAnimGif: ResourceImageFile = ResourceImageFile(
-//        resourceName = "format_anim.gif",
-//        name = "GIF",
-//        size = Size(479, 467),
-//        mimeType = "image/gif",
-//        animated = true
-//    )
-//    val formatAnimWebp: ResourceImageFile = ResourceImageFile(
-//        resourceName = "format_anim.webp",
-//        name = "WEBP_ANIM",
-//        size = Size(479, 269),
-//        mimeType = "image/webp",
-//        animated = true
-//    )
-//    val formatAnims = arrayOf(formatAnimGif, formatAnimWebp)
 
     val mp4: ResourceImageFile = ResourceImageFile(
         resourceName = "sample.mp4",
@@ -155,6 +107,7 @@ object ResourceImages {
         size = Size(690, 12176),
         mimeType = "image/jpeg"
     )
+    val longs = arrayOf(longQMSHT, longCOMIC)
 
     val clockExifFlipHorizontal: ResourceImageFile = ResourceImageFile(
         resourceName = "clock_exif_flip_horizontal.jpeg",
@@ -231,6 +184,19 @@ object ResourceImages {
         clockExifUndefined,
     )
 
+    val clockHor: ResourceImageFile = ResourceImageFile(
+        resourceName = "clock_hor.jpeg",
+        name = "CLOCK_HOR",
+        size = Size(1500, 750),
+        mimeType = "image/jpeg"
+    )
+    val clockVer: ResourceImageFile = ResourceImageFile(
+        resourceName = "clock_ver.jpeg",
+        name = "CLOCK_VER",
+        size = Size(750, 1500),
+        mimeType = "image/jpeg"
+    )
+
     val number1: ResourceImageFile = ResourceImageFile(
         resourceName = "number_1.png",
         name = "NUMBER_1",
@@ -287,6 +253,7 @@ object ResourceImages {
     )
     val numbers =
         arrayOf(number1, number2, number3, number4, number5, number6, number7, number8, number9)
+
     val numbersGif: ResourceImageFile = ResourceImageFile(
         resourceName = "numbers.gif",
         name = "NUMBERS",
@@ -295,24 +262,12 @@ object ResourceImages {
         animated = true
     )
 
-    val clockHor: ResourceImageFile = ResourceImageFile(
-        resourceName = "clock_hor.jpeg",
-        name = "CLOCK_HOR",
-        size = Size(1500, 750),
-        mimeType = "image/jpeg"
-    )
-    val clockVer: ResourceImageFile = ResourceImageFile(
-        resourceName = "clock_ver.jpeg",
-        name = "CLOCK_VER",
-        size = Size(750, 1500),
-        mimeType = "image/jpeg"
-    )
-
-    val values: Array<ResourceImageFile> = arrayOf(
-        bmp, heic, jpeg, png, svg, webp, animGif, animHeif, animWebp, mp4, longQMSHT, longCOMIC,
-        clockExifFlipHorizontal, clockExifFlipVertical, clockExifNormal, clockExifRotate90,
-        clockExifRotate180, clockExifRotate270, clockExifTranspose, clockExifTransverse,
-        clockExifUndefined, number1, number2, number3, number4, number5, number6, number7, number8,
-        number9, clockHor, clockVer
-    )
+    val values: Array<ResourceImageFile> = statics
+        .plus(anims)
+        .plus(videos)
+        .plus(longs)
+        .plus(clockExifs)
+        .plus(arrayOf(clockHor, clockVer))
+        .plus(numbers)
+        .plus(numbersGif)
 }

@@ -1,9 +1,10 @@
-package com.github.panpf.sketch.test.utils
+package com.github.panpf.sketch.images
 
 import com.github.panpf.sketch.http.HttpStack
 import okio.Buffer
 import okio.Source
 import okio.Timeout
+import kotlin.time.TimeSource
 
 class SlowSource constructor(
     private val source: Source,
@@ -47,4 +48,18 @@ class SourceContent(private val source: Source) : HttpStack.Content {
 
 fun Source.content(): HttpStack.Content {
     return SourceContent(this)
+}
+
+/**
+ * Replacement for delay as delay does not work in runTest
+ *
+ * Note: Because block will really block the current thread, so please do not use it in the UI thread.
+ */
+fun block(millis: Long) {
+    if (millis > 0) {
+        val startTime = TimeSource.Monotonic.markNow()
+        while (startTime.elapsedNow().inWholeMilliseconds < millis) {
+            // Do nothing
+        }
+    }
 }
