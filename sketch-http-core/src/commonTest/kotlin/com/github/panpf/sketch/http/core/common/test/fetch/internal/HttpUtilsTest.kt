@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.http.core.common.test.fetch.internal
 
+import com.github.panpf.sketch.fetch.internal.copyToWithProgress
 import com.github.panpf.sketch.fetch.internal.getMimeType
-import com.github.panpf.sketch.fetch.internal.writeAllWithProgress
 import com.github.panpf.sketch.images.content
 import com.github.panpf.sketch.images.slow
 import com.github.panpf.sketch.request.ImageRequest
@@ -19,7 +19,7 @@ import kotlin.test.assertEquals
 class HttpUtilsTest {
 
     @Test
-    fun testWriteAllWithProgress() = runTest {
+    fun testCopyToWithProgress() = runTest {
         val context = getTestContext()
         val string = "abcdefghijklmnopqrstuvwxyz"
         val progressListener = ProgressListenerSupervisor()
@@ -29,7 +29,7 @@ class HttpUtilsTest {
         val buffer = Buffer()
         buffer.use { sink ->
             Buffer().writeUtf8(string).slow(100).content().use { content ->
-                writeAllWithProgress(
+                copyToWithProgress(
                     coroutineScope = this@runTest,
                     sink = sink,
                     content = content,
@@ -50,7 +50,7 @@ class HttpUtilsTest {
         val buffer2 = Buffer()
         buffer2.use { sink ->
             Buffer().writeUtf8(string).slow(100).content().use { content ->
-                writeAllWithProgress(
+                copyToWithProgress(
                     coroutineScope = this@runTest,
                     sink = sink,
                     content = content,
@@ -69,7 +69,7 @@ class HttpUtilsTest {
         val buffer3 = Buffer()
         buffer3.use { sink ->
             Buffer().writeUtf8(string).slow(100).buffer().content().use { content ->
-                writeAllWithProgress(
+                copyToWithProgress(
                     coroutineScope = this@runTest,
                     sink = sink,
                     content = content,
@@ -90,7 +90,7 @@ class HttpUtilsTest {
         val buffer4 = Buffer()
         buffer4.use { sink ->
             Buffer().writeUtf8(string).slow(readDelayMillis = 400).content().use { content ->
-                writeAllWithProgress(
+                copyToWithProgress(
                     coroutineScope = this@runTest,
                     sink = sink,
                     content = content,

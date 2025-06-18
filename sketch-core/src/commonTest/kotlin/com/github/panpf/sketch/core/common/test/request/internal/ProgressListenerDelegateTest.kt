@@ -42,15 +42,15 @@ class ProgressListenerDelegateTest {
         }
         val delegate = ProgressListenerDelegate(scope, listener)
 
-        delegate.onUpdateProgress(request, 1000, 200)
+        delegate.callbackProgress(request, 1000, 200)
         block(40)
-        delegate.onUpdateProgress(request, 1000, 400)
+        delegate.callbackProgress(request, 1000, 400)
         block(40)
-        delegate.onUpdateProgress(request, 1000, 600)
+        delegate.callbackProgress(request, 1000, 600)
         block(40)
-        delegate.onUpdateProgress(request, 1000, 800)
+        delegate.callbackProgress(request, 1000, 800)
         block(40)
-        delegate.onUpdateProgress(request, 1000, 1000)
+        delegate.callbackProgress(request, 1000, 1000)
         block(150)
         assertTrue(completedList.size < 5)
     }

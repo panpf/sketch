@@ -26,16 +26,14 @@ import kotlinx.coroutines.isActive
 import okio.BufferedSink
 import okio.IOException
 import kotlin.coroutines.cancellation.CancellationException
-import kotlin.time.TimeSource
-import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 /**
  * Write all the content of the input stream to the output stream.
  *
- * @see com.github.panpf.sketch.http.core.common.test.fetch.internal.HttpUtilsTest.testWriteAllWithProgress
+ * @see com.github.panpf.sketch.http.core.common.test.fetch.internal.HttpUtilsTest.testCopyToWithProgress
  */
 @Throws(IOException::class, CancellationException::class)
-internal suspend fun writeAllWithProgress(
+internal suspend fun copyToWithProgress(
     coroutineScope: CoroutineScope,
     sink: BufferedSink,
     content: Content,
@@ -43,40 +41,28 @@ internal suspend fun writeAllWithProgress(
     contentLength: Long,
     bufferSize: Int = 1024 * 8,
 ): Long {
-    var bytesCopied = 0L
     val buffer = ByteArray(bufferSize)
-    var bytes = content.read(buffer)
-    var lastTimeMark: ValueTimeMark? = null
-    val progressListenerDelegate = request.progressListener?.let {
-        ProgressListenerDelegate(coroutineScope, it)
-    }
-    var lastUpdateProgressBytesCopied = 0L
-    while (bytes >= 0 && coroutineScope.isActive) {
-        sink.write(buffer, 0, bytes)
-        bytesCopied += bytes
-        if (progressListenerDelegate != null && contentLength > 0) {
-            val inWholeMilliseconds = lastTimeMark?.elapsedNow()?.inWholeMilliseconds
-            if (inWholeMilliseconds == null || inWholeMilliseconds >= 300) {
-                lastTimeMark = TimeSource.Monotonic.markNow()
-                val currentBytesCopied = bytesCopied
-                lastUpdateProgressBytesCopied = currentBytesCopied
-                progressListenerDelegate.onUpdateProgress(
-                    request, contentLength, currentBytesCopied
-                )
-            }
+    var completedLength = 0L
+    val progressListenerDelegate = request.progressListener
+        ?.let { ProgressListenerDelegate(coroutineScope, it) }
+    while (coroutineScope.isActive) {
+        val readLength = content.read(buffer)
+        if (readLength > 0) {
+            sink.write(buffer, 0, readLength)
+            completedLength += readLength
+            progressListenerDelegate?.callbackProgress(
+                request = request,
+                contentLength = contentLength,
+                completedLength = completedLength
+            )
+        } else {
+            break
         }
-        bytes = content.read(buffer)
     }
     if (!coroutineScope.isActive) {
         throw CancellationException("Canceled")
     }
-    if (progressListenerDelegate != null
-        && contentLength > 0
-        && lastUpdateProgressBytesCopied != bytesCopied
-    ) {
-        progressListenerDelegate.onUpdateProgress(request, contentLength, bytesCopied)
-    }
-    return bytesCopied
+    return completedLength
 }
 
 /**

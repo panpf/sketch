@@ -23,6 +23,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlin.time.TimeSource
+import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 
 /**
  * [ProgressListener] Delegate, which can be used to prevent the progress from being updated too frequently
@@ -35,14 +37,35 @@ class ProgressListenerDelegate(
 ) {
 
     private var lastJob: Job? = null
+    private var lastTimeMark: ValueTimeMark? = null
+    private var lastUpdateProgressBytesCopied: Long? = null
 
-    fun onUpdateProgress(request: ImageRequest, totalLength: Long, completedLength: Long) {
+    fun callbackProgress(request: ImageRequest, contentLength: Long, completedLength: Long) {
+        if (contentLength <= 0) {
+            return
+        }
+
+        // If the progress has not changed, do not update
+        if (lastUpdateProgressBytesCopied != null && lastUpdateProgressBytesCopied == completedLength) {
+            return
+        }
+
+        // If the time since the last update is less than 300 milliseconds, do not update
+        // CompletedLength is the last update when it is greater than or equal to contentLength, and the time interval is not to be considered.
+        val inWholeMilliseconds = lastTimeMark?.elapsedNow()?.inWholeMilliseconds
+        if (completedLength < contentLength && inWholeMilliseconds != null && inWholeMilliseconds < 300) {
+            return
+        }
+
         val lastJob = this.lastJob
         if (lastJob?.isActive == true) {
             lastJob.cancel()
         }
+
+        lastTimeMark = TimeSource.Monotonic.markNow()
+        lastUpdateProgressBytesCopied = completedLength
         this.lastJob = coroutineScope.launch(Dispatchers.Main) {
-            progressListener.onUpdateProgress(request, Progress(totalLength, completedLength))
+            progressListener.onUpdateProgress(request, Progress(contentLength, completedLength))
         }
     }
 }

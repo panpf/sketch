@@ -26,8 +26,8 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.cache.downloadCacheKey
 import com.github.panpf.sketch.cache.isReadOrWrite
+import com.github.panpf.sketch.fetch.internal.copyToWithProgress
 import com.github.panpf.sketch.fetch.internal.getMimeType
-import com.github.panpf.sketch.fetch.internal.writeAllWithProgress
 import com.github.panpf.sketch.http.HttpStack
 import com.github.panpf.sketch.http.HttpStack.Response
 import com.github.panpf.sketch.request.Depth
@@ -196,7 +196,7 @@ open class HttpUriFetcher constructor(
             val contentLength = response.contentLength
             val readLength = response.content().use { content ->
                 downloadCache.fileSystem.sink(editor.data).buffer().use { sink ->
-                    writeAllWithProgress(coroutineScope, sink, content, request, contentLength)
+                    copyToWithProgress(coroutineScope, sink, content, request, contentLength)
                 }
             }
             // 'Transform-Encoding: chunked' contentLength is -1
@@ -245,7 +245,7 @@ open class HttpUriFetcher constructor(
         val contentLength = response.contentLength
         val buffer = Buffer()
         val readLength = response.content().use { content ->
-            writeAllWithProgress(coroutineScope, buffer, content, request, contentLength)
+            copyToWithProgress(coroutineScope, buffer, content, request, contentLength)
         }
         if (contentLength > 0 && readLength != contentLength) {
             val message =
