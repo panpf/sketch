@@ -2,12 +2,12 @@ package com.github.panpf.sketch.http.core.common.test.fetch.internal
 
 import com.github.panpf.sketch.fetch.internal.getMimeType
 import com.github.panpf.sketch.fetch.internal.writeAllWithProgress
+import com.github.panpf.sketch.images.content
+import com.github.panpf.sketch.images.slow
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.block
-import com.github.panpf.sketch.test.utils.content
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.slow
 import kotlinx.coroutines.test.runTest
 import okio.Buffer
 import okio.buffer
