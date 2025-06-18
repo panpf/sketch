@@ -32,6 +32,31 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
  */
 class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
 
+    override suspend fun <T> request(
+        url: String,
+        httpHeaders: HttpHeaders?,
+        extras: Extras?,
+        block: suspend (HttpStack.Response) -> T
+    ): T {
+        val httpRequest = Request.Builder().apply {
+            url(url)
+            httpHeaders?.apply {
+                addList.forEach {
+                    addHeader(it.first, it.second)
+                }
+                setList.forEach {
+                    header(it.first, it.second)
+                }
+            }
+        }.build()
+        val response = okHttpClient.newCall(httpRequest).execute()
+        return block(Response(response))
+    }
+
+    @Deprecated(
+        message = "The Ktor version of getResponse() will read all the contents into memory before returning the response. Please use request instead.",
+        replaceWith = ReplaceWith("request(url, httpHeaders, extras) { it }")
+    )
     @Throws(IOException::class)
     override suspend fun getResponse(
         url: String,
@@ -49,7 +74,8 @@ class OkHttpStack(val okHttpClient: OkHttpClient) : HttpStack {
                 }
             }
         }.build()
-        return Response(okHttpClient.newCall(httpRequest).execute())
+        val response = okHttpClient.newCall(httpRequest).execute()
+        return Response(response)
     }
 
     override fun equals(other: Any?): Boolean {

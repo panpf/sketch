@@ -24,19 +24,38 @@ import kotlin.coroutines.cancellation.CancellationException
 /**
  * Responsible for sending HTTP requests and returning responses
  *
- * @see com.github.panpf.sketch.http.core.common.test.http.HttpStackTest
+ * @see com.github.panpf.sketch.http.hurl.common.test.http.HurlStackTest
+ * @see com.github.panpf.sketch.http.okhttp.common.test.http.OkHttpStackTest
+ * @see com.github.panpf.sketch.http.ktor2.common.test.http.KtorStackTest
+ * @see com.github.panpf.sketch.http.ktor3.common.test.http.KtorStackTest
  */
 interface HttpStack {
+
+    /**
+     * Send a request and execute the block with the response
+     */
+    @Throws(IOException::class, CancellationException::class)
+    suspend fun <T> request(
+        url: String,
+        httpHeaders: HttpHeaders?,
+        extras: Extras?,
+        block: suspend (Response) -> T
+    ): T
 
     /**
      * Send a request and return a response
      */
     @Throws(IOException::class, CancellationException::class)
+    @Deprecated(
+        message = "The Ktor version of getResponse() will read all the contents into memory before returning the response. Please use request instead.",
+        replaceWith = ReplaceWith("request(url, httpHeaders, extras) { it }")
+    )
     suspend fun getResponse(
         url: String,
         httpHeaders: HttpHeaders?,
         extras: Extras?
-    ): Response
+    ): Response =
+        throw UnsupportedOperationException("getResponse is deprecated, use request instead")
 
     /**
      * Http Response

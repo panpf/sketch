@@ -110,38 +110,38 @@ open class HttpUriFetcher constructor(
 
             // open connection
             val url = request.uri.toString()
-            val response = try {
-                httpStack.getResponse(url, request.httpHeaders, request.extras)
+            return@withContext try {
+                httpStack.request(url, request.httpHeaders, request.extras) { response ->
+                    // intercept cancel
+                    if (!isActive) {
+                        return@request Result.failure(CancellationException("Canceled"))
+                    }
+
+                    // check code
+                    val httpCode = response.code
+                    if (httpCode != 200) {
+                        val httpMessage = response.message
+                        val message = "HTTP code error. $httpCode $httpMessage. ${request.uri}"
+                        return@request Result.failure(IOException(message))
+                    }
+
+                    // Save to download cache
+                    val coroutineScope: CoroutineScope = this@withContext
+                    val mimeType = getMimeType(url, response.contentType)
+                    if (request.downloadCachePolicy.writeEnabled) {
+                        val result = writeCache(coroutineScope, response, mimeType)
+                        if (result != null) {
+                            return@request result
+                        }
+                    }
+
+                    // Save to ByteArray
+                    val result = readBytes(coroutineScope, response, mimeType)
+                    return@request result
+                }
             } catch (e: Throwable) {
                 return@withContext Result.failure(e)
             }
-
-            // intercept cancel
-            if (!isActive) {
-                return@withContext Result.failure(CancellationException("Canceled"))
-            }
-
-            // check code
-            val httpCode = response.code
-            if (httpCode != 200) {
-                val httpMessage = response.message
-                val message = "HTTP code error. $httpCode $httpMessage. ${request.uri}"
-                return@withContext Result.failure(IOException(message))
-            }
-
-            // Save to download cache
-            val coroutineScope: CoroutineScope = this@withContext
-            val mimeType = getMimeType(url, response.contentType)
-            if (request.downloadCachePolicy.writeEnabled) {
-                val result = writeCache(coroutineScope, response, mimeType)
-                if (result != null) {
-                    return@withContext result
-                }
-            }
-
-            // Save to ByteArray
-            val result = readBytes(coroutineScope, response, mimeType)
-            return@withContext result
         }
     }
 

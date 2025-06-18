@@ -9,6 +9,8 @@
 
 # new
 
+* fix: 修复使用 sketch-http-ktor3 和 sketch-http-ktor2 时不更新下载进度的
+  bug。 [#253](https://github.com/panpf/sketch/issues/253)
 * change: 弃用带有 keepContentNoneStartOnDraw 参数的 AsyncImage
 * change: 弃用 TransitionTarget 的 fitScale 属性，新增 ViewTarget.scaleType 和
   ComposeTarget.contentsScale 以及 ComposeTarget.alignment 代替 fitScale

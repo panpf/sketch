@@ -11,6 +11,8 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
+import kotlin.time.measureTime
 
 class HurlStackTest {
 
@@ -95,35 +97,100 @@ class HurlStackTest {
             assertEquals(9904, contentLength)
             assertEquals("image/png", contentType)
             assertEquals("image/png", getHeaderField("Content-Type"))
-            content().use {
-                assertNotNull(it)
-            }
+            content().use {}
         }
 
         HurlStack.Builder().apply {
             userAgent("Android 8.1")
             headers("header1" to "value1")
             addHeaders("addHeader1" to "addValue1")
-        }.build().let {
-            val httpHeaders = HttpHeaders.Builder().apply {
+        }.build().getResponse(
+            url = url,
+            httpHeaders = HttpHeaders.Builder().apply {
                 add("addHttpHeader1", "setHttpValue1")
                 set("setHttpHeader1", "setHttpValue1")
-            }.build()
-            it.getResponse(url, httpHeaders, null)
-        }.apply {
+            }.build(),
+            extras = null
+        ).apply {
             assertEquals(200, code)
             assertEquals("OK", message)
             assertEquals(9904, contentLength)
             assertEquals("image/png", contentType)
             assertEquals("image/png", getHeaderField("Content-Type"))
-            content().use {
-                assertNotNull(it)
-            }
+            content().use {}
         }
 
         assertFailsWith(IOException::class) {
             HurlStack.Builder().build().getResponse("", null, null)
         }
+    }
+
+    @Test
+    fun testGetResponseTime() = runTest {
+        val duration = measureTime {
+            HurlStack.Builder().build().getResponse(
+                url = "https://img.picgo.net/2025/06/15/1de439443053e5edd.webp",
+                httpHeaders = null,
+                extras = null
+            )
+        }
+        assertTrue(
+            actual = duration.inWholeMilliseconds <= 1500,
+            message = "Request took too long: $duration"
+        )
+    }
+
+    @Test
+    fun testRequest() = runTest {
+        val url = "https://inews.gtimg.com/newsapp_bt/0/12171811596_909/0"
+
+        HurlStack.Builder().build().request(url, null, null) {
+            assertEquals(200, it.code)
+            assertEquals("OK", it.message)
+            assertEquals(9904, it.contentLength)
+            assertEquals("image/png", it.contentType)
+            assertEquals("image/png", it.getHeaderField("Content-Type"))
+            it.content().use {}
+        }
+
+        HurlStack.Builder().apply {
+            userAgent("Android 8.1")
+            headers("header1" to "value1")
+            addHeaders("addHeader1" to "addValue1")
+        }.build().request(
+            url = url,
+            httpHeaders = HttpHeaders.Builder().apply {
+                add("addHttpHeader1", "setHttpValue1")
+                set("setHttpHeader1", "setHttpValue1")
+            }.build(),
+            extras = null
+        ) {
+            assertEquals(200, it.code)
+            assertEquals("OK", it.message)
+            assertEquals(9904, it.contentLength)
+            assertEquals("image/png", it.contentType)
+            assertEquals("image/png", it.getHeaderField("Content-Type"))
+            it.content().use {}
+        }
+
+        assertFailsWith(IOException::class) {
+            HurlStack.Builder().build().request("", null, null) {}
+        }
+    }
+
+    @Test
+    fun testRequestTime() = runTest {
+        val duration = measureTime {
+            HurlStack.Builder().build().request(
+                url = "https://img.picgo.net/2025/06/15/1de439443053e5edd.webp",
+                httpHeaders = null,
+                extras = null
+            ) {}
+        }
+        assertTrue(
+            actual = duration.inWholeMilliseconds <= 1500,
+            message = "Request took too long: $duration"
+        )
     }
 
     @Test

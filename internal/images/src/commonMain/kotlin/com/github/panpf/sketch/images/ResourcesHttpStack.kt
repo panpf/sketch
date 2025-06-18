@@ -25,33 +25,35 @@ import okio.BufferedSource
 import okio.buffer
 import okio.use
 
-// TODO Repeated with MyImagesHttpStack
 class ResourcesHttpStack(
     private val context: PlatformContext,
 ) : HttpStack {
 
-    override suspend fun getResponse(
+    override suspend fun <T> request(
         url: String,
         httpHeaders: HttpHeaders?,
-        extras: Extras?
-    ): HttpStack.Response {
+        extras: Extras?,
+        block: suspend (HttpStack.Response) -> T
+    ): T {
         val uri = url.toUri()
         if (uri.authority != "resource") {
-            return ErrorResponse(
-                403,
-                "Invalid resource authority: ${uri.authority}, expected 'resource'"
+            val response = ErrorResponse(
+                code = 403,
+                message = "Invalid resource authority: ${uri.authority}, expected 'resource'"
             )
+            return block(response)
         }
 
         val targetResourceName = uri.pathSegments.first()
         val image = ResourceImages.values.find {
             it.resourceName == targetResourceName
         }
-        return if (image != null) {
+        val response = if (image != null) {
             ResourcesResponse(context, image)
         } else {
-            ErrorResponse(404, "Not found resource")
+            ErrorResponse(code = 404, message = "Not found resource")
         }
+        return block(response)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -63,7 +65,7 @@ class ResourcesHttpStack(
     }
 
     override fun hashCode(): Int {
-        var result = context.hashCode()
+        val result = context.hashCode()
         return result
     }
 

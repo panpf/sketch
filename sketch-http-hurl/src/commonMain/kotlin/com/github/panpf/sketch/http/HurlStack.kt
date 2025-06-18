@@ -31,6 +31,45 @@ class HurlStack private constructor(
     val interceptors: List<Interceptor> = emptyList()
 ) : HttpStack {
 
+    override suspend fun <T> request(
+        url: String,
+        httpHeaders: HttpHeaders?,
+        extras: Extras?,
+        block: suspend (HttpStack.Response) -> T
+    ): T {
+        var newUri = url
+        while (newUri.isNotEmpty()) {
+            // Currently running on a limited number of IO contexts, so this warning can be ignored
+            @Suppress("BlockingMethodInNonBlockingContext")
+            val connection = (URL(newUri).openConnection() as HttpURLConnection).apply {
+                doInput = true
+            }
+
+            val fixedInterceptors = listOf(HttpHeadersInterceptor(httpHeaders), EngineInterceptor())
+            val finalInterceptors = interceptors.plus(fixedInterceptors)
+            val response = InterceptorChain(connection, finalInterceptors).proceed()
+
+            val code = response.code
+            if (code == 301 || code == 302 || code == 307) {
+                val location: String? = response.getHeaderField("Location")
+                if (location?.isNotEmpty() == true) {
+                    newUri = location
+                } else {
+                    @Suppress("KotlinUnreachableCode")
+                    throw throw IOException("Unable to get Location field")
+                }
+            } else {
+                return block(response)
+            }
+        }
+        @Suppress("KotlinUnreachableCode")
+        throw throw IOException("Unable to get response")
+    }
+
+    @Deprecated(
+        message = "The Ktor version of getResponse() will read all the contents into memory before returning the response. Please use request instead.",
+        replaceWith = ReplaceWith("request(url, httpHeaders, extras) { it }")
+    )
     @Throws(IOException::class)
     override suspend fun getResponse(
         url: String,
@@ -51,16 +90,18 @@ class HurlStack private constructor(
 
             val code = response.code
             if (code == 301 || code == 302 || code == 307) {
-                val location = response.getHeaderField("Location")
-                if (location != null) {
+                val location: String? = response.getHeaderField("Location")
+                if (location?.isNotEmpty() == true) {
                     newUri = location
                 } else {
+                    @Suppress("KotlinUnreachableCode")
                     throw throw IOException("Unable to get Location field")
                 }
             } else {
                 return response
             }
         }
+        @Suppress("KotlinUnreachableCode")
         throw throw IOException("Unable to get response")
     }
 

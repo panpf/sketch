@@ -11,6 +11,8 @@ Translations: [简体中文](CHANGELOG.zh.md)
 
 # new
 
+* fix: Fixed a bug that did not update download progress when using sketch-http-ktor3 and
+  sketch-http-ktor2. [#253](https://github.com/panpf/sketch/issues/253)
 * change: Deprecate AsyncImage with keepContentNoneStartOnDraw parameter
 * change: Deprecate the fitScale property of TransitionTarget, adding ViewTarget.scaleType
   and ComposeTarget.contentsScale and ComposeTarget.alignment instead of fitScale

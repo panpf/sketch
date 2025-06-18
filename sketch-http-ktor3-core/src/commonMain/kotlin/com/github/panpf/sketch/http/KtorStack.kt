@@ -20,6 +20,7 @@ import com.github.panpf.sketch.request.Extras
 import io.ktor.client.HttpClient
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
+import io.ktor.client.request.prepareRequest
 import io.ktor.client.request.request
 import io.ktor.client.request.url
 import io.ktor.client.statement.HttpResponse
@@ -35,6 +36,33 @@ import io.ktor.utils.io.readAvailable
  */
 class KtorStack(val client: HttpClient = HttpClient()) : HttpStack {
 
+    override suspend fun <T> request(
+        url: String,
+        httpHeaders: HttpHeaders?,
+        extras: Extras?,
+        block: suspend (HttpStack.Response) -> T
+    ): T {
+        val httpRequest = HttpRequestBuilder().apply {
+            url(url)
+            httpHeaders?.apply {
+                addList.forEach {
+                    header(it.first, it.second)
+                }
+                setList.forEach {
+                    header(it.first, it.second)
+                }
+            }
+        }
+//        val httpResponse: HttpResponse = client.request(httpRequest)  // This way, it will directly read all content into memory, so it cannot be used
+        return client.prepareRequest(httpRequest).execute {
+            block(Response(it))
+        }
+    }
+
+    @Deprecated(
+        message = "The Ktor version of getResponse() will read all the contents into memory before returning the response. Please use request instead.",
+        replaceWith = ReplaceWith("request(url, httpHeaders, extras) { it }")
+    )
     override suspend fun getResponse(
         url: String,
         httpHeaders: HttpHeaders?,

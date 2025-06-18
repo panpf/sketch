@@ -46,21 +46,23 @@ class TestHttpStack(
         )
     }
 
-    override suspend fun getResponse(
+    override suspend fun <T> request(
         url: String,
         httpHeaders: HttpHeaders?,
-        extras: Extras?
-    ): HttpStack.Response {
+        extras: Extras?,
+        block: suspend (HttpStack.Response) -> T
+    ): T {
         connectionDelayMillis?.let {
             block(it)
         }
         val testImage = testImages.plus(errorImage).plus(chunkedErrorImage).plus(lengthErrorImage)
             .find { it.uri == url }
-        return if (testImage != null) {
+        val response = if (testImage != null) {
             TestResponse(context, testImage, readDelayMillis)
         } else {
             ErrorResponse(404, "Not found resource")
         }
+        return block(response)
     }
 
     override fun equals(other: Any?): Boolean {
