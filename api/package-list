@@ -45,6 +45,7 @@ $dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource/openSour
 $dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource/resourcePath/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.source/[ios]-kotlin-resource-data-source/resource-path.html
 $dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource/toString/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.source/[ios]-kotlin-resource-data-source/to-string.html
 module:sketch-animated-core
+com.github.panpf.sketch
 com.github.panpf.sketch.decode.internal
 com.github.panpf.sketch.drawable
 com.github.panpf.sketch.request
