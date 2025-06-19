@@ -16,98 +16,59 @@
 
 package com.github.panpf.sketch.target
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.RememberObserver
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.IntSize
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.AsyncImage
+import com.github.panpf.sketch.AsyncImageState
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.PainterState
 import com.github.panpf.sketch.PainterState.Loading
-import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.ImageResult.Error
+import com.github.panpf.sketch.request.ImageResult.Success
 import com.github.panpf.sketch.request.LifecycleResolver
-import com.github.panpf.sketch.request.LoadState
-import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.internal.ComposeRequestManager
 import com.github.panpf.sketch.resize.AsyncImageSizeResolver
 import com.github.panpf.sketch.target.internal.AsyncImageListener
-import com.github.panpf.sketch.util.screenSize
-import com.github.panpf.sketch.util.toIntSize
 
 /**
  * A [Target] that handles setting [Image] on an [AsyncImage]
  *
  * @see com.github.panpf.sketch.compose.core.common.test.target.AsyncImageTargetTest
  */
-class AsyncImageTarget constructor(
-    private val context: PlatformContext,
-    private val lifecycle: Lifecycle,
-    private val imageOptions: ImageOptions?,
-) : GenericComposeTarget() {
+class AsyncImageTarget constructor(imageState: AsyncImageState) : GenericComposeTarget() {
 
-    private val listener = AsyncImageListener()
-    private val sizeResolver = AsyncImageSizeResolver()
-    private val requestManager = ComposeRequestManager()
+    private val lifecycle: Lifecycle = imageState.lifecycle
+    private val requestManager: ComposeRequestManager = imageState.requestManager
+    private val listener = AsyncImageListener(this)
 
-    private val sizeMutableState: MutableState<IntSize?> = mutableStateOf(null)
-    private val painterMutableState: MutableState<Painter?> = mutableStateOf(null)
-    private val painterStateMutableState: MutableState<PainterState?> = mutableStateOf(null)
+    private val lazyString by lazy { imageState.toString() }
 
-    val contentScaleMutableState: MutableState<ContentScale?> = mutableStateOf(null)
-    val alignmentMutableState: MutableState<Alignment?> = mutableStateOf(null)
-    val filterQualityMutableState: MutableState<FilterQuality?> = mutableStateOf(null)
-
-    val sizeState: State<IntSize?> = sizeMutableState
-    val painterState: State<Painter?> = painterMutableState
-    val painterStateState: State<PainterState?> = painterStateMutableState
-    val loadStateState: State<LoadState?> = listener.loadStateState
-    val resultState: State<ImageResult?> = listener.resultState
-    val progressState: State<Progress?> = listener.progressState
-
-    var onPainterStateState: ((PainterState) -> Unit)? = null
-    var onLoadStateState: ((LoadState) -> Unit)?
-        get() = listener.onLoadState
-        set(value) {
-            listener.onLoadState = value
-        }
-
-    var windowContainerSize: IntSize = context.screenSize().toIntSize()
-        set(value) {
-            val finalValue = if (value.width < 100 || value.height < 100) {
-                IntSize(value.width.coerceAtLeast(100), value.height.coerceAtLeast(100))
-            } else {
-                value
-            }
-            field = finalValue
-        }
+    var imageState: AsyncImageState? = imageState
 
     override val painter: Painter?
-        get() = painterMutableState.value
+        get() = imageState?.painterMutableState?.value
 
     override val contentScale: ContentScale
-        get() = contentScaleMutableState.value ?: ContentScale.Fit
+        get() = imageState?.contentScaleMutableState?.value ?: ContentScale.Fit
 
     override val alignment: Alignment
-        get() = alignmentMutableState.value ?: Alignment.Center
+        get() = imageState?.alignmentMutableState?.value ?: Alignment.Center
 
     override val filterQuality: FilterQuality
-        get() = filterQualityMutableState.value ?: super.filterQuality
+        get() = imageState?.filterQualityMutableState?.value ?: super.filterQuality
 
     override fun setPainter(painter: Painter?) {
-        val oldPainter = painterMutableState.value
+        val oldPainter = imageState?.painterMutableState?.value
         if (painter !== oldPainter) {
             (oldPainter as? RememberObserver)?.onForgotten()
-            painterMutableState.value = painter
+            imageState?.painterMutableState?.value = painter
             (painter as? RememberObserver)?.onRemembered()
         }
     }
@@ -117,25 +78,12 @@ class AsyncImageTarget constructor(
         listener.onStart(request)
     }
 
-    fun setSize(size: IntSize) {
-        // If the width or height is 0, it means that the constraint of the component is to wrap content.
-        // In this case, the size of the window container can be used instead.
-        val limitedSize = IntSize(
-            width = if (size.width > 0) size.width else windowContainerSize.width,
-            height = if (size.height > 0) size.height else windowContainerSize.height
-        )
-        this.sizeMutableState.value = limitedSize
-        this.sizeResolver.sizeState.value = limitedSize
-    }
-
     fun onRemembered() {
         (painter as? RememberObserver)?.onRemembered()
-        requestManager.onRemembered()
     }
 
     fun onForgotten() {
         (painter as? RememberObserver)?.onForgotten()
-        requestManager.onForgotten()
     }
 
     override fun getRequestManager(): ComposeRequestManager = requestManager
@@ -148,60 +96,49 @@ class AsyncImageTarget constructor(
     override fun getLifecycleResolver(): LifecycleResolver = LifecycleResolver(lifecycle)
 
 
-    override fun getSizeResolver(): AsyncImageSizeResolver = sizeResolver
+    override fun getSizeResolver(): AsyncImageSizeResolver? = imageState?.sizeResolver
 
-    override fun getImageOptions(): ImageOptions? = imageOptions
+    override fun getImageOptions(): ImageOptions? = imageState?.imageOptions
 
 
     override fun onStart(sketch: Sketch, request: ImageRequest, placeholder: Image?) {
         super.onStart(sketch, request, placeholder)
+        val imageState = imageState ?: return
         val loading = Loading(painter)
-        painterStateMutableState.value = loading
-        onPainterStateState?.invoke(loading)
+        imageState.painterStateMutableState.value = loading
+        imageState.onPainterState?.invoke(loading)
     }
 
-    override fun onSuccess(
-        sketch: Sketch,
-        request: ImageRequest,
-        result: ImageResult.Success,
-        image: Image
-    ) {
+    override fun onSuccess(sketch: Sketch, request: ImageRequest, result: Success, image: Image) {
         super.onSuccess(sketch, request, result, image)
+        val imageState = imageState ?: return
         val success = PainterState.Success(result, painter!!)
-        painterStateMutableState.value = success
-        onPainterStateState?.invoke(success)
+        imageState.painterStateMutableState.value = success
+        imageState.onPainterState?.invoke(success)
     }
 
-    override fun onError(
-        sketch: Sketch,
-        request: ImageRequest,
-        error: ImageResult.Error,
-        image: Image?
-    ) {
+    override fun onError(sketch: Sketch, request: ImageRequest, error: Error, image: Image?) {
         super.onError(sketch, request, error, image)
+        val imageState = imageState ?: return
         val error1 = PainterState.Error(error, painter)
-        painterStateMutableState.value = error1
-        onPainterStateState?.invoke(error1)
+        imageState.painterStateMutableState.value = error1
+        imageState.onPainterState?.invoke(error1)
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as AsyncImageTarget
-        if (context != other.context) return false
         if (lifecycle != other.lifecycle) return false
-        if (imageOptions != other.imageOptions) return false
+        if (requestManager != other.requestManager) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = context.hashCode()
-        result = 31 * result + (lifecycle.hashCode())
-        result = 31 * result + (imageOptions?.hashCode() ?: 0)
+        var result = lifecycle.hashCode()
+        result = 31 * result + requestManager.hashCode()
         return result
     }
 
-    override fun toString(): String {
-        return "AsyncImageTarget(context=$context, lifecycle=$lifecycle, options=$imageOptions)"
-    }
+    override fun toString(): String = "AsyncImageTarget($lazyString)"
 }

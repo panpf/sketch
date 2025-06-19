@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.github.panpf.sketch.AsyncImageState
 import com.github.panpf.sketch.BitmapImage
+import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PainterImage
 import com.github.panpf.sketch.PainterState
 import com.github.panpf.sketch.cache.CachePolicy
@@ -31,19 +32,19 @@ import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.request.LifecycleResolver
 import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.error
+import com.github.panpf.sketch.request.name
 import com.github.panpf.sketch.request.placeholder
 import com.github.panpf.sketch.resize.FixedSizeResolver
 import com.github.panpf.sketch.resize.Precision
-import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.ScaleDecider
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.target.AsyncImageTarget
+import com.github.panpf.sketch.test.singleton.SingletonSketch
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ComposeSize
+import com.github.panpf.sketch.test.utils.DelayRequestInterceptor
 import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestErrorEqualsSizeResolver
 import com.github.panpf.sketch.test.utils.TestHttpStack
@@ -51,9 +52,7 @@ import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
 import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.block
-import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.test.utils.current
-import com.github.panpf.sketch.test.utils.fakeSuccessImageResult
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.test.utils.similarity
@@ -87,7 +86,7 @@ class AsyncImageStateTest {
                         assertEquals(expected = false, actual = inspectionMode)
                         assertEquals(
                             expected = windowContainerSize(),
-                            actual = target.windowContainerSize
+                            actual = windowContainerSize
                         )
                         assertEquals(expected = null, actual = imageOptions)
                     }
@@ -98,7 +97,7 @@ class AsyncImageStateTest {
                             assertEquals(expected = true, actual = inspectionMode)
                             assertEquals(
                                 expected = windowContainerSize(),
-                                actual = target.windowContainerSize
+                                actual = windowContainerSize
                             )
                             assertEquals(expected = null, actual = imageOptions)
                         }
@@ -109,7 +108,7 @@ class AsyncImageStateTest {
                         assertEquals(expected = false, actual = inspectionMode)
                         assertEquals(
                             expected = windowContainerSize(),
-                            actual = target.windowContainerSize
+                            actual = windowContainerSize
                         )
                         assertEquals(
                             expected = ImageOptions { size(101, 202) },
@@ -124,7 +123,7 @@ class AsyncImageStateTest {
                         assertEquals(expected = false, actual = inspectionMode)
                         assertEquals(
                             expected = windowContainerSize(),
-                            actual = target.windowContainerSize
+                            actual = windowContainerSize
                         )
                         assertEquals(
                             expected = ImageOptions { size(202, 101) },
@@ -151,7 +150,7 @@ class AsyncImageStateTest {
                     assertEquals(expected = false, actual = inspectionMode)
                     assertEquals(
                         expected = context.screenSize().toIntSize(),
-                        actual = target.windowContainerSize
+                        actual = windowContainerSize
                     )
                     assertEquals(
                         expected = ImageOptions(),
@@ -173,8 +172,8 @@ class AsyncImageStateTest {
             imageOptions = ImageOptions()
         )
         assertEquals(
-            expected = LifecycleResolver(lifecycle),
-            actual = asyncImageState.target.getLifecycleResolver()
+            expected = lifecycle,
+            actual = asyncImageState.lifecycle
         )
     }
 
@@ -189,7 +188,7 @@ class AsyncImageStateTest {
         )
         assertEquals(
             expected = null,
-            actual = asyncImageState1.target.getImageOptions()
+            actual = asyncImageState1.imageOptions
         )
 
         val asyncImageState2 = AsyncImageState(
@@ -200,7 +199,7 @@ class AsyncImageStateTest {
         )
         assertEquals(
             expected = ImageOptions(),
-            actual = asyncImageState2.target.getImageOptions()
+            actual = asyncImageState2.imageOptions
         )
     }
 
@@ -217,185 +216,37 @@ class AsyncImageStateTest {
             expected = null,
             actual = asyncImageState.contentScale
         )
-        assertEquals(
-            expected = null,
-            actual = asyncImageState.alignment
-        )
-        assertEquals(
-            expected = true,
-            actual = asyncImageState.target.fitScale
-        )
-        assertEquals(
-            expected = ScaleDecider(Scale.CENTER_CROP),
-            actual = asyncImageState.target.getScaleDecider()
-        )
-
         asyncImageState.contentScale = ContentScale.Fit
         assertEquals(
             expected = ContentScale.Fit,
             actual = asyncImageState.contentScale
         )
-        assertEquals(
-            expected = true,
-            actual = asyncImageState.target.fitScale
-        )
-        assertEquals(
-            expected = ScaleDecider(Scale.CENTER_CROP),
-            actual = asyncImageState.target.getScaleDecider()
-        )
 
-        asyncImageState.contentScale = ContentScale.Inside
         assertEquals(
-            expected = ContentScale.Inside,
-            actual = asyncImageState.contentScale
+            expected = null,
+            actual = asyncImageState.alignment
         )
-        assertEquals(
-            expected = true,
-            actual = asyncImageState.target.fitScale
-        )
-        assertEquals(
-            expected = ScaleDecider(Scale.CENTER_CROP),
-            actual = asyncImageState.target.getScaleDecider()
-        )
-
-        asyncImageState.contentScale = ContentScale.Inside
-        assertEquals(
-            expected = ContentScale.Inside,
-            actual = asyncImageState.contentScale
-        )
-        assertEquals(
-            expected = true,
-            actual = asyncImageState.target.fitScale
-        )
-        assertEquals(
-            expected = ScaleDecider(Scale.CENTER_CROP),
-            actual = asyncImageState.target.getScaleDecider()
-        )
-
-        asyncImageState.contentScale = ContentScale.Crop
-        assertEquals(
-            expected = ContentScale.Crop,
-            actual = asyncImageState.contentScale
-        )
-        assertEquals(
-            expected = false,
-            actual = asyncImageState.target.fitScale
-        )
-        assertEquals(
-            expected = ScaleDecider(Scale.CENTER_CROP),
-            actual = asyncImageState.target.getScaleDecider()
-        )
-
-        asyncImageState.contentScale = ContentScale.None
-        assertEquals(
-            expected = ContentScale.None,
-            actual = asyncImageState.contentScale
-        )
-        assertEquals(
-            expected = false,
-            actual = asyncImageState.target.fitScale
-        )
-        assertEquals(
-            expected = ScaleDecider(Scale.CENTER_CROP),
-            actual = asyncImageState.target.getScaleDecider()
-        )
-
-        asyncImageState.contentScale = ContentScale.FillWidth
-        assertEquals(
-            expected = ContentScale.FillWidth,
-            actual = asyncImageState.contentScale
-        )
-        assertEquals(
-            expected = false,
-            actual = asyncImageState.target.fitScale
-        )
-        assertEquals(
-            expected = ScaleDecider(Scale.FILL),
-            actual = asyncImageState.target.getScaleDecider()
-        )
-
-        asyncImageState.contentScale = ContentScale.FillHeight
-        assertEquals(
-            expected = ContentScale.FillHeight,
-            actual = asyncImageState.contentScale
-        )
-        assertEquals(
-            expected = false,
-            actual = asyncImageState.target.fitScale
-        )
-        assertEquals(
-            expected = ScaleDecider(Scale.FILL),
-            actual = asyncImageState.target.getScaleDecider()
-        )
-
-        asyncImageState.contentScale = ContentScale.FillBounds
-        assertEquals(
-            expected = ContentScale.FillBounds,
-            actual = asyncImageState.contentScale
-        )
-        assertEquals(
-            expected = false,
-            actual = asyncImageState.target.fitScale
-        )
-        assertEquals(
-            expected = ScaleDecider(Scale.FILL),
-            actual = asyncImageState.target.getScaleDecider()
-        )
-
         asyncImageState.alignment = Alignment.TopStart
         assertEquals(
             expected = Alignment.TopStart,
-            actual = asyncImageState.alignment
-        )
-
-        asyncImageState.alignment = Alignment.BottomEnd
-        assertEquals(
-            expected = Alignment.BottomEnd,
             actual = asyncImageState.alignment
         )
     }
 
     @Test
     fun testFilterQuality() {
-        val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, "http://sample.com/sample.jpeg")
+        val context = getTestContext()
         val asyncImageState = AsyncImageState(
             context = context,
             inspectionMode = false,
             lifecycle = GlobalLifecycle,
             imageOptions = ImageOptions()
         )
-        val target = asyncImageState.target
+
         assertEquals(expected = null, actual = asyncImageState.filterQuality)
-        assertEquals(expected = FilterQuality.Low, actual = target.filterQuality)
-        assertEquals(expected = null, actual = target.filterQualityMutableState.value)
-        target.onSuccess(
-            sketch,
-            request,
-            fakeSuccessImageResult(context),
-            createBitmapImage(101, 202)
-        ).apply {
-            assertEquals(
-                expected = FilterQuality.Low,
-                actual = asyncImageState.painter!!.asOrThrow<ImageBitmapPainter>().filterQuality
-            )
-        }
 
         asyncImageState.filterQuality = FilterQuality.High
         assertEquals(expected = FilterQuality.High, actual = asyncImageState.filterQuality)
-        assertEquals(expected = FilterQuality.High, actual = target.filterQuality)
-        assertEquals(expected = FilterQuality.High, actual = target.filterQualityMutableState.value)
-        target.onSuccess(
-            sketch,
-            request,
-            fakeSuccessImageResult(context),
-            createBitmapImage(101, 202)
-        ).apply {
-            assertEquals(
-                expected = FilterQuality.High,
-                actual = asyncImageState.painter!!.asOrThrow<ImageBitmapPainter>().filterQuality
-            )
-        }
     }
 
     @Test
@@ -409,10 +260,10 @@ class AsyncImageStateTest {
             imageOptions = ImageOptions()
         )
         assertEquals(expected = null, actual = asyncImageState.size)
-        assertEquals(expected = null, actual = asyncImageState.target.sizeState.value)
+        assertEquals(expected = null, actual = asyncImageState.sizeState.value)
         assertEquals(
             expected = null,
-            actual = asyncImageState.target.getSizeResolver().sizeState.value
+            actual = asyncImageState.sizeResolver.sizeState.value
         )
 
         asyncImageState.setSize(IntSize(0, 1000))
@@ -422,11 +273,11 @@ class AsyncImageStateTest {
         )
         assertEquals(
             expected = IntSize(windowContainerSize.width, 1000),
-            actual = asyncImageState.target.sizeState.value
+            actual = asyncImageState.sizeState.value
         )
         assertEquals(
             expected = IntSize(windowContainerSize.width, 1000),
-            actual = asyncImageState.target.getSizeResolver().sizeState.value
+            actual = asyncImageState.sizeResolver.sizeState.value
         )
 
         asyncImageState.setSize(IntSize(1000, 0))
@@ -436,11 +287,11 @@ class AsyncImageStateTest {
         )
         assertEquals(
             expected = IntSize(1000, windowContainerSize.height),
-            actual = asyncImageState.target.sizeState.value
+            actual = asyncImageState.sizeState.value
         )
         assertEquals(
             expected = IntSize(1000, windowContainerSize.height),
-            actual = asyncImageState.target.getSizeResolver().sizeState.value
+            actual = asyncImageState.sizeResolver.sizeState.value
         )
 
         asyncImageState.setSize(IntSize(0, 0))
@@ -450,19 +301,19 @@ class AsyncImageStateTest {
         )
         assertEquals(
             expected = IntSize(windowContainerSize.width, windowContainerSize.height),
-            actual = asyncImageState.target.sizeState.value
+            actual = asyncImageState.sizeState.value
         )
         assertEquals(
             expected = IntSize(windowContainerSize.width, windowContainerSize.height),
-            actual = asyncImageState.target.getSizeResolver().sizeState.value
+            actual = asyncImageState.sizeResolver.sizeState.value
         )
 
         asyncImageState.setSize(IntSize(300, 400))
         assertEquals(expected = IntSize(300, 400), actual = asyncImageState.size)
-        assertEquals(expected = IntSize(300, 400), actual = asyncImageState.target.sizeState.value)
+        assertEquals(expected = IntSize(300, 400), actual = asyncImageState.sizeState.value)
         assertEquals(
             expected = IntSize(300, 400),
-            actual = asyncImageState.target.getSizeResolver().sizeState.value
+            actual = asyncImageState.sizeResolver.sizeState.value
         )
     }
 
@@ -478,39 +329,38 @@ class AsyncImageStateTest {
         @Suppress("USELESS_IS_CHECK")
         assertTrue(actual = asyncImageState is RememberObserver)
 
-        val requestManager = asyncImageState.target.getRequestManager()
         assertEquals(expected = 0, actual = asyncImageState.rememberedCounter.count)
-        assertEquals(expected = 0, actual = requestManager.rememberedCounter.count)
+        assertEquals(expected = 0, actual = asyncImageState.requestManager.rememberedCounter.count)
         assertEquals(expected = null, actual = asyncImageState.coroutineScope)
 
         asyncImageState.onRemembered()
         assertEquals(expected = 1, actual = asyncImageState.rememberedCounter.count)
-        assertEquals(expected = 1, actual = requestManager.rememberedCounter.count)
+        assertEquals(expected = 1, actual = asyncImageState.requestManager.rememberedCounter.count)
         assertNotEquals(illegal = null, actual = asyncImageState.coroutineScope)
 
         asyncImageState.onRemembered()
         assertEquals(expected = 2, actual = asyncImageState.rememberedCounter.count)
-        assertEquals(expected = 1, actual = requestManager.rememberedCounter.count)
+        assertEquals(expected = 1, actual = asyncImageState.requestManager.rememberedCounter.count)
         assertNotEquals(illegal = null, actual = asyncImageState.coroutineScope)
 
         asyncImageState.onRemembered()
         assertEquals(expected = 3, actual = asyncImageState.rememberedCounter.count)
-        assertEquals(expected = 1, actual = requestManager.rememberedCounter.count)
+        assertEquals(expected = 1, actual = asyncImageState.requestManager.rememberedCounter.count)
         assertNotEquals(illegal = null, actual = asyncImageState.coroutineScope)
 
         asyncImageState.onAbandoned()
         assertEquals(expected = 2, actual = asyncImageState.rememberedCounter.count)
-        assertEquals(expected = 1, actual = requestManager.rememberedCounter.count)
+        assertEquals(expected = 1, actual = asyncImageState.requestManager.rememberedCounter.count)
         assertNotEquals(illegal = null, actual = asyncImageState.coroutineScope)
 
         asyncImageState.onForgotten()
         assertEquals(expected = 1, actual = asyncImageState.rememberedCounter.count)
-        assertEquals(expected = 1, actual = requestManager.rememberedCounter.count)
+        assertEquals(expected = 1, actual = asyncImageState.requestManager.rememberedCounter.count)
         assertNotEquals(illegal = null, actual = asyncImageState.coroutineScope)
 
         asyncImageState.onForgotten()
         assertEquals(expected = 0, actual = asyncImageState.rememberedCounter.count)
-        assertEquals(expected = 0, actual = requestManager.rememberedCounter.count)
+        assertEquals(expected = 0, actual = asyncImageState.requestManager.rememberedCounter.count)
         assertEquals(expected = null, actual = asyncImageState.coroutineScope)
     }
 
@@ -1199,6 +1049,28 @@ class AsyncImageStateTest {
     }
 
     @Test
+    fun testRequestManagerAndRemembered() {
+        val context = getTestContext()
+        val state = AsyncImageState(context, false, GlobalLifecycle, null)
+        assertEquals(expected = 0, actual = state.requestManager.rememberedCounter.count)
+
+        state.onRemembered()
+        assertEquals(expected = 1, actual = state.requestManager.rememberedCounter.count)
+
+        state.onRemembered()
+        assertEquals(expected = 1, actual = state.requestManager.rememberedCounter.count)
+
+        state.onForgotten()
+        assertEquals(expected = 1, actual = state.requestManager.rememberedCounter.count)
+
+        state.onForgotten()
+        assertEquals(expected = 0, actual = state.requestManager.rememberedCounter.count)
+
+        state.onForgotten()
+        assertEquals(expected = 0, actual = state.requestManager.rememberedCounter.count)
+    }
+
+    @Test
     fun testEqualsAndHashCode() = runTest {
         val context = getTestContext()
         val lifecycle = GlobalLifecycle
@@ -1221,5 +1093,43 @@ class AsyncImageStateTest {
             expected = "AsyncImageState@${asyncImageState.toHexString()}",
             actual = asyncImageState.toString()
         )
+    }
+
+    @Test
+    fun testNoSharingState() {
+        // The second request is immediately initiated when the first request reaches Started. It is expected that the first request will be cancelled, but the callback does not call back. The loadStateList is [Started, Started, Success], and the error is [Started, Started, Canceled, Success]
+        val testLifecycle = GlobalLifecycle
+        runComposeUiTest {
+            val loadStateList = mutableListOf<LoadState>()
+            setContent {
+                CompositionLocalProvider(LocalLifecycleOwner provides testLifecycle.owner) {
+                    val imageState = rememberAsyncImageState()
+                    LaunchedEffect(imageState) {
+                        imageState.onLoadState = {
+                            val empty = loadStateList.isEmpty()
+                            loadStateList.add(it)
+                            if (empty && it is LoadState.Started) {
+                                imageState.contentScale = ContentScale.None
+                            }
+                        }
+                    }
+                    val context = LocalPlatformContext.current
+                    LaunchedEffect(imageState) {
+                        imageState.contentScale = ContentScale.Fit
+                        imageState.alignment = Alignment.Center
+                        imageState.filterQuality = DrawScope.DefaultFilterQuality
+                        imageState.sketch = SingletonSketch.get(context)
+                        imageState.request = ImageRequest(context, ResourceImages.jpeg.uri) {
+                            components {
+                                addRequestInterceptor(DelayRequestInterceptor(1000))
+                            }
+                        }
+                        imageState.setSize(IntSize(500, 500))
+                    }
+                }
+            }
+            block(2000)
+            assertEquals("Started, Started, Success", loadStateList.joinToString { it.name })
+        }
     }
 }

@@ -2,8 +2,10 @@ package com.github.panpf.sketch.compose.core.common.test.target.internal
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import com.github.panpf.sketch.AsyncImageState
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.LoadState
@@ -12,6 +14,7 @@ import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom
+import com.github.panpf.sketch.target.AsyncImageTarget
 import com.github.panpf.sketch.target.internal.AsyncImageListener
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.toHexString
@@ -24,28 +27,29 @@ class AsyncImageListenerTest {
     @Test
     fun test() {
         val context = getTestContext()
+        val state = AsyncImageState(context, false, GlobalLifecycle, null)
+        val listener = AsyncImageListener(AsyncImageTarget(state))
         val request = ImageRequest(context, "http://sample.com/sample.jpeg")
-        val listener = AsyncImageListener()
 
-        assertEquals(expected = null, actual = listener.loadStateState.value)
-        assertEquals(expected = null, actual = listener.resultState.value)
-        assertEquals(expected = null, actual = listener.progressState.value)
+        assertEquals(expected = null, actual = state.loadStateState.value)
+        assertEquals(expected = null, actual = state.resultState.value)
+        assertEquals(expected = null, actual = state.progressState.value)
 
         listener.onStart(request)
         assertEquals(
             expected = LoadState.Started(request),
-            actual = listener.loadStateState.value
+            actual = state.loadStateState.value
         )
-        assertEquals(expected = null, actual = listener.resultState.value)
-        assertEquals(expected = null, actual = listener.progressState.value)
+        assertEquals(expected = null, actual = state.resultState.value)
+        assertEquals(expected = null, actual = state.progressState.value)
 
         listener.onUpdateProgress(request, Progress(1024, 100))
         assertEquals(
             expected = LoadState.Started(request),
-            actual = listener.loadStateState.value
+            actual = state.loadStateState.value
         )
-        assertEquals(expected = null, actual = listener.resultState.value)
-        assertEquals(expected = Progress(1024, 100), actual = listener.progressState.value)
+        assertEquals(expected = null, actual = state.resultState.value)
+        assertEquals(expected = Progress(1024, 100), actual = state.progressState.value)
 
         val successResult = ImageResult.Success(
             request = request,
@@ -60,18 +64,18 @@ class AsyncImageListenerTest {
         listener.onSuccess(request, successResult)
         assertEquals(
             expected = LoadState.Success(request, successResult),
-            actual = listener.loadStateState.value
+            actual = state.loadStateState.value
         )
-        assertEquals(expected = successResult, actual = listener.resultState.value)
-        assertEquals(expected = Progress(1024, 100), actual = listener.progressState.value)
+        assertEquals(expected = successResult, actual = state.resultState.value)
+        assertEquals(expected = Progress(1024, 100), actual = state.progressState.value)
 
         listener.onUpdateProgress(request, Progress(1024, 500))
         assertEquals(
             expected = LoadState.Success(request, successResult),
-            actual = listener.loadStateState.value
+            actual = state.loadStateState.value
         )
-        assertEquals(expected = successResult, actual = listener.resultState.value)
-        assertEquals(expected = Progress(1024, 500), actual = listener.progressState.value)
+        assertEquals(expected = successResult, actual = state.resultState.value)
+        assertEquals(expected = Progress(1024, 500), actual = state.progressState.value)
 
         val errorResult = ImageResult.Error(
             request = request,
@@ -81,32 +85,34 @@ class AsyncImageListenerTest {
         listener.onError(request, errorResult)
         assertEquals(
             expected = LoadState.Error(request, errorResult),
-            actual = listener.loadStateState.value
+            actual = state.loadStateState.value
         )
-        assertEquals(expected = errorResult, actual = listener.resultState.value)
-        assertEquals(expected = Progress(1024, 500), actual = listener.progressState.value)
+        assertEquals(expected = errorResult, actual = state.resultState.value)
+        assertEquals(expected = Progress(1024, 500), actual = state.progressState.value)
 
         listener.onUpdateProgress(request, Progress(1024, 1024))
         assertEquals(
             expected = LoadState.Error(request, errorResult),
-            actual = listener.loadStateState.value
+            actual = state.loadStateState.value
         )
-        assertEquals(expected = errorResult, actual = listener.resultState.value)
-        assertEquals(expected = Progress(1024, 1024), actual = listener.progressState.value)
+        assertEquals(expected = errorResult, actual = state.resultState.value)
+        assertEquals(expected = Progress(1024, 1024), actual = state.progressState.value)
 
         listener.onCancel(request)
         assertEquals(
             expected = LoadState.Canceled(request),
-            actual = listener.loadStateState.value
+            actual = state.loadStateState.value
         )
-        assertEquals(expected = errorResult, actual = listener.resultState.value)
-        assertEquals(expected = Progress(1024, 1024), actual = listener.progressState.value)
+        assertEquals(expected = errorResult, actual = state.resultState.value)
+        assertEquals(expected = Progress(1024, 1024), actual = state.progressState.value)
     }
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = AsyncImageListener()
-        val element11 = AsyncImageListener()
+        val context = getTestContext()
+        val state = AsyncImageState(context, false, GlobalLifecycle, null)
+        val element1 = AsyncImageListener(AsyncImageTarget(state))
+        val element11 = AsyncImageListener(AsyncImageTarget(state))
 
         assertNotEquals(illegal = element1, actual = element11)
         assertNotEquals(illegal = element1, actual = null as Any?)
@@ -116,7 +122,10 @@ class AsyncImageListenerTest {
 
     @Test
     fun testToString() {
-        val asyncImageListener = AsyncImageListener()
+        val context = getTestContext()
+        val state = AsyncImageState(context, false, GlobalLifecycle, null)
+        val target = AsyncImageTarget(state)
+        val asyncImageListener = AsyncImageListener(target)
         assertEquals(
             expected = "AsyncImageListener@${asyncImageListener.toHexString()}",
             actual = asyncImageListener.toString()

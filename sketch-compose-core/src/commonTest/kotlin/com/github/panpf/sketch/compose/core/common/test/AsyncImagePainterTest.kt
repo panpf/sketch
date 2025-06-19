@@ -23,6 +23,7 @@ import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.target.AsyncImageTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.LifecycleContainer
 import com.github.panpf.sketch.test.utils.SizeColorPainter
@@ -169,18 +170,19 @@ class AsyncImagePainterTest {
             lifecycle = TestLifecycle(),
             imageOptions = null
         )
+        val target = AsyncImageTarget(asyncImageState)
         val asyncImagePainter = AsyncImagePainter(asyncImageState)
 
-        assertEquals(null, asyncImageState.target.painter)
+        assertEquals(null, target.painter)
         assertEquals(Size.Unspecified, asyncImagePainter.intrinsicSize)
 
-        asyncImageState.target.onSuccess(
+        target.onSuccess(
             sketch = sketch,
             request = request,
             result = fakeSuccessImageResult(context),
             image = SizeColorPainter(Color.Red, Size(101f, 202f)).asImage()
         )
-        assertEquals(SizeColorPainter(Color.Red, Size(101f, 202f)), asyncImageState.target.painter)
+        assertEquals(SizeColorPainter(Color.Red, Size(101f, 202f)), target.painter)
         assertEquals(Size(101f, 202f), asyncImagePainter.intrinsicSize)
     }
 

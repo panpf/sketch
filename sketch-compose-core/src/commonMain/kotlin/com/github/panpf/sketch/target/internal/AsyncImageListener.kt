@@ -16,12 +16,8 @@
 
 package com.github.panpf.sketch.target.internal
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ImageResult.Success
 import com.github.panpf.sketch.request.Listener
@@ -29,6 +25,7 @@ import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.LoadState.Canceled
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
+import com.github.panpf.sketch.target.AsyncImageTarget
 import com.github.panpf.sketch.util.toHexString
 
 /**
@@ -36,53 +33,52 @@ import com.github.panpf.sketch.util.toHexString
  *
  * @see com.github.panpf.sketch.compose.core.common.test.target.internal.AsyncImageListenerTest
  */
-class AsyncImageListener : Listener, ProgressListener {
-
-    private val loadStateMutableState: MutableState<LoadState?> = mutableStateOf(null)
-    private val resultMutableState: MutableState<ImageResult?> = mutableStateOf(null)
-    private val progressMutableState: MutableState<Progress?> = mutableStateOf(null)
-
-    val loadStateState: State<LoadState?> = loadStateMutableState
-    val resultState: State<ImageResult?> = resultMutableState
-    val progressState: State<Progress?> = progressMutableState
-
-    var onLoadState: ((LoadState) -> Unit)? = null
+class AsyncImageListener(val asyncImageTarget: AsyncImageTarget) : Listener, ProgressListener {
 
     override fun onStart(request: ImageRequest) {
-        resultMutableState.value = null
-        progressMutableState.value = null
+        val imageState = asyncImageTarget.imageState ?: return
+
+        imageState.resultMutableState.value = null
+        imageState.progressMutableState.value = null
+
         val startState = LoadState.Started(request)
-        loadStateMutableState.value = startState
-        onLoadState?.invoke(startState)
+        imageState.onLoadState?.invoke(startState)
+        imageState.loadStateMutableState.value = startState
     }
 
     override fun onSuccess(request: ImageRequest, result: Success) {
-        resultMutableState.value = result
+        val imageState = asyncImageTarget.imageState ?: return
+
+        imageState.resultMutableState.value = result
+
         val successState = LoadState.Success(request, result)
-        loadStateMutableState.value = successState
-        onLoadState?.invoke(successState)
+        imageState.onLoadState?.invoke(successState)
+        imageState.loadStateMutableState.value = successState
     }
 
     override fun onError(request: ImageRequest, error: Error) {
-        resultMutableState.value = error
+        val imageState = asyncImageTarget.imageState ?: return
+
+        imageState.resultMutableState.value = error
+
         val errorState = LoadState.Error(request, error)
-        loadStateMutableState.value = errorState
-        onLoadState?.invoke(errorState)
+        imageState.onLoadState?.invoke(errorState)
+        imageState.loadStateMutableState.value = errorState
     }
 
     override fun onCancel(request: ImageRequest) {
+        val imageState = asyncImageTarget.imageState ?: return
+
         val cancelState = Canceled(request)
-        loadStateMutableState.value = cancelState
-        onLoadState?.invoke(cancelState)
+        imageState.onLoadState?.invoke(cancelState)
+        imageState.loadStateMutableState.value = cancelState
     }
 
     override fun onUpdateProgress(request: ImageRequest, progress: Progress) {
-        progressMutableState.value = progress
+        val imageState = asyncImageTarget.imageState ?: return
+
+        imageState.progressMutableState.value = progress
     }
-
-    override fun equals(other: Any?): Boolean = super.equals(other)
-
-    override fun hashCode(): Int = super.hashCode()
 
     override fun toString(): String = "AsyncImageListener@${this.toHexString()}"
 }
