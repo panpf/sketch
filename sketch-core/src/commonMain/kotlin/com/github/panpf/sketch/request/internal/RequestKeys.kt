@@ -55,7 +55,7 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
  *
  * @see com.github.panpf.sketch.core.common.test.request.internal.RequestKeysTest.testNewCacheKey
  */
-internal fun ImageRequest.newCacheKey(size: Size): String = ImageRequestKeyBuilder(this)
+internal fun ImageRequest.newCacheKey(size: Size?): String = ImageRequestKeyBuilder(this)
     .appendCacheExtras()
     .appendColorType()
     .appendColorSpace()

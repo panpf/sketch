@@ -89,7 +89,7 @@ class RequestContext constructor(
     /**
      * The log key of the request
      */
-    val logKey: String = initialRequest.key
+    val logKey: String = initialRequest.newCacheKey(size)
 
     /**
      * Used to cache bitmaps in memory and on disk

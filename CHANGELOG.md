@@ -19,6 +19,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
 * change: Deprecate the fitScale property of TransitionTarget, adding ViewTarget.scaleType
   and ComposeTarget.contentsScale and ComposeTarget.alignment instead of fitScale
 * change: AnimatedImage is now an interface, and its implementation class is SkiaAnimatedImage
+* improve: Thin request logs and remove information that is not related to loading
 * new: CrossfadePainter now supports contentScale and alignment
 * new: ResizePainter now supports contentScale and alignment
 * new: CrossfadeDrawable now supports scaleType

@@ -16,6 +16,7 @@
 * change: 弃用 TransitionTarget 的 fitScale 属性，新增 ViewTarget.scaleType 和
   ComposeTarget.contentsScale 以及 ComposeTarget.alignment 代替 fitScale
 * change: AnimatedImage 现在是接口，它的实现类是 SkiaAnimatedImage
+* improve: 精简请求日志，去掉和加载无关的信息
 * new: CrossfadePainter 现在支持 contentScale 和 alignment
 * new: ResizePainter 现在支持 contentScale 和 alignment
 * new: CrossfadeDrawable 现在支持 scaleType

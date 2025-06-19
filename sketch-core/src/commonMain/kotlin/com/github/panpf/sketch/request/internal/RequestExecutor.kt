@@ -118,7 +118,7 @@ class RequestExecutor constructor(val sketch: Sketch) {
         val request = requestContext.request
         request.listener?.onStart(request)
         requestContext.sketch.logger.d {
-            "RequestExecutor. Request started. '${requestContext.initialRequest.key}'"
+            "Request started. '${requestContext.logKey}'"
         }
     }
 
@@ -151,11 +151,10 @@ class RequestExecutor constructor(val sketch: Sketch) {
             val resultString = "image=${result.image}, " +
                     "imageInfo=${result.imageInfo}, " +
                     "dataFrom=${result.dataFrom}, " +
-                    "cacheKey=${result.cacheKey}, " +
                     "resize=${result.resize}, " +
                     "transformeds=${result.transformeds}, " +
                     "extras=${result.extras}"
-            "RequestExecutor. Request Successful. Result($resultString). '${requestContext.logKey}'"
+            "Request Successful. Result($resultString). '${requestContext.logKey}'"
         }
         return result
     }
@@ -186,7 +185,11 @@ class RequestExecutor constructor(val sketch: Sketch) {
         }
         lastRequest.listener?.onError(lastRequest, errorResult)
         val logMessage =
-            "RequestExecutor. Request failed. '${throwable1.message}'. '${request.key}'"
+            "Request failed. '${throwable1.message}'. '${
+                requestContext?.logKey ?: request.newCacheKey(
+                    null
+                )
+            }'"
         when (throwable1) {
             is DepthException -> sketch.logger.d { logMessage }
             is SketchException -> sketch.logger.e(logMessage)
@@ -199,7 +202,7 @@ class RequestExecutor constructor(val sketch: Sketch) {
     private fun doCancel(sketch: Sketch, request: ImageRequest, requestContext: RequestContext?) {
         val lastRequest = requestContext?.request ?: request
         sketch.logger.d {
-            "RequestExecutor. Request canceled. '${request.key}'"
+            "Request canceled. '${requestContext?.logKey ?: request.newCacheKey(null)}'"
         }
         lastRequest.listener?.onCancel(lastRequest)
     }

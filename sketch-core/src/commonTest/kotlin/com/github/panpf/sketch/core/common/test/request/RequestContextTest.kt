@@ -21,6 +21,7 @@ import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.request.resolveSize
 import com.github.panpf.sketch.resize.LongImagePrecisionDecider
 import com.github.panpf.sketch.resize.LongImageScaleDecider
@@ -128,9 +129,9 @@ class RequestContextTest {
             size(400, 500)
         }
         RequestContext(sketch = sketch, request = request1).apply {
-            assertEquals(expected = request1.key, actual = logKey)
+            assertEquals(expected = request1.newCacheKey(Size(201, 303)), actual = logKey)
             setNewRequest(request2)
-            assertEquals(expected = request1.key, actual = logKey)
+            assertEquals(expected = request1.newCacheKey(Size(201, 303)), actual = logKey)
             assertNotEquals(illegal = request1.key, actual = request2.key)
         }
     }
