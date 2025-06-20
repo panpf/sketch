@@ -53,22 +53,22 @@ class AsyncImageTarget constructor(imageState: AsyncImageState) : GenericCompose
     var imageState: AsyncImageState? = imageState
 
     override val painter: Painter?
-        get() = imageState?.painterMutableState?.value
+        get() = imageState?.painter
 
     override val contentScale: ContentScale
-        get() = imageState?.contentScaleMutableState?.value ?: ContentScale.Fit
+        get() = imageState?.contentScale ?: ContentScale.Fit
 
     override val alignment: Alignment
-        get() = imageState?.alignmentMutableState?.value ?: Alignment.Center
+        get() = imageState?.alignment ?: Alignment.Center
 
     override val filterQuality: FilterQuality
-        get() = imageState?.filterQualityMutableState?.value ?: super.filterQuality
+        get() = imageState?.filterQuality ?: super.filterQuality
 
     override fun setPainter(painter: Painter?) {
-        val oldPainter = imageState?.painterMutableState?.value
+        val oldPainter = imageState?.painter
         if (painter !== oldPainter) {
             (oldPainter as? RememberObserver)?.onForgotten()
-            imageState?.painterMutableState?.value = painter
+            imageState?.painter = painter
             (painter as? RememberObserver)?.onRemembered()
         }
     }
@@ -105,7 +105,7 @@ class AsyncImageTarget constructor(imageState: AsyncImageState) : GenericCompose
         super.onStart(sketch, request, placeholder)
         val imageState = imageState ?: return
         val loading = Loading(painter)
-        imageState.painterStateMutableState.value = loading
+        imageState.painterState = loading
         imageState.onPainterState?.invoke(loading)
     }
 
@@ -113,7 +113,7 @@ class AsyncImageTarget constructor(imageState: AsyncImageState) : GenericCompose
         super.onSuccess(sketch, request, result, image)
         val imageState = imageState ?: return
         val success = PainterState.Success(result, painter!!)
-        imageState.painterStateMutableState.value = success
+        imageState.painterState = success
         imageState.onPainterState?.invoke(success)
     }
 
@@ -121,7 +121,7 @@ class AsyncImageTarget constructor(imageState: AsyncImageState) : GenericCompose
         super.onError(sketch, request, error, image)
         val imageState = imageState ?: return
         val error1 = PainterState.Error(error, painter)
-        imageState.painterStateMutableState.value = error1
+        imageState.painterState = error1
         imageState.onPainterState?.invoke(error1)
     }
 

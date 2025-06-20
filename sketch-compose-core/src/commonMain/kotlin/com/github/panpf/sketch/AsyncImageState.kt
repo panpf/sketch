@@ -17,10 +17,8 @@
 package com.github.panpf.sketch
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
@@ -45,9 +44,8 @@ import com.github.panpf.sketch.resize.AsyncImageSizeResolver
 import com.github.panpf.sketch.target.AsyncImageTarget
 import com.github.panpf.sketch.util.RememberedCounter
 import com.github.panpf.sketch.util.difference
-import com.github.panpf.sketch.util.screenSize
+import com.github.panpf.sketch.util.isEmpty
 import com.github.panpf.sketch.util.toHexString
-import com.github.panpf.sketch.util.toIntSize
 import com.github.panpf.sketch.util.windowContainerSize
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -73,7 +71,7 @@ fun rememberAsyncImageState(options: ImageOptions? = null): AsyncImageState {
     return remember(context, inspectionMode, lifecycle, options) {
         AsyncImageState(context, inspectionMode, lifecycle, options)
     }.apply {
-        this@apply.windowContainerSize = windowContainerSize
+        this@apply.setWindowContainerSizeWithLeast(windowContainerSize)
     }
 }
 
@@ -92,7 +90,7 @@ fun rememberAsyncImageState(optionsLazy: () -> ImageOptions): AsyncImageState {
         val options = optionsLazy.invoke()
         AsyncImageState(context, inspectionMode, lifecycle, options)
     }.apply {
-        this@apply.windowContainerSize = windowContainerSize
+        this@apply.setWindowContainerSizeWithLeast(windowContainerSize)
     }
 }
 
@@ -109,39 +107,14 @@ class AsyncImageState internal constructor(
     val imageOptions: ImageOptions?,
 ) : RememberObserver {
 
-    internal var currentRequest: ImageRequest? = null
-    internal var currentTarget: AsyncImageTarget? = null
-    internal var loadImageJob: Job? = null
+    private var currentTarget: AsyncImageTarget? = null
+    private var currentRequest: ImageRequest? = null
+    private var currentLoadJob: Job? = null
     internal var coroutineScope: CoroutineScope? = null
-    internal val rememberedCounter: RememberedCounter = RememberedCounter()
     internal var coroutineExceptionHandler: CoroutineExceptionHandler? = null
-
     internal val sizeResolver = AsyncImageSizeResolver()
     internal val requestManager = ComposeRequestManager()
-    internal val contentScaleMutableState: MutableState<ContentScale?> = mutableStateOf(null)
-    internal val alignmentMutableState: MutableState<Alignment?> = mutableStateOf(null)
-    internal val filterQualityMutableState: MutableState<FilterQuality?> = mutableStateOf(null)
-    internal val sizeMutableState: MutableState<IntSize?> = mutableStateOf(null)
-    internal val painterMutableState: MutableState<Painter?> = mutableStateOf(null)
-    internal val painterStateMutableState: MutableState<PainterState?> = mutableStateOf(null)
-    internal val loadStateMutableState: MutableState<LoadState?> = mutableStateOf(null)
-    internal val resultMutableState: MutableState<ImageResult?> = mutableStateOf(null)
-    internal val progressMutableState: MutableState<Progress?> = mutableStateOf(null)
-    internal val sizeState: State<IntSize?> = sizeMutableState
-    internal val painterStateState: State<PainterState?> = painterStateMutableState
-    internal val loadStateState: State<LoadState?> = loadStateMutableState
-    internal val resultState: State<ImageResult?> = resultMutableState
-    internal val progressState: State<Progress?> = progressMutableState
-
-    var windowContainerSize: IntSize = context.screenSize().toIntSize()
-        set(value) {
-            val finalValue = if (value.width < 100 || value.height < 100) {
-                IntSize(value.width.coerceAtLeast(100), value.height.coerceAtLeast(100))
-            } else {
-                value
-            }
-            field = finalValue
-        }
+    internal val rememberedCounter: RememberedCounter = RememberedCounter()
 
     /*
      * The default values for sketch, request, contentScale, and filterQuality are all null.
@@ -151,33 +124,66 @@ class AsyncImageState internal constructor(
         internal set
     var request: ImageRequest? by mutableStateOf(null)
         internal set
-    var contentScale: ContentScale? by contentScaleMutableState
+    var contentScale: ContentScale by mutableStateOf(ContentScale.Fit)
         internal set
-    var alignment: Alignment? by alignmentMutableState
+    var alignment: Alignment by mutableStateOf(Alignment.Center)
         internal set
-    var filterQuality: FilterQuality? by filterQualityMutableState
+    var filterQuality: FilterQuality by mutableStateOf(DrawScope.DefaultFilterQuality)
         internal set
 
-    val size: IntSize? by sizeState
-    val painter: Painter? by painterMutableState
-    val painterState: PainterState? by painterStateState
-    val result: ImageResult? by resultState
-    val loadState: LoadState? by loadStateState
-    val progress: Progress? by progressState
+    var windowContainerSize: IntSize? by mutableStateOf(null)
+        private set
+    var size: IntSize? by mutableStateOf(null)
+        private set
+
+    var painter: Painter? by mutableStateOf(null)
+        internal set
+    var painterState: PainterState? by mutableStateOf(null)
+        internal set
+    var result: ImageResult? by mutableStateOf(null)
+        internal set
+    var loadState: LoadState? by mutableStateOf(null)
+        internal set
+    var progress: Progress? by mutableStateOf(null)
+        internal set
 
     var onPainterState: ((PainterState) -> Unit)? = null
     var onLoadState: ((LoadState) -> Unit)? = null
 
-    fun setSize(size: IntSize) {
+    fun setWindowContainerSizeWithLeast(size: IntSize) {
+        if (size != windowContainerSize) {
+            val limitedSize = if (size.width < 100 || size.height < 100) {
+                IntSize(
+                    width = size.width.coerceAtLeast(100),
+                    height = size.height.coerceAtLeast(100)
+                )
+            } else {
+                size
+            }
+            windowContainerSize = limitedSize
+        }
+    }
+
+    fun setSizeWithLeast(size: IntSize) {
         // If the width or height is 0, it means that the constraint of the component is to wrap content.
         // In this case, the size of the window container can be used instead.
-        val limitedSize = IntSize(
-            width = if (size.width > 0) size.width else windowContainerSize.width,
-            height = if (size.height > 0) size.height else windowContainerSize.height
-        )
-        this.sizeMutableState.value = limitedSize
+        val windowContainerSize = windowContainerSize
+        val limitedSize =
+            if (size.isEmpty() && windowContainerSize != null && !windowContainerSize.isEmpty()) {
+                IntSize(
+                    width = if (size.width > 0) size.width else windowContainerSize.width,
+                    height = if (size.height > 0) size.height else windowContainerSize.height
+                )
+            } else {
+                size
+            }
+
+        this.size = limitedSize
         this.sizeResolver.sizeState.value = limitedSize
     }
+
+    @Deprecated("Use setSizeWithLeast instead", ReplaceWith("setSizeWithLeast(size)"))
+    fun setSize(size: IntSize) = setSizeWithLeast(size)
 
     /**
      * Note: When using AsyncImageState externally,
@@ -328,7 +334,7 @@ class AsyncImageState internal constructor(
         val fullRequest = request.newRequest {
             target(target)
         }
-        loadImageJob = coroutineScope.launch {
+        currentLoadJob = coroutineScope.launch {
             sketch.execute(fullRequest)
         }
     }
@@ -336,16 +342,13 @@ class AsyncImageState internal constructor(
     fun restart() {
         val request = request ?: return
         val sketch = sketch ?: return
-        val contentScale = contentScale ?: return
-        val alignment = alignment ?: return
-        val filterQuality = filterQuality ?: return
         coroutineScope ?: return
         cancelLoadImageJob()
         loadImage(sketch, request, contentScale, alignment, filterQuality)
     }
 
     private fun cancelLoadImageJob() {
-        val loadImageJob = loadImageJob
+        val loadImageJob = currentLoadJob
         if (loadImageJob != null && loadImageJob.isActive) {
             loadImageJob.cancel()
         }

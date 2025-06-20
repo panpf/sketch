@@ -261,7 +261,7 @@ fun SubcomposeAsyncImage(
             propagateMinConstraints = true
         ) {
             // Ensure images are prepared before content is drawn when in-memory cache exists
-            state.setSize(constraints.toRequestSize())
+            state.setSizeWithLeast(constraints.toRequestSize())
 
             RealSubcomposeAsyncImageScope(
                 parentScope = this,

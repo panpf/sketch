@@ -38,32 +38,32 @@ class AsyncImageListener(val asyncImageTarget: AsyncImageTarget) : Listener, Pro
     override fun onStart(request: ImageRequest) {
         val imageState = asyncImageTarget.imageState ?: return
 
-        imageState.resultMutableState.value = null
-        imageState.progressMutableState.value = null
+        imageState.result = null
+        imageState.progress = null
 
         val startState = LoadState.Started(request)
         imageState.onLoadState?.invoke(startState)
-        imageState.loadStateMutableState.value = startState
+        imageState.loadState = startState
     }
 
     override fun onSuccess(request: ImageRequest, result: Success) {
         val imageState = asyncImageTarget.imageState ?: return
 
-        imageState.resultMutableState.value = result
+        imageState.result = result
 
         val successState = LoadState.Success(request, result)
         imageState.onLoadState?.invoke(successState)
-        imageState.loadStateMutableState.value = successState
+        imageState.loadState = successState
     }
 
     override fun onError(request: ImageRequest, error: Error) {
         val imageState = asyncImageTarget.imageState ?: return
 
-        imageState.resultMutableState.value = error
+        imageState.result = error
 
         val errorState = LoadState.Error(request, error)
         imageState.onLoadState?.invoke(errorState)
-        imageState.loadStateMutableState.value = errorState
+        imageState.loadState = errorState
     }
 
     override fun onCancel(request: ImageRequest) {
@@ -71,13 +71,13 @@ class AsyncImageListener(val asyncImageTarget: AsyncImageTarget) : Listener, Pro
 
         val cancelState = Canceled(request)
         imageState.onLoadState?.invoke(cancelState)
-        imageState.loadStateMutableState.value = cancelState
+        imageState.loadState = cancelState
     }
 
     override fun onUpdateProgress(request: ImageRequest, progress: Progress) {
         val imageState = asyncImageTarget.imageState ?: return
 
-        imageState.progressMutableState.value = progress
+        imageState.progress = progress
     }
 
     override fun toString(): String = "AsyncImageListener@${this.toHexString()}"

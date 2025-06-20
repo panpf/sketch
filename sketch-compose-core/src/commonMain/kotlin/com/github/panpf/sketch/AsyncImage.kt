@@ -133,7 +133,7 @@ fun AsyncImage(
     AsyncImageContent(
         modifier = modifier.onSizeChanged { size ->
             // Ensure images are prepared before content is drawn when in-memory cache exists
-            state.setSize(size)
+            state.setSizeWithLeast(size)
         },
         painter = painter,
         contentDescription = contentDescription,
@@ -259,7 +259,7 @@ fun AsyncImage(
     AsyncImageContent(
         modifier = modifier.onSizeChanged { size ->
             // Ensure images are prepared before content is drawn when in-memory cache exists
-            state.setSize(size)
+            state.setSizeWithLeast(size)
         },
         painter = painter,
         contentDescription = contentDescription,

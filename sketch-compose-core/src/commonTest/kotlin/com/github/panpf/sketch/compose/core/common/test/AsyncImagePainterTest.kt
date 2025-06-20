@@ -271,9 +271,9 @@ class AsyncImagePainterTest {
             assertEquals(
                 expected = IntSize(
                     windowContainerSizeHolder!!.width,
-                    windowContainerSizeHolder!!.height
+                    windowContainerSizeHolder.height
                 ),
-                actual = (stateHolder?.result as ImageResult.Success).resize.size.toIntSize()
+                actual = (stateHolder.result as ImageResult.Success).resize.size.toIntSize()
             )
         }
 
@@ -425,9 +425,9 @@ class AsyncImagePainterTest {
             assertEquals(
                 expected = IntSize(
                     windowContainerSizeHolder!!.width,
-                    windowContainerSizeHolder!!.height
+                    windowContainerSizeHolder.height
                 ),
-                actual = (stateHolder?.result as ImageResult.Success).resize.size.toIntSize()
+                actual = (stateHolder.result as ImageResult.Success).resize.size.toIntSize()
             )
         }
 

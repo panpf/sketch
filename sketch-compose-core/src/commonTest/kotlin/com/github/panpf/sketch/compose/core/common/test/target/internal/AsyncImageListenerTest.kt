@@ -31,25 +31,25 @@ class AsyncImageListenerTest {
         val listener = AsyncImageListener(AsyncImageTarget(state))
         val request = ImageRequest(context, "http://sample.com/sample.jpeg")
 
-        assertEquals(expected = null, actual = state.loadStateState.value)
-        assertEquals(expected = null, actual = state.resultState.value)
-        assertEquals(expected = null, actual = state.progressState.value)
+        assertEquals(expected = null, actual = state.loadState)
+        assertEquals(expected = null, actual = state.result)
+        assertEquals(expected = null, actual = state.progress)
 
         listener.onStart(request)
         assertEquals(
             expected = LoadState.Started(request),
-            actual = state.loadStateState.value
+            actual = state.loadState
         )
-        assertEquals(expected = null, actual = state.resultState.value)
-        assertEquals(expected = null, actual = state.progressState.value)
+        assertEquals(expected = null, actual = state.result)
+        assertEquals(expected = null, actual = state.progress)
 
         listener.onUpdateProgress(request, Progress(1024, 100))
         assertEquals(
             expected = LoadState.Started(request),
-            actual = state.loadStateState.value
+            actual = state.loadState
         )
-        assertEquals(expected = null, actual = state.resultState.value)
-        assertEquals(expected = Progress(1024, 100), actual = state.progressState.value)
+        assertEquals(expected = null, actual = state.result)
+        assertEquals(expected = Progress(1024, 100), actual = state.progress)
 
         val successResult = ImageResult.Success(
             request = request,
@@ -64,18 +64,18 @@ class AsyncImageListenerTest {
         listener.onSuccess(request, successResult)
         assertEquals(
             expected = LoadState.Success(request, successResult),
-            actual = state.loadStateState.value
+            actual = state.loadState
         )
-        assertEquals(expected = successResult, actual = state.resultState.value)
-        assertEquals(expected = Progress(1024, 100), actual = state.progressState.value)
+        assertEquals(expected = successResult, actual = state.result)
+        assertEquals(expected = Progress(1024, 100), actual = state.progress)
 
         listener.onUpdateProgress(request, Progress(1024, 500))
         assertEquals(
             expected = LoadState.Success(request, successResult),
-            actual = state.loadStateState.value
+            actual = state.loadState
         )
-        assertEquals(expected = successResult, actual = state.resultState.value)
-        assertEquals(expected = Progress(1024, 500), actual = state.progressState.value)
+        assertEquals(expected = successResult, actual = state.result)
+        assertEquals(expected = Progress(1024, 500), actual = state.progress)
 
         val errorResult = ImageResult.Error(
             request = request,
@@ -85,26 +85,26 @@ class AsyncImageListenerTest {
         listener.onError(request, errorResult)
         assertEquals(
             expected = LoadState.Error(request, errorResult),
-            actual = state.loadStateState.value
+            actual = state.loadState
         )
-        assertEquals(expected = errorResult, actual = state.resultState.value)
-        assertEquals(expected = Progress(1024, 500), actual = state.progressState.value)
+        assertEquals(expected = errorResult, actual = state.result)
+        assertEquals(expected = Progress(1024, 500), actual = state.progress)
 
         listener.onUpdateProgress(request, Progress(1024, 1024))
         assertEquals(
             expected = LoadState.Error(request, errorResult),
-            actual = state.loadStateState.value
+            actual = state.loadState
         )
-        assertEquals(expected = errorResult, actual = state.resultState.value)
-        assertEquals(expected = Progress(1024, 1024), actual = state.progressState.value)
+        assertEquals(expected = errorResult, actual = state.result)
+        assertEquals(expected = Progress(1024, 1024), actual = state.progress)
 
         listener.onCancel(request)
         assertEquals(
             expected = LoadState.Canceled(request),
-            actual = state.loadStateState.value
+            actual = state.loadState
         )
-        assertEquals(expected = errorResult, actual = state.resultState.value)
-        assertEquals(expected = Progress(1024, 1024), actual = state.progressState.value)
+        assertEquals(expected = errorResult, actual = state.result)
+        assertEquals(expected = Progress(1024, 1024), actual = state.progress)
     }
 
     @Test

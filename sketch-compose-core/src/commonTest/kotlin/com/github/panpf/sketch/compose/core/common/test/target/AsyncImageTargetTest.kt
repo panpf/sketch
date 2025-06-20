@@ -97,8 +97,8 @@ class AsyncImageTargetTest {
         val target = AsyncImageTarget(state)
         assertEquals(expected = null, actual = state.painter)
         assertEquals(expected = null, actual = target.painter)
-        assertEquals(expected = null, actual = state.painterStateState.value)
-        assertEquals(expected = null, actual = state.loadStateState.value)
+        assertEquals(expected = null, actual = state.painterState)
+        assertEquals(expected = null, actual = state.loadState)
 
         val previewPainter = ColorPainter(Color.Red)
 
@@ -107,11 +107,11 @@ class AsyncImageTargetTest {
         assertEquals(expected = previewPainter, actual = target.painter)
         assertEquals(
             expected = PainterState.Loading(previewPainter),
-            actual = state.painterStateState.value
+            actual = state.painterState
         )
         assertEquals(
             expected = LoadState.Started(request),
-            actual = state.loadStateState.value
+            actual = state.loadState
         )
     }
 
@@ -126,39 +126,39 @@ class AsyncImageTargetTest {
         assertEquals(expected = true, actual = target.fitScale)
 
 
-        state.contentScaleMutableState.value = ContentScale.Inside
+        state.contentScale = ContentScale.Inside
         assertEquals(expected = ContentScale.Inside, actual = target.contentScale)
 
-        state.contentScaleMutableState.value = ContentScale.None
+        state.contentScale = ContentScale.None
         assertEquals(expected = ContentScale.None, actual = target.contentScale)
 
 
-        state.alignmentMutableState.value = Alignment.TopStart
+        state.alignment = Alignment.TopStart
         assertEquals(expected = Alignment.TopStart, actual = target.alignment)
 
-        state.alignmentMutableState.value = Alignment.BottomEnd
+        state.alignment = Alignment.BottomEnd
         assertEquals(expected = Alignment.BottomEnd, actual = target.alignment)
 
 
-        state.contentScaleMutableState.value = ContentScale.Inside
+        state.contentScale = ContentScale.Inside
         assertEquals(expected = true, actual = target.fitScale)
 
-        state.contentScaleMutableState.value = ContentScale.Fit
+        state.contentScale = ContentScale.Fit
         assertEquals(expected = true, actual = target.fitScale)
 
-        state.contentScaleMutableState.value = ContentScale.Crop
+        state.contentScale = ContentScale.Crop
         assertEquals(expected = false, actual = target.fitScale)
 
-        state.contentScaleMutableState.value = ContentScale.None
+        state.contentScale = ContentScale.None
         assertEquals(expected = false, actual = target.fitScale)
 
-        state.contentScaleMutableState.value = ContentScale.FillWidth
+        state.contentScale = ContentScale.FillWidth
         assertEquals(expected = false, actual = target.fitScale)
 
-        state.contentScaleMutableState.value = ContentScale.FillHeight
+        state.contentScale = ContentScale.FillHeight
         assertEquals(expected = false, actual = target.fitScale)
 
-        state.contentScaleMutableState.value = ContentScale.FillBounds
+        state.contentScale = ContentScale.FillBounds
         assertEquals(expected = false, actual = target.fitScale)
     }
 
@@ -181,7 +181,7 @@ class AsyncImageTargetTest {
             )
         }
 
-        state.filterQualityMutableState.value = FilterQuality.High
+        state.filterQuality = FilterQuality.High
         assertEquals(expected = FilterQuality.High, actual = target.filterQuality)
         target.onSuccess(
             sketch = sketch,
@@ -243,93 +243,93 @@ class AsyncImageTargetTest {
         val target = AsyncImageTarget(state)
         assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
 
-        state.contentScaleMutableState.value = ContentScale.Fit
-        state.alignmentMutableState.value = Alignment.TopStart
+        state.contentScale = ContentScale.Fit
+        state.alignment = Alignment.TopStart
         assertEquals(expected = ScaleDecider(Scale.START_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.TopCenter
+        state.alignment = Alignment.TopCenter
         assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.TopEnd
+        state.alignment = Alignment.TopEnd
         assertEquals(expected = ScaleDecider(Scale.END_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.CenterStart
+        state.alignment = Alignment.CenterStart
         assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.Center
+        state.alignment = Alignment.Center
         assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.CenterEnd
+        state.alignment = Alignment.CenterEnd
         assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.BottomStart
+        state.alignment = Alignment.BottomStart
         assertEquals(expected = ScaleDecider(Scale.START_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.BottomCenter
+        state.alignment = Alignment.BottomCenter
         assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.BottomEnd
-        assertEquals(expected = ScaleDecider(Scale.END_CROP), actual = target.getScaleDecider())
-
-        state.contentScaleMutableState.value = ContentScale.Crop
-        state.alignmentMutableState.value = Alignment.TopStart
-        assertEquals(expected = ScaleDecider(Scale.START_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.TopCenter
-        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.TopEnd
-        assertEquals(expected = ScaleDecider(Scale.END_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.CenterStart
-        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.Center
-        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.CenterEnd
-        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.BottomStart
-        assertEquals(expected = ScaleDecider(Scale.START_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.BottomCenter
-        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.BottomEnd
+        state.alignment = Alignment.BottomEnd
         assertEquals(expected = ScaleDecider(Scale.END_CROP), actual = target.getScaleDecider())
 
-        state.contentScaleMutableState.value = ContentScale.None
-        state.alignmentMutableState.value = Alignment.TopStart
+        state.contentScale = ContentScale.Crop
+        state.alignment = Alignment.TopStart
         assertEquals(expected = ScaleDecider(Scale.START_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.TopCenter
+        state.alignment = Alignment.TopCenter
         assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.TopEnd
+        state.alignment = Alignment.TopEnd
         assertEquals(expected = ScaleDecider(Scale.END_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.CenterStart
+        state.alignment = Alignment.CenterStart
         assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.Center
+        state.alignment = Alignment.Center
         assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.CenterEnd
+        state.alignment = Alignment.CenterEnd
         assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.BottomStart
+        state.alignment = Alignment.BottomStart
         assertEquals(expected = ScaleDecider(Scale.START_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.BottomCenter
+        state.alignment = Alignment.BottomCenter
         assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.BottomEnd
-        assertEquals(expected = ScaleDecider(Scale.END_CROP), actual = target.getScaleDecider())
-
-        state.contentScaleMutableState.value = ContentScale.Inside
-        state.alignmentMutableState.value = Alignment.TopStart
-        assertEquals(expected = ScaleDecider(Scale.START_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.TopCenter
-        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.TopEnd
-        assertEquals(expected = ScaleDecider(Scale.END_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.CenterStart
-        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.Center
-        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.CenterEnd
-        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.BottomStart
-        assertEquals(expected = ScaleDecider(Scale.START_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.BottomCenter
-        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
-        state.alignmentMutableState.value = Alignment.BottomEnd
+        state.alignment = Alignment.BottomEnd
         assertEquals(expected = ScaleDecider(Scale.END_CROP), actual = target.getScaleDecider())
 
-        state.contentScaleMutableState.value = ContentScale.FillWidth
+        state.contentScale = ContentScale.None
+        state.alignment = Alignment.TopStart
+        assertEquals(expected = ScaleDecider(Scale.START_CROP), actual = target.getScaleDecider())
+        state.alignment = Alignment.TopCenter
+        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
+        state.alignment = Alignment.TopEnd
+        assertEquals(expected = ScaleDecider(Scale.END_CROP), actual = target.getScaleDecider())
+        state.alignment = Alignment.CenterStart
+        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
+        state.alignment = Alignment.Center
+        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
+        state.alignment = Alignment.CenterEnd
+        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
+        state.alignment = Alignment.BottomStart
+        assertEquals(expected = ScaleDecider(Scale.START_CROP), actual = target.getScaleDecider())
+        state.alignment = Alignment.BottomCenter
+        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
+        state.alignment = Alignment.BottomEnd
+        assertEquals(expected = ScaleDecider(Scale.END_CROP), actual = target.getScaleDecider())
+
+        state.contentScale = ContentScale.Inside
+        state.alignment = Alignment.TopStart
+        assertEquals(expected = ScaleDecider(Scale.START_CROP), actual = target.getScaleDecider())
+        state.alignment = Alignment.TopCenter
+        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
+        state.alignment = Alignment.TopEnd
+        assertEquals(expected = ScaleDecider(Scale.END_CROP), actual = target.getScaleDecider())
+        state.alignment = Alignment.CenterStart
+        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
+        state.alignment = Alignment.Center
+        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
+        state.alignment = Alignment.CenterEnd
+        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
+        state.alignment = Alignment.BottomStart
+        assertEquals(expected = ScaleDecider(Scale.START_CROP), actual = target.getScaleDecider())
+        state.alignment = Alignment.BottomCenter
+        assertEquals(expected = ScaleDecider(Scale.CENTER_CROP), actual = target.getScaleDecider())
+        state.alignment = Alignment.BottomEnd
+        assertEquals(expected = ScaleDecider(Scale.END_CROP), actual = target.getScaleDecider())
+
+        state.contentScale = ContentScale.FillWidth
         assertEquals(expected = ScaleDecider(Scale.FILL), actual = target.getScaleDecider())
 
-        state.contentScaleMutableState.value = ContentScale.FillHeight
+        state.contentScale = ContentScale.FillHeight
         assertEquals(expected = ScaleDecider(Scale.FILL), actual = target.getScaleDecider())
 
-        state.contentScaleMutableState.value = ContentScale.FillBounds
+        state.contentScale = ContentScale.FillBounds
         assertEquals(expected = ScaleDecider(Scale.FILL), actual = target.getScaleDecider())
     }
 
@@ -371,7 +371,7 @@ class AsyncImageTargetTest {
 
         assertEquals(expected = null, actual = target.painter)
         assertEquals(expected = null, actual = state.painter)
-        assertEquals(expected = null, actual = state.painterStateState.value)
+        assertEquals(expected = null, actual = state.painterState)
 
         val painter1 = ColorPainter(Color.Red)
         val painter2 = ColorPainter(Color.Green)
@@ -382,7 +382,7 @@ class AsyncImageTargetTest {
         assertEquals(expected = painter1, actual = state.painter)
         assertEquals(
             expected = PainterState.Loading(painter1),
-            actual = state.painterStateState.value
+            actual = state.painterState
         )
 
         target.onSuccess(sketch, request, fakeSuccessImageResult(context), painter2.asImage())
@@ -390,7 +390,7 @@ class AsyncImageTargetTest {
         assertEquals(expected = painter2, actual = state.painter)
         assertEquals(
             expected = PainterState.Success(fakeSuccessImageResult(context), painter2),
-            actual = state.painterStateState.value
+            actual = state.painterState
         )
 
         target.onError(sketch, request, fakeErrorImageResult(context), painter3.asImage())
@@ -398,7 +398,7 @@ class AsyncImageTargetTest {
         assertEquals(expected = painter3, actual = state.painter)
         assertEquals(
             expected = PainterState.Error(fakeErrorImageResult(context), painter3),
-            actual = state.painterStateState.value
+            actual = state.painterState
         )
     }
 

@@ -163,11 +163,16 @@ fun rememberAsyncImagePainter(
     contentScale: ContentScale = ContentScale.Fit,
     filterQuality: FilterQuality = DefaultFilterQuality,
 ): AsyncImagePainter {
-    state.request = request
-    state.sketch = sketch
-    state.contentScale = contentScale
+    // You must set sketch and request at the end,
+    // because alignment, contentScale, and filterQuality have default values,
+    // so the loading task will be started immediately after the sketch and request is set.
+    // If alignment, contentScale, filterQuality and the default values are different,
+    // the loading task will be started again, causing waste.
     state.alignment = alignment
+    state.contentScale = contentScale
     state.filterQuality = filterQuality
+    state.sketch = sketch
+    state.request = request
     return remember(state) {
         AsyncImagePainter(state)
     }
@@ -241,7 +246,7 @@ class AsyncImagePainter internal constructor(
         // When using AsyncImage or SubcomposeAsyncImage, it will not be executed here because they will actively call setSize
         // So this will only be executed when AsyncImagePainter is used as a Painter in the Image component
         if (state.size == null) {
-            state.setSize(drawSize.toIntSize())
+            state.setSizeWithLeast(drawSize.toIntSize())
         }
     }
 
