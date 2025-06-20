@@ -139,6 +139,10 @@ kotlin {
         nonJsCommonMain.dependencies {
             implementation(libs.multiplatform.paging)
         }
+        wasmJsMain.dependencies {
+            // https://youtrack.jetbrains.com/issue/KTOR-7934/JS-WASM-fails-with-IllegalStateException-Content-Length-mismatch-on-requesting-gzipped-content
+            implementation("io.ktor:ktor-client-js-wasm-js:${libs.versions.ktor31.get()}")
+        }
 
         commonTest.dependencies {
             implementation(projects.internal.test)
