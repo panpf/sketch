@@ -4,4 +4,4 @@
 set -e
 
 # Build and install the artifacts locally to 'mavenLocal'.
-./gradlew publishToMavenLocal --no-configuration-cache --exclude-task=dokkaHtml --exclude-task=javadocJar
+./gradlew publishToMavenLocal --no-configuration-cache --exclude-task=dokkaHtml
