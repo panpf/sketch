@@ -205,6 +205,7 @@ fun SketchZoomAsyncImage(
             contentDescription = contentDescription,
             sketch = sketch,
             state = state,
+            alignment = alignment,
             contentScale = contentScale,
             alpha = alpha,
             colorFilter = colorFilter,
