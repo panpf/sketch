@@ -43,7 +43,7 @@ kotlinx-serialization-json = "1.8.1"
 #noinspection GradleDependency
 ktor2 = "2.3.13"
 ktor3 = "3.0.3" # 3.1.0+ Error when publishing packaging obfuscation on desktop platform: 'https://youtrack.jetbrains.com/issue/KTOR-8325/Proguard-cant-find-enclosing-method-attachFor-error-since-3.1.0'
-ktor31 = "3.1.0" # https://youtrack.jetbrains.com/issue/KTOR-7934/JS-WASM-fails-with-IllegalStateException-Content-Length-mismatch-on-requesting-gzipped-content
+ktor31 = "3.1.3" # https://youtrack.jetbrains.com/issue/KTOR-7934/JS-WASM-fails-with-IllegalStateException-Content-Length-mismatch-on-requesting-gzipped-content
 
 leakcanary = "2.14"
 
