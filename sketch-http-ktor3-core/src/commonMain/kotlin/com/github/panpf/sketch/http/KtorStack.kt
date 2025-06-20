@@ -93,9 +93,10 @@ class KtorStack(val client: HttpClient = HttpClient()) : HttpStack {
 
         override val message: String = httpResponse.status.description
 
-        override val contentLength: Long = getHeaderField("content-length")?.toLongOrNull() ?: -1L
+        override val contentLength: Long =
+            getHeaderField(io.ktor.http.HttpHeaders.ContentLength)?.toLongOrNull() ?: -1L
 
-        override val contentType: String? = getHeaderField("content-type")
+        override val contentType: String? = getHeaderField(io.ktor.http.HttpHeaders.ContentType)
 
         override fun getHeaderField(name: String): String? {
             return httpResponse.headers[name]
