@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.AsyncImagePainter
@@ -42,12 +43,12 @@ import com.github.panpf.sketch.internal.requestOf
 import com.github.panpf.sketch.name
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.sample.ui.components.zoomimage.zoom2
-import com.github.panpf.sketch.sample.ui.components.zoomimage.zooming2
 import com.github.panpf.zoomimage.compose.subsampling.subsampling
 import com.github.panpf.zoomimage.compose.zoom.ScrollBarSpec
 import com.github.panpf.zoomimage.compose.zoom.mouseZoom
+import com.github.panpf.zoomimage.compose.zoom.zoom
 import com.github.panpf.zoomimage.compose.zoom.zoomScrollBar
+import com.github.panpf.zoomimage.compose.zoom.zooming
 import com.github.panpf.zoomimage.sketch.SketchTileImageCache
 import com.github.panpf.zoomimage.subsampling.SubsamplingImage
 import com.github.panpf.zoomimage.subsampling.SubsamplingImageGenerateResult
@@ -181,6 +182,7 @@ fun SketchZoomAsyncImage(
 ) {
     zoomState.zoomable.contentScale = contentScale
     zoomState.zoomable.alignment = alignment
+    zoomState.zoomable.layoutDirection = LocalLayoutDirection.current
 
     LaunchedEffect(zoomState.subsampling) {
         zoomState.subsampling.tileImageCache = SketchTileImageCache(sketch)
@@ -205,15 +207,15 @@ fun SketchZoomAsyncImage(
             contentDescription = contentDescription,
             sketch = sketch,
             state = state,
-            alignment = alignment,
             contentScale = contentScale,
+            alignment = alignment,
             alpha = alpha,
             colorFilter = colorFilter,
             filterQuality = filterQuality,
             clipToBounds = false,
             modifier = Modifier
                 .matchParentSize()
-                .zoom2(
+                .zoom(
                     zoomable = zoomState.zoomable,
                     userSetupContentSize = true,
                     firstRestoreContentBaseTransform = true,
@@ -225,7 +227,7 @@ fun SketchZoomAsyncImage(
         Box(
             Modifier
                 .matchParentSize()
-                .zooming2(zoomable = zoomState.zoomable, firstRestoreContentBaseTransform = false)
+                .zooming(zoomable = zoomState.zoomable, firstRestoreContentBaseTransform = false)
                 .subsampling(zoomState.zoomable, zoomState.subsampling)
         )
 
