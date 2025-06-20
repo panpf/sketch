@@ -8,6 +8,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.test.runTest
 import okio.Buffer
 import okio.buffer
@@ -21,6 +22,7 @@ class HttpUtilsTest {
     @Test
     fun testCopyToWithProgress() = runTest {
         val context = getTestContext()
+        val logger = Logger()
         val string = "abcdefghijklmnopqrstuvwxyz"
         val progressListener = ProgressListenerSupervisor()
 
@@ -31,6 +33,7 @@ class HttpUtilsTest {
             Buffer().writeUtf8(string).slow(100).content().use { content ->
                 copyToWithProgress(
                     coroutineScope = this@runTest,
+                    logger = logger,
                     sink = sink,
                     content = content,
                     request = ImageRequest(context, "http://sample.com/sample.jpeg") {
@@ -52,6 +55,7 @@ class HttpUtilsTest {
             Buffer().writeUtf8(string).slow(100).content().use { content ->
                 copyToWithProgress(
                     coroutineScope = this@runTest,
+                    logger = logger,
                     sink = sink,
                     content = content,
                     request = ImageRequest(context, "http://sample.com/sample.jpeg"),
@@ -71,6 +75,7 @@ class HttpUtilsTest {
             Buffer().writeUtf8(string).slow(100).buffer().content().use { content ->
                 copyToWithProgress(
                     coroutineScope = this@runTest,
+                    logger = logger,
                     sink = sink,
                     content = content,
                     request = ImageRequest(context, "http://sample.com/sample.jpeg") {
@@ -92,6 +97,7 @@ class HttpUtilsTest {
             Buffer().writeUtf8(string).slow(readDelayMillis = 400).content().use { content ->
                 copyToWithProgress(
                     coroutineScope = this@runTest,
+                    logger = logger,
                     sink = sink,
                     content = content,
                     request = ImageRequest(context, "http://sample.com/sample.jpeg") {

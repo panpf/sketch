@@ -20,6 +20,7 @@ import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.http.HttpStack.Content
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
+import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.MimeTypeMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.isActive
@@ -35,16 +36,24 @@ import kotlin.coroutines.cancellation.CancellationException
 @Throws(IOException::class, CancellationException::class)
 internal suspend fun copyToWithProgress(
     coroutineScope: CoroutineScope,
+    logger: Logger,
     sink: BufferedSink,
     content: Content,
     request: ImageRequest,
     contentLength: Long,
     bufferSize: Int = 1024 * 8,
 ): Long {
+    val progressListener = request.progressListener
+    if (progressListener != null && contentLength <= 0) {
+        logger.w { "Invalid contentLength $contentLength, progressListener will not be called. ${request.uri}" }
+    }
+    val progressListenerDelegate = if (progressListener != null && contentLength > 0) {
+        ProgressListenerDelegate(coroutineScope, progressListener)
+    } else {
+        null
+    }
     val buffer = ByteArray(bufferSize)
     var completedLength = 0L
-    val progressListenerDelegate = request.progressListener
-        ?.let { ProgressListenerDelegate(coroutineScope, it) }
     while (coroutineScope.isActive) {
         val readLength = content.read(buffer)
         if (readLength > 0) {
