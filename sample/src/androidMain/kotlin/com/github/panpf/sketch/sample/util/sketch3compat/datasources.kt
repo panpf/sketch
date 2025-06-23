@@ -4,7 +4,6 @@ package com.github.panpf.sketch.datasource
 
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.source.cacheFile
 import okio.Path
 import okio.Source
@@ -76,7 +75,7 @@ typealias ResourceDataSource = com.github.panpf.sketch.source.ResourceDataSource
     message = "Use DataSource instead",
     replaceWith = ReplaceWith("DataSource", "com.github.panpf.sketch.source.DataSource")
 )
-interface BasedStreamDataSource : DataSource {
+interface BasedStreamDataSource : com.github.panpf.sketch.source.DataSource {
 
     override fun openSource(): Source {
         return newInputStream().source()

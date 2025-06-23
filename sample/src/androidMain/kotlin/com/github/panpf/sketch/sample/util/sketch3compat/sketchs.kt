@@ -8,6 +8,7 @@ import androidx.annotation.DrawableRes
 import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.DrawableDecodeInterceptor
+import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
@@ -125,6 +126,16 @@ fun ImageView.displayResourceImage(
     @DrawableRes drawableResId: Int,
     configBlock: (ImageRequest.Builder.() -> Unit)? = null
 ): Disposable = loadResourceImage(packageName, drawableResId, configBlock)
+
+@Deprecated(
+    message = "Use loadImage(newAppIconUri(packageName, versionCode)) instead",
+    replaceWith = ReplaceWith("loadImage(newAppIconUri(packageName, versionCode))")
+)
+fun ImageView.displayAppIconImage(
+    packageName: String,
+    versionCode: Int,
+    configBlock: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable = loadImage(newAppIconUri(packageName, versionCode), configBlock)
 
 @Deprecated(
     message = "Use disposeLoad() instead",
