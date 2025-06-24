@@ -21,7 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.unit.dp
-import com.github.panpf.sketch.sample.EventBus
+import com.github.panpf.sketch.sample.AppEvents
 import com.github.panpf.sketch.sample.image.palette.PhotoPalette
 import com.github.panpf.sketch.sample.resources.Res
 import com.github.panpf.sketch.sample.resources.ic_arrow_left
@@ -35,6 +35,7 @@ import com.github.panpf.zoomimage.compose.util.matcherKeyHandler
 import com.github.panpf.zoomimage.compose.util.platformAssistKey
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 
 
 @Composable
@@ -43,6 +44,7 @@ fun TurnPageIndicator(
     pagerState: PagerState,
     photoPaletteState: MutableState<PhotoPalette>,
 ) {
+    val appEvents: AppEvents = koinInject()
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(Unit) {
         val keyHandlers = listOf(
@@ -83,7 +85,7 @@ fun TurnPageIndicator(
                 }
             }
         )
-        EventBus.keyEvent.collect { keyEvent ->
+        appEvents.keyEvent.collect { keyEvent ->
             keyHandlers.any {
                 it.handle(keyEvent)
             }

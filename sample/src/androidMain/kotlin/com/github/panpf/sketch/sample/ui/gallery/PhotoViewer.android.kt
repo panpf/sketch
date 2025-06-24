@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.sample.EventBus
+import com.github.panpf.sketch.sample.AppEvents
 import com.github.panpf.sketch.sample.ui.base.ActionResult
 import com.github.panpf.zoomimage.SketchZoomState
 import dev.icerock.moko.permissions.Permission
@@ -18,6 +18,7 @@ import dev.icerock.moko.permissions.compose.PermissionsControllerFactory
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import dev.icerock.moko.permissions.storage.WRITE_STORAGE
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 @Composable
 actual fun PhotoViewerBottomBarWrapper(
@@ -29,6 +30,7 @@ actual fun PhotoViewerBottomBarWrapper(
     onInfoClick: (() -> Unit)?,
 ) {
     val context = LocalPlatformContext.current
+    val appEvents: AppEvents = koinInject()
     val coroutineScope = rememberCoroutineScope()
     val factory: PermissionsControllerFactory = rememberPermissionsControllerFactory()
     val controller: PermissionsController =
@@ -42,44 +44,44 @@ actual fun PhotoViewerBottomBarWrapper(
         onInfoClick = onInfoClick,
         onShareClick = {
             coroutineScope.launch {
-                sharePhoto(context, imageUri)
+                sharePhoto(context, appEvents, imageUri)
             }
         },
         onSaveClick = {
             coroutineScope.launch {
                 try {
                     controller.providePermission(Permission.WRITE_STORAGE)
-                    savePhoto(context, imageUri)
+                    savePhoto(context, appEvents, imageUri)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    EventBus.toastFlow.emit("You have denied storage permission and cannot save pictures for you.")
+                    appEvents.toastFlow.emit("You have denied storage permission and cannot save pictures for you.")
                 }
             }
         },
     )
 }
 
-private suspend fun savePhoto(context: PlatformContext, imageUri: String) {
+private suspend fun savePhoto(context: PlatformContext, appEvents: AppEvents, imageUri: String) {
     val result = PhotoActionViewModel(context.applicationContext as Application).save(imageUri)
-    handleActionResult(result)
+    handleActionResult(appEvents, result)
 }
 
-private suspend fun sharePhoto(context: PlatformContext, imageUri: String) {
+private suspend fun sharePhoto(context: PlatformContext, appEvents: AppEvents, imageUri: String) {
     val result = PhotoActionViewModel(context.applicationContext as Application).share(imageUri)
-    handleActionResult(result)
+    handleActionResult(appEvents, result)
 }
 
-suspend fun handleActionResult(result: ActionResult): Boolean =
+suspend fun handleActionResult(appEvents: AppEvents, result: ActionResult): Boolean =
     when (result) {
         is ActionResult.Success -> {
             result.message?.let {
-                EventBus.toastFlow.emit(it)
+                appEvents.toastFlow.emit(it)
             }
             true
         }
 
         is ActionResult.Error -> {
-            EventBus.toastFlow.emit(result.message)
+            appEvents.toastFlow.emit(result.message)
             false
         }
     }

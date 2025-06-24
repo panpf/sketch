@@ -27,7 +27,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.model.MultiSelectMenu
 import com.github.panpf.sketch.sample.model.SwitchMenuFlow
@@ -46,6 +46,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
+import org.koin.mp.KoinPlatform
 import kotlin.reflect.KClass
 
 class AppSettingsViewModel(application1: Application, private val page: Page) :
@@ -58,7 +59,7 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
         }
     }
 
-    private val appSettings = application1.appSettings
+    private val appSettings: AppSettings = KoinPlatform.getKoin().get()
 
     private val _menuListData = MutableStateFlow<List<Any>>(emptyList())
     val menuListData: StateFlow<List<Any>> = _menuListData

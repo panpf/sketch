@@ -1,13 +1,10 @@
 package com.github.panpf.sketch.sample
 
-import android.content.Context
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
-import androidx.fragment.app.Fragment
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
@@ -18,7 +15,6 @@ import com.github.panpf.sketch.decode.LowQualityColorType
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.ui.util.valueOf
-import com.github.panpf.sketch.sample.util.ParamLazy
 import com.github.panpf.sketch.sample.util.SettingsStateFlow
 import com.github.panpf.sketch.sample.util.booleanSettingsStateFlow
 import com.github.panpf.sketch.sample.util.enumSettingsStateFlow
@@ -28,17 +24,6 @@ import com.github.panpf.sketch.sample.util.stateMap
 import com.github.panpf.sketch.sample.util.stringSettingsStateFlow
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.flow.StateFlow
-
-private val appSettingsLazy = ParamLazy<PlatformContext, AppSettings> { AppSettings(it) }
-
-actual val PlatformContext.appSettings: AppSettings
-    get() = appSettingsLazy.get(this.applicationContext)
-
-val Fragment.appSettings: AppSettings
-    get() = this.requireContext().appSettings
-
-val View.appSettings: AppSettings
-    get() = this.context.appSettings
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class AppSettings actual constructor(val context: PlatformContext) {
@@ -270,8 +255,8 @@ actual fun platformSupportedDarkModes(): List<DarkMode> {
     }
 }
 
-fun applyDarkMode(context: Context) {
-    val mode = when (context.appSettings.darkMode.value) {
+fun applyDarkMode(appSettings: AppSettings) {
+    val mode = when (appSettings.darkMode.value) {
         DarkMode.SYSTEM -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
         DarkMode.LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
         DarkMode.DARK -> AppCompatDelegate.MODE_NIGHT_YES

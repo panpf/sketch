@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.sample.ui.setting
 
+import com.github.panpf.sketch.sample.AppEvents
 import com.github.panpf.sketch.sample.AppSettings
-import com.github.panpf.sketch.sample.EventBus
 
 actual fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     add(
@@ -14,7 +14,10 @@ actual fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem>
 }
 
 
-actual fun platformOtherMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
+actual fun platformOtherMenuList(
+    appSettings: AppSettings,
+    appEvents: AppEvents
+): List<SettingItem> = buildList {
     add(
         DropdownSettingItem(
             title = "Http Client",
@@ -22,7 +25,7 @@ actual fun platformOtherMenuList(appSettings: AppSettings): List<SettingItem> = 
             values = listOf("Ktor", "OkHttp", "HttpURLConnection"),
             state = appSettings.httpClient,
             onItemClick = {
-                EventBus.toastFlow.emit("Restart the app to take effect")
+                appEvents.toastFlow.emit("Restart the app to take effect")
             }
         )
     )

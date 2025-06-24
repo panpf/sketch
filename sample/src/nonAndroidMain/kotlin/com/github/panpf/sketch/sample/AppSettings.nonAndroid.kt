@@ -12,7 +12,6 @@ import com.github.panpf.sketch.decode.LowQualityColorType
 import com.github.panpf.sketch.resize.PrecisionDecider
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.ui.util.valueOf
-import com.github.panpf.sketch.sample.util.ParamLazy
 import com.github.panpf.sketch.sample.util.SettingsStateFlow
 import com.github.panpf.sketch.sample.util.booleanSettingsStateFlow
 import com.github.panpf.sketch.sample.util.enumSettingsStateFlow
@@ -22,12 +21,6 @@ import com.github.panpf.sketch.sample.util.stateMap
 import com.github.panpf.sketch.sample.util.stringSettingsStateFlow
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.flow.StateFlow
-
-
-private val appSettingsLazy = ParamLazy<PlatformContext, AppSettings> { AppSettings(it) }
-
-actual val PlatformContext.appSettings: AppSettings
-    get() = appSettingsLazy.get(this)
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class AppSettings actual constructor(val context: PlatformContext) {

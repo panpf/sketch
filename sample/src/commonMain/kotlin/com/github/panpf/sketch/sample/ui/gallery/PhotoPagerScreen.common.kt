@@ -53,8 +53,8 @@ import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
-import com.github.panpf.sketch.sample.EventBus
-import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.AppEvents
+import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor
 import com.github.panpf.sketch.sample.image.palette.PhotoPalette
 import com.github.panpf.sketch.sample.image.simplePalette
@@ -76,6 +76,7 @@ import com.github.panpf.sketch.util.toSketchSize
 import com.github.panpf.sketch.util.windowContainerSize
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 
 expect fun getTopMargin(context: PlatformContext): Int
 
@@ -83,6 +84,7 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
 
     @Composable
     override fun DrawContent() {
+        val appEvents: AppEvents = koinInject()
         val coroutineScope = rememberCoroutineScope()
         val focusRequest = remember { androidx.compose.ui.focus.FocusRequester() }
         Box(
@@ -92,7 +94,7 @@ class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
                 .focusRequester(focusRequest)
                 .onKeyEvent {
                     coroutineScope.launch {
-                        EventBus.keyEvent.emit(it)
+                        appEvents.keyEvent.emit(it)
                     }
                     true
                 }
@@ -213,7 +215,8 @@ fun PhotoPagerHeaders(
 
             Spacer(Modifier.weight(1f))
 
-            val appSettings = LocalPlatformContext.current.appSettings
+            val appEvents: AppEvents = koinInject()
+            val appSettings: AppSettings = koinInject()
             val showOriginImage by appSettings.showOriginImage.collectAsState()
             val image2IconPainter = if (showOriginImage)
                 painterResource(Res.drawable.ic_image2_baseline) else painterResource(Res.drawable.ic_image2_outline)
@@ -224,9 +227,9 @@ fun PhotoPagerHeaders(
                     appSettings.showOriginImage.value = newValue
                     coroutineScope.launch {
                         if (newValue) {
-                            EventBus.toastFlow.emit("Now show original image")
+                            appEvents.toastFlow.emit("Now show original image")
                         } else {
-                            EventBus.toastFlow.emit("Now show thumbnails image")
+                            appEvents.toastFlow.emit("Now show thumbnails image")
                         }
                     }
                 },
@@ -298,8 +301,7 @@ fun PhotoPagerHeaders(
 
 @Composable
 fun GestureDialog() {
-    val context = LocalPlatformContext.current
-    val appSettings = context.appSettings
+    val appSettings: AppSettings = koinInject()
     val pagerGuideShowed by appSettings.pagerGuideShowed.collectAsState()
     var showPagerGuide by remember { mutableStateOf(true) }
     if (!pagerGuideShowed && showPagerGuide) {

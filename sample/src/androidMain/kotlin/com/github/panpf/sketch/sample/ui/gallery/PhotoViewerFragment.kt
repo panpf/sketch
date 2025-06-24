@@ -34,7 +34,6 @@ import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.LoadState.Error
 import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.databinding.FragmentImageViewerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.model.Photo

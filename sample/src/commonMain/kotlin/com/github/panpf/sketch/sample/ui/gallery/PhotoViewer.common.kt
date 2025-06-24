@@ -23,9 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.rememberAsyncImageState
-import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.image.palette.PhotoPalette
 import com.github.panpf.sketch.sample.resources.Res
 import com.github.panpf.sketch.sample.resources.ic_info_baseline
@@ -43,6 +42,7 @@ import com.github.panpf.zoomimage.SketchZoomState
 import com.github.panpf.zoomimage.rememberSketchZoomState
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 import kotlin.math.roundToInt
 
 @Composable
@@ -52,11 +52,11 @@ fun PhotoViewer(
     pageSelected: Boolean,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        val context = LocalPlatformContext.current
         val imageState = rememberAsyncImageState()
         val zoomState = rememberSketchZoomState()
         val infoDialogState = rememberMyDialogState()
-        val showOriginImage by context.appSettings.showOriginImage.collectAsState()
+        val appSettings: AppSettings = koinInject()
+        val showOriginImage by appSettings.showOriginImage.collectAsState()
         val imageUri = if (showOriginImage)
             photo.originalUrl else photo.mediumUrl ?: photo.originalUrl
 

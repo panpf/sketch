@@ -19,15 +19,17 @@ package com.github.panpf.sketch.sample.ui.widget
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.RecyclerView
-import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.ui.util.lifecycleOwner
 import com.github.panpf.sketch.sample.util.collectWithLifecycle
 import com.github.panpf.sketch.util.PauseLoadWhenScrollingMixedScrollListener
+import org.koin.mp.KoinPlatform
 
 class MyRecyclerView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : RecyclerView(context, attrs) {
 
+    private val appSettings: AppSettings = KoinPlatform.getKoin().get()
     private val scrollListener = PauseLoadWhenScrollingMixedScrollListener()
 
     override fun onAttachedToWindow() {

@@ -41,8 +41,8 @@ import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.request.updateImageOptions
+import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.buildScale
 import com.github.panpf.sketch.sample.ui.components.NewMoonLoadingDrawable
 import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
@@ -59,11 +59,13 @@ import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import org.koin.mp.KoinPlatform
 
 class MyListImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
 ) : MyImageView(context, attrs, defStyle) {
 
+    private val appSettings: AppSettings = KoinPlatform.getKoin().get()
     private val mimeTypeLogoMap by lazy {
         val newLogoDrawable: (String) -> Drawable = {
             TextDrawable.builder()
@@ -179,8 +181,6 @@ class MyListImageView @JvmOverloads constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-
-        val appSettings = appSettings
 
         appSettings.showProgressIndicatorInList.collectWithLifecycle(lifecycleOwner) { show ->
             setShowProgressIndicator(show = show)

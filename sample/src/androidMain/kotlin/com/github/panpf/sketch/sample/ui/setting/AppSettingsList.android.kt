@@ -4,8 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.ColorSpace
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import com.github.panpf.sketch.sample.AppEvents
 import com.github.panpf.sketch.sample.AppSettings
-import com.github.panpf.sketch.sample.EventBus
 
 actual fun platformColorTypes(): List<String> {
     return Bitmap.Config.values().map { it.name }
@@ -45,7 +45,10 @@ actual fun platformDecodeMenuList(appSettings: AppSettings): List<SettingItem> =
 
 actual fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem> = emptyList()
 
-actual fun platformOtherMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
+actual fun platformOtherMenuList(
+    appSettings: AppSettings,
+    appEvents: AppEvents
+): List<SettingItem> = buildList {
     add(
         DropdownSettingItem(
             title = "Http Client",
@@ -53,7 +56,7 @@ actual fun platformOtherMenuList(appSettings: AppSettings): List<SettingItem> = 
             values = listOf("Ktor", "OkHttp", "HttpURLConnection"),
             state = appSettings.httpClient,
             onItemClick = {
-                EventBus.toastFlow.emit("Restart the app to take effect")
+                appEvents.toastFlow.emit("Restart the app to take effect")
             }
         )
     )
@@ -64,7 +67,7 @@ actual fun platformOtherMenuList(appSettings: AppSettings): List<SettingItem> = 
             values = listOf("FFmpeg", "AndroidBuiltIn"),
             state = appSettings.videoFrameDecoder,
             onItemClick = {
-                EventBus.toastFlow.emit("Restart the app to take effect")
+                appEvents.toastFlow.emit("Restart the app to take effect")
             }
         )
     )
@@ -75,7 +78,7 @@ actual fun platformOtherMenuList(appSettings: AppSettings): List<SettingItem> = 
             values = listOf("KoralGif", "Movie", "Movie+ImageDecoder"),
             state = appSettings.gifDecoder,
             onItemClick = {
-                EventBus.toastFlow.emit("Restart the app to take effect")
+                appEvents.toastFlow.emit("Restart the app to take effect")
             }
         )
     )

@@ -11,7 +11,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.sample.EventBus
+import com.github.panpf.sketch.sample.AppEvents
 import com.github.panpf.sketch.sample.util.sha256String
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.Size
@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okio.buffer
 import okio.sink
+import org.koin.compose.koinInject
 import java.io.File
 
 @Composable
@@ -32,6 +33,7 @@ actual fun PhotoViewerBottomBarWrapper(
     buttonContentColor: Color?,
     onInfoClick: (() -> Unit)?,
 ) {
+    val appEvents: AppEvents = koinInject()
     val context = LocalPlatformContext.current
     val coroutineScope = rememberCoroutineScope()
     PhotoViewerBottomBar(
@@ -42,18 +44,18 @@ actual fun PhotoViewerBottomBarWrapper(
         onInfoClick = onInfoClick,
         onShareClick = {
             coroutineScope.launch {
-                sharePhoto(context, imageUri)
+                sharePhoto(context, appEvents, imageUri)
             }
         },
         onSaveClick = {
             coroutineScope.launch {
-                savePhoto(context, imageUri)
+                savePhoto(context, appEvents, imageUri)
             }
         },
     )
 }
 
-private suspend fun savePhoto(context: PlatformContext, imageUri: String) {
+private suspend fun savePhoto(context: PlatformContext, appEvents: AppEvents, imageUri: String) {
     val sketch: Sketch = SingletonSketch.get(context)
     val fetcher = withContext(Dispatchers.IO) {
         val requestContext =
@@ -61,14 +63,14 @@ private suspend fun savePhoto(context: PlatformContext, imageUri: String) {
         sketch.components.newFetcherOrThrow(requestContext)
     }
     if (fetcher is FileUriFetcher) {
-        return EventBus.toastFlow.emit("Local files do not need to be saved")
+        return appEvents.toastFlow.emit("Local files do not need to be saved")
     }
 
     val fetchResult = withContext(Dispatchers.IO) {
         fetcher.fetch()
     }.let {
         it.getOrNull()
-            ?: return EventBus.toastFlow.emit("Failed to save picture: ${it.exceptionOrNull()!!.message}")
+            ?: return appEvents.toastFlow.emit("Failed to save picture: ${it.exceptionOrNull()!!.message}")
     }
     val userHomeDir = File(System.getProperty("user.home"))
     val userPicturesDir = File(userHomeDir, "Pictures")
@@ -87,14 +89,14 @@ private suspend fun savePhoto(context: PlatformContext, imageUri: String) {
         }
     }
     return if (result.isSuccess) {
-        EventBus.toastFlow.emit("Saved to the '${imageFile.parentFile?.path}' directory")
+        appEvents.toastFlow.emit("Saved to the '${imageFile.parentFile?.path}' directory")
     } else {
         val exception = result.exceptionOrNull()
-        EventBus.toastFlow.emit("Failed to save picture: ${exception?.message}")
+        appEvents.toastFlow.emit("Failed to save picture: ${exception?.message}")
     }
 }
 
 @Suppress("UNUSED_PARAMETER")
-private suspend fun sharePhoto(context: PlatformContext, imageUri: String) {
-    EventBus.toastFlow.emit("Desktop platform does not support sharing photo")
+private suspend fun sharePhoto(context: PlatformContext, appEvents: AppEvents, imageUri: String) {
+    appEvents.toastFlow.emit("Desktop platform does not support sharing photo")
 }

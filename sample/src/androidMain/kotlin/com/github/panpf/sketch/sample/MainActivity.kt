@@ -29,7 +29,7 @@ class MainActivity : BaseActivity() {
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        applyDarkMode(this)
+        applyDarkMode(appSettings)
 
         if (appSettings.composePage.value) {
             startActivity(Intent(this, ComposeMainActivity::class.java))

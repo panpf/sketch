@@ -11,19 +11,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.panpf.sketch.LocalPlatformContext
+import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.DarkMode
-import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.platformSupportedDarkModes
 import com.github.panpf.sketch.sample.resources.Res
 import com.github.panpf.sketch.sample.resources.ic_auto_mode
 import com.github.panpf.sketch.sample.resources.ic_dark_mode
 import com.github.panpf.sketch.sample.resources.ic_light_mode
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 
 @Composable
 fun DarkModeSwitch(modifier: Modifier = Modifier) {
-    val appSettings = LocalPlatformContext.current.appSettings
+    val appSettings: AppSettings = koinInject()
     val darkMode by appSettings.darkMode.collectAsState()
     val nextDarkMode by remember {
         derivedStateOf {

@@ -7,9 +7,9 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.github.panpf.sketch.LocalPlatformContext
+import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.DarkMode
-import com.github.panpf.sketch.sample.appSettings
+import org.koin.compose.koinInject
 
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -81,7 +81,8 @@ fun AppTheme(
     darkMode: DarkMode? = null,
     content: @Composable () -> Unit
 ) {
-    val settingsDarkMode by LocalPlatformContext.current.appSettings.darkMode.collectAsState()
+    val appSettings: AppSettings = koinInject()
+    val settingsDarkMode by appSettings.darkMode.collectAsState()
     val realDarkMode = darkMode ?: settingsDarkMode
     val useDarkTheme = when (realDarkMode) {
         DarkMode.SYSTEM -> isSystemInDarkTheme()

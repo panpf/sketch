@@ -25,7 +25,6 @@ import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
 import com.github.panpf.sketch.sample.DarkMode
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.applyDarkMode
 import com.github.panpf.sketch.sample.databinding.FragmentViewHomeBinding
 import com.github.panpf.sketch.sample.platformSupportedDarkModes
@@ -66,7 +65,6 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
         }
 
         binding.layoutImage.apply {
-            val appSettings = context.appSettings
             appSettings.staggeredGridMode
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     val iconResId =
@@ -84,7 +82,6 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
 
         binding.darkModeIcon.apply {
             val nextDarkMode: () -> DarkMode = {
-                val appSettings = binding.darkModeIcon.appSettings
                 val darkMode = appSettings.darkMode.value
                 val platformSupportedDarkModes = platformSupportedDarkModes()
                 val index = platformSupportedDarkModes.indexOf(darkMode)
@@ -104,7 +101,7 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
             setOnClickListener {
                 appSettings.darkMode.value = nextDarkMode()
                 setIcon(nextDarkMode())
-                applyDarkMode(requireContext())
+                applyDarkMode(appSettings)
             }
         }
 

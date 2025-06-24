@@ -35,7 +35,6 @@ import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.databinding.FragmentImagePagerBinding
 import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor
 import com.github.panpf.sketch.sample.image.palette.PhotoPalette

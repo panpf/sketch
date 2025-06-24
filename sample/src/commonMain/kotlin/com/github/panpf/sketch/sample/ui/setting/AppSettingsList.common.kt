@@ -42,9 +42,8 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
+import com.github.panpf.sketch.sample.AppEvents
 import com.github.panpf.sketch.sample.AppSettings
-import com.github.panpf.sketch.sample.EventBus
-import com.github.panpf.sketch.sample.appSettings
 import com.github.panpf.sketch.sample.resources.Res.drawable
 import com.github.panpf.sketch.sample.resources.ic_expand_more
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
@@ -59,6 +58,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 
 @Composable
 fun AppSettingsList(page: Page) {
@@ -69,11 +69,12 @@ fun AppSettingsList(page: Page) {
     ) {
         val recreateSettingItems = remember { mutableStateOf(0) }
         val context = LocalPlatformContext.current
-        val appSettings = context.appSettings
+        val appSettings: AppSettings = koinInject()
+        val appEvents: AppEvents = koinInject()
         val logLevel by appSettings.logLevel.collectAsState()
         val recreateCount by recreateSettingItems
         val settingItems = remember(logLevel, recreateCount) {
-            createSettingItems(context, appSettings, page, recreateSettingItems)
+            createSettingItems(context, appSettings, appEvents, page, recreateSettingItems)
         }
         settingItems.forEach { settingItem ->
             when (settingItem) {
@@ -88,6 +89,7 @@ fun AppSettingsList(page: Page) {
 fun createSettingItems(
     context: PlatformContext,
     appSettings: AppSettings,
+    appEvents: AppEvents,
     page: Page,
     recreateSettingItems: MutableState<Int>
 ): List<SettingItem> = buildList {
@@ -115,8 +117,8 @@ fun createSettingItems(
     addAll(cacheMenuList(context, appSettings, recreateSettingItems))
 
     add(GroupSettingItem("Other"))
-    addAll(otherMenuList(appSettings))
-    addAll(platformOtherMenuList(appSettings))
+    addAll(otherMenuList(appSettings, appEvents))
+    addAll(platformOtherMenuList(appSettings, appEvents))
 }
 
 
@@ -385,41 +387,42 @@ private fun cacheMenuList(
     )
 }
 
-private fun otherMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
-    add(
-        DropdownSettingItem(
-            title = "Logger Level",
-            desc = if (appSettings.logLevel.value <= Logger.Level.Debug)
-                "DEBUG and below will reduce UI fluency" else null,
-            values = Logger.Level.values().toList(),
-            state = appSettings.logLevel,
+private fun otherMenuList(appSettings: AppSettings, appEvents: AppEvents): List<SettingItem> =
+    buildList {
+        add(
+            DropdownSettingItem(
+                title = "Logger Level",
+                desc = if (appSettings.logLevel.value <= Logger.Level.Debug)
+                    "DEBUG and below will reduce UI fluency" else null,
+                values = Logger.Level.values().toList(),
+                state = appSettings.logLevel,
+            )
         )
-    )
-    add(
-        DropdownSettingItem(
-            title = "Network Parallelism Limited",
-            desc = "No limit when less than or equal to 0",
-            values = listOf(-1, 1, 2, 4, 10, 20),
-            state = appSettings.networkParallelismLimited,
-            onItemClick = {
-                EventBus.toastFlow.emit("Restart the app to take effect")
-            }
+        add(
+            DropdownSettingItem(
+                title = "Network Parallelism Limited",
+                desc = "No limit when less than or equal to 0",
+                values = listOf(-1, 1, 2, 4, 10, 20),
+                state = appSettings.networkParallelismLimited,
+                onItemClick = {
+                    appEvents.toastFlow.emit("Restart the app to take effect")
+                }
+            )
         )
-    )
-    add(
-        DropdownSettingItem(
-            title = "Decode Parallelism Limited",
-            desc = "No limit when less than or equal to 0",
-            values = listOf(-1, 1, 2, 4, 10, 20),
-            state = appSettings.decodeParallelismLimited,
-            onItemClick = {
-                EventBus.toastFlow.emit("Restart the app to take effect")
-            }
+        add(
+            DropdownSettingItem(
+                title = "Decode Parallelism Limited",
+                desc = "No limit when less than or equal to 0",
+                values = listOf(-1, 1, 2, 4, 10, 20),
+                state = appSettings.decodeParallelismLimited,
+                onItemClick = {
+                    appEvents.toastFlow.emit("Restart the app to take effect")
+                }
+            )
         )
-    )
-}
+    }
 
-expect fun platformOtherMenuList(appSettings: AppSettings): List<SettingItem>
+expect fun platformOtherMenuList(appSettings: AppSettings, appEvents: AppEvents): List<SettingItem>
 
 interface SettingItem {
     val title: String

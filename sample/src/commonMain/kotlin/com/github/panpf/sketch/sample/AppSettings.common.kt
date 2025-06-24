@@ -16,8 +16,6 @@ import com.github.panpf.sketch.sample.util.SettingsStateFlow
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.flow.StateFlow
 
-expect val PlatformContext.appSettings: AppSettings
-
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 expect class AppSettings(context: PlatformContext) {
 

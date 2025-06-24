@@ -25,8 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.resources.Res
 import com.github.panpf.sketch.sample.resources.ic_debug
 import com.github.panpf.sketch.sample.resources.ic_giphy
@@ -46,6 +45,7 @@ import com.github.panpf.sketch.sample.util.isMobile
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 
 val gridCellsMinSize: Dp = if (Platform.current.isMobile()) 100.dp else 150.dp
 
@@ -99,8 +99,7 @@ object VerHomeScreen : BaseScreen() {
             VerHomeHeader()
 
             val coroutineScope = rememberCoroutineScope()
-            val context = LocalPlatformContext.current
-            val appSettings = context.appSettings
+            val appSettings: AppSettings = koinInject()
             val homeTabs = remember {
                 HomeTab.values()
             }

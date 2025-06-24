@@ -25,17 +25,20 @@ import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.request.updateImageOptions
-import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.ui.util.lifecycleOwner
 import com.github.panpf.sketch.sample.util.collectWithLifecycle
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.util.SketchUtils
 import com.github.panpf.zoomimage.SketchZoomImageView
 import kotlinx.coroutines.flow.StateFlow
+import org.koin.mp.KoinPlatform
 
 class MyZoomImageView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0
 ) : SketchZoomImageView(context, attrs, defStyle) {
+
+    private val appSettings: AppSettings = KoinPlatform.getKoin().get()
 
     init {
         updateImageOptions {

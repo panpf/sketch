@@ -15,8 +15,8 @@ import com.github.panpf.sketch.ability.progressIndicator
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.request.repeatCount
-import com.github.panpf.sketch.sample.EventBus
-import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.AppEvents
+import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
 import com.github.panpf.zoomimage.SketchZoomAsyncImage
@@ -25,6 +25,7 @@ import com.github.panpf.zoomimage.compose.zoom.ScrollBarSpec
 import com.github.panpf.zoomimage.compose.zoom.bindKeyZoomWithKeyEventFlow
 import com.github.panpf.zoomimage.rememberSketchZoomState
 import com.github.panpf.zoomimage.zoom.ReadMode
+import org.koin.compose.koinInject
 
 @Composable
 fun MyZoomAsyncImage(
@@ -39,7 +40,7 @@ fun MyZoomAsyncImage(
     onLongPress: ((Offset) -> Unit)? = null
 ) {
     val context = LocalPlatformContext.current
-    val appSettings = context.appSettings
+    val appSettings: AppSettings = koinInject()
 
     LaunchedEffect(zoomState) {
         appSettings.showTileBounds.collect {
@@ -108,6 +109,7 @@ fun MyZoomAsyncImage(
     )
 
     if (pageSelected) {
-        bindKeyZoomWithKeyEventFlow(EventBus.keyEvent, zoomState.zoomable)
+        val appEvents: AppEvents = koinInject()
+        bindKeyZoomWithKeyEventFlow(appEvents.keyEvent, zoomState.zoomable)
     }
 }

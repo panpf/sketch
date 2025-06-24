@@ -14,8 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.resources.Res.drawable
 import com.github.panpf.sketch.sample.resources.ic_layout_grid
 import com.github.panpf.sketch.sample.resources.ic_layout_grid_staggered
@@ -27,6 +26,7 @@ import com.github.panpf.sketch.sample.ui.components.rememberMyDialogState
 import com.github.panpf.sketch.sample.ui.setting.AppSettingsList
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 
 @Composable
 fun MainMenu(modifier: Modifier = Modifier) {
@@ -36,8 +36,7 @@ fun MainMenu(modifier: Modifier = Modifier) {
             .clip(RoundedCornerShape(50))
             .background(color = colorScheme.tertiaryContainer)
     ) {
-        val context = LocalPlatformContext.current
-        val appSettings = context.appSettings
+        val appSettings: AppSettings = koinInject()
         val disallowAnimatedImageInList by appSettings.disallowAnimatedImageInList.collectAsState()
         val staggeredGridMode by appSettings.staggeredGridMode.collectAsState()
         val playIcon = if (disallowAnimatedImageInList) {

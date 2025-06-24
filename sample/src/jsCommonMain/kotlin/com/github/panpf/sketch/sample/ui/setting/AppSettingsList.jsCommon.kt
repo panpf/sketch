@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.sample.ui.setting
 
+import com.github.panpf.sketch.sample.AppEvents
 import com.github.panpf.sketch.sample.AppSettings
 
 actual fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
@@ -12,4 +13,7 @@ actual fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem>
     )
 }
 
-actual fun platformOtherMenuList(appSettings: AppSettings): List<SettingItem> = emptyList()
+actual fun platformOtherMenuList(
+    appSettings: AppSettings,
+    appEvents: AppEvents
+): List<SettingItem> = emptyList()

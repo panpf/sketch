@@ -14,7 +14,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.AsyncImageState
-import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.SubcomposeAsyncImage
 import com.github.panpf.sketch.ability.dataFromLogo
 import com.github.panpf.sketch.ability.mimeTypeLogo
@@ -28,7 +27,7 @@ import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.request.saveCellularTraffic
-import com.github.panpf.sketch.sample.appSettings
+import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.buildScale
 import com.github.panpf.sketch.sample.resources.Res
 import com.github.panpf.sketch.sample.resources.ic_image_broken_outline
@@ -42,7 +41,7 @@ import com.github.panpf.sketch.state.ComposableConditionStateImage
 import com.github.panpf.sketch.state.rememberIconAnimatablePainterStateImage
 import com.github.panpf.sketch.state.rememberIconPainterStateImage
 import com.github.panpf.sketch.state.saveCellularTrafficError
-
+import org.koin.compose.koinInject
 
 @Composable
 fun MyListAsyncImage(
@@ -52,8 +51,7 @@ fun MyListAsyncImage(
     animatedPlaceholder: Boolean = false,
     onClick: () -> Unit
 ) {
-    val context = LocalPlatformContext.current
-    val appSettings = context.appSettings
+    val appSettings: AppSettings = koinInject()
     val contentScale by appSettings.listContentScale.collectAsState()
     val alignment by appSettings.listAlignment.collectAsState()
     val infoDialogState = rememberMyDialogState()
@@ -87,8 +85,7 @@ fun MyListSubcomposeAsyncImage(
     animatedPlaceholder: Boolean = false,
     onClick: () -> Unit
 ) {
-    val context = LocalPlatformContext.current
-    val appSettings = context.appSettings
+    val appSettings: AppSettings = koinInject()
     val contentScale by appSettings.listContentScale.collectAsState()
     val alignment by appSettings.listAlignment.collectAsState()
     val infoDialogState = rememberMyDialogState()
@@ -122,8 +119,7 @@ fun MyListAsyncImagePainterImage(
     animatedPlaceholder: Boolean = false,
     onClick: () -> Unit
 ) {
-    val context = LocalPlatformContext.current
-    val appSettings = context.appSettings
+    val appSettings: AppSettings = koinInject()
     val contentScale by appSettings.listContentScale.collectAsState()
     val alignment by appSettings.listAlignment.collectAsState()
     val infoDialogState = rememberMyDialogState()
@@ -155,8 +151,7 @@ fun MyListAsyncImagePainterImage(
 
 @Composable
 private fun Modifier.buildListImageModifier(imageState: AsyncImageState): Modifier {
-    val context = LocalPlatformContext.current
-    val appSettings = context.appSettings
+    val appSettings: AppSettings = koinInject()
     val mimeTypeLogoMap = rememberMimeTypeLogoMap()
     val progressPainter = rememberThemeSectorProgressPainter(hiddenWhenIndeterminate = true)
     val showDataFromLogo by appSettings.showDataFromLogoInList.collectAsState()
@@ -179,8 +174,7 @@ private fun buildListImageRequest(
     uri: String,
     animatedPlaceholder: Boolean
 ): ImageRequest {
-    val context = LocalPlatformContext.current
-    val appSettings = context.appSettings
+    val appSettings: AppSettings = koinInject()
     val colorScheme = MaterialTheme.colorScheme
     return ComposableImageRequest(uri) {
         val memoryCache by appSettings.memoryCache.collectAsState()
