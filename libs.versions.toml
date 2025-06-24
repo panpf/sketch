@@ -34,6 +34,8 @@ jetbrains-compose = "1.8.0"
 jetbrains-lifecycle = "2.8.4"
 jetbrains-compose-material-icons-core = "1.7.3"
 
+koin = "4.1.0"
+
 kotlin = "2.1.10" # 2.1.20 version will report an error when sync 'kotlin-project-structure-metadata.json (No such file or directory)', but it does not affect the compilation
 kotlinx-atomicfu = "0.27.0" # sync with kotlin
 kotlinx-coroutines = "1.10.2"
@@ -116,6 +118,13 @@ google-flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = 
 jetbrains-lifecycle-common = { module = "org.jetbrains.androidx.lifecycle:lifecycle-common", version.ref = "jetbrains-lifecycle" }
 jetbrains-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "jetbrains-lifecycle" }
 jetbrains-compose-material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "jetbrains-compose-material-icons-core" }
+
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
+koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation", version.ref = "koin" }
+koin-ktor = { module = "io.insert-koin:koin-ktor", version.ref = "koin" }
 
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
