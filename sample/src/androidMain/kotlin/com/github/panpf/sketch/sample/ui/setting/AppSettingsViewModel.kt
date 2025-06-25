@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.AppSettings
@@ -35,7 +36,6 @@ import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
 import com.github.panpf.sketch.sample.util.ignoreFirst
-import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.tools4a.toast.Toastx
 import com.github.panpf.tools4j.io.ktx.formatFileSize
@@ -51,6 +51,8 @@ import kotlin.reflect.KClass
 
 class AppSettingsViewModel(application1: Application, private val page: Page) :
     LifecycleAndroidViewModel(application1) {
+
+    private val sketch: Sketch = KoinPlatform.getKoin().get<Sketch>()
 
     class Factory(val application: Application, private val page: Page) :
         ViewModelProvider.Factory {
@@ -362,8 +364,6 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
     }
 
     private fun makeCacheMenuList(): List<Any> = buildList {
-        val sketch = application1.sketch
-
         add(
             SwitchMenuFlow(
                 title = "Memory Cache",
@@ -439,9 +439,9 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
         add(
             MultiSelectMenu(
                 title = "Logger Level",
-                desc = if (application1.sketch.logger.level <= Logger.Level.Debug) "DEBUG and below will reduce UI fluency" else "",
+                desc = if (sketch.logger.level <= Logger.Level.Debug) "DEBUG and below will reduce UI fluency" else "",
                 values = Logger.Level.values().map { it.name },
-                getValue = { application1.sketch.logger.level.name },
+                getValue = { sketch.logger.level.name },
                 onSelect = { _, value ->
                     appSettings.logLevel.value = Logger.Level.valueOf(value)
                 }

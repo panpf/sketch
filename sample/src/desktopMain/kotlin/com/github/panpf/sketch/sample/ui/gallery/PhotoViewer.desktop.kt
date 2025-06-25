@@ -4,9 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
@@ -34,7 +31,7 @@ actual fun PhotoViewerBottomBarWrapper(
     onInfoClick: (() -> Unit)?,
 ) {
     val appEvents: AppEvents = koinInject()
-    val context = LocalPlatformContext.current
+    val sketch: Sketch = koinInject()
     val coroutineScope = rememberCoroutineScope()
     PhotoViewerBottomBar(
         modifier = modifier,
@@ -44,19 +41,18 @@ actual fun PhotoViewerBottomBarWrapper(
         onInfoClick = onInfoClick,
         onShareClick = {
             coroutineScope.launch {
-                sharePhoto(context, appEvents, imageUri)
+                sharePhoto(appEvents, sketch, imageUri)
             }
         },
         onSaveClick = {
             coroutineScope.launch {
-                savePhoto(context, appEvents, imageUri)
+                savePhoto(appEvents, sketch, imageUri)
             }
         },
     )
 }
 
-private suspend fun savePhoto(context: PlatformContext, appEvents: AppEvents, imageUri: String) {
-    val sketch: Sketch = SingletonSketch.get(context)
+private suspend fun savePhoto(appEvents: AppEvents, sketch: Sketch, imageUri: String) {
     val fetcher = withContext(Dispatchers.IO) {
         val requestContext =
             RequestContext(sketch, ImageRequest(sketch.context, imageUri), Size.Empty)
@@ -97,6 +93,6 @@ private suspend fun savePhoto(context: PlatformContext, appEvents: AppEvents, im
 }
 
 @Suppress("UNUSED_PARAMETER")
-private suspend fun sharePhoto(context: PlatformContext, appEvents: AppEvents, imageUri: String) {
+private suspend fun sharePhoto(appEvents: AppEvents, sketch: Sketch, imageUri: String) {
     appEvents.toastFlow.emit("Desktop platform does not support sharing photo")
 }

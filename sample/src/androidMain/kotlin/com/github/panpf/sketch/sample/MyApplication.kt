@@ -17,18 +17,11 @@
 package com.github.panpf.sketch.sample
 
 import android.app.Application
-import android.content.Context
-import com.github.panpf.sketch.SingletonSketch
-import com.github.panpf.sketch.Sketch
 
-class MyApplication : Application(), SingletonSketch.Factory {
+class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
         initialApp(this@MyApplication)
-    }
-
-    override fun createSketch(context: Context): Sketch {
-        return newSketch(context)
     }
 }

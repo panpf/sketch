@@ -20,13 +20,13 @@ import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import android.os.Environment
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.sample.ui.base.ActionResult
 import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.util.sha256String
-import com.github.panpf.sketch.sketch
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.fileprovider.ktx.getShareFileUri
@@ -34,14 +34,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.buffer
 import okio.sink
+import org.koin.mp.KoinPlatform
 import java.io.File
 
 class PhotoActionViewModel(application: Application) : LifecycleAndroidViewModel(application) {
 
+    private val sketch: Sketch = KoinPlatform.getKoin().get<Sketch>()
+
     suspend fun share(imageUri: String): ActionResult {
         val application = application1
         val fetchResult = withContext(Dispatchers.IO) {
-            val sketch = application1.sketch
             val requestContext =
                 RequestContext(sketch, ImageRequest(application1, imageUri), Size.Empty)
             val fetcher = sketch.components
@@ -86,7 +88,6 @@ class PhotoActionViewModel(application: Application) : LifecycleAndroidViewModel
     suspend fun save(imageUri: String): ActionResult {
         val application = application1
         val fetcher = withContext(Dispatchers.IO) {
-            val sketch = application.sketch
             val requestContext =
                 RequestContext(sketch, ImageRequest(application, imageUri), Size.Empty)
             sketch.components.newFetcherOrThrow(requestContext)

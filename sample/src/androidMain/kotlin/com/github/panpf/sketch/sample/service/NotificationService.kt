@@ -19,13 +19,14 @@ package com.github.panpf.sketch.sample.service
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.execute
-import com.github.panpf.sketch.sketch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.koin.mp.KoinPlatform
 
 /**
  * This Service is just to test the compatibility of Sketch under multi-process
@@ -46,7 +47,7 @@ class NotificationService : Service() {
                 resize(200, 200)
             }.execute()
 
-            val cacheDirName = sketch.resultCache.directory.name
+            val cacheDirName = KoinPlatform.getKoin().get<Sketch>().resultCache.directory.name
             require(cacheDirName.startsWith("result") && cacheDirName != "result") {
                 cacheDirName
             }

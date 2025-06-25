@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.sample
 
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -12,7 +11,6 @@ actual fun initialApp(context: PlatformContext) {
         modules(commonModule(context))
         modules(platformModule(context))
     }
-    SingletonSketch.setSafe { newSketch(it) }
 }
 
 actual fun platformModule(context: PlatformContext): Module = module {

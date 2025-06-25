@@ -8,9 +8,10 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.sketch
 import kotlinx.coroutines.flow.Flow
+import org.koin.mp.KoinPlatform
 
 class LocalPhotoListFragment : BasePhotoListFragment() {
 
@@ -25,6 +26,9 @@ class LocalPhotoListFragment : BasePhotoListFragment() {
         get() = localPhotoListViewModel.pagingFlow
 
     class LocalPhotoListViewModel(application: Application) : AndroidViewModel(application) {
+
+        private val sketch: Sketch = KoinPlatform.getKoin().get<Sketch>()
+
         val pagingFlow = Pager(
             config = PagingConfig(
                 pageSize = 60,
@@ -32,7 +36,7 @@ class LocalPhotoListFragment : BasePhotoListFragment() {
             ),
             initialKey = 0,
             pagingSourceFactory = {
-                LocalPhotoListPagingSource(application, application.sketch)
+                LocalPhotoListPagingSource(application, sketch)
             }
         ).flow.cachedIn(viewModelScope)
     }

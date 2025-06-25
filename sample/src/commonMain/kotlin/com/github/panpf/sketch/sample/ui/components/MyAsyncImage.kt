@@ -12,8 +12,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.AsyncImageState
-import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.gallery.PhotoInfo
@@ -36,7 +34,6 @@ fun MyAsyncImage(
     AsyncImage(
         uri = uri,
         contentDescription = contentDescription,
-        sketch = SingletonSketch.get(LocalPlatformContext.current),
         modifier = modifier.pointerInput(Unit) {
             detectTapGestures(
                 onTap = { onClick?.invoke() },
@@ -74,7 +71,6 @@ fun MyAsyncImage(
     AsyncImage(
         request = request,
         contentDescription = contentDescription,
-        sketch = SingletonSketch.get(LocalPlatformContext.current),
         modifier = modifier.pointerInput(Unit) {
             detectTapGestures(
                 onTap = { onClick?.invoke() },

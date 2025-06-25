@@ -56,7 +56,7 @@ kotlin {
             implementation(projects.internal.images)
             implementation(projects.sketchAnimatedGif)
             implementation(projects.sketchAnimatedWebp)
-            implementation(projects.sketchCompose)
+            implementation(projects.sketchComposeKoin)
             implementation(projects.sketchComposeResources)
             implementation(projects.sketchExtensionsCompose)
             implementation(projects.sketchExtensionsComposeResources)
@@ -87,7 +87,7 @@ kotlin {
             implementation(projects.sketchExtensionsView)
             implementation(projects.sketchVideo)
             implementation(projects.sketchVideoFfmpeg)
-            implementation(projects.sketchView)
+            implementation(projects.sketchViewKoin)
             implementation(compose.preview) // Only available on Android and desktop platforms
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.appcompat)

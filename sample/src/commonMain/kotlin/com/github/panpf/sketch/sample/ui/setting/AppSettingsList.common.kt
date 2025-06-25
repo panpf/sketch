@@ -37,9 +37,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.SingletonSketch
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.AppEvents
@@ -68,13 +66,13 @@ fun AppSettingsList(page: Page) {
             .verticalScroll(rememberScrollState())
     ) {
         val recreateSettingItems = remember { mutableStateOf(0) }
-        val context = LocalPlatformContext.current
         val appSettings: AppSettings = koinInject()
         val appEvents: AppEvents = koinInject()
+        val sketch: Sketch = koinInject()
         val logLevel by appSettings.logLevel.collectAsState()
         val recreateCount by recreateSettingItems
         val settingItems = remember(logLevel, recreateCount) {
-            createSettingItems(context, appSettings, appEvents, page, recreateSettingItems)
+            createSettingItems(appSettings, appEvents, sketch, page, recreateSettingItems)
         }
         settingItems.forEach { settingItem ->
             when (settingItem) {
@@ -87,9 +85,9 @@ fun AppSettingsList(page: Page) {
 }
 
 fun createSettingItems(
-    context: PlatformContext,
     appSettings: AppSettings,
     appEvents: AppEvents,
+    sketch: Sketch,
     page: Page,
     recreateSettingItems: MutableState<Int>
 ): List<SettingItem> = buildList {
@@ -114,7 +112,7 @@ fun createSettingItems(
     }
 
     add(GroupSettingItem("Cache"))
-    addAll(cacheMenuList(context, appSettings, recreateSettingItems))
+    addAll(cacheMenuList(appSettings, sketch, recreateSettingItems))
 
     add(GroupSettingItem("Other"))
     addAll(otherMenuList(appSettings, appEvents))
@@ -332,12 +330,10 @@ expect fun platformColorSpaces(): List<String>
 
 
 private fun cacheMenuList(
-    context: PlatformContext,
     appSettings: AppSettings,
+    sketch: Sketch,
     recreateSettingItems: MutableState<Int>,
 ): List<SettingItem> = buildList {
-    val sketch = SingletonSketch.get(context)
-
     add(
         SwitchSettingItem(
             title = "Memory Cache",

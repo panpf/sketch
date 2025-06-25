@@ -9,8 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import com.github.panpf.sketch.AsyncImageState
-import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.SingletonSketch
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.ability.progressIndicator
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
@@ -39,7 +38,6 @@ fun MyZoomAsyncImage(
     pageSelected: Boolean = false,
     onLongPress: ((Offset) -> Unit)? = null
 ) {
-    val context = LocalPlatformContext.current
     val appSettings: AppSettings = koinInject()
 
     LaunchedEffect(zoomState) {
@@ -81,7 +79,7 @@ fun MyZoomAsyncImage(
         val platformAsyncImageSettings = composablePlatformAsyncImageSettings(appSettings)
         merge(platformAsyncImageSettings)
     }
-    val sketch = SingletonSketch.get(context)
+    val sketch: Sketch = koinInject()
 
     val progressPainter = rememberThemeSectorProgressPainter()
     val modifier1 = modifier.progressIndicator(imageState, progressPainter)

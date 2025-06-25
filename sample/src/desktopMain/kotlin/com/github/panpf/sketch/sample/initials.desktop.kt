@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.sample
 
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.SingletonSketch
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.internal.HurlHttpUriFetcherProvider
 import com.github.panpf.sketch.fetch.internal.KtorHttpUriFetcherProvider
@@ -20,7 +19,6 @@ actual fun initialApp(context: PlatformContext) {
         modules(commonModule(context))
         modules(platformModule(context))
     }
-    SingletonSketch.setSafe { newSketch(it) }
 }
 
 actual fun platformModule(context: PlatformContext): Module = module {

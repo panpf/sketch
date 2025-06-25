@@ -14,18 +14,18 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import java.io.File
 
-@Deprecated(
-    message = "Use SingletonSketch.Factory instead",
-    replaceWith = ReplaceWith("SingletonSketch.Factory", "com.github.panpf.sketch.SingletonSketch")
-)
-interface SketchFactory : SingletonSketch.Factory {
-
-    override fun createSketch(context: PlatformContext): Sketch {
-        return createSketch()
-    }
-
-    fun createSketch(): Sketch
-}
+//@Deprecated(
+//    message = "Use SingletonSketch.Factory instead",
+//    replaceWith = ReplaceWith("SingletonSketch.Factory", "com.github.panpf.sketch.SingletonSketch")
+//)
+//interface SketchFactory : SingletonSketch.Factory {
+//
+//    override fun createSketch(context: PlatformContext): Sketch {
+//        return createSketch()
+//    }
+//
+//    fun createSketch(): Sketch
+//}
 
 @Deprecated(
     message = "Use addDecoder instead",
