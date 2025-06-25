@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.core.android.test
 
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.Sketch.Builder
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecoder
 import com.github.panpf.sketch.decode.internal.DrawableDecoder
 import com.github.panpf.sketch.fetch.AssetUriFetcher
@@ -22,7 +22,7 @@ class SketchAndroidTest {
     fun testBuilder() {
         TestActivity::class.launchActivity().use { scenario ->
             val activity = scenario.getActivitySync()
-            Builder(activity).build().apply {
+            Sketch.Builder(activity).build().apply {
                 assertNotEquals(activity, context)
                 assertEquals(activity.applicationContext, context)
             }

@@ -8,6 +8,6 @@ import com.github.panpf.sketch.Sketch
 class TestApplication : Application(), SingletonSketch.Factory {
 
     override fun createSketch(context: PlatformContext): Sketch {
-        return Sketch.Builder(context).build()
+        return Sketch(context)
     }
 }

@@ -73,7 +73,7 @@ class OkHttpHttpUriFetcherTest {
     @Test
     fun testEqualsAndHashCode() {
         val (context, sketch) = getTestContextAndSketch()
-        val sketch2 = Sketch.Builder(context).build()
+        val sketch2 = Sketch(context)
         val httpStack = OkHttpStack.Builder().build()
         val httpStack2 = OkHttpStack.Builder().apply {
             connectTimeoutMillis(1000)

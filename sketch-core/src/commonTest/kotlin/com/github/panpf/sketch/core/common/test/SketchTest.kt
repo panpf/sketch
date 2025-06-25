@@ -52,6 +52,20 @@ import kotlin.test.assertTrue
 class SketchTest {
 
     @Test
+    fun testCreateFunction() {
+        val context = getTestContext()
+        Sketch(context).apply {
+            assertEquals(Logger.Level.Info, logger.level)
+        }
+
+        Sketch(context) {
+            logger(level = Logger.Level.Verbose)
+        }.apply {
+            assertEquals(Logger.Level.Verbose, logger.level)
+        }
+    }
+
+    @Test
     fun testBuilder() {
         val context = getTestContext()
 
@@ -78,6 +92,13 @@ class SketchTest {
             logger()
         }.build().apply {
             assertEquals(Logger.Level.Info, logger.level)
+            assertFalse(logger.toString().contains(fakePipeline.toString()))
+        }
+
+        Sketch.Builder(context).apply {
+            logger(Logger(Logger.Level.Error))
+        }.build().apply {
+            assertEquals(Logger.Level.Error, logger.level)
             assertFalse(logger.toString().contains(fakePipeline.toString()))
         }
 

@@ -171,7 +171,7 @@ AsyncImage to load images, but they also require you to create [Sketch] instance
 when loading the image, as follows:
 
 ```kotlin
-val sketch = Sketch.Builder(context).build()
+val sketch = Sketch(context)
 
 // Compose
 AsyncImage(

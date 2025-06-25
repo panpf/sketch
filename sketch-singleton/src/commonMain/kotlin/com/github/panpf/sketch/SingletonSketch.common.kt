@@ -16,6 +16,9 @@
 
 package com.github.panpf.sketch
 
+import com.github.panpf.sketch.SingletonSketch.get
+import com.github.panpf.sketch.SingletonSketch.setSafe
+import com.github.panpf.sketch.SingletonSketch.setUnsafe
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.updateAndGet
 import kotlin.jvm.JvmStatic
@@ -163,5 +166,5 @@ object SingletonSketch {
  * Default [Sketch] Factory
  */
 private val DefaultSketchFactory = SingletonSketch.Factory { context ->
-    Sketch.Builder(context).build()
+    Sketch(context)
 }

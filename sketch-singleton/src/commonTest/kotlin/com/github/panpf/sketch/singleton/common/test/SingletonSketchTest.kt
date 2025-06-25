@@ -16,9 +16,9 @@ class SingletonSketchTest {
     fun test() {
         val context = getTestContext()
 
-        val mySketch1 = Sketch.Builder(context).build()
-        val mySketch2 = Sketch.Builder(context).build()
-        val mySketch3 = Sketch.Builder(context).build()
+        val mySketch1 = Sketch(context)
+        val mySketch2 = Sketch(context)
+        val mySketch3 = Sketch(context)
         assertFalse(mySketch1.isShutdown)
         assertFalse(mySketch2.isShutdown)
         assertFalse(mySketch3.isShutdown)

@@ -9,7 +9,7 @@ object Koins {
     init {
         startKoin {
             modules(module {
-                single { Sketch.Builder(getTestContext()).build() }
+                single { Sketch(getTestContext()) }
             })
         }
     }

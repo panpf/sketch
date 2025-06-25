@@ -13,6 +13,8 @@ Translations: [简体中文](CHANGELOG.zh.md)
 
 * new: Added `sketch-compose-koin` and `sketch-view-koin` modules to provide Koin dependency
   injection support
+* new: Added `Sketch(PlatformContext, (Sketch.Builder.() -> Unit)? = null)` function and
+  `Sketch.Builder.logger(Logger)` function
 
 # 4.2.0-beta01
 

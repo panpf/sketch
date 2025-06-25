@@ -162,7 +162,7 @@ context.sketch.enqueue(request)
 等组件来加载图片，但他们还需要你创建 [Sketch] 实例，然后在加载图片的时候使用它，如下：
 
 ```kotlin
-val sketch = Sketch.Builder(context).build()
+val sketch = Sketch(context)
 
 // Compose
 AsyncImage(

@@ -73,7 +73,7 @@ class KtorHttpUriFetcherTest {
     @Test
     fun testEqualsAndHashCode() {
         val (context, sketch) = getTestContextAndSketch()
-        val sketch2 = Sketch.Builder(context).build()
+        val sketch2 = Sketch(context)
         val httpStack = KtorStack()
         val httpStack2 = KtorStack()
         val request = ImageRequest(context, "http://sample.com/sample.jpg")

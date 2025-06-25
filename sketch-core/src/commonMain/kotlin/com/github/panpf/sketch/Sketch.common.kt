@@ -71,6 +71,15 @@ import okio.FileSystem
 import kotlin.reflect.KClass
 
 /**
+ * Create a [Sketch] instance with the given [context] and optional configuration block.
+ */
+fun Sketch(context: PlatformContext, block: (Sketch.Builder.() -> Unit)? = null): Sketch {
+    return Sketch.Builder(context)
+        .apply { block?.invoke(this) }
+        .build()
+}
+
+/**
  * A service class that performs an [ImageRequest] to load an image.
  *
  * Sketch is responsible for handling data acquisition, image decoding, image conversion,
@@ -254,7 +263,7 @@ class Sketch private constructor(
         resultCache.close()
     }
 
-    class Builder(context: PlatformContext) {
+    class Builder constructor(context: PlatformContext) {
 
         private val context: PlatformContext = context.application
         private var logger: Logger? = null
@@ -275,6 +284,13 @@ class Sketch private constructor(
 
         init {
             checkPlatformContext(this.context)
+        }
+
+        /**
+         * Set the [Logger] to write logs to.
+         */
+        fun logger(logger: Logger): Builder = apply {
+            this.logger = logger
         }
 
         /**

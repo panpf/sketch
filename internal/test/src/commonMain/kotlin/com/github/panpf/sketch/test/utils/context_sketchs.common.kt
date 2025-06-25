@@ -28,17 +28,17 @@ import okio.Path
 expect fun getTestContext(): PlatformContext
 
 suspend inline fun runInNewSketchWithUse(
-    builder: Sketch.Builder.(context: PlatformContext) -> Unit,
+    crossinline builder: Sketch.Builder.(context: PlatformContext) -> Unit,
     crossinline block2: suspend (PlatformContext, Sketch) -> Unit
 ) {
     val context = getTestContext()
-    val sketch = Sketch.Builder(context).apply {
+    val sketch = Sketch(context) {
         logger(level = Logger.Level.Verbose)
         val directory = context.newAloneTestDiskCacheDirectory()
         downloadCacheOptions(DiskCache.Options(appCacheDirectory = directory))
         resultCacheOptions(DiskCache.Options(appCacheDirectory = directory))
         builder.invoke(this, context)
-    }.build()
+    }
     try {
         block2(context, sketch)
     } finally {
@@ -61,12 +61,12 @@ suspend inline fun runInNewSketchWithUse(
     crossinline block2: suspend (PlatformContext, Sketch) -> Unit
 ) {
     val context = getTestContext()
-    val sketch = Sketch.Builder(context).apply {
+    val sketch = Sketch(context) {
         logger(level = Logger.Level.Verbose)
         val directory = context.newAloneTestDiskCacheDirectory()
         downloadCacheOptions(DiskCache.Options(appCacheDirectory = directory))
         resultCacheOptions(DiskCache.Options(appCacheDirectory = directory))
-    }.build()
+    }
     try {
         block2(context, sketch)
     } finally {

@@ -71,7 +71,7 @@ class HurlHttpUriFetcherTest {
     @Test
     fun testEqualsAndHashCode() {
         val (context, sketch) = getTestContextAndSketch()
-        val sketch2 = Sketch.Builder(context).build()
+        val sketch2 = Sketch(context)
         val httpStack = HurlStack.Builder().build()
         val httpStack2 = HurlStack.Builder().apply {
             connectTimeoutMillis(1000)

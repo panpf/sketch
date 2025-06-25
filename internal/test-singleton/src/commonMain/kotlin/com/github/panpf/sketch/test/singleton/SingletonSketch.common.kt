@@ -18,6 +18,9 @@ package com.github.panpf.sketch.test.singleton
 
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.test.singleton.SingletonSketch.get
+import com.github.panpf.sketch.test.singleton.SingletonSketch.setSafe
+import com.github.panpf.sketch.test.singleton.SingletonSketch.setUnsafe
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.updateAndGet
 import kotlin.jvm.JvmStatic
@@ -143,5 +146,5 @@ object SingletonSketch {
 internal expect fun PlatformContext.applicationSketchFactory(): SingletonSketch.Factory?
 
 private val DefaultSketchFactory = SingletonSketch.Factory { context ->
-    Sketch.Builder(context).build()
+    Sketch(context)
 }

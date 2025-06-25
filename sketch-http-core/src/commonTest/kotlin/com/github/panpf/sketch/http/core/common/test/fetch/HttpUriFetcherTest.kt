@@ -466,7 +466,7 @@ class HttpUriFetcherTest {
     @Test
     fun testEqualsAndHashCode() {
         val (context, sketch) = getTestContextAndSketch()
-        val sketch2 = Sketch.Builder(context).build()
+        val sketch2 = Sketch(context)
         val httpStack = TestHttpStack(context)
         val httpStack2 = TestHttpStack(context, readDelayMillis = 3000)
         val request = ImageRequest(context, "http://sample.com/sample.jpg")
