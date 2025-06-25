@@ -96,6 +96,10 @@ implementation("io.github.panpf.sketch4:sketch-http-ktor2:${LAST_VERSION}")
 // 支持使用 3.x 版本的 ktor 访问网络图片
 implementation("io.github.panpf.sketch4:sketch-http-ktor3:${LAST_VERSION}")
 
+// 提供 koin 集成支持，代替 sketch-compose 和 sketch-view，默认从 koin 获取 Sketch 实例
+implementation("io.github.panpf.sketch4:sketch-compose-koin:${LAST_VERSION}")
+implementation("io.github.panpf.sketch4:sketch-view-koin:${LAST_VERSION}")
+
 // 支持 SVG 图片
 implementation("io.github.panpf.sketch4:sketch-svg:${LAST_VERSION}")
 

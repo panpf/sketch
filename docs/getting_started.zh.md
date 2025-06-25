@@ -87,11 +87,11 @@ val request = ImageRequest(context, imageUri) {
 context.sketch.enqueue(request)
 ```
 
-[Sketch] 是智能的，它会自动根据组件的大小来调整图片的尺寸，防止加载到内存的图片的尺寸超出组件自身的大小造成内存浪费，还会在组件销毁时自动取消请求
+[Sketch] 会自动根据组件的大小来调整图片的尺寸，防止加载到内存的图片的尺寸超出组件自身的大小造成内存浪费，还会在组件销毁时自动取消请求
 
 ## 支持的图片类型
 
-[Sketch] 支持多种静态图片和动态图片类型，如下：
+[Sketch] 支持多种类型的静态图片和动态图片，如下：
 
 | 类型      | 依赖模块                                             |
 |:--------|--------------------------------------------------|
@@ -108,7 +108,7 @@ context.sketch.enqueue(request)
 | 视频帧     | sketch-video<br>sketch-video-ffmpeg              |
 | Apk 图标  | sketch-extensions-apkicon                        |
 
-每一种图片类型都有对应的 Decoder 对其提供支持，[详细了解 Decoder][decoder]
+每一种图片类型都有对应的 Decoder 提供支持，[详细了解 Decoder][decoder]
 
 ## 支持的 URI
 
@@ -158,11 +158,30 @@ context.sketch.enqueue(request)
 
 [Sketch] 类是整个框架的核心，它用来执行并管理 [ImageRequest]
 
+`sketch-compose-core` 和 `sketch-view-core` 模块提供了 ImageRequest, AsyncImage
+等组件来加载图片，但他们还需要你创建 [Sketch] 实例，然后在加载图片的时候使用它，如下：
+
+```kotlin
+val sketch = Sketch.Builder(context).build()
+
+// Compose
+AsyncImage(
+     uri = "https://www.example.com/image.jpg",
+     sketch = sketch,
+     moidifier = Modifier.fillMaxSize(),
+     contentDescription = "photo",
+)
+
+// View
+val request = ImageRequest(imageView, uri = "https://www.example.com/image.jpg")
+sketch.enqueue(request)
+```
+
+为了更加便捷，Sketch 提供了单例模式和 Koin 模式，可以在加载图片的时候直接使用共享的 [Sketch] 实例
+
 ### 单例模式
 
-`sketch-compose` 和 `sketch-view` 模块依赖了 `sketch-singleton` 模块，因此直接依赖他们就可以使用单例模式
-
-单例模式下不需要主动创建 [Sketch] 实例，你可以直接获取共享的 [Sketch] 实例，如下：
+你可以直接依赖 `sketch-compose` 或 `sketch-view` 模块使用单例模式，同时还提供了更加便捷的组件或加载函数，如下：
 
 ```kotlin
 // Android
@@ -171,6 +190,18 @@ val sketch = SingletonSketch.get(context)
 
 // Non Android
 val sketch = SingletonSketch.get()
+
+// Compose
+AsyncImage(
+     uri = "https://www.example.com/image.jpg",
+     moidifier = Modifier.fillMaxSize(),
+     contentDescription = "photo",
+)
+
+// View
+imageView.loadImage(uri = "https://www.example.com/image.jpg")
+// or
+ImageRequest(imageView, uri = "https://www.example.com/image.jpg").enqueue(request)
 ```
 
 需要自定义 [Sketch] 时可以通过以下方式创建 [Sketch] 并配置它：
@@ -182,45 +213,53 @@ class MyApplication : Application(), SingletonSketch.Factory {
     override fun createSketch(): Sketch {
         return Sketch.Builder(context).apply {
             logger(level = Logger.Level.Debug)
-            httpStack(OkHttpStack.Builder().build())
             // There is a lot more...
         }.build()
     }
 }
 
-// Non Android
+// Non Android. 在 App 入口函数中调用
 SingletonSketch.setSafe {
     Sketch.Builder(PlatformContext.INSTANCE).apply {
         logger(level = Logger.Level.Debug)
-        httpStack(OkHttpStack.Builder().build())
         // There is a lot more...
     }.build()
 }
 ```
 
-> [!TIP]
-> 使用 [SingletonSketch].setSafe() 方式自定义 [Sketch] 时需要尽可能早的调用它，最好是在 App 的入口函数中
+### Koin 模式
 
-### 非单例模式
-
-非单例模式下需要你自己创建 [Sketch] 并记住它，然后在需要的时候使用你创建的实例，如下：
+如果你使用 Koin 作为依赖注入框架，就可以依赖 `sketch-compose-koin` 或 `sketch-view-koin` 模块使用
+Koin 模式，同样也提供了更加便捷的组件或加载函数，如下：
 
 ```kotlin
-val sketch = Sketch.Builder(context).apply {
-    logger(level = Logger.Level.Debug)
-    httpStack(OkHttpStack.Builder().build())
-    // There is a lot more...
-}.build()
-
-val imageUri = "https://www.example.com/image.jpg"
-val request = ImageRequest(context, imageUri)
-GloablScope.launch {
-    val imageResult: ImageResult = sketch.execute(request)
+// 在 App 的入口函数或 Application 的 onCreate 中初始化 koin
+startKoin {
+    modules(
+         module {
+             single<Sketch> { Sketch.Builder(get()).apply{
+                 logger(level = Logger.Level.Debug)
+                 // There is a lot more...
+             }.build() 
+        }
+    })
 }
-```
 
-> [!TIP]
-> 关于 [Sketch] 的更多自定义配置请参考 [Sketch].Builder 类
+// 在任意位置获取实例
+val sketch = KoinPlatform.getKoin().get<Sketch>()
+
+// Compose
+AsyncImage(
+     uri = "https://www.example.com/image.jpg",
+     moidifier = Modifier.fillMaxSize(),
+     contentDescription = "photo",
+)
+
+// View
+imageView.loadImage(uri = "https://www.example.com/image.jpg")
+// or
+ImageRequest(imageView, uri = "https://www.example.com/image.jpg").enqueue(request)
+```
 
 ## ImageRequest
 

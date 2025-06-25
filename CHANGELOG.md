@@ -9,6 +9,11 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
+# new
+
+* new: Added `sketch-compose-koin` and `sketch-view-koin` modules to provide Koin dependency
+  injection support
+
 # 4.2.0-beta01
 
 * fix: Fixed a bug that did not update download progress when using sketch-http-ktor3 and

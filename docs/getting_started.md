@@ -89,7 +89,7 @@ val request = ImageRequest(context, imageUri) {
 context.sketch.enqueue(request)
 ```
 
-[Sketch] is smart. It will automatically adjust the size of the image according to the size of the
+[Sketch] will automatically adjust the size of the image according to the size of the
 component to prevent the size of the image loaded into the memory from exceeding the size of the
 component itself and cause memory waste. It will also automatically cancel the request when the
 component is destroyed.
@@ -166,13 +166,33 @@ different, as follows:
 The [Sketch] class is the core of the entire framework, which is used to execute and
 manage [ImageRequest]
 
-### Singleton Mode
+The `sketch-compose-core` and `sketch-view-core` modules provide components such as ImageRequest,
+AsyncImage to load images, but they also require you to create [Sketch] instances and then use it
+when loading the image, as follows:
 
-The `sketch-compose` and `sketch-view` modules depend on the `sketch-singleton` module, so you can
-use the singleton mode by directly relying on them.
+```kotlin
+val sketch = Sketch.Builder(context).build()
 
-In singleton mode, you do not need to actively create a [Sketch] instance. You can directly obtain
-the shared [Sketch] instance, as follows:
+// Compose
+AsyncImage(
+     uri = "https://www.example.com/image.jpg",
+     sketch = sketch,
+     moidifier = Modifier.fillMaxSize(),
+     contentDescription = "photo",
+)
+
+// View
+val request = ImageRequest(imageView, uri = "https://www.example.com/image.jpg")
+sketch.enqueue(request)
+```
+
+For more convenience, Sketch provides singleton mode and Koin mode, which allows you to directly use
+the shared [Sketch] instance when loading pictures.
+
+### Singleton mode
+
+You can directly rely on the `sketch-compose` or `sketch-view` module to use singleton mode, and
+also provide more convenient components or loading functions, as follows:
 
 ```kotlin
 // Android
@@ -181,6 +201,18 @@ val sketch = SingletonSketch.get(context)
 
 // Non Android
 val sketch = SingletonSketch.get()
+
+// Compose
+AsyncImage(
+     uri = "https://www.example.com/image.jpg",
+     moidifier = Modifier.fillMaxSize(),
+     contentDescription = "photo",
+)
+
+// View
+imageView.loadImage(uri = "https://www.example.com/image.jpg")
+// or
+ImageRequest(imageView, uri = "https://www.example.com/image.jpg").enqueue(request)
 ```
 
 When you need to customize [Sketch], you can create [Sketch] and configure it in the following ways:
@@ -192,47 +224,55 @@ class MyApplication : Application(), SingletonSketch.Factory {
     override fun createSketch(): Sketch {
         return Sketch.Builder(context).apply {
             logger(level = Logger.Level.Debug)
-            httpStack(OkHttpStack.Builder().build())
             // There is a lot more...
         }.build()
     }
 }
 
-// Non Android
+// Non Android. Called in the App entry function
 SingletonSketch.setSafe {
     Sketch.Builder(PlatformContext.INSTANCE).apply {
         logger(level = Logger.Level.Debug)
-        httpStack(OkHttpStack.Builder().build())
         // There is a lot more...
     }.build()
 }
 ```
 
-> [!TIP]
-> When using [SingletonSketch].setSafe() to customize [Sketch], you need to call it as early as
-> possible, preferably in the entry function of the App
+### Koin mode
 
-### Non-singleton mode
-
-In non-singleton mode, you need to create [Sketch] yourself and remember it, and then use the
-instance you created when needed, as follows:
+If you use Koin as a dependency injection framework, you can rely on the `sketch-compose-koin` or
+`sketch-view-koin` module to use the Koin pattern, which also provides more convenient components or
+loading functions, as follows:
 
 ```kotlin
-val sketch = Sketch.Builder(context).apply {
-    logger(level = Logger.Level.Debug)
-    httpStack(OkHttpStack.Builder().build())
-    // There is a lot more...
-}.build()
-
-val imageUri = "https://www.example.com/image.jpg"
-val request = ImageRequest(context, imageUri)
-GloablScope.launch {
-    val imageResult: ImageResult = sketch.execute(request)
+// Initialize koin in the app's entry function or onCreate in the Application
+startKoin {
+     modules(
+          module {
+               single<Sketch> {
+                    Sketch.Builder(get()).apply {
+                         logger(level = Logger.Level.Debug)
+                         // There is a lot more...
+                    }.build()
+               }
+          })
 }
-```
 
-> [!TIP]
-> For more custom configurations of [Sketch], please refer to the [Sketch].Builder class
+// Get instances anywhere
+val sketch = KoinPlatform.getKoin().get<Sketch>()
+
+// Compose
+AsyncImage(
+     uri = "https://www.example.com/image.jpg",
+     moidifier = Modifier.fillMaxSize(),
+     contentDescription = "photo",
+)
+
+// View
+imageView.loadImage(uri = "https://www.example.com/image.jpg")
+// or
+ImageRequest(imageView, uri = "https://www.example.com/image.jpg").enqueue(request)
+```
 
 ## ImageRequest
 

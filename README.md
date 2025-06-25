@@ -107,6 +107,11 @@ implementation("io.github.panpf.sketch4:sketch-http-ktor2:${LAST_VERSION}")
 // Supports using ktor version 3.x to access network images
 implementation("io.github.panpf.sketch4:sketch-http-ktor3:${LAST_VERSION}")
 
+// Provides koin integration support, instead of sketch-compose and sketch-view, 
+// and obtains Sketch instances from koin by default
+implementation("io.github.panpf.sketch4:sketch-compose-koin:${LAST_VERSION}")
+implementation("io.github.panpf.sketch4:sketch-view-koin:${LAST_VERSION}")
+
 // Support SVG images
 implementation("io.github.panpf.sketch4:sketch-svg:${LAST_VERSION}")
 
