@@ -1,8 +1,11 @@
+@file:OptIn(ExperimentalTime::class)
+
 package com.github.panpf.sketch.http.okhttp.common.test.http
 
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.OkHttpStack
 import com.github.panpf.sketch.http.OkHttpStack.MyInterceptor
+import com.github.panpf.sketch.test.utils.readAllBytes
 import kotlinx.coroutines.test.runTest
 import okhttp3.OkHttpClient
 import kotlin.test.Test
@@ -11,7 +14,8 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import kotlin.time.measureTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class OkHttpStackTest {
 
@@ -165,16 +169,21 @@ class OkHttpStackTest {
 
     @Test
     fun testGetResponseTime() = runTest {
-        val duration = measureTime {
-            OkHttpStack.Builder().build().getResponse(
-                url = "https://img.picgo.net/2025/06/15/1de439443053e5edd.webp",
-                httpHeaders = null,
-                extras = null
-            )
-        }
+        val time1 = Clock.System.now().toEpochMilliseconds()
+        val response = OkHttpStack.Builder().build().getResponse(
+            url = "https://img.picgo.net/2025/06/15/1de439443053e5edd.webp",
+            httpHeaders = null,
+            extras = null
+        )
+        val time2 = Clock.System.now().toEpochMilliseconds()
+        val openTime = time2 - time1
+        val bytes = response.readAllBytes()
+        val time3 = Clock.System.now().toEpochMilliseconds()
+        val totalTime = time3 - time1
+        assertEquals(expected = 13365162, actual = bytes.size)
         assertTrue(
-            actual = duration.inWholeMilliseconds <= 1500,
-            message = "Request took too long: $duration"
+            actual = openTime <= totalTime / 2,
+            message = "openTime=${openTime}ms, totalTime=${totalTime}ms"
         )
     }
 
@@ -217,17 +226,23 @@ class OkHttpStackTest {
 
     @Test
     fun testRequestTime() = runTest {
-        val duration = measureTime {
-            OkHttpStack.Builder().build().request(
-                url = "https://img.picgo.net/2025/06/15/1de439443053e5edd.webp",
-                httpHeaders = null,
-                extras = null
-            ) {}
+        val time1 = Clock.System.now().toEpochMilliseconds()
+        OkHttpStack.Builder().build().request(
+            url = "https://img.picgo.net/2025/06/15/1de439443053e5edd.webp",
+            httpHeaders = null,
+            extras = null
+        ) { response ->
+            val time2 = Clock.System.now().toEpochMilliseconds()
+            val openTime = time2 - time1
+            val bytes = response.readAllBytes()
+            val time3 = Clock.System.now().toEpochMilliseconds()
+            val totalTime = time3 - time1
+            assertEquals(expected = 13365162, actual = bytes.size)
+            assertTrue(
+                actual = openTime <= totalTime / 2,
+                message = "openTime=${openTime}ms, totalTime=${totalTime}ms"
+            )
         }
-        assertTrue(
-            actual = duration.inWholeMilliseconds <= 1500,
-            message = "Request took too long: $duration"
-        )
     }
 
     @Test

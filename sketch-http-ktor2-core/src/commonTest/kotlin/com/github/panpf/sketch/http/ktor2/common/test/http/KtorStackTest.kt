@@ -1,14 +1,18 @@
+@file:OptIn(ExperimentalTime::class)
+
 package com.github.panpf.sketch.http.ktor2.common.test.http
 
 import com.github.panpf.sketch.http.HttpHeaders.Builder
 import com.github.panpf.sketch.http.KtorStack
+import com.github.panpf.sketch.test.utils.readAllBytes
 import kotlinx.coroutines.test.runTest
 import okio.use
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertTrue
-import kotlin.time.measureTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class KtorStackTest {
 
@@ -47,23 +51,28 @@ class KtorStackTest {
 
     @Test
     fun testGetResponseTime() = runTest {
-        val duration = measureTime {
-            KtorStack().getResponse(
-                url = "https://img.picgo.net/2025/06/15/1de439443053e5edd.webp",
-                httpHeaders = null,
-                extras = null
-            )
-        }
+        val time1 = Clock.System.now().toEpochMilliseconds()
+        val response = KtorStack().getResponse(
+            url = "https://img.picgo.net/2025/06/15/1de439443053e5edd.webp",
+            httpHeaders = null,
+            extras = null
+        )
+        val time2 = Clock.System.now().toEpochMilliseconds()
+        val openTime = time2 - time1
+        val bytes = response.readAllBytes()
+        val time3 = Clock.System.now().toEpochMilliseconds()
+        val totalTime = time3 - time1
+        assertEquals(expected = 13365162, actual = bytes.size)
         assertTrue(
-            actual = duration.inWholeMilliseconds >= 2000,
-            message = "Request took too long: $duration"
+            actual = openTime >= totalTime * 0.9,
+            message = "openTime=${openTime}ms, totalTime=${totalTime}ms"
         )
     }
 
     @Test
     fun testRequest() = runTest {
         val url = "https://inews.gtimg.com/newsapp_bt/0/12171811596_909/0"
-        KtorStack().request<Unit>(url, null, null) {
+        KtorStack().request(url, null, null) {
             assertEquals(200, it.code)
             assertEquals("OK", it.message)
             assertEquals(9904, it.contentLength)
@@ -72,7 +81,7 @@ class KtorStackTest {
             it.content().use {}
         }
 
-        KtorStack().request<Unit>(
+        KtorStack().request(
             url = url,
             httpHeaders = Builder().apply {
                 add("addHttpHeader1", "setHttpValue1")
@@ -95,16 +104,22 @@ class KtorStackTest {
 
     @Test
     fun testRequestTime() = runTest {
-        val duration = measureTime {
-            KtorStack().request(
-                url = "https://img.picgo.net/2025/06/15/1de439443053e5edd.webp",
-                httpHeaders = null,
-                extras = null
-            ) {}
+        val time1 = Clock.System.now().toEpochMilliseconds()
+        KtorStack().request(
+            url = "https://img.picgo.net/2025/06/15/1de439443053e5edd.webp",
+            httpHeaders = null,
+            extras = null
+        ) { response ->
+            val time2 = Clock.System.now().toEpochMilliseconds()
+            val openTime = time2 - time1
+            val bytes = response.readAllBytes()
+            val time3 = Clock.System.now().toEpochMilliseconds()
+            val totalTime = time3 - time1
+            assertEquals(expected = 13365162, actual = bytes.size)
+            assertTrue(
+                actual = openTime <= totalTime / 2,
+                message = "openTime=${openTime}ms, totalTime=${totalTime}ms"
+            )
         }
-        assertTrue(
-            actual = duration.inWholeMilliseconds <= 1500,
-            message = "Request took too long: $duration"
-        )
     }
 }
