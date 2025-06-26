@@ -396,8 +396,8 @@ class Sketch private constructor(
         /**
          * Build and set the [ComponentRegistry]
          */
-        fun components(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder =
-            components(ComponentRegistry.Builder().apply(configBlock).build())
+        fun components(block: (ComponentRegistry.Builder.() -> Unit)): Builder =
+            components(ComponentRegistry.Builder().apply(block).build())
 
         /**
          * Merge the [ComponentRegistry]
@@ -409,8 +409,8 @@ class Sketch private constructor(
         /**
          * Merge the [ComponentRegistry]
          */
-        fun addComponents(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder =
-            addComponents(ComponentRegistry.Builder().apply(configBlock).build())
+        fun addComponents(block: (ComponentRegistry.Builder.() -> Unit)): Builder =
+            addComponents(ComponentRegistry.Builder().apply(block).build())
 
         /**
          * Disable the component loader. This will prevent Sketch from automatically detecting and registering components.

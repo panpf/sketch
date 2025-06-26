@@ -40,7 +40,7 @@ fun ComposableImageRequest(
 /**
  * Build and set the [ImageRequest]
  *
- * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
+ * [block] must be inline so that the status used internally will be correctly monitored and updated.
  *
  * @see com.github.panpf.sketch.compose.core.common.test.request.ImageRequestComposeCommonTest.testComposableImageRequest
  */
@@ -48,9 +48,9 @@ fun ComposableImageRequest(
 inline fun ComposableImageRequest(
     context: PlatformContext,
     uri: String?,
-    crossinline configBlock: @Composable (ImageRequest.Builder.() -> Unit)
+    crossinline block: @Composable (ImageRequest.Builder.() -> Unit)
 ): ImageRequest = ImageRequest.Builder(context, uri).apply {
-    configBlock.invoke(this)
+    block.invoke(this)
 }.build()
 
 /**
@@ -65,16 +65,16 @@ fun ComposableImageRequest(uri: String?): ImageRequest =
 /**
  * Build and set the [ImageRequest]
  *
- * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
+ * [block] must be inline so that the status used internally will be correctly monitored and updated.
  *
  * @see com.github.panpf.sketch.compose.core.common.test.request.ImageRequestComposeCommonTest.testComposableImageRequest
  */
 @Composable
 inline fun ComposableImageRequest(
     uri: String?,
-    crossinline configBlock: @Composable (ImageRequest.Builder.() -> Unit)
+    crossinline block: @Composable (ImageRequest.Builder.() -> Unit)
 ): ImageRequest = ImageRequest.Builder(LocalPlatformContext.current, uri).apply {
-    configBlock.invoke(this)
+    block.invoke(this)
 }.build()
 
 

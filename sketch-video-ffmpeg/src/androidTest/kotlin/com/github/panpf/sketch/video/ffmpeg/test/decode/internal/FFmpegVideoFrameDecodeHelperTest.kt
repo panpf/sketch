@@ -163,11 +163,11 @@ class FFmpegVideoFrameDecodeHelperTest {
         context: PlatformContext,
         sketch: Sketch,
         dataSource: DataSource? = null,
-        configBlock: (ImageRequest.Builder.() -> Unit)? = null
+        block: (ImageRequest.Builder.() -> Unit)? = null
     ): FFmpegVideoFrameDecodeHelper {
         return FFmpegVideoFrameDecodeHelper(
             sketch = sketch,
-            request = ImageRequest(context, uri, configBlock),
+            request = ImageRequest(context, uri, block),
             dataSource = dataSource ?: toDataSource(context),
             mimeType = mimeType
         )

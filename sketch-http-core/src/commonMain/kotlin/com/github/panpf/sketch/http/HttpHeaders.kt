@@ -58,23 +58,23 @@ class HttpHeaders(
     /**
      * Create a new [HttpHeaders.Builder] based on the current [HttpHeaders].
      *
-     * You can extend it with a trailing lambda function [configBlock]
+     * You can extend it with a trailing lambda function [block]
      */
     fun newBuilder(
-        configBlock: (Builder.() -> Unit)? = null
+        block: (Builder.() -> Unit)? = null
     ): Builder = Builder(this).apply {
-        configBlock?.invoke(this)
+        block?.invoke(this)
     }
 
     /**
      * Create a new [HttpHeaders] based on the current [HttpHeaders].
      *
-     * You can extend it with a trailing lambda function [configBlock]
+     * You can extend it with a trailing lambda function [block]
      */
     fun newHttpHeaders(
-        configBlock: (Builder.() -> Unit)? = null
+        block: (Builder.() -> Unit)? = null
     ): HttpHeaders = Builder(this).apply {
-        configBlock?.invoke(this)
+        block?.invoke(this)
     }.build()
 
     override fun merge(other: Mergeable): Mergeable {

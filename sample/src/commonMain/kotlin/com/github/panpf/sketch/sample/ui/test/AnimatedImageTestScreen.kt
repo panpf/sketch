@@ -244,7 +244,7 @@ class AnimatedImageTestScreen : BaseScreen() {
     @Composable
     private inline fun buildImageRequest(
         uri: String,
-        crossinline configBlock: @Composable (ImageRequest.Builder.() -> Unit)
+        crossinline block: @Composable (ImageRequest.Builder.() -> Unit)
     ): ImageRequest = ComposableImageRequest(uri) {
         placeholder(
             rememberIconPainterStateImage(
@@ -260,6 +260,6 @@ class AnimatedImageTestScreen : BaseScreen() {
                 iconTint = colorScheme.onPrimaryContainer
             )
         )
-        configBlock()
+        block()
     }
 }

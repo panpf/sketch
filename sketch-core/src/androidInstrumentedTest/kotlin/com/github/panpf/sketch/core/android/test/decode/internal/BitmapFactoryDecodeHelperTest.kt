@@ -483,10 +483,10 @@ class BitmapFactoryDecodeHelperTest {
     private fun ResourceImageFile.toDecodeHelper(
         context: PlatformContext,
         dataSource: DataSource? = null,
-        configBlock: (ImageRequest.Builder.() -> Unit)? = null
+        block: (ImageRequest.Builder.() -> Unit)? = null
     ): BitmapFactoryDecodeHelper {
         return BitmapFactoryDecodeHelper(
-            request = ImageRequest(context, uri, configBlock),
+            request = ImageRequest(context, uri, block),
             dataSource = dataSource ?: toDataSource(context)
         )
     }

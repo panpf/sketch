@@ -57,9 +57,9 @@ import com.github.panpf.sketch.util.toUri
 fun ImageRequest(
     context: PlatformContext,
     uri: String?,
-    configBlock: (ImageRequest.Builder.() -> Unit)? = null
+    block: (ImageRequest.Builder.() -> Unit)? = null
 ): ImageRequest = ImageRequest.Builder(context, uri).apply {
-    configBlock?.invoke(this)
+    block?.invoke(this)
 }.build()
 
 /**
@@ -238,25 +238,25 @@ data class ImageRequest(
     /**
      * Create a new [ImageRequest.Builder] based on the current [ImageRequest].
      *
-     * You can extend it with a trailing lambda function [configBlock]
+     * You can extend it with a trailing lambda function [block]
      */
     fun newBuilder(
         uri: String? = this.uri.toString(),
-        configBlock: (Builder.() -> Unit)? = null
+        block: (Builder.() -> Unit)? = null
     ): Builder = Builder(this, uri).apply {
-        configBlock?.invoke(this)
+        block?.invoke(this)
     }
 
     /**
      * Create a new [ImageRequest] based on the current [ImageRequest].
      *
-     * You can extend it with a trailing lambda function [configBlock]
+     * You can extend it with a trailing lambda function [block]
      */
     fun newRequest(
         uri: String? = this.uri.toString(),
-        configBlock: (Builder.() -> Unit)? = null
+        block: (Builder.() -> Unit)? = null
     ): ImageRequest = Builder(this, uri).apply {
-        configBlock?.invoke(this)
+        block?.invoke(this)
     }.build()
 
     class Builder {
@@ -706,8 +706,8 @@ data class ImageRequest(
         /**
          * Build and set the [ComponentRegistry]
          */
-        fun components(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder = apply {
-            definedOptionsBuilder.components(configBlock)
+        fun components(block: (ComponentRegistry.Builder.() -> Unit)): Builder = apply {
+            definedOptionsBuilder.components(block)
         }
 
         /**
@@ -720,8 +720,8 @@ data class ImageRequest(
         /**
          * Build and merge the [ComponentRegistry]
          */
-        fun addComponents(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder = apply {
-            definedOptionsBuilder.addComponents(configBlock)
+        fun addComponents(block: (ComponentRegistry.Builder.() -> Unit)): Builder = apply {
+            definedOptionsBuilder.addComponents(block)
         }
 
 

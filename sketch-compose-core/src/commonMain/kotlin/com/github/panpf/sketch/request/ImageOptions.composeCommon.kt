@@ -27,13 +27,13 @@ import com.github.panpf.sketch.util.toSketchSize
 /**
  * Build and set the [ImageOptions]
  *
- * [configBlock] must be inline so that the status used internally will be correctly monitored and updated.
+ * [block] must be inline so that the status used internally will be correctly monitored and updated.
  */
 @Composable
 inline fun ComposableImageOptions(
-    crossinline configBlock: @Composable (ImageOptions.Builder.() -> Unit)
+    crossinline block: @Composable (ImageOptions.Builder.() -> Unit)
 ): ImageOptions = ImageOptions.Builder().apply {
-    configBlock.invoke(this)
+    block.invoke(this)
 }.build()
 
 

@@ -65,67 +65,67 @@ fun ComponentRegistry.Builder.addDrawableDecodeInterceptor(drawableDecodeInterce
 
 @Deprecated(
     message = "Use loadImage instead",
-    replaceWith = ReplaceWith("loadImage(uri, configBlock)")
+    replaceWith = ReplaceWith("loadImage(uri, block)")
 )
 fun ImageView.displayImage(
     uri: String?,
-    configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable = loadImage(uri, configBlock)
+    block: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable = loadImage(uri, block)
 
 @Deprecated(
     message = "Use loadImage instead",
-    replaceWith = ReplaceWith("loadImage(uri, configBlock)")
+    replaceWith = ReplaceWith("loadImage(uri, block)")
 )
 fun ImageView.displayImage(
     uri: Uri?,
-    configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable = loadImage(uri, configBlock)
+    block: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable = loadImage(uri, block)
 
 @Deprecated(
     message = "Use loadImage instead",
-    replaceWith = ReplaceWith("loadImage(drawableResId, configBlock)")
+    replaceWith = ReplaceWith("loadImage(drawableResId, block)")
 )
 fun ImageView.displayImage(
     @DrawableRes drawableResId: Int?,
-    configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable = loadImage(drawableResId, configBlock)
+    block: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable = loadImage(drawableResId, block)
 
 @Deprecated(
     message = "Use loadImage instead",
-    replaceWith = ReplaceWith("loadImage(file, configBlock)")
+    replaceWith = ReplaceWith("loadImage(file, block)")
 )
 fun ImageView.displayImage(
     file: File?,
-    configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable = loadImage(file, configBlock)
+    block: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable = loadImage(file, block)
 
 @Deprecated(
     message = "Use loadAssetImage instead",
-    replaceWith = ReplaceWith("loadImage(assetFileName, configBlock)")
+    replaceWith = ReplaceWith("loadImage(assetFileName, block)")
 )
 fun ImageView.displayAssetImage(
     assetFileName: String?,
-    configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable = loadAssetImage(assetFileName, configBlock)
+    block: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable = loadAssetImage(assetFileName, block)
 
 @Deprecated(
     message = "Use loadResourceImage instead",
-    replaceWith = ReplaceWith("loadImage(drawableResId, configBlock)")
+    replaceWith = ReplaceWith("loadImage(drawableResId, block)")
 )
 fun ImageView.displayResourceImage(
     @DrawableRes drawableResId: Int?,
-    configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable = loadResourceImage(drawableResId, configBlock)
+    block: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable = loadResourceImage(drawableResId, block)
 
 @Deprecated(
     message = "Use loadResourceImage instead",
-    replaceWith = ReplaceWith("loadImage(packageName, drawableResId, configBlock)")
+    replaceWith = ReplaceWith("loadImage(packageName, drawableResId, block)")
 )
 fun ImageView.displayResourceImage(
     packageName: String,
     @DrawableRes drawableResId: Int,
-    configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable = loadResourceImage(packageName, drawableResId, configBlock)
+    block: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable = loadResourceImage(packageName, drawableResId, block)
 
 @Deprecated(
     message = "Use loadImage(newAppIconUri(packageName, versionCode)) instead",
@@ -134,8 +134,8 @@ fun ImageView.displayResourceImage(
 fun ImageView.displayAppIconImage(
     packageName: String,
     versionCode: Int,
-    configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable = loadImage(newAppIconUri(packageName, versionCode), configBlock)
+    block: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable = loadImage(newAppIconUri(packageName, versionCode), block)
 
 @Deprecated(
     message = "Use disposeLoad() instead",

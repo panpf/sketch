@@ -94,12 +94,12 @@ class MyZoomImageView @JvmOverloads constructor(
 
     private fun <T> listenSettings(
         state: StateFlow<T>,
-        configBlock: (ImageOptions.Builder.(T) -> Unit)
+        block: (ImageOptions.Builder.(T) -> Unit)
     ) {
         state.ignoreFirst()
             .collectWithLifecycle(lifecycleOwner) { newValue ->
                 updateImageOptions {
-                    configBlock(newValue)
+                    block(newValue)
                 }
                 reloadImage()
             }

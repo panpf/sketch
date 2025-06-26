@@ -323,12 +323,12 @@ class MyListImageView @JvmOverloads constructor(
 
     private fun <T> listenSettings(
         state: Flow<T>,
-        configBlock: (ImageOptions.Builder.(T) -> Unit)
+        block: (ImageOptions.Builder.(T) -> Unit)
     ) {
         state.ignoreFirst()
             .collectWithLifecycle(lifecycleOwner) { newValue ->
                 updateImageOptions {
-                    configBlock(newValue)
+                    block(newValue)
                 }
                 reloadImage()
             }

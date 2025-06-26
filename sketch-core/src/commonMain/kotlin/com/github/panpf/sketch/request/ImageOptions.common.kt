@@ -42,9 +42,9 @@ import com.github.panpf.sketch.util.keyOrNull
  * @see com.github.panpf.sketch.core.common.test.request.ImageOptionsTest.testImageOptions
  */
 fun ImageOptions(
-    configBlock: (ImageOptions.Builder.() -> Unit)? = null
+    block: (ImageOptions.Builder.() -> Unit)? = null
 ): ImageOptions = ImageOptions.Builder().apply {
-    configBlock?.invoke(this)
+    block?.invoke(this)
 }.build()
 
 /**
@@ -166,23 +166,23 @@ data class ImageOptions(
     /**
      * Create a new [ImageOptions.Builder] based on the current [ImageOptions].
      *
-     * You can extend it with a trailing lambda function [configBlock]
+     * You can extend it with a trailing lambda function [block]
      */
     fun newBuilder(
-        configBlock: (Builder.() -> Unit)? = null
+        block: (Builder.() -> Unit)? = null
     ): Builder = Builder(this).apply {
-        configBlock?.invoke(this)
+        block?.invoke(this)
     }
 
     /**
      * Create a new [ImageOptions] based on the current [ImageOptions].
      *
-     * You can extend it with a trailing lambda function [configBlock]
+     * You can extend it with a trailing lambda function [block]
      */
     fun newOptions(
-        configBlock: (Builder.() -> Unit)? = null
+        block: (Builder.() -> Unit)? = null
     ): ImageOptions = Builder(this).apply {
-        configBlock?.invoke(this)
+        block?.invoke(this)
     }.build()
 
     /**
@@ -594,8 +594,8 @@ data class ImageOptions(
         /**
          * Build and set the [ComponentRegistry]
          */
-        fun components(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder =
-            components(ComponentRegistry.Builder().apply(configBlock).build())
+        fun components(block: (ComponentRegistry.Builder.() -> Unit)): Builder =
+            components(ComponentRegistry.Builder().apply(block).build())
 
         /**
          * Merge the [ComponentRegistry]
@@ -607,8 +607,8 @@ data class ImageOptions(
         /**
          * Merge the [ComponentRegistry]
          */
-        fun addComponents(configBlock: (ComponentRegistry.Builder.() -> Unit)): Builder =
-            addComponents(ComponentRegistry.Builder().apply(configBlock).build())
+        fun addComponents(block: (ComponentRegistry.Builder.() -> Unit)): Builder =
+            addComponents(ComponentRegistry.Builder().apply(block).build())
 
 
         /**

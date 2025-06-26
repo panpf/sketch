@@ -114,18 +114,18 @@ class Extras private constructor(
      * Create a new [Extras.Builder] based on the current [Extras].
      */
     fun newBuilder(
-        configBlock: (Builder.() -> Unit)? = null
+        block: (Builder.() -> Unit)? = null
     ): Builder = Builder(this).apply {
-        configBlock?.invoke(this)
+        block?.invoke(this)
     }
 
     /**
      * Create a new [Extras] based on the current [Extras].
      */
     fun newExtras(
-        configBlock: (Builder.() -> Unit)? = null
+        block: (Builder.() -> Unit)? = null
     ): Extras = Builder(this).apply {
-        configBlock?.invoke(this)
+        block?.invoke(this)
     }.build()
 
     override fun equals(other: Any?): Boolean {

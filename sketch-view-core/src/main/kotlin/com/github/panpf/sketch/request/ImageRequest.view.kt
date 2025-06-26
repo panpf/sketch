@@ -29,10 +29,10 @@ import com.github.panpf.sketch.target.ImageViewTarget
 fun ImageRequest(
     imageView: ImageView,
     uri: String?,
-    configBlock: (ImageRequest.Builder.() -> Unit)? = null
+    block: (ImageRequest.Builder.() -> Unit)? = null
 ): ImageRequest = ImageRequest.Builder(imageView.context, uri).apply {
     target(imageView)
-    configBlock?.invoke(this)
+    block?.invoke(this)
 }.build()
 
 

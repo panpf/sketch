@@ -29,13 +29,13 @@ import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.util.requiredWorkThread
 
 /**
- * Create a [ComponentRegistry] based on the [configBlock]
+ * Create a [ComponentRegistry] based on the [block]
  *
  * @see com.github.panpf.sketch.core.common.test.ComponentRegistryTest
  */
-fun ComponentRegistry(configBlock: (ComponentRegistry.Builder.() -> Unit)? = null): ComponentRegistry {
+fun ComponentRegistry(block: (ComponentRegistry.Builder.() -> Unit)? = null): ComponentRegistry {
     return ComponentRegistry.Builder().apply {
-        configBlock?.invoke(this)
+        block?.invoke(this)
     }.build()
 }
 
@@ -74,23 +74,23 @@ open class ComponentRegistry private constructor(
     /**
      * Create a new [ComponentRegistry.Builder] based on the current [ComponentRegistry].
      *
-     * You can extend it with a trailing lambda function [configBlock]
+     * You can extend it with a trailing lambda function [block]
      */
     fun newBuilder(
-        configBlock: (Builder.() -> Unit)? = null
+        block: (Builder.() -> Unit)? = null
     ): Builder = Builder(this).apply {
-        configBlock?.invoke(this)
+        block?.invoke(this)
     }
 
     /**
      * Create a new [ComponentRegistry] based on the current [ComponentRegistry]
      *
-     * You can extend it with a trailing lambda function [configBlock]
+     * You can extend it with a trailing lambda function [block]
      */
     fun newRegistry(
-        configBlock: (Builder.() -> Unit)? = null
+        block: (Builder.() -> Unit)? = null
     ): ComponentRegistry = Builder(this).apply {
-        configBlock?.invoke(this)
+        block?.invoke(this)
     }.build()
 
     /**

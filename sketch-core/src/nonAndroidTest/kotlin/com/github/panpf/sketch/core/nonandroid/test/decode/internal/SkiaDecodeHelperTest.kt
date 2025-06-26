@@ -390,10 +390,10 @@ class SkiaDecodeHelperTest {
 
     private fun ResourceImageFile.toDecodeHelper(
         context: PlatformContext,
-        configBlock: (ImageRequest.Builder.() -> Unit)? = null
+        block: (ImageRequest.Builder.() -> Unit)? = null
     ): SkiaDecodeHelper {
         return SkiaDecodeHelper(
-            request = ImageRequest(context, uri, configBlock),
+            request = ImageRequest(context, uri, block),
             dataSource = toDataSource(context)
         )
     }

@@ -30,84 +30,84 @@ import java.io.File
 /**
  * Load the image from [uri] and display it on this [ImageView]
  *
- * You can set request params with a trailing lambda function [configBlock]
+ * You can set request params with a trailing lambda function [block]
  *
  * @see com.github.panpf.sketch.view.koin.test.ImageViewSingletonExtensionsTest.testLoadImage
  */
 fun ImageView.loadImage(
     uri: String?,
-    configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable = KoinPlatform.getKoin().get<Sketch>().enqueue(ImageRequest(this, uri, configBlock))
+    block: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable = KoinPlatform.getKoin().get<Sketch>().enqueue(ImageRequest(this, uri, block))
 
 /**
  * Load the image from [uri] and display it on this [ImageView]
  *
- * You can set request params with a trailing lambda function [configBlock]
+ * You can set request params with a trailing lambda function [block]
  *
  * @see com.github.panpf.sketch.view.koin.test.ImageViewSingletonExtensionsTest.testLoadImage
  */
 fun ImageView.loadImage(
     uri: Uri?,
-    configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable = loadImage(uri?.toString(), configBlock)
+    block: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable = loadImage(uri?.toString(), block)
 
 /**
  * Load the image from drawable res and display it on this [ImageView]
  *
- * You can set request params with a trailing lambda function [configBlock]
+ * You can set request params with a trailing lambda function [block]
  *
  * @see com.github.panpf.sketch.view.koin.test.ImageViewSingletonExtensionsTest.testLoadImage
  */
 fun ImageView.loadImage(
     @DrawableRes resId: Int?,
-    configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable = loadImage(resId?.let { newResourceUri(it) }, configBlock)
+    block: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable = loadImage(resId?.let { newResourceUri(it) }, block)
 
 /**
  * Load the image from local file and display it on this [ImageView]
  *
- * You can set request params with a trailing lambda function [configBlock]
+ * You can set request params with a trailing lambda function [block]
  *
  * @see com.github.panpf.sketch.view.koin.test.ImageViewSingletonExtensionsTest.testLoadImage
  */
 fun ImageView.loadImage(
     file: File?,
-    configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable = loadImage(file?.let { newFileUri(it.path) }, configBlock)
+    block: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable = loadImage(file?.let { newFileUri(it.path) }, block)
 
 /**
  * Load the image from app assets and display it on this [ImageView]
  *
- * You can set request params with a trailing lambda function [configBlock]
+ * You can set request params with a trailing lambda function [block]
  *
  * @see com.github.panpf.sketch.view.koin.test.ImageViewSingletonExtensionsTest.testLoadImage
  */
 fun ImageView.loadAssetImage(
     fileName: String?,
-    configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable = loadImage(fileName?.let { newAssetUri(fileName) }, configBlock)
+    block: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable = loadImage(fileName?.let { newAssetUri(fileName) }, block)
 
 /**
  * Load the image from drawable res and display it on this [ImageView]
  *
- * You can set request params with a trailing lambda function [configBlock]
+ * You can set request params with a trailing lambda function [block]
  *
  * @see com.github.panpf.sketch.view.koin.test.ImageViewSingletonExtensionsTest.testLoadImage
  */
 fun ImageView.loadResourceImage(
     @DrawableRes resId: Int?,
-    configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable = loadImage(resId?.let { newResourceUri(it) }, configBlock)
+    block: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable = loadImage(resId?.let { newResourceUri(it) }, block)
 
 /**
  * Load the image from drawable res and display it on this [ImageView]
  *
- * You can set request params with a trailing lambda function [configBlock]
+ * You can set request params with a trailing lambda function [block]
  *
  * @see com.github.panpf.sketch.view.koin.test.ImageViewSingletonExtensionsTest.testLoadImage
  */
 fun ImageView.loadResourceImage(
     packageName: String,
     @DrawableRes resId: Int,
-    configBlock: (ImageRequest.Builder.() -> Unit)? = null
-): Disposable = loadImage(newResourceUri(packageName, resId), configBlock)
+    block: (ImageRequest.Builder.() -> Unit)? = null
+): Disposable = loadImage(newResourceUri(packageName, resId), block)

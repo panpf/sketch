@@ -30,6 +30,6 @@ interface ImageOptionsProvider {
  *
  * @see com.github.panpf.sketch.core.common.test.request.ImageOptionsProviderTest.testUpdateImageOptions
  */
-fun ImageOptionsProvider.updateImageOptions(configBlock: (ImageOptions.Builder.() -> Unit)) {
-    imageOptions = imageOptions?.newOptions(configBlock) ?: ImageOptions(configBlock)
+fun ImageOptionsProvider.updateImageOptions(block: (ImageOptions.Builder.() -> Unit)) {
+    imageOptions = imageOptions?.newOptions(block) ?: ImageOptions(block)
 }

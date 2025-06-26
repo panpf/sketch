@@ -170,10 +170,10 @@ fun ImageRequest.Builder.bitmapConfig(colorType: BitmapColorType): ImageRequest.
 
 @Deprecated(
     message = "Use updateImageOptions instead",
-    replaceWith = ReplaceWith("updateImageOptions(configBlock)")
+    replaceWith = ReplaceWith("updateImageOptions(block)")
 )
-fun ImageOptionsProvider.updateDisplayImageOptions(configBlock: (ImageOptions.Builder.() -> Unit)) =
-    updateImageOptions(configBlock)
+fun ImageOptionsProvider.updateDisplayImageOptions(block: (ImageOptions.Builder.() -> Unit)) =
+    updateImageOptions(block)
 
 @Deprecated(
     message = "Use asBitmap() instead",
