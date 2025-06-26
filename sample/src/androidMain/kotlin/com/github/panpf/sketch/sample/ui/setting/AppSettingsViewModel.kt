@@ -18,13 +18,10 @@
 
 package com.github.panpf.sketch.sample.ui.setting
 
-import android.app.Application
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
@@ -32,7 +29,6 @@ import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.model.MultiSelectMenu
 import com.github.panpf.sketch.sample.model.SwitchMenuFlow
-import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
 import com.github.panpf.sketch.sample.util.ignoreFirst
@@ -46,22 +42,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
-import org.koin.mp.KoinPlatform
-import kotlin.reflect.KClass
 
-class AppSettingsViewModel(application1: Application, private val page: Page) :
-    LifecycleAndroidViewModel(application1) {
-
-    private val sketch: Sketch = KoinPlatform.getKoin().get<Sketch>()
-
-    class Factory(val application: Application, private val page: Page) :
-        ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: KClass<T>, extras: CreationExtras): T {
-            return AppSettingsViewModel(application, page) as T
-        }
-    }
-
-    private val appSettings: AppSettings = KoinPlatform.getKoin().get()
+class AppSettingsViewModel(
+    val sketch: Sketch,
+    val appSettings: AppSettings,
+    private val page: Page
+) : ViewModel() {
 
     private val _menuListData = MutableStateFlow<List<Any>>(emptyList())
     val menuListData: StateFlow<List<Any>> = _menuListData
@@ -455,7 +441,7 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
                 getValue = { appSettings.networkParallelismLimited.value.toString() },
                 onSelect = { _, value ->
                     appSettings.networkParallelismLimited.value = value.toInt()
-                    Toastx.showLong(application1, "Restart the app to take effect")
+                    Toastx.showLong(sketch.context, "Restart the app to take effect")
                 }
             )
         )
@@ -467,7 +453,7 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
                 getValue = { appSettings.decodeParallelismLimited.value.toString() },
                 onSelect = { _, value ->
                     appSettings.decodeParallelismLimited.value = value.toInt()
-                    Toastx.showLong(application1, "Restart the app to take effect")
+                    Toastx.showLong(sketch.context, "Restart the app to take effect")
                 }
             )
         )
@@ -479,7 +465,7 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
                 getValue = { appSettings.httpClient.value },
                 onSelect = { _, value ->
                     appSettings.httpClient.value = value
-                    Toastx.showLong(application1, "Restart the app to take effect")
+                    Toastx.showLong(sketch.context, "Restart the app to take effect")
                 }
             )
         )
@@ -491,7 +477,7 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
                 getValue = { appSettings.videoFrameDecoder.value },
                 onSelect = { _, value ->
                     appSettings.videoFrameDecoder.value = value
-                    Toastx.showLong(application1, "Restart the app to take effect")
+                    Toastx.showLong(sketch.context, "Restart the app to take effect")
                 }
             )
         )
@@ -503,7 +489,7 @@ class AppSettingsViewModel(application1: Application, private val page: Page) :
                 getValue = { appSettings.gifDecoder.value },
                 onSelect = { _, value ->
                     appSettings.gifDecoder.value = value
-                    Toastx.showLong(application1, "Restart the app to take effect")
+                    Toastx.showLong(sketch.context, "Restart the app to take effect")
                 }
             )
         )

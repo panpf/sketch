@@ -16,11 +16,9 @@
 
 package com.github.panpf.sketch.sample.ui.test.transform
 
-import android.app.Application
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.widget.SeekBar
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.images.ResourceImages
@@ -28,22 +26,23 @@ import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationRotateBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
-import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.RotateTransformation
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RotateTransformationTestFragment :
     BaseBindingFragment<FragmentTestTransformationRotateBinding>() {
 
-    private val viewModel by viewModels<RotateTransformationTestViewModel>()
+    private val rotateTransformationTestViewModel by viewModel<RotateTransformationTestViewModel>()
 
     override fun onViewCreated(
         binding: FragmentTestTransformationRotateBinding,
         savedInstanceState: Bundle?
     ) {
-        viewModel.rotateData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
+        rotateTransformationTestViewModel.rotateData.repeatCollectWithLifecycle(
+            viewLifecycleOwner,
+            State.CREATED
+        ) {
             binding.myImage.loadImage(ResourceImages.statics.first().uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
@@ -56,7 +55,7 @@ class RotateTransformationTestFragment :
 
         binding.degreesSeekBar.apply {
             max = 360
-            progress = viewModel.rotateData.value
+            progress = rotateTransformationTestViewModel.rotateData.value
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
                 }
@@ -67,20 +66,9 @@ class RotateTransformationTestFragment :
                 override fun onProgressChanged(
                     seekBar: SeekBar, progress: Int, fromUser: Boolean
                 ) {
-                    viewModel.changeRotate(progress.coerceAtLeast(0))
+                    rotateTransformationTestViewModel.changeRotate(progress.coerceAtLeast(0))
                 }
             })
-        }
-    }
-
-    class RotateTransformationTestViewModel(application1: Application) :
-        LifecycleAndroidViewModel(application1) {
-
-        private val _rotateData = MutableStateFlow(45)
-        val rotateData: StateFlow<Int> = _rotateData
-
-        fun changeRotate(rotate: Int) {
-            _rotateData.value = rotate
         }
     }
 }

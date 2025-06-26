@@ -2,10 +2,7 @@ package com.github.panpf.sketch.sample.ui.test
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.github.panpf.sketch.ability.ProgressIndicatorAbility
 import com.github.panpf.sketch.ability.ViewAbilityContainer
 import com.github.panpf.sketch.ability.removeProgressIndicator
@@ -22,19 +19,13 @@ import com.github.panpf.sketch.sample.ui.util.createThemeRingProgressDrawable
 import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
 import com.github.panpf.sketch.sample.ui.util.getDrawableCompat
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import kotlin.random.Random
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ProgressIndicatorTestFragment :
     BaseToolbarBindingFragment<FragmentTestProgressIndicatorBinding>() {
 
-    private val viewModel by viewModels<ProgressIndicatorTestViewModel>()
+    private val progressIndicatorTestViewModel by viewModel<ProgressIndicatorTestViewModel>()
 
     override fun getNavigationBarInsetsView(binding: FragmentTestProgressIndicatorBinding): View {
         return binding.root
@@ -67,71 +58,77 @@ class ProgressIndicatorTestFragment :
         )
 
         binding.actionButton.setOnClickListener {
-            viewModel.action()
+            progressIndicatorTestViewModel.action()
         }
 
-        viewModel.modelState.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
+        progressIndicatorTestViewModel.modelState.repeatCollectWithLifecycle(
+            viewLifecycleOwner,
+            State.CREATED
+        ) {
             setupModel(binding, it)
         }
         binding.progressRadioButton.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.changeModel(ProgressIndicatorTestModel.Progress)
+                progressIndicatorTestViewModel.changeModel(ProgressIndicatorTestModel.Progress)
             }
         }
         binding.completedRadioButton.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.changeModel(ProgressIndicatorTestModel.DirectlyComplete)
+                progressIndicatorTestViewModel.changeModel(ProgressIndicatorTestModel.DirectlyComplete)
             }
         }
         binding.errorRadioButton.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                viewModel.changeModel(ProgressIndicatorTestModel.Error)
+                progressIndicatorTestViewModel.changeModel(ProgressIndicatorTestModel.Error)
             }
         }
 
         combine(
             flows = listOf(
-                viewModel.hiddenWhenIndeterminateState,
-                viewModel.hiddenWhenCompletedState,
-                viewModel.shortStepState
+                progressIndicatorTestViewModel.hiddenWhenIndeterminateState,
+                progressIndicatorTestViewModel.hiddenWhenCompletedState,
+                progressIndicatorTestViewModel.shortStepState
             ),
             transform = { it.joinToString() }
         ).repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             setupProgressIndicator(binding)
         }
         binding.hiddenIndeterminateCheckBox.apply {
-            viewModel.hiddenWhenIndeterminateState
+            progressIndicatorTestViewModel.hiddenWhenIndeterminateState
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     isChecked = it
                 }
             setOnCheckedChangeListener { _, isChecked ->
-                viewModel.changeHiddenWhenIndeterminate(isChecked)
+                progressIndicatorTestViewModel.changeHiddenWhenIndeterminate(isChecked)
             }
         }
         binding.hiddenCompletedCheckBox.apply {
-            viewModel.hiddenWhenCompletedState
+            progressIndicatorTestViewModel.hiddenWhenCompletedState
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     isChecked = it
                 }
             setOnCheckedChangeListener { _, isChecked ->
-                viewModel.changeHiddenWhenCompleted(isChecked)
+                progressIndicatorTestViewModel.changeHiddenWhenCompleted(isChecked)
             }
         }
         binding.shortStepCheckBox.apply {
-            viewModel.shortStepState
+            progressIndicatorTestViewModel.shortStepState
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     isChecked = it
                 }
             setOnCheckedChangeListener { _, isChecked ->
-                viewModel.changeShortStep(isChecked)
+                progressIndicatorTestViewModel.changeShortStep(isChecked)
             }
         }
 
-        viewModel.runningState.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
+        progressIndicatorTestViewModel.runningState.repeatCollectWithLifecycle(
+            viewLifecycleOwner,
+            State.CREATED
+        ) {
             binding.actionButton.text = if (it) "Stop" else "Start"
         }
 
-        viewModel.progressState
+        progressIndicatorTestViewModel.progressState
             .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) { progress ->
                 val request = ImageRequest(requireContext(), "http://sample.com/sample.jpeg")
                 val totalLength: Long = 100
@@ -161,9 +158,10 @@ class ProgressIndicatorTestFragment :
         binding.image2.removeProgressIndicator()
         binding.image3.removeProgressIndicator()
 
-        val hiddenWhenIndeterminate = viewModel.hiddenWhenIndeterminateState.value
-        val hiddenWhenCompleted = viewModel.hiddenWhenCompletedState.value
-        val shortStep = viewModel.shortStepState.value
+        val hiddenWhenIndeterminate =
+            progressIndicatorTestViewModel.hiddenWhenIndeterminateState.value
+        val hiddenWhenCompleted = progressIndicatorTestViewModel.hiddenWhenCompletedState.value
+        val shortStep = progressIndicatorTestViewModel.shortStepState.value
         val stepAnimationDuration = if (shortStep) 1000 else 300
         binding.image1.showProgressIndicator(
             createThemeMaskProgressDrawable(
@@ -196,83 +194,4 @@ class ProgressIndicatorTestFragment :
             .let { it as ProgressIndicatorAbility }
 
 
-    class ProgressIndicatorTestViewModel : ViewModel() {
-
-        private var runningJob: Job? = null
-
-        private val _progressState = MutableStateFlow(0f)
-        val progressState: StateFlow<Float> = _progressState
-
-        private val _runningState = MutableStateFlow(false)
-        val runningState: StateFlow<Boolean> = _runningState
-
-        private val _modelState = MutableStateFlow(ProgressIndicatorTestModel.Progress)
-        val modelState: StateFlow<ProgressIndicatorTestModel> = _modelState
-
-        private val _hiddenWhenIndeterminateState = MutableStateFlow(false)
-        val hiddenWhenIndeterminateState: StateFlow<Boolean> = _hiddenWhenIndeterminateState
-
-        private val _hiddenWhenCompletedState = MutableStateFlow(true)
-        val hiddenWhenCompletedState: StateFlow<Boolean> = _hiddenWhenCompletedState
-
-        private val _shortStepState = MutableStateFlow(false)
-        val shortStepState: StateFlow<Boolean> = _shortStepState
-
-        fun changeModel(model: ProgressIndicatorTestModel) {
-            _modelState.value = model
-        }
-
-        fun changeHiddenWhenIndeterminate(hidden: Boolean) {
-            _hiddenWhenIndeterminateState.value = hidden
-        }
-
-        fun changeHiddenWhenCompleted(hidden: Boolean) {
-            _hiddenWhenCompletedState.value = hidden
-        }
-
-        fun changeShortStep(hidden: Boolean) {
-            _shortStepState.value = hidden
-        }
-
-        fun action() {
-            val runningJob = this.runningJob
-            if (runningJob != null && runningJob.isActive) {
-                runningJob.cancel()
-                _runningState.value = false
-            } else {
-                _runningState.value = true
-                this.runningJob = viewModelScope.launch {
-                    when (_modelState.value) {
-                        ProgressIndicatorTestModel.Progress -> {
-                            var progress = 0f
-                            val shortSteps = _shortStepState.value
-                            do {
-                                _progressState.value = progress
-                                if (shortSteps) {
-                                    delay(500)
-                                } else {
-                                    delay(Random.nextLong(150, 1000))
-                                }
-                                progress = (progress + 0.2f)
-                            } while (progress <= 1f && isActive)
-                        }
-
-                        ProgressIndicatorTestModel.DirectlyComplete -> {
-                            _progressState.value = 0f
-                            delay(2000)
-                            _progressState.value = 1f
-                        }
-
-                        ProgressIndicatorTestModel.Error -> {
-                            _progressState.value = 0f
-                            delay(2000)
-                            _progressState.value = -1f
-                        }
-                    }
-
-                    _runningState.value = false
-                }
-            }
-        }
-    }
 }

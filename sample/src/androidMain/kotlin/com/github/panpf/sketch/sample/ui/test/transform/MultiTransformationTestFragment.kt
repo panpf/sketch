@@ -17,44 +17,43 @@
 package com.github.panpf.sketch.sample.ui.test.transform
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.SeekBar
 import androidx.core.graphics.ColorUtils
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationMultiBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
-import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.MaskTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
 import com.github.panpf.sketch.transform.RoundedCornersTransformation
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MultiTransformationTestFragment :
     BaseBindingFragment<FragmentTestTransformationMultiBinding>() {
 
-    private val viewModel by viewModels<MultiTransformationTestViewModel>()
+    private val multiTransformationTestViewModel by viewModel<MultiTransformationTestViewModel>()
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(
         binding: FragmentTestTransformationMultiBinding,
         savedInstanceState: Bundle?
     ) {
-        viewModel.rotateData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
+        multiTransformationTestViewModel.rotateData.repeatCollectWithLifecycle(
+            viewLifecycleOwner,
+            State.CREATED
+        ) {
             updateImage(binding)
             binding.degreesText.text = "$it"
         }
         binding.degreesSeekBar.apply {
             max = 360
-            progress = viewModel.rotateData.value
+            progress = multiTransformationTestViewModel.rotateData.value
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
                 }
@@ -65,18 +64,21 @@ class MultiTransformationTestFragment :
                 override fun onProgressChanged(
                     seekBar: SeekBar, progress: Int, fromUser: Boolean
                 ) {
-                    viewModel.changeRotate(progress.coerceAtLeast(0))
+                    multiTransformationTestViewModel.changeRotate(progress.coerceAtLeast(0))
                 }
             })
         }
 
-        viewModel.blurRadiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
+        multiTransformationTestViewModel.blurRadiusData.repeatCollectWithLifecycle(
+            viewLifecycleOwner,
+            State.CREATED
+        ) {
             updateImage(binding)
             binding.blurValueText.text = "$it"
         }
         binding.blurSeekBar.apply {
             max = 100
-            progress = viewModel.blurRadiusData.value
+            progress = multiTransformationTestViewModel.blurRadiusData.value
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
                 }
@@ -87,19 +89,19 @@ class MultiTransformationTestFragment :
                 override fun onProgressChanged(
                     seekBar: SeekBar, progress: Int, fromUser: Boolean
                 ) {
-                    viewModel.changeBlurRadius(progress.coerceAtLeast(1))
+                    multiTransformationTestViewModel.changeBlurRadius(progress.coerceAtLeast(1))
                 }
             })
         }
 
-        viewModel.roundedCornersRadiusData
+        multiTransformationTestViewModel.roundedCornersRadiusData
             .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                 updateImage(binding)
                 binding.roundedCornersRadiusText.text = "$it"
             }
         binding.roundedCornersSeekBar.apply {
             max = 100
-            progress = viewModel.roundedCornersRadiusData.value
+            progress = multiTransformationTestViewModel.roundedCornersRadiusData.value
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
                 }
@@ -110,26 +112,44 @@ class MultiTransformationTestFragment :
                 override fun onProgressChanged(
                     seekBar: SeekBar, progress: Int, fromUser: Boolean
                 ) {
-                    viewModel.changeRoundedCornersRadius(progress)
+                    multiTransformationTestViewModel.changeRoundedCornersRadius(progress)
                 }
             })
         }
 
-        viewModel.maskColorData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
+        multiTransformationTestViewModel.maskColorData.repeatCollectWithLifecycle(
+            viewLifecycleOwner,
+            State.CREATED
+        ) {
             updateImage(binding)
         }
         binding.redButton.isChecked = true
         binding.noneButton1.setOnClickListener {
-            viewModel.changeMaskColor(null)
+            multiTransformationTestViewModel.changeMaskColor(null)
         }
         binding.redButton.setOnClickListener {
-            viewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.RED, 128))
+            multiTransformationTestViewModel.changeMaskColor(
+                ColorUtils.setAlphaComponent(
+                    Color.RED,
+                    128
+                )
+            )
         }
         binding.greenButton.setOnClickListener {
-            viewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.GREEN, 128))
+            multiTransformationTestViewModel.changeMaskColor(
+                ColorUtils.setAlphaComponent(
+                    Color.GREEN,
+                    128
+                )
+            )
         }
         binding.blueButton.setOnClickListener {
-            viewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.BLUE, 128))
+            multiTransformationTestViewModel.changeMaskColor(
+                ColorUtils.setAlphaComponent(
+                    Color.BLUE,
+                    128
+                )
+            )
         }
     }
 
@@ -138,46 +158,14 @@ class MultiTransformationTestFragment :
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             addTransformations(
-                BlurTransformation(radius = viewModel.blurRadiusData.value),
-                RoundedCornersTransformation(viewModel.roundedCornersRadiusData.value.toFloat()),
+                BlurTransformation(radius = multiTransformationTestViewModel.blurRadiusData.value),
+                RoundedCornersTransformation(multiTransformationTestViewModel.roundedCornersRadiusData.value.toFloat()),
                 MaskTransformation(
-                    maskColor = viewModel.maskColorData.value ?: Color.TRANSPARENT
+                    maskColor = multiTransformationTestViewModel.maskColorData.value
+                        ?: Color.TRANSPARENT
                 ),
-                RotateTransformation(viewModel.rotateData.value),
+                RotateTransformation(multiTransformationTestViewModel.rotateData.value),
             )
-        }
-    }
-
-    class MultiTransformationTestViewModel(application1: Application) :
-        LifecycleAndroidViewModel(application1) {
-
-        private val _blurRadiusData = MutableStateFlow(30)
-        val blurRadiusData: StateFlow<Int> = _blurRadiusData
-
-        private val _maskColorData =
-            MutableStateFlow<Int?>(ColorUtils.setAlphaComponent(Color.RED, 128))
-        val maskColorData: StateFlow<Int?> = _maskColorData
-
-        private val _roundedCornersRadiusData = MutableStateFlow(30)
-        val roundedCornersRadiusData: StateFlow<Int> = _roundedCornersRadiusData
-
-        private val _rotateData = MutableStateFlow(45)
-        val rotateData: StateFlow<Int> = _rotateData
-
-        fun changeRotate(rotate: Int) {
-            _rotateData.value = rotate
-        }
-
-        fun changeRoundedCornersRadius(radius: Int) {
-            _roundedCornersRadiusData.value = radius
-        }
-
-        fun changeBlurRadius(radius: Int) {
-            _blurRadiusData.value = radius
-        }
-
-        fun changeMaskColor(color: Int?) {
-            _maskColorData.value = color
         }
     }
 }

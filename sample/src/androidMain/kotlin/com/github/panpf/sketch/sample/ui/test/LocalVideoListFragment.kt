@@ -17,7 +17,6 @@
 package com.github.panpf.sketch.sample.ui.test
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -25,15 +24,9 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.Lifecycle.State
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.cachedIn
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
 import com.github.panpf.sketch.loadImage
@@ -50,11 +43,12 @@ import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.setting.Page
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.tools4a.toast.ktx.showLongToast
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
 class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefreshBinding>() {
 
-    private val videoListViewModel by viewModels<LocalVideoListViewModel>()
+    private val videoListViewModel by viewModel<LocalVideoListViewModel>()
 
     override fun getNavigationBarInsetsView(binding: FragmentRecyclerRefreshBinding): View {
         return binding.root
@@ -82,7 +76,8 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
             }
         }
 
-        val pagingAdapter = AssemblyPagingDataAdapter<VideoInfo>(listOf(
+        val pagingAdapter = AssemblyPagingDataAdapter<VideoInfo>(
+            listOf(
             LocalVideoItemFactory().setOnItemClickListener { _, _, _, _, data ->
                 try {
                     startActivity(Intent(Intent.ACTION_VIEW).apply {
@@ -141,21 +136,6 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
                     }
                 }
             }
-    }
-
-    class LocalVideoListViewModel(application: Application) : AndroidViewModel(application) {
-        val pagingFlow = Pager(
-            config = PagingConfig(
-                pageSize = 80,
-                prefetchDistance = 10,
-                enablePlaceholders = false,
-                initialLoadSize = 40
-            ),
-            initialKey = 0,
-            pagingSourceFactory = {
-                LocalVideoListPagingSource(application)
-            }
-        ).flow.cachedIn(viewModelScope)
     }
 
     class LocalVideoItemFactory :

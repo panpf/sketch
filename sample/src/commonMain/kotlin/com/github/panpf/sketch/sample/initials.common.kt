@@ -5,11 +5,15 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.images.supportResourcesHttpUri
 import com.github.panpf.sketch.request.supportPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.supportSaveCellularTraffic
+import com.github.panpf.sketch.sample.ui.test.DecoderTestViewModel
+import com.github.panpf.sketch.sample.ui.test.FetcherTestViewModel
+import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.util.Logger
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatform
 
@@ -19,6 +23,10 @@ fun commonModule(context: PlatformContext): Module = module {
     single { AppSettings(context) }
     single { AppEvents() }
     single { newSketch(context) }
+
+    viewModel { DecoderTestViewModel(context) }
+    viewModel { FetcherTestViewModel(context) }
+    viewModel { ProgressIndicatorTestViewModel() }
 }
 
 expect fun platformModule(context: PlatformContext): Module

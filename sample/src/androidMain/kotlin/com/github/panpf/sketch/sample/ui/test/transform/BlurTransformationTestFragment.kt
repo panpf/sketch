@@ -16,40 +16,36 @@
 
 package com.github.panpf.sketch.sample.ui.test.transform
 
-import android.app.Application
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.SeekBar
 import androidx.core.graphics.ColorUtils
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationBlurBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
-import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.BlurTransformation
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class BlurTransformationTestFragment :
     BaseBindingFragment<FragmentTestTransformationBlurBinding>() {
 
-    private val viewModel by viewModels<BlurTransformationTestViewModel>()
+    private val testViewModel by viewModel<BlurTransformationTestViewModel>()
 
     override fun onViewCreated(
         binding: FragmentTestTransformationBlurBinding,
         savedInstanceState: Bundle?
     ) {
-        viewModel.radiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
+        testViewModel.radiusData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             updateImage(binding = binding)
             binding.valueText.text = "$it"
         }
         binding.seekBar.apply {
             max = 100
-            progress = viewModel.radiusData.value
+            progress = testViewModel.radiusData.value
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
                 }
@@ -60,48 +56,48 @@ class BlurTransformationTestFragment :
                 override fun onProgressChanged(
                     seekBar: SeekBar, progress: Int, fromUser: Boolean
                 ) {
-                    viewModel.changeRadius(progress.coerceAtLeast(1))
+                    testViewModel.changeRadius(progress.coerceAtLeast(1))
                 }
             })
         }
 
-        viewModel.maskColorData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
+        testViewModel.maskColorData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             updateImage(binding = binding)
         }
         binding.noneButton1.isChecked = true
         binding.noneButton1.setOnClickListener {
-            viewModel.changeMaskColor(null)
+            testViewModel.changeMaskColor(null)
         }
         binding.redButton.setOnClickListener {
-            viewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.RED, 128))
+            testViewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.RED, 128))
         }
         binding.greenButton.setOnClickListener {
-            viewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.GREEN, 128))
+            testViewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.GREEN, 128))
         }
         binding.blueButton.setOnClickListener {
-            viewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.BLUE, 128))
+            testViewModel.changeMaskColor(ColorUtils.setAlphaComponent(Color.BLUE, 128))
         }
 
-        viewModel.backgroundColorData
+        testViewModel.backgroundColorData
             .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                 updateImage(binding = binding)
             }
         binding.noneButton2.isChecked = true
         binding.noneButton2.setOnClickListener {
-            viewModel.changeBackgroundColor(null)
+            testViewModel.changeBackgroundColor(null)
         }
         binding.blackButton.setOnClickListener {
-            viewModel.changeBackgroundColor(Color.BLACK)
+            testViewModel.changeBackgroundColor(Color.BLACK)
         }
         binding.whiteButton.setOnClickListener {
-            viewModel.changeBackgroundColor(Color.WHITE)
+            testViewModel.changeBackgroundColor(Color.WHITE)
         }
     }
 
     private fun updateImage(binding: FragmentTestTransformationBlurBinding) {
-        val radius = viewModel.radiusData.value
-        val maskColor = viewModel.maskColorData.value
-        val backgroundColor = viewModel.backgroundColorData.value
+        val radius = testViewModel.radiusData.value
+        val maskColor = testViewModel.maskColorData.value
+        val backgroundColor = testViewModel.backgroundColorData.value
 
         binding.myImage1.loadImage(ResourceImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
@@ -125,29 +121,6 @@ class BlurTransformationTestFragment :
                     hasAlphaBitmapBgColor = backgroundColor
                 )
             )
-        }
-    }
-
-    class BlurTransformationTestViewModel(application1: Application) :
-        LifecycleAndroidViewModel(application1) {
-
-        private val _radiusData = MutableStateFlow(30)
-        val radiusData: StateFlow<Int> = _radiusData
-        private val _maskColorData = MutableStateFlow<Int?>(null)
-        val maskColorData: StateFlow<Int?> = _maskColorData
-        private val _backgroundColorData = MutableStateFlow<Int?>(null)
-        val backgroundColorData: StateFlow<Int?> = _backgroundColorData
-
-        fun changeRadius(radius: Int) {
-            _radiusData.value = radius
-        }
-
-        fun changeMaskColor(color: Int?) {
-            _maskColorData.value = color
-        }
-
-        fun changeBackgroundColor(color: Int?) {
-            _backgroundColorData.value = color
         }
     }
 }

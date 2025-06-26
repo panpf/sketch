@@ -17,7 +17,6 @@
 package com.github.panpf.sketch.sample.ui.test
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
@@ -26,9 +25,7 @@ import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
-import androidx.lifecycle.viewModelScope
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.ApkIconDecoder
@@ -45,18 +42,15 @@ import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.sample.R.drawable
 import com.github.panpf.sketch.sample.databinding.FragmentTabPagerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
-import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DecoderTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>() {
 
-    private val viewModel by viewModels<DecoderTestViewModel>()
+    private val decoderTestViewModel by viewModel<DecoderTestViewModel>()
 
     override fun getNavigationBarInsetsView(binding: FragmentTabPagerBinding): View {
         return binding.root
@@ -69,7 +63,7 @@ class DecoderTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>(
     ) {
         toolbar.title = "Decoder"
 
-        viewModel.data.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
+        decoderTestViewModel.data.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
             binding.pager.adapter = AssemblyFragmentStateAdapter(
                 fragment = this,
                 itemFactoryList = listOf(DecoderTestImageFragment.ItemFactory()),
@@ -82,18 +76,6 @@ class DecoderTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>(
         }
     }
 
-    class DecoderTestViewModel(application1: Application) :
-        LifecycleAndroidViewModel(application1) {
-
-        private val _data = MutableStateFlow<List<DecoderTestItem>>(emptyList())
-        val data: StateFlow<List<DecoderTestItem>> = _data
-
-        init {
-            viewModelScope.launch {
-                _data.value = buildDecoderTestItems(application1)
-            }
-        }
-    }
 }
 
 @SuppressLint("NewApi")

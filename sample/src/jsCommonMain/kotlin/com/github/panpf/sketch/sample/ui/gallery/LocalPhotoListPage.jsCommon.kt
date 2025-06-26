@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.compose.runtime.Composable
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import com.github.panpf.sketch.sample.data.builtinImages
 import com.github.panpf.sketch.sample.ui.gridCellsMinSize
@@ -10,7 +9,7 @@ import com.github.panpf.sketch.sample.ui.model.Photo
 actual fun localPhotoListPermission(): Any? = null
 
 @Composable
-actual fun LocalPhotoListPage(screen: Screen) {
+actual fun LocalPhotoListPage() {
     val navigator = LocalNavigator.current!!
     PhotoList(
         animatedPlaceholder = true,

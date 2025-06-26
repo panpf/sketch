@@ -19,10 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.ability.dataFromLogo
 import com.github.panpf.sketch.ability.progressIndicator
@@ -34,9 +30,8 @@ import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.common.AsyncImagePageState
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
 class FetcherTestItem(val title: String, val imageUri: String)
 
@@ -51,9 +46,8 @@ class FetcherTestScreen : BaseScreen() {
     @OptIn(ExperimentalFoundationApi::class)
     override fun DrawContent() {
         ToolbarScaffold(title = "FetcherTest") {
-            val context = LocalPlatformContext.current
-            val screenModel = rememberScreenModel { FetcherTestScreenModel(context) }
-            val items by screenModel.testItems.collectAsState()
+            val fetcherTestViewModel: FetcherTestViewModel = koinViewModel()
+            val items by fetcherTestViewModel.data.collectAsState()
             if (items.isNotEmpty()) {
                 val pagerState = rememberPagerState(0) { items.size }
                 val coroutineScope = rememberCoroutineScope()
@@ -110,17 +104,6 @@ class FetcherTestScreen : BaseScreen() {
                         }
                     }
                 }
-            }
-        }
-    }
-
-    class FetcherTestScreenModel(val context: PlatformContext) : ScreenModel {
-        private val _testItems = MutableStateFlow<List<FetcherTestItem>>(emptyList())
-        val testItems: StateFlow<List<FetcherTestItem>> = _testItems
-
-        init {
-            screenModelScope.launch {
-                _testItems.value = buildFetcherTestItems(context)
             }
         }
     }

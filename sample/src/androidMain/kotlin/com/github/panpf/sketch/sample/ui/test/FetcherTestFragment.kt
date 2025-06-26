@@ -16,26 +16,20 @@
 
 package com.github.panpf.sketch.sample.ui.test
 
-import android.app.Application
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
-import androidx.lifecycle.viewModelScope
 import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.github.panpf.sketch.sample.databinding.FragmentTabPagerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
-import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FetcherTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>() {
 
-    private val viewModel by viewModels<FetcherTestViewModel>()
+    private val fetcherTestViewModel by viewModel<FetcherTestViewModel>()
 
     override fun getNavigationBarInsetsView(binding: FragmentTabPagerBinding): View {
         return binding.root
@@ -48,7 +42,10 @@ class FetcherTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>(
     ) {
         toolbar.title = "Fetcher"
 
-        viewModel.data.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) { data ->
+        fetcherTestViewModel.data.repeatCollectWithLifecycle(
+            viewLifecycleOwner,
+            State.CREATED
+        ) { data ->
             val imageFromData = data ?: return@repeatCollectWithLifecycle
             val images = imageFromData.map { it.imageUri }
 
@@ -64,17 +61,4 @@ class FetcherTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>(
         }
     }
 
-    class FetcherTestViewModel(
-        application1: Application
-    ) : LifecycleAndroidViewModel(application1) {
-
-        private val _data = MutableStateFlow<List<FetcherTestItem>?>(null)
-        val data: StateFlow<List<FetcherTestItem>?> = _data
-
-        init {
-            viewModelScope.launch {
-                _data.value = buildFetcherTestItems(application1, fromCompose = false)
-            }
-        }
-    }
 }

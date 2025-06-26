@@ -16,38 +16,36 @@
 
 package com.github.panpf.sketch.sample.ui.test.transform
 
-import android.app.Application
 import android.graphics.Bitmap
 import android.os.Bundle
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.colorType
-import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.sample.databinding.FragmentTestTransformationCircleCropBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
-import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.CircleCropTransformation
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CircleCropTransformationTestFragment :
     BaseBindingFragment<FragmentTestTransformationCircleCropBinding>() {
 
-    val viewModel by viewModels<CircleCropTransformationTestViewModel>()
+    val circleCropTransformationTestViewModel by viewModel<CircleCropTransformationTestViewModel>()
 
     override fun onViewCreated(
         binding: FragmentTestTransformationCircleCropBinding,
         savedInstanceState: Bundle?
     ) {
-        viewModel.scaleData.repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
+        circleCropTransformationTestViewModel.scaleData.repeatCollectWithLifecycle(
+            viewLifecycleOwner,
+            State.CREATED
+        ) {
             binding.startButton.isChecked = it == START_CROP
             binding.centerButton.isChecked = it == CENTER_CROP
             binding.endButton.isChecked = it == END_CROP
@@ -63,30 +61,19 @@ class CircleCropTransformationTestFragment :
         }
 
         binding.startButton.setOnClickListener {
-            viewModel.changeScale(START_CROP)
+            circleCropTransformationTestViewModel.changeScale(START_CROP)
         }
 
         binding.centerButton.setOnClickListener {
-            viewModel.changeScale(CENTER_CROP)
+            circleCropTransformationTestViewModel.changeScale(CENTER_CROP)
         }
 
         binding.endButton.setOnClickListener {
-            viewModel.changeScale(END_CROP)
+            circleCropTransformationTestViewModel.changeScale(END_CROP)
         }
 
         binding.fillButton.setOnClickListener {
-            viewModel.changeScale(FILL)
-        }
-    }
-
-    class CircleCropTransformationTestViewModel(application1: Application) :
-        LifecycleAndroidViewModel(application1) {
-
-        private val _scaleData = MutableStateFlow(CENTER_CROP)
-        val scaleData: StateFlow<Scale> = _scaleData
-
-        fun changeScale(scale: Scale) {
-            _scaleData.value = scale
+            circleCropTransformationTestViewModel.changeScale(FILL)
         }
     }
 }

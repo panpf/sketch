@@ -16,16 +16,15 @@
 
 package com.github.panpf.sketch.sample.ui.gallery
 
-import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import android.os.Environment
+import androidx.lifecycle.ViewModel
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.sample.ui.base.ActionResult
-import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import com.github.panpf.sketch.sample.util.sha256String
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.Size
@@ -34,18 +33,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.buffer
 import okio.sink
-import org.koin.mp.KoinPlatform
 import java.io.File
 
-class PhotoActionViewModel(application: Application) : LifecycleAndroidViewModel(application) {
-
-    private val sketch: Sketch = KoinPlatform.getKoin().get<Sketch>()
+class PhotoActionViewModel(val sketch: Sketch) : ViewModel() {
 
     suspend fun share(imageUri: String): ActionResult {
-        val application = application1
         val fetchResult = withContext(Dispatchers.IO) {
             val requestContext =
-                RequestContext(sketch, ImageRequest(application1, imageUri), Size.Empty)
+                RequestContext(sketch, ImageRequest(sketch.context, imageUri), Size.Empty)
             val fetcher = sketch.components
                 .newFetcherOrThrow(requestContext)
             fetcher.fetch()
@@ -58,7 +53,7 @@ class PhotoActionViewModel(application: Application) : LifecycleAndroidViewModel
             ?: MimeTypeMap.getExtensionFromMimeType(fetchResult.mimeType ?: "")
             ?: "jpeg"
         val imageFile =
-            File(application.getExternalFilesDir("share"), "share_temp.$fileExtension").apply {
+            File(sketch.context.getExternalFilesDir("share"), "share_temp.$fileExtension").apply {
                 delete()
             }
 
@@ -75,8 +70,8 @@ class PhotoActionViewModel(application: Application) : LifecycleAndroidViewModel
             return ActionResult.error("Failed to save picture: ${e.message}")
         }
 
-        application.startActivity(Intent(Intent.ACTION_SEND).apply {
-            putExtra(Intent.EXTRA_STREAM, application.getShareFileUri(imageFile))
+        sketch.context.startActivity(Intent(Intent.ACTION_SEND).apply {
+            putExtra(Intent.EXTRA_STREAM, sketch.context.getShareFileUri(imageFile))
             type = fetchResult.mimeType ?: "image/*"
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -86,10 +81,9 @@ class PhotoActionViewModel(application: Application) : LifecycleAndroidViewModel
 
     @Suppress("DEPRECATION")
     suspend fun save(imageUri: String): ActionResult {
-        val application = application1
         val fetcher = withContext(Dispatchers.IO) {
             val requestContext =
-                RequestContext(sketch, ImageRequest(application, imageUri), Size.Empty)
+                RequestContext(sketch, ImageRequest(sketch.context, imageUri), Size.Empty)
             sketch.components.newFetcherOrThrow(requestContext)
         }
         if (fetcher is FileUriFetcher) {
@@ -121,7 +115,7 @@ class PhotoActionViewModel(application: Application) : LifecycleAndroidViewModel
         }
         return if (result.isSuccess) {
             val intent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(imageFile))
-            application.sendBroadcast(intent)
+            sketch.context.sendBroadcast(intent)
             ActionResult.success("Saved to the '${imageFile.parentFile?.path}' directory")
         } else {
             val exception = result.exceptionOrNull()

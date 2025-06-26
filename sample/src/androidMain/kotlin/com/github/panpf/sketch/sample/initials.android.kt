@@ -19,10 +19,27 @@ import com.github.panpf.sketch.fetch.internal.OkHttpHttpUriFetcherProvider
 import com.github.panpf.sketch.fetch.supportHurlHttpUri
 import com.github.panpf.sketch.fetch.supportKtorHttpUri
 import com.github.panpf.sketch.fetch.supportOkHttpHttpUri
+import com.github.panpf.sketch.sample.ui.gallery.GiphyPhotoListViewModel
+import com.github.panpf.sketch.sample.ui.gallery.LocalPhotoListViewModel
+import com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoListViewModel
+import com.github.panpf.sketch.sample.ui.gallery.PhotoActionViewModel
+import com.github.panpf.sketch.sample.ui.gallery.PhotoPaletteViewModel
+import com.github.panpf.sketch.sample.ui.setting.AppSettingsViewModel
+import com.github.panpf.sketch.sample.ui.test.DrawableScaleTypeViewModel
+import com.github.panpf.sketch.sample.ui.test.LocalVideoListViewModel
+import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel
+import com.github.panpf.sketch.sample.ui.test.transform.BlurTransformationTestViewModel
+import com.github.panpf.sketch.sample.ui.test.transform.CircleCropTransformationTestViewModel
+import com.github.panpf.sketch.sample.ui.test.transform.MaskTransformationTestViewModel
+import com.github.panpf.sketch.sample.ui.test.transform.MultiTransformationTestViewModel
+import com.github.panpf.sketch.sample.ui.test.transform.RotateTransformationTestViewModel
+import com.github.panpf.sketch.sample.ui.test.transform.RoundedCornersTransformationTestViewModel
 import com.github.panpf.sketch.sample.util.PenfeizhouAnimatedWebpDecoder
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatform
 import java.security.SecureRandom
@@ -43,7 +60,21 @@ actual fun initialApp(context: PlatformContext) {
 }
 
 actual fun platformModule(context: PlatformContext): Module = module {
-
+    viewModel { AppSettingsViewModel(sketch = get(), appSettings = get(), page = it.get()) }
+    viewModelOf(::PexelsPhotoListViewModel)
+    viewModelOf(::GiphyPhotoListViewModel)
+    viewModelOf(::LocalPhotoListViewModel)
+    viewModelOf(::LocalVideoListViewModel)
+    viewModelOf(::DrawableScaleTypeViewModel)
+    viewModelOf(::ProgressIndicatorTestViewModel)
+    viewModelOf(::BlurTransformationTestViewModel)
+    viewModelOf(::MaskTransformationTestViewModel)
+    viewModelOf(::MultiTransformationTestViewModel)
+    viewModelOf(::RotateTransformationTestViewModel)
+    viewModelOf(::CircleCropTransformationTestViewModel)
+    viewModelOf(::RoundedCornersTransformationTestViewModel)
+    viewModelOf(::PhotoActionViewModel)
+    viewModelOf(::PhotoPaletteViewModel)
 }
 
 actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {

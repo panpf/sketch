@@ -38,7 +38,7 @@ import com.github.panpf.sketch.sample.databinding.FragmentImageViewerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
-import com.github.panpf.sketch.sample.ui.util.parentViewModels
+import com.github.panpf.sketch.sample.ui.util.parentViewModel
 import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
 import com.github.panpf.sketch.sample.util.registerForActivityResult
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
@@ -52,13 +52,14 @@ import com.github.panpf.zoomimage.zoom.ReadMode
 import com.github.panpf.zoomimage.zoom.valueOf
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.math.roundToInt
 
 class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
 
     private val args by navArgs<PhotoViewerFragmentArgs>()
-    private val photoPaletteViewModel by parentViewModels<PhotoPaletteViewModel>()
-    private val photoActionViewModel by parentViewModels<PhotoActionViewModel>()
+    private val photoPaletteViewModel by parentViewModel<PhotoPaletteViewModel>()
+    private val photoActionViewModel by viewModel<PhotoActionViewModel>()
     private val requestPermissionResult =
         registerForActivityResult(WithDataActivityResultContracts.RequestPermission())
 

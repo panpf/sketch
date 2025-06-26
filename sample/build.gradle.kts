@@ -76,7 +76,6 @@ kotlin {
             implementation(libs.multiplatformsettings)
             implementation(libs.panpf.zoomimage.compose)
             implementation(libs.voyager.navigator)
-            implementation(libs.voyager.screenModel)
             implementation(libs.voyager.transitions)
         }
         androidMain.dependencies {

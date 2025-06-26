@@ -27,9 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.panpf.sketch.ability.progressIndicator
 import com.github.panpf.sketch.painter.rememberIconPainter
 import com.github.panpf.sketch.rememberAsyncImageState
@@ -41,13 +38,7 @@ import com.github.panpf.sketch.sample.ui.model.ProgressIndicatorTestModel
 import com.github.panpf.sketch.sample.ui.util.rememberThemeMaskProgressPainter
 import com.github.panpf.sketch.sample.ui.util.rememberThemeRingProgressPainter
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import kotlin.random.Random
+import org.koin.compose.viewmodel.koinViewModel
 
 class ProgressIndicatorTestScreen : BaseScreen() {
 
@@ -61,9 +52,7 @@ class ProgressIndicatorTestScreen : BaseScreen() {
                     .padding(vertical = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val viewModel = rememberScreenModel {
-                    ProgressIndicatorTestScreenModel()
-                }
+                val viewModel: ProgressIndicatorTestViewModel = koinViewModel()
                 val colorScheme = MaterialTheme.colorScheme
                 val placeholderPainter = rememberIconPainter(
                     icon = drawable.ic_image_outline,
@@ -240,82 +229,3 @@ class ProgressIndicatorTestScreen : BaseScreen() {
     }
 }
 
-class ProgressIndicatorTestScreenModel : ScreenModel {
-
-    private var runningJob: Job? = null
-
-    private val _progressState = MutableStateFlow(0f)
-    val progressState: StateFlow<Float> = _progressState
-
-    private val _runningState = MutableStateFlow(false)
-    val runningState: StateFlow<Boolean> = _runningState
-
-    private val _modelState = MutableStateFlow(ProgressIndicatorTestModel.Progress)
-    val modelState: StateFlow<ProgressIndicatorTestModel> = _modelState
-
-    private val _hiddenWhenIndeterminateState = MutableStateFlow(false)
-    val hiddenWhenIndeterminateState: StateFlow<Boolean> = _hiddenWhenIndeterminateState
-
-    private val _hiddenWhenCompletedState = MutableStateFlow(true)
-    val hiddenWhenCompletedState: StateFlow<Boolean> = _hiddenWhenCompletedState
-
-    private val _shortStepState = MutableStateFlow(false)
-    val shortStepState: StateFlow<Boolean> = _shortStepState
-
-    fun changeModel(model: ProgressIndicatorTestModel) {
-        _modelState.value = model
-    }
-
-    fun changeHiddenWhenIndeterminate(hidden: Boolean) {
-        _hiddenWhenIndeterminateState.value = hidden
-    }
-
-    fun changeHiddenWhenCompleted(hidden: Boolean) {
-        _hiddenWhenCompletedState.value = hidden
-    }
-
-    fun changeShortStep(hidden: Boolean) {
-        _shortStepState.value = hidden
-    }
-
-    fun action() {
-        val runningJob = this.runningJob
-        if (runningJob != null && runningJob.isActive) {
-            runningJob.cancel()
-            _runningState.value = false
-        } else {
-            _runningState.value = true
-            this.runningJob = screenModelScope.launch {
-                when (_modelState.value) {
-                    ProgressIndicatorTestModel.Progress -> {
-                        var progress = 0f
-                        val shortSteps = _shortStepState.value
-                        do {
-                            _progressState.value = progress
-                            if (shortSteps) {
-                                delay(500)
-                            } else {
-                                delay(Random.nextLong(150, 1000))
-                            }
-                            progress = (progress + 0.2f)
-                        } while (progress <= 1f && isActive)
-                    }
-
-                    ProgressIndicatorTestModel.DirectlyComplete -> {
-                        _progressState.value = 0f
-                        delay(2000)
-                        _progressState.value = 1f
-                    }
-
-                    ProgressIndicatorTestModel.Error -> {
-                        _progressState.value = 0f
-                        delay(2000)
-                        _progressState.value = -1f
-                    }
-                }
-
-                _runningState.value = false
-            }
-        }
-    }
-}

@@ -62,13 +62,13 @@ enum class HomeTab(
         title = "Pexels",
         icon = Res.drawable.ic_pexels,
         padding = 1.5.dp,
-        content = { PexelsPhotoListPage(this) }
+        content = { PexelsPhotoListPage() }
     ),
     GIPHY(
         title = "Giphy",
         icon = Res.drawable.ic_giphy,
         padding = 1.5.dp,
-        content = { GiphyPhotoListPage(this) }
+        content = { GiphyPhotoListPage() }
     ),
     LOCAL(
         title = "Local",
@@ -78,7 +78,7 @@ enum class HomeTab(
             PermissionContainer(
                 permission = localPhotoListPermission(),
                 permissionRequired = false,
-                content = { LocalPhotoListPage(this) }
+                content = { LocalPhotoListPage() }
             )
         }
     ),

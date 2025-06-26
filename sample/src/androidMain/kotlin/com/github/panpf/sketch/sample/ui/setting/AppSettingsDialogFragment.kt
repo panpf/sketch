@@ -17,7 +17,6 @@
 package com.github.panpf.sketch.sample.ui.setting
 
 import android.os.Bundle
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle.State
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,12 +25,18 @@ import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingDialogFragment
 import com.github.panpf.sketch.sample.ui.common.list.ListSeparatorItemFactory
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class AppSettingsDialogFragment : BaseBindingDialogFragment<FragmentRecyclerBinding>() {
 
     private val args by navArgs<AppSettingsDialogFragmentArgs>()
-    private val viewModel by viewModels<AppSettingsViewModel> {
-        AppSettingsViewModel.Factory(requireActivity().application, Page.valueOf(args.page))
+    private val settingsViewModel by viewModel<AppSettingsViewModel> {
+        parametersOf(
+            Page.valueOf(
+                args.page
+            )
+        )
     }
 
     init {
@@ -48,7 +53,7 @@ class AppSettingsDialogFragment : BaseBindingDialogFragment<FragmentRecyclerBind
                     ListSeparatorItemFactory(),
                 )
             ).apply {
-                viewModel.menuListData
+                settingsViewModel.menuListData
                     .repeatCollectWithLifecycle(owner = viewLifecycleOwner, state = State.CREATED) {
                         submitList(it)
                     }

@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.sample.ui.test
 
-import android.app.Application
 import android.content.Context
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
@@ -10,8 +9,6 @@ import android.view.ViewGroup
 import android.widget.ImageView.ScaleType
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -27,15 +24,15 @@ import com.github.panpf.tools4a.dimen.ktx.dp2px
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.math.roundToInt
 
 abstract class BaseDrawableTestFragment :
     BaseToolbarBindingFragment<FragmentTestDrawableScaletypeBinding>() {
 
-    private val viewModel by viewModels<DrawableScaleTypeViewModel>()
+    private val drawableScaleTypeViewModel by viewModel<DrawableScaleTypeViewModel>()
 
     override fun getNavigationBarInsetsView(binding: FragmentTestDrawableScaletypeBinding): View {
         return binding.root
@@ -57,32 +54,36 @@ abstract class BaseDrawableTestFragment :
         toolbar.title = title
 
         binding.fitXYButton.setOnClickListener {
-            viewModel.setScaleType(ScaleType.FIT_XY)
+            drawableScaleTypeViewModel.setScaleType(ScaleType.FIT_XY)
         }
         binding.fitStartButton.setOnClickListener {
-            viewModel.setScaleType(ScaleType.FIT_START)
+            drawableScaleTypeViewModel.setScaleType(ScaleType.FIT_START)
         }
         binding.fitCenterButton.setOnClickListener {
-            viewModel.setScaleType(ScaleType.FIT_CENTER)
+            drawableScaleTypeViewModel.setScaleType(ScaleType.FIT_CENTER)
         }
         binding.fitEndButton.setOnClickListener {
-            viewModel.setScaleType(ScaleType.FIT_END)
+            drawableScaleTypeViewModel.setScaleType(ScaleType.FIT_END)
         }
         binding.centerButton.setOnClickListener {
-            viewModel.setScaleType(ScaleType.CENTER)
+            drawableScaleTypeViewModel.setScaleType(ScaleType.CENTER)
         }
         binding.centerCropButton.setOnClickListener {
-            viewModel.setScaleType(ScaleType.CENTER_CROP)
+            drawableScaleTypeViewModel.setScaleType(ScaleType.CENTER_CROP)
         }
         binding.centerInsideButton.setOnClickListener {
-            viewModel.setScaleType(ScaleType.CENTER_INSIDE)
+            drawableScaleTypeViewModel.setScaleType(ScaleType.CENTER_INSIDE)
         }
         binding.matrixButton.setOnClickListener {
-            viewModel.setScaleType(ScaleType.MATRIX)
+            drawableScaleTypeViewModel.setScaleType(ScaleType.MATRIX)
         }
 
         val recyclerAdapter = AssemblyRecyclerAdapter<DrawableScaleType>(
-            itemFactoryList = listOf(element = DrawableScaleTypeItemFactory(viewModel.scaleTypeState)),
+            itemFactoryList = listOf(
+                element = DrawableScaleTypeItemFactory(
+                    drawableScaleTypeViewModel.scaleTypeState
+                )
+            ),
         )
         val gridCells = 3
         val gridDividerSizePx = 8.dp2px
@@ -105,7 +106,7 @@ abstract class BaseDrawableTestFragment :
             adapter = recyclerAdapter
         }
 
-        viewModel.scaleTypeState.repeatCollectWithLifecycle(
+        drawableScaleTypeViewModel.scaleTypeState.repeatCollectWithLifecycle(
             owner = this.viewLifecycleOwner,
             state = Lifecycle.State.STARTED
         ) { scaleType ->
@@ -182,13 +183,4 @@ abstract class BaseDrawableTestFragment :
 
     data class DrawableScaleType(val title: String, val drawable: Drawable)
 
-    class DrawableScaleTypeViewModel(application: Application) : AndroidViewModel(application) {
-
-        private val _scaleTypeState = MutableStateFlow(ScaleType.FIT_CENTER)
-        val scaleTypeState: StateFlow<ScaleType> = _scaleTypeState
-
-        fun setScaleType(scaleType: ScaleType) {
-            _scaleTypeState.value = scaleType
-        }
-    }
 }

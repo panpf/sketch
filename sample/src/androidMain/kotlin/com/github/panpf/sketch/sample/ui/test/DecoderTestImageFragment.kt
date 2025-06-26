@@ -13,17 +13,17 @@ import com.github.panpf.sketch.request.LoadState.Error
 import com.github.panpf.sketch.sample.databinding.FragmentImageBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
-import com.github.panpf.sketch.sample.ui.util.parentViewModels
+import com.github.panpf.sketch.sample.ui.util.parentViewModel
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.util.SketchUtils
 
 class DecoderTestImageFragment : BaseBindingFragment<FragmentImageBinding>() {
 
     private val args by navArgs<DecoderTestImageFragmentArgs>()
-    private val viewModel by parentViewModels<DecoderTestFragment.DecoderTestViewModel>()
+    private val decoderTestViewModel by parentViewModel<DecoderTestViewModel>()
 
     override fun onViewCreated(binding: FragmentImageBinding, savedInstanceState: Bundle?) {
-        viewModel.data
+        decoderTestViewModel.data
             .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) { list ->
                 val testItem = list[args.position]
                 if ((testItem.currentApi ?: 0) >= (testItem.minAPI ?: 0)) {

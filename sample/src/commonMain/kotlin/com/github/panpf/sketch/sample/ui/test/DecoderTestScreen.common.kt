@@ -20,9 +20,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.rememberScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.ability.dataFromLogo
@@ -37,9 +34,8 @@ import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.common.AsyncImagePageState
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 
 class DecoderTestScreen : BaseScreen() {
 
@@ -48,8 +44,8 @@ class DecoderTestScreen : BaseScreen() {
     override fun DrawContent() {
         ToolbarScaffold(title = "DecoderTest") {
             val context = LocalPlatformContext.current
-            val screenModel = rememberScreenModel { DecoderTestScreenModel(context) }
-            val items by screenModel.testItems.collectAsState()
+            val decoderTestViewModel: DecoderTestViewModel = koinViewModel()
+            val items by decoderTestViewModel.data.collectAsState()
             if (items.isNotEmpty()) {
                 val pagerState = rememberPagerState(0) { items.size }
                 val coroutineScope = rememberCoroutineScope()
@@ -125,16 +121,6 @@ class DecoderTestScreen : BaseScreen() {
         }
     }
 
-    class DecoderTestScreenModel(val context: PlatformContext) : ScreenModel {
-        private val _testItems = MutableStateFlow<List<DecoderTestItem>>(emptyList())
-        val testItems: StateFlow<List<DecoderTestItem>> = _testItems
-
-        init {
-            screenModelScope.launch {
-                _testItems.value = buildDecoderTestItems(context)
-            }
-        }
-    }
 }
 
 class DecoderTestItem(

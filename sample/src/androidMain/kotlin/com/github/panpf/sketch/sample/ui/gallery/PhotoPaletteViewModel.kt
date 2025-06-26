@@ -17,13 +17,13 @@
 package com.github.panpf.sketch.sample.ui.gallery
 
 import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.image.palette.PhotoPalette
-import com.github.panpf.sketch.sample.ui.base.LifecycleAndroidViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class PhotoPaletteViewModel(application: Application) : LifecycleAndroidViewModel(application) {
+class PhotoPaletteViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _photoPaletteState = MutableStateFlow(
         PhotoPalette(
