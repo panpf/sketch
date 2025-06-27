@@ -28,8 +28,9 @@ fun ComponentRegistry.Builder.supportHurlHttpUri(
 class HurlHttpUriFetcher(
     sketch: Sketch,
     httpStack: HurlStack,
-    request: ImageRequest
-) : HttpUriFetcher(sketch, httpStack, request) {
+    request: ImageRequest,
+    downloadCacheKey: String,
+) : HttpUriFetcher(sketch, httpStack, request, downloadCacheKey) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -38,6 +39,7 @@ class HurlHttpUriFetcher(
         if (sketch != other.sketch) return false
         if (httpStack != other.httpStack) return false
         if (request != other.request) return false
+        if (downloadCacheKey != other.downloadCacheKey) return false
         return true
     }
 
@@ -45,11 +47,12 @@ class HurlHttpUriFetcher(
         var result = sketch.hashCode()
         result = 31 * result + httpStack.hashCode()
         result = 31 * result + request.hashCode()
+        result = 31 * result + downloadCacheKey.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "HurlHttpUriFetcher(sketch=$sketch, httpStack=$httpStack, request=$request)"
+        return "HurlHttpUriFetcher(sketch=$sketch, httpStack=$httpStack, request=$request, downloadCacheKey='$downloadCacheKey')"
     }
 
     class Factory(val httpStack: HurlStack = Builder().build()) : Fetcher.Factory {
@@ -62,6 +65,7 @@ class HurlHttpUriFetcher(
                 sketch = requestContext.sketch,
                 httpStack = httpStack,
                 request = request,
+                downloadCacheKey = requestContext.downloadCacheKey,
             )
         }
 

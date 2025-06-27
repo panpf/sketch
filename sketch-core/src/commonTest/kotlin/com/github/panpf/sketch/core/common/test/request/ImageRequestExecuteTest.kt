@@ -7,8 +7,6 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.cache.memoryCacheKey
-import com.github.panpf.sketch.cache.resultCacheKey
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
@@ -655,11 +653,11 @@ class ImageRequestExecuteTest {
                 assertEquals(size.ratio, image.size.ratio)
             }
         assertNotEquals(sarStartCropBitmap!!.corners(), sarCenterCropBitmap!!.corners())
-        assertNotEquals(sarStartCropBitmap!!.corners(), sarEndCropBitmap!!.corners())
-        assertNotEquals(sarStartCropBitmap!!.corners(), sarFillCropBitmap!!.corners())
-        assertNotEquals(sarCenterCropBitmap!!.corners(), sarEndCropBitmap!!.corners())
-        assertNotEquals(sarCenterCropBitmap!!.corners(), sarFillCropBitmap!!.corners())
-        assertNotEquals(sarEndCropBitmap!!.corners(), sarFillCropBitmap!!.corners())
+        assertNotEquals(sarStartCropBitmap.corners(), sarEndCropBitmap!!.corners())
+        assertNotEquals(sarStartCropBitmap.corners(), sarFillCropBitmap!!.corners())
+        assertNotEquals(sarCenterCropBitmap.corners(), sarEndCropBitmap.corners())
+        assertNotEquals(sarCenterCropBitmap.corners(), sarFillCropBitmap.corners())
+        assertNotEquals(sarEndCropBitmap.corners(), sarFillCropBitmap.corners())
 
         var exactlyStartCropBitmap: Image?
         var exactlyCenterCropBitmap: Image?
@@ -709,20 +707,20 @@ class ImageRequestExecuteTest {
             exactlyStartCropBitmap!!.corners(),
             exactlyCenterCropBitmap!!.corners()
         )
-        assertNotEquals(exactlyStartCropBitmap!!.corners(), exactlyEndCropBitmap!!.corners())
+        assertNotEquals(exactlyStartCropBitmap.corners(), exactlyEndCropBitmap!!.corners())
         assertNotEquals(
-            exactlyStartCropBitmap!!.corners(),
+            exactlyStartCropBitmap.corners(),
             exactlyFillCropBitmap!!.corners()
         )
         assertNotEquals(
-            exactlyCenterCropBitmap!!.corners(),
-            exactlyEndCropBitmap!!.corners()
+            exactlyCenterCropBitmap.corners(),
+            exactlyEndCropBitmap.corners()
         )
         assertNotEquals(
-            exactlyCenterCropBitmap!!.corners(),
-            exactlyFillCropBitmap!!.corners()
+            exactlyCenterCropBitmap.corners(),
+            exactlyFillCropBitmap.corners()
         )
-        assertNotEquals(exactlyEndCropBitmap!!.corners(), exactlyFillCropBitmap!!.corners())
+        assertNotEquals(exactlyEndCropBitmap.corners(), exactlyFillCropBitmap.corners())
 
         // origin
         var size1: Size?
@@ -1363,7 +1361,7 @@ class ImageRequestExecuteTest {
             deferred = async {
                 sketch.execute(request)
             }
-            deferred?.join()
+            deferred.join()
         }
         assertEquals(listOf("onStart", "onCancel"), listenerSupervisor.callbackActionList)
     }
@@ -1530,7 +1528,7 @@ class ImageRequestExecuteTest {
                 deferred = async {
                     sketch.execute(request)
                 }
-                deferred?.join()
+                deferred.join()
             }
             assertNull(testTarget.startImage)
             assertNull(testTarget.successImage)
@@ -1552,7 +1550,7 @@ class ImageRequestExecuteTest {
                 deferred = async {
                     sketch.execute(request)
                 }
-                deferred?.join()
+                deferred.join()
             }
             assertNull(testTarget.startImage)
             assertNull(testTarget.successImage)

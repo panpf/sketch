@@ -2,15 +2,9 @@ package com.github.panpf.sketch.core.common.test.cache
 
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.defaultDiskCacheMaxSize
-import com.github.panpf.sketch.cache.downloadCacheKey
-import com.github.panpf.sketch.cache.resultCacheKey
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.appCacheDirectory
 import com.github.panpf.sketch.util.defaultFileSystem
-import kotlinx.coroutines.test.runTest
 import okio.Path.Companion.toPath
 import kotlin.math.roundToLong
 import kotlin.test.Test
@@ -276,26 +270,5 @@ class DiskCacheTest {
                 actual = internalVersion
             )
         }
-    }
-
-    @Test
-    fun testDownloadCacheKey() = runTest {
-        val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, "http://test.com/test.jpg")
-        val requestContext = request.toRequestContext(sketch)
-        assertEquals(
-            expected = requestContext.cacheKey,
-            actual = requestContext.resultCacheKey
-        )
-    }
-
-    @Test
-    fun testResultCacheKey() {
-        val context = getTestContext()
-        val request = ImageRequest(context, "http://test.com/test.jpg")
-        assertEquals(
-            expected = request.uri.toString(),
-            actual = request.downloadCacheKey
-        )
     }
 }

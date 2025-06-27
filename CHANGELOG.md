@@ -15,6 +15,8 @@ Translations: [简体中文](CHANGELOG.zh.md)
   injection support
 * new: Added `Sketch(PlatformContext, (Sketch.Builder.() -> Unit)? = null)` function and
   `Sketch.Builder.logger(Logger)` function
+* new: ImageRequest and ImageOptions add downloadCacheKey, downloadCacheKeyMapper, resultCacheKey,
+  resultCacheKeyMapper, memoryCacheKey, memoryCacheKeyMapper properties
 
 # 4.2.0-beta01
 

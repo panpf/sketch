@@ -67,7 +67,7 @@ class KtorHttpUriFetcherTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "http://sample.com/sample.jpg")
         val httpStack = KtorStack()
-        KtorHttpUriFetcher(sketch, httpStack, request)
+        KtorHttpUriFetcher(sketch, httpStack, request, "downloadCacheKey")
     }
 
     @Test
@@ -78,19 +78,24 @@ class KtorHttpUriFetcherTest {
         val httpStack2 = KtorStack()
         val request = ImageRequest(context, "http://sample.com/sample.jpg")
         val request2 = request.newRequest { memoryCachePolicy(DISABLED) }
-        val element1 = KtorHttpUriFetcher(sketch, httpStack, request)
-        val element11 = KtorHttpUriFetcher(sketch, httpStack, request)
-        val element2 = KtorHttpUriFetcher(sketch2, httpStack, request)
-        val element3 = KtorHttpUriFetcher(sketch, httpStack2, request)
-        val element4 = KtorHttpUriFetcher(sketch, httpStack, request2)
+        val element1 = KtorHttpUriFetcher(sketch, httpStack, request, "downloadCacheKey")
+        val element11 = KtorHttpUriFetcher(sketch, httpStack, request, "downloadCacheKey")
+        val element2 = KtorHttpUriFetcher(sketch2, httpStack, request, "downloadCacheKey")
+        val element3 = KtorHttpUriFetcher(sketch, httpStack2, request, "downloadCacheKey")
+        val element4 = KtorHttpUriFetcher(sketch, httpStack, request2, "downloadCacheKey")
+        val element5 = KtorHttpUriFetcher(sketch, httpStack, request, "downloadCacheKey2")
 
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
         assertNotEquals(element1, element3)
         assertNotEquals(element1, element4)
+        assertNotEquals(element1, element5)
         assertNotEquals(element2, element3)
         assertNotEquals(element2, element4)
+        assertNotEquals(element2, element5)
         assertNotEquals(element3, element4)
+        assertNotEquals(element3, element5)
+        assertNotEquals(element4, element5)
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
@@ -98,9 +103,13 @@ class KtorHttpUriFetcherTest {
         assertNotEquals(element1.hashCode(), element2.hashCode())
         assertNotEquals(element1.hashCode(), element3.hashCode())
         assertNotEquals(element1.hashCode(), element4.hashCode())
+        assertNotEquals(element1.hashCode(), element5.hashCode())
         assertNotEquals(element2.hashCode(), element3.hashCode())
         assertNotEquals(element2.hashCode(), element4.hashCode())
+        assertNotEquals(element2.hashCode(), element5.hashCode())
         assertNotEquals(element3.hashCode(), element4.hashCode())
+        assertNotEquals(element3.hashCode(), element5.hashCode())
+        assertNotEquals(element4.hashCode(), element5.hashCode())
     }
 
     @Test
@@ -108,9 +117,9 @@ class KtorHttpUriFetcherTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "http://sample.com/sample.jpg")
         val httpStack = KtorStack()
-        val httpUriFetcher = KtorHttpUriFetcher(sketch, httpStack, request)
+        val httpUriFetcher = KtorHttpUriFetcher(sketch, httpStack, request, "downloadCacheKey2")
         assertEquals(
-            expected = "KtorHttpUriFetcher(sketch=$sketch, httpStack=$httpStack, request=$request)",
+            expected = "KtorHttpUriFetcher(sketch=$sketch, httpStack=$httpStack, request=$request, downloadCacheKey='downloadCacheKey2')",
             actual = httpUriFetcher.toString()
         )
     }

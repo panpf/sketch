@@ -12,6 +12,8 @@
 * new: 新增 `sketch-compose-koin` 和 `sketch-view-koin` 模块，提供 Koin 依赖注入支持
 * new: 新增 `Sketch(PlatformContext, (Sketch.Builder.() -> Unit)? = null)` 函数和
   `Sketch.Builder.logger(Logger)` 函数
+* new: ImageRequest 和 ImageOptions 新增 downloadCacheKey, downloadCacheKeyMapper, resultCacheKey,
+  resultCacheKeyMapper, memoryCacheKey, memoryCacheKeyMapper 属性
 
 # 4.2.0-beta01
 

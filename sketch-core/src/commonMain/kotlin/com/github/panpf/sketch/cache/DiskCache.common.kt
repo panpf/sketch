@@ -19,8 +19,6 @@ package com.github.panpf.sketch.cache
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.internal.EmptyDiskCache
 import com.github.panpf.sketch.cache.internal.LruDiskCache
-import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.util.appCacheDirectory
 import okio.Closeable
 import okio.FileSystem
@@ -282,19 +280,3 @@ interface DiskCache : Closeable {
  * @see com.github.panpf.sketch.core.nonjscommon.test.cache.DiskCacheNonJsCommonTest.testDefaultDiskCacheMaxSize
  */
 internal expect fun defaultDiskCacheMaxSize(context: PlatformContext): Long?
-
-/**
- * Result cache key
- *
- * @see com.github.panpf.sketch.core.common.test.cache.DiskCacheTest.testResultCacheKey
- */
-val RequestContext.resultCacheKey: String
-    get() = cacheKey
-
-/**
- * Download cache key
- *
- * @see com.github.panpf.sketch.core.common.test.cache.DiskCacheTest.testDownloadCacheKey
- */
-val ImageRequest.downloadCacheKey: String
-    get() = uri.toString()

@@ -16,7 +16,6 @@
 
 package com.github.panpf.sketch.core.common.test.state
 
-import com.github.panpf.sketch.cache.memoryCacheKey
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.EXACTLY

@@ -7,7 +7,6 @@ import com.github.panpf.sketch.cache.getExtras
 import com.github.panpf.sketch.cache.getImageInfo
 import com.github.panpf.sketch.cache.getResize
 import com.github.panpf.sketch.cache.getTransformeds
-import com.github.panpf.sketch.cache.memoryCacheKey
 import com.github.panpf.sketch.cache.newCacheValueExtras
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest

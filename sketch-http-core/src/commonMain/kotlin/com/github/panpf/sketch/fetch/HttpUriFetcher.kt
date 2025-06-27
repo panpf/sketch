@@ -24,7 +24,6 @@ package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.cache.downloadCacheKey
 import com.github.panpf.sketch.cache.isReadOrWrite
 import com.github.panpf.sketch.fetch.internal.copyToWithProgress
 import com.github.panpf.sketch.fetch.internal.getMimeType
@@ -66,9 +65,10 @@ fun isHttpUri(uri: Uri): Boolean =
  * @see com.github.panpf.sketch.http.core.common.test.fetch.HttpUriFetcherTest
  */
 open class HttpUriFetcher constructor(
-    val sketch: Sketch,
+    val sketch: Sketch, // TODO Split sketch, pass only the required attributes
     val httpStack: HttpStack,
-    val request: ImageRequest,
+    val request: ImageRequest, // TODO Split request, pass only the required attributes
+    val downloadCacheKey: String,
 ) : Fetcher {
 
     companion object {
@@ -77,14 +77,11 @@ open class HttpUriFetcher constructor(
         const val MIME_TYPE_TEXT_PLAIN = "text/plain"
     }
 
-    private val downloadCacheKey = request.downloadCacheKey
-    private val downloadCacheLockKey = request.downloadCacheKey
-
     @WorkerThread
     override suspend fun fetch(): Result<FetchResult> {
         requiredWorkThread()
         val result = if (request.downloadCachePolicy.isReadOrWrite) {
-            sketch.downloadCache.withLock(downloadCacheLockKey) {
+            sketch.downloadCache.withLock(downloadCacheKey) {
                 readCache() ?: executeFetch()
             }
         } else {
@@ -279,6 +276,7 @@ open class HttpUriFetcher constructor(
         if (sketch != other.sketch) return false
         if (httpStack != other.httpStack) return false
         if (request != other.request) return false
+        if (downloadCacheKey != other.downloadCacheKey) return false
         return true
     }
 
@@ -286,11 +284,12 @@ open class HttpUriFetcher constructor(
         var result = sketch.hashCode()
         result = 31 * result + httpStack.hashCode()
         result = 31 * result + request.hashCode()
+        result = 31 * result + downloadCacheKey.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "HttpUriFetcher(sketch=$sketch, httpStack=$httpStack, request=$request)"
+        return "HttpUriFetcher(sketch=$sketch, httpStack=$httpStack, request=$request, downloadCacheKey='$downloadCacheKey')"
     }
 
     open class Factory(val httpStack: HttpStack) : Fetcher.Factory {
@@ -303,6 +302,7 @@ open class HttpUriFetcher constructor(
                 sketch = requestContext.sketch,
                 httpStack = httpStack,
                 request = request,
+                downloadCacheKey = requestContext.downloadCacheKey
             )
         }
 

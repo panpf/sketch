@@ -55,6 +55,7 @@ import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.resize.SizeResolver
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.FakeCacheKeyMapper
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeStateImage
 import com.github.panpf.sketch.test.utils.FakeTransition
@@ -99,6 +100,8 @@ import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class ImageRequestTest {
+
+    // TODO test downloadCacheKey, downloadCacheKeyMapper, resultCacheKey, resultCacheKeyMapper, memoryCacheKey, memoryCacheKeyMapper
 
     @Test
     fun testImageRequest() {
@@ -1717,6 +1720,8 @@ class ImageRequestTest {
             depth(LOCAL, "test")
             setExtra("key", "value")
             downloadCachePolicy(WRITE_ONLY)
+            downloadCacheKey("testDownloadCacheKey")
+            downloadCacheKeyMapper(FakeCacheKeyMapper())
             colorType("RGB_565")
             colorSpace("SRGB")
             size(100, 100)
@@ -1725,6 +1730,8 @@ class ImageRequestTest {
             scale(FILL)
             transformations(RotateTransformation(40))
             resultCachePolicy(READ_ONLY)
+            resultCacheKey("testResultCacheKey")
+            resultCacheKeyMapper(FakeCacheKeyMapper())
             placeholder(FakeStateImage(FakeImage(SketchSize(100, 100))))
             fallback(FakeStateImage(FakeImage(SketchSize(100, 100))))
             error(FakeStateImage(FakeImage(SketchSize(100, 100))))
@@ -1732,6 +1739,8 @@ class ImageRequestTest {
             resizeOnDraw(true)
             allowNullImage(true)
             memoryCachePolicy(ENABLED)
+            memoryCacheKey("testMemoryCacheKey")
+            memoryCacheKeyMapper(FakeCacheKeyMapper())
             components {
                 addFetcher(TestFetcher.Factory())
             }
@@ -1745,7 +1754,7 @@ class ImageRequestTest {
                         "progressListener=$testProgressListener, " +
                         "lifecycleResolver=FixedLifecycleResolver($testLifecycle), " +
                         "definedRequestOptions=RequestOptions(listener=$testListener, progressListener=$testProgressListener, lifecycleResolver=FixedLifecycleResolver($testLifecycle)), " +
-                        "definedOptions=ImageOptions(depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[TestFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[])), defaultOptions=null, depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), downloadCachePolicy=WRITE_ONLY, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], resultCachePolicy=READ_ONLY, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, componentRegistry=ComponentRegistry(fetcherFactoryList=[TestFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[]))",
+                        "definedOptions=ImageOptions(depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), downloadCachePolicy=WRITE_ONLY, downloadCacheKey=testDownloadCacheKey, downloadCacheKeyMapper=FakeCacheKeyMapper, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], resultCachePolicy=READ_ONLY, resultCacheKey=testResultCacheKey, resultCacheKeyMapper=FakeCacheKeyMapper, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, memoryCacheKey=testMemoryCacheKey, memoryCacheKeyMapper=FakeCacheKeyMapper, componentRegistry=ComponentRegistry(fetcherFactoryList=[TestFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[])), defaultOptions=null, depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), downloadCachePolicy=WRITE_ONLY, downloadCacheKey=testDownloadCacheKey, downloadCacheKeyMapper=FakeCacheKeyMapper, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], resultCachePolicy=READ_ONLY, resultCacheKey=testResultCacheKey, resultCacheKeyMapper=FakeCacheKeyMapper, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, memoryCacheKey=testMemoryCacheKey, memoryCacheKeyMapper=FakeCacheKeyMapper, componentRegistry=ComponentRegistry(fetcherFactoryList=[TestFetcher],decoderFactoryList=[],requestInterceptorList=[],decodeInterceptorList=[]))",
                 actual = this.toString()
             )
         }

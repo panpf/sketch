@@ -19,6 +19,7 @@ package com.github.panpf.sketch.request
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.cache.CacheKeyMapper
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.checkPlatformContext
 import com.github.panpf.sketch.decode.BitmapColorSpace
@@ -140,6 +141,16 @@ data class ImageRequest(
      */
     val downloadCachePolicy: CachePolicy,
 
+    /**
+     * The key used to cache the downloaded image in the download cache.
+     */
+    val downloadCacheKey: String?,
+
+    /**
+     * A mapper that maps a download cache key to a different string representation.
+     */
+    val downloadCacheKeyMapper: CacheKeyMapper?,
+
 
     /**
      * Bitmap color type
@@ -183,6 +194,16 @@ data class ImageRequest(
      */
     val resultCachePolicy: CachePolicy,
 
+    /**
+     * The key used to cache the result image in the result cache.
+     */
+    val resultCacheKey: String?,
+
+    /**
+     * A mapper that maps a result cache key to a different string representation.
+     */
+    val resultCacheKeyMapper: CacheKeyMapper?,
+
 
     /**
      * Placeholder image when loading
@@ -221,6 +242,16 @@ data class ImageRequest(
      */
     val memoryCachePolicy: CachePolicy,
 
+    /**
+     * The key used to cache the image in the memory cache.
+     */
+    val memoryCacheKey: String?,
+
+    /**
+     * A mapper that maps a memory cache key to a different string representation.
+     */
+    val memoryCacheKeyMapper: CacheKeyMapper?,
+
 
     /** Components that are only valid for the current request */
     val componentRegistry: ComponentRegistry?,
@@ -230,6 +261,73 @@ data class ImageRequest(
      * The unique identifier for this request.
      */
     override val key: String by lazy { newKey() }
+
+    // For keep binary compatibility
+    constructor(
+        context: PlatformContext,
+        uri: Uri,
+        target: Target?,
+        listener: Listener?,
+        progressListener: ProgressListener?,
+        lifecycleResolver: LifecycleResolver,
+        definedRequestOptions: RequestOptions,
+        definedOptions: ImageOptions,
+        defaultOptions: ImageOptions?,
+        depthHolder: DepthHolder,
+        extras: Extras?,
+        downloadCachePolicy: CachePolicy,
+        colorType: BitmapColorType?,
+        colorSpace: BitmapColorSpace?,
+        sizeResolver: SizeResolver,
+        sizeMultiplier: Float?,
+        precisionDecider: PrecisionDecider,
+        scaleDecider: ScaleDecider,
+        transformations: List<Transformation>?,
+        resultCachePolicy: CachePolicy,
+        placeholder: StateImage?,
+        fallback: StateImage?,
+        error: StateImage?,
+        transitionFactory: Transition.Factory?,
+        resizeOnDraw: Boolean?,
+        allowNullImage: Boolean?,
+        memoryCachePolicy: CachePolicy,
+        componentRegistry: ComponentRegistry?,
+    ) : this(
+        context = context,
+        uri = uri,
+        target = target,
+        listener = listener,
+        progressListener = progressListener,
+        lifecycleResolver = lifecycleResolver,
+        definedRequestOptions = definedRequestOptions,
+        definedOptions = definedOptions,
+        defaultOptions = defaultOptions,
+        depthHolder = depthHolder,
+        extras = extras,
+        downloadCachePolicy = downloadCachePolicy,
+        downloadCacheKey = null,
+        downloadCacheKeyMapper = null,
+        colorType = colorType,
+        colorSpace = colorSpace,
+        sizeResolver = sizeResolver,
+        sizeMultiplier = sizeMultiplier,
+        precisionDecider = precisionDecider,
+        scaleDecider = scaleDecider,
+        transformations = transformations,
+        resultCachePolicy = resultCachePolicy,
+        resultCacheKey = null,
+        resultCacheKeyMapper = null,
+        placeholder = placeholder,
+        fallback = fallback,
+        error = error,
+        transitionFactory = transitionFactory,
+        resizeOnDraw = resizeOnDraw,
+        allowNullImage = allowNullImage,
+        memoryCachePolicy = memoryCachePolicy,
+        memoryCacheKey = null,
+        memoryCacheKeyMapper = null,
+        componentRegistry = componentRegistry
+    )
 
     init {
         checkPlatformContext(context)
@@ -258,6 +356,73 @@ data class ImageRequest(
     ): ImageRequest = Builder(this, uri).apply {
         block?.invoke(this)
     }.build()
+
+    // For keep binary compatibility
+    fun copy(
+        context: PlatformContext = this.context,
+        uri: Uri = this.uri,
+        target: Target? = this.target,
+        listener: Listener? = this.listener,
+        progressListener: ProgressListener? = this.progressListener,
+        lifecycleResolver: LifecycleResolver = this.lifecycleResolver,
+        definedRequestOptions: RequestOptions = this.definedRequestOptions,
+        definedOptions: ImageOptions = this.definedOptions,
+        defaultOptions: ImageOptions? = this.defaultOptions,
+        depthHolder: DepthHolder = this.depthHolder,
+        extras: Extras? = this.extras,
+        downloadCachePolicy: CachePolicy = this.downloadCachePolicy,
+        colorType: BitmapColorType? = this.colorType,
+        colorSpace: BitmapColorSpace? = this.colorSpace,
+        sizeResolver: SizeResolver = this.sizeResolver,
+        sizeMultiplier: Float? = this.sizeMultiplier,
+        precisionDecider: PrecisionDecider = this.precisionDecider,
+        scaleDecider: ScaleDecider = this.scaleDecider,
+        transformations: List<Transformation>? = this.transformations,
+        resultCachePolicy: CachePolicy = this.resultCachePolicy,
+        placeholder: StateImage? = this.placeholder,
+        fallback: StateImage? = this.fallback,
+        error: StateImage? = this.error,
+        transitionFactory: Transition.Factory? = this.transitionFactory,
+        resizeOnDraw: Boolean? = this.resizeOnDraw,
+        allowNullImage: Boolean? = this.allowNullImage,
+        memoryCachePolicy: CachePolicy = this.memoryCachePolicy,
+        componentRegistry: ComponentRegistry? = this.componentRegistry
+    ): ImageRequest = ImageRequest(
+        context = context,
+        uri = uri,
+        target = target,
+        listener = listener,
+        progressListener = progressListener,
+        lifecycleResolver = lifecycleResolver,
+        definedRequestOptions = definedRequestOptions,
+        definedOptions = definedOptions,
+        defaultOptions = defaultOptions,
+        depthHolder = depthHolder,
+        extras = extras,
+        downloadCachePolicy = downloadCachePolicy,
+        downloadCacheKey = downloadCacheKey,
+        downloadCacheKeyMapper = downloadCacheKeyMapper,
+        colorType = colorType,
+        colorSpace = colorSpace,
+        sizeResolver = sizeResolver,
+        sizeMultiplier = sizeMultiplier,
+        precisionDecider = precisionDecider,
+        scaleDecider = scaleDecider,
+        transformations = transformations,
+        resultCachePolicy = resultCachePolicy,
+        resultCacheKey = resultCacheKey,
+        resultCacheKeyMapper = resultCacheKeyMapper,
+        placeholder = placeholder,
+        fallback = fallback,
+        error = error,
+        transitionFactory = transitionFactory,
+        resizeOnDraw = resizeOnDraw,
+        allowNullImage = allowNullImage,
+        memoryCachePolicy = memoryCachePolicy,
+        memoryCacheKey = memoryCacheKey,
+        memoryCacheKeyMapper = memoryCacheKeyMapper,
+        componentRegistry = componentRegistry
+    )
 
     class Builder {
 
@@ -421,6 +586,20 @@ data class ImageRequest(
          */
         fun downloadCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
             definedOptionsBuilder.downloadCachePolicy(cachePolicy)
+        }
+
+        /**
+         * Set the key used to cache the downloaded image in the download cache.
+         */
+        fun downloadCacheKey(key: String?): Builder = apply {
+            definedOptionsBuilder.downloadCacheKey(key)
+        }
+
+        /**
+         * Set a mapper that maps a download cache key to a different string representation.
+         */
+        fun downloadCacheKeyMapper(mapper: CacheKeyMapper?): Builder = apply {
+            definedOptionsBuilder.downloadCacheKeyMapper(mapper)
         }
 
         /**
@@ -606,6 +785,20 @@ data class ImageRequest(
             definedOptionsBuilder.resultCachePolicy(cachePolicy)
         }
 
+        /**
+         * Set the key used to cache the result image in the result cache.
+         */
+        fun resultCacheKey(key: String?): Builder = apply {
+            definedOptionsBuilder.resultCacheKey(key)
+        }
+
+        /**
+         * Set a mapper that maps a result cache key to a different string representation.
+         */
+        fun resultCacheKeyMapper(mapper: CacheKeyMapper?): Builder = apply {
+            definedOptionsBuilder.resultCacheKeyMapper(mapper)
+        }
+
 
         /**
          * Set placeholder image when loading
@@ -680,6 +873,20 @@ data class ImageRequest(
             definedOptionsBuilder.memoryCachePolicy(cachePolicy)
         }
 
+        /**
+         * Set the key used to cache the memory image in the memory cache.
+         */
+        fun memoryCacheKey(key: String?): Builder = apply {
+            definedOptionsBuilder.memoryCacheKey(key)
+        }
+
+        /**
+         * Set a mapper that maps a memory cache key to a different string representation.
+         */
+        fun memoryCacheKeyMapper(mapper: CacheKeyMapper?): Builder = apply {
+            definedOptionsBuilder.memoryCacheKeyMapper(mapper)
+        }
+
 
         /**
          * Merge the specified [ImageOptions] into the current [Builder]. Currently [Builder] takes precedence
@@ -738,7 +945,8 @@ data class ImageRequest(
             val depthHolder = finalOptions.depthHolder ?: DepthHolder.Default
             val extras = finalOptions.extras
             val downloadCachePolicy = finalOptions.downloadCachePolicy ?: CachePolicy.ENABLED
-            val resultCachePolicy = finalOptions.resultCachePolicy ?: CachePolicy.ENABLED
+            val downloadCacheKey = finalOptions.downloadCacheKey
+            val downloadCacheKeyMapper = finalOptions.downloadCacheKeyMapper
             val colorType = finalOptions.colorType
             val colorSpace = finalOptions.colorSpace
             val sizeResolver = finalOptions.sizeResolver ?: resolveSizeResolver()
@@ -747,6 +955,9 @@ data class ImageRequest(
                 finalOptions.precisionDecider ?: PrecisionDecider(Precision.LESS_PIXELS)
             val scaleDecider = finalOptions.scaleDecider ?: resolveScaleDecider()
             val transformations = finalOptions.transformations
+            val resultCachePolicy = finalOptions.resultCachePolicy ?: CachePolicy.ENABLED
+            val resultCacheKey = finalOptions.resultCacheKey
+            val resultCacheKeyMapper = finalOptions.resultCacheKeyMapper
             val placeholder = finalOptions.placeholder
             val fallback = finalOptions.fallback
             val error = finalOptions.error
@@ -754,6 +965,8 @@ data class ImageRequest(
             val resizeOnDraw = finalOptions.resizeOnDraw
             val allowNullImage = finalOptions.allowNullImage
             val memoryCachePolicy = finalOptions.memoryCachePolicy ?: CachePolicy.ENABLED
+            val memoryCacheKey = finalOptions.memoryCacheKey
+            val memoryCacheKeyMapper = finalOptions.memoryCacheKeyMapper
             val targetComponents = target?.getComponents()
             val componentRegistry = finalOptions.componentRegistry.merged(targetComponents)
 
@@ -770,7 +983,8 @@ data class ImageRequest(
                 depthHolder = depthHolder,
                 extras = extras,
                 downloadCachePolicy = downloadCachePolicy,
-                resultCachePolicy = resultCachePolicy,
+                downloadCacheKey = downloadCacheKey,
+                downloadCacheKeyMapper = downloadCacheKeyMapper,
                 colorType = colorType,
                 colorSpace = colorSpace,
                 sizeResolver = sizeResolver,
@@ -778,6 +992,9 @@ data class ImageRequest(
                 precisionDecider = precisionDecider,
                 scaleDecider = scaleDecider,
                 transformations = transformations,
+                resultCachePolicy = resultCachePolicy,
+                resultCacheKey = resultCacheKey,
+                resultCacheKeyMapper = resultCacheKeyMapper,
                 placeholder = placeholder,
                 fallback = fallback,
                 error = error,
@@ -785,6 +1002,8 @@ data class ImageRequest(
                 resizeOnDraw = resizeOnDraw,
                 allowNullImage = allowNullImage,
                 memoryCachePolicy = memoryCachePolicy,
+                memoryCacheKey = memoryCacheKey,
+                memoryCacheKeyMapper = memoryCacheKeyMapper,
                 componentRegistry = componentRegistry,
             )
         }

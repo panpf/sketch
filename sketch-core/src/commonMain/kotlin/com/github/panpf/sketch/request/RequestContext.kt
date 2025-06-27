@@ -23,9 +23,8 @@ import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.coerceAtLeast
+import com.github.panpf.sketch.util.resetLazy
 import com.github.panpf.sketch.util.times
-import kotlinx.atomicfu.locks.SynchronizedObject
-import kotlinx.atomicfu.locks.synchronized
 
 /**
  * Create a new [RequestContext] based on the specified [Sketch] and [ImageRequest]
@@ -63,10 +62,41 @@ class RequestContext constructor(
     size: Size
 ) {
 
-    private val lock = SynchronizedObject()
     private val _requestList = mutableListOf(initialRequest)
     private var _request: ImageRequest = initialRequest
-    private var _cacheKey: String? = null
+
+    private val cacheKeyLazy = resetLazy {
+        val request = this@RequestContext.request
+        val cacheKey = request.newCacheKey(this@RequestContext.size)
+        cacheKey
+    }
+    private val memoryCacheKeyLazy = resetLazy {
+        val request = this@RequestContext.request
+        val memoryCacheKey = request.memoryCacheKey ?: cacheKeyLazy.value
+        val memoryCacheKeyMapper = request.memoryCacheKeyMapper
+        val finalMemoryCacheKey = memoryCacheKeyMapper?.map(memoryCacheKey)
+            ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
+            ?: memoryCacheKey
+        finalMemoryCacheKey
+    }
+    private val resultCacheKeyLazy = resetLazy {
+        val request = this@RequestContext.request
+        val resultCacheKey = request.resultCacheKey ?: cacheKeyLazy.value
+        val resultCacheKeyMapper = request.resultCacheKeyMapper
+        val finalResultCacheKey = resultCacheKeyMapper?.map(resultCacheKey)
+            ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
+            ?: resultCacheKey
+        finalResultCacheKey
+    }
+    private val downloadCacheKeyLazy = resetLazy {
+        val request = this@RequestContext.request
+        val downloadCacheKey = request.downloadCacheKey ?: request.uri.toString()
+        val downloadCacheKeyMapper = request.downloadCacheKeyMapper
+        val finalDownloadCacheKey = downloadCacheKeyMapper?.map(downloadCacheKey)
+            ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
+            ?: downloadCacheKey
+        finalDownloadCacheKey
+    }
 
     /**
      * The request list, the first element is the initial request, and the last element is the current request
@@ -89,17 +119,33 @@ class RequestContext constructor(
     /**
      * The log key of the request
      */
-    val logKey: String = initialRequest.newCacheKey(size)
+    val logKey: String by lazy { initialRequest.newCacheKey(size) }
 
     /**
      * Used to cache bitmaps in memory and on disk
      */
+    @Deprecated("Use `memoryCacheKey` or `resultCacheKey` instead")
     val cacheKey: String
-        get() = synchronized(lock) {
-            _cacheKey ?: request.newCacheKey(size).apply {
-                _cacheKey = this
-            }
-        }
+        get() = cacheKeyLazy.value
+
+    /**
+     * The key currently requesting read and write memory cache
+     */
+    val memoryCacheKey: String
+        get() = memoryCacheKeyLazy.value
+
+    /**
+     * The key currently requesting read and write result cache
+     */
+    val resultCacheKey: String
+        get() = resultCacheKeyLazy.value
+
+    /**
+     * The key currently requesting read and write download cache
+     */
+    val downloadCacheKey: String
+        get() = downloadCacheKeyLazy.value
+
 
     /**
      * Set up a new request and recalculate the size of the request
@@ -107,12 +153,15 @@ class RequestContext constructor(
     internal suspend fun setNewRequest(request: ImageRequest) {
         val lastRequest = this.request
         if (lastRequest != request) {
-            _requestList.add(request)
-            _request = request
             if (lastRequest.sizeResolver != request.sizeResolver) {
                 size = resolveSize(request)
             }
-            _cacheKey = null
+            _requestList.add(request)
+            _request = request
+            cacheKeyLazy.reset()
+            memoryCacheKeyLazy.reset()
+            resultCacheKeyLazy.reset()
+            downloadCacheKeyLazy.reset()
         }
     }
 

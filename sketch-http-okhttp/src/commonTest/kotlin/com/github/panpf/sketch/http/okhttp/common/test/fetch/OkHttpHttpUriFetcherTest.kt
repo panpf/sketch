@@ -67,7 +67,7 @@ class OkHttpHttpUriFetcherTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "http://sample.com/sample.jpg")
         val httpStack = OkHttpStack.Builder().build()
-        OkHttpHttpUriFetcher(sketch, httpStack, request)
+        OkHttpHttpUriFetcher(sketch, httpStack, request, "downloadCacheKey")
     }
 
     @Test
@@ -80,19 +80,24 @@ class OkHttpHttpUriFetcherTest {
         }.build()
         val request = ImageRequest(context, "http://sample.com/sample.jpg")
         val request2 = request.newRequest { memoryCachePolicy(DISABLED) }
-        val element1 = OkHttpHttpUriFetcher(sketch, httpStack, request)
-        val element11 = OkHttpHttpUriFetcher(sketch, httpStack, request)
-        val element2 = OkHttpHttpUriFetcher(sketch2, httpStack, request)
-        val element3 = OkHttpHttpUriFetcher(sketch, httpStack2, request)
-        val element4 = OkHttpHttpUriFetcher(sketch, httpStack, request2)
+        val element1 = OkHttpHttpUriFetcher(sketch, httpStack, request, "downloadCacheKey")
+        val element11 = OkHttpHttpUriFetcher(sketch, httpStack, request, "downloadCacheKey")
+        val element2 = OkHttpHttpUriFetcher(sketch2, httpStack, request, "downloadCacheKey")
+        val element3 = OkHttpHttpUriFetcher(sketch, httpStack2, request, "downloadCacheKey")
+        val element4 = OkHttpHttpUriFetcher(sketch, httpStack, request2, "downloadCacheKey")
+        val element5 = OkHttpHttpUriFetcher(sketch, httpStack, request, "downloadCacheKey2")
 
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
         assertNotEquals(element1, element3)
         assertNotEquals(element1, element4)
+        assertNotEquals(element1, element5)
         assertNotEquals(element2, element3)
         assertNotEquals(element2, element4)
+        assertNotEquals(element2, element5)
         assertNotEquals(element3, element4)
+        assertNotEquals(element3, element5)
+        assertNotEquals(element4, element5)
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
@@ -100,9 +105,13 @@ class OkHttpHttpUriFetcherTest {
         assertNotEquals(element1.hashCode(), element2.hashCode())
         assertNotEquals(element1.hashCode(), element3.hashCode())
         assertNotEquals(element1.hashCode(), element4.hashCode())
+        assertNotEquals(element1.hashCode(), element5.hashCode())
         assertNotEquals(element2.hashCode(), element3.hashCode())
         assertNotEquals(element2.hashCode(), element4.hashCode())
+        assertNotEquals(element2.hashCode(), element5.hashCode())
         assertNotEquals(element3.hashCode(), element4.hashCode())
+        assertNotEquals(element3.hashCode(), element5.hashCode())
+        assertNotEquals(element4.hashCode(), element5.hashCode())
     }
 
     @Test
@@ -110,9 +119,9 @@ class OkHttpHttpUriFetcherTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "http://sample.com/sample.jpg")
         val httpStack = OkHttpStack.Builder().build()
-        val httpUriFetcher = OkHttpHttpUriFetcher(sketch, httpStack, request)
+        val httpUriFetcher = OkHttpHttpUriFetcher(sketch, httpStack, request, "downloadCacheKey2")
         assertEquals(
-            expected = "OkHttpHttpUriFetcher(sketch=$sketch, httpStack=$httpStack, request=$request)",
+            expected = "OkHttpHttpUriFetcher(sketch=$sketch, httpStack=$httpStack, request=$request, downloadCacheKey='downloadCacheKey2')",
             actual = httpUriFetcher.toString()
         )
     }

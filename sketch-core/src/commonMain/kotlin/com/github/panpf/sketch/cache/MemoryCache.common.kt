@@ -20,7 +20,6 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.internal.LruMemoryCache
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.util.maxMemory
 import kotlin.math.roundToLong
@@ -154,14 +153,6 @@ interface MemoryCache {
  * @see com.github.panpf.sketch.core.jscommon.test.cache.MemoryCacheJsCommonTest.testDefaultMemoryCacheSize
  */
 internal expect fun PlatformContext.defaultMemoryCacheSize(): Long
-
-/**
- * Memory cache key
- *
- * @see com.github.panpf.sketch.core.common.test.cache.MemoryCacheTest.testMemoryCacheKey
- */
-val RequestContext.memoryCacheKey: String
-    get() = cacheKey
 
 /**
  * Get the image information from the cache value

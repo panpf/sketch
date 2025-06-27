@@ -11,8 +11,9 @@ import com.github.panpf.sketch.request.RequestContext
 class TestHttpUriFetcher(
     sketch: Sketch,
     httpStack: TestHttpStack,
-    request: ImageRequest
-) : HttpUriFetcher(sketch, httpStack, request) {
+    request: ImageRequest,
+    downloadCacheKey: String,
+) : HttpUriFetcher(sketch, httpStack, request, downloadCacheKey) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -21,6 +22,7 @@ class TestHttpUriFetcher(
         if (sketch != other.sketch) return false
         if (httpStack != other.httpStack) return false
         if (request != other.request) return false
+        if (downloadCacheKey != other.downloadCacheKey) return false
         return true
     }
 
@@ -28,11 +30,12 @@ class TestHttpUriFetcher(
         var result = sketch.hashCode()
         result = 31 * result + httpStack.hashCode()
         result = 31 * result + request.hashCode()
+        result = 31 * result + downloadCacheKey.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "TestHttpUriFetcher(sketch=$sketch, httpStack=$httpStack, request=$request)"
+        return "TestHttpUriFetcher(sketch=$sketch, httpStack=$httpStack, request=$request, downloadCacheKey='$downloadCacheKey')"
     }
 
     class Factory(
@@ -49,6 +52,7 @@ class TestHttpUriFetcher(
                 sketch = requestContext.sketch,
                 httpStack = TestHttpStack(context, readDelayMillis, connectionDelayMillis),
                 request = request,
+                downloadCacheKey = requestContext.downloadCacheKey,
             )
         }
 

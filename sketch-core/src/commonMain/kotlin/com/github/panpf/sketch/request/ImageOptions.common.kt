@@ -17,6 +17,7 @@
 package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.ComponentRegistry
+import com.github.panpf.sketch.cache.CacheKeyMapper
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.decode.BitmapColorSpace
 import com.github.panpf.sketch.decode.BitmapColorType
@@ -75,6 +76,16 @@ data class ImageOptions(
      */
     val downloadCachePolicy: CachePolicy?,
 
+    /**
+     * The key used to cache the downloaded image in the download cache.
+     */
+    val downloadCacheKey: String?,
+
+    /**
+     * A mapper that maps a download cache key to a different string representation.
+     */
+    val downloadCacheKeyMapper: CacheKeyMapper?,
+
 
     /**
      * Bitmap color type
@@ -118,6 +129,16 @@ data class ImageOptions(
      */
     val resultCachePolicy: CachePolicy?,
 
+    /**
+     * The key used to cache the result image in the result cache.
+     */
+    val resultCacheKey: String?,
+
+    /**
+     * A mapper that maps a result cache key to a different string representation.
+     */
+    val resultCacheKeyMapper: CacheKeyMapper?,
+
 
     /**
      * Placeholder image when loading
@@ -156,12 +177,71 @@ data class ImageOptions(
      */
     val memoryCachePolicy: CachePolicy?,
 
+    /**
+     * The key used to cache the image in the memory cache.
+     */
+    val memoryCacheKey: String?,
+
+    /**
+     * A mapper that maps a memory cache key to a different string representation.
+     */
+    val memoryCacheKeyMapper: CacheKeyMapper?,
+
 
     /**
      * Components that are only valid for the current request
      */
     val componentRegistry: ComponentRegistry?,
 ) {
+
+    // For keep binary compatibility
+    constructor(
+        depthHolder: DepthHolder?,
+        extras: Extras?,
+        downloadCachePolicy: CachePolicy?,
+        colorType: BitmapColorType?,
+        colorSpace: BitmapColorSpace?,
+        sizeResolver: SizeResolver?,
+        sizeMultiplier: Float?,
+        precisionDecider: PrecisionDecider?,
+        scaleDecider: ScaleDecider?,
+        transformations: List<Transformation>?,
+        resultCachePolicy: CachePolicy?,
+        placeholder: StateImage?,
+        fallback: StateImage?,
+        error: StateImage?,
+        transitionFactory: Transition.Factory?,
+        resizeOnDraw: Boolean?,
+        allowNullImage: Boolean?,
+        memoryCachePolicy: CachePolicy?,
+        componentRegistry: ComponentRegistry?,
+    ) : this(
+        depthHolder = depthHolder,
+        extras = extras,
+        downloadCachePolicy = downloadCachePolicy,
+        downloadCacheKey = null,
+        downloadCacheKeyMapper = null,
+        colorType = colorType,
+        colorSpace = colorSpace,
+        sizeResolver = sizeResolver,
+        sizeMultiplier = sizeMultiplier,
+        precisionDecider = precisionDecider,
+        scaleDecider = scaleDecider,
+        transformations = transformations,
+        resultCachePolicy = resultCachePolicy,
+        resultCacheKey = null,
+        resultCacheKeyMapper = null,
+        placeholder = placeholder,
+        fallback = fallback,
+        error = error,
+        transitionFactory = transitionFactory,
+        resizeOnDraw = resizeOnDraw,
+        allowNullImage = allowNullImage,
+        memoryCachePolicy = memoryCachePolicy,
+        memoryCacheKey = null,
+        memoryCacheKeyMapper = null,
+        componentRegistry = componentRegistry
+    )
 
     /**
      * Create a new [ImageOptions.Builder] based on the current [ImageOptions].
@@ -204,6 +284,8 @@ data class ImageOptions(
         depthHolder == null
                 && extras?.isEmpty() != false
                 && downloadCachePolicy == null
+                && downloadCacheKey == null
+                && downloadCacheKeyMapper == null
                 && colorType == null
                 && colorSpace == null
                 && sizeResolver == null
@@ -212,6 +294,8 @@ data class ImageOptions(
                 && scaleDecider == null
                 && transformations == null
                 && resultCachePolicy == null
+                && resultCacheKey == null
+                && resultCacheKeyMapper == null
                 && placeholder == null
                 && fallback == null
                 && error == null
@@ -219,14 +303,66 @@ data class ImageOptions(
                 && resizeOnDraw == null
                 && allowNullImage == null
                 && memoryCachePolicy == null
+                && memoryCacheKey == null
+                && memoryCacheKeyMapper == null
                 && componentRegistry == null
+
+    // For keep binary compatibility
+    fun copy(
+        depthHolder: DepthHolder? = this.depthHolder,
+        extras: Extras? = this.extras,
+        downloadCachePolicy: CachePolicy? = this.downloadCachePolicy,
+        colorType: BitmapColorType? = this.colorType,
+        colorSpace: BitmapColorSpace? = this.colorSpace,
+        sizeResolver: SizeResolver? = this.sizeResolver,
+        sizeMultiplier: Float? = this.sizeMultiplier,
+        precisionDecider: PrecisionDecider? = this.precisionDecider,
+        scaleDecider: ScaleDecider? = this.scaleDecider,
+        transformations: List<Transformation>? = this.transformations,
+        resultCachePolicy: CachePolicy? = this.resultCachePolicy,
+        placeholder: StateImage? = this.placeholder,
+        fallback: StateImage? = this.fallback,
+        error: StateImage? = this.error,
+        transitionFactory: Transition.Factory? = this.transitionFactory,
+        resizeOnDraw: Boolean? = this.resizeOnDraw,
+        allowNullImage: Boolean? = this.allowNullImage,
+        memoryCachePolicy: CachePolicy? = this.memoryCachePolicy,
+        componentRegistry: ComponentRegistry? = this.componentRegistry
+    ): ImageOptions = ImageOptions(
+        depthHolder = depthHolder,
+        extras = extras,
+        downloadCachePolicy = downloadCachePolicy,
+        downloadCacheKey = downloadCacheKey,
+        downloadCacheKeyMapper = downloadCacheKeyMapper,
+        colorType = colorType,
+        colorSpace = colorSpace,
+        sizeResolver = sizeResolver,
+        sizeMultiplier = sizeMultiplier,
+        precisionDecider = precisionDecider,
+        scaleDecider = scaleDecider,
+        transformations = transformations,
+        resultCachePolicy = resultCachePolicy,
+        resultCacheKey = resultCacheKey,
+        resultCacheKeyMapper = resultCacheKeyMapper,
+        placeholder = placeholder,
+        fallback = fallback,
+        error = error,
+        transitionFactory = transitionFactory,
+        resizeOnDraw = resizeOnDraw,
+        allowNullImage = allowNullImage,
+        memoryCachePolicy = memoryCachePolicy,
+        memoryCacheKey = memoryCacheKey,
+        memoryCacheKeyMapper = memoryCacheKeyMapper,
+        componentRegistry = componentRegistry
+    )
 
     class Builder {
 
         private var depthHolder: DepthHolder? = null
         private var extrasBuilder: Extras.Builder? = null
-
         private var downloadCachePolicy: CachePolicy? = null
+        private var downloadCacheKey: String? = null
+        private var downloadCacheKeyMapper: CacheKeyMapper? = null
 
         private var colorType: BitmapColorType? = null
         private var colorSpace: BitmapColorSpace? = null
@@ -236,6 +372,8 @@ data class ImageOptions(
         private var scaleDecider: ScaleDecider? = null
         private var transformations: MutableList<Transformation>? = null
         private var resultCachePolicy: CachePolicy? = null
+        private var resultCacheKey: String? = null
+        private var resultCacheKeyMapper: CacheKeyMapper? = null
 
         private var placeholder: StateImage? = null
         private var fallback: StateImage? = null
@@ -244,6 +382,8 @@ data class ImageOptions(
         private var resizeOnDraw: Boolean? = null
         private var allowNullImage: Boolean? = null
         private var memoryCachePolicy: CachePolicy? = null
+        private var memoryCacheKey: String? = null
+        private var memoryCacheKeyMapper: CacheKeyMapper? = null
 
         private var componentRegistry: ComponentRegistry? = null
 
@@ -252,8 +392,9 @@ data class ImageOptions(
         internal constructor(options: ImageOptions) {
             this.depthHolder = options.depthHolder
             this.extrasBuilder = options.extras?.newBuilder()
-
             this.downloadCachePolicy = options.downloadCachePolicy
+            this.downloadCacheKey = options.downloadCacheKey
+            this.downloadCacheKeyMapper = options.downloadCacheKeyMapper
 
             this.colorType = options.colorType
             this.colorSpace = options.colorSpace
@@ -263,6 +404,8 @@ data class ImageOptions(
             this.scaleDecider = options.scaleDecider
             this.transformations = options.transformations?.toMutableList()
             this.resultCachePolicy = options.resultCachePolicy
+            this.resultCacheKey = options.resultCacheKey
+            this.resultCacheKeyMapper = options.resultCacheKeyMapper
 
             this.placeholder = options.placeholder
             this.fallback = options.fallback
@@ -271,6 +414,8 @@ data class ImageOptions(
             this.resizeOnDraw = options.resizeOnDraw
             this.allowNullImage = options.allowNullImage
             this.memoryCachePolicy = options.memoryCachePolicy
+            this.memoryCacheKey = options.memoryCacheKey
+            this.memoryCacheKeyMapper = options.memoryCacheKeyMapper
 
             this.componentRegistry = options.componentRegistry
         }
@@ -317,6 +462,20 @@ data class ImageOptions(
          */
         fun downloadCachePolicy(cachePolicy: CachePolicy?): Builder = apply {
             this.downloadCachePolicy = cachePolicy
+        }
+
+        /**
+         * Set the key used to cache the downloaded image in the download cache.
+         */
+        fun downloadCacheKey(key: String?): Builder = apply {
+            this.downloadCacheKey = key?.takeIf { it.isNotEmpty() && it.isNotBlank() }
+        }
+
+        /**
+         * Set a mapper that maps a download cache key to a different string representation.
+         */
+        fun downloadCacheKeyMapper(mapper: CacheKeyMapper?): Builder = apply {
+            this.downloadCacheKeyMapper = mapper
         }
 
         /**
@@ -506,6 +665,20 @@ data class ImageOptions(
             this.resultCachePolicy = cachePolicy
         }
 
+        /**
+         * Set the key used to cache the result image in the result cache.
+         */
+        fun resultCacheKey(key: String?): Builder = apply {
+            this.resultCacheKey = key?.takeIf { it.isNotEmpty() && it.isNotBlank() }
+        }
+
+        /**
+         * Set a mapper that maps a result cache key to a different string representation.
+         */
+        fun resultCacheKeyMapper(mapper: CacheKeyMapper?): Builder = apply {
+            this.resultCacheKeyMapper = mapper
+        }
+
 
         /**
          * Set placeholder image when loading
@@ -585,6 +758,20 @@ data class ImageOptions(
         }
 
         /**
+         * Set the key used to cache the image in the memory cache.
+         */
+        fun memoryCacheKey(key: String?): Builder = apply {
+            this.memoryCacheKey = key?.takeIf { it.isNotEmpty() && it.isNotBlank() }
+        }
+
+        /**
+         * Set a mapper that maps a memory cache key to a different string representation.
+         */
+        fun memoryCacheKeyMapper(mapper: CacheKeyMapper?): Builder = apply {
+            this.memoryCacheKeyMapper = mapper
+        }
+
+        /**
          * Set the [ComponentRegistry]
          */
         fun components(components: ComponentRegistry?): Builder = apply {
@@ -623,9 +810,14 @@ data class ImageOptions(
             options.extras?.let {
                 extrasBuilder = extrasBuilder?.build().merged(it)?.newBuilder()
             }
-
             if (this.downloadCachePolicy == null) {
                 this.downloadCachePolicy = options.downloadCachePolicy
+            }
+            if (this.downloadCacheKey == null) {
+                this.downloadCacheKey = options.downloadCacheKey
+            }
+            if (this.downloadCacheKeyMapper == null) {
+                this.downloadCacheKeyMapper = options.downloadCacheKeyMapper
             }
 
             if (this.colorType == null) {
@@ -652,6 +844,12 @@ data class ImageOptions(
             if (this.resultCachePolicy == null) {
                 this.resultCachePolicy = options.resultCachePolicy
             }
+            if (this.resultCacheKey == null) {
+                this.resultCacheKey = options.resultCacheKey
+            }
+            if (this.resultCacheKeyMapper == null) {
+                this.resultCacheKeyMapper = options.resultCacheKeyMapper
+            }
 
             if (this.placeholder == null) {
                 this.placeholder = options.placeholder
@@ -674,6 +872,12 @@ data class ImageOptions(
             if (this.memoryCachePolicy == null) {
                 this.memoryCachePolicy = options.memoryCachePolicy
             }
+            if (this.memoryCacheKey == null) {
+                this.memoryCacheKey = options.memoryCacheKey
+            }
+            if (this.memoryCacheKeyMapper == null) {
+                this.memoryCacheKeyMapper = options.memoryCacheKeyMapper
+            }
 
             componentRegistry = componentRegistry.merged(options.componentRegistry)
         }
@@ -686,7 +890,8 @@ data class ImageOptions(
                 depthHolder = depthHolder,
                 extras = extras,
                 downloadCachePolicy = downloadCachePolicy,
-                resultCachePolicy = resultCachePolicy,
+                downloadCacheKey = downloadCacheKey,
+                downloadCacheKeyMapper = downloadCacheKeyMapper,
                 colorType = colorType,
                 colorSpace = colorSpace,
                 sizeResolver = sizeResolver,
@@ -694,6 +899,9 @@ data class ImageOptions(
                 precisionDecider = precisionDecider,
                 scaleDecider = scaleDecider,
                 transformations = transformations,
+                resultCachePolicy = resultCachePolicy,
+                resultCacheKey = resultCacheKey,
+                resultCacheKeyMapper = resultCacheKeyMapper,
                 placeholder = placeholder,
                 fallback = fallback,
                 error = error,
@@ -701,6 +909,8 @@ data class ImageOptions(
                 resizeOnDraw = resizeOnDraw,
                 allowNullImage = allowNullImage,
                 memoryCachePolicy = memoryCachePolicy,
+                memoryCacheKey = memoryCacheKey,
+                memoryCacheKeyMapper = memoryCacheKeyMapper,
                 componentRegistry = componentRegistry,
             )
         }
