@@ -12,7 +12,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
 # new
 
 * new: Added `sketch-compose-koin` and `sketch-view-koin` modules to provide Koin dependency
-  injection support
+  injection support. [#256](https://github.com/panpf/sketch/issues/256)
 * new: Added `Sketch(PlatformContext, (Sketch.Builder.() -> Unit)? = null)` function and
   `Sketch.Builder.logger(Logger)` function
 * new: ImageRequest and ImageOptions add downloadCacheKey, downloadCacheKeyMapper, resultCacheKey,
