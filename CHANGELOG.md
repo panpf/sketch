@@ -9,7 +9,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
-# new
+# 4.2.0-beta02
 
 * new: Added `sketch-compose-koin` and `sketch-view-koin` modules to provide Koin dependency
   injection support. [#256](https://github.com/panpf/sketch/issues/256)

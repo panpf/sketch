@@ -7,7 +7,7 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
-# new
+# 4.2.0-beta02
 
 * new: 新增 `sketch-compose-koin` 和 `sketch-view-koin` 模块，提供 Koin
   依赖注入支持。 [#256](https://github.com/panpf/sketch/issues/256)
