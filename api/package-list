@@ -80,6 +80,8 @@ com.github.panpf.sketch.target
 com.github.panpf.sketch.target.internal
 com.github.panpf.sketch.transition
 com.github.panpf.sketch.util
+module:sketch-compose-koin
+com.github.panpf.sketch
 module:sketch-compose-resources
 com.github.panpf.sketch.fetch
 com.github.panpf.sketch.fetch.internal
@@ -156,6 +158,8 @@ module:sketch-http-okhttp
 com.github.panpf.sketch.fetch
 com.github.panpf.sketch.fetch.internal
 com.github.panpf.sketch.http
+module:sketch-koin
+com.github.panpf.sketch.request
 module:sketch-singleton
 com.github.panpf.sketch
 com.github.panpf.sketch.request
@@ -183,3 +187,5 @@ com.github.panpf.sketch.resize.internal
 com.github.panpf.sketch.target
 com.github.panpf.sketch.transition
 com.github.panpf.sketch.util
+module:sketch-view-koin
+com.github.panpf.sketch
