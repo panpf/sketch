@@ -61,6 +61,7 @@
 -dontwarn io.netty.**
 -dontwarn com.typesafe.**
 -dontwarn org.slf4j.**
+-dontwarn io.ktor.**
 
 # Obfuscation breaks coroutines/ktor for some reason
 -dontobfuscate
