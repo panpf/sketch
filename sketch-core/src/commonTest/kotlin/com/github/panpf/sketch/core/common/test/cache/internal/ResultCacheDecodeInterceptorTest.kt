@@ -20,26 +20,38 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
+import com.github.panpf.sketch.cache.createImageSerializer
 import com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.MyCacheKeyMapper
 import com.github.panpf.sketch.test.utils.Platform
+import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.test.runTest
+import okio.buffer
+import okio.use
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class ResultCacheDecodeInterceptorTest {
@@ -53,16 +65,15 @@ class ResultCacheDecodeInterceptorTest {
         val (context, sketch) = getTestContextAndSketch()
         val resultCache = sketch.resultCache
 
-        val interceptors = listOf(
-            ResultCacheDecodeInterceptor(),
-            ExtrasTestDecodeInterceptor(),
-            EngineDecodeInterceptor()
-        )
         val executeRequest: suspend (ImageRequest) -> DecodeResult = { request ->
             DecodeInterceptorChain(
                 requestContext = request.toRequestContext(sketch),
                 fetchResult = null,
-                interceptors = interceptors,
+                interceptors = listOf(
+                    ResultCacheDecodeInterceptor(),
+                    ExtrasTestDecodeInterceptor(),
+                    EngineDecodeInterceptor()
+                ),
                 index = 0
             ).proceed().getOrThrow()
         }
@@ -220,6 +231,72 @@ class ResultCacheDecodeInterceptorTest {
             )
         }
         assertFalse(resultCache.exist(request1.toRequestContext(sketch).resultCacheKey))
+    }
+
+    @Test
+    fun testResultCacheKey() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
+        val (context, sketch) = getTestContextAndSketch()
+        val resultCache = sketch.resultCache
+
+        val executeRequest: suspend (ImageRequest) -> DecodeResult? = { request ->
+            DecodeInterceptorChain(
+                requestContext = request.toRequestContext(sketch),
+                fetchResult = null,
+                interceptors = listOf(
+                    ResultCacheDecodeInterceptor(),
+                    ExtrasTestDecodeInterceptor(),
+                    EngineDecodeInterceptor()
+                ),
+                index = 0
+            ).proceed().getOrNull()
+        }
+
+        resultCache.clear()
+        assertEquals(expected = 0, actual = resultCache.size)
+
+        val editor = resultCache.openEditor(key = "resultCacheKey1")!!
+        resultCache.fileSystem.sink(editor.data).buffer().use {
+            val bitmapImage = createBitmapImage(100, 100)
+            createImageSerializer().compress(bitmapImage, it)
+        }
+        resultCache.fileSystem.sink(editor.metadata).buffer().use {
+            val metadata = ResultCacheDecodeInterceptor.Metadata(
+                imageInfo = ImageInfo(width = 100, height = 100, mimeType = "image/png"),
+                resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
+                transformeds = null,
+                extras = null
+            )
+            it.writeUtf8(metadata.toMetadataString())
+        }
+        editor.commit()
+        assertEquals(expected = 273, actual = resultCache.size)
+
+        executeRequest(ImageRequest(context, "http://sample.com/sample.jpeg") {
+            resultCachePolicy(ENABLED)
+            depth(Depth.LOCAL)
+        }).apply {
+            assertNull(this)
+        }
+
+        executeRequest(ImageRequest(context, "http://sample.com/sample.jpeg") {
+            resultCachePolicy(ENABLED)
+            depth(Depth.LOCAL)
+            resultCacheKey("resultCacheKey1")
+        }).apply {
+            assertNotNull(this)
+        }
+
+        executeRequest(ImageRequest(context, "http://sample.com/sample.jpeg") {
+            resultCachePolicy(ENABLED)
+            depth(Depth.LOCAL)
+            resultCacheKeyMapper(MyCacheKeyMapper("resultCacheKey1"))
+        }).apply {
+            assertNotNull(this)
+        }
     }
 
     @Test

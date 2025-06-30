@@ -37,6 +37,7 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.MyCacheKeyMapper
 import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestCountTarget
 import com.github.panpf.sketch.test.utils.TestMemoryCacheRequestIntercept
@@ -52,7 +53,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
+import kotlin.test.assertNull
 
 class MemoryCacheRequestInterceptorTest {
 
@@ -123,7 +126,7 @@ class MemoryCacheRequestInterceptorTest {
         assertEquals(expected = 0, actual = memoryCache.size)
 
         memoryCache.put(
-            key = request.toRequestContext(sketch).cacheKey,
+            key = request.toRequestContext(sketch).memoryCacheKey,
             value = createCacheValue(
                 image = cacheImage,
                 extras = newCacheValueExtras(
@@ -154,7 +157,7 @@ class MemoryCacheRequestInterceptorTest {
         assertEquals(expected = 0, actual = memoryCache.size)
 
         memoryCache.put(
-            key = request.toRequestContext(sketch).cacheKey,
+            key = request.toRequestContext(sketch).memoryCacheKey,
             value = createCacheValue(
                 image = cacheImage,
                 extras = newCacheValueExtras(
@@ -200,6 +203,66 @@ class MemoryCacheRequestInterceptorTest {
                 memoryCachePolicy(ENABLED)
                 depth(MEMORY)
             })
+        }
+    }
+
+    @Test
+    fun testMemoryCacheKey() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Will get stuck forever in iOS test environment.
+            return@runTest
+        }
+        val (context, sketch) = getTestContextAndSketch()
+        val memoryCache = sketch.memoryCache
+
+        val requestInterceptorList =
+            listOf(MemoryCacheRequestInterceptor(), FakeRequestInterceptor())
+        val executeRequest: suspend (ImageRequest) -> ImageData? = { request ->
+            withContext(Dispatchers.Main) {
+                RequestInterceptorChain(
+                    requestContext = request.toRequestContext(sketch),
+                    interceptors = requestInterceptorList,
+                    index = 0,
+                ).proceed(request)
+            }.getOrNull()
+        }
+
+        memoryCache.clear()
+        assertEquals(expected = 0, actual = memoryCache.size)
+
+        val extras = newCacheValueExtras(
+            imageInfo = ImageInfo(width = 100, height = 100, mimeType = "image/png"),
+            resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
+            transformeds = null,
+            extras = null
+        )
+        memoryCache.put(
+            key = "memoryCacheKey1",
+            value = createCacheValue(createBitmapImage(100, 100), extras)
+        )
+        assertEquals(expected = 40000, actual = memoryCache.size)
+
+        executeRequest(ImageRequest(context, ResourceImages.jpeg.uri) {
+            memoryCachePolicy(ENABLED)
+            depth(MEMORY)
+        }).apply {
+            assertNull(this)
+        }
+
+        executeRequest(ImageRequest(context, ResourceImages.jpeg.uri) {
+            memoryCachePolicy(ENABLED)
+            depth(MEMORY)
+            memoryCacheKey("memoryCacheKey1")
+        }).apply {
+            assertNotNull(this)
+        }
+
+        executeRequest(ImageRequest(context, ResourceImages.jpeg.uri) {
+            memoryCachePolicy(ENABLED)
+            depth(MEMORY)
+            memoryCacheKeyMapper(MyCacheKeyMapper("memoryCacheKey1"))
+        }).apply {
+            assertNotNull(this)
         }
     }
 

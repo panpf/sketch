@@ -2,15 +2,17 @@
 
 翻译：[English](memory_cache.md)
 
-为了避免重复加载图片并提高图片的加载速度 Sketch 引入了内存缓存，[MemoryCacheRequestInterceptor]
-会将已加载的 Image 缓存在内存中，下次直接从内存中读取跳过加载过程。
+为了避免重复加载图片并提高图片的加载速度 Sketch 引入了内存缓存，内存缓存功能会将已加载的 Image
+缓存在内存中，下次直接从内存中读取跳过加载过程。
 
-内存缓存由 [MemoryCache] 组件提供服务，默认的实现是 [LruMemoryCache]：
+内存缓存功能由 [MemoryCacheRequestInterceptor] 负责核心逻辑，[MemoryCache] 负责存储管理
+
+[MemoryCache] 的默认实现是 [LruMemoryCache]：
 
 * 根据最少使用原则释放旧的 Bitmap
 * 最大容量在 Android 上是最大可用内存的 25% 到 33%，在非 Android 上是最大可用内存的 15%
 
-## 自定义
+### 自定义
 
 你可以在初始化 [Sketch] 时通过 [Sketch].Builder 的 memoryCache() 方法自定义内存缓存的实现或配置，如下：
 
@@ -33,9 +35,10 @@ Sketch.Builder(context).apply {
 }.build()
 ```
 
-## 配置请求
+## 缓存策略
 
-内存缓存默认配置是 [CachePolicy].ENABLED，你可以通过 [ImageRequest] 或 [ImageOptions] 的 memoryCachePolicy 属性控制内存缓存:
+缓存策略用于控制如何使用内存缓存，默认配置是 [CachePolicy].ENABLED，你可以通过 [ImageRequest]
+或 [ImageOptions] 的 memoryCachePolicy 属性配置它:
 
 ```kotlin
 ImageRequest(context, "https://example.com/image.jpg") {
@@ -46,6 +49,41 @@ ImageRequest(context, "https://example.com/image.jpg") {
     // 只写
     memoryCachePolicy(CachePolicy.WRITE_ONLY)
 }
+```
+
+## 缓存 key
+
+默认情况下 Sketch 会自动根据请求的配置生成内存缓存 key，但你还可以通过以下属性自定义内存缓存 key：
+
+```kotlin
+ImageRequest(context, "https://example.com/image.jpg") {
+    // 使用自定义的内存缓存 key
+    memoryCacheKey("https://example.com/image.jpg?width=100&height=100")
+
+    // 修改自动生成的内存缓存 key
+    memoryCacheKeyMapper(CacheKeyMapper { "${it}&width=100&height=100" })
+}
+
+ImageOptions {
+    // 使用自定义的内存缓存 key
+    memoryCacheKey("https://example.com/image.jpg?width=100&height=100")
+
+    // 修改自动生成的内存缓存 key
+    memoryCacheKeyMapper(CacheKeyMapper { "${it}&width=100&height=100" })
+}
+```
+
+你还可以通过以下方式和获取最终的内存缓存 key：
+
+```kotlin
+// 在自定义的 RequestInterceptor、DecodeInterceptor、Transformation、Fetcher、Decoder 组件中
+// 可以通过 RequestContext 获取内存缓存 key
+val requestContext: RequestContext = ...
+requestContext.memoryCacheKey
+
+// 从 ImageResult 中获取内存缓存 key
+val imageSuccess = sketch.execute(request) as ImageResult.Success
+imageSuccess.memoryCacheKey
 ```
 
 ## 读写缓存

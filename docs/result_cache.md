@@ -2,12 +2,14 @@
 
 Translations: [简体中文](result_cache.zh.md)
 
-In order to avoid repeated conversion of images and improve the loading speed of images, [Sketch]
-introduces result caching. [ResultCacheDecodeInterceptor] will persistently store the converted
-images on the disk, and read them directly from the disk next time to skip the conversion process.
+In order to avoid repeated conversion of pictures and improve the loading speed of
+pictures [Sketch], the result cache function will store the converted pictures on disk for a long
+time, and skip the conversion process next time you read them directly from disk.
 
-The result cache is served by the [DiskCache] component, and the default implementation
-is [LruDiskCache]:
+The result caching function is managed by [ResultCacheDecodeInterceptor], and [DiskCache] is managed
+by the storage management.
+
+The default implementation of [DiskCache] is [LruDiskCache]:
 
 * Default maximum capacity is 200 MB
 * Clear old cache based on least used principle
@@ -91,11 +93,11 @@ Sketch.Builder(context).apply {
 }.build()
 ```
 
-## 配置请求
+## Cache Policy
 
-The default configuration of the result cache is [CachePolicy].ENABLED. You can control result
-caching through the resultCachePolicy
-attribute of [ImageRequest] or [ImageOptions], as follows:
+The result caching policy is used to control how to use the result caching. The default
+configuration is [CachePolicy].ENABLED, which you can configure via the resultCachePolicy attribute
+of [ImageRequest] or [ImageOptions]:
 
 ```kotlin
 ImageRequest(context, "https://example.com/image.jpg") {
@@ -106,6 +108,42 @@ ImageRequest(context, "https://example.com/image.jpg") {
     // Write Only
     resultCachePolicy(CachePolicy.WRITE_ONLY)
 }
+```
+
+## Cache key
+
+By default, Sketch will automatically generate a result cache key based on the requested
+configuration, but you can also customize the result cache key with the following properties:
+
+```kotlin
+ImageRequest(context, "https://example.com/image.jpg") {
+    // Use custom result cache key
+    resultCacheKey("https://example.com/image.jpg?width=100&height=100")
+
+    // Modify the automatically generated result cache key
+    resultCacheKeyMapper(CacheKeyMapper { "${it}&width=100&height=100" })
+}
+
+ImageOptions {
+    // Use custom result cache key
+    resultCacheKey("https://example.com/image.jpg?width=100&height=100")
+
+    // Modify the automatically generated result cache key
+    resultCacheKeyMapper(CacheKeyMapper { "${it}&width=100&height=100" })
+}
+```
+
+You can also get the final result cache key through the following methods:
+
+```kotlin
+// The result cache key can be obtained through RequestContext in the customized RequestInterceptor, 
+// DecodeInterceptor, Transformation, Fetcher, and Decoder components.
+val requestContext: RequestContext = ...
+requestContext.resultCacheKey
+
+// Get the result cache key from ImageResult
+val imageSuccess = sketch.execute(request) as ImageResult.Success
+imageSuccess.resultCacheKey
 ```
 
 ## Read and write cache

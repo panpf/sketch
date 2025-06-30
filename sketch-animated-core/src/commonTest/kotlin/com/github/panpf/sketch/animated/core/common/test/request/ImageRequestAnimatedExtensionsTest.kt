@@ -68,10 +68,13 @@ class ImageRequestAnimatedExtensionsTest {
         assertNotEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, ResourceImages.animGif.uri).toRequestContext(sketch).cacheKey
+            ImageRequest(
+                context,
+                ResourceImages.animGif.uri
+            ).toRequestContext(sketch).memoryCacheKey
         val cacheKey2 = ImageRequest(context, ResourceImages.animGif.uri) {
             repeatCount(5)
-        }.toRequestContext(sketch).cacheKey
+        }.toRequestContext(sketch).memoryCacheKey
         assertNotEquals(cacheKey1, cacheKey2)
     }
 
@@ -105,10 +108,13 @@ class ImageRequestAnimatedExtensionsTest {
         assertEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, ResourceImages.animGif.uri).toRequestContext(sketch).cacheKey
+            ImageRequest(
+                context,
+                ResourceImages.animGif.uri
+            ).toRequestContext(sketch).memoryCacheKey
         val cacheKey2 = ImageRequest(context, ResourceImages.animGif.uri) {
             onAnimationStart(myAnimationStartCallback)
-        }.toRequestContext(sketch).cacheKey
+        }.toRequestContext(sketch).memoryCacheKey
         assertEquals(cacheKey1, cacheKey2)
     }
 
@@ -142,10 +148,13 @@ class ImageRequestAnimatedExtensionsTest {
         assertEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, ResourceImages.animGif.uri).toRequestContext(sketch).cacheKey
+            ImageRequest(
+                context,
+                ResourceImages.animGif.uri
+            ).toRequestContext(sketch).memoryCacheKey
         val cacheKey2 = ImageRequest(context, ResourceImages.animGif.uri) {
             onAnimationEnd(myAnimationEndCallback)
-        }.toRequestContext(sketch).cacheKey
+        }.toRequestContext(sketch).memoryCacheKey
         assertEquals(cacheKey1, cacheKey2)
     }
 
@@ -179,10 +188,13 @@ class ImageRequestAnimatedExtensionsTest {
         assertNotEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, ResourceImages.animGif.uri).toRequestContext(sketch).cacheKey
+            ImageRequest(
+                context,
+                ResourceImages.animGif.uri
+            ).toRequestContext(sketch).memoryCacheKey
         val cacheKey2 = ImageRequest(context, ResourceImages.animGif.uri) {
             animatedTransformation(myAnimatedTransformation)
-        }.toRequestContext(sketch).cacheKey
+        }.toRequestContext(sketch).memoryCacheKey
         assertEquals(cacheKey1, cacheKey2)
     }
 

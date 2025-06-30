@@ -15,8 +15,10 @@ Translations: [简体中文](CHANGELOG.zh.md)
   injection support. [#256](https://github.com/panpf/sketch/issues/256)
 * new: Added `Sketch(PlatformContext, (Sketch.Builder.() -> Unit)? = null)` function and
   `Sketch.Builder.logger(Logger)` function
-* new: ImageRequest and ImageOptions add downloadCacheKey, downloadCacheKeyMapper, resultCacheKey,
-  resultCacheKeyMapper, memoryCacheKey, memoryCacheKeyMapper properties
+* new: ImageRequest, ImageOptions and ImageResult.Success add downloadCacheKey,
+  downloadCacheKeyMapper, resultCacheKey,
+  resultCacheKeyMapper, memoryCacheKey, memoryCacheKeyMapper
+  properties. [#255](https://github.com/panpf/sketch/issues/255)
 
 # 4.2.0-beta01
 

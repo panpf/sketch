@@ -66,6 +66,9 @@ class ViewCrossfadeTransitionTest {
         val result = ImageResult.Success(
             request = request,
             cacheKey = requestContext.cacheKey,
+            memoryCacheKey = requestContext.memoryCacheKey,
+            resultCacheKey = requestContext.resultCacheKey,
+            downloadCacheKey = requestContext.downloadCacheKey,
             image = resultBitmap.asImage(),
             imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = LOCAL,
@@ -160,9 +163,13 @@ class ViewCrossfadeTransitionTest {
         assertEquals(Color.GREEN, (imageView.drawable as ColorDrawable).color)
         assertEquals(Color.GREEN, (imageViewTarget.drawable as ColorDrawable).color)
         val resultBitmap = Bitmap.createBitmap(100, 200, RGB_565)
+        val requestContext = request.toRequestContext(sketch)
         val success = ImageResult.Success(
             request = request,
-            cacheKey = request.toRequestContext(sketch).cacheKey,
+            cacheKey = requestContext.cacheKey,
+            memoryCacheKey = requestContext.memoryCacheKey,
+            resultCacheKey = requestContext.resultCacheKey,
+            downloadCacheKey = requestContext.downloadCacheKey,
             image = resultBitmap.asImage(),
             imageInfo = ImageInfo(100, 200, "image/jpeg"),
             resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
@@ -214,7 +221,10 @@ class ViewCrossfadeTransitionTest {
             target = imageViewTarget,
             result = ImageResult.Success(
                 request = request,
-                cacheKey = request.toRequestContext(sketch).cacheKey,
+                cacheKey = requestContext.cacheKey,
+                memoryCacheKey = requestContext.memoryCacheKey,
+                resultCacheKey = requestContext.resultCacheKey,
+                downloadCacheKey = requestContext.downloadCacheKey,
                 image = imageViewTarget.drawable!!.asImage(),
                 imageInfo = ImageInfo(100, 200, "image/jpeg"),
                 dataFrom = LOCAL,
@@ -260,9 +270,13 @@ class ViewCrossfadeTransitionTest {
 
         val resultBitmap = Bitmap.createBitmap(100, 200, RGB_565)
 
+        val requestContext = request.toRequestContext(sketch)
         val successResult = ImageResult.Success(
             request = request,
-            cacheKey = request.toRequestContext(sketch).cacheKey,
+            cacheKey = requestContext.cacheKey,
+            memoryCacheKey = requestContext.memoryCacheKey,
+            resultCacheKey = requestContext.resultCacheKey,
+            downloadCacheKey = requestContext.downloadCacheKey,
             image = resultBitmap.asImage(),
             imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = LOCAL,
@@ -281,7 +295,10 @@ class ViewCrossfadeTransitionTest {
 
         val fromMemoryCacheSuccessResult = ImageResult.Success(
             request = request,
-            cacheKey = request.toRequestContext(sketch).cacheKey,
+            cacheKey = requestContext.cacheKey,
+            memoryCacheKey = requestContext.memoryCacheKey,
+            resultCacheKey = requestContext.resultCacheKey,
+            downloadCacheKey = requestContext.downloadCacheKey,
             image = resultBitmap.asImage(),
             imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = MEMORY_CACHE,

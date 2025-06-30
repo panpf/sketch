@@ -38,7 +38,7 @@ import okio.use
 /**
  * Result cache decode interceptor, used to read and write the decode result to the disk cache
  *
- * @see com.github.panpf.sketch.core.common.test.cache.internal.MemoryCacheRequestInterceptorTest
+ * @see com.github.panpf.sketch.core.common.test.cache.internal.ResultCacheDecodeInterceptorTest
  */
 class ResultCacheDecodeInterceptor : DecodeInterceptor {
 
@@ -54,7 +54,8 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         val resultCachePolicy = requestContext.request.resultCachePolicy
 
         return if (resultCachePolicy.isReadOrWrite) {
-            resultCache.withLock(requestContext.cacheKey) {
+            val resultCacheKey = requestContext.resultCacheKey
+            resultCache.withLock(resultCacheKey) {
                 val decodeResultFromCache = readCache(requestContext)
                 if (decodeResultFromCache != null) {
                     Result.success(decodeResultFromCache)
@@ -162,7 +163,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
 
     override fun toString(): String = "ResultCacheDecodeInterceptor(sortWeight=$sortWeight)"
 
-    private class Metadata(
+    class Metadata(
         val imageInfo: ImageInfo,
         val resize: Resize,
         val transformeds: List<String>?,

@@ -86,10 +86,10 @@ class PauseLoadWhenScrollingExtensionsTest {
         assertNotEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).cacheKey
+            ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).memoryCacheKey
         val cacheKey2 = ImageRequest(context, ResourceImages.svg.uri) {
             pauseLoadWhenScrolling(true)
-        }.toRequestContext(sketch).cacheKey
+        }.toRequestContext(sketch).memoryCacheKey
         assertEquals(cacheKey1, cacheKey2)
     }
 
@@ -145,10 +145,10 @@ class PauseLoadWhenScrollingExtensionsTest {
         assertNotEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).cacheKey
+            ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).memoryCacheKey
         val cacheKey2 = ImageRequest(context, ResourceImages.svg.uri) {
             ignorePauseLoadWhenScrolling(true)
-        }.toRequestContext(sketch).cacheKey
+        }.toRequestContext(sketch).memoryCacheKey
         assertEquals(cacheKey1, cacheKey2)
     }
 }

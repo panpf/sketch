@@ -46,6 +46,7 @@ import com.github.panpf.sketch.resize.Scale.END_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.resize.Scale.START_CROP
 import com.github.panpf.sketch.test.utils.FakeCacheKeyMapper
+import com.github.panpf.sketch.test.utils.FakeCacheKeyMapper2
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeStateImage
 import com.github.panpf.sketch.test.utils.FakeTransition
@@ -77,8 +78,6 @@ import kotlin.test.assertTrue
 
 class ImageOptionsTest {
 
-    // TODO test downloadCacheKey, downloadCacheKeyMapper, resultCacheKey, resultCacheKeyMapper, memoryCacheKey, memoryCacheKeyMapper
-
     @Test
     fun testImageOptions() {
         ImageOptions().apply {
@@ -101,6 +100,8 @@ class ImageOptionsTest {
             assertNull(this.depthHolder)
             assertNull(this.extras)
             assertNull(this.downloadCachePolicy)
+            assertNull(this.downloadCacheKey)
+            assertNull(this.downloadCacheKeyMapper)
             assertNull(this.colorType)
             assertNull(this.colorSpace)
             assertNull(this.sizeResolver)
@@ -108,12 +109,16 @@ class ImageOptionsTest {
             assertNull(this.scaleDecider)
             assertNull(this.transformations)
             assertNull(this.resultCachePolicy)
+            assertNull(this.resultCacheKey)
+            assertNull(this.resultCacheKeyMapper)
             assertNull(this.placeholder)
             assertNull(this.fallback)
             assertNull(this.error)
             assertNull(this.transitionFactory)
             assertNull(this.resizeOnDraw)
             assertNull(this.memoryCachePolicy)
+            assertNull(this.memoryCacheKey)
+            assertNull(this.memoryCacheKeyMapper)
             assertNull(this.componentRegistry)
         }
 
@@ -139,6 +144,22 @@ class ImageOptionsTest {
             assertFalse(this.isEmpty())
             assertTrue(this.isNotEmpty())
             assertNotNull(this.downloadCachePolicy)
+        }
+
+        ImageOptions {
+            downloadCacheKey("downloadCacheKey1")
+        }.apply {
+            assertFalse(this.isEmpty())
+            assertTrue(this.isNotEmpty())
+            assertNotNull(this.downloadCacheKey)
+        }
+
+        ImageOptions {
+            downloadCacheKeyMapper(FakeCacheKeyMapper())
+        }.apply {
+            assertFalse(this.isEmpty())
+            assertTrue(this.isNotEmpty())
+            assertNotNull(this.downloadCacheKeyMapper)
         }
 
         ImageOptions {
@@ -198,6 +219,22 @@ class ImageOptionsTest {
         }
 
         ImageOptions {
+            resultCacheKey("resultCacheKey1")
+        }.apply {
+            assertFalse(this.isEmpty())
+            assertTrue(this.isNotEmpty())
+            assertNotNull(this.resultCacheKey)
+        }
+
+        ImageOptions {
+            resultCacheKeyMapper(FakeCacheKeyMapper())
+        }.apply {
+            assertFalse(this.isEmpty())
+            assertTrue(this.isNotEmpty())
+            assertNotNull(this.resultCacheKeyMapper)
+        }
+
+        ImageOptions {
             placeholder(FakeStateImage())
         }.apply {
             assertFalse(this.isEmpty())
@@ -243,6 +280,22 @@ class ImageOptionsTest {
             assertFalse(this.isEmpty())
             assertTrue(this.isNotEmpty())
             assertNotNull(this.memoryCachePolicy)
+        }
+
+        ImageOptions {
+            memoryCacheKey("memoryCacheKey1")
+        }.apply {
+            assertFalse(this.isEmpty())
+            assertTrue(this.isNotEmpty())
+            assertNotNull(this.memoryCacheKey)
+        }
+
+        ImageOptions {
+            memoryCacheKeyMapper(FakeCacheKeyMapper())
+        }.apply {
+            assertFalse(this.isEmpty())
+            assertTrue(this.isNotEmpty())
+            assertNotNull(this.memoryCacheKeyMapper)
         }
 
         ImageOptions {
@@ -360,6 +413,30 @@ class ImageOptionsTest {
         }
 
         ImageOptions().apply {
+            assertEquals(null, this.downloadCacheKey)
+        }.merged(ImageOptions {
+            downloadCacheKey("downloadCacheKey1")
+        }).apply {
+            assertEquals("downloadCacheKey1", this.downloadCacheKey)
+        }.merged(ImageOptions {
+            downloadCacheKey("downloadCacheKey2")
+        }).apply {
+            assertEquals("downloadCacheKey1", this.downloadCacheKey)
+        }
+
+        ImageOptions().apply {
+            assertEquals(null, this.downloadCacheKeyMapper)
+        }.merged(ImageOptions {
+            downloadCacheKeyMapper(FakeCacheKeyMapper())
+        }).apply {
+            assertEquals(FakeCacheKeyMapper(), this.downloadCacheKeyMapper)
+        }.merged(ImageOptions {
+            downloadCacheKeyMapper(FakeCacheKeyMapper2())
+        }).apply {
+            assertEquals(FakeCacheKeyMapper(), this.downloadCacheKeyMapper)
+        }
+
+        ImageOptions().apply {
             assertEquals(null, this.colorType)
         }.merged(ImageOptions {
             colorType(HighQualityColorType)
@@ -454,6 +531,30 @@ class ImageOptionsTest {
         }
 
         ImageOptions().apply {
+            assertEquals(null, this.resultCacheKey)
+        }.merged(ImageOptions {
+            resultCacheKey("resultCacheKey1")
+        }).apply {
+            assertEquals("resultCacheKey1", this.resultCacheKey)
+        }.merged(ImageOptions {
+            resultCacheKey("resultCacheKey2")
+        }).apply {
+            assertEquals("resultCacheKey1", this.resultCacheKey)
+        }
+
+        ImageOptions().apply {
+            assertEquals(null, this.resultCacheKeyMapper)
+        }.merged(ImageOptions {
+            resultCacheKeyMapper(FakeCacheKeyMapper())
+        }).apply {
+            assertEquals(FakeCacheKeyMapper(), this.resultCacheKeyMapper)
+        }.merged(ImageOptions {
+            resultCacheKeyMapper(FakeCacheKeyMapper2())
+        }).apply {
+            assertEquals(FakeCacheKeyMapper(), this.resultCacheKeyMapper)
+        }
+
+        ImageOptions().apply {
             assertEquals(null, this.placeholder)
         }.merged(ImageOptions {
             placeholder(FakeStateImage(FakeImage(SketchSize(100, 100))))
@@ -541,6 +642,30 @@ class ImageOptionsTest {
             memoryCachePolicy(READ_ONLY)
         }).apply {
             assertEquals(DISABLED, this.memoryCachePolicy)
+        }
+
+        ImageOptions().apply {
+            assertEquals(null, this.memoryCacheKey)
+        }.merged(ImageOptions {
+            memoryCacheKey("memoryCacheKey1")
+        }).apply {
+            assertEquals("memoryCacheKey1", this.memoryCacheKey)
+        }.merged(ImageOptions {
+            memoryCacheKey("memoryCacheKey2")
+        }).apply {
+            assertEquals("memoryCacheKey1", this.memoryCacheKey)
+        }
+
+        ImageOptions().apply {
+            assertEquals(null, this.memoryCacheKeyMapper)
+        }.merged(ImageOptions {
+            memoryCacheKeyMapper(FakeCacheKeyMapper())
+        }).apply {
+            assertEquals(FakeCacheKeyMapper(), this.memoryCacheKeyMapper)
+        }.merged(ImageOptions {
+            memoryCacheKeyMapper(FakeCacheKeyMapper2())
+        }).apply {
+            assertEquals(FakeCacheKeyMapper(), this.memoryCacheKeyMapper)
         }
 
         ImageOptions().apply {
@@ -708,6 +833,33 @@ class ImageOptionsTest {
         }
     }
 
+    @Test
+    fun testDownloadCacheKey() {
+        ImageOptions.Builder().apply {
+            build().apply {
+                assertNull(downloadCacheKey)
+            }
+
+            downloadCacheKey("downloadCacheKey1")
+            build().apply {
+                assertEquals("downloadCacheKey1", downloadCacheKey)
+            }
+        }
+    }
+
+    @Test
+    fun testDownloadCacheKeyMapper() {
+        ImageOptions.Builder().apply {
+            build().apply {
+                assertNull(downloadCacheKeyMapper)
+            }
+
+            downloadCacheKeyMapper(FakeCacheKeyMapper())
+            build().apply {
+                assertEquals(FakeCacheKeyMapper(), downloadCacheKeyMapper)
+            }
+        }
+    }
 
     @Test
     fun testColorType() {
@@ -1060,6 +1212,34 @@ class ImageOptionsTest {
     }
 
     @Test
+    fun testResultCacheKey() {
+        ImageOptions.Builder().apply {
+            build().apply {
+                assertNull(resultCacheKey)
+            }
+
+            resultCacheKey("resultCacheKey1")
+            build().apply {
+                assertEquals("resultCacheKey1", resultCacheKey)
+            }
+        }
+    }
+
+    @Test
+    fun testResultCacheKeyMapper() {
+        ImageOptions.Builder().apply {
+            build().apply {
+                assertNull(resultCacheKeyMapper)
+            }
+
+            resultCacheKeyMapper(FakeCacheKeyMapper())
+            build().apply {
+                assertEquals(FakeCacheKeyMapper(), resultCacheKeyMapper)
+            }
+        }
+    }
+
+    @Test
     fun testPlaceholder() {
         ImageOptions.Builder().apply {
             build().apply {
@@ -1274,6 +1454,34 @@ class ImageOptionsTest {
     }
 
     @Test
+    fun testMemoryCacheKey() {
+        ImageOptions.Builder().apply {
+            build().apply {
+                assertNull(memoryCacheKey)
+            }
+
+            memoryCacheKey("memoryCacheKey1")
+            build().apply {
+                assertEquals("memoryCacheKey1", memoryCacheKey)
+            }
+        }
+    }
+
+    @Test
+    fun testMemoryCacheKeyMapper() {
+        ImageOptions.Builder().apply {
+            build().apply {
+                assertNull(memoryCacheKeyMapper)
+            }
+
+            memoryCacheKeyMapper(FakeCacheKeyMapper())
+            build().apply {
+                assertEquals(FakeCacheKeyMapper(), memoryCacheKeyMapper)
+            }
+        }
+    }
+
+    @Test
     fun testComponents() {
         ImageOptions().apply {
             assertNull(componentRegistry)
@@ -1360,6 +1568,12 @@ class ImageOptionsTest {
                 downloadCachePolicy(READ_ONLY)
             },
             ScopeAction {
+                downloadCacheKey("downloadCacheKey1")
+            },
+            ScopeAction {
+                downloadCacheKeyMapper(FakeCacheKeyMapper())
+            },
+            ScopeAction {
                 colorType("RAGB")
             },
             ScopeAction {
@@ -1387,6 +1601,12 @@ class ImageOptionsTest {
                 resultCachePolicy(WRITE_ONLY)
             },
             ScopeAction {
+                resultCacheKey("resultCacheKey1")
+            },
+            ScopeAction {
+                resultCacheKeyMapper(FakeCacheKeyMapper())
+            },
+            ScopeAction {
                 placeholder(FakeStateImage())
             },
             ScopeAction {
@@ -1403,6 +1623,12 @@ class ImageOptionsTest {
             },
             ScopeAction {
                 memoryCachePolicy(WRITE_ONLY)
+            },
+            ScopeAction {
+                memoryCacheKey("memoryCacheKey1")
+            },
+            ScopeAction {
+                memoryCacheKeyMapper(FakeCacheKeyMapper())
             },
             ScopeAction {
                 components {

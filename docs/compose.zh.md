@@ -133,7 +133,9 @@ when (loadState) {
 
     }
     is Success -> {
-        val cacheKey: String = loadState.result.cacheKey
+        val memoryCacheKey: String = loadState.result.memoryCacheKey 
+        val resultCacheKey: String = loadState.result.resultCacheKey
+        val downloadCacheKey: String = loadState.result.downloadCacheKey
         val imageInfo: ImageInfo = loadState.result.imageInfo
         val dataFrom: DataFrom = loadState.result.dataFrom
         val resize: Resize = loadState.result.resize

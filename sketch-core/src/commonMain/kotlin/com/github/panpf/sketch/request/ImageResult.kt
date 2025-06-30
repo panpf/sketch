@@ -26,7 +26,8 @@ import com.github.panpf.sketch.source.DataFrom
 /**
  * Result of [ImageRequest]
  *
- * @see com.github.panpf.sketch.core.common.test.request.ImageResultTest
+ * @see com.github.panpf.sketch.core.common.test.request.ImageResultSuccessTest
+ * @see com.github.panpf.sketch.core.common.test.request.ImageResultErrorTest
  */
 interface ImageResult {
 
@@ -48,6 +49,8 @@ interface ImageResult {
 
     /**
      * Image loading success result
+     *
+     * @see com.github.panpf.sketch.core.common.test.request.ImageResultSuccessTest
      */
     data class Success constructor(
         override val request: ImageRequest,
@@ -55,8 +58,26 @@ interface ImageResult {
 
         /**
          * Cache key, it is used for memory cache or result cache reading and writing.
+         *
+         * If you use [ImageRequest.memoryCacheKey], [ImageRequest.memoryCacheKeyMapper], [ImageRequest.resultCacheKey], [ImageRequest.resultCacheKeyMapper], then this [cacheKey] is inaccurate. Please use [memoryCacheKey], [resultCacheKey] instead.
          */
+        @Deprecated("Use memoryCacheKey or resultCacheKey instead")
         val cacheKey: String,
+
+        /**
+         * Cache key, it is used for memory cache or result cache reading and writing.
+         */
+        val memoryCacheKey: String,
+
+        /**
+         * Cache key, it is used for memory cache or result cache reading and writing.
+         */
+        val resultCacheKey: String,
+
+        /**
+         * Cache key, it is used for memory cache or result cache reading and writing.
+         */
+        val downloadCacheKey: String,
 
         /**
          * Image width, height, type and other information
@@ -86,6 +107,8 @@ interface ImageResult {
 
     /**
      * Image loading error result
+     *
+     * @see com.github.panpf.sketch.core.common.test.request.ImageResultErrorTest
      */
     data class Error constructor(
         override val request: ImageRequest,

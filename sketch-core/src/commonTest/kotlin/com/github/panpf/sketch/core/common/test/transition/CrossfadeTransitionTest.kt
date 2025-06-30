@@ -57,9 +57,13 @@ class CrossfadeTransitionTest {
         val factory = CrossfadeTransition.Factory()
         val target = TestTransitionTarget()
 
+        val requestContext = request.toRequestContext(sketch)
         val successResult = ImageResult.Success(
             request = request,
-            cacheKey = request.toRequestContext(sketch).cacheKey,
+            cacheKey = requestContext.cacheKey,
+            memoryCacheKey = requestContext.memoryCacheKey,
+            resultCacheKey = requestContext.resultCacheKey,
+            downloadCacheKey = requestContext.downloadCacheKey,
             image = FakeImage(Size(100, 200)),
             imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = LOCAL,
@@ -87,7 +91,10 @@ class CrossfadeTransitionTest {
 
         val fromMemoryCacheSuccessResult = ImageResult.Success(
             request = request,
-            cacheKey = request.toRequestContext(sketch).cacheKey,
+            cacheKey = requestContext.cacheKey,
+            memoryCacheKey = requestContext.memoryCacheKey,
+            resultCacheKey = requestContext.resultCacheKey,
+            downloadCacheKey = requestContext.downloadCacheKey,
             image = FakeImage(Size(100, 200)),
             imageInfo = ImageInfo(100, 200, "image/jpeg"),
             dataFrom = MEMORY_CACHE,

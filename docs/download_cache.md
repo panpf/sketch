@@ -2,12 +2,15 @@
 
 Translations: [简体中文](download_cache.zh.md)
 
-In order to avoid repeatedly downloading images from the Internet and improve the loading speed of
-images [Sketch] introduces download caching. [HttpUriFetcher] will first store images persistently
-on the disk and then read them from the disk.
+In order to avoid repeatedly downloading pictures from the network and improve the loading speed of
+pictures, Sketch has introduced download cache. The download cache function will first store the
+pictures on disk for a long time, then read them from disk, and skip the download process next time
+you read them directly from disk.
 
-The download cache is served by the [DiskCache] component, and the default implementation
-is [LruDiskCache]:
+[HttpUriFetcher] is responsible for the core logic, and [DiskCache] is responsible for the storage
+management.
+
+The default implementation of [DiskCache] is [LruDiskCache]:
 
 * The default maximum capacity is 300 MB
 * Clear old cache based on least used principle
@@ -91,10 +94,11 @@ Sketch.Builder(context).apply {
 }.build()
 ```
 
-## Configuration request
+## Cache Policy
 
-The default configuration of the download cache is [CachePolicy].ENABLED, you can pass the downloadCachePolicy of [ImageRequest]
-or [ImageOptions] Properties control download caching, as follows:
+The download cache policy is used to control how to use the download cache. The default
+configuration is [CachePolicy].ENABLED, which you can configure via the downloadCachePolicy property
+of [ImageRequest] or [ImageOptions]:
 
 ```kotlin
 ImageRequest(context, "https://example.com/image.jpg") {
@@ -105,6 +109,42 @@ ImageRequest(context, "https://example.com/image.jpg") {
     // Write Only
     downloadCachePolicy(CachePolicy.WRITE_ONLY)
 }
+```
+
+## Cache key
+
+By default, Sketch will automatically generate a download cache key based on the requested
+configuration, but you can also customize the download cache key with the following properties:
+
+```kotlin
+ImageRequest(context, "https://example.com/image.jpg") {
+     // Use custom download cache key
+     downloadCacheKey("https://example.com/image.jpg?width=100&height=100")
+
+     // Modify the automatically generated download cache key
+     downloadCacheKeyMapper(CacheKeyMapper { "${it}&width=100&height=100" })
+}
+
+ImageOptions {
+     // Use custom download cache key
+     downloadCacheKey("https://example.com/image.jpg?width=100&height=100")
+
+     // Modify the automatically generated download cache key
+     downloadCacheKeyMapper(CacheKeyMapper { "${it}&width=100&height=100" })
+}
+```
+
+You can also get the final download cache key through the following methods:
+
+```kotlin
+// The download cache key can be obtained through RequestContext in the customized RequestInterceptor, 
+// DecodeInterceptor, Transformation, Fetcher, and Decoder components.
+val requestContext: RequestContext = ...
+requestContext.downloadCacheKey
+
+// Get the download cache key from ImageResult
+val imageSuccess = sketch.execute(request) as ImageResult.Success
+imageSuccess.downloadCacheKey
 ```
 
 ## Read and write cache

@@ -142,12 +142,16 @@ data class ImageRequest(
     val downloadCachePolicy: CachePolicy,
 
     /**
-     * The key used to cache the downloaded image in the download cache.
+     * The key used to cache the image in the download cache.
+     *
+     * @see com.github.panpf.sketch.request.RequestContext.downloadCacheKey
      */
     val downloadCacheKey: String?,
 
     /**
-     * A mapper that maps a download cache key to a different string representation.
+     * Mapper for unified modification of the automatically generated download cache key. [downloadCacheKey] Priority
+     *
+     * @see com.github.panpf.sketch.request.RequestContext.downloadCacheKey
      */
     val downloadCacheKeyMapper: CacheKeyMapper?,
 
@@ -196,11 +200,15 @@ data class ImageRequest(
 
     /**
      * The key used to cache the result image in the result cache.
+     *
+     * @see com.github.panpf.sketch.request.RequestContext.resultCacheKey
      */
     val resultCacheKey: String?,
 
     /**
-     * A mapper that maps a result cache key to a different string representation.
+     * Mapper for unified modification of the automatically generated result cache key. [resultCacheKey] Priority
+     *
+     * @see com.github.panpf.sketch.request.RequestContext.resultCacheKey
      */
     val resultCacheKeyMapper: CacheKeyMapper?,
 
@@ -244,11 +252,15 @@ data class ImageRequest(
 
     /**
      * The key used to cache the image in the memory cache.
+     *
+     * @see com.github.panpf.sketch.request.RequestContext.memoryCacheKey
      */
     val memoryCacheKey: String?,
 
     /**
-     * A mapper that maps a memory cache key to a different string representation.
+     * Mapper for unified modification of the automatically generated memory cache key. [memoryCacheKey] Priority
+     *
+     * @see com.github.panpf.sketch.request.RequestContext.memoryCacheKey
      */
     val memoryCacheKeyMapper: CacheKeyMapper?,
 

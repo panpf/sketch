@@ -45,7 +45,7 @@ class MemoryCacheStateImageTest {
     fun testKey() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, ResourceImages.jpeg.uri)
-        val memoryCacheKey = request.toRequestContext(sketch).cacheKey
+        val memoryCacheKey = request.toRequestContext(sketch).memoryCacheKey
         val stateImage = FakeStateImage()
 
         MemoryCacheStateImage(null, null).apply {
@@ -67,7 +67,7 @@ class MemoryCacheStateImageTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, ResourceImages.jpeg.uri)
         val memoryCache = sketch.memoryCache
-        val memoryCacheKey = request.toRequestContext(sketch).cacheKey
+        val memoryCacheKey = request.toRequestContext(sketch).memoryCacheKey
         val stateImage = FakeStateImage()
 
         memoryCache.clear()
@@ -150,7 +150,7 @@ class MemoryCacheStateImageTest {
     fun testToString() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, ResourceImages.jpeg.uri)
-        val memoryCacheKey = request.toRequestContext(sketch).cacheKey
+        val memoryCacheKey = request.toRequestContext(sketch).memoryCacheKey
         val stateImage = FakeStateImage()
 
         MemoryCacheStateImage(null, null).apply {

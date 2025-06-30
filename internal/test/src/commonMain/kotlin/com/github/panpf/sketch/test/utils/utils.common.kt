@@ -80,6 +80,9 @@ fun fakeSuccessImageResult(context: PlatformContext): ImageResult.Success {
     return ImageResult.Success(
         request = ImageRequest(context, "http://test.com/test.jpg"),
         cacheKey = "http://test.com/test.jpg",
+        memoryCacheKey = "http://test.com/test.jpg",
+        resultCacheKey = "http://test.com/test.jpg",
+        downloadCacheKey = "http://test.com/test.jpg",
         image = FakeImage(100, 200),
         imageInfo = ImageInfo(100, 200, "image/jpeg"),
         dataFrom = LOCAL,

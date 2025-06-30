@@ -19,6 +19,7 @@
 package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.cache.CacheKeyMapper
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.util.Size
@@ -72,30 +73,33 @@ class RequestContext constructor(
     }
     private val memoryCacheKeyLazy = resetLazy {
         val request = this@RequestContext.request
-        val memoryCacheKey = request.memoryCacheKey ?: cacheKeyLazy.value
-        val memoryCacheKeyMapper = request.memoryCacheKeyMapper
-        val finalMemoryCacheKey = memoryCacheKeyMapper?.map(memoryCacheKey)
-            ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
-            ?: memoryCacheKey
-        finalMemoryCacheKey
+        val memoryCacheKey = buildCacheKey(
+            fromRequestCacheKey = request.memoryCacheKey,
+            cacheKey = { cacheKeyLazy.value },
+            cacheKeyMapper = request.memoryCacheKeyMapper,
+            type = "memory",
+        )
+        memoryCacheKey
     }
     private val resultCacheKeyLazy = resetLazy {
         val request = this@RequestContext.request
-        val resultCacheKey = request.resultCacheKey ?: cacheKeyLazy.value
-        val resultCacheKeyMapper = request.resultCacheKeyMapper
-        val finalResultCacheKey = resultCacheKeyMapper?.map(resultCacheKey)
-            ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
-            ?: resultCacheKey
-        finalResultCacheKey
+        val resultCacheKey = buildCacheKey(
+            fromRequestCacheKey = request.resultCacheKey,
+            cacheKey = { cacheKeyLazy.value },
+            cacheKeyMapper = request.resultCacheKeyMapper,
+            type = "result",
+        )
+        resultCacheKey
     }
     private val downloadCacheKeyLazy = resetLazy {
         val request = this@RequestContext.request
-        val downloadCacheKey = request.downloadCacheKey ?: request.uri.toString()
-        val downloadCacheKeyMapper = request.downloadCacheKeyMapper
-        val finalDownloadCacheKey = downloadCacheKeyMapper?.map(downloadCacheKey)
-            ?.takeIf { it.isNotEmpty() && it.isNotBlank() }
-            ?: downloadCacheKey
-        finalDownloadCacheKey
+        val downloadCacheKey = buildCacheKey(
+            fromRequestCacheKey = request.downloadCacheKey,
+            cacheKey = { request.uri.toString() },
+            cacheKeyMapper = request.downloadCacheKeyMapper,
+            type = "download",
+        )
+        downloadCacheKey
     }
 
     /**
@@ -172,5 +176,29 @@ class RequestContext constructor(
         val precision = request.precisionDecider.get(imageSize = imageSize, targetSize = size)
         val scale = request.scaleDecider.get(imageSize = imageSize, targetSize = size)
         return Resize(size = size, precision = precision, scale = scale)
+    }
+
+    private fun buildCacheKey(
+        fromRequestCacheKey: String?,
+        cacheKey: () -> String,
+        cacheKeyMapper: CacheKeyMapper?,
+        type: String,
+    ): String {
+        if (fromRequestCacheKey != null) {
+            require(fromRequestCacheKey.isNotEmpty() && fromRequestCacheKey.isNotBlank()) {
+                "ImageRequest.${type}CacheKey is empty or blank"
+            }
+            return fromRequestCacheKey
+        }
+
+        val newCacheKey = cacheKey()
+        if (cacheKeyMapper != null) {
+            val mapperCacheKey = cacheKeyMapper.map(newCacheKey)
+            require(mapperCacheKey.isNotEmpty() && mapperCacheKey.isNotBlank()) {
+                "ImageRequest.${type}CacheKeyMapper map result is empty or blank"
+            }
+            return mapperCacheKey
+        }
+        return newCacheKey
     }
 }

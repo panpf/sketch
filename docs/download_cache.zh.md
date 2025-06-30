@@ -2,10 +2,12 @@
 
 翻译：[English](download_cache.md)
 
-为了避免重复从网络下载图片并提高图片的加载速度 [Sketch] 引入了下载缓存，[HttpUriFetcher]
-会先将图片持久的存储在磁盘上，再从磁盘读取
+为了避免重复从网络下载图片并提高图片的加载速度 Sketch
+引入了下载缓存，下载缓存功能会先将图片持久的存储在磁盘上，再从磁盘读取，下次直接从磁盘中读取跳过下载过程。
 
-下载缓存由 [DiskCache] 组件提供服务，默认实现是 [LruDiskCache]：
+下载缓存功能由 [HttpUriFetcher] 负责核心逻辑，[DiskCache] 负责存储管理
+
+[DiskCache] 的默认实现是 [LruDiskCache]：
 
 * 默认最大容量是 300 MB
 * 根据最少使用原则清除旧的缓存
@@ -86,10 +88,11 @@ Sketch.Builder(context).apply {
 }.build()
 ```
 
-## 配置请求
+## 缓存策略
 
-下载缓存默认配置是 [CachePolicy].ENABLED，你可以通过 [ImageRequest] 或 [ImageOptions] 的 downloadCachePolicy
-属性控制下载缓存，如下:
+下载缓存策略用于控制如何使用下载缓存，默认配置是 [CachePolicy].ENABLED，你可以通过 [ImageRequest]
+或 [ImageOptions] 的 downloadCachePolicy
+属性配置它:
 
 ```kotlin
 ImageRequest(context, "https://example.com/image.jpg") {
@@ -100,6 +103,41 @@ ImageRequest(context, "https://example.com/image.jpg") {
     // 只写
     downloadCachePolicy(CachePolicy.WRITE_ONLY)
 }
+```
+
+## 缓存 key
+
+默认情况下 Sketch 会自动根据请求的配置生成下载缓存 key，但你还可以通过以下属性自定义下载缓存 key：
+
+```kotlin
+ImageRequest(context, "https://example.com/image.jpg") {
+    // 使用自定义的下载缓存 key
+    downloadCacheKey("https://example.com/image.jpg?width=100&height=100")
+
+    // 修改自动生成的下载缓存 key
+    downloadCacheKeyMapper(CacheKeyMapper { "${it}&width=100&height=100" })
+}
+
+ImageOptions {
+    // 使用自定义的下载缓存 key
+    downloadCacheKey("https://example.com/image.jpg?width=100&height=100")
+
+    // 修改自动生成的下载缓存 key
+    downloadCacheKeyMapper(CacheKeyMapper { "${it}&width=100&height=100" })
+}
+```
+
+你还可以通过以下方式和获取最终的下载缓存 key：
+
+```kotlin
+// 在自定义的 RequestInterceptor、DecodeInterceptor、Transformation、Fetcher、Decoder 组件中
+// 可以通过 RequestContext 获取下载缓存 key
+val requestContext: RequestContext = ...
+requestContext.downloadCacheKey
+
+// 从 ImageResult 中获取下载缓存 key
+val imageSuccess = sketch.execute(request) as ImageResult.Success
+imageSuccess.downloadCacheKey
 ```
 
 ## 读写缓存

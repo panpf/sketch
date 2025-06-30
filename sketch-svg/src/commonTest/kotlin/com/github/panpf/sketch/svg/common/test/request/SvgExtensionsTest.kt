@@ -80,10 +80,13 @@ class SvgExtensionsTest {
 
         runTest {
             val cacheKey1 =
-                ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).cacheKey
+                ImageRequest(
+                    context,
+                    ResourceImages.svg.uri
+                ).toRequestContext(sketch).memoryCacheKey
             val cacheKey2 = ImageRequest(context, ResourceImages.svg.uri) {
                 svgBackgroundColor(TestColor.BLUE)
-            }.toRequestContext(sketch).cacheKey
+            }.toRequestContext(sketch).memoryCacheKey
             assertNotEquals(cacheKey1, cacheKey2)
         }
     }
@@ -136,10 +139,13 @@ class SvgExtensionsTest {
 
         runTest {
             val cacheKey1 =
-                ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).cacheKey
+                ImageRequest(
+                    context,
+                    ResourceImages.svg.uri
+                ).toRequestContext(sketch).memoryCacheKey
             val cacheKey2 = ImageRequest(context, ResourceImages.svg.uri) {
                 svgCss("css1")
-            }.toRequestContext(sketch).cacheKey
+            }.toRequestContext(sketch).memoryCacheKey
             assertNotEquals(cacheKey1, cacheKey2)
         }
     }

@@ -417,7 +417,9 @@ when (image) {
     }
 }
 if (imageResult is ImageResult.Success) {
-    val cacheKey: String = imageResult.cacheKey
+    val memoryCacheKey: String = imageResult.memoryCacheKey
+    val resultCacheKey: String = imageResult.resultCacheKey
+    val downloadCacheKey: String = imageResult.downloadCacheKey
     val imageInfo: ImageInfo = imageResult.imageInfo
     val dataFrom: DataFrom = imageResult.dataFrom
     val resize: Resize = imageResult.resize

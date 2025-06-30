@@ -29,9 +29,11 @@ import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.AppendCacheKeyMapper
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.screenSize
 import com.github.panpf.sketch.util.times
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -137,31 +139,77 @@ class RequestContextTest {
     }
 
     @Test
-    fun testCacheKey() = runTest {
+    fun testCacheKeys() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        ImageRequest(context, ResourceImages.jpeg.uri).toRequestContext(sketch).apply {
-            val cacheKey0 = cacheKey
+        val uri = ResourceImages.jpeg.uri
+        val requestContext = ImageRequest(context, uri).toRequestContext(sketch)
+        val screenSize = context.screenSize()
+        assertEquals(
+            expected = "${uri}?_size=${screenSize}&_precision=Fixed(LESS_PIXELS)&_scale=Fixed(CENTER_CROP)",
+            actual = requestContext.cacheKey
+        )
+        assertEquals(
+            expected = "${uri}?_size=${screenSize}&_precision=Fixed(LESS_PIXELS)&_scale=Fixed(CENTER_CROP)",
+            actual = requestContext.memoryCacheKey
+        )
+        assertEquals(
+            expected = "${uri}?_size=${screenSize}&_precision=Fixed(LESS_PIXELS)&_scale=Fixed(CENTER_CROP)",
+            actual = requestContext.resultCacheKey
+        )
+        assertEquals(
+            expected = uri,
+            actual = requestContext.downloadCacheKey
+        )
 
-            setNewRequest(request.newRequest())
-            val cacheKey1 = cacheKey
-            assertSame(cacheKey0, cacheKey1)
+        // test CacheKeyMapper
+        requestContext.setNewRequest(ImageRequest(context, uri) {
+            memoryCacheKeyMapper(AppendCacheKeyMapper("&from=memory"))
+            resultCacheKeyMapper(AppendCacheKeyMapper("&from=result"))
+            downloadCacheKeyMapper(AppendCacheKeyMapper("&from=download"))
+        })
+        assertEquals(
+            expected = "${uri}?_size=${screenSize}&_precision=Fixed(LESS_PIXELS)&_scale=Fixed(CENTER_CROP)",
+            actual = requestContext.cacheKey
+        )
+        assertEquals(
+            expected = "${uri}?_size=${screenSize}&_precision=Fixed(LESS_PIXELS)&_scale=Fixed(CENTER_CROP)&from=memory",
+            actual = requestContext.memoryCacheKey
+        )
+        assertEquals(
+            expected = "${uri}?_size=${screenSize}&_precision=Fixed(LESS_PIXELS)&_scale=Fixed(CENTER_CROP)&from=result",
+            actual = requestContext.resultCacheKey
+        )
+        assertEquals(
+            expected = "${uri}&from=download",
+            actual = requestContext.downloadCacheKey
+        )
 
-            setNewRequest(request.newRequest {
-                size(100, 300)
-            })
-            val cacheKey2 = cacheKey
-            assertNotEquals(cacheKey1, cacheKey2)
+        // test CacheKeyMapper + memoryCacheKey + resultCacheKey + downloadCacheKey
+        requestContext.setNewRequest(ImageRequest(context, uri) {
+            memoryCacheKeyMapper(AppendCacheKeyMapper("&from=memory"))
+            resultCacheKeyMapper(AppendCacheKeyMapper("&from=result"))
+            downloadCacheKeyMapper(AppendCacheKeyMapper("&from=download"))
 
-            setNewRequest(request.newRequest {
-                precision(Precision.EXACTLY)
-            })
-            val cacheKey3 = cacheKey
-            assertNotEquals(cacheKey2, cacheKey3)
-
-            setNewRequest(request.newRequest())
-            val cacheKey4 = cacheKey
-            assertSame(cacheKey3, cacheKey4)
-        }
+            memoryCacheKey("memoryCacheKey1")
+            resultCacheKey("resultCacheKey1")
+            downloadCacheKey("downloadCacheKey1")
+        })
+        assertEquals(
+            expected = "${uri}?_size=${screenSize}&_precision=Fixed(LESS_PIXELS)&_scale=Fixed(CENTER_CROP)",
+            actual = requestContext.cacheKey
+        )
+        assertEquals(
+            expected = "memoryCacheKey1",
+            actual = requestContext.memoryCacheKey
+        )
+        assertEquals(
+            expected = "resultCacheKey1",
+            actual = requestContext.resultCacheKey
+        )
+        assertEquals(
+            expected = "downloadCacheKey1",
+            actual = requestContext.downloadCacheKey
+        )
     }
 
     @Test

@@ -101,8 +101,6 @@ import kotlin.test.assertTrue
 
 class ImageRequestTest {
 
-    // TODO test downloadCacheKey, downloadCacheKeyMapper, resultCacheKey, resultCacheKeyMapper, memoryCacheKey, memoryCacheKeyMapper
-
     @Test
     fun testImageRequest() {
         val context1 = getTestContext()
@@ -118,17 +116,23 @@ class ImageRequestTest {
             assertEquals(NETWORK, this.depthHolder.depth)
             assertNull(this.extras)
             assertEquals(ENABLED, this.downloadCachePolicy)
+            assertNull(this.downloadCacheKey)
+            assertNull(this.downloadCacheKeyMapper)
             assertEquals(SizeResolver(context1.screenSize()), this.sizeResolver)
             assertEquals(FixedPrecisionDecider(LESS_PIXELS), this.precisionDecider)
             assertEquals(FixedScaleDecider(CENTER_CROP), this.scaleDecider)
             assertNull(this.transformations)
             assertEquals(ENABLED, this.resultCachePolicy)
+            assertNull(this.resultCacheKey)
+            assertNull(this.resultCacheKeyMapper)
             assertNull(this.placeholder)
             assertNull(this.fallback)
             assertNull(this.error)
             assertNull(this.transitionFactory)
             assertFalse(this.resizeOnDraw ?: false)
             assertEquals(ENABLED, this.memoryCachePolicy)
+            assertNull(this.memoryCacheKey)
+            assertNull(this.memoryCacheKeyMapper)
         }
     }
 
@@ -561,6 +565,38 @@ class ImageRequestTest {
             downloadCachePolicy(null)
             build().apply {
                 assertEquals(ENABLED, downloadCachePolicy)
+            }
+        }
+    }
+
+    @Test
+    fun testDownloadCacheKey() {
+        val context1 = getTestContext()
+        val uri = ResourceImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
+            build().apply {
+                assertNull(downloadCacheKey)
+            }
+
+            downloadCacheKey("downloadCacheKey1")
+            build().apply {
+                assertEquals("downloadCacheKey1", downloadCacheKey)
+            }
+        }
+    }
+
+    @Test
+    fun testDownloadCacheKeyMapper() {
+        val context1 = getTestContext()
+        val uri = ResourceImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
+            build().apply {
+                assertNull(downloadCacheKeyMapper)
+            }
+
+            downloadCacheKeyMapper(FakeCacheKeyMapper())
+            build().apply {
+                assertEquals(FakeCacheKeyMapper(), downloadCacheKeyMapper)
             }
         }
     }
@@ -1057,6 +1093,38 @@ class ImageRequestTest {
     }
 
     @Test
+    fun testResultCacheKey() {
+        val context1 = getTestContext()
+        val uri = ResourceImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
+            build().apply {
+                assertNull(resultCacheKey)
+            }
+
+            resultCacheKey("resultCacheKey1")
+            build().apply {
+                assertEquals("resultCacheKey1", resultCacheKey)
+            }
+        }
+    }
+
+    @Test
+    fun testResultCacheKeyMapper() {
+        val context1 = getTestContext()
+        val uri = ResourceImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
+            build().apply {
+                assertNull(resultCacheKeyMapper)
+            }
+
+            resultCacheKeyMapper(FakeCacheKeyMapper())
+            build().apply {
+                assertEquals(FakeCacheKeyMapper(), resultCacheKeyMapper)
+            }
+        }
+    }
+
+    @Test
     fun testPlaceholder() {
         val context1 = getTestContext()
         val uri = ResourceImages.jpeg.uri
@@ -1256,6 +1324,38 @@ class ImageRequestTest {
             memoryCachePolicy(null)
             build().apply {
                 assertEquals(ENABLED, memoryCachePolicy)
+            }
+        }
+    }
+
+    @Test
+    fun testMemoryCacheKey() {
+        val context1 = getTestContext()
+        val uri = ResourceImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
+            build().apply {
+                assertNull(memoryCacheKey)
+            }
+
+            memoryCacheKey("memoryCacheKey1")
+            build().apply {
+                assertEquals("memoryCacheKey1", memoryCacheKey)
+            }
+        }
+    }
+
+    @Test
+    fun testMemoryCacheKeyMapper() {
+        val context1 = getTestContext()
+        val uri = ResourceImages.jpeg.uri
+        ImageRequest.Builder(context1, uri).apply {
+            build().apply {
+                assertNull(memoryCacheKeyMapper)
+            }
+
+            memoryCacheKeyMapper(FakeCacheKeyMapper())
+            build().apply {
+                assertEquals(FakeCacheKeyMapper(), memoryCacheKeyMapper)
             }
         }
     }
@@ -1620,6 +1720,12 @@ class ImageRequestTest {
                 downloadCachePolicy(READ_ONLY)
             },
             ScopeAction {
+                downloadCacheKey("downloadCacheKey1")
+            },
+            ScopeAction {
+                downloadCacheKeyMapper(FakeCacheKeyMapper())
+            },
+            ScopeAction {
                 colorType("RAGB")
             },
             ScopeAction {
@@ -1647,6 +1753,12 @@ class ImageRequestTest {
                 resultCachePolicy(WRITE_ONLY)
             },
             ScopeAction {
+                resultCacheKey("resultCacheKey1")
+            },
+            ScopeAction {
+                resultCacheKeyMapper(FakeCacheKeyMapper())
+            },
+            ScopeAction {
                 placeholder(FakeStateImage())
             },
             ScopeAction {
@@ -1663,6 +1775,12 @@ class ImageRequestTest {
             },
             ScopeAction {
                 memoryCachePolicy(WRITE_ONLY)
+            },
+            ScopeAction {
+                memoryCacheKey("memoryCacheKey1")
+            },
+            ScopeAction {
+                memoryCacheKeyMapper(FakeCacheKeyMapper())
             },
             ScopeAction {
                 components {

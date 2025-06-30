@@ -13,8 +13,10 @@
   依赖注入支持。 [#256](https://github.com/panpf/sketch/issues/256)
 * new: 新增 `Sketch(PlatformContext, (Sketch.Builder.() -> Unit)? = null)` 函数和
   `Sketch.Builder.logger(Logger)` 函数
-* new: ImageRequest 和 ImageOptions 新增 downloadCacheKey, downloadCacheKeyMapper, resultCacheKey,
-  resultCacheKeyMapper, memoryCacheKey, memoryCacheKeyMapper 属性
+* new: ImageRequest、ImageOptions 和 ImageResult.Success 新增 downloadCacheKey,
+  downloadCacheKeyMapper, resultCacheKey,
+  resultCacheKeyMapper, memoryCacheKey, memoryCacheKeyMapper
+  属性。 [#255](https://github.com/panpf/sketch/issues/255)
 
 # 4.2.0-beta01
 

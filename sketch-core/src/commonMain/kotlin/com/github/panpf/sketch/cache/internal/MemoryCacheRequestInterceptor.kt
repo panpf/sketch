@@ -81,7 +81,8 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
     private fun readFromMemoryCache(requestContext: RequestContext): ImageData? {
         if (!requestContext.request.memoryCachePolicy.readEnabled) return null
         val memoryCache = requestContext.sketch.memoryCache
-        val cachedValue = memoryCache[requestContext.memoryCacheKey] ?: return null
+        val memoryCacheKey = requestContext.memoryCacheKey
+        val cachedValue = memoryCache[memoryCacheKey] ?: return null
         return ImageData(
             image = cachedValue.image,
             imageInfo = cachedValue.getImageInfo()!!,
@@ -120,7 +121,8 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
             )
         )
         val sketch = requestContext.sketch
-        val saveState = sketch.memoryCache.put(requestContext.memoryCacheKey, cacheValue)
+        val memoryCacheKey = requestContext.memoryCacheKey
+        val saveState = sketch.memoryCache.put(memoryCacheKey, cacheValue)
         if (saveState != 0) {
             sketch.logger.w(
                 "MemoryCacheRequestInterceptor. " +

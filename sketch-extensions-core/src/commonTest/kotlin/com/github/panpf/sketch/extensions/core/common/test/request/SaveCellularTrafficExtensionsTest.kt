@@ -92,10 +92,11 @@ class SaveCellularTrafficExtensionsTest {
         }.key
         assertNotEquals(key1, key2)
 
-        val cacheKey1 = ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).cacheKey
+        val cacheKey1 =
+            ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).memoryCacheKey
         val cacheKey2 = ImageRequest(context, ResourceImages.svg.uri) {
             saveCellularTraffic(true)
-        }.toRequestContext(sketch).cacheKey
+        }.toRequestContext(sketch).memoryCacheKey
         assertEquals(cacheKey1, cacheKey2)
     }
 
@@ -150,10 +151,11 @@ class SaveCellularTrafficExtensionsTest {
         }.key
         assertNotEquals(key1, key2)
 
-        val cacheKey1 = ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).cacheKey
+        val cacheKey1 =
+            ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).memoryCacheKey
         val cacheKey2 = ImageRequest(context, ResourceImages.svg.uri) {
             ignoreSaveCellularTraffic(true)
-        }.toRequestContext(sketch).cacheKey
+        }.toRequestContext(sketch).memoryCacheKey
         assertEquals(cacheKey1, cacheKey2)
     }
 
@@ -208,10 +210,11 @@ class SaveCellularTrafficExtensionsTest {
         }.key
         assertEquals(key1, key2)
 
-        val cacheKey1 = ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).cacheKey
+        val cacheKey1 =
+            ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).memoryCacheKey
         val cacheKey2 = ImageRequest(context, ResourceImages.svg.uri) {
             depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
-        }.toRequestContext(sketch).cacheKey
+        }.toRequestContext(sketch).memoryCacheKey
         assertEquals(cacheKey1, cacheKey2)
 
         val key11 = ImageRequest(context, ResourceImages.svg.uri).key
@@ -220,10 +223,11 @@ class SaveCellularTrafficExtensionsTest {
         }.key
         assertNotEquals(key11, key22)
 
-        val cacheKey11 = ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).cacheKey
+        val cacheKey11 =
+            ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).memoryCacheKey
         val cacheKey22 = ImageRequest(context, ResourceImages.svg.uri) {
             depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
-        }.toRequestContext(sketch).cacheKey
+        }.toRequestContext(sketch).memoryCacheKey
         assertEquals(cacheKey11, cacheKey22)
     }
 

@@ -5,17 +5,28 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
+import com.github.panpf.sketch.cache.createImageSerializer
+import com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
+import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.HttpUriFetcher
 import com.github.panpf.sketch.fetch.isHttpUri
+import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.resize.Precision
+import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom.DOWNLOAD_CACHE
 import com.github.panpf.sketch.source.DataFrom.NETWORK
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.MyCacheKeyMapper
+import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.block
+import com.github.panpf.sketch.test.utils.createBitmapImage
+import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.runBlock
@@ -29,6 +40,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import okio.IOException
+import okio.buffer
+import okio.use
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -263,6 +276,69 @@ class HttpUriFetcherTest {
                 }
                 assertTrue(downloadCache.exist(downloadCacheKey))
             }
+        }
+    }
+
+    @Test
+    fun testResultCacheKey() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
+        val (context, sketch) = getTestContextAndSketch()
+        val downloadCache = sketch.downloadCache
+        val testUri = TestHttpStack.testImages.first()
+        val executeRequest: suspend (ImageRequest) -> FetchResult? = { request ->
+            val requestContext = request.toRequestContext(sketch)
+            HttpUriFetcher(
+                sketch,
+                TestHttpStack(context),
+                request,
+                requestContext.downloadCacheKey
+            ).fetch().getOrNull()
+        }
+
+        downloadCache.clear()
+        assertEquals(expected = 0, actual = downloadCache.size)
+
+        val editor = downloadCache.openEditor(key = "downloadCacheKey1")!!
+        downloadCache.fileSystem.sink(editor.data).buffer().use {
+            val bitmapImage = createBitmapImage(100, 100)
+            createImageSerializer().compress(bitmapImage, it)
+        }
+        downloadCache.fileSystem.sink(editor.metadata).buffer().use {
+            val metadata = ResultCacheDecodeInterceptor.Metadata(
+                imageInfo = ImageInfo(width = 100, height = 100, mimeType = "image/png"),
+                resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
+                transformeds = null,
+                extras = null
+            )
+            it.writeUtf8(metadata.toMetadataString())
+        }
+        editor.commit()
+        assertEquals(expected = 273, actual = downloadCache.size)
+
+        executeRequest(ImageRequest(context, testUri.uri) {
+            downloadCachePolicy(ENABLED)
+            depth(Depth.LOCAL)
+        }).apply {
+            assertNull(this)
+        }
+
+        executeRequest(ImageRequest(context, testUri.uri) {
+            downloadCachePolicy(ENABLED)
+            depth(Depth.LOCAL)
+            downloadCacheKey("downloadCacheKey1")
+        }).apply {
+            assertNotNull(this)
+        }
+
+        executeRequest(ImageRequest(context, testUri.uri) {
+            downloadCachePolicy(ENABLED)
+            depth(Depth.LOCAL)
+            downloadCacheKeyMapper(MyCacheKeyMapper("downloadCacheKey1"))
+        }).apply {
+            assertNotNull(this)
         }
     }
 

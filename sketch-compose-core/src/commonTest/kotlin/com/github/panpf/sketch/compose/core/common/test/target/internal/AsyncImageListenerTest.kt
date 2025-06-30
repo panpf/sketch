@@ -16,8 +16,11 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.target.AsyncImageTarget
 import com.github.panpf.sketch.target.internal.AsyncImageListener
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.toHexString
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -25,11 +28,12 @@ import kotlin.test.assertNotEquals
 class AsyncImageListenerTest {
 
     @Test
-    fun test() {
-        val context = getTestContext()
+    fun test() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
         val state = AsyncImageState(context, false, GlobalLifecycle, null)
         val listener = AsyncImageListener(AsyncImageTarget(state))
         val request = ImageRequest(context, "http://sample.com/sample.jpeg")
+        val requestContext = request.toRequestContext(sketch)
 
         assertEquals(expected = null, actual = state.loadState)
         assertEquals(expected = null, actual = state.result)
@@ -54,7 +58,10 @@ class AsyncImageListenerTest {
         val successResult = ImageResult.Success(
             request = request,
             image = ColorPainter(Color.Red).asImage(),
-            cacheKey = request.key,
+            cacheKey = requestContext.cacheKey,
+            memoryCacheKey = requestContext.memoryCacheKey,
+            resultCacheKey = requestContext.resultCacheKey,
+            downloadCacheKey = requestContext.downloadCacheKey,
             imageInfo = ImageInfo(101, 202, "image/jpeg"),
             dataFrom = DataFrom.LOCAL,
             resize = Resize(100, 100, Precision.EXACTLY, Scale.CENTER_CROP),

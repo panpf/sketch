@@ -9,15 +9,11 @@ import com.github.panpf.sketch.cache.getResize
 import com.github.panpf.sketch.cache.getTransformeds
 import com.github.panpf.sketch.cache.newCacheValueExtras
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Resize
-import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.getTestContext
-import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.createRotateTransformed
 import com.github.panpf.sketch.util.maxMemory
-import kotlinx.coroutines.test.runTest
 import kotlin.math.roundToLong
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -64,17 +60,6 @@ class MemoryCacheTest {
                 actual = maxSize
             )
         }
-    }
-
-    @Test
-    fun testMemoryCacheKey() = runTest {
-        val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, "http://test.com/test.jpg")
-        val requestContext = request.toRequestContext(sketch)
-        assertEquals(
-            expected = requestContext.cacheKey,
-            actual = requestContext.memoryCacheKey
-        )
     }
 
     @Test
