@@ -22,12 +22,13 @@ import app.cash.paging.PagingSourceLoadResult
 import app.cash.paging.PagingSourceLoadResultError
 import app.cash.paging.PagingState
 import app.cash.paging.createPagingSourceLoadResultPage
-import com.github.panpf.sketch.sample.data.api.Apis
 import com.github.panpf.sketch.sample.data.api.Response
+import com.github.panpf.sketch.sample.data.api.pexels.PexelsApi
 import com.github.panpf.sketch.sample.data.api.pexels.PexelsPhoto
 import com.github.panpf.sketch.sample.ui.model.Photo
 
-class PexelsPhotoListPagingSource : PagingSource<Int, Photo>() {
+class PexelsPhotoListPagingSource constructor(val pexelsApi: PexelsApi) :
+    PagingSource<Int, Photo>() {
 
     private val keySet = HashSet<String>()  // Compose LazyVerticalGrid does not allow a key repeat
 
@@ -36,7 +37,7 @@ class PexelsPhotoListPagingSource : PagingSource<Int, Photo>() {
     override suspend fun load(params: PagingSourceLoadParams<Int>): PagingSourceLoadResult<Int, Photo> {
         val pageNumber = (params.key ?: 0).coerceAtLeast(1)
         val response = try {
-            Apis.pexelsApi.curated(pageNumber, params.loadSize)
+            pexelsApi.curated(pageNumber, params.loadSize)
         } catch (e: Exception) {
             e.printStackTrace()
             return PagingSourceLoadResultError(e)

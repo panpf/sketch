@@ -124,7 +124,6 @@ koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation", version.ref = "koin" }
-koin-ktor = { module = "io.insert-koin:koin-ktor", version.ref = "koin" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 #koin-test-juint4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin" }
 #koin-test-android = { module = "io.insert-koin:koin-android-test", version.ref = "koin" }
@@ -153,6 +152,7 @@ ktor3-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "kt
 ktor3-client-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor3" }
 ktor3-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor3" }
 ktor3-client-wasmJs = { module = "io.ktor:ktor-client-js-wasm-js", version.ref = "ktor3" }
+ktor31-client-wasmJs = { module = "io.ktor:ktor-client-js-wasm-js", version.ref = "ktor31" }
 ktor3-serialization-kotlinxJson = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor3" }
 
 leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }

@@ -22,12 +22,12 @@ import app.cash.paging.PagingSourceLoadResult
 import app.cash.paging.PagingSourceLoadResultError
 import app.cash.paging.PagingState
 import app.cash.paging.createPagingSourceLoadResultPage
-import com.github.panpf.sketch.sample.data.api.Apis
 import com.github.panpf.sketch.sample.data.api.Response
+import com.github.panpf.sketch.sample.data.api.giphy.GiphyApi
 import com.github.panpf.sketch.sample.data.api.giphy.GiphyGif
 import com.github.panpf.sketch.sample.ui.model.Photo
 
-class GiphyPhotoListPagingSource : PagingSource<Int, Photo>() {
+class GiphyPhotoListPagingSource constructor(val giphyApi: GiphyApi) : PagingSource<Int, Photo>() {
 
     private val keySet = HashSet<String>()  // Compose LazyVerticalGrid does not allow a key repeat
 
@@ -37,8 +37,8 @@ class GiphyPhotoListPagingSource : PagingSource<Int, Photo>() {
         val pageStart = params.key ?: 0
         val pageSize = params.loadSize
         val response = try {
-            Apis.giphyApi.trending(pageStart, pageSize)
-//            Apis.giphyApi.search("pet", pageStart, pageSize)
+            giphyApi.trending(pageStart, pageSize)
+//            giphyApi.search("pet", pageStart, pageSize)
         } catch (e: Exception) {
             e.printStackTrace()
             return PagingSourceLoadResultError(e)

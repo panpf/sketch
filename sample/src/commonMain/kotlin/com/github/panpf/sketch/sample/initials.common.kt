@@ -5,13 +5,19 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.images.supportResourcesHttpUri
 import com.github.panpf.sketch.request.supportPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.supportSaveCellularTraffic
+import com.github.panpf.sketch.sample.data.api.giphy.GiphyApi
+import com.github.panpf.sketch.sample.data.api.pexels.PexelsApi
 import com.github.panpf.sketch.sample.ui.test.DecoderTestViewModel
 import com.github.panpf.sketch.sample.ui.test.FetcherTestViewModel
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.util.Logger
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -23,6 +29,9 @@ fun commonModule(context: PlatformContext): Module = module {
     single { AppSettings(context) }
     single { AppEvents() }
     single { newSketch(context) }
+    single { newHttpClient() }
+    single { PexelsApi(get()) }
+    single { GiphyApi(get()) }
 
     viewModel { DecoderTestViewModel(context) }
     viewModel { FetcherTestViewModel(context) }
@@ -59,3 +68,15 @@ private fun newSketch(context: PlatformContext): Sketch {
 }
 
 expect fun Sketch.Builder.platformSketchInitial(context: PlatformContext)
+
+private fun newHttpClient(): HttpClient {
+    return HttpClient {
+        install(ContentNegotiation) {
+            json(Json {
+                ignoreUnknownKeys = true
+                prettyPrint = true
+                isLenient = true
+            })
+        }
+    }
+}

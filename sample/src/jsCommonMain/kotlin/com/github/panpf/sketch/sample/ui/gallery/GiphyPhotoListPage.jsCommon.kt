@@ -3,20 +3,22 @@ package com.github.panpf.sketch.sample.ui.gallery
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
-import com.github.panpf.sketch.sample.data.api.Apis
 import com.github.panpf.sketch.sample.data.api.Response
+import com.github.panpf.sketch.sample.data.api.giphy.GiphyApi
 import com.github.panpf.sketch.sample.data.api.giphy.GiphyGif
 import com.github.panpf.sketch.sample.ui.model.Photo
+import org.koin.compose.koinInject
 
 @Composable
 actual fun GiphyPhotoListPage() {
     val navigator = LocalNavigator.current!!
+    val giphyApi: GiphyApi = koinInject()
     PhotoList(
         animatedPlaceholder = true,
         initialPageStart = 0,
         pageSize = 80,
         load = { pageStart: Int, pageSize: Int ->
-            Apis.giphyApi.trending(pageStart, pageSize).let { response ->
+            giphyApi.trending(pageStart, pageSize).let { response ->
                 when (response) {
                     is Response.Success -> {
                         Result.success(response.body.dataList?.map { it.toPhoto() } ?: emptyList())

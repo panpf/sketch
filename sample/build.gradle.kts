@@ -70,7 +70,6 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.compose.viewmodel.navigation)
-            implementation(libs.koin.ktor)
             implementation(libs.ktor3.client.contentNegotiation)
             implementation(libs.ktor3.serialization.kotlinxJson)
             implementation(libs.multiplatformsettings)
@@ -146,7 +145,7 @@ kotlin {
         }
         wasmJsMain.dependencies {
             // https://youtrack.jetbrains.com/issue/KTOR-7934/JS-WASM-fails-with-IllegalStateException-Content-Length-mismatch-on-requesting-gzipped-content
-            implementation("io.ktor:ktor-client-js-wasm-js:${libs.versions.ktor31.get()}")
+            implementation(libs.ktor31.client.wasmJs)
         }
 
         commonTest.dependencies {

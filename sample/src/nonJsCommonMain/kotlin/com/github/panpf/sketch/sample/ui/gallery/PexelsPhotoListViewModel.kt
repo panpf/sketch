@@ -5,8 +5,9 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import com.github.panpf.sketch.sample.data.api.pexels.PexelsApi
 
-class PexelsPhotoListViewModel : ViewModel() {
+class PexelsPhotoListViewModel constructor(val pexelsApi: PexelsApi) : ViewModel() {
     val pagingFlow = Pager(
         config = PagingConfig(
             pageSize = 60,
@@ -14,7 +15,7 @@ class PexelsPhotoListViewModel : ViewModel() {
         ),
         initialKey = 0,
         pagingSourceFactory = {
-            PexelsPhotoListPagingSource()
+            PexelsPhotoListPagingSource(pexelsApi)
         }
     ).flow.cachedIn(viewModelScope)
 }
