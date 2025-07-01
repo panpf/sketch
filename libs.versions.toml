@@ -28,7 +28,7 @@ ffmpegMediaMetadataRetriever = "1.0.19"
 
 google-flexbox = "3.0.0"
 google-material = "1.12.0"
-gradle-maven-publish-plugin = "0.31.0"
+gradle-maven-publish-plugin = "0.33.0"
 
 jetbrains-compose = "1.8.0"
 jetbrains-lifecycle = "2.8.4"
