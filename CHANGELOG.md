@@ -9,6 +9,33 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
+# 4.2.0
+
+> [!NOTE]
+> There is no change compared to the 4.2.0-beta02 version
+
+* fix: Fixed a bug that did not update download progress when using sketch-http-ktor3 and
+  sketch-http-ktor2. [#253](https://github.com/panpf/sketch/issues/253)
+* fix: Fixed the bug where AsyncImageState can still receive the cancel status of the old request
+  after canceling the old request due to the new request.
+* change: Deprecate AsyncImage with keepContentNoneStartOnDraw parameter
+* change: Deprecate the fitScale property of TransitionTarget, adding ViewTarget.scaleType
+  and ComposeTarget.contentsScale and ComposeTarget.alignment instead of fitScale
+* change: AnimatedImage is now an interface, and its implementation class is SkiaAnimatedImage
+* improve: Thin request logs and remove information that is not related to loading
+* new: CrossfadePainter now supports contentScale and alignment
+* new: ResizePainter now supports contentScale and alignment
+* new: CrossfadeDrawable now supports scaleType
+* new: ResizeDrawable now supports scaleType
+* new: Added `sketch-compose-koin` and `sketch-view-koin` modules to provide Koin dependency
+  injection support. [#256](https://github.com/panpf/sketch/issues/256)
+* new: Added `Sketch(PlatformContext, (Sketch.Builder.() -> Unit)? = null)` function and
+  `Sketch.Builder.logger(Logger)` function
+* new: ImageRequest, ImageOptions and ImageResult.Success add downloadCacheKey,
+  downloadCacheKeyMapper, resultCacheKey,
+  resultCacheKeyMapper, memoryCacheKey, memoryCacheKeyMapper
+  properties. [#255](https://github.com/panpf/sketch/issues/255)
+
 # 4.2.0-beta02
 
 * new: Added `sketch-compose-koin` and `sketch-view-koin` modules to provide Koin dependency

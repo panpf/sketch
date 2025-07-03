@@ -7,6 +7,32 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
+# 4.2.0
+
+> [!NOTE]
+> 和 4.2.0-beta02 版本相比没有任何改变`
+
+* fix: 修复使用 sketch-http-ktor3 和 sketch-http-ktor2 时不更新下载进度的
+  bug。 [#253](https://github.com/panpf/sketch/issues/253)
+* fix: 修复 AsyncImageState 因发起新请求而取消旧请求后，仍然可以收到旧请求的取消状态的 bug
+* change: 弃用带有 keepContentNoneStartOnDraw 参数的 AsyncImage
+* change: 弃用 TransitionTarget 的 fitScale 属性，新增 ViewTarget.scaleType 和
+  ComposeTarget.contentsScale 以及 ComposeTarget.alignment 代替 fitScale
+* change: AnimatedImage 现在是接口，它的实现类是 SkiaAnimatedImage
+* improve: 精简请求日志，去掉和加载无关的信息
+* new: CrossfadePainter 现在支持 contentScale 和 alignment
+* new: ResizePainter 现在支持 contentScale 和 alignment
+* new: CrossfadeDrawable 现在支持 scaleType
+* new: ResizeDrawable 现在支持 scaleType
+* new: 新增 `sketch-compose-koin` 和 `sketch-view-koin` 模块，提供 Koin
+  依赖注入支持。 [#256](https://github.com/panpf/sketch/issues/256)
+* new: 新增 `Sketch(PlatformContext, (Sketch.Builder.() -> Unit)? = null)` 函数和
+  `Sketch.Builder.logger(Logger)` 函数
+* new: ImageRequest、ImageOptions 和 ImageResult.Success 新增 downloadCacheKey,
+  downloadCacheKeyMapper, resultCacheKey,
+  resultCacheKeyMapper, memoryCacheKey, memoryCacheKeyMapper
+  属性。 [#255](https://github.com/panpf/sketch/issues/255)
+
 # 4.2.0-beta02
 
 * new: 新增 `sketch-compose-koin` 和 `sketch-view-koin` 模块，提供 Koin
