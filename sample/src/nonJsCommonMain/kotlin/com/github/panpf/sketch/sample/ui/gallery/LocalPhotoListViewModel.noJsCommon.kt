@@ -7,8 +7,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.github.panpf.sketch.Sketch
 
-class LocalPhotoListViewModel(val sketch: Sketch) :
-    ViewModel() {
+actual class LocalPhotoListViewModel actual constructor(val sketch: Sketch) : ViewModel() {
 
     val pagingFlow = Pager(
         config = PagingConfig(

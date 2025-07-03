@@ -7,6 +7,9 @@ import com.github.panpf.sketch.request.supportPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.supportSaveCellularTraffic
 import com.github.panpf.sketch.sample.data.api.giphy.GiphyApi
 import com.github.panpf.sketch.sample.data.api.pexels.PexelsApi
+import com.github.panpf.sketch.sample.ui.gallery.GiphyPhotoListViewModel
+import com.github.panpf.sketch.sample.ui.gallery.LocalPhotoListViewModel
+import com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoListViewModel
 import com.github.panpf.sketch.sample.ui.test.DecoderTestViewModel
 import com.github.panpf.sketch.sample.ui.test.FetcherTestViewModel
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel
@@ -20,19 +23,22 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
-import org.koin.mp.KoinPlatform
 
 expect fun initialApp(context: PlatformContext)
 
 fun commonModule(context: PlatformContext): Module = module {
     single { AppSettings(context) }
     single { AppEvents() }
-    single { newSketch(context) }
+    single { newSketch(context, appSettings = get()) }
     single { newHttpClient() }
     single { PexelsApi(get()) }
     single { GiphyApi(get()) }
 
+    viewModelOf(::PexelsPhotoListViewModel)
+    viewModelOf(::GiphyPhotoListViewModel)
+    viewModelOf(::LocalPhotoListViewModel)
     viewModel { DecoderTestViewModel(context) }
     viewModel { FetcherTestViewModel(context) }
     viewModel { ProgressIndicatorTestViewModel() }
@@ -40,7 +46,7 @@ fun commonModule(context: PlatformContext): Module = module {
 
 expect fun platformModule(context: PlatformContext): Module
 
-private fun newSketch(context: PlatformContext): Sketch {
+private fun newSketch(context: PlatformContext, appSettings: AppSettings): Sketch {
     return Sketch(context) {
         components {
             supportSaveCellularTraffic()
@@ -48,7 +54,6 @@ private fun newSketch(context: PlatformContext): Sketch {
             supportResourcesHttpUri(context)
         }
 
-        val appSettings: AppSettings = KoinPlatform.getKoin().get()
         networkParallelismLimited(appSettings.networkParallelismLimited.value)
         decodeParallelismLimited(appSettings.decodeParallelismLimited.value)
 

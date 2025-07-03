@@ -8,13 +8,9 @@ import com.github.panpf.sketch.fetch.internal.OkHttpHttpUriFetcherProvider
 import com.github.panpf.sketch.fetch.supportHurlHttpUri
 import com.github.panpf.sketch.fetch.supportKtorHttpUri
 import com.github.panpf.sketch.fetch.supportOkHttpHttpUri
-import com.github.panpf.sketch.sample.ui.gallery.GiphyPhotoListViewModel
-import com.github.panpf.sketch.sample.ui.gallery.LocalPhotoListViewModel
-import com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoListViewModel
 import com.github.panpf.sketch.sample.ui.util.PexelsCompatibleRequestInterceptor
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
-import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatform
 
@@ -26,9 +22,7 @@ actual fun initialApp(context: PlatformContext) {
 }
 
 actual fun platformModule(context: PlatformContext): Module = module {
-    viewModelOf(::PexelsPhotoListViewModel)
-    viewModelOf(::LocalPhotoListViewModel)
-    viewModelOf(::GiphyPhotoListViewModel)
+
 }
 
 actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {

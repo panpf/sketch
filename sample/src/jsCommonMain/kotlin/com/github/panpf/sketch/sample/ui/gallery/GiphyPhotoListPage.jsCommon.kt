@@ -1,42 +1,22 @@
 package com.github.panpf.sketch.sample.ui.gallery
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
-import com.github.panpf.sketch.sample.data.api.Response
-import com.github.panpf.sketch.sample.data.api.giphy.GiphyApi
 import com.github.panpf.sketch.sample.data.api.giphy.GiphyGif
 import com.github.panpf.sketch.sample.ui.model.Photo
-import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 actual fun GiphyPhotoListPage() {
     val navigator = LocalNavigator.current!!
-    val giphyApi: GiphyApi = koinInject()
+    val giphyPhotoListViewModel: GiphyPhotoListViewModel = koinViewModel()
     PhotoList(
+        photoPaging = giphyPhotoListViewModel.photoPaging,
+        modifier = Modifier.fillMaxSize(),
         animatedPlaceholder = true,
-        initialPageStart = 0,
-        pageSize = 80,
-        load = { pageStart: Int, pageSize: Int ->
-            giphyApi.trending(pageStart, pageSize).let { response ->
-                when (response) {
-                    is Response.Success -> {
-                        Result.success(response.body.dataList?.map { it.toPhoto() } ?: emptyList())
-                    }
-
-                    is Response.Error -> {
-                        Result.failure(response.throwable!!)
-                    }
-
-                    else -> {
-                        throw IllegalStateException("Unsupported response: $response")
-                    }
-                }
-            }
-        },
-        calculateNextPageStart = { currentPageStart: Int, loadedPhotoSize: Int ->
-            currentPageStart + loadedPhotoSize
-        },
         gridCellsMinSize = 150.dp,
         onClick = { photos1, _, index ->
             val params = buildPhotoPagerParams(photos1, index)

@@ -20,12 +20,16 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.ViewGroup.LayoutParams
 import androidx.fragment.app.DialogFragment
+import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.tools4a.display.ktx.getScreenHeight
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
+import org.koin.android.ext.android.inject
 import kotlin.math.roundToInt
 
 abstract class BaseDialogFragment : DialogFragment() {
+
+    protected val appSettings: AppSettings by inject()
 
     protected var dialogWidthRatio: Float = 0.85f
     protected var dialogHeightRatio: Float? = null
