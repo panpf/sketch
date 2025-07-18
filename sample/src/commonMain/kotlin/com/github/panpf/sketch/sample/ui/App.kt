@@ -3,6 +3,7 @@ package com.github.panpf.sketch.sample.ui
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -13,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.ScaleTransition
+import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.sample.AppEvents
 import com.github.panpf.sketch.sample.ui.theme.AppTheme
 import com.github.panpf.sketch.sample.util.Platform
@@ -25,10 +27,11 @@ fun App(onContentChanged: ((Navigator) -> Unit)? = null) {
     AppTheme {
         Box(Modifier.fillMaxSize()) {
             val homeScreen = if (Platform.current.isMobile()) VerHomeScreen else HorHomeScreen
-            Navigator(homeScreen) { navigator ->
-                ScaleTransition(navigator = navigator)
-                onContentChanged?.invoke(navigator)
-            }
+//            Navigator(homeScreen) { navigator ->
+//                ScaleTransition(navigator = navigator)
+//                onContentChanged?.invoke(navigator)
+//            }
+            AsyncImage(uri = "UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2", contentDescription = "", modifier = Modifier.size(300.dp, 300.dp))
 
             val snackbarHostState = remember { SnackbarHostState() }
             SnackbarHost(

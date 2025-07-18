@@ -26,6 +26,7 @@ import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
+import com.github.panpf.sketch.fetch.BlurHashUriFetcher
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.Disposable
@@ -530,6 +531,7 @@ internal expect fun platformComponents(context: PlatformContext): ComponentRegis
 internal fun commonComponents(): ComponentRegistry = ComponentRegistry {
     addFetcher(Base64UriFetcher.Factory())
     addFetcher(FileUriFetcher.Factory())
+    addFetcher(BlurHashUriFetcher.Factory())
 
     addRequestInterceptor(MemoryCacheRequestInterceptor())
     addRequestInterceptor(EngineRequestInterceptor())

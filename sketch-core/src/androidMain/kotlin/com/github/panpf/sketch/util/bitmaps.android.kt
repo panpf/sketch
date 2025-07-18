@@ -38,6 +38,7 @@ import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.ResizeMapping
 import com.github.panpf.sketch.resize.Scale
+import java.nio.ByteBuffer
 import kotlin.math.ceil
 import kotlin.math.min
 
@@ -250,6 +251,9 @@ actual fun Bitmap.installIntPixels(intPixels: IntArray) {
     )
 }
 
+actual fun Bitmap.installPixels(byteArray: ByteArray) {
+    copyPixelsFromBuffer(ByteBuffer.wrap(byteArray))
+}
 /**
  * Returns the Color at the specified location. Format ARGB_8888
  *

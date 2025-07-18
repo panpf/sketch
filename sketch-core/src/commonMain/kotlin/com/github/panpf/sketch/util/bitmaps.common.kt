@@ -66,6 +66,8 @@ expect fun Bitmap.readIntPixels(
  */
 expect fun Bitmap.installIntPixels(intPixels: IntArray)
 
+expect fun Bitmap.installPixels(byteArray: ByteArray)
+
 /**
  * Returns the Color at the specified location. Format ARGB_8888
  *

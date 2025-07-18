@@ -81,7 +81,7 @@ actual val Bitmap.isImmutable: Boolean
  *
  * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testColorType
  */
-typealias ColorType = android.graphics.Bitmap.Config
+actual typealias ColorType = android.graphics.Bitmap.Config
 
 /**
  * Get the [ColorType] of the bitmap
@@ -91,16 +91,17 @@ typealias ColorType = android.graphics.Bitmap.Config
 val Bitmap.colorType: ColorType?
     get() = configOrNull
 
+actual val BASE_COLOR_TYPE: ColorType = ColorType.ARGB_8888
 /**
  * Create a new [Bitmap] with the specified width, height, and [ColorType] and allocate memory
  *
  * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testCreateBitmap
  */
-fun createBitmap(
+actual fun createBitmap(
     width: Int,
     height: Int,
-    config: ColorType = ColorType.ARGB_8888
-): Bitmap = Bitmap.createBitmap(width, height, config)
+    colorType: ColorType
+): Bitmap = Bitmap.createBitmap(width, height, colorType)
 
 /**
  * Create a new [Bitmap] with the specified width, height, and [ColorType] and allocate memory

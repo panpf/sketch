@@ -52,4 +52,24 @@ interface DecodeHelper : Closeable {
      * Decode the specified region
      */
     fun decodeRegion(region: Rect, sampleSize: Int): Image
+
+    abstract class Adapter : DecodeHelper {
+        override val supportRegion: Boolean
+            get() = TODO("Not yet implemented")
+
+        override fun decode(sampleSize: Int): Image {
+            TODO("Not yet implemented")
+        }
+
+        override fun decodeRegion(
+            region: Rect,
+            sampleSize: Int
+        ): Image {
+            TODO("Not yet implemented")
+        }
+
+        override fun close() {
+
+        }
+    }
 }

@@ -134,7 +134,7 @@ internal fun Drawable.toBitmap(
         createBitmap(
             width = targetWidth,
             height = targetHeight,
-            config = colorType.safeToSoftware()
+            colorType = colorType.safeToSoftware()
         )
     }
     val canvas = Canvas(bitmap)

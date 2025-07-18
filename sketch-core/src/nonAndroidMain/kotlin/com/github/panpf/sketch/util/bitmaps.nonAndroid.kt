@@ -211,6 +211,10 @@ actual fun Bitmap.installIntPixels(intPixels: IntArray) {
     }
 }
 
+
+actual fun Bitmap.installPixels(byteArray: ByteArray) {
+    this.installPixels(byteArray)
+}
 /**
  * Returns the pixel at the specified position in ARGB_8888 format
  *

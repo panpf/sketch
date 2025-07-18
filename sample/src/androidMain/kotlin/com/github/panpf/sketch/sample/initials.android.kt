@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Build
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.internal.BlurhashHelperDecoder
 import com.github.panpf.sketch.decode.internal.FFmpegVideoFrameDecoderProvider
 import com.github.panpf.sketch.decode.internal.GifDecoderProvider
 import com.github.panpf.sketch.decode.internal.KoralGifDecoderProvider
@@ -113,6 +114,8 @@ actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
             addDecoder(PenfeizhouAnimatedWebpDecoder.Factory())
         }
+
+        addDecoder(BlurhashHelperDecoder.Factory())
     }
 }
 

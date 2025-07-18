@@ -31,6 +31,8 @@ import org.jetbrains.skia.ImageInfo
  */
 actual typealias Bitmap = org.jetbrains.skia.Bitmap
 
+actual typealias ColorType = ColorType
+
 /**
  * Get the width of the bitmap
  *
@@ -65,6 +67,7 @@ actual val Bitmap.byteCount: Long
 actual val Bitmap.isMutable: Boolean
     get() = !this.isImmutable
 
+actual val BASE_COLOR_TYPE: ColorType = ColorType.RGBA_8888
 /**
  * Returns true if the bitmap is immutable
  *
@@ -87,11 +90,9 @@ fun createBitmap(imageInfo: ImageInfo): Bitmap = Bitmap()
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testCreateBitmap
  */
-fun createBitmap(
+actual fun createBitmap(
     width: Int,
     height: Int,
-    colorType: ColorType = ColorType.N32,
-    alphaType: ColorAlphaType = ColorAlphaType.PREMUL,
-    colorSpace: ColorSpace = ColorSpace.sRGB,
+    colorType: ColorType,
 ): Bitmap = Bitmap()
-    .apply { allocPixels(ImageInfo(width, height, colorType, alphaType, colorSpace)) }
+    .apply { allocPixels(ImageInfo(width, height, colorType, ColorAlphaType.PREMUL)) }

@@ -28,6 +28,8 @@ import com.github.panpf.sketch.util.Size
  */
 expect class Bitmap
 
+expect enum class ColorType
+
 /**
  * Get the width of the bitmap
  *
@@ -76,3 +78,9 @@ expect val Bitmap.isMutable: Boolean
  * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testIsImmutable
  */
 expect val Bitmap.isImmutable: Boolean
+
+expect val BASE_COLOR_TYPE : ColorType
+
+expect fun createBitmap(width: Int,
+                        height: Int,
+                        colorType: ColorType) : Bitmap

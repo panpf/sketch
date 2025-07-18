@@ -42,9 +42,10 @@ class SkiaDecoder(
 ) : HelperDecoder(
     requestContext = requestContext,
     dataSource = dataSource,
-    decodeHelperFactory = { SkiaDecodeHelper(requestContext.request, dataSource) }
+    decodeHelperFactory = {
+        SkiaDecodeHelper(requestContext.request, dataSource)
+    }
 ) {
-
     class Factory : Decoder.Factory {
 
         override val key: String get() = "SkiaDecoder"
