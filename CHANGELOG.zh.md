@@ -11,6 +11,8 @@
 
 * fix: 修复 ThumbnailMemoryCacheStateImage 在遇到没有 ImageInfo 的内存缓存时导致 App 崩溃或图片加载失败的
   bug。 [#259](https://github.com/panpf/sketch/issues/259)
+* fix: 修复 MemoryCacheRequestInterceptor 在遇到没有 ImageInfo 的缓存时图片加载失败的
+  bug。 [#260](https://github.com/panpf/sketch/issues/260)
 
 # 4.2.0
 

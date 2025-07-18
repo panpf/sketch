@@ -83,10 +83,12 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         val memoryCache = requestContext.sketch.memoryCache
         val memoryCacheKey = requestContext.memoryCacheKey
         val cachedValue = memoryCache[memoryCacheKey] ?: return null
+        val imageInfo = cachedValue.getImageInfo() ?: return null
+        val resize = cachedValue.getResize() ?: return null
         return ImageData(
             image = cachedValue.image,
-            imageInfo = cachedValue.getImageInfo()!!,
-            resize = cachedValue.getResize()!!,
+            imageInfo = imageInfo,
+            resize = resize,
             transformeds = cachedValue.getTransformeds(),
             extras = cachedValue.getExtras(),
             dataFrom = DataFrom.MEMORY_CACHE,

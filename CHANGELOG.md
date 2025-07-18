@@ -14,6 +14,8 @@ Translations: [简体中文](CHANGELOG.zh.md)
 * fix: Fixed a bug that caused the App to crash or image loading failure when
   ThumbnailMemoryCacheStateImage to encounter memory cache without
   ImageInfo. [#259](https://github.com/panpf/sketch/issues/259)
+* fix: Fixed a bug where MemoryCacheRequestInterceptor failed to load images when they encountered a
+  cache without ImageInfo. [#260](https://github.com/panpf/sketch/issues/260)
 
 # 4.2.0
 
