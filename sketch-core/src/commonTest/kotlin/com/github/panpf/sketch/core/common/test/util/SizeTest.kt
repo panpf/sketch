@@ -23,6 +23,8 @@ import com.github.panpf.sketch.util.coerceAtMost
 import com.github.panpf.sketch.util.div
 import com.github.panpf.sketch.util.isNotEmpty
 import com.github.panpf.sketch.util.isSameAspectRatio
+import com.github.panpf.sketch.util.minus
+import com.github.panpf.sketch.util.plus
 import com.github.panpf.sketch.util.rotate
 import com.github.panpf.sketch.util.times
 import kotlin.test.Test
@@ -231,6 +233,30 @@ class SizeTest {
         assertEquals(
             expected = Size(10, 5),
             actual = Size(20, 5).coerceAtMost(Size(10, 20))
+        )
+    }
+
+    @Test
+    fun testPlus() {
+        assertEquals(
+            expected = "15x37",
+            actual = (Size(11, 22) + Size(4, 15)).toString()
+        )
+        assertEquals(
+            expected = "7x7",
+            actual = (Size(11, 22) + Size(-4, -15)).toString()
+        )
+    }
+
+    @Test
+    fun testMinus() {
+        assertEquals(
+            expected = "7x7",
+            actual = (Size(11, 22) - Size(4, 15)).toString()
+        )
+        assertEquals(
+            expected = "15x37",
+            actual = (Size(11, 22) - Size(-4, -15)).toString()
         )
     }
 }

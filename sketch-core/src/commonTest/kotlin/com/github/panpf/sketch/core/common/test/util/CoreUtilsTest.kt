@@ -46,16 +46,23 @@ import com.github.panpf.sketch.util.ifOrNull
 import com.github.panpf.sketch.util.intMerged
 import com.github.panpf.sketch.util.intSplit
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
+import com.github.panpf.sketch.util.isThumbnailWithSize
 import com.github.panpf.sketch.util.md5
+import com.github.panpf.sketch.util.plus
 import com.github.panpf.sketch.util.toHexString
 import kotlinx.coroutines.async
 import kotlinx.coroutines.test.runTest
 import okio.IOException
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.roundToInt
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class CoreUtilsTest {
 
@@ -996,6 +1003,184 @@ class CoreUtilsTest {
         assertEquals(1, compareVersions("0.8.1-beta.1", "0.8.1-alpha.01"))
         assertEquals(1, compareVersions("0.8.1-alpha.01", "0.8.1-SNAPSHOT.1"))
         assertEquals(1, compareVersions("0.8.1-SNAPSHOT.1", "0.8.0"))
+    }
+
+    @Test
+    fun testIsThumbnailWithSize() {
+        assertFalse(isThumbnailWithSize(Size(0, 2000), Size(500, 1000)))
+        assertFalse(isThumbnailWithSize(Size(1000, 0), Size(500, 1000)))
+        assertFalse(isThumbnailWithSize(Size(1000, 2000), Size(0, 1000)))
+        assertFalse(isThumbnailWithSize(Size(1000, 2000), Size(500, 0)))
+        assertFalse(isThumbnailWithSize(Size(1000, 2000), Size(1001, 200)))
+        assertFalse(isThumbnailWithSize(Size(1000, 2000), Size(100, 2001)))
+        assertFalse(isThumbnailWithSize(Size(100, 200), Size(1000, 100)))
+
+        assertFalse(
+            isThumbnailWithSize(
+                size = Size(6799, 4882),
+                otherSize = Size(696, 501),
+                epsilonPixels = 1f
+            )
+        )
+        assertTrue(
+            isThumbnailWithSize(
+                size = Size(6799, 4882),
+                otherSize = Size(696, 501),
+                epsilonPixels = 2f
+            )
+        )
+
+        var imageSize = Size(29999, 325)
+        val maxMultiple = 257
+
+        val nextFunction: (Float) -> Float = { it + 0.1f }
+        val calculateThumbnailSize: (Size, Float, RoundMode) -> Size =
+            { size, multiple, mode ->
+                when (mode) {
+                    RoundMode.CEIL -> Size(
+                        width = ceil(size.width / multiple).toInt(),
+                        height = ceil(size.height / multiple).toInt()
+                    )
+
+                    RoundMode.FLOOR -> Size(
+                        width = floor(size.width / multiple).toInt(),
+                        height = floor(size.height / multiple).toInt()
+                    )
+
+                    RoundMode.ROUND -> Size(
+                        width = (size.width / multiple).roundToInt(),
+                        height = (size.height / multiple).roundToInt()
+                    )
+                }
+            }
+
+        generateSequence(1f, nextFunction).takeWhile { it <= maxMultiple }.forEach { multiple ->
+            val thumbnailSize =
+                calculateThumbnailSize(imageSize, multiple, RoundMode.CEIL)
+            assertEquals(
+                expected = imageSize != thumbnailSize,
+                actual = isThumbnailWithSize(imageSize, thumbnailSize),
+                message = "imageSize=${imageSize}, " +
+                        "thumbnailSize=${thumbnailSize}, " +
+                        "multiple=${multiple.format(2)}"
+            )
+
+            val thumbnailSize2 = thumbnailSize + Size(0, 2)
+            assertFalse(
+                actual = isThumbnailWithSize(imageSize, thumbnailSize2),
+                message = "imageSize=${imageSize}, " +
+                        "thumbnailSize=${thumbnailSize2}, " +
+                        "multiple=${multiple.format(2)}"
+            )
+        }
+
+        generateSequence(1f, nextFunction).takeWhile { it <= maxMultiple }.forEach { multiple ->
+            val thumbnailSize =
+                calculateThumbnailSize(imageSize, multiple, RoundMode.FLOOR)
+            assertEquals(
+                expected = imageSize != thumbnailSize,
+                actual = isThumbnailWithSize(imageSize, thumbnailSize),
+                message = "imageSize=${imageSize}, " +
+                        "thumbnailSize=${thumbnailSize}, " +
+                        "multiple=${multiple.format(2)}"
+            )
+
+            val thumbnailSize2 = thumbnailSize + Size(0, 2)
+            assertFalse(
+                actual = isThumbnailWithSize(imageSize, thumbnailSize2),
+                message = "imageSize=${imageSize}, " +
+                        "thumbnailSize=${thumbnailSize2}, " +
+                        "multiple=${multiple.format(2)}"
+            )
+        }
+
+        generateSequence(1f, nextFunction).takeWhile { it <= maxMultiple }.forEach { multiple ->
+            val thumbnailSize =
+                calculateThumbnailSize(imageSize, multiple, RoundMode.ROUND)
+            assertEquals(
+                expected = imageSize != thumbnailSize,
+                actual = isThumbnailWithSize(imageSize, thumbnailSize),
+                message = "imageSize=${imageSize}, " +
+                        "thumbnailSize=${thumbnailSize}, " +
+                        "multiple=${multiple.format(2)}"
+            )
+
+            val thumbnailSize2 = thumbnailSize + Size(0, 2)
+            assertFalse(
+                actual = isThumbnailWithSize(imageSize, thumbnailSize2),
+                message = "imageSize=${imageSize}, " +
+                        "thumbnailSize=${thumbnailSize2}, " +
+                        "multiple=${multiple.format(2)}"
+            )
+        }
+
+        imageSize = Size(325, 29999)
+
+        generateSequence(1f, nextFunction).takeWhile { it <= maxMultiple }.forEach { multiple ->
+            val thumbnailSize =
+                calculateThumbnailSize(imageSize, multiple, RoundMode.CEIL)
+            assertEquals(
+                expected = imageSize != thumbnailSize,
+                actual = isThumbnailWithSize(thumbnailSize, imageSize),
+                message = "imageSize=${imageSize}, " +
+                        "thumbnailSize=${thumbnailSize}, " +
+                        "multiple=${multiple.format(2)}"
+            )
+
+            val thumbnailSize2 = thumbnailSize + Size(2, 0)
+            assertFalse(
+                actual = isThumbnailWithSize(thumbnailSize2, imageSize),
+                message = "imageSize=${imageSize}, " +
+                        "thumbnailSize=${thumbnailSize2}, " +
+                        "multiple=${multiple.format(2)}"
+            )
+        }
+
+        generateSequence(1f, nextFunction).takeWhile { it <= maxMultiple }.forEach { multiple ->
+            val thumbnailSize =
+                calculateThumbnailSize(imageSize, multiple, RoundMode.FLOOR)
+            assertEquals(
+                expected = imageSize != thumbnailSize,
+                actual = isThumbnailWithSize(thumbnailSize, imageSize),
+                message = "imageSize=${imageSize}, " +
+                        "thumbnailSize=${thumbnailSize}, " +
+                        "multiple=${multiple.format(2)}"
+            )
+
+            val thumbnailSize2 = thumbnailSize + Size(2, 0)
+            assertFalse(
+                actual = isThumbnailWithSize(thumbnailSize2, imageSize),
+                message = "imageSize=${imageSize}, " +
+                        "thumbnailSize=${thumbnailSize2}, " +
+                        "multiple=${multiple.format(2)}"
+            )
+        }
+
+        generateSequence(1f, nextFunction).takeWhile { it <= maxMultiple }.forEach { multiple ->
+            val thumbnailSize =
+                calculateThumbnailSize(imageSize, multiple, RoundMode.ROUND)
+            assertEquals(
+                expected = imageSize != thumbnailSize,
+                actual = isThumbnailWithSize(thumbnailSize, imageSize),
+                message = "imageSize=${imageSize}, " +
+                        "thumbnailSize=${thumbnailSize}, " +
+                        "multiple=${multiple.format(2)}"
+            )
+
+            val thumbnailSize2 = thumbnailSize + Size(2, 0)
+            assertFalse(
+                actual = isThumbnailWithSize(thumbnailSize2, imageSize),
+                message = "imageSize=${imageSize}, " +
+                        "thumbnailSize=${thumbnailSize2}, " +
+                        "multiple=${multiple.format(2)}"
+            )
+        }
+    }
+
+    enum class RoundMode {
+        CEIL,
+        FLOOR,
+        ROUND,
     }
 
     private class FormatItem<T>(val number: T, val newScale: Int, val expected: T)

@@ -21,6 +21,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okio.ByteString.Companion.encodeUtf8
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
@@ -645,4 +646,58 @@ fun compareVersions(version1: String, version2: String): Int {
         }
     }
     return suffixCompareResult
+}
+
+/**
+ * If one of the size is a thumbnail of the other size, it returns true.
+ * The rule is that their scaling ratio is the same and the error after scaling does not exceed [epsilonPixels] pixels
+ *
+ * @param epsilonPixels The maximum allowable error pixels
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testIsThumbnailWithSize
+ */
+internal fun isThumbnailWithSize(
+    size: Size,
+    otherSize: Size,
+    epsilonPixels: Float = 1.0f
+): Boolean {
+    // There is no need to compare pictures with width or height of 0
+    if (size.isEmpty || otherSize.isEmpty) return false
+    // There is no need to compare the image direction (horizontal or vertical)
+    if (size.width > size.height && otherSize.width < otherSize.height) return false
+    if (size.width < size.height && otherSize.width > otherSize.height) return false
+
+    val (originSize, thumbnailSize) = when {
+        size.width > otherSize.width && size.height > otherSize.height -> size to otherSize
+        size.width < otherSize.width && size.height < otherSize.height -> otherSize to size
+        else -> return false
+    }
+
+    // Verify height with width scaling
+    val widthScale = originSize.width.toFloat() / thumbnailSize.width
+    val targetHeight = originSize.height.toFloat() / widthScale
+    val heightDiff = abs(targetHeight - thumbnailSize.height)
+    val validByWidth = heightDiff <= epsilonPixels
+
+    // Verify width with height scaling
+    val heightScale = originSize.height.toFloat() / thumbnailSize.height
+    val targetWidth = originSize.width.toFloat() / heightScale
+    val widthDiff = abs(targetWidth - thumbnailSize.width)
+    val validByHeight = widthDiff <= epsilonPixels
+
+    val pass = validByWidth || validByHeight
+//    println(
+//        "isThumbnailWithSize: " +
+//                "originSize=${originSize.toShortString()}, " +
+//                "thumbnailSize=${thumbnailSize.toShortString()}. " +
+//                "widthScale=${widthScale.format(2)}, " +
+//                "targetHeight=${targetHeight.format(2)}, " +
+//                "heightDiff=${heightDiff.format(2)}, " +
+//                "validByWidth=${validByWidth}. " +
+//                "heightScale=${heightScale.format(2)}, " +
+//                "targetWidth=${targetWidth.format(2)}, " +
+//                "widthDiff=${widthDiff.format(2)}, " +
+//                "validByHeight=${validByHeight}. " +
+//                "pass=$pass"
+//    )
+    return pass
 }

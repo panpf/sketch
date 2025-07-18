@@ -163,3 +163,19 @@ fun Size.coerceAtMost(maximumValue: Size): Size = Size(
     width = width.coerceAtMost(maximumValue.width),
     height = height.coerceAtMost(maximumValue.height),
 )
+
+/**
+ * Return the results of two IntSizeCompat addition operations
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.SizeTest.testPlus
+ */
+operator fun Size.plus(other: Size): Size =
+    Size(this.width + other.width, this.height + other.height)
+
+/**
+ * Return the results of two Size subtraction operations
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.SizeTest.testMinus
+ */
+operator fun Size.minus(other: Size): Size =
+    Size(this.width - other.width, this.height - other.height)

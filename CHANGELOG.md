@@ -17,6 +17,8 @@ Translations: [简体中文](CHANGELOG.zh.md)
 * fix: Fixed a bug where MemoryCacheRequestInterceptor failed to load images when they encountered a
   cache without ImageInfo. [#260](https://github.com/panpf/sketch/issues/260)
 * new: MemoryCache added entries() method to get all cache entries
+* improve: Improve the performance of ThumbnailMemoryCacheStateImage, now iterates through all
+  memory caches by default and improves the judgment accuracy of thumbnail images.
 
 # 4.2.0
 
