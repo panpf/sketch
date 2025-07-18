@@ -62,9 +62,9 @@ data class ThumbnailMemoryCacheStateImage(
             }
             if (uri == uriFromKey) {
                 val cachedValue = sketch.memoryCache[key]?.takeIf {
+                    val imageInfo = it.getImageInfo() ?: return@takeIf false
                     val image = it.image
                     val bitmapAspectRatio = (image.width.toFloat() / image.height).format(1)
-                    val imageInfo = it.getImageInfo()!!
                     val imageAspectRatio =
                         (imageInfo.width.toFloat() / imageInfo.height).format(1)
                     val sizeSame = abs(bitmapAspectRatio - imageAspectRatio) <= 0.1f

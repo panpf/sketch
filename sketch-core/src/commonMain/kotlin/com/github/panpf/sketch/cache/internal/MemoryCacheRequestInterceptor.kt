@@ -99,9 +99,23 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         val requestContext = chain.requestContext
         val target = request.target
         if (target != null) {
-            val placeholderDrawable = request.placeholder
-                ?.getImage(sketch, request, null)
-                ?.resizeOnDraw(request, requestContext.size)
+            val placeholderDrawable = runCatching {
+                request.placeholder
+                    ?.getImage(sketch, request, null)
+                    ?.resizeOnDraw(request, requestContext.size)
+            }.apply {
+                if (isFailure) {
+                    val exception = exceptionOrNull()
+                    if (exception != null) {
+                        sketch.logger.e(
+                            tr = exception,
+                            msg = "Failed to get the placeholder image. '${request.key}'"
+                        )
+                    } else {
+                        sketch.logger.e(msg = "Failed to get the placeholder image. '${request.key}'")
+                    }
+                }
+            }.getOrNull()
             target.onStart(sketch, request, placeholderDrawable)
         }
     }
