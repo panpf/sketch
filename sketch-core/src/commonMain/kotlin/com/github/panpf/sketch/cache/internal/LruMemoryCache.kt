@@ -88,6 +88,10 @@ class LruMemoryCache(
         return cache.keys
     }
 
+    override fun entries(): Set<Map.Entry<String, Value>> {
+        return cache.entries
+    }
+
     override fun clear() {
         cache.clear()
     }

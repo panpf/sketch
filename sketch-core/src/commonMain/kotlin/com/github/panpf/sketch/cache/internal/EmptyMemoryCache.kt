@@ -50,6 +50,8 @@ data object EmptyMemoryCache : MemoryCache {
 
     override fun keys(): Set<String> = emptySet()
 
+    override fun entries(): Set<Map.Entry<String, Value>> = emptySet()
+
     override fun clear() {
 
     }

@@ -40,6 +40,8 @@ internal open class LruCache<K : Any, V : Any>(
 
     val keys: Set<K> get() = map.keys.toSet()
 
+    val entries: Set<Map.Entry<K, V>> get() = map.entries.toSet()
+
     init {
         require(maxSize > 0) { "maxSize <= 0" }
     }
