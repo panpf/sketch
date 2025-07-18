@@ -20,7 +20,6 @@ import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -80,11 +79,9 @@ class ProgressIndicatorTestScreen : BaseScreen() {
                     stepAnimationDuration = stepAnimationDuration
                 )
                 val progress by viewModel.progressState.collectAsState()
-                LaunchedEffect(progress) {
-                    maskProgressPainter.progress = progress
-                    sectorProgressPainter.progress = progress
-                    ringProgressPainter.progress = progress
-                }
+                maskProgressPainter.progress = progress
+                sectorProgressPainter.progress = progress
+                ringProgressPainter.progress = progress
 
                 val imageState = rememberAsyncImageState()
                 Text(text = "MaskProgressIndicator")

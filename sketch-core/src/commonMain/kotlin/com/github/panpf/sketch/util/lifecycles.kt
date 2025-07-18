@@ -41,7 +41,7 @@ internal suspend fun Lifecycle.awaitStarted() {
                     continuation.resume(Unit)
                 }
             }
-            addObserver(observer!!)
+            addObserver(observer)
         }
     } finally {
         // 'observer' will always be null if this method is marked as 'inline'.

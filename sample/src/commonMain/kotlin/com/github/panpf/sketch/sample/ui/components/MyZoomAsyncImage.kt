@@ -1,7 +1,6 @@
 package com.github.panpf.sketch.sample.ui.components
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -40,19 +39,11 @@ fun MyZoomAsyncImage(
 ) {
     val appSettings: AppSettings = koinInject()
 
-    LaunchedEffect(zoomState) {
-        appSettings.showTileBounds.collect {
-            zoomState.subsampling.showTileBounds = it
-        }
-    }
-    LaunchedEffect(zoomState) {
-        appSettings.readModeEnabled.collect {
-            zoomState.zoomable.readMode = if (it) ReadMode.Default else null
-        }
-    }
-    LaunchedEffect(zoomState) {
-        zoomState.zoomable.keepTransformWhenSameAspectRatioContentSizeChanged = true
-    }
+    val showTileBounds by appSettings.showTileBounds.collectAsState()
+    val readModeEnabled by appSettings.readModeEnabled.collectAsState()
+    zoomState.subsampling.showTileBounds = showTileBounds
+    zoomState.zoomable.readMode = if (readModeEnabled) ReadMode.Default else null
+    zoomState.zoomable.keepTransformWhenSameAspectRatioContentSizeChanged = true
 
     val request = ComposableImageRequest(uri) {
         val memoryCache by appSettings.memoryCache.collectAsState()
