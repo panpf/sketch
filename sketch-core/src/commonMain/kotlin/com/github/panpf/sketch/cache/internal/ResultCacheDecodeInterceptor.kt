@@ -197,18 +197,25 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
                             ?: throw IllegalArgumentException("Illegal result cache properties: $metadataString")
                         line.substring(0, delimiterIndex) to line.substring(delimiterIndex + 1)
                     }
-                val imageInfo = ImageInfo(
-                    width = propertiesMap["width"]!!.toInt(),
-                    height = propertiesMap["height"]!!.toInt(),
-                    mimeType = propertiesMap["mimeType"]!!,
-                )
+                val width: Int = propertiesMap["width"]?.toIntOrNull()
+                    ?: throw IllegalArgumentException("Not found 'width' in result cache properties: $metadataString")
+                val height: Int = propertiesMap["height"]?.toIntOrNull()
+                    ?: throw IllegalArgumentException("Not found 'height' in  result cache properties: $metadataString")
+                val mimeType: String = propertiesMap["mimeType"]
+                    ?: throw IllegalArgumentException("Not found 'mimeType' in  result cache properties: $metadataString")
+                val resizeWidth = propertiesMap["resizeWidth"]?.toIntOrNull()
+                    ?: throw IllegalArgumentException("Not found 'resizeWidth' in  result cache properties: $metadataString")
+                val resizeHeight = propertiesMap["resizeHeight"]?.toIntOrNull()
+                    ?: throw IllegalArgumentException("Not found 'resizeHeight' in  result cache properties: $metadataString")
+                val precision = propertiesMap["resizePrecision"]
+                    ?: throw IllegalArgumentException("Not found 'resizePrecision' in  result cache properties: $metadataString")
+                val scale = propertiesMap["resizeScale"]
+                    ?: throw IllegalArgumentException("Not found 'resizeScale' in  result cache properties: $metadataString")
+                val imageInfo = ImageInfo(width = width, height = height, mimeType = mimeType)
                 val resize = Resize(
-                    size = Size(
-                        width = propertiesMap["resizeWidth"]!!.toInt(),
-                        height = propertiesMap["resizeHeight"]!!.toInt()
-                    ),
-                    precision = Precision.valueOf(propertiesMap["resizePrecision"]!!),
-                    scale = Scale.valueOf(propertiesMap["resizeScale"]!!)
+                    size = Size(width = resizeWidth, height = resizeHeight),
+                    precision = Precision.valueOf(precision),
+                    scale = Scale.valueOf(scale)
                 )
                 val transformeds = propertiesMap.keys.asSequence()
                     .filter { key -> key == "transformed" }
