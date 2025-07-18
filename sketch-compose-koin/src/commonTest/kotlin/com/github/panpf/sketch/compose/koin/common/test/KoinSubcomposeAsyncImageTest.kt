@@ -18,7 +18,7 @@ import com.github.panpf.sketch.test.utils.Koins
 import com.github.panpf.sketch.test.utils.LifecycleContainer
 import kotlin.test.Test
 
-class SingletonSubcomposeAsyncImageTest {
+class KoinSubcomposeAsyncImageTest {
 
     init {
         Koins.initial()

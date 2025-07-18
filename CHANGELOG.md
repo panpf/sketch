@@ -16,6 +16,9 @@ Translations: [简体中文](CHANGELOG.zh.md)
   ImageInfo. [#259](https://github.com/panpf/sketch/issues/259)
 * fix: Fixed a bug where MemoryCacheRequestInterceptor failed to load images when they encountered a
   cache without ImageInfo. [#260](https://github.com/panpf/sketch/issues/260)
+* break: 'sketch-compose-koin', 'sketch-view-koin', 'sketch-koin' The file name of the module has
+  been changed from Singleton to Koin, and binary compatibility is corrupted. The library that
+  depends on this may need to be recompiled.
 * new: MemoryCache added entries() method to get all cache entries
 * improve: Improve the performance of ThumbnailMemoryCacheStateImage, now iterates through all
   memory caches by default and improves the judgment accuracy of thumbnail images.

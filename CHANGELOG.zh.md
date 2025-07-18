@@ -13,6 +13,8 @@
   bug。 [#259](https://github.com/panpf/sketch/issues/259)
 * fix: 修复 MemoryCacheRequestInterceptor 在遇到没有 ImageInfo 的缓存时图片加载失败的
   bug。 [#260](https://github.com/panpf/sketch/issues/260)
+* break: 'sketch-compose-koin', 'sketch-view-koin', 'sketch-koin' 模块的文件名从 Singleton 改为
+  Koin，二进制兼容性被破坏，依赖于此的库可能需要重新编译
 * new: MemoryCache 新增 entries() 方法用于获取所有缓存条目
 * improve: 改进 ThumbnailMemoryCacheStateImage 的性能，现在默认遍历所有的内存缓存并且改进缩略图的判断精度
 

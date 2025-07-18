@@ -49,7 +49,7 @@ import org.koin.compose.koinInject
  *  destination.
  *  @param clipToBounds Whether to clip the content to the bounds of this layout. Defaults to true.
  *
- * @see com.github.panpf.sketch.compose.koin.common.test.SingletonAsyncImageTest.testAsyncImage1
+ * @see com.github.panpf.sketch.compose.koin.common.test.KoinAsyncImageTest.testAsyncImage1
  */
 @Composable
 @NonRestartableComposable
@@ -99,7 +99,7 @@ fun AsyncImage(
  *  destination.
  *  @param clipToBounds Whether to clip the content to the bounds of this layout. Defaults to true.
  *
- * @see com.github.panpf.sketch.compose.koin.common.test.SingletonAsyncImageTest.testAsyncImage2
+ * @see com.github.panpf.sketch.compose.koin.common.test.KoinAsyncImageTest.testAsyncImage2
  */
 @Composable
 @NonRestartableComposable
