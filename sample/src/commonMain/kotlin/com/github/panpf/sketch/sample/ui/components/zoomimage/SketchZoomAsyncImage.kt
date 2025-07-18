@@ -18,7 +18,6 @@ package com.github.panpf.zoomimage
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -186,9 +185,7 @@ fun SketchZoomAsyncImage(
     zoomState.zoomable.alignment = alignment
     zoomState.zoomable.layoutDirection = LocalLayoutDirection.current
 
-    LaunchedEffect(zoomState.subsampling) {
-        zoomState.subsampling.tileImageCache = SketchTileImageCache(sketch)
-    }
+    zoomState.subsampling.tileImageCache = remember(sketch) { SketchTileImageCache(sketch) }
 
     val coroutineScope = rememberCoroutineScope()
     // Why not use 'snapshotFlow { state.painterState }' but onPainterState ?
@@ -237,7 +234,7 @@ fun SketchZoomAsyncImage(
         Box(
             Modifier
                 .matchParentSize()
-                .zooming(zoomable = zoomState.zoomable)
+                .zooming(zoomable = zoomState.zoomable, firstScaleByContentSize = true)
                 .subsampling(zoomState.zoomable, zoomState.subsampling)
         )
 
