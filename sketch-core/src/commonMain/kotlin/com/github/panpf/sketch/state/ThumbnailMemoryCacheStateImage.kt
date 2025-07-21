@@ -24,6 +24,7 @@ import com.github.panpf.sketch.cache.getTransformeds
 import com.github.panpf.sketch.decode.internal.isInSampledTransformed
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.size
+import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.isThumbnailWithSize
 
 /**
@@ -59,11 +60,13 @@ data class ThumbnailMemoryCacheStateImage(
         for (entry: Map.Entry<String, MemoryCache.Value> in entries) {
             val (memoryCacheKey: String, value: MemoryCache.Value) = entry
 
-            if (!checkMemoryCacheKey(memoryCacheKey, uri)) {
+            if (!checkMemoryCacheKey(sketch.logger, memoryCacheKey, uri)) {
                 continue
             }
 
-            if (checkThumbnailBySize(value) && checkTransformeds(value)) {
+            val checkThumbnailBySize = checkSize(sketch.logger, value, memoryCacheKey)
+            val checkTransformeds = checkTransformeds(sketch.logger, value, memoryCacheKey)
+            if (checkThumbnailBySize && checkTransformeds) {
                 targetCachedValue = value
                 break
             } else if (maxMismatchCount >= 0 && ++mismatchCount > maxMismatchCount) {
@@ -73,35 +76,78 @@ data class ThumbnailMemoryCacheStateImage(
         return targetCachedValue?.image ?: defaultImage?.getImage(sketch, request, throwable)
     }
 
-    private fun checkMemoryCacheKey(memoryCacheKey: String, uri: String): Boolean {
+    private fun checkMemoryCacheKey(logger: Logger, memoryCacheKey: String, uri: String): Boolean {
         // memoryCacheKey == "${uri}[?|&]_${options}". See RequestKeys.newCacheKey() for details.
         if (!memoryCacheKey.startsWith(uri)) {
+            logger.v {
+                "ThumbnailMemoryCacheStateImage. memoryCacheKey does not start with uri. memoryCacheKey='$memoryCacheKey', uri='$uri'"
+            }
             return false
         }
+        if (memoryCacheKey.length == uri.length) {
+            return true
+        }
         if (memoryCacheKey.length < uri.length + 2) {
+            logger.v {
+                "ThumbnailMemoryCacheStateImage. memoryCacheKey is too short. memoryCacheKey='$memoryCacheKey', uri='$uri'"
+            }
             return false
         }
         val char1 = memoryCacheKey[uri.length]
         val char2 = memoryCacheKey[uri.length + 1]
-        return (char1 == '?' || char1 == '&') && char2 == '_'
+        val pass = (char1 == '?' || char1 == '&') && char2 == '_'
+        if (!pass) {
+            logger.v {
+                "ThumbnailMemoryCacheStateImage. The cached value does not come from Sketch. memoryCacheKey='$memoryCacheKey'"
+            }
+        }
+        return pass
     }
 
-    private fun checkThumbnailBySize(value: MemoryCache.Value): Boolean {
+    private fun checkSize(
+        logger: Logger,
+        value: MemoryCache.Value,
+        memoryCacheKey: String
+    ): Boolean {
         val imageInfo = value.getImageInfo() ?: return false
         val image = value.image
-        if (image.width >= imageInfo.size.width || image.height >= imageInfo.size.height) {
+        if (image.size == imageInfo.size) {
+            return true
+        }
+        if (image.width > imageInfo.size.width || image.height > imageInfo.size.height) {
+            logger.v {
+                "ThumbnailMemoryCacheStateImage. image size is greater than imageInfo size. " +
+                        "imageSize=${image.size}, imageOriginSize=${imageInfo.size}, memoryCacheKey='$memoryCacheKey'"
+            }
             return false
         }
-        return isThumbnailWithSize(
+        val pass = isThumbnailWithSize(
             size = imageInfo.size,
             otherSize = image.size,
             epsilonPixels = 2f
         )
+        if (!pass) {
+            logger.v {
+                "ThumbnailMemoryCacheStateImage. image size is not a thumbnail with imageInfo size. " +
+                        "imageSize=${image.size}, imageOriginSize=${imageInfo.size}, memoryCacheKey='$memoryCacheKey'"
+            }
+        }
+        return pass
     }
 
-    private fun checkTransformeds(value: MemoryCache.Value): Boolean {
+    private fun checkTransformeds(
+        logger: Logger,
+        value: MemoryCache.Value,
+        memoryCacheKey: String
+    ): Boolean {
         val transformeds = value.getTransformeds()
-        return transformeds == null || transformeds.all { isInSampledTransformed(it) }
+        val pass = transformeds == null || transformeds.all { isInSampledTransformed(it) }
+        if (!pass) {
+            logger.v {
+                "ThumbnailMemoryCacheStateImage. image has been transformed. transformeds=$transformeds, memoryCacheKey='$memoryCacheKey'"
+            }
+        }
+        return pass
     }
 
     override fun toString(): String =

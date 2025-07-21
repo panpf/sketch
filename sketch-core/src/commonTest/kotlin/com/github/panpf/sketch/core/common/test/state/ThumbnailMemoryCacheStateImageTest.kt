@@ -37,6 +37,7 @@ import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchSize
 import com.github.panpf.sketch.util.div
+import com.github.panpf.sketch.util.minus
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -150,11 +151,27 @@ class ThumbnailMemoryCacheStateImageTest {
             ).getImage(sketch, request, null)
         )
 
-        // memoryCacheKey.length error
+        // memoryCacheKey uri same
         memoryCache.clear()
         assertEquals(0, memoryCache.keys().size)
         memoryCache.put(
             key = imageFile.uri,
+            value = ImageCacheValue(
+                image = thumbnailImage,
+                extras = newCacheValueExtras(imageInfo, resize, transformeds = null, extras = null)
+            )
+        )
+        assertEquals(expected = 1, actual = memoryCache.keys().size)
+        assertEquals(
+            expected = thumbnailImage,
+            actual = ThumbnailMemoryCacheStateImage().getImage(sketch, request, null)
+        )
+
+        // memoryCacheKey.length error
+        memoryCache.clear()
+        assertEquals(0, memoryCache.keys().size)
+        memoryCache.put(
+            key = imageFile.uri + "!",
             value = ImageCacheValue(
                 image = thumbnailImage,
                 extras = newCacheValueExtras(imageInfo, resize, transformeds = null, extras = null)
@@ -190,6 +207,69 @@ class ThumbnailMemoryCacheStateImageTest {
             value = ImageCacheValue(
                 image = thumbnailImage,
                 extras = newCacheValueExtras(imageInfo, resize, transformeds = null, extras = null)
+            )
+        )
+        assertEquals(expected = 1, actual = memoryCache.keys().size)
+        assertEquals(
+            expected = null,
+            actual = ThumbnailMemoryCacheStateImage().getImage(sketch, request, null)
+        )
+
+        // size same
+        memoryCache.clear()
+        assertEquals(0, memoryCache.keys().size)
+        memoryCache.put(
+            key = requestContext.memoryCacheKey,
+            value = ImageCacheValue(
+                image = thumbnailImage,
+                extras = newCacheValueExtras(
+                    imageInfo = ImageInfo(thumbnailSize, "image/jpeg"),
+                    resize = resize,
+                    transformeds = null,
+                    extras = null
+                )
+            )
+        )
+        assertEquals(expected = 1, actual = memoryCache.keys().size)
+        assertEquals(
+            expected = thumbnailImage,
+            actual = ThumbnailMemoryCacheStateImage().getImage(sketch, request, null)
+        )
+
+        // image size greater than thumbnail size 1
+        memoryCache.clear()
+        assertEquals(0, memoryCache.keys().size)
+        memoryCache.put(
+            key = requestContext.memoryCacheKey,
+            value = ImageCacheValue(
+                image = thumbnailImage,
+                extras = newCacheValueExtras(
+                    imageInfo = ImageInfo(thumbnailSize - Size(1, 0), "image/jpeg"),
+                    resize = resize,
+                    transformeds = null,
+                    extras = null
+                )
+            )
+        )
+        assertEquals(expected = 1, actual = memoryCache.keys().size)
+        assertEquals(
+            expected = null,
+            actual = ThumbnailMemoryCacheStateImage().getImage(sketch, request, null)
+        )
+
+        // image size greater than thumbnail size 2
+        memoryCache.clear()
+        assertEquals(0, memoryCache.keys().size)
+        memoryCache.put(
+            key = requestContext.memoryCacheKey,
+            value = ImageCacheValue(
+                image = thumbnailImage,
+                extras = newCacheValueExtras(
+                    imageInfo = ImageInfo(thumbnailSize - Size(0, 1), "image/jpeg"),
+                    resize = resize,
+                    transformeds = null,
+                    extras = null
+                )
             )
         )
         assertEquals(expected = 1, actual = memoryCache.keys().size)
