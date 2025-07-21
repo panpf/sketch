@@ -9,7 +9,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
-# new
+# 4.3.1
 
 * fix: Fixed a bug that returned null when ThumbnailMemoryCacheStateImage starts with version
   4.3.0. [#263](https://github.com/panpf/sketch/issues/263)
