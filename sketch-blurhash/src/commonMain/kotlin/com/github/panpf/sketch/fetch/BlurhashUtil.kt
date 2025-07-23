@@ -56,7 +56,7 @@ object BlurhashUtil {
     }
 
     private inline fun srgbToLinear(enc: Int) = SRGB_TO_LINEAR[enc]
-    private inline fun linearToSrgb(v: Float) = LINEAR_TO_SRGB[(v.coerceIn(0f,1f)*4095f).toInt()]
+    private inline fun linearToSrgb(v: Float) = LINEAR_TO_SRGB[(v.coerceIn(0f, 1f) * 4095f).toInt()]
 
     private fun decodeAc(value: Int, maxAc: Float, out: FloatArray, outIndex: Int) {
         val oneNinth = 1f / 9f
@@ -69,7 +69,7 @@ object BlurhashUtil {
         out[outIndex + 2] = signedPow2((b - 9) * oneNinth) * maxAc
     }
 
-    private fun signedPow2(v: Float) = if (v < 0) -(v*v) else v*v
+    private fun signedPow2(v: Float) = if (v < 0) -(v * v) else v * v
 
     private fun composeBitmapAsByteArray(
         width: Int,
@@ -85,9 +85,9 @@ object BlurhashUtil {
         var pixelIndex = 0
 
         for (y in 0 until height) {
-            val yCompOffset = y*numCompY
+            val yCompOffset = y * numCompY
             for (x in 0 until width) {
-                val xCompOffset = x*numCompX
+                val xCompOffset = x * numCompX
                 var r = 0f
                 var g = 0f
                 var b = 0f
@@ -97,8 +97,8 @@ object BlurhashUtil {
                     val baseIndex = j * numCompX * 3       // pre-mul for cache friendliness
                     for (i in 0 until numCompX) {
                         val basis = cosY * cosinesX[xCompOffset + i]
-                        val cIdx = baseIndex + i*3
-                        r += colors[cIdx]     * basis
+                        val cIdx = baseIndex + i * 3
+                        r += colors[cIdx] * basis
                         g += colors[cIdx + 1] * basis
                         b += colors[cIdx + 2] * basis
                     }

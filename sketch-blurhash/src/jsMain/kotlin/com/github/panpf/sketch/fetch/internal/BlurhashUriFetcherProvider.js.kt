@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch
+package com.github.panpf.sketch.fetch.internal
 
-import com.github.panpf.sketch.decode.SkiaDecoder
-import com.github.panpf.sketch.fetch.KotlinResourceUriFetcher
+import com.github.panpf.sketch.util.ComponentLoader
 
-/**
- * iOS platform related components
- *
- * @see com.github.panpf.sketch.core.ios.test.SketchIosTest.testPlatformComponents
- */
-internal actual fun platformComponents(context: PlatformContext): ComponentRegistry {
-    return ComponentRegistry {
-        addFetcher(KotlinResourceUriFetcher.Factory())
-        addDecoder(SkiaDecoder.Factory())
-    }
-}
+@JsExport   // Required
+@Suppress("DEPRECATION")
+@OptIn(ExperimentalStdlibApi::class, ExperimentalJsExport::class)
+@EagerInitialization
+@Deprecated("", level = DeprecationLevel.HIDDEN)
+val blurhashUriFetcherProviderInitHook: Any =
+    ComponentLoader.register(BlurhashUriFetcherProvider())

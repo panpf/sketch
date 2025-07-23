@@ -43,10 +43,10 @@ import okio.use
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.SkiaDecoderTest
  */
 open class HelperDecoder(
-    requestContext: RequestContext,
-    dataSource: DataSource,
-    decodeHelperFactory: () -> DecodeHelper,
-) : AbstractHelperDecoder(requestContext, dataSource, decodeHelperFactory) {
+    private val requestContext: RequestContext,
+    private val dataSource: DataSource,
+    private val decodeHelperFactory: () -> DecodeHelper,
+) : Decoder {
 
     private var _imageInfo: ImageInfo? = null
     private val imageInfoLock = SynchronizedObject()
@@ -63,7 +63,44 @@ open class HelperDecoder(
             }
         }
 
-    override fun decodeFull(decodeHelper: DecodeHelper, resize: Resize): Pair<Image, List<String>?> {
+    @WorkerThread
+    override fun decode(): DecodeResult {
+        requiredWorkThread()
+        val decodeHelper = decodeHelperFactory()
+        try {
+            val imageInfo = decodeHelper.imageInfo
+            val resize = requestContext.computeResize(imageInfo.size)
+            val (image, transformeds) = if (resize.shouldClip(imageInfo.size) && decodeHelper.supportRegion) {
+                try {
+                    decodeRegion(decodeHelper, resize)
+                } catch (e: Throwable) {
+                    if (e !is UnsupportedOperationException) {
+                        requestContext.sketch.logger.w("Decode region failed. '${requestContext.request.key}'")
+                    }
+                    decodeFull(decodeHelper, resize)
+                }
+            } else {
+                decodeFull(decodeHelper, resize)
+            }
+            if (image.size.isEmpty) {
+                throw ImageInvalidException("Invalid image size. size=${image.size}")
+            }
+            val decodeResult = DecodeResult(
+                image = image,
+                imageInfo = imageInfo,
+                dataFrom = dataSource.dataFrom,
+                resize = resize,
+                transformeds = transformeds,
+                extras = null,
+            )
+            val resizeResult = decodeResult.resize(resize)
+            return resizeResult
+        } finally {
+            decodeHelper.close()
+        }
+    }
+
+    private fun decodeFull(decodeHelper: DecodeHelper, resize: Resize): Pair<Image, List<String>?> {
         val smallerSizeMode = resize.precision.isSmallerSizeMode()
         val sampleSize = calculateSampleSize(
             imageSize = imageInfo.size,
@@ -80,7 +117,7 @@ open class HelperDecoder(
         return Pair(image, transformeds)
     }
 
-    override fun decodeRegion(
+    private fun decodeRegion(
         decodeHelper: DecodeHelper,
         resize: Resize
     ): Pair<Image, List<String>?> {
