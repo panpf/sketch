@@ -20,23 +20,6 @@ class BlurhashHelperDecoder(
     decodeHelperFactory: () -> DecodeHelper,
 ) : HelperDecoder(requestContext, dataSource, decodeHelperFactory) {
 
-//    override fun decodeFull(
-//        decodeHelper: DecodeHelper,
-//        resize: Resize
-//    ): Pair<Image, List<String>?> {
-//        val decoded = BlurhashUtil.decodeByte((dataSource as BlurhashDataSource).blurhash, resize.size.width, resize.size.height)
-//        val createBitmap = createBitmap(resize.size.width, resize.size.height, BASE_COLOR_TYPE)
-//        createBitmap.installPixels(decoded)
-//        return createBitmap.asImage() to null
-//    }
-//
-//    override fun decodeRegion(
-//        decodeHelper: DecodeHelper,
-//        resize: Resize
-//    ): Pair<Image, List<String>?> {
-//        return decodeFull(decodeHelper, resize)
-//    }
-
     override val imageInfo: ImageInfo = ImageInfo(100, 100, "")
 
     class Factory : Decoder.Factory {
@@ -53,10 +36,6 @@ class BlurhashHelperDecoder(
                 dataSource = fetchResult.dataSource as BlurhashDataSource,
                 decodeHelperFactory = {
                     BlurhashDecodeHelper(requestContext.size, fetchResult.dataSource as BlurhashDataSource)
-//                    object : DecodeHelper.Adapter(){
-//                    override val imageInfo: ImageInfo = ImageInfo(requestContext.size, "")
-//
-//                }
                 }
             )
         }

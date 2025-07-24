@@ -4,6 +4,11 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.pow
 
+/**
+ *  original algorithm is taken from https://github.com/cbeyls/BlurHashAndroidBenchmark/
+ *  author Christophe Beyls
+ */
+
 object BlurhashUtil {
 
     private val BASE83_REGEX = Regex("^[0-9A-Za-z#\\$%*+,\\-.:;=?@\\[\\]^_{|}~]+$")
@@ -24,7 +29,15 @@ object BlurhashUtil {
         else ((1.055f * v.pow(1 / 2.4f) - 0.055f) * 255f + .5f).toInt()
     }
 
-    fun decodeByte(blurHash: String, width: Int, height: Int, punch: Float = 1f): ByteArray {
+    fun decodeByte(
+        blurHash: String,
+        width: Int,
+        height: Int,
+        outputwidth: Int = width,
+        outputheight: Int = height,
+        output: ByteArray? = null,
+        punch: Float = 1f
+    ): ByteArray {
         val numCompEnc = decode83(blurHash, 0, 1)
         val numCompX = (numCompEnc % 9) + 1
         val numCompY = (numCompEnc / 9) + 1
@@ -40,7 +53,7 @@ object BlurhashUtil {
             decodeAc(decode83(blurHash, index, index + 2), maxAc * punch, colors, i * 3)
         }
 
-        return composeBitmapAsByteArray(width, height, numCompX, numCompY, colors)
+        return composeBitmapAsByteArray(width, height, numCompX, numCompY, colors, outputwidth, outputheight, output)
     }
 
     private inline fun decode83(s: String, from: Int, to: Int): Int {
@@ -76,9 +89,12 @@ object BlurhashUtil {
         height: Int,
         numCompX: Int,
         numCompY: Int,
-        colors: FloatArray
+        colors: FloatArray,
+        outputwidth: Int = width,
+        outputheight: Int = height,
+        output1: ByteArray? = null,
     ): ByteArray {
-        val output = ByteArray(width * height * 4)
+        val output = output1 ?: ByteArray(width * height * 4)
         val cosinesX = createCosines(width, numCompX)
         val cosinesY = if (width == height && numCompX == numCompY) cosinesX else createCosines(height, numCompY)
 
@@ -111,6 +127,7 @@ object BlurhashUtil {
                 output[base + 3] = 255.toByte()
                 pixelIndex++
             }
+            pixelIndex += (outputwidth - width)
         }
 
         return output

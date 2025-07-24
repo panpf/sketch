@@ -29,18 +29,6 @@ fun App(onContentChanged: ((Navigator) -> Unit)? = null) {
                 ScaleTransition(navigator = navigator)
                 onContentChanged?.invoke(navigator)
             }
-//            Column {
-//                AsyncImage(
-//                    uri = "https://upload.wikimedia.org/wikipedia/commons/4/4f/SVG_Logo.svg",
-//                    contentDescription = "",
-//                    modifier = Modifier.size(300.dp, 300.dp)
-//                )
-//                AsyncImage(
-//                    uri = "blurhash://UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2",
-//                    contentDescription = "",
-//                    modifier = Modifier.size(300.dp, 300.dp)
-//                )
-//            }
 
             val snackbarHostState = remember { SnackbarHostState() }
             SnackbarHost(
