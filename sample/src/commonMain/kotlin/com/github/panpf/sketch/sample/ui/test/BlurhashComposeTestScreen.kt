@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.sample.ui.test
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -20,7 +19,6 @@ import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.fetch.newBlurhashUri
 import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.painter.BlurhashPainter
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
@@ -28,6 +26,7 @@ import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.state.rememberBlurhashStateImage
+import com.github.panpf.sketch.util.Size
 
 class BlurhashComposeTestScreen : BaseScreen() {
 
@@ -35,11 +34,8 @@ class BlurhashComposeTestScreen : BaseScreen() {
     override fun DrawContent() {
         ToolbarScaffold(title = "Blurhash") {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .windowInsetsPadding(NavigationBarDefaults.windowInsets)
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
+                modifier = Modifier.fillMaxWidth().windowInsetsPadding(NavigationBarDefaults.windowInsets)
+                    .verticalScroll(rememberScrollState()).padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
@@ -51,14 +47,14 @@ class BlurhashComposeTestScreen : BaseScreen() {
                 val context = LocalPlatformContext.current
                 val uri = ResourceImages.jpeg.uri
                 val stateImage =
-                    rememberBlurhashStateImage("d7D+0q5W00^h01~A~B0gInR%?G9vR%R+NH=_I;NG\$\$-o")
+                    rememberBlurhashStateImage("d7D+0q5W00^h01~A~B0gInR%?G9vR%R+NH=_I;NG\$\$-o", Size(100, 100))
                 val request = ImageRequest(context, uri) {
                     memoryCachePolicy(DISABLED)
                     resultCachePolicy(DISABLED)
                     placeholder(stateImage)
                     crossfade(true)
                     components {
-                        addDecodeInterceptor(DelayDecodeInterceptor(3000))
+                        addDecodeInterceptor(DelayDecodeInterceptor(2000))
                     }
                 }
                 // Example blurhash placeholder
@@ -66,10 +62,7 @@ class BlurhashComposeTestScreen : BaseScreen() {
                     request = request,
                     contentDescription = "",
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .height(300.dp)
-                        .width(200.dp)
-                        .align(Alignment.CenterHorizontally)
+                    modifier = Modifier.height(300.dp).width(200.dp).align(Alignment.CenterHorizontally)
                 )
                 Spacer(Modifier.size(20.dp))
 
@@ -91,20 +84,32 @@ class BlurhashComposeTestScreen : BaseScreen() {
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
+//                rememberPainterStateImage()
+//                Image(
+//                    painter = BlurhashPainter(
+//                        blurhash = blurhash1,
+//                        size = androidx.compose.ui.geometry.Size(200f, 200f)
+//                    ),
+//                    contentDescription = "Blurhash example 1",
+//                    modifier = Modifier
+//                        .size(150.dp)
+//                        .border(2.dp, Color.Gray)
+//                        .padding(2.dp)
+//                )
 
-                Image(
-                    painter = BlurhashPainter(
-                        blurhash = blurhash1,
-                        size = androidx.compose.ui.geometry.Size(200f, 200f)
-                    ),
-                    contentDescription = "Blurhash example 1",
-                    modifier = Modifier
-                        .size(150.dp)
-                        .border(2.dp, Color.Gray)
-                        .padding(2.dp)
-                )
-
-                Spacer(Modifier.size(20.dp))
+//                Image(
+//                    painter = BlurhashPainter(
+//                        blurhash = blurhash1,
+//                        size = androidx.compose.ui.geometry.Size(200f, 200f)
+//                    ),
+//                    contentDescription = "Blurhash example 1",
+//                    modifier = Modifier
+//                        .size(150.dp)
+//                        .border(2.dp, Color.Gray)
+//                        .padding(2.dp)
+//                )
+//
+//                Spacer(Modifier.size(20.dp))
 
                 // Blurhash URI usage
                 Text(
@@ -116,10 +121,7 @@ class BlurhashComposeTestScreen : BaseScreen() {
                 AsyncImage(
                     uri = newBlurhashUri(blurhash2),
                     contentDescription = "Blurhash URI example",
-                    modifier = Modifier
-                        .size(150.dp)
-                        .border(2.dp, Color.Gray)
-                        .padding(2.dp)
+                    modifier = Modifier.size(150.dp).border(2.dp, Color.Gray).padding(2.dp)
                 )
 
                 Spacer(Modifier.size(20.dp))
@@ -133,14 +135,11 @@ class BlurhashComposeTestScreen : BaseScreen() {
 
                 AsyncImage(
                     request = ComposableImageRequest("invalid_url") {
-                        placeholder(rememberBlurhashStateImage(blurhash1))
-                        error(rememberBlurhashStateImage(blurhash3))
+                        placeholder(rememberBlurhashStateImage(blurhash1, Size(100, 100)))
+                        error(rememberBlurhashStateImage(blurhash3, Size(100, 100)))
                     },
                     contentDescription = "Blurhash state image example",
-                    modifier = Modifier
-                        .size(150.dp)
-                        .border(2.dp, Color.Gray)
-                        .padding(2.dp)
+                    modifier = Modifier.size(150.dp).border(2.dp, Color.Gray).padding(2.dp)
                 )
 
                 Spacer(Modifier.size(20.dp))
@@ -163,34 +162,30 @@ class BlurhashComposeTestScreen : BaseScreen() {
                     "fKN]Rv%2Tw=wR6cE]~RBVZRip0W9};RPxuwH%3s8tLOtxZ%gixtQI.ENa0NZIVt6",
                 ).forEach { blurhash ->
                     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Image(
-                            painter = BlurhashPainter(
-                                blurhash = blurhash,
-                            ),
+                        AsyncImage(
+                            request = ComposableImageRequest("invalid_url") {
+                                placeholder(rememberBlurhashStateImage(blurhash, Size((1000 * 16f / 9).toInt(), 1000)))
+//                                error(rememberBlurhashStateImage(blurhash3))
+                            },
                             contentDescription = "Blurhash variation",
-                            modifier = Modifier.weight(1f)
-                                .aspectRatio(16f / 9)
-                                .border(1.dp, Color.LightGray)
+                            modifier = Modifier.weight(1f).aspectRatio(16f / 9).border(1.dp, Color.LightGray)
                                 .padding(1.dp)
                         )
-                        Image(
-                            painter = BlurhashPainter(
-                                blurhash = blurhash,
-                            ),
+                        AsyncImage(
+                            request = ComposableImageRequest("invalid_url") {
+                                placeholder(rememberBlurhashStateImage(blurhash, Size(1000, 1000)))
+//                                error(rememberBlurhashStateImage(blurhash3))
+                            },
                             contentDescription = "Blurhash variation",
-                            modifier = Modifier.weight(1f)
-                                .aspectRatio(1f)
-                                .border(1.dp, Color.LightGray)
-                                .padding(1.dp)
+                            modifier = Modifier.weight(1f).aspectRatio(1f).border(1.dp, Color.LightGray).padding(1.dp)
                         )
-                        Image(
-                            painter = BlurhashPainter(
-                                blurhash = blurhash,
-                            ),
+                        AsyncImage(
+                            request = ComposableImageRequest("invalid_url") {
+                                placeholder(rememberBlurhashStateImage(blurhash, Size(1000, (1000 * 16f / 9).toInt())))
+//                                error(rememberBlurhashStateImage(blurhash3))
+                            },
                             contentDescription = "Blurhash variation",
-                            modifier = Modifier.weight(1f)
-                                .aspectRatio(9f / 16)
-                                .border(1.dp, Color.LightGray)
+                            modifier = Modifier.weight(1f).aspectRatio(9f / 16).border(1.dp, Color.LightGray)
                                 .padding(1.dp)
                         )
                     }

@@ -32,23 +32,13 @@ import com.github.panpf.sketch.request.internal.PairListener
 import com.github.panpf.sketch.request.internal.PairProgressListener
 import com.github.panpf.sketch.request.internal.RequestOptions
 import com.github.panpf.sketch.request.internal.newKey
-import com.github.panpf.sketch.resize.Precision
-import com.github.panpf.sketch.resize.PrecisionDecider
-import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.ScaleDecider
-import com.github.panpf.sketch.resize.SizeResolver
+import com.github.panpf.sketch.resize.*
 import com.github.panpf.sketch.state.StateImage
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transition.CrossfadeTransition
 import com.github.panpf.sketch.transition.Transition
-import com.github.panpf.sketch.util.Key
-import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.Uri
-import com.github.panpf.sketch.util.application
-import com.github.panpf.sketch.util.keyOrNull
-import com.github.panpf.sketch.util.screenSize
-import com.github.panpf.sketch.util.toUri
+import com.github.panpf.sketch.util.*
 
 /**
  * Build and set the [ImageRequest]

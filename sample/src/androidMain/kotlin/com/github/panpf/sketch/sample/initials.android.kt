@@ -4,16 +4,8 @@ import android.annotation.SuppressLint
 import android.os.Build
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.internal.BlurhashHelperDecoder
-import com.github.panpf.sketch.decode.internal.FFmpegVideoFrameDecoderProvider
-import com.github.panpf.sketch.decode.internal.GifDecoderProvider
-import com.github.panpf.sketch.decode.internal.KoralGifDecoderProvider
-import com.github.panpf.sketch.decode.internal.VideoFrameDecoderProvider
-import com.github.panpf.sketch.decode.supportFFmpegVideoFrame
-import com.github.panpf.sketch.decode.supportImageDecoderGif
-import com.github.panpf.sketch.decode.supportKoralGif
-import com.github.panpf.sketch.decode.supportMovieGif
-import com.github.panpf.sketch.decode.supportVideoFrame
+import com.github.panpf.sketch.decode.*
+import com.github.panpf.sketch.decode.internal.*
 import com.github.panpf.sketch.fetch.internal.HurlHttpUriFetcherProvider
 import com.github.panpf.sketch.fetch.internal.KtorHttpUriFetcherProvider
 import com.github.panpf.sketch.fetch.internal.OkHttpHttpUriFetcherProvider
@@ -26,12 +18,7 @@ import com.github.panpf.sketch.sample.ui.setting.AppSettingsViewModel
 import com.github.panpf.sketch.sample.ui.test.DrawableScaleTypeViewModel
 import com.github.panpf.sketch.sample.ui.test.LocalVideoListViewModel
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel
-import com.github.panpf.sketch.sample.ui.test.transform.BlurTransformationTestViewModel
-import com.github.panpf.sketch.sample.ui.test.transform.CircleCropTransformationTestViewModel
-import com.github.panpf.sketch.sample.ui.test.transform.MaskTransformationTestViewModel
-import com.github.panpf.sketch.sample.ui.test.transform.MultiTransformationTestViewModel
-import com.github.panpf.sketch.sample.ui.test.transform.RotateTransformationTestViewModel
-import com.github.panpf.sketch.sample.ui.test.transform.RoundedCornersTransformationTestViewModel
+import com.github.panpf.sketch.sample.ui.test.transform.*
 import com.github.panpf.sketch.sample.util.PenfeizhouAnimatedWebpDecoder
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -115,7 +102,7 @@ actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
             addDecoder(PenfeizhouAnimatedWebpDecoder.Factory())
         }
 
-        addDecoder(BlurhashHelperDecoder.Factory())
+        addDecoder(BlurhashDecoder.Factory())
     }
 }
 

@@ -28,33 +28,16 @@ import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
-import com.github.panpf.sketch.decode.internal.ExifOrientationHelper
-import com.github.panpf.sketch.decode.internal.ImageFormat
-import com.github.panpf.sketch.decode.internal.calculateSampleSize
-import com.github.panpf.sketch.decode.internal.calculateSampleSizeForRegion
-import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
-import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForRegion
-import com.github.panpf.sketch.decode.internal.decode
-import com.github.panpf.sketch.decode.internal.decodeRegion
-import com.github.panpf.sketch.decode.internal.getMaxBitmapSize
-import com.github.panpf.sketch.decode.internal.getMaxBitmapSizeOr
-import com.github.panpf.sketch.decode.internal.getResizeTransformed
+import com.github.panpf.sketch.decode.internal.*
 import com.github.panpf.sketch.decode.internal.readImageInfo
-import com.github.panpf.sketch.decode.internal.readImageInfoWithIgnoreExifOrientation
-import com.github.panpf.sketch.decode.internal.resize
-import com.github.panpf.sketch.decode.internal.supportBitmapRegionDecoder
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision
-import com.github.panpf.sketch.resize.Precision.EXACTLY
-import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
-import com.github.panpf.sketch.resize.Precision.SAME_ASPECT_RATIO
+import com.github.panpf.sketch.resize.Precision.*
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.resize.Scale.CENTER_CROP
-import com.github.panpf.sketch.resize.Scale.END_CROP
-import com.github.panpf.sketch.resize.Scale.START_CROP
+import com.github.panpf.sketch.resize.Scale.*
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
@@ -69,24 +52,12 @@ import com.github.panpf.sketch.test.utils.intrinsicSize
 import com.github.panpf.sketch.test.utils.similarity
 import com.github.panpf.sketch.test.utils.toRect
 import com.github.panpf.sketch.test.utils.toRequestContext
-import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.div
+import com.github.panpf.sketch.util.*
 import com.github.panpf.sketch.util.getDrawableCompat
-import com.github.panpf.sketch.util.isSameAspectRatio
-import com.github.panpf.sketch.util.rotate
-import com.github.panpf.sketch.util.safeToSoftware
-import com.github.panpf.sketch.util.size
-import com.github.panpf.sketch.util.times
-import com.github.panpf.sketch.util.toAndroidRect
 import kotlinx.coroutines.test.runTest
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class DecodesAndroidTest {
 
@@ -1588,7 +1559,7 @@ class DecodesAndroidTest {
         val mergedBitmap = createBitmap(
             width = imageInfo.width,
             height = imageInfo.height,
-            config = topLeftBitmap.colorType.safeToSoftware()
+            colorType = topLeftBitmap.colorType.safeToSoftware()
         ).apply {
             val canvas = Canvas(this)
             canvas.drawBitmap(

@@ -11,7 +11,7 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.Uri
 
 /**
- * Adds compose blurhash
+ * Adds blurhash support
  *
  * @see com.github.panpf.sketch.compose.resources.common.test.fetch.BlurhashUriFetcherTest.testSupportBlurhash
  */
@@ -20,13 +20,22 @@ fun ComponentRegistry.Builder.supportBlurhash(): ComponentRegistry.Builder = app
 }
 
 /**
- * Sample: 'blurhash://UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2'
+ * Create a blurhash uri
+ *
+ * Sample: 'blurhash://UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2&width=100&height=100'
  *
  * @see com.github.panpf.sketch.core.android.test.fetch.BlurhashUriFetcherTest.testNewBlurhashUri
  */
-fun newBlurhashUri(blurhashString: String): String {
+fun newBlurhashUri(blurhashString: String, width: Int? = null, height: Int? = null): String {
     if (BlurhashUtil.isValid(blurhashString)) {
-        return "${BlurhashUriFetcher.SCHEME}://${blurhashString}"
+        if (width != null && height != null) {
+            require(width > 0 && height > 0) {
+                "Width and height must be greater than zero"
+            }
+            return "${BlurhashUriFetcher.SCHEME}://${blurhashString}&width=${width}&height=${height}"
+        } else {
+            return "${BlurhashUriFetcher.SCHEME}://${blurhashString}"
+        }
     }
     throw IllegalArgumentException("Not valid blurhash string: $blurhashString")
 }
@@ -39,15 +48,57 @@ fun newBlurhashUri(blurhashString: String): String {
 fun isBlurHashUri(uri: Uri): Boolean {
     val data = uri.toString()
     if (BlurhashUriFetcher.SCHEME == uri.scheme && data.startsWith("${BlurhashUriFetcher.SCHEME}://")) {
-        val blurhashString = data.substring("${BlurhashUriFetcher.SCHEME}://".length)
+        val afterScheme = data.substring("${BlurhashUriFetcher.SCHEME}://".length)
+        val blurhashString = if (afterScheme.contains('&')) {
+            val endIndex = afterScheme.indexOf('&')
+            afterScheme.substring(0, endIndex)
+        } else {
+            afterScheme
+        }
         return BlurhashUtil.isValid(blurhashString)
     }
     return false
 }
 
+fun parseQueryParameters(queryString: String): Size? {
+    val params = mutableMapOf<String, String>()
+    queryString.split('&').forEach { param ->
+        val parts = param.split('=', limit = 2)
+        if (parts.size == 2) {
+            params[parts[0]] = parts[1]
+        }
+    }
+
+    val width = params["width"]?.toIntOrNull()
+    val height = params["height"]?.toIntOrNull()
+
+    return if (width != null && height != null && width > 0 && height > 0) {
+        Size(width, height)
+    } else {
+        null
+    }
+}
+
 class BlurhashUriFetcher constructor(
-    val blurHashString: String, val size: Size
+    blurhashString: String,
+    fallbackSize: Size? = null,
 ) : Fetcher {
+
+    val blurHashString: String
+    val size: Size?
+
+    init {
+        if (blurhashString.contains('&')) {
+            val endIndex = blurhashString.indexOf('&')
+            blurHashString = blurhashString.substring(0, endIndex)
+            val queryString = blurhashString.substring(endIndex + 1)
+            val parsedSize = parseQueryParameters(queryString)
+            size = parsedSize ?: fallbackSize
+        } else {
+            blurHashString = blurhashString
+            size = fallbackSize
+        }
+    }
 
     companion object {
         const val SCHEME = "blurhash"
@@ -86,9 +137,11 @@ class BlurhashUriFetcher constructor(
             val uri = request.uri
             if (!isBlurHashUri(uri) || requestContext.size == Size.Empty) return null
             val uriString = uri.toString()
-            val blurhashString = uriString.substring("${BlurhashUriFetcher.SCHEME}://".length)
+            val afterScheme = uriString.substring("${SCHEME}://".length)
+
             return BlurhashUriFetcher(
-                blurHashString = blurhashString, size = requestContext.size
+                blurhashString = afterScheme,
+                fallbackSize = requestContext.size
             )
         }
 

@@ -79,8 +79,15 @@ expect val Bitmap.isMutable: Boolean
  */
 expect val Bitmap.isImmutable: Boolean
 
-expect val BASE_COLOR_TYPE : ColorType
 
-expect fun createBitmap(width: Int,
-                        height: Int,
-                        colorType: ColorType) : Bitmap
+/**
+ * Image color type com.github.panpf.sketch.fetch.BlurhashUtil.decodeByte() decodes blurhash string in
+ *
+ * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testBlurhashColorType
+ * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testBlurhashColorType
+ */
+expect val BLURHASH_COLOR_TYPE: ColorType
+
+//expect fun createBitmap(width: Int,
+//                        height: Int,
+//                        colorType: ColorType) : Bitmap

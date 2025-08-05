@@ -4,8 +4,7 @@ import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
 import com.github.panpf.sketch.request.ComposableImageOptions
 import com.github.panpf.sketch.state.BlurhashStateImage
-import com.github.panpf.sketch.test.utils.Platform
-import com.github.panpf.sketch.test.utils.current
+import com.github.panpf.sketch.util.Size
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -14,17 +13,22 @@ class ImageOptionsBlurhashTest {
 
     @Test
     fun testPlaceholder() {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return
-        }
         runComposeUiTest {
             setContent {
                 ComposableImageOptions {
-                    placeholder(BlurhashStateImage("blurhash://L6PZfSi_.AyE_3t7t7R**0o#DgR4"))
+                    placeholder(BlurhashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4", Size(200, 100)))
                 }.apply {
                     assertEquals(
-                        expected = BlurhashStateImage("blurhash://L6PZfSi_.AyE_3t7t7R**0o#DgR4"),
+                        expected = BlurhashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4", Size(200, 100)),
+                        actual = placeholder
+                    )
+                }
+
+                ComposableImageOptions {
+                    placeholder(BlurhashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4&width=100&height=100"))
+                }.apply {
+                    assertEquals(
+                        expected = BlurhashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4&width=100&height=100"),
                         actual = placeholder
                     )
                 }
@@ -34,17 +38,22 @@ class ImageOptionsBlurhashTest {
 
     @Test
     fun testFallback() {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return
-        }
         runComposeUiTest {
             setContent {
                 ComposableImageOptions {
-                    fallback(BlurhashStateImage("blurhash://L6PZfSi_.AyE_3t7t7R**0o#DgR4"))
+                    fallback(BlurhashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4", Size(200, 100)))
                 }.apply {
                     assertEquals(
-                        expected = BlurhashStateImage("blurhash://L6PZfSi_.AyE_3t7t7R**0o#DgR4"),
+                        expected = BlurhashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4", Size(200, 100)),
+                        actual = fallback
+                    )
+                }
+
+                ComposableImageOptions {
+                    fallback(BlurhashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4&width=100&height=100"))
+                }.apply {
+                    assertEquals(
+                        expected = BlurhashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4&width=100&height=100"),
                         actual = fallback
                     )
                 }
@@ -54,17 +63,22 @@ class ImageOptionsBlurhashTest {
 
     @Test
     fun testError() {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return
-        }
         runComposeUiTest {
             setContent {
                 ComposableImageOptions {
-                    error(BlurhashStateImage("blurhash://L6PZfSi_.AyE_3t7t7R**0o#DgR4"))
+                    error(BlurhashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4", Size(200, 100)))
                 }.apply {
                     assertEquals(
-                        expected = BlurhashStateImage("blurhash://L6PZfSi_.AyE_3t7t7R**0o#DgR4"),
+                        expected = BlurhashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4", Size(200, 100)),
+                        actual = error
+                    )
+                }
+
+                ComposableImageOptions {
+                    error(BlurhashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4&width=100&height=100"))
+                }.apply {
+                    assertEquals(
+                        expected = BlurhashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4&width=100&height=100"),
                         actual = error
                     )
                 }

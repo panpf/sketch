@@ -4,8 +4,7 @@ import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.state.BlurhashStateImage
-import com.github.panpf.sketch.test.utils.Platform
-import com.github.panpf.sketch.test.utils.current
+import com.github.panpf.sketch.util.Size
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -14,17 +13,13 @@ class ImageRequestBlurhashTest {
 
     @Test
     fun testPlaceholder() {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return
-        }
         runComposeUiTest {
             setContent {
-                ComposableImageRequest(uri = "blurhash://L6PZfSi_.AyE_3t7t7R**0o#DgR4") {
-                    placeholder(BlurhashStateImage(""))
+                ComposableImageRequest(uri = "http://sample.com/sample.jpeg") {
+                    placeholder(BlurhashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4", Size(100, 200)))
                 }.apply {
                     assertEquals(
-                        expected = BlurhashStateImage("blurhash://L6PZfSi_.AyE_3t7t7R**0o#DgR4"),
+                        expected = BlurhashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4", Size(100, 200)),
                         actual = placeholder
                     )
                 }
@@ -34,18 +29,13 @@ class ImageRequestBlurhashTest {
 
     @Test
     fun testFallback() {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return
-        }
         runComposeUiTest {
             setContent {
-                ComposableImageRequest(uri = "blurhash://L6PZfSi_.AyE_3t7t7R**0o#DgR4") {
-                    fallback(BlurhashStateImage(""))
+                ComposableImageRequest(uri = "http://sample.com/sample.jpeg") {
+                    fallback(BlurhashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4", Size(100, 200)))
                 }.apply {
                     assertEquals(
-                        expected = BlurhashStateImage("blurhash://L6PZfSi_.AyE_3t7t7R**0o#DgR4"),
-                        actual = fallback
+                        expected = BlurhashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4", Size(100, 200)), actual = fallback
                     )
                 }
             }
@@ -54,18 +44,13 @@ class ImageRequestBlurhashTest {
 
     @Test
     fun testError() {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return
-        }
         runComposeUiTest {
             setContent {
-                ComposableImageRequest(uri = "blurhash://L6PZfSi_.AyE_3t7t7R**0o#DgR4") {
-                    error(BlurhashStateImage(""))
+                ComposableImageRequest(uri = "http://sample.com/sample.jpeg") {
+                    error(BlurhashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4", Size(100, 200)))
                 }.apply {
                     assertEquals(
-                        expected = BlurhashStateImage("blurhash://L6PZfSi_.AyE_3t7t7R**0o#DgR4"),
-                        actual = error
+                        expected = BlurhashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4", Size(100, 200)), actual = error
                     )
                 }
             }
