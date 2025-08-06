@@ -39,6 +39,10 @@ fun MyZoomAsyncImage(
 ) {
     val appSettings: AppSettings = koinInject()
 
+    val zoomImageLogLevel by appSettings.zoomImageLogLevel.collectAsState()
+    zoomState.logger.level = zoomImageLogLevel
+//    zoomState.subsampling.disabled = true
+
     val showTileBounds by appSettings.showTileBounds.collectAsState()
     val readModeEnabled by appSettings.readModeEnabled.collectAsState()
     zoomState.subsampling.showTileBounds = showTileBounds
