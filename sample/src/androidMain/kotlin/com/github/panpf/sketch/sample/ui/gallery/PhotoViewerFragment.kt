@@ -87,22 +87,22 @@ class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
             zoomable.apply {
                 appSettings.readModeEnabled
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
-                        readModeState.value = if (it) ReadMode.Default else null
+                        setReadMode(if (it) ReadMode.Default else null)
                     }
                 appSettings.contentScaleName
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
-                        contentScaleState.value = ContentScaleCompat.valueOf(it)
+                        setContentScale(ContentScaleCompat.valueOf(it))
                     }
                 appSettings.alignmentName
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
-                        alignmentState.value = AlignmentCompat.valueOf(it)
+                        setAlignment(AlignmentCompat.valueOf(it))
                     }
-                keepTransformWhenSameAspectRatioContentSizeChangedState.value = true
+                setKeepTransformWhenSameAspectRatioContentSizeChanged(true)
             }
             subsampling.apply {
                 appSettings.showTileBounds
                     .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
-                        showTileBoundsState.value = it
+                        setShowTileBounds(it)
                     }
             }
 
