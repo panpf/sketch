@@ -1,20 +1,11 @@
 package com.github.panpf.sketch.core.android.test
 
-import com.github.panpf.sketch.byteCount as expectByteCount
-import com.github.panpf.sketch.height as expectHeight
-import com.github.panpf.sketch.isImmutable as expectIsImmutable
-import com.github.panpf.sketch.isMutable as expectIsMutable
-import com.github.panpf.sketch.size as expectSize
-import com.github.panpf.sketch.width as expectWidth
 import android.graphics.Bitmap
 import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.ColorSpace
 import android.os.Build
-import com.github.panpf.sketch.ColorType
-import com.github.panpf.sketch.colorType
-import com.github.panpf.sketch.createBitmap
-import com.github.panpf.sketch.createEmptyBitmapWith
+import com.github.panpf.sketch.*
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.util.Size
@@ -23,6 +14,12 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import com.github.panpf.sketch.byteCount as expectByteCount
+import com.github.panpf.sketch.height as expectHeight
+import com.github.panpf.sketch.isImmutable as expectIsImmutable
+import com.github.panpf.sketch.isMutable as expectIsMutable
+import com.github.panpf.sketch.size as expectSize
+import com.github.panpf.sketch.width as expectWidth
 
 class BitmapAndroidTest {
 
@@ -71,6 +68,11 @@ class BitmapAndroidTest {
     }
 
     @Test
+    fun testBlurhashColorType() {
+        assertEquals(ColorType.ARGB_8888, BLURHASH_COLOR_TYPE)
+    }
+
+    @Test
     fun testCreateBitmap() {
         createBitmap(width = 100, height = 200).apply {
             assertEquals(expected = 100, actual = width)
@@ -81,7 +83,7 @@ class BitmapAndroidTest {
                 assertEquals(expected = ColorSpace.get(ColorSpace.Named.SRGB), actual = colorSpace)
             }
         }
-        createBitmap(width = 100, height = 200, config = ColorType.RGB_565).apply {
+        createBitmap(width = 100, height = 200, colorType = ColorType.RGB_565).apply {
             assertEquals(expected = 100, actual = width)
             assertEquals(expected = 200, actual = height)
             assertEquals(expected = ColorType.RGB_565, actual = config)

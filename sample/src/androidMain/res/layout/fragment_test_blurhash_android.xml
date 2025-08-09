@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+        <TextView
+                android:id="@+id/text1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Blurhash placeholder example"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center"/>
+
+        <com.github.panpf.sketch.sample.ui.widget.MyImageView
+                android:id="@+id/myImage1"
+                android:layout_width="200dp"
+                android:layout_height="300dp"
+                android:layout_marginTop="20dp"
+                android:scaleType="centerCrop"
+                android:layout_gravity="center"
+                app:layout_constraintBottom_toTopOf="@id/text2"
+                app:layout_constraintDimensionRatio="1.0"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/text1"
+                tools:srcCompat="@drawable/im_placeholder"/>
+
+        <TextView
+                android:id="@+id/text2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Blurhash Android View Examples"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center"/>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Blurhash URI with SketchImageView"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+        <com.github.panpf.sketch.sample.ui.widget.MyImageView
+                android:id="@+id/imageView1"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/bg_rect_stroke"
+                android:contentDescription="Blurhash URI example"
+                android:padding="2dp"/>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Blurhash as Placeholder"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+        <com.github.panpf.sketch.sample.ui.widget.MyImageView
+                android:id="@+id/imageView2"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/bg_rect_stroke"
+                android:contentDescription="Blurhash placeholder example"
+                android:padding="2dp"/>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Blurhash as Error State"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+        <com.github.panpf.sketch.sample.ui.widget.MyImageView
+                android:id="@+id/imageView3"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/bg_rect_stroke"
+                android:contentDescription="Blurhash error example"
+                android:padding="2dp"/>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Different Blurhash Variations"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+        <com.github.panpf.sketch.sample.ui.widget.MyImageView
+                android:id="@+id/imageView4"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_rect_stroke"
+                android:contentDescription="Blurhash variation 1"
+                android:padding="1dp"/>
+
+        <com.github.panpf.sketch.sample.ui.widget.MyImageView
+                android:id="@+id/imageView5"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_rect_stroke"
+                android:contentDescription="Blurhash variation 2"
+                android:padding="1dp"/>
+
+        <com.github.panpf.sketch.sample.ui.widget.MyImageView
+                android:id="@+id/imageView6"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_rect_stroke"
+                android:contentDescription="Blurhash variation 3"
+                android:padding="1dp"/>
+
+        <com.github.panpf.sketch.sample.ui.widget.MyImageView
+                android:id="@+id/imageView7"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/bg_rect_stroke"
+                android:contentDescription="Blurhash variation 4"
+                android:padding="1dp"/>
+
+    </LinearLayout>
+</ScrollView>

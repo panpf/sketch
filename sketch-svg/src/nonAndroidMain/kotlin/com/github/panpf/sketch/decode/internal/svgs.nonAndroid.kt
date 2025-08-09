@@ -127,7 +127,7 @@ internal actual fun DataSource.decodeSvg(
         mimeType = PNG.mimeType,
         isOpaque = false
     )
-    val newColorType = decodeConfig.colorType ?: ColorType.RGBA_8888
+    val newColorType: ColorType = decodeConfig.colorType ?: ColorType.RGBA_8888
     val newColorSpace = decodeConfig.colorSpace ?: ColorSpace.sRGB
     val bitmap = createBitmap(
         org.jetbrains.skia.ImageInfo(

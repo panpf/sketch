@@ -81,7 +81,7 @@ actual val Bitmap.isImmutable: Boolean
  *
  * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testColorType
  */
-typealias ColorType = android.graphics.Bitmap.Config
+actual typealias ColorType = android.graphics.Bitmap.Config
 
 /**
  * Get the [ColorType] of the bitmap
@@ -92,6 +92,13 @@ val Bitmap.colorType: ColorType?
     get() = configOrNull
 
 /**
+ * Image color type com.github.panpf.sketch.fetch.BlurhashUtil.decodeByte() decodes blurhash string in
+ *
+ * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testBlurhashColorType
+ */
+actual val BLURHASH_COLOR_TYPE: ColorType = ColorType.ARGB_8888
+
+/**
  * Create a new [Bitmap] with the specified width, height, and [ColorType] and allocate memory
  *
  * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testCreateBitmap
@@ -99,8 +106,8 @@ val Bitmap.colorType: ColorType?
 fun createBitmap(
     width: Int,
     height: Int,
-    config: ColorType = ColorType.ARGB_8888
-): Bitmap = Bitmap.createBitmap(width, height, config)
+    colorType: ColorType = ColorType.ARGB_8888
+): Bitmap = Bitmap.createBitmap(width, height, colorType)
 
 /**
  * Create a new [Bitmap] with the specified width, height, and [ColorType] and allocate memory

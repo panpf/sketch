@@ -18,6 +18,7 @@
 
 package com.github.panpf.sketch.decode
 
+import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.util.Key
 
 /**
@@ -53,7 +54,9 @@ interface BitmapColorType : Key {
  * @see com.github.panpf.sketch.core.android.test.decode.BitmapColorTypeAndroidTest.testPlatformColorType
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.BitmapColorTypeNonAndroidTest.testPlatformColorType
  */
-expect class PlatformColorType
+expect class PlatformColorType {
+    val colorType: ColorType
+}
 
 /**
  * Low quality bitmap color type. RGB_565 is preferred, followed by ARGB_8888

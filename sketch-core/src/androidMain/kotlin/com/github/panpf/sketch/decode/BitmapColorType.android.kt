@@ -34,7 +34,7 @@ fun BitmapColorType(colorType: ColorType): BitmapColorType = FixedColorType(colo
  *
  * @see com.github.panpf.sketch.core.android.test.decode.BitmapColorTypeAndroidTest.testPlatformColorType
  */
-actual data class PlatformColorType(val colorType: ColorType)
+actual data class PlatformColorType(actual val colorType: ColorType)
 
 /**
  * Low quality bitmap config. RGB_565 is preferred, followed by ARGB_8888

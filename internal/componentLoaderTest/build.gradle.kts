@@ -27,6 +27,7 @@ kotlin {
             api(projects.sketchAnimatedHeif)
             api(projects.sketchExtensionsApkicon)
             api(projects.sketchExtensionsAppicon)
+            api(projects.sketchBlurhash)
             api(projects.sketchVideo)
             api(projects.sketchVideoFfmpeg)
         }
