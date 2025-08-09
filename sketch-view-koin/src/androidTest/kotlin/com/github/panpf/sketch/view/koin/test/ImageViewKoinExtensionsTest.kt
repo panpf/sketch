@@ -41,7 +41,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
-class ImageViewSingletonExtensionsTest {
+class ImageViewKoinExtensionsTest {
 
     init {
         Koins.initial()

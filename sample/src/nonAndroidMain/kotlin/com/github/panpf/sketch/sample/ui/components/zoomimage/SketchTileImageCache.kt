@@ -39,7 +39,7 @@ actual class SketchTileImageCache actual constructor(
         cacheValue as ImageCacheValue
         val bitmapImage = cacheValue.image as BitmapImage
         val bitmap = bitmapImage.bitmap
-        return BitmapTileImage(bitmap, key, fromCache = true)
+        return BitmapTileImage(bitmap)
     }
 
     actual override fun put(

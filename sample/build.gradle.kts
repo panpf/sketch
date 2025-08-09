@@ -169,13 +169,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = appName
-            packageVersion = property("versionName").toString().let {
-                if (it.contains("-")) {
-                    it.substring(0, it.indexOf("-"))
-                } else {
-                    it
-                }
-            }
+            packageVersion = convertDesktopPackageVersion(property("versionName").toString())
             vendor = "panpfpanpf@outlook.com"
             description = "Sketch4 Image Loader Library Sample App"
             macOS {
@@ -298,4 +292,58 @@ tasks.register<Copy>("copyImagesToWasmJsProcessedResources") {
 }
 tasks.named("wasmJsProcessResources") {
     dependsOn("copyImagesToWasmJsProcessedResources")
+}
+
+/**
+ * '1.2.0' -> '1.2.0099'
+ * '1.2.1' -> '1.2.0199'
+ * '1.2.21' -> '1.2.2199'
+ * '1.2.1-alpha01' -> '1.2.0101'
+ * '1.2.1-alpha01' -> '1.2.0101'
+ * '1.2.1-beta01' -> '1.2.0131'
+ * '1.2.1-rc01' -> '1.2.0161'
+ */
+private fun convertDesktopPackageVersion(version: String): String {
+    val versionItems = version.split("-")
+    val (major, preRelease) = when (versionItems.size) {
+        2 -> versionItems[0] to versionItems[1]
+        1 -> versionItems[0] to null
+        else -> throw IllegalArgumentException("The version is invalid, version: $version")
+    }
+    val majorItems = major.split(".")
+    require(majorItems.size == 3) {
+        "The major part of the version string must have three parts, but was: $version"
+    }
+    val patch = majorItems[2].toIntOrNull()
+        ?: throw IllegalArgumentException("The patch part of version is invalid. version: $version")
+    require(patch < 100) {
+        "The patch part of the version string must be less than 100, but was: $version"
+    }
+
+    val finalPreReleaseNumberFormatted = if (preRelease != null) {
+        val preReleaseRules = listOf(
+            "alpha" to 0,
+            "beta" to 30,
+            "rc" to 60
+        )
+        val preReleaseRule = preReleaseRules.find { preRelease.startsWith(it.first) }
+            ?: throw IllegalArgumentException("The pre-release part of the version string must start with 'alpha', 'beta' or 'rc', but was: $version")
+        val preReleaseNumber = preRelease.replace(preReleaseRule.first, "").toIntOrNull()
+            ?: throw IllegalArgumentException("The pre-release part of the version string must start with 'alpha', 'beta' or 'rc', but was: $version")
+        require(preReleaseNumber < 30) {
+            "The pre-release number must be less than 30, but was: $version"
+        }
+        val finalPreReleaseNumber = preReleaseRule.second + preReleaseNumber
+        String.format("%02d", finalPreReleaseNumber)
+    } else {
+        "99"
+    }
+    val finalPatch = String.format("%02d", patch)
+    val newPatch = "${finalPatch}${finalPreReleaseNumberFormatted}"
+    val newVersion = listOf(
+        majorItems[0],  // Major
+        majorItems[1],  // Minor
+        newPatch       // Patch with pre-release number
+    ).joinToString(".")
+    return newVersion
 }

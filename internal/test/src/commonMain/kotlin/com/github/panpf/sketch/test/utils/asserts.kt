@@ -22,11 +22,3 @@ fun assertSizeEquals(expected: Size, actual: Size, delta: Size? = null, message:
         assertEquals(expected, actual, message)
     }
 }
-
-operator fun Size.plus(size: Size): Size {
-    return Size(this.width + size.width, this.height + size.height)
-}
-
-operator fun Size.minus(size: Size): Size {
-    return Size(this.width - size.width, this.height - size.height)
-}

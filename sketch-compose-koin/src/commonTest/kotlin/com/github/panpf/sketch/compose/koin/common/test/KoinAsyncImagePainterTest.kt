@@ -22,7 +22,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertSame
 
 @OptIn(ExperimentalTestApi::class)
-class SingletonAsyncImagePainterTest {
+class KoinAsyncImagePainterTest {
 
     init {
         Koins.initial()

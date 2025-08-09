@@ -7,6 +7,22 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
+# 4.3.1
+
+* fix: 修复从 4.3.0 版本开始 ThumbnailMemoryCacheStateImage 在遇到缓存 key 和 uri 相同或者尺寸相同的情况时返回
+  null 的 bug。[#263](https://github.com/panpf/sketch/issues/263)
+
+# 4.3.0
+
+* fix: 修复 ThumbnailMemoryCacheStateImage 在遇到没有 ImageInfo 的内存缓存时导致 App 崩溃或图片加载失败的
+  bug。 [#259](https://github.com/panpf/sketch/issues/259)
+* fix: 修复 MemoryCacheRequestInterceptor 在遇到没有 ImageInfo 的缓存时图片加载失败的
+  bug。 [#260](https://github.com/panpf/sketch/issues/260)
+* break: 'sketch-compose-koin', 'sketch-view-koin', 'sketch-koin' 模块的文件名从 Singleton 改为
+  Koin，二进制兼容性被破坏，依赖于此的库可能需要重新编译
+* new: MemoryCache 新增 entries() 方法用于获取所有缓存条目
+* improve: 改进 ThumbnailMemoryCacheStateImage 的性能，现在默认遍历所有的内存缓存并且改进缩略图的判断精度
+
 # 4.2.0
 
 > [!NOTE]

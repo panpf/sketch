@@ -51,7 +51,7 @@ import org.koin.compose.koinInject
  * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
  *  destination.
  *
- * @see com.github.panpf.sketch.compose.koin.common.test.SingletonSubcomposeAsyncImageTest.testSubcomposeAsyncImage1
+ * @see com.github.panpf.sketch.compose.koin.common.test.KoinSubcomposeAsyncImageTest.testSubcomposeAsyncImage1
  */
 @Composable
 @NonRestartableComposable
@@ -107,7 +107,7 @@ fun SubcomposeAsyncImage(
  *  destination.
  * @param content A callback to draw the content inside an [SubcomposeAsyncImageScope].
  *
- * @see com.github.panpf.sketch.compose.koin.common.test.SingletonSubcomposeAsyncImageTest.testSubcomposeAsyncImage2
+ * @see com.github.panpf.sketch.compose.koin.common.test.KoinSubcomposeAsyncImageTest.testSubcomposeAsyncImage2
  */
 @Composable
 @NonRestartableComposable
@@ -159,7 +159,7 @@ fun SubcomposeAsyncImage(
  * @param filterQuality Sampling algorithm applied to a bitmap when it is scaled and drawn into the
  *  destination.
  *
- * @see com.github.panpf.sketch.compose.koin.common.test.SingletonSubcomposeAsyncImageTest.testSubcomposeAsyncImage3
+ * @see com.github.panpf.sketch.compose.koin.common.test.KoinSubcomposeAsyncImageTest.testSubcomposeAsyncImage3
  */
 @Composable
 @NonRestartableComposable
@@ -215,7 +215,7 @@ fun SubcomposeAsyncImage(
  *  destination.
  * @param content A callback to draw the content inside an [SubcomposeAsyncImageScope].
  *
- * @see com.github.panpf.sketch.compose.koin.common.test.SingletonSubcomposeAsyncImageTest.testSubcomposeAsyncImage4
+ * @see com.github.panpf.sketch.compose.koin.common.test.KoinSubcomposeAsyncImageTest.testSubcomposeAsyncImage4
  */
 @Composable
 @NonRestartableComposable

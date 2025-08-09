@@ -9,6 +9,25 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
+# 4.3.1
+
+* fix: Fixed a bug that returned null when ThumbnailMemoryCacheStateImage starts with version
+  4.3.0. [#263](https://github.com/panpf/sketch/issues/263)
+
+# 4.3.0
+
+* fix: Fixed a bug that caused the App to crash or image loading failure when
+  ThumbnailMemoryCacheStateImage to encounter memory cache without
+  ImageInfo. [#259](https://github.com/panpf/sketch/issues/259)
+* fix: Fixed a bug where MemoryCacheRequestInterceptor failed to load images when they encountered a
+  cache without ImageInfo. [#260](https://github.com/panpf/sketch/issues/260)
+* break: 'sketch-compose-koin', 'sketch-view-koin', 'sketch-koin' The file name of the module has
+  been changed from Singleton to Koin, and binary compatibility is corrupted. The library that
+  depends on this may need to be recompiled.
+* new: MemoryCache added entries() method to get all cache entries
+* improve: Improve the performance of ThumbnailMemoryCacheStateImage, now iterates through all
+  memory caches by default and improves the judgment accuracy of thumbnail images.
+
 # 4.2.0
 
 > [!NOTE]

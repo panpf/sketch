@@ -28,7 +28,7 @@ import org.koin.mp.KoinPlatform
  *
  * @return A [Disposable] which can be used to cancel or check the status of the request.
  *
- * @see com.github.panpf.sketch.koin.common.test.request.ImageRequestSingletonTest.testEnqueue
+ * @see com.github.panpf.sketch.koin.common.test.request.ImageRequestKoinTest.testEnqueue
  */
 fun ImageRequest.enqueue(
     sketch: Sketch = KoinPlatform.getKoin().get<Sketch>()
@@ -42,7 +42,7 @@ fun ImageRequest.enqueue(
  *
  * @return A [ImageResult.Success] if the request completes successfully. Else, returns an [ImageResult.Error].
  *
- * @see com.github.panpf.sketch.koin.common.test.request.ImageRequestSingletonTest.testExecute
+ * @see com.github.panpf.sketch.koin.common.test.request.ImageRequestKoinTest.testExecute
  */
 suspend fun ImageRequest.execute(
     sketch: Sketch = KoinPlatform.getKoin().get<Sketch>()

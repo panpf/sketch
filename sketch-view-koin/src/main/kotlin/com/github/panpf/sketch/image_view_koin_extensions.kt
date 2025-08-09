@@ -32,7 +32,7 @@ import java.io.File
  *
  * You can set request params with a trailing lambda function [block]
  *
- * @see com.github.panpf.sketch.view.koin.test.ImageViewSingletonExtensionsTest.testLoadImage
+ * @see com.github.panpf.sketch.view.koin.test.ImageViewKoinExtensionsTest.testLoadImage
  */
 fun ImageView.loadImage(
     uri: String?,
@@ -44,7 +44,7 @@ fun ImageView.loadImage(
  *
  * You can set request params with a trailing lambda function [block]
  *
- * @see com.github.panpf.sketch.view.koin.test.ImageViewSingletonExtensionsTest.testLoadImage
+ * @see com.github.panpf.sketch.view.koin.test.ImageViewKoinExtensionsTest.testLoadImage
  */
 fun ImageView.loadImage(
     uri: Uri?,
@@ -56,7 +56,7 @@ fun ImageView.loadImage(
  *
  * You can set request params with a trailing lambda function [block]
  *
- * @see com.github.panpf.sketch.view.koin.test.ImageViewSingletonExtensionsTest.testLoadImage
+ * @see com.github.panpf.sketch.view.koin.test.ImageViewKoinExtensionsTest.testLoadImage
  */
 fun ImageView.loadImage(
     @DrawableRes resId: Int?,
@@ -68,7 +68,7 @@ fun ImageView.loadImage(
  *
  * You can set request params with a trailing lambda function [block]
  *
- * @see com.github.panpf.sketch.view.koin.test.ImageViewSingletonExtensionsTest.testLoadImage
+ * @see com.github.panpf.sketch.view.koin.test.ImageViewKoinExtensionsTest.testLoadImage
  */
 fun ImageView.loadImage(
     file: File?,
@@ -80,7 +80,7 @@ fun ImageView.loadImage(
  *
  * You can set request params with a trailing lambda function [block]
  *
- * @see com.github.panpf.sketch.view.koin.test.ImageViewSingletonExtensionsTest.testLoadImage
+ * @see com.github.panpf.sketch.view.koin.test.ImageViewKoinExtensionsTest.testLoadImage
  */
 fun ImageView.loadAssetImage(
     fileName: String?,
@@ -92,7 +92,7 @@ fun ImageView.loadAssetImage(
  *
  * You can set request params with a trailing lambda function [block]
  *
- * @see com.github.panpf.sketch.view.koin.test.ImageViewSingletonExtensionsTest.testLoadImage
+ * @see com.github.panpf.sketch.view.koin.test.ImageViewKoinExtensionsTest.testLoadImage
  */
 fun ImageView.loadResourceImage(
     @DrawableRes resId: Int?,
@@ -104,7 +104,7 @@ fun ImageView.loadResourceImage(
  *
  * You can set request params with a trailing lambda function [block]
  *
- * @see com.github.panpf.sketch.view.koin.test.ImageViewSingletonExtensionsTest.testLoadImage
+ * @see com.github.panpf.sketch.view.koin.test.ImageViewKoinExtensionsTest.testLoadImage
  */
 fun ImageView.loadResourceImage(
     packageName: String,

@@ -75,6 +75,11 @@ interface MemoryCache {
     fun keys(): Set<String>
 
     /**
+     * Get all cached entries
+     */
+    fun entries(): Set<Map.Entry<String, Value>>
+
+    /**
      * Clear all cached bitmaps
      */
     fun clear()

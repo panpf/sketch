@@ -17,7 +17,7 @@ import com.github.panpf.sketch.test.utils.LifecycleContainer
 import kotlin.test.Test
 
 @OptIn(ExperimentalTestApi::class)
-class SingletonAsyncImageTest {
+class KoinAsyncImageTest {
 
     init {
         Koins.initial()
