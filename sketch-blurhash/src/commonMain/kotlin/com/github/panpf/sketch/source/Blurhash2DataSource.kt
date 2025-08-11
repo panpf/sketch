@@ -5,12 +5,12 @@ import okio.IOException
 import okio.Path
 import okio.Source
 
-class BlurhashDataSource constructor(
-    val blurhash: String,
+class Blurhash2DataSource constructor(
+    val blurHash: String,
     override val dataFrom: DataFrom,
 ) : DataSource {
 
-    override val key: String = blurhash
+    override val key: String = blurHash
 
     @Throws(IOException::class)
     override fun openSource(): Source = throw UnsupportedOperationException("Not supported")
@@ -22,7 +22,7 @@ class BlurhashDataSource constructor(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
-        other as BlurhashDataSource
+        other as Blurhash2DataSource
         if (dataFrom != other.dataFrom) return false
         return true
     }

@@ -2,12 +2,16 @@ package com.github.panpf.sketch.core.android.test.decode.internal
 
 import android.graphics.Bitmap
 import android.graphics.ColorSpace
-import com.github.panpf.sketch.*
+import com.github.panpf.sketch.BLURHASH_COLOR_TYPE
+import com.github.panpf.sketch.BitmapImage
+import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.colorType
 import com.github.panpf.sketch.decode.FixedColorSpace
-import com.github.panpf.sketch.decode.internal.BlurhashDecodeHelper
+import com.github.panpf.sketch.decode.internal.Blurhash2DecodeHelper
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorType
-import com.github.panpf.sketch.source.BlurhashDataSource
+import com.github.panpf.sketch.size
+import com.github.panpf.sketch.source.Blurhash2DataSource
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.assertSizeEquals
@@ -17,7 +21,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class AndroidBlurhashDecodeHelperTest {
+class AndroidBlurhash2DecodeHelperTest {
 
     val testableBlurhash = "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
     val testableBlurhashUri = "blurhash://$testableBlurhash&width=200&height=300"
@@ -97,11 +101,11 @@ class AndroidBlurhashDecodeHelperTest {
     private fun String.toDecodeHelper(
         context: PlatformContext,
         block: (ImageRequest.Builder.() -> Unit)? = null
-    ): BlurhashDecodeHelper {
+    ): Blurhash2DecodeHelper {
         val request = ImageRequest(context, this, block)
-        return BlurhashDecodeHelper(
+        return Blurhash2DecodeHelper(
             request,
-            BlurhashDataSource(this, DataFrom.NETWORK),
+            Blurhash2DataSource(this, DataFrom.NETWORK),
             Size(200, 200)
         )
     }

@@ -22,5 +22,5 @@ import com.github.panpf.sketch.util.ComponentLoader
 @OptIn(ExperimentalStdlibApi::class)
 @EagerInitialization
 @Deprecated("", level = DeprecationLevel.HIDDEN)
-val blurhashUriFetcherProviderInitHook: Any =
-    ComponentLoader.register(BlurhashUriFetcherProvider())
+val blurHashUriFetcherProviderInitHook: Any =
+    ComponentLoader.register(BlurHashUriFetcherProvider())

@@ -100,12 +100,12 @@
         app:popExitAnim="@anim/nav_pop_exit" />
 
     <fragment
-            android:id="@+id/blurhashFragment"
-            android:name="com.github.panpf.sketch.sample.ui.test.BlurhashAndroidTestFragment"
+        android:id="@+id/blurHashFragment"
+        android:name="com.github.panpf.sketch.sample.ui.test.BlurHashTestFragment"
             android:label="NotificationFragment"/>
     <action
-            android:id="@+id/action_blurhashFragment"
-            app:destination="@id/blurhashFragment"
+        android:id="@+id/action_blurHashFragment"
+        app:destination="@id/blurHashFragment"
             app:enterAnim="@anim/nav_enter"
             app:exitAnim="@anim/nav_exit"
             app:popEnterAnim="@anim/nav_pop_enter"

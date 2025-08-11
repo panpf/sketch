@@ -30,8 +30,8 @@ import okio.Closeable
  * @see com.github.panpf.sketch.video.test.decode.internal.VideoFrameDecodeHelperTest
  * @see com.github.panpf.sketch.video.ffmpeg.test.decode.internal.FFmpegVideoFrameDecodeHelperTest
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.SkiaDecodeHelperTest
- * @see com.github.panpf.sketch.core.android.test.decode.internal.SkiaBlurhashDecodeHelperTest
- * @see com.github.panpf.sketch.core.android.test.decode.internal.AndroidBlurhashDecodeHelperTest
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.SkiaBlurHashDecodeHelperTest
+ * @see com.github.panpf.sketch.core.android.test.decode.internal.AndroidBlurHashDecodeHelperTest
  */
 interface DecodeHelper : Closeable {
 

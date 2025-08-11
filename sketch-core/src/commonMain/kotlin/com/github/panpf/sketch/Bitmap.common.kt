@@ -81,7 +81,7 @@ expect val Bitmap.isImmutable: Boolean
 
 
 /**
- * Image color type com.github.panpf.sketch.fetch.BlurhashUtil.decodeByte() decodes blurhash string in
+ * Image color type com.github.panpf.sketch.fetch.Blurhash2Util.decodeByte() decodes blurhash string in
  *
  * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testBlurhashColorType
  * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testBlurhashColorType

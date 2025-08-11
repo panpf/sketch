@@ -41,7 +41,7 @@ import okio.use
  * @see com.github.panpf.sketch.video.test.decode.VideoFrameDecoderTest
  * @see com.github.panpf.sketch.video.ffmpeg.test.decode.FFmpegVideoFrameDecoderTest
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.SkiaDecoderTest
- * @see com.github.panpf.sketch.blurhash.test.decode.internal.BlurhashDecoderTest
+ * @see com.github.panpf.sketch.blurhash.test.decode.internal.BlurHashDecoderTest
  */
 open class HelperDecoder(
     private val requestContext: RequestContext,

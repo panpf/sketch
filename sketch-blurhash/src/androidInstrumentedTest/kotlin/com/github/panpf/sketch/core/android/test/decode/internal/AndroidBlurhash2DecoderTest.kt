@@ -1,9 +1,9 @@
 package com.github.panpf.sketch.core.android.test.decode.internal
 
-import com.github.panpf.sketch.decode.internal.BlurhashDecoder
+import com.github.panpf.sketch.decode.internal.Blurhash2Decoder
 import com.github.panpf.sketch.fetch.isBlurHashUri
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.source.BlurhashDataSource
+import com.github.panpf.sketch.source.Blurhash2DataSource
 import com.github.panpf.sketch.source.DataFrom.NETWORK
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.createDecoderOrNull
@@ -13,9 +13,13 @@ import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.toShortInfoString
 import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.test.runTest
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
-class AndroidBlurhashDecoderTest {
+class AndroidBlurhash2DecoderTest {
 
     val testableBlurhash = "LEHV6nWB2yk8pyo0adR*.7kCMdnj"
     val testableBlurhashUri = "blurhash://$testableBlurhash&width=200&height=300"
@@ -32,10 +36,10 @@ class AndroidBlurhashDecoderTest {
 
         val request = ImageRequest(context, testableBlurhashUri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = BlurhashDataSource(testableBlurhash, NETWORK)
+        val dataSource = Blurhash2DataSource(testableBlurhash, NETWORK)
 
-        BlurhashDecoder(requestContext, dataSource)
-        BlurhashDecoder(requestContext = requestContext, dataSource = dataSource)
+        Blurhash2Decoder(requestContext, dataSource)
+        Blurhash2Decoder(requestContext = requestContext, dataSource = dataSource)
     }
 
     @Test
@@ -43,9 +47,9 @@ class AndroidBlurhashDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, "blurhash://$testableBlurhash")
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = BlurhashDataSource(testableBlurhash, NETWORK)
+        val dataSource = Blurhash2DataSource(testableBlurhash, NETWORK)
 
-        val decoder = BlurhashDecoder(requestContext, dataSource)
+        val decoder = Blurhash2Decoder(requestContext, dataSource)
 
         assertEquals(expected = 100, actual = decoder.imageInfo.width)
         assertEquals(expected = 100, actual = decoder.imageInfo.height)
@@ -57,9 +61,9 @@ class AndroidBlurhashDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, testableBlurhashUri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = BlurhashDataSource(testableBlurhash, NETWORK)
+        val dataSource = Blurhash2DataSource(testableBlurhash, NETWORK)
 
-        val decoder = BlurhashDecoder(requestContext, dataSource)
+        val decoder = Blurhash2Decoder(requestContext, dataSource)
 
         assertEquals(expected = 200, actual = decoder.imageInfo.width)
         assertEquals(expected = 300, actual = decoder.imageInfo.height)
@@ -71,9 +75,9 @@ class AndroidBlurhashDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, testableBlurhashUri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = BlurhashDataSource(testableBlurhash, NETWORK)
+        val dataSource = Blurhash2DataSource(testableBlurhash, NETWORK)
 
-        val decoder = BlurhashDecoder(requestContext, dataSource)
+        val decoder = Blurhash2Decoder(requestContext, dataSource)
 
         decoder.decode().apply {
             assertEquals(
@@ -94,10 +98,10 @@ class AndroidBlurhashDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, testableBlurhashUri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = BlurhashDataSource(testableBlurhash, NETWORK)
+        val dataSource = Blurhash2DataSource(testableBlurhash, NETWORK)
 
-        val element1 = BlurhashDecoder(requestContext, dataSource)
-        val element11 = BlurhashDecoder(requestContext, dataSource)
+        val element1 = Blurhash2Decoder(requestContext, dataSource)
+        val element11 = Blurhash2Decoder(requestContext, dataSource)
 
         assertNotEquals(illegal = element1, actual = element11)
         assertNotEquals(illegal = element1, actual = null as Any?)
@@ -110,9 +114,9 @@ class AndroidBlurhashDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, testableBlurhashUri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = BlurhashDataSource(testableBlurhash, NETWORK)
+        val dataSource = Blurhash2DataSource(testableBlurhash, NETWORK)
 
-        val decoder = BlurhashDecoder(requestContext, dataSource)
+        val decoder = Blurhash2Decoder(requestContext, dataSource)
 
         assertTrue(
             actual = decoder.toString().contains("BlurhashDecoder"),
@@ -123,42 +127,42 @@ class AndroidBlurhashDecoderTest {
 
     @Test
     fun testFactoryConstructor() {
-        BlurhashDecoder.Factory()
+        Blurhash2Decoder.Factory()
     }
 
     @Test
     fun testFactoryKey() {
         assertEquals(
             expected = "BlurhashHelperDecoder",
-            actual = BlurhashDecoder.Factory().key
+            actual = Blurhash2Decoder.Factory().key
         )
     }
 
     @Test
     fun testFactoryCreate() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val factory = BlurhashDecoder.Factory()
+        val factory = Blurhash2Decoder.Factory()
 
         ImageRequest(context, testableBlurhashUri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "")
             }.apply {
-                assertTrue(this is BlurhashDecoder)
+                assertTrue(this is Blurhash2Decoder)
             }
 
         ImageRequest(context, testableBlurhashUri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/png")
             }.apply {
-                assertTrue(this is BlurhashDecoder)
+                assertTrue(this is Blurhash2Decoder)
             }
     }
 
 
     @Test
     fun testFactoryEqualsAndHashCode() {
-        val element1 = BlurhashDecoder.Factory()
-        val element11 = BlurhashDecoder.Factory()
+        val element1 = Blurhash2Decoder.Factory()
+        val element11 = Blurhash2Decoder.Factory()
 
         assertEquals(expected = element1, actual = element11)
         assertNotEquals(illegal = element1, actual = null as Any?)
@@ -171,7 +175,7 @@ class AndroidBlurhashDecoderTest {
     fun testFactoryToString() {
         assertEquals(
             expected = "BlurhashHelperDecoder",
-            actual = BlurhashDecoder.Factory().toString()
+            actual = Blurhash2Decoder.Factory().toString()
         )
     }
 }

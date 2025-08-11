@@ -16,10 +16,9 @@
 
 package com.github.panpf.sketch.fetch.internal
 
-//import androidx.annotation.Keep
 import com.github.panpf.sketch.PlatformContext
 //import com.github.panpf.sketch.fetch.AppIconUriFetcher
-import com.github.panpf.sketch.fetch.BlurhashUriFetcher
+import com.github.panpf.sketch.fetch.BlurHashUriFetcher
 import com.github.panpf.sketch.util.FetcherProvider
 
 ///**
@@ -29,7 +28,7 @@ import com.github.panpf.sketch.util.FetcherProvider
 // * @see com.github.panpf.sketch.compose.resources.nonjvm.test.fetch.internal.ComposeResourceUriFetcherProviderNonJvmTest
 // */
 
-expect class BlurhashUriFetcherProvider : FetcherProvider {
+expect class BlurHashUriFetcherProvider : FetcherProvider {
 
-    override fun factory(context: PlatformContext): BlurhashUriFetcher.Factory
+    override fun factory(context: PlatformContext): BlurHashUriFetcher.Factory
 }

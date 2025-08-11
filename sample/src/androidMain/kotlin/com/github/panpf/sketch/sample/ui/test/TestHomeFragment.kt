@@ -121,8 +121,8 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
             navDirections = NavMainDirections.actionRemoteViewsFragment()
         ),
         Link(
-            title = "Blurhash",
-            navDirections = NavMainDirections.actionBlurhashFragment()
+            title = "BlurHash",
+            navDirections = NavMainDirections.actionBlurHashFragment()
         ),
 
         ListSeparator("Other"),

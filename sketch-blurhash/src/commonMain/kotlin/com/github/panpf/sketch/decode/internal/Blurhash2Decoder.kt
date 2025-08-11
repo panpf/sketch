@@ -3,30 +3,31 @@ package com.github.panpf.sketch.decode.internal
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.source.BlurhashDataSource
+import com.github.panpf.sketch.source.Blurhash2DataSource
 
-class BlurhashDecoder(
+class Blurhash2Decoder(
     requestContext: RequestContext,
-    dataSource: BlurhashDataSource,
+    dataSource: Blurhash2DataSource,
 ) : HelperDecoder(requestContext, dataSource, {
-    BlurhashDecodeHelper(requestContext.request, dataSource)
+    Blurhash2DecodeHelper(requestContext.request, dataSource)
 }) {
 
     class Factory : Decoder.Factory {
 
-        override val key: String = "BlurhashHelperDecoder"
+        override val key: String = "BlurHashHelperDecoder"
 
         override fun create(
             requestContext: RequestContext, fetchResult: FetchResult
-        ): BlurhashDecoder? {
+        ): Blurhash2Decoder? {
             if (!isApplicable(fetchResult)) return null
-            return BlurhashDecoder(
-                requestContext = requestContext, dataSource = fetchResult.dataSource as BlurhashDataSource
+            return Blurhash2Decoder(
+                requestContext = requestContext,
+                dataSource = fetchResult.dataSource as Blurhash2DataSource
             )
         }
 
         private fun isApplicable(fetchResult: FetchResult): Boolean {
-            return fetchResult.dataSource is BlurhashDataSource
+            return fetchResult.dataSource is Blurhash2DataSource
         }
 
         override fun equals(other: Any?): Boolean {
@@ -38,7 +39,7 @@ class BlurhashDecoder(
             return this::class.hashCode()
         }
 
-        override fun toString(): String = "BlurhashHelperDecoder"
+        override fun toString(): String = "BlurHashHelperDecoder"
     }
 
 }

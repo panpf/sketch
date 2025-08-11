@@ -15,7 +15,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Blurhash placeholder example"
+            android:text="Placeholder"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:gravity="center"/>
@@ -39,7 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Blurhash Android View Examples"
+            android:text="Android View Examples"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:gravity="center"/>
@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Blurhash URI with SketchImageView"
+            android:text="URI with SketchImageView"
                 android:textSize="16sp"
                 android:textStyle="bold"/>
 
@@ -59,14 +59,14 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/bg_rect_stroke"
-                android:contentDescription="Blurhash URI example"
+            android:contentDescription="URI example"
                 android:padding="2dp"/>
 
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Blurhash as Placeholder"
+            android:text="As Placeholder"
                 android:textSize="16sp"
                 android:textStyle="bold"/>
 
@@ -77,14 +77,14 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/bg_rect_stroke"
-                android:contentDescription="Blurhash placeholder example"
+            android:contentDescription="placeholder example"
                 android:padding="2dp"/>
 
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Blurhash as Error State"
+            android:text="As Error State"
                 android:textSize="16sp"
                 android:textStyle="bold"/>
 
@@ -95,14 +95,14 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/bg_rect_stroke"
-                android:contentDescription="Blurhash error example"
+            android:contentDescription="error example"
                 android:padding="2dp"/>
 
         <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="Different Blurhash Variations"
+            android:text="Different Variations"
                 android:textSize="16sp"
                 android:textStyle="bold"/>
 
@@ -113,7 +113,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/bg_rect_stroke"
-                android:contentDescription="Blurhash variation 1"
+            android:contentDescription="variation 1"
                 android:padding="1dp"/>
 
         <com.github.panpf.sketch.sample.ui.widget.MyImageView
@@ -123,7 +123,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/bg_rect_stroke"
-                android:contentDescription="Blurhash variation 2"
+            android:contentDescription="variation 2"
                 android:padding="1dp"/>
 
         <com.github.panpf.sketch.sample.ui.widget.MyImageView
@@ -133,7 +133,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/bg_rect_stroke"
-                android:contentDescription="Blurhash variation 3"
+            android:contentDescription="variation 3"
                 android:padding="1dp"/>
 
         <com.github.panpf.sketch.sample.ui.widget.MyImageView
@@ -143,7 +143,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/bg_rect_stroke"
-                android:contentDescription="Blurhash variation 4"
+            android:contentDescription="variation 4"
                 android:padding="1dp"/>
 
     </LinearLayout>

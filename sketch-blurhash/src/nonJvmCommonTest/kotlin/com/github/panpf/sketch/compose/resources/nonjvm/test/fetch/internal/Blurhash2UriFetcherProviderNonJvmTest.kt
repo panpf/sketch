@@ -1,30 +1,30 @@
 package com.github.panpf.sketch.compose.resources.nonjvm.test.fetch.internal
 
-import com.github.panpf.sketch.fetch.BlurhashUriFetcher
-import com.github.panpf.sketch.fetch.internal.BlurhashUriFetcherProvider
+import com.github.panpf.sketch.fetch.BlurHashUriFetcher
+import com.github.panpf.sketch.fetch.internal.BlurHashUriFetcherProvider
 import com.github.panpf.sketch.test.utils.getTestContext
 import kotlin.test.Test
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
-class BlurhashUriFetcherProviderNonJvmTest {
+class Blurhash2UriFetcherProviderNonJvmTest {
 
     @Test
     @Suppress("USELESS_IS_CHECK")
     fun testFactory() {
         val context = getTestContext()
-        val decoderProvider = BlurhashUriFetcherProvider()
+        val decoderProvider = BlurHashUriFetcherProvider()
         val decoderFactory = decoderProvider.factory(context)
         assertTrue(
-            actual = decoderFactory is BlurhashUriFetcher.Factory,
+            actual = decoderFactory is BlurHashUriFetcher.Factory,
             message = decoderFactory.toString()
         )
     }
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = BlurhashUriFetcherProvider()
-        val element11 = BlurhashUriFetcherProvider()
+        val element1 = BlurHashUriFetcherProvider()
+        val element11 = BlurHashUriFetcherProvider()
 
         assertNotEquals(element1, element11)
         assertNotEquals(element1, null as Any?)
@@ -35,7 +35,7 @@ class BlurhashUriFetcherProviderNonJvmTest {
 
     @Test
     fun testToString() {
-        val decoderProvider = BlurhashUriFetcherProvider()
+        val decoderProvider = BlurHashUriFetcherProvider()
         assertTrue(
             actual = decoderProvider.toString().contains("BlurhashUriFetcherProvider"),
             message = decoderProvider.toString()

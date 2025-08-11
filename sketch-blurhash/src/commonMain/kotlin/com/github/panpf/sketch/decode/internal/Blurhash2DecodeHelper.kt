@@ -4,17 +4,17 @@ import com.github.panpf.sketch.Bitmap
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.fetch.BlurhashUtil
+import com.github.panpf.sketch.fetch.Blurhash2Util
 import com.github.panpf.sketch.fetch.parseQueryParameters
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.source.BlurhashDataSource
+import com.github.panpf.sketch.source.Blurhash2DataSource
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.installPixels
 
-class BlurhashDecodeHelper(
+class Blurhash2DecodeHelper(
     val request: ImageRequest,
-    val dataSource: BlurhashDataSource,
+    val dataSource: Blurhash2DataSource,
     private val fallbackSize: Size = Size(100, 100)
 ) : DecodeHelper {
 
@@ -33,13 +33,13 @@ class BlurhashDecodeHelper(
 
     override fun decode(sampleSize: Int): Image {
         val pixelData = try {
-            BlurhashUtil.decodeByte(dataSource.blurhash, imageInfo.width, imageInfo.height)
+            Blurhash2Util.decodeByte(dataSource.blurHash, imageInfo.width, imageInfo.height)
         } catch (e: Exception) {
             e.printStackTrace()
             throw IllegalArgumentException()
         }
 
-        val bitmap = createBlurhashBitmap(imageInfo.width, imageInfo.height)
+        val bitmap = createBlurHashBitmap(imageInfo.width, imageInfo.height)
         bitmap.installPixels(pixelData)
         return bitmap.asImage()
     }
@@ -56,4 +56,4 @@ class BlurhashDecodeHelper(
     }
 }
 
-expect fun createBlurhashBitmap(width: Int, height: Int): Bitmap
+expect fun createBlurHashBitmap(width: Int, height: Int): Bitmap

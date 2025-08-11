@@ -17,7 +17,7 @@
 package com.github.panpf.sketch.request
 
 import androidx.compose.runtime.Composable
-import com.github.panpf.sketch.state.rememberBlurhashStateImage
+import com.github.panpf.sketch.state.rememberBlurHashStateImage
 
 /**
  * Set Drawable placeholder image when loading
@@ -25,8 +25,8 @@ import com.github.panpf.sketch.state.rememberBlurhashStateImage
  * @see com.github.panpf.sketch.compose.resources.common.test.request.ImageRequestComposeResourcesTest.testPlaceholder
  */
 @Composable
-fun ImageRequest.Builder.blurhashPlaceholder(blurhash: String): ImageRequest.Builder =
-    placeholder(rememberBlurhashStateImage(blurhash))
+fun ImageRequest.Builder.blurHashPlaceholder(blurHash: String): ImageRequest.Builder =
+    placeholder(rememberBlurHashStateImage(blurHash))
 
 /**
  * Set Drawable placeholder image when uri is invalid
@@ -34,8 +34,8 @@ fun ImageRequest.Builder.blurhashPlaceholder(blurhash: String): ImageRequest.Bui
  * @see com.github.panpf.sketch.compose.resources.common.test.request.ImageRequestComposeResourcesTest.testFallback
  */
 @Composable
-fun ImageRequest.Builder.blurhashFallback(blurhash: String): ImageRequest.Builder =
-    fallback(rememberBlurhashStateImage(blurhash))
+fun ImageRequest.Builder.blurHashFallback(blurHash: String): ImageRequest.Builder =
+    fallback(rememberBlurHashStateImage(blurHash))
 
 /**
  * Set Color image to display when loading fails.
@@ -45,5 +45,5 @@ fun ImageRequest.Builder.blurhashFallback(blurhash: String): ImageRequest.Builde
  * @see com.github.panpf.sketch.compose.resources.common.test.request.ImageRequestComposeResourcesTest.testError
  */
 @Composable
-fun ImageRequest.Builder.blurhashError(blurhash: String): ImageRequest.Builder =
-    error(rememberBlurhashStateImage(blurhash))
+fun ImageRequest.Builder.blurHashError(blurHash: String): ImageRequest.Builder =
+    error(rememberBlurHashStateImage(blurHash))

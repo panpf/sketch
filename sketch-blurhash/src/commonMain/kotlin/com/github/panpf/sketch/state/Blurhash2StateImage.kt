@@ -7,8 +7,8 @@ import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.cache.ImageCacheValue
-import com.github.panpf.sketch.decode.internal.createBlurhashBitmap
-import com.github.panpf.sketch.fetch.BlurhashUtil
+import com.github.panpf.sketch.decode.internal.createBlurHashBitmap
+import com.github.panpf.sketch.fetch.Blurhash2Util
 import com.github.panpf.sketch.fetch.parseQueryParameters
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.Size
@@ -25,54 +25,52 @@ import kotlinx.coroutines.withContext
  * @see com.github.panpf.sketch.compose.core.common.test.state.ColorPainterStateImageTest.testRememberColorPainterStateImage
  */
 @Composable
-fun rememberBlurhashStateImage(blurhash: String, size: Size? = null): BlurhashStateImage =
-    remember(blurhash) { BlurhashStateImage(blurhash, size) }
+fun rememberBlurHashStateImage(blurHash: String, size: Size? = null): BlurHashStateImage =
+    remember(blurHash) { BlurHashStateImage(blurHash, size) }
 
 /**
- * StateImage that creates a Bitmap directly from blurhash and caches it in memory
+ * StateImage that creates a Bitmap directly from blurHash and caches it in memory
  *
- * @see com.github.panpf.sketch.compose.core.common.test.state.BlurhashStateImageTest
+ * @see com.github.panpf.sketch.compose.core.common.test.state.BlurHashStateImageTest
  */
 @Stable
-data class BlurhashStateImage(val blurhash: String, val blurhashSize: Size? = null) : StateImage {
+data class BlurHashStateImage(val blurHash: String, val size: Size? = null) : StateImage {
 
-    override val key: String = "BlurhashStateImage(${blurhash},${blurhashSize})"
+    override val key: String = "BlurHashStateImage(${blurHash},${size})"
 
     private var sizeInUri: Size? = null
 
     init {
-        if (blurhashSize != null) {
-            require(!blurhashSize.isEmpty) {
-                "blurhashSize must be not empty"
+        if (size != null) {
+            require(!size.isEmpty) {
+                "size must be not empty"
             }
         } else {
-            val queryString = blurhash.substring(blurhash.indexOf('&') + 1)
+            val queryString = blurHash.substring(blurHash.indexOf('&') + 1)
             val sizeInUri = parseQueryParameters(queryString)
             require(sizeInUri != null && !sizeInUri.isEmpty) {
-                "When blurhashSize is not set, size must be specified in blurhash uri"
+                "When size is not set, size must be specified in blurHash uri"
             }
             this.sizeInUri = sizeInUri
         }
     }
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image? {
-        if (!BlurhashUtil.isValid(blurhash)) {
+        if (!Blurhash2Util.isValid(blurHash)) {
             return null
         }
 
-        val cacheKey = "blurhash:$blurhash"
+        val cacheKey = "blurhash:$blurHash"
         val memoryCache = sketch.memoryCache
 
         val cachedValue = memoryCache[cacheKey]
         if (cachedValue != null) {
-            println("From cache blurhash $blurhash")
             return cachedValue.image
         }
 
-        println("Creating bitmap for blurhash $blurhash")
-        val realIconSize = blurhashSize ?: sizeInUri!!
+        val realIconSize = size ?: sizeInUri!!
 
-        val bitmap = createBlurhashBitmap(realIconSize.width, realIconSize.height)
+        val bitmap = createBlurHashBitmap(realIconSize.width, realIconSize.height)
         val bitmapImage = bitmap.asImage()
 
         val cacheValue = ImageCacheValue(bitmapImage)
@@ -82,16 +80,13 @@ data class BlurhashStateImage(val blurhash: String, val blurhashSize: Size? = nu
         GlobalScope.launch(Dispatchers.Main) {
             val decodingResult = withContext(ioCoroutineDispatcher()) {
                 runCatching {
-                    println("Decoding blurhash $blurhash on background thread")
-                    BlurhashUtil.decodeByte(blurhash, realIconSize.width, realIconSize.height)
+                    Blurhash2Util.decodeByte(blurHash, realIconSize.width, realIconSize.height)
                 }
             }
 
             decodingResult.onSuccess { decodedBytes ->
-                println("Installing pixels for blurhash $blurhash")
                 bitmap.installPixels(decodedBytes)
             }.onFailure { exception ->
-                println("Failed to decode blurhash $blurhash: ${exception.message}")
                 exception.printStackTrace()
             }
         }
@@ -99,5 +94,5 @@ data class BlurhashStateImage(val blurhash: String, val blurhashSize: Size? = nu
         return bitmapImage
     }
 
-    override fun toString(): String = "BlurhashStateImage(blurhash=${blurhash}, size=$blurhashSize)"
+    override fun toString(): String = "BlurHashStateImage(blurHash=${blurHash}, size=$size)"
 }
