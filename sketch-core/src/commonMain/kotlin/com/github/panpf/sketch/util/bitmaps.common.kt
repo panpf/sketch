@@ -66,7 +66,21 @@ expect fun Bitmap.readIntPixels(
  */
 expect fun Bitmap.installIntPixels(intPixels: IntArray)
 
-expect fun Bitmap.installPixels(byteArray: ByteArray)
+/**
+ * Install pixels from a byte array
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testInstallPixels
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testInstallPixels
+ */
+expect fun Bitmap.installPixels(pixels: ByteArray)
+
+/**
+ * Read pixels from the current Bitmap and return a byte array.
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testInstallPixels
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testInstallPixels
+ */
+expect fun Bitmap.readPixels(): ByteArray?
 
 /**
  * Returns the Color at the specified location. Format ARGB_8888

@@ -28,17 +28,45 @@ import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
-import com.github.panpf.sketch.request.*
+import com.github.panpf.sketch.request.Disposable
+import com.github.panpf.sketch.request.ImageOptions
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.OneShotDisposable
+import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
-import com.github.panpf.sketch.util.*
+import com.github.panpf.sketch.util.ComponentLoader
+import com.github.panpf.sketch.util.DecoderProvider
+import com.github.panpf.sketch.util.DownloadData
+import com.github.panpf.sketch.util.FetcherProvider
+import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level
 import com.github.panpf.sketch.util.Logger.Pipeline
+import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.SystemCallbacks
+import com.github.panpf.sketch.util.application
+import com.github.panpf.sketch.util.defaultFileSystem
+import com.github.panpf.sketch.util.defaultLogPipeline
+import com.github.panpf.sketch.util.ioCoroutineDispatcher
+import com.github.panpf.sketch.util.isMainThread
+import com.github.panpf.sketch.util.toComponentRegistry
 import kotlinx.atomicfu.atomic
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import okio.FileSystem
 import kotlin.reflect.KClass
 
@@ -502,7 +530,6 @@ internal expect fun platformComponents(context: PlatformContext): ComponentRegis
 internal fun commonComponents(): ComponentRegistry = ComponentRegistry {
     addFetcher(Base64UriFetcher.Factory())
     addFetcher(FileUriFetcher.Factory())
-//    addFetcher(BlurHashUriFetcher.Factory())
 
     addRequestInterceptor(MemoryCacheRequestInterceptor())
     addRequestInterceptor(EngineRequestInterceptor())

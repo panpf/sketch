@@ -31,12 +31,14 @@ import com.github.panpf.sketch.util.copyWith
 import com.github.panpf.sketch.util.flip
 import com.github.panpf.sketch.util.hasAlphaPixels
 import com.github.panpf.sketch.util.installIntPixels
+import com.github.panpf.sketch.util.installPixels as installPixelsCommon
 import com.github.panpf.sketch.util.mapping
 import com.github.panpf.sketch.util.mask
 import com.github.panpf.sketch.util.mutableCopy
 import com.github.panpf.sketch.util.mutableCopyOrSelf
 import com.github.panpf.sketch.util.readIntPixel
 import com.github.panpf.sketch.util.readIntPixels
+import com.github.panpf.sketch.util.readPixels as readPixelsCommon
 import com.github.panpf.sketch.util.rotate
 import com.github.panpf.sketch.util.roundedCorners
 import com.github.panpf.sketch.util.scale
@@ -549,6 +551,24 @@ class BitmapsNonAndroidTest {
                     message = "colorType=$colorType"
                 )
             }
+    }
+
+    @Test
+    fun testInstallPixels() {
+        val sourceBitmap = ResourceImages.jpeg.decode().bitmap.apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,RGBA_8888,sRGB)",
+                actual = toShortInfoString()
+            )
+        }
+
+        val bytePixels = sourceBitmap.readPixelsCommon()!!
+        val newBitmap = createBitmap(sourceBitmap.imageInfo)
+        newBitmap.installPixelsCommon(bytePixels)
+
+        val sourceFingerPrint = sourceBitmap.produceFingerPrint()
+        val newFingerPrint = newBitmap.produceFingerPrint()
+        assertEquals(sourceFingerPrint, newFingerPrint)
     }
 
     @Test

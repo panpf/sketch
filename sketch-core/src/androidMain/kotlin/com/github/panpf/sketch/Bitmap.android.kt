@@ -92,13 +92,6 @@ val Bitmap.colorType: ColorType?
     get() = configOrNull
 
 /**
- * Image color type com.github.panpf.sketch.fetch.BlurHashUtil.decodeByte() decodes blur hash string in
- *
- * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testBlurhashColorType
- */
-actual val BLURHASH_COLOR_TYPE: ColorType = ColorType.ARGB_8888
-
-/**
  * Create a new [Bitmap] with the specified width, height, and [ColorType] and allocate memory
  *
  * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testCreateBitmap
@@ -106,8 +99,8 @@ actual val BLURHASH_COLOR_TYPE: ColorType = ColorType.ARGB_8888
 fun createBitmap(
     width: Int,
     height: Int,
-    colorType: ColorType = ColorType.ARGB_8888
-): Bitmap = Bitmap.createBitmap(width, height, colorType)
+    config: ColorType = ColorType.ARGB_8888
+): Bitmap = Bitmap.createBitmap(width, height, config)
 
 /**
  * Create a new [Bitmap] with the specified width, height, and [ColorType] and allocate memory

@@ -251,9 +251,29 @@ actual fun Bitmap.installIntPixels(intPixels: IntArray) {
     )
 }
 
-actual fun Bitmap.installPixels(byteArray: ByteArray) {
-    copyPixelsFromBuffer(ByteBuffer.wrap(byteArray))
+/**
+ * Install pixels from a byte array
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testInstallPixels
+ */
+actual fun Bitmap.installPixels(pixels: ByteArray) {
+    copyPixelsFromBuffer(ByteBuffer.wrap(pixels))
 }
+
+/**
+ * Read pixels from the current Bitmap and return a byte array.
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testInstallPixels
+ */
+actual fun Bitmap.readPixels(): ByteArray? {
+    val byteCount1 = byteCount
+    if (byteCount1 == 0) return null
+    val pixels = ByteArray(byteCount1)
+    val buffer = ByteBuffer.wrap(pixels)
+    copyPixelsToBuffer(buffer)
+    return pixels
+}
+
 /**
  * Returns the Color at the specified location. Format ARGB_8888
  *

@@ -28,6 +28,9 @@ import com.github.panpf.sketch.util.Size
  */
 expect class Bitmap
 
+/**
+ * ColorType, which is a alias of platform ColorType
+ */
 expect enum class ColorType
 
 /**
@@ -78,16 +81,3 @@ expect val Bitmap.isMutable: Boolean
  * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testIsImmutable
  */
 expect val Bitmap.isImmutable: Boolean
-
-
-/**
- * Image color type com.github.panpf.sketch.fetch.BlurHashUtil.decodeByte() decodes blur hash string in
- *
- * @see com.github.panpf.sketch.core.android.test.BitmapAndroidTest.testBlurhashColorType
- * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testBlurhashColorType
- */
-expect val BLURHASH_COLOR_TYPE: ColorType
-
-//expect fun createBitmap(width: Int,
-//                        height: Int,
-//                        colorType: ColorType) : Bitmap

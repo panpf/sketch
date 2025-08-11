@@ -27,6 +27,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.createBitmap
+import com.github.panpf.sketch.createEmptyBitmapWith
 import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.internal.decode
@@ -62,6 +63,7 @@ import com.github.panpf.sketch.util.copyWith
 import com.github.panpf.sketch.util.flip
 import com.github.panpf.sketch.util.hasAlphaPixels
 import com.github.panpf.sketch.util.installIntPixels
+import com.github.panpf.sketch.util.installPixels
 import com.github.panpf.sketch.util.isHardware
 import com.github.panpf.sketch.util.mapping
 import com.github.panpf.sketch.util.mask
@@ -69,6 +71,7 @@ import com.github.panpf.sketch.util.mutableCopy
 import com.github.panpf.sketch.util.mutableCopyOrSelf
 import com.github.panpf.sketch.util.readIntPixel
 import com.github.panpf.sketch.util.readIntPixels
+import com.github.panpf.sketch.util.readPixels
 import com.github.panpf.sketch.util.rotate
 import com.github.panpf.sketch.util.roundedCorners
 import com.github.panpf.sketch.util.safeConfig
@@ -931,6 +934,24 @@ class BitmapsAndroidTest {
                     message = "colorType=$colorType"
                 )
             }
+    }
+
+    @Test
+    fun testInstallPixels() {
+        val sourceBitmap = ResourceImages.jpeg.decode().bitmap.apply {
+            assertEquals(
+                expected = "Bitmap(1291x1936,ARGB_8888,SRGB)",
+                actual = toShortInfoString()
+            )
+        }
+
+        val bytePixels = sourceBitmap.readPixels()!!
+        val newBitmap = sourceBitmap.createEmptyBitmapWith()
+        newBitmap.installPixels(bytePixels)
+
+        val sourceFingerPrint = sourceBitmap.produceFingerPrint()
+        val newFingerPrint = newBitmap.produceFingerPrint()
+        assertEquals(sourceFingerPrint, newFingerPrint)
     }
 
     @Test

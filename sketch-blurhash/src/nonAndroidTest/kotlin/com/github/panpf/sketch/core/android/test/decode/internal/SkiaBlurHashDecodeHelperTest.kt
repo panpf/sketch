@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.core.android.test.decode.internal
 
-import com.github.panpf.sketch.BLURHASH_COLOR_TYPE
 import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.FixedColorSpace
@@ -49,7 +48,7 @@ class SkiaBlurHashDecodeHelperTest {
             .asOrThrow<BitmapImage>().bitmap
             .apply {
                 assertEquals(
-                    expected = BLURHASH_COLOR_TYPE,
+                    expected = ColorType.RGBA_8888,
                     actual = colorType,
                 )
             }
@@ -59,7 +58,7 @@ class SkiaBlurHashDecodeHelperTest {
             .asOrThrow<BitmapImage>().bitmap
             .apply {
                 assertEquals(
-                    expected = BLURHASH_COLOR_TYPE,
+                    expected = ColorType.RGBA_8888,
                     actual = colorType,
                 )
             }

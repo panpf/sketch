@@ -119,7 +119,7 @@ internal actual fun DataSource.decodeSvg(
         createBitmap(
             width = bitmapSize.width,
             height = bitmapSize.height,
-            colorType = bitmapConfig,
+            config = bitmapConfig,
         )
     }
     val canvas = Canvas(bitmap)

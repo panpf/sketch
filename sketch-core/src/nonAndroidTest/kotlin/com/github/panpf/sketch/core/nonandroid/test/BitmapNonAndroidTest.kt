@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.core.nonandroid.test
 
-import com.github.panpf.sketch.BLURHASH_COLOR_TYPE
 import com.github.panpf.sketch.Bitmap
 import com.github.panpf.sketch.byteCount as expectByteCount
 import com.github.panpf.sketch.createBitmap
@@ -28,6 +27,21 @@ class BitmapNonAndroidTest {
             expected = org.jetbrains.skia.Bitmap::class,
             actual = com.github.panpf.sketch.Bitmap::class
         )
+    }
+
+    @Test
+    fun testColorType() {
+        assertEquals(
+            expected = org.jetbrains.skia.ColorType::class,
+            actual = com.github.panpf.sketch.ColorType::class
+        )
+
+        createBitmap(100, 200).apply {
+            assertEquals(
+                expected = org.jetbrains.skia.ColorType.RGBA_8888,
+                actual = this.colorType
+            )
+        }
     }
 
     @Test
@@ -70,11 +84,6 @@ class BitmapNonAndroidTest {
     fun testIsImmutable() {
         assertFalse(ResourceImages.jpeg.decode().bitmap.expectIsImmutable)
         assertTrue(ResourceImages.jpeg.decode().bitmap.apply { setImmutable() }.expectIsImmutable)
-    }
-
-    @Test
-    fun testBlurHashColorType() {
-        assertEquals(ColorType.RGBA_8888, BLURHASH_COLOR_TYPE)
     }
 
     @Test

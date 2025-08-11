@@ -21,7 +21,6 @@ package com.github.panpf.sketch
 import org.jetbrains.skia.ColorAlphaType
 import org.jetbrains.skia.ColorInfo
 import org.jetbrains.skia.ColorSpace
-import org.jetbrains.skia.ColorType
 import org.jetbrains.skia.ImageInfo
 
 /**
@@ -31,7 +30,12 @@ import org.jetbrains.skia.ImageInfo
  */
 actual typealias Bitmap = org.jetbrains.skia.Bitmap
 
-actual typealias ColorType = ColorType
+/**
+ * ColorType, which is a alias of [org.jetbrains.skia.ColorType]
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testColorType
+ */
+actual typealias ColorType = org.jetbrains.skia.ColorType
 
 /**
  * Get the width of the bitmap
@@ -75,13 +79,6 @@ actual val Bitmap.isMutable: Boolean
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 actual val Bitmap.isImmutable: Boolean
     get() = this.isImmutable
-
-/**
- * Image color type com.github.panpf.sketch.fetch.BlurHashUtil.decodeByte() decodes blur hash string in
- *
- * @see com.github.panpf.sketch.core.nonandroid.test.BitmapNonAndroidTest.testBlurhashColorType
- */
-actual val BLURHASH_COLOR_TYPE: ColorType = ColorType.RGBA_8888
 
 /**
  * Create a new [Bitmap] with the specified [ImageInfo] and allocate memory

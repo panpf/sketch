@@ -5,7 +5,6 @@ import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.ColorSpace
 import android.os.Build
-import com.github.panpf.sketch.BLURHASH_COLOR_TYPE
 import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.byteCount as expectByteCount
 import com.github.panpf.sketch.colorType
@@ -72,11 +71,6 @@ class BitmapAndroidTest {
     }
 
     @Test
-    fun testBlurHashColorType() {
-        assertEquals(ColorType.ARGB_8888, BLURHASH_COLOR_TYPE)
-    }
-
-    @Test
     fun testCreateBitmap() {
         createBitmap(width = 100, height = 200).apply {
             assertEquals(expected = 100, actual = width)
@@ -87,7 +81,7 @@ class BitmapAndroidTest {
                 assertEquals(expected = ColorSpace.get(ColorSpace.Named.SRGB), actual = colorSpace)
             }
         }
-        createBitmap(width = 100, height = 200, colorType = ColorType.RGB_565).apply {
+        createBitmap(width = 100, height = 200, config = ColorType.RGB_565).apply {
             assertEquals(expected = 100, actual = width)
             assertEquals(expected = 200, actual = height)
             assertEquals(expected = ColorType.RGB_565, actual = config)
@@ -122,7 +116,7 @@ class BitmapAndroidTest {
     fun testColorType() {
         assertEquals(
             expected = android.graphics.Bitmap.Config::class,
-            actual = ColorType::class
+            actual = com.github.panpf.sketch.ColorType::class
         )
 
         createBitmap(100, 200).apply {

@@ -211,10 +211,24 @@ actual fun Bitmap.installIntPixels(intPixels: IntArray) {
     }
 }
 
-
-actual fun Bitmap.installPixels(byteArray: ByteArray) {
-    this.installPixels(byteArray)
+/**
+ * Install pixels from a byte array
+ *
+ * @see com.github.panpf.sketch.core.nonandroid.test.util.BitmapsNonAndroidTest.testInstallPixels
+ */
+actual fun Bitmap.installPixels(pixels: ByteArray) {
+    this.installPixels(pixels)
 }
+
+/**
+ * Read pixels from the current Bitmap and return a byte array.
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.BitmapsAndroidTest.testInstallPixels
+ */
+actual fun Bitmap.readPixels(): ByteArray? {
+    return this.readPixels()
+}
+
 /**
  * Returns the pixel at the specified position in ARGB_8888 format
  *

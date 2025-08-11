@@ -2,8 +2,8 @@ package com.github.panpf.sketch.core.android.test.decode.internal
 
 import android.graphics.Bitmap
 import android.graphics.ColorSpace
-import com.github.panpf.sketch.BLURHASH_COLOR_TYPE
 import com.github.panpf.sketch.BitmapImage
+import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.colorType
 import com.github.panpf.sketch.decode.FixedColorSpace
@@ -28,7 +28,6 @@ class AndroidBlurHashDecodeHelperTest {
 
     @Test
     fun testDecode() {
-
         val context = getTestContext()
 
         testableBlurHashUri.toDecodeHelper(context)
@@ -50,7 +49,7 @@ class AndroidBlurHashDecodeHelperTest {
             .asOrThrow<BitmapImage>().bitmap
             .apply {
                 assertEquals(
-                    expected = BLURHASH_COLOR_TYPE,
+                    expected = ColorType.ARGB_8888,
                     actual = colorType,
                 )
             }
@@ -60,7 +59,7 @@ class AndroidBlurHashDecodeHelperTest {
             .asOrThrow<BitmapImage>().bitmap
             .apply {
                 assertEquals(
-                    expected = BLURHASH_COLOR_TYPE,
+                    expected = ColorType.ARGB_8888,
                     actual = colorType,
                 )
             }

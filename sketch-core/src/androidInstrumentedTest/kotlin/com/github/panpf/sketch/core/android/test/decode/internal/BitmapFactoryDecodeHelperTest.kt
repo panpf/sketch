@@ -7,7 +7,11 @@ import android.graphics.Canvas
 import android.graphics.ColorSpace
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import com.github.panpf.sketch.*
+import com.github.panpf.sketch.BitmapImage
+import com.github.panpf.sketch.ColorType
+import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.colorType
+import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.BitmapFactoryDecodeHelper
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
@@ -20,10 +24,16 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.request.preferQualityOverSpeed
+import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DataSource
-import com.github.panpf.sketch.test.utils.*
+import com.github.panpf.sketch.test.utils.asOrThrow
+import com.github.panpf.sketch.test.utils.assertSizeEquals
+import com.github.panpf.sketch.test.utils.chunkingFour
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.similarity
+import com.github.panpf.sketch.test.utils.toRect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.safeToSoftware
 import com.github.panpf.sketch.util.size
@@ -257,7 +267,7 @@ class BitmapFactoryDecodeHelperTest {
         val mergedBitmap = createBitmap(
             width = imageInfo.width,
             height = imageInfo.height,
-            colorType = topLeftBitmap.colorType.safeToSoftware()
+            config = topLeftBitmap.colorType.safeToSoftware()
         ).apply {
             val canvas = Canvas(this)
             canvas.drawBitmap(

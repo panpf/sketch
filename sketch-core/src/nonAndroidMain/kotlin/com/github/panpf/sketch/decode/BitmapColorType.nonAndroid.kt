@@ -29,13 +29,6 @@ import org.jetbrains.skia.ColorType
 fun BitmapColorType(colorType: ColorType): BitmapColorType = FixedColorType(colorType)
 
 /**
- * Color type of packaging skia platform
- *
- * @see com.github.panpf.sketch.core.nonandroid.test.decode.BitmapColorTypeNonAndroidTest.testPlatformColorType
- */
-actual data class PlatformColorType(actual val colorType: ColorType)
-
-/**
  * Low quality bitmap config. RGB_565 is preferred, followed by ARGB_8888
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.BitmapColorTypeNonAndroidTest.testLowQualityColorType
