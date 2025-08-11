@@ -5,7 +5,7 @@ package com.github.panpf.sketch.fetch
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.source.Blurhash2DataSource
+import com.github.panpf.sketch.source.BlurHashDataSource
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.Uri
@@ -27,7 +27,7 @@ fun ComponentRegistry.Builder.supportBlurHash(): ComponentRegistry.Builder = app
  * @see com.github.panpf.sketch.core.android.test.fetch.BlurHashUriFetcherTest.testNewBlurHashUri
  */
 fun newBlurHashUri(blurHashString: String, width: Int? = null, height: Int? = null): String {
-    if (Blurhash2Util.isValid(blurHashString)) {
+    if (BlurHashUtil.isValid(blurHashString)) {
         if (width != null && height != null) {
             require(width > 0 && height > 0) {
                 "Width and height must be greater than zero"
@@ -55,7 +55,7 @@ fun isBlurHashUri(uri: Uri): Boolean {
         } else {
             afterScheme
         }
-        return Blurhash2Util.isValid(blurHashString)
+        return BlurHashUtil.isValid(blurHashString)
     }
     return false
 }
@@ -108,7 +108,7 @@ class BlurHashUriFetcher constructor(
     override suspend fun fetch(): Result<FetchResult> {
         return Result.success(
             FetchResult(
-                Blurhash2DataSource(
+                BlurHashDataSource(
                     this@BlurHashUriFetcher.blurHashString,
                     DataFrom.NETWORK
                 ), ""

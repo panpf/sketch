@@ -2,12 +2,12 @@ package com.github.panpf.sketch.blurhash.test.fetch
 
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.fetch.BlurHashUriFetcher
-import com.github.panpf.sketch.fetch.Blurhash2Util
+import com.github.panpf.sketch.fetch.BlurHashUtil
 import com.github.panpf.sketch.fetch.isBlurHashUri
 import com.github.panpf.sketch.fetch.newBlurHashUri
 import com.github.panpf.sketch.fetch.supportBlurHash
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.source.Blurhash2DataSource
+import com.github.panpf.sketch.source.BlurHashDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
@@ -22,7 +22,7 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class Blurhash2UriFetcherTest {
+class BlurHashUriFetcherTest {
 
     @Test
     fun testSupportBlurHash() {
@@ -43,7 +43,7 @@ class Blurhash2UriFetcherTest {
             build().apply {
                 assertEquals(
                     "ComponentRegistry(" +
-                            "fetcherFactoryList=[BlurhashUriFetcher]," +
+                            "fetcherFactoryList=[BlurHashUriFetcher]," +
                             "decoderFactoryList=[]," +
                             "requestInterceptorList=[]," +
                             "decodeInterceptorList=[]" +
@@ -56,7 +56,7 @@ class Blurhash2UriFetcherTest {
             build().apply {
                 assertEquals(
                     "ComponentRegistry(" +
-                            "fetcherFactoryList=[BlurhashUriFetcher,BlurhashUriFetcher]," +
+                            "fetcherFactoryList=[BlurHashUriFetcher,BlurHashUriFetcher]," +
                             "decoderFactoryList=[]," +
                             "requestInterceptorList=[]," +
                             "decodeInterceptorList=[]" +
@@ -89,11 +89,11 @@ class Blurhash2UriFetcherTest {
             actual = newBlurHashUri("UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2", 200, 150)
         )
 
-        val invalidBlurhashString = "SEHV6nWB2yk8pyo0adR*.7kCMdnj"
-        assertFalse(Blurhash2Util.isValid(invalidBlurhashString))
+        val invalidBlurHashString = "SEHV6nWB2yk8pyo0adR*.7kCMdnj"
+        assertFalse(BlurHashUtil.isValid(invalidBlurHashString))
 
         assertFailsWith(IllegalArgumentException::class) {
-            newBlurHashUri(invalidBlurhashString)
+            newBlurHashUri(invalidBlurHashString)
         }
 
         assertFailsWith(IllegalArgumentException::class) {
@@ -101,7 +101,7 @@ class Blurhash2UriFetcherTest {
         }
 
         assertFailsWith(IllegalArgumentException::class) {
-            newBlurHashUri(invalidBlurhashString, 100, 100)
+            newBlurHashUri(invalidBlurHashString, 100, 100)
         }
 
         assertFailsWith(IllegalArgumentException::class) {
@@ -183,7 +183,7 @@ class Blurhash2UriFetcherTest {
                 .toRequestContext(sketch, Size(100, 100))
         )!!
         val source = fetcher.fetch().getOrThrow().dataSource
-        assertTrue(source is Blurhash2DataSource)
+        assertTrue(source is BlurHashDataSource)
     }
 
     @Test
@@ -248,7 +248,7 @@ class Blurhash2UriFetcherTest {
             assertEquals(Size(100, 100), size)
         }
         val invalidBlurHashString = "A6PZfSi_.AyE8^_3t7t7R*WB*0o#DgR4.T_3R*D%xt%MMcV@%itSI9"
-        assertFalse(Blurhash2Util.isValid(invalidBlurHashString))
+        assertFalse(BlurHashUtil.isValid(invalidBlurHashString))
 
         val blurHashErrorUri1 = "blurhash://$invalidBlurHashString"
         val blurHashErrorUri2 = "blurhash:///e6PZfSi_.AyE8^_3t7t7R*WB*0o#DgR4.T_3R*D%xt%MMcV@%itSI9"

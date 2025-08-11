@@ -5,7 +5,7 @@ package com.github.panpf.sketch.blurhash.test.state
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
 import com.github.panpf.sketch.BitmapImage
-import com.github.panpf.sketch.fetch.Blurhash2Util
+import com.github.panpf.sketch.fetch.BlurHashUtil
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.state.BlurHashStateImage
@@ -18,7 +18,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
-class Blurhash2StateImageTest {
+class BlurHashStateImageTest {
 
     @Test
     fun testRememberBlurHashStateImage() {
@@ -38,7 +38,7 @@ class Blurhash2StateImageTest {
     }
 
     @Test
-    fun testRememberBlurhashStateImageWithSize() {
+    fun testRememberBlurHashStateImageWithSize() {
         runComposeUiTest {
             setContent {
                 rememberBlurHashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4", Size(100, 200)).apply {
@@ -61,13 +61,13 @@ class Blurhash2StateImageTest {
         val size = Size(200, 100)
         BlurHashStateImage(blurHash).apply {
             assertEquals(
-                expected = "BlurhashStateImage($blurHash,null)",
+                expected = "BlurHashStateImage($blurHash,null)",
                 actual = key
             )
         }
         BlurHashStateImage(blurHash, size).apply {
             assertEquals(
-                expected = "BlurhashStateImage($blurHash,${size})",
+                expected = "BlurHashStateImage($blurHash,${size})",
                 actual = key
             )
         }
@@ -120,7 +120,7 @@ class Blurhash2StateImageTest {
         val request = ImageRequest(context, ResourceImages.jpeg.uri)
 
         val invalidBlurHash = "invalid_blur_hash_string"
-        assertFalse(Blurhash2Util.isValid(invalidBlurHash))
+        assertFalse(BlurHashUtil.isValid(invalidBlurHash))
 
         BlurHashStateImage(invalidBlurHash, Size(100, 200)).apply {
             val image = getImage(sketch, request, null)
@@ -137,7 +137,7 @@ class Blurhash2StateImageTest {
     @Test
     fun testToString() {
         assertEquals(
-            expected = "Blurhash2StateImage(blurHash=L6PZfSi_.AyE_3t7t7R**0o#DgR4, size=100x200)",
+            expected = "BlurHashStateImage(blurHash=L6PZfSi_.AyE_3t7t7R**0o#DgR4, size=100x200)",
             actual = BlurHashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4", Size(100, 200)).toString()
         )
     }

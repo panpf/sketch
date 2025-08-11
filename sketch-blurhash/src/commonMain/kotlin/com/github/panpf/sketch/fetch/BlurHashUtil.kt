@@ -9,7 +9,7 @@ import kotlin.math.pow
  *  author Christophe Beyls
  */
 
-object Blurhash2Util {
+object BlurHashUtil {
 
     private val BASE83_REGEX = Regex("^[0-9A-Za-z#\\$%*+,\\-.:;=?@\\[\\]^_{|}~]+$")
     private const val CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#$%*+,-.:;=?@[]^_{|}~"

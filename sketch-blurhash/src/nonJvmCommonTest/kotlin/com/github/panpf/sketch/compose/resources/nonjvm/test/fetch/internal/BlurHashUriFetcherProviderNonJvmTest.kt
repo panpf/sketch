@@ -7,7 +7,7 @@ import kotlin.test.Test
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
-class Blurhash2UriFetcherProviderNonJvmTest {
+class BlurHashUriFetcherProviderNonJvmTest {
 
     @Test
     @Suppress("USELESS_IS_CHECK")
@@ -37,7 +37,7 @@ class Blurhash2UriFetcherProviderNonJvmTest {
     fun testToString() {
         val decoderProvider = BlurHashUriFetcherProvider()
         assertTrue(
-            actual = decoderProvider.toString().contains("BlurhashUriFetcherProvider"),
+            actual = decoderProvider.toString().contains("BlurHashUriFetcherProvider"),
             message = decoderProvider.toString()
         )
         assertTrue(

@@ -1,37 +1,36 @@
 package com.github.panpf.sketch.core.android.test.decode.internal
 
-import android.graphics.Bitmap
-import android.graphics.ColorSpace
 import com.github.panpf.sketch.BLURHASH_COLOR_TYPE
 import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.colorType
 import com.github.panpf.sketch.decode.FixedColorSpace
-import com.github.panpf.sketch.decode.internal.Blurhash2DecodeHelper
+import com.github.panpf.sketch.decode.internal.BlurHashDecodeHelper
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.size
-import com.github.panpf.sketch.source.Blurhash2DataSource
+import com.github.panpf.sketch.source.BlurHashDataSource
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.assertSizeEquals
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Size
+import org.jetbrains.skia.ColorSpace
+import org.jetbrains.skia.ColorType
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class AndroidBlurhash2DecodeHelperTest {
+class SkiaBlurHashDecodeHelperTest {
 
-    val testableBlurhash = "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
-    val testableBlurhashUri = "blurhash://$testableBlurhash&width=200&height=300"
+    val testableBlurHash = "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
+    val testableBlurHashUri = "blurhash://$testableBlurHash&width=200&height=300"
 
     @Test
     fun testDecode() {
 
         val context = getTestContext()
 
-        testableBlurhashUri.toDecodeHelper(context)
+        testableBlurHashUri.toDecodeHelper(context)
             .decode(sampleSize = 1)
             .asOrThrow<BitmapImage>().bitmap
             .apply {
@@ -45,7 +44,7 @@ class AndroidBlurhash2DecodeHelperTest {
         /*
          * colorType is ignored
          */
-        testableBlurhashUri.toDecodeHelper(context)
+        testableBlurHashUri.toDecodeHelper(context)
             .decode(sampleSize = 1)
             .asOrThrow<BitmapImage>().bitmap
             .apply {
@@ -54,8 +53,8 @@ class AndroidBlurhash2DecodeHelperTest {
                     actual = colorType,
                 )
             }
-        testableBlurhashUri.toDecodeHelper(context) {
-            colorType(Bitmap.Config.RGB_565)
+        testableBlurHashUri.toDecodeHelper(context) {
+            colorType(ColorType.RGB_565)
         }.decode(sampleSize = 1)
             .asOrThrow<BitmapImage>().bitmap
             .apply {
@@ -68,23 +67,22 @@ class AndroidBlurhash2DecodeHelperTest {
         /*
          * config: colorSpace is ignored
          */
-        testableBlurhashUri.toDecodeHelper(context)
+        testableBlurHashUri.toDecodeHelper(context)
             .decode(sampleSize = 1)
             .asOrThrow<BitmapImage>().bitmap
             .apply {
-                val actual = colorSpace
                 assertEquals(
-                    expected = ColorSpace.get(ColorSpace.Named.SRGB),
-                    actual = actual,
+                    expected = ColorSpace.sRGB,
+                    actual = colorSpace,
                 )
             }
-        testableBlurhashUri.toDecodeHelper(context) {
-            colorSpace(FixedColorSpace(ColorSpace.Named.DISPLAY_P3.name))
+        this@SkiaBlurHashDecodeHelperTest.testableBlurHashUri.toDecodeHelper(context) {
+            colorSpace(FixedColorSpace("Display P3"))
         }.decode(sampleSize = 1)
             .asOrThrow<BitmapImage>().bitmap
             .apply {
                 assertEquals(
-                    expected = ColorSpace.get(ColorSpace.Named.SRGB),
+                    expected = ColorSpace.sRGB,
                     actual = colorSpace,
                 )
             }
@@ -101,12 +99,11 @@ class AndroidBlurhash2DecodeHelperTest {
     private fun String.toDecodeHelper(
         context: PlatformContext,
         block: (ImageRequest.Builder.() -> Unit)? = null
-    ): Blurhash2DecodeHelper {
+    ): BlurHashDecodeHelper {
         val request = ImageRequest(context, this, block)
-        return Blurhash2DecodeHelper(
+        return BlurHashDecodeHelper(
             request,
-            Blurhash2DataSource(this, DataFrom.NETWORK),
-            Size(200, 200)
+            BlurHashDataSource(this, DataFrom.NETWORK),
         )
     }
 }

@@ -5,7 +5,7 @@ import okio.IOException
 import okio.Path
 import okio.Source
 
-class Blurhash2DataSource constructor(
+class BlurHashDataSource constructor(
     val blurHash: String,
     override val dataFrom: DataFrom,
 ) : DataSource {
@@ -22,7 +22,7 @@ class Blurhash2DataSource constructor(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
-        other as Blurhash2DataSource
+        other as BlurHashDataSource
         if (dataFrom != other.dataFrom) return false
         return true
     }

@@ -5,21 +5,25 @@ import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Bitmap.Config.RGB_565
 import android.graphics.ColorSpace
 import android.os.Build
-import com.github.panpf.sketch.*
+import com.github.panpf.sketch.BLURHASH_COLOR_TYPE
+import com.github.panpf.sketch.ColorType
+import com.github.panpf.sketch.byteCount as expectByteCount
+import com.github.panpf.sketch.colorType
+import com.github.panpf.sketch.createBitmap
+import com.github.panpf.sketch.createEmptyBitmapWith
+import com.github.panpf.sketch.height as expectHeight
 import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.isImmutable as expectIsImmutable
+import com.github.panpf.sketch.isMutable as expectIsMutable
+import com.github.panpf.sketch.size as expectSize
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.copyWith
+import com.github.panpf.sketch.width as expectWidth
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import com.github.panpf.sketch.byteCount as expectByteCount
-import com.github.panpf.sketch.height as expectHeight
-import com.github.panpf.sketch.isImmutable as expectIsImmutable
-import com.github.panpf.sketch.isMutable as expectIsMutable
-import com.github.panpf.sketch.size as expectSize
-import com.github.panpf.sketch.width as expectWidth
 
 class BitmapAndroidTest {
 
@@ -68,7 +72,7 @@ class BitmapAndroidTest {
     }
 
     @Test
-    fun testBlurhashColorType() {
+    fun testBlurHashColorType() {
         assertEquals(ColorType.ARGB_8888, BLURHASH_COLOR_TYPE)
     }
 

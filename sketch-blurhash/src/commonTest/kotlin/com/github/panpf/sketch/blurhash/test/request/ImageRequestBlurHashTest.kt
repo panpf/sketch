@@ -9,7 +9,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalTestApi::class)
-class ImageRequestBlurhash2Test {
+class ImageRequestBlurHashTest {
 
     @Test
     fun testPlaceholder() {

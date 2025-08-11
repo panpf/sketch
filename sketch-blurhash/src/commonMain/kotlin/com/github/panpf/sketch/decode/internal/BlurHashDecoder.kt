@@ -3,13 +3,13 @@ package com.github.panpf.sketch.decode.internal
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.source.Blurhash2DataSource
+import com.github.panpf.sketch.source.BlurHashDataSource
 
-class Blurhash2Decoder(
+class BlurHashDecoder(
     requestContext: RequestContext,
-    dataSource: Blurhash2DataSource,
+    dataSource: BlurHashDataSource,
 ) : HelperDecoder(requestContext, dataSource, {
-    Blurhash2DecodeHelper(requestContext.request, dataSource)
+    BlurHashDecodeHelper(requestContext.request, dataSource)
 }) {
 
     class Factory : Decoder.Factory {
@@ -18,16 +18,16 @@ class Blurhash2Decoder(
 
         override fun create(
             requestContext: RequestContext, fetchResult: FetchResult
-        ): Blurhash2Decoder? {
+        ): BlurHashDecoder? {
             if (!isApplicable(fetchResult)) return null
-            return Blurhash2Decoder(
+            return BlurHashDecoder(
                 requestContext = requestContext,
-                dataSource = fetchResult.dataSource as Blurhash2DataSource
+                dataSource = fetchResult.dataSource as BlurHashDataSource
             )
         }
 
         private fun isApplicable(fetchResult: FetchResult): Boolean {
-            return fetchResult.dataSource is Blurhash2DataSource
+            return fetchResult.dataSource is BlurHashDataSource
         }
 
         override fun equals(other: Any?): Boolean {

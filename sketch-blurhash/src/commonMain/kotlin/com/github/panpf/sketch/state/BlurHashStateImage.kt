@@ -8,7 +8,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.cache.ImageCacheValue
 import com.github.panpf.sketch.decode.internal.createBlurHashBitmap
-import com.github.panpf.sketch.fetch.Blurhash2Util
+import com.github.panpf.sketch.fetch.BlurHashUtil
 import com.github.panpf.sketch.fetch.parseQueryParameters
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.Size
@@ -56,7 +56,7 @@ data class BlurHashStateImage(val blurHash: String, val size: Size? = null) : St
     }
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image? {
-        if (!Blurhash2Util.isValid(blurHash)) {
+        if (!BlurHashUtil.isValid(blurHash)) {
             return null
         }
 
@@ -80,7 +80,7 @@ data class BlurHashStateImage(val blurHash: String, val size: Size? = null) : St
         GlobalScope.launch(Dispatchers.Main) {
             val decodingResult = withContext(ioCoroutineDispatcher()) {
                 runCatching {
-                    Blurhash2Util.decodeByte(blurHash, realIconSize.width, realIconSize.height)
+                    BlurHashUtil.decodeByte(blurHash, realIconSize.width, realIconSize.height)
                 }
             }
 

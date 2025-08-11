@@ -4,17 +4,17 @@ import com.github.panpf.sketch.Bitmap
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.fetch.Blurhash2Util
+import com.github.panpf.sketch.fetch.BlurHashUtil
 import com.github.panpf.sketch.fetch.parseQueryParameters
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.source.Blurhash2DataSource
+import com.github.panpf.sketch.source.BlurHashDataSource
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.installPixels
 
-class Blurhash2DecodeHelper(
+class BlurHashDecodeHelper(
     val request: ImageRequest,
-    val dataSource: Blurhash2DataSource,
+    val dataSource: BlurHashDataSource,
     private val fallbackSize: Size = Size(100, 100)
 ) : DecodeHelper {
 
@@ -33,7 +33,7 @@ class Blurhash2DecodeHelper(
 
     override fun decode(sampleSize: Int): Image {
         val pixelData = try {
-            Blurhash2Util.decodeByte(dataSource.blurHash, imageInfo.width, imageInfo.height)
+            BlurHashUtil.decodeByte(dataSource.blurHash, imageInfo.width, imageInfo.height)
         } catch (e: Exception) {
             e.printStackTrace()
             throw IllegalArgumentException()
