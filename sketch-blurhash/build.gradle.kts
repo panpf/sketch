@@ -15,7 +15,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
 //            api(projects.sketchCore)
-            api(projects.sketchComposeCore)
+            api(projects.sketchComposeCore) // TODO Change to sketchCore
         }
 
         commonTest.dependencies {

@@ -60,7 +60,7 @@ data class BlurHashStateImage(val blurHash: String, val size: Size? = null) : St
             return null
         }
 
-        val cacheKey = "blurhash:$blurHash"
+        val cacheKey = "blurhash:$blurHash" // TODO add size
         val memoryCache = sketch.memoryCache
 
         val cachedValue = memoryCache[cacheKey]
