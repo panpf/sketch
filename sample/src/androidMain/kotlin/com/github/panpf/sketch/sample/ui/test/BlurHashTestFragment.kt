@@ -27,6 +27,7 @@ import com.github.panpf.sketch.sample.databinding.FragmentTestBlurhashAndroidBin
 import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.state.BlurHashStateImage
+import com.github.panpf.sketch.util.Size
 
 class BlurHashTestFragment : BaseToolbarBindingFragment<FragmentTestBlurhashAndroidBinding>() {
 
@@ -44,7 +45,12 @@ class BlurHashTestFragment : BaseToolbarBindingFragment<FragmentTestBlurhashAndr
         binding.myImage1.loadImage(ResourceImages.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
-            placeholder(BlurHashStateImage("d7D+0q5W00^h01~A~B0gInR%?G9vR%R+NH=_I;NG\$\$-o"))
+            placeholder(
+                BlurHashStateImage(
+                    blurHash = "d7D+0q5W00^h01~A~B0gInR%?G9vR%R+NH=_I;NG\$\$-o",
+                    size = Size(100, 100)
+                )
+            )
             components {
                 addDecodeInterceptor(DelayDecodeInterceptor(3000))
             }
@@ -62,12 +68,12 @@ class BlurHashTestFragment : BaseToolbarBindingFragment<FragmentTestBlurhashAndr
 
         // BlurHash as placeholder
         binding.imageView2.loadImage("https://httpbin.org/delay/3") {
-            placeholder(BlurHashStateImage(blurHash2))
+            placeholder(BlurHashStateImage(blurHash2, Size(100, 100)))
         }
 
         // BlurHash as error state
         binding.imageView3.loadImage("invalid_url") {
-            error(BlurHashStateImage(blurHash3))
+            error(BlurHashStateImage(blurHash3, Size(100, 100)))
         }
 
         // Different blurHash variations
