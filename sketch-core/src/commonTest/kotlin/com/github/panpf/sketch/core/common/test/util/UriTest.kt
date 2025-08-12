@@ -380,4 +380,30 @@ class UriTest {
         assertNull(uri.query)
         assertNull(uri.fragment)
     }
+
+    @Test
+    fun queryParameters() {
+        assertEquals(
+            expected = "{}",
+            actual = "https://example.com/image.jpg".toUri().queryParameters.toString()
+        )
+        assertEquals(
+            expected = "{key2=value2}",
+            actual = "https://example.com/image.jpg?key2=value2".toUri().queryParameters.toString()
+        )
+        assertEquals(
+            expected = "{key1=value1, key2=value2}",
+            actual = "https://example.com/image.jpg?key1=value1&key2=value2".toUri().queryParameters.toString()
+        )
+        val queryParameters =
+            "https://example.com/image.jpg?key1=value1&key2=value2=value3".toUri().queryParameters
+        assertEquals(
+            expected = "{key1=value1, key2=value2=value3}",
+            actual = queryParameters.toString()
+        )
+        assertEquals(
+            expected = "value2=value3",
+            actual = queryParameters["key2"]
+        )
+    }
 }

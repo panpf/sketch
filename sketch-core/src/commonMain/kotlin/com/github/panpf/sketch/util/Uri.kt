@@ -128,6 +128,21 @@ class Uri internal constructor(
     }
 
     /**
+     * Returns the URI's query parameters as a map.
+     */
+    val queryParameters: Map<String, String> by lazy {
+        val query = query
+        query?.split('&')?.associate { param ->
+            val parts = param.split('=', limit = 2)
+            if (parts.size == 2) {
+                parts[0] to parts[1]
+            } else {
+                parts[0] to ""
+            }
+        } ?: emptyMap()
+    }
+
+    /**
      * Returns the URI's [Uri.path] formatted according to the URI's native [Uri.separator].
      */
     val filePath: String? by lazy {
