@@ -1,8 +1,5 @@
 package com.github.panpf.sketch.state
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.remember
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
@@ -20,20 +17,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * Create a [ColorPainterStateImage] instance and remember it
- *
- * @see com.github.panpf.sketch.compose.core.common.test.state.ColorPainterStateImageTest.testRememberColorPainterStateImage
- */
-@Composable
-fun rememberBlurHashStateImage(blurHash: String, size: Size? = null): BlurHashStateImage =
-    remember(blurHash) { BlurHashStateImage(blurHash, size) }
-
-/**
  * StateImage that creates a Bitmap directly from blurHash and caches it in memory
  *
  * @see com.github.panpf.sketch.compose.core.common.test.state.BlurHashStateImageTest
  */
-@Stable
 data class BlurHashStateImage(val blurHash: String, val size: Size? = null) : StateImage {
 
     override val key: String = "BlurHashStateImage(${blurHash},${size})"

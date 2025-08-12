@@ -35,7 +35,7 @@ import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
-import com.github.panpf.sketch.state.rememberBlurHashStateImage
+import com.github.panpf.sketch.state.BlurHashStateImage
 import com.github.panpf.sketch.util.Size
 
 class BlurHashTestScreen : BaseScreen() {
@@ -44,7 +44,8 @@ class BlurHashTestScreen : BaseScreen() {
     override fun DrawContent() {
         ToolbarScaffold(title = "BlurHash") {
             Column(
-                modifier = Modifier.fillMaxWidth().windowInsetsPadding(NavigationBarDefaults.windowInsets)
+                modifier = Modifier.fillMaxWidth()
+                    .windowInsetsPadding(NavigationBarDefaults.windowInsets)
                     .verticalScroll(rememberScrollState()).padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -57,7 +58,7 @@ class BlurHashTestScreen : BaseScreen() {
                 val context = LocalPlatformContext.current
                 val uri = ResourceImages.jpeg.uri
                 val stateImage =
-                    rememberBlurHashStateImage(
+                    BlurHashStateImage(
                         "d7D+0q5W00^h01~A~B0gInR%?G9vR%R+NH=_I;NG\$\$-o",
                         Size(100, 100)
                     )
@@ -75,7 +76,8 @@ class BlurHashTestScreen : BaseScreen() {
                     request = request,
                     contentDescription = "",
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.height(300.dp).width(200.dp).align(Alignment.CenterHorizontally)
+                    modifier = Modifier.height(300.dp).width(200.dp)
+                        .align(Alignment.CenterHorizontally)
                 )
                 Spacer(Modifier.size(20.dp))
 
@@ -108,8 +110,8 @@ class BlurHashTestScreen : BaseScreen() {
 
                 AsyncImage(
                     request = ComposableImageRequest("invalid_url") {
-                        placeholder(rememberBlurHashStateImage(blurHash1, Size(100, 100)))
-                        error(rememberBlurHashStateImage(blurHash3, Size(100, 100)))
+                        placeholder(BlurHashStateImage(blurHash1, Size(100, 100)))
+                        error(BlurHashStateImage(blurHash3, Size(100, 100)))
                     },
                     contentDescription = "BlurHash state image example",
                     modifier = Modifier.size(150.dp).border(2.dp, Color.Gray).padding(2.dp)
@@ -138,37 +140,40 @@ class BlurHashTestScreen : BaseScreen() {
                         AsyncImage(
                             request = ComposableImageRequest("invalid_url") {
                                 placeholder(
-                                    rememberBlurHashStateImage(
+                                    BlurHashStateImage(
                                         blurHash,
                                         Size((1000 * 16f / 9).toInt(), 1000)
                                     )
                                 )
-//                                error(rememberBlurHashStateImage(blurHash3))
+//                                error(BlurHashStateImage(blurHash3))
                             },
                             contentDescription = "BlurHash variation",
-                            modifier = Modifier.weight(1f).aspectRatio(16f / 9).border(1.dp, Color.LightGray)
+                            modifier = Modifier.weight(1f).aspectRatio(16f / 9)
+                                .border(1.dp, Color.LightGray)
                                 .padding(1.dp)
                         )
                         AsyncImage(
                             request = ComposableImageRequest("invalid_url") {
-                                placeholder(rememberBlurHashStateImage(blurHash, Size(1000, 1000)))
-//                                error(rememberBlurHashStateImage(blurHash3))
+                                placeholder(BlurHashStateImage(blurHash, Size(1000, 1000)))
+//                                error(BlurHashStateImage(blurHash3))
                             },
                             contentDescription = "BlurHash variation",
-                            modifier = Modifier.weight(1f).aspectRatio(1f).border(1.dp, Color.LightGray).padding(1.dp)
+                            modifier = Modifier.weight(1f).aspectRatio(1f)
+                                .border(1.dp, Color.LightGray).padding(1.dp)
                         )
                         AsyncImage(
                             request = ComposableImageRequest("invalid_url") {
                                 placeholder(
-                                    rememberBlurHashStateImage(
+                                    BlurHashStateImage(
                                         blurHash,
                                         Size(1000, (1000 * 16f / 9).toInt())
                                     )
                                 )
-//                                error(rememberBlurHashStateImage(blurHash3))
+//                                error(BlurHashStateImage(blurHash3))
                             },
                             contentDescription = "BlurHash variation",
-                            modifier = Modifier.weight(1f).aspectRatio(9f / 16).border(1.dp, Color.LightGray)
+                            modifier = Modifier.weight(1f).aspectRatio(9f / 16)
+                                .border(1.dp, Color.LightGray)
                                 .padding(1.dp)
                         )
                     }

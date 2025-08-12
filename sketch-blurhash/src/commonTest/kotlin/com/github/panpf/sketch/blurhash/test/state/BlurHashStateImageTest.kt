@@ -1,15 +1,10 @@
-@file:OptIn(ExperimentalTestApi::class)
-
 package com.github.panpf.sketch.blurhash.test.state
 
-import androidx.compose.ui.test.ExperimentalTestApi
-import androidx.compose.ui.test.runComposeUiTest
 import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.fetch.BlurHashUtil
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.state.BlurHashStateImage
-import com.github.panpf.sketch.state.rememberBlurHashStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.Size
 import kotlin.test.Test
@@ -19,41 +14,6 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 class BlurHashStateImageTest {
-
-    @Test
-    fun testRememberBlurHashStateImage() {
-        runComposeUiTest {
-            setContent {
-                rememberBlurHashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4", Size(100, 200)).apply {
-                    assertEquals(
-                        expected = BlurHashStateImage(
-                            "L6PZfSi_.AyE_3t7t7R**0o#DgR4",
-                            Size(100, 200)
-                        ),
-                        actual = this
-                    )
-                }
-            }
-        }
-    }
-
-    @Test
-    fun testRememberBlurHashStateImageWithSize() {
-        runComposeUiTest {
-            setContent {
-                rememberBlurHashStateImage("L6PZfSi_.AyE_3t7t7R**0o#DgR4", Size(100, 200)).apply {
-                    assertEquals(
-                        expected = BlurHashStateImage(
-                            "L6PZfSi_.AyE_3t7t7R**0o#DgR4",
-                            Size(100, 200)
-                        ),
-                        actual = this
-                    )
-                }
-            }
-        }
-    }
-
 
     @Test
     fun testKey() {
