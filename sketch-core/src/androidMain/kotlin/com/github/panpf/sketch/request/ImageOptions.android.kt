@@ -112,7 +112,7 @@ fun ImageOptions.Builder.fallback(color: ResColorFetcher): ImageOptions.Builder 
 /**
  * Set Drawable image to display when loading fails.
  *
- * You can also set image of different error types via the trailing lambda function
+ * You can also set image of different error types via the trailing lambda function. TODO delete line
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testError
  */
