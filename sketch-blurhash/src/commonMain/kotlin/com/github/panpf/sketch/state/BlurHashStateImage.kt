@@ -1,85 +1,87 @@
+/*
+ * Copyright (C) 2024 panpf <panpfpanpf@outlook.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.github.panpf.sketch.state
 
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.cache.ImageCacheValue
-import com.github.panpf.sketch.decode.internal.createBlurHashBitmap
-import com.github.panpf.sketch.fetch.BlurHashUtil
-import com.github.panpf.sketch.fetch.parseQueryParameters
+import com.github.panpf.sketch.fetch.isBlurHashUri
+import com.github.panpf.sketch.fetch.newBlurHashUri
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.util.BlurHashUtil
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.blurHashMemoryCacheKey
+import com.github.panpf.sketch.util.createBlurHashBitmap
 import com.github.panpf.sketch.util.installPixels
-import com.github.panpf.sketch.util.ioCoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.github.panpf.sketch.util.resolveBlurHashBitmapSize
+import com.github.panpf.sketch.util.toUri
 
 /**
  * StateImage that creates a Bitmap directly from blurHash and caches it in memory
  *
- * @see com.github.panpf.sketch.compose.core.common.test.state.BlurHashStateImageTest
+ * @param blurHash 'LEHLh[WB2yk8pyoJadR*.7kCMdnj' or 'blurhash://LEHV6nWB2yk8pyo0adR*.7kCMdnj?width=200&height=100'.
+ * When using the uri format, please use the [newBlurHashUri] function to build it, which will automatically encode characters that are not supported by url.
+ * @see com.github.panpf.sketch.blurhash.common.test.state.BlurHashStateImageTest
  */
 data class BlurHashStateImage(val blurHash: String, val size: Size? = null) : StateImage {
 
-    override val key: String = "BlurHashStateImage(${blurHash},${size})"
-
-    private var sizeInUri: Size? = null
-
-    init {
-        if (size != null) {
-            require(!size.isEmpty) {
-                "size must be not empty"
-            }
-        } else {
-            val queryString = blurHash.substring(blurHash.indexOf('&') + 1)
-            val sizeInUri = parseQueryParameters(queryString)
-            require(sizeInUri != null && !sizeInUri.isEmpty) {
-                "When size is not set, size must be specified in blurHash uri"
-            }
-            this.sizeInUri = sizeInUri
-        }
-    }
+    override val key: String = "BlurHashStateImage('${blurHash}',${size})"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image? {
-        if (!BlurHashUtil.isValid(blurHash)) {
-            return null
+        val (realBlurHash, bitmapSize) = if (isBlurHashUri(blurHash)) {
+            val blurHashUri = blurHash.toUri()
+            val bitmapSize = resolveBlurHashBitmapSize(blurHashUri, size)
+            val realBlurHash = blurHashUri.authority.orEmpty()
+            realBlurHash to bitmapSize
+        } else {
+            val bitmapSize = resolveBlurHashBitmapSize(blurHashUri = null, size = size)
+            blurHash to bitmapSize
+        }
+        require(BlurHashUtil.isValid(realBlurHash)) {
+            "Invalid blurHash: $blurHash"
         }
 
-        val cacheKey = "blurhash:$blurHash" // TODO add size
+        val cacheKey = blurHashMemoryCacheKey(realBlurHash, bitmapSize)
         val memoryCache = sketch.memoryCache
-
         val cachedValue = memoryCache[cacheKey]
         if (cachedValue != null) {
             return cachedValue.image
         }
 
-        val realIconSize = size ?: sizeInUri!!
-
-        val bitmap = createBlurHashBitmap(realIconSize.width, realIconSize.height)
-        val bitmapImage = bitmap.asImage()
-
-        val cacheValue = ImageCacheValue(bitmapImage)
-        memoryCache.put(cacheKey, cacheValue)
-
-        @Suppress("OPT_IN_USAGE")
-        GlobalScope.launch(Dispatchers.Main) {
-            val decodingResult = withContext(ioCoroutineDispatcher()) {
-                runCatching {
-                    BlurHashUtil.decodeByte(blurHash, realIconSize.width, realIconSize.height)
-                }
-            }
-
-            decodingResult.onSuccess { decodedBytes ->
-                bitmap.installPixels(decodedBytes)
-            }.onFailure { exception ->
-                exception.printStackTrace()
+        // If you go to IO thread decoding, you must complete the decoding before the user sees it (actually this is not guaranteed), otherwise the user will see an empty picture
+        // So we cannot go to IO thread decoding here. To improve decoding performance, we can only reduce the size of the image.
+        val result = runCatching {
+            BlurHashUtil.decodeByte(realBlurHash, bitmapSize.width, bitmapSize.height)
+        }.onFailure {
+            sketch.logger.w {
+                "BlurHashStateImage decode blurHash failed, blurHash=$realBlurHash, size=$bitmapSize, error=${it.message}"
             }
         }
+
+        val pixels = result.getOrNull() ?: return null
+        val bitmap = createBlurHashBitmap(bitmapSize.width, bitmapSize.height)
+        bitmap.installPixels(pixels)
+
+        val bitmapImage = bitmap.asImage()
+        memoryCache.put(cacheKey, ImageCacheValue(bitmapImage))
 
         return bitmapImage
     }
 
-    override fun toString(): String = "BlurHashStateImage(blurHash=${blurHash}, size=$size)"
+    override fun toString(): String = "BlurHashStateImage(blurHash='${blurHash}', size=$size)"
 }

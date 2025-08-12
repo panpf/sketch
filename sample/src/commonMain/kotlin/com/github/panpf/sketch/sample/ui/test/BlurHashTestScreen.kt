@@ -31,6 +31,7 @@ import com.github.panpf.sketch.fetch.newBlurHashUri
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.blurHashPlaceholder
 import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
@@ -57,15 +58,10 @@ class BlurHashTestScreen : BaseScreen() {
                 )
                 val context = LocalPlatformContext.current
                 val uri = ResourceImages.jpeg.uri
-                val stateImage =
-                    BlurHashStateImage(
-                        "d7D+0q5W00^h01~A~B0gInR%?G9vR%R+NH=_I;NG\$\$-o",
-                        Size(100, 100)
-                    )
                 val request = ImageRequest(context, uri) {
                     memoryCachePolicy(DISABLED)
                     resultCachePolicy(DISABLED)
-                    placeholder(stateImage)
+                    blurHashPlaceholder("d7D+0q5W00^h01~A~B0gInR%?G9vR%R+NH=_I;NG\$\$-o")
                     crossfade(true)
                     components {
                         addDecodeInterceptor(DelayDecodeInterceptor(2000))
@@ -79,6 +75,7 @@ class BlurHashTestScreen : BaseScreen() {
                     modifier = Modifier.height(300.dp).width(200.dp)
                         .align(Alignment.CenterHorizontally)
                 )
+
                 Spacer(Modifier.size(20.dp))
 
                 // Example blurHash strings
@@ -92,7 +89,6 @@ class BlurHashTestScreen : BaseScreen() {
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-
                 AsyncImage(
                     uri = newBlurHashUri(blurHash2),
                     contentDescription = "BlurHash URI example",
@@ -179,9 +175,6 @@ class BlurHashTestScreen : BaseScreen() {
                     }
                     Spacer(Modifier.size(8.dp))
                 }
-
-                Spacer(Modifier.size(20.dp))
-
             }
         }
     }

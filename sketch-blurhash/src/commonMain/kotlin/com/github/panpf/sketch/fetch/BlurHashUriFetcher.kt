@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2024 panpf <panpfpanpf@outlook.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 @file:Suppress("RedundantConstructorKeyword")
 
 package com.github.panpf.sketch.fetch
@@ -9,6 +25,7 @@ import com.github.panpf.sketch.source.BlurHashDataSource
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.Uri
+import com.github.panpf.sketch.util.UriCodec
 
 /**
  * Adds blur hash support
@@ -22,22 +39,27 @@ fun ComponentRegistry.Builder.supportBlurHash(): ComponentRegistry.Builder = app
 /**
  * Create a blur hash uri
  *
- * Sample: 'blurhash://UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2&width=100&height=100'
+ * Sample: 'blurhash://UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2?width=100&height=100'
  *
  * @see com.github.panpf.sketch.core.android.test.fetch.BlurHashUriFetcherTest.testNewBlurHashUri
  */
-fun newBlurHashUri(blurHashString: String, width: Int? = null, height: Int? = null): String {
-    if (BlurHashUtil.isValid(blurHashString)) {
-        if (width != null && height != null) {
-            require(width > 0 && height > 0) {
-                "Width and height must be greater than zero"
-            }
-            return "${BlurHashUriFetcher.SCHEME}://${blurHashString}&width=${width}&height=${height}"
-        } else {
-            return "${BlurHashUriFetcher.SCHEME}://${blurHashString}"
-        }
+fun newBlurHashUri(blurHash: String, width: Int? = null, height: Int? = null): String {
+    return if (width != null && height != null && width > 0 && height > 0) {
+        "${BlurHashUriFetcher.SCHEME}://${UriCodec.encode(blurHash)}?width=${width}&height=${height}"
+    } else {
+        "${BlurHashUriFetcher.SCHEME}://${UriCodec.encode(blurHash)}"
     }
-    throw IllegalArgumentException("Not valid blurHash string: $blurHashString")
+}
+
+/**
+ * Create a blur hash uri
+ *
+ * Sample: 'blurhash://UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2?width=100&height=100'
+ *
+ * @see com.github.panpf.sketch.core.android.test.fetch.BlurHashUriFetcherTest.testNewBlurHashUri
+ */
+fun newBlurHashUri(blurHash: String, size: Size? = null): String {
+    return newBlurHashUri(blurHash = blurHash, size?.width, size?.height)
 }
 
 /**
@@ -45,19 +67,24 @@ fun newBlurHashUri(blurHashString: String, width: Int? = null, height: Int? = nu
  *
  * @see com.github.panpf.sketch.core.common.test.fetch.BlurHashUriFetcherTest.testIsBlurHashUri
  */
-fun isBlurHashUri(uri: Uri): Boolean {
-    val data = uri.toString()
-    if (BlurHashUriFetcher.SCHEME == uri.scheme && data.startsWith("${BlurHashUriFetcher.SCHEME}://")) {
-        val afterScheme = data.substring("${BlurHashUriFetcher.SCHEME}://".length)
-        val blurHashString = if (afterScheme.contains('&')) {
-            val endIndex = afterScheme.indexOf('&')
-            afterScheme.substring(0, endIndex)
-        } else {
-            afterScheme
-        }
-        return BlurHashUtil.isValid(blurHashString)
-    }
-    return false
+fun isBlurHashUri(uri: Uri): Boolean = BlurHashUriFetcher.SCHEME == uri.scheme
+
+/**
+ * Check if the uri string is a blurHash image uri
+ *
+ * @see com.github.panpf.sketch.core.common.test.fetch.BlurHashUriFetcherTest.testIsBlurHashUri
+ */
+fun isBlurHashUri(uri: String): Boolean = uri.startsWith("${BlurHashUriFetcher.SCHEME}://")
+
+/**
+ * Get the size from the blurHash uri
+ */
+fun getSizeFromBlurHashUri(uri: Uri): Size? {
+    if (!isBlurHashUri(uri)) return null
+    val queryParameters: Map<String, String> = uri.queryParameters
+    val width = queryParameters["width"]?.toIntOrNull() ?: return null
+    val height = queryParameters["height"]?.toIntOrNull() ?: return null
+    return Size(width, height)
 }
 
 fun parseQueryParameters(queryString: String): Size? {

@@ -16,30 +16,42 @@
 
 package com.github.panpf.sketch.request
 
+import com.github.panpf.sketch.fetch.newBlurHashUri
 import com.github.panpf.sketch.state.BlurHashStateImage
+import com.github.panpf.sketch.util.Size
 
 /**
- * Set Drawable placeholder image when loading
+ * Set blur hash placeholder image when loading
  *
- * @see com.github.panpf.sketch.compose.resources.common.test.request.ImageOptionsComposeResourcesTest.testPlaceholder
+ * @param blurHash 'LEHLh[WB2yk8pyoJadR*.7kCMdnj' or 'blurhash://LEHV6nWB2yk8pyo0adR*.7kCMdnj?width=200&height=100'.
+ * When using the uri format, please use the [newBlurHashUri] function to build it, which will automatically encode characters that are not supported by url.
+ * @see com.github.panpf.sketch.blurhash.common.test.request.ImageOptionsBlurHashTest.testBlurHashPlaceholder
  */
-fun ImageOptions.Builder.blurHashPlaceholder(blurHash: String): ImageOptions.Builder =
-    placeholder(BlurHashStateImage(blurHash))
+fun ImageOptions.Builder.blurHashPlaceholder(
+    blurHash: String,
+    size: Size? = null
+): ImageOptions.Builder = placeholder(stateImage = BlurHashStateImage(blurHash, size))
 
 /**
- * Set Drawable placeholder image when uri is invalid
+ * Set blur hash placeholder image when uri is invalid
  *
- * @see com.github.panpf.sketch.compose.resources.common.test.request.ImageOptionsComposeResourcesTest.testFallback
+ * @param blurHash 'LEHLh[WB2yk8pyoJadR*.7kCMdnj' or 'blurhash://LEHV6nWB2yk8pyo0adR*.7kCMdnj?width=200&height=100'.
+ * When using the uri format, please use the [newBlurHashUri] function to build it, which will automatically encode characters that are not supported by url.
+ * @see com.github.panpf.sketch.blurhash.common.test.request.ImageOptionsBlurHashTest.testBlurHashFallback
  */
-fun ImageOptions.Builder.blurHashFallback(blurHash: String): ImageOptions.Builder =
-    fallback(BlurHashStateImage(blurHash))
+fun ImageOptions.Builder.blurHashFallback(
+    blurHash: String,
+    size: Size? = null
+): ImageOptions.Builder = fallback(stateImage = BlurHashStateImage(blurHash, size))
 
 /**
- * Set Color image to display when loading fails.
+ * Set blur hash placeholder image when loading fails.
  *
- * You can also set image of different error types via the trailing lambda function
- *
- * @see com.github.panpf.sketch.compose.resources.common.test.request.ImageOptionsComposeResourcesTest.testError
+ * @param blurHash 'LEHLh[WB2yk8pyoJadR*.7kCMdnj' or 'blurhash://LEHV6nWB2yk8pyo0adR*.7kCMdnj?width=200&height=100'.
+ * When using the uri format, please use the [newBlurHashUri] function to build it, which will automatically encode characters that are not supported by url.
+ * @see com.github.panpf.sketch.blurhash.common.test.request.ImageOptionsBlurHashTest.testBlurHashError
  */
-fun ImageOptions.Builder.blurHashError(blurHash: String): ImageOptions.Builder =
-    error(BlurHashStateImage(blurHash))
+fun ImageOptions.Builder.blurHashError(
+    blurHash: String,
+    size: Size? = null
+): ImageOptions.Builder = error(stateImage = BlurHashStateImage(blurHash, size))

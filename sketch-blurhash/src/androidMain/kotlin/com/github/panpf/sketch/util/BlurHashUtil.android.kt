@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.fetch.internal
+package com.github.panpf.sketch.util
 
-import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.fetch.BlurHashUriFetcher
-import com.github.panpf.sketch.util.ComponentLoader
+import com.github.panpf.sketch.Bitmap
+import com.github.panpf.sketch.ColorType
+import com.github.panpf.sketch.createBitmap
 
 /**
- * Cooperate with [ComponentLoader] to achieve automatic registration [BlurHashUriFetcher]
+ * Create a [Bitmap] for decoding BlurHash, the [ColorType] is [ColorType.ARGB_8888].
  *
- * @see com.github.panpf.sketch.blurhash.nonjvm.test.fetch.internal.BlurHashUriFetcherProviderNonJvmTest
+ * @see com.github.panpf.sketch.blurhash.android.test.util.BlurHashUtilAndroidTest.testCreateBlurHashBitmap
  */
-actual class BlurHashUriFetcherProvider : com.github.panpf.sketch.util.FetcherProvider {
-
-    actual override fun factory(context: PlatformContext): BlurHashUriFetcher.Factory {
-        return BlurHashUriFetcher.Factory()
-    }
+actual fun createBlurHashBitmap(width: Int, height: Int): Bitmap {
+    return createBitmap(width, height, ColorType.ARGB_8888)
 }

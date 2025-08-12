@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.fetch.internal
+package com.github.panpf.sketch.decode.internal
 
-import com.github.panpf.sketch.PlatformContext
 //import com.github.panpf.sketch.fetch.AppIconUriFetcher
-import com.github.panpf.sketch.fetch.BlurHashUriFetcher
-import com.github.panpf.sketch.util.FetcherProvider
+import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.util.DecoderProvider
 
 /**
- * Cooperate with [ComponentLoader] to achieve automatic registration [BlurHashUriFetcher]
+ * Cooperate with [ComponentLoader] to achieve automatic registration [BlurHashDecoder]
  *
- * @see com.github.panpf.sketch.blurhash.jvm.test.fetch.internal.BlurHashUriFetcherProviderJvmTest
- * @see com.github.panpf.sketch.blurhash.nonjvm.test.fetch.internal.BlurHashUriFetcherProviderNonJvmTest
+ * @see com.github.panpf.sketch.blurhash.jvm.test.decode.internal.BlurHashDecoderProviderJvmTest
+ * @see com.github.panpf.sketch.blurhash.nonjvm.test.decode.internal.BlurHashDecoderProviderNonJvmTest
  */
-expect class BlurHashUriFetcherProvider : FetcherProvider {
+expect class BlurHashDecoderProvider : DecoderProvider {
 
-    override fun factory(context: PlatformContext): BlurHashUriFetcher.Factory
+    override fun factory(context: PlatformContext): BlurHashDecoder.Factory
 }
