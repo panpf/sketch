@@ -112,8 +112,6 @@ fun ImageOptions.Builder.fallback(color: ResColorFetcher): ImageOptions.Builder 
 /**
  * Set Drawable image to display when loading fails.
  *
- * You can also set image of different error types via the trailing lambda function. TODO delete line
- *
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testError
  */
 fun ImageOptions.Builder.error(drawable: EquitableDrawable): ImageOptions.Builder =
@@ -121,8 +119,6 @@ fun ImageOptions.Builder.error(drawable: EquitableDrawable): ImageOptions.Builde
 
 /**
  * Set Drawable res image to display when loading fails.
- *
- * You can also set image of different error types via the trailing lambda function
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testError
  */
@@ -132,8 +128,6 @@ fun ImageOptions.Builder.error(@DrawableRes resId: Int): ImageOptions.Builder =
 /**
  * Set Color image to display when loading fails.
  *
- * You can also set image of different error types via the trailing lambda function
- *
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testError
  */
 fun ImageOptions.Builder.error(
@@ -142,8 +136,6 @@ fun ImageOptions.Builder.error(
 
 /**
  * Set Color image to display when loading fails.
- *
- * You can also set image of different error types via the trailing lambda function
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageOptionsAndroidTest.testError
  */

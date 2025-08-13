@@ -41,8 +41,6 @@ fun ImageRequest.Builder.fallback(resource: DrawableResource): ImageRequest.Buil
 /**
  * Set Color image to display when loading fails.
  *
- * You can also set image of different error types via the trailing lambda function
- *
  * @see com.github.panpf.sketch.compose.resources.common.test.request.ImageRequestComposeResourcesTest.testError
  */
 @Composable

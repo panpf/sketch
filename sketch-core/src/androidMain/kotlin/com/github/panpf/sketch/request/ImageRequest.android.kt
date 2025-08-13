@@ -112,8 +112,6 @@ fun ImageRequest.Builder.fallback(color: ResColorFetcher): ImageRequest.Builder 
 /**
  * Set Drawable image to display when loading fails.
  *
- * You can also set image of different error types via the trailing lambda function
- *
  * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testError
  */
 fun ImageRequest.Builder.error(drawable: EquitableDrawable): ImageRequest.Builder =
@@ -121,8 +119,6 @@ fun ImageRequest.Builder.error(drawable: EquitableDrawable): ImageRequest.Builde
 
 /**
  * Set Drawable res image to display when loading fails.
- *
- * You can also set image of different error types via the trailing lambda function
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testError
  */
@@ -132,8 +128,6 @@ fun ImageRequest.Builder.error(@DrawableRes resId: Int): ImageRequest.Builder =
 /**
  * Set Color image to display when loading fails.
  *
- * You can also set image of different error types via the trailing lambda function
- *
  * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testError
  */
 fun ImageRequest.Builder.error(color: IntColorFetcher): ImageRequest.Builder =
@@ -141,8 +135,6 @@ fun ImageRequest.Builder.error(color: IntColorFetcher): ImageRequest.Builder =
 
 /**
  * Set Color image to display when loading fails.
- *
- * You can also set image of different error types via the trailing lambda function
  *
  * @see com.github.panpf.sketch.core.android.test.request.ImageRequestAndroidTest.testError
  */

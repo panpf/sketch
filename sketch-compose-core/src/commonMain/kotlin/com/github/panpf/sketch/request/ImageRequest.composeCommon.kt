@@ -129,8 +129,6 @@ fun ImageRequest.Builder.fallback(color: Color): ImageRequest.Builder =
 /**
  * Set Color image to display when loading fails.
  *
- * You can also set image of different error types via the trailing lambda function
- *
  * @see com.github.panpf.sketch.compose.core.common.test.request.ImageRequestComposeCommonTest.testError
  */
 fun ImageRequest.Builder.error(color: Color): ImageRequest.Builder =
