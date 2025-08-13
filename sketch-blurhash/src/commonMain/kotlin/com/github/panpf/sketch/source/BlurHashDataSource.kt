@@ -17,43 +17,40 @@
 package com.github.panpf.sketch.source
 
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.util.Uri
 import okio.IOException
 import okio.Path
 import okio.Source
 
 /**
- * A [DataSource] that provides access to image data represented by a BlurHash string.
+ * A [DataSource] that provides access to image data represented by a BlurHash uri.
  *
  * @see com.github.panpf.sketch.blurhash.common.test.source.BlurHashDataSourceTest
  */
-class BlurHashDataSource constructor(
-    val blurHash: String,
-    override val dataFrom: DataFrom,
-) : DataSource {
+class BlurHashDataSource constructor(val blurHashUri: Uri) : DataSource {
 
-    override val key: String = blurHash
+    override val key: String = blurHashUri.toString()
+    override val dataFrom: DataFrom = DataFrom.MEMORY
 
     @Throws(IOException::class)
-    override fun openSource(): Source = throw UnsupportedOperationException("Not supported")
+    override fun openSource(): Source =
+        throw UnsupportedOperationException("BlurHash not supported for open Source")
 
     @Throws(IOException::class)
     override fun getFile(sketch: Sketch): Path =
-        throw UnsupportedOperationException("Not supported")
+        throw UnsupportedOperationException("BlurHash not supported for getFile")
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as BlurHashDataSource
-        if (blurHash != other.blurHash) return false
-        if (dataFrom != other.dataFrom) return false
+        if (blurHashUri != other.blurHashUri) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = blurHash.hashCode()
-        result = 31 * result + dataFrom.hashCode()
-        return result
+        return blurHashUri.hashCode()
     }
 
-    override fun toString(): String = "BlurHashDataSource(blurHash='$blurHash', dataFrom=$dataFrom)"
+    override fun toString(): String = "BlurHashDataSource(blurHashUri='$blurHashUri')"
 }

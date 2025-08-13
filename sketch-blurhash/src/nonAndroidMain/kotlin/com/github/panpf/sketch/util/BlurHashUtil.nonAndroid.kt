@@ -18,6 +18,8 @@ package com.github.panpf.sketch.util
 
 import com.github.panpf.sketch.Bitmap
 import com.github.panpf.sketch.createBitmap
+import com.github.panpf.sketch.decode.DecodeConfig
+import org.jetbrains.skia.ColorSpace
 import org.jetbrains.skia.ColorType
 
 /**
@@ -25,6 +27,11 @@ import org.jetbrains.skia.ColorType
  *
  * @see com.github.panpf.sketch.blurhash.nonandroid.test.util.BlurHashUtilNonAndroidTest.testCreateBlurHashBitmap
  */
-actual fun createBlurHashBitmap(width: Int, height: Int): Bitmap {
-    return createBitmap(width, height, ColorType.RGBA_8888)
+actual fun createBlurHashBitmap(width: Int, height: Int, decodeConfig: DecodeConfig?): Bitmap {
+    return createBitmap(
+        width = width,
+        height = height,
+        colorType = decodeConfig?.colorType ?: ColorType.RGBA_8888,
+        colorSpace = decodeConfig?.colorSpace ?: ColorSpace.sRGB
+    )
 }

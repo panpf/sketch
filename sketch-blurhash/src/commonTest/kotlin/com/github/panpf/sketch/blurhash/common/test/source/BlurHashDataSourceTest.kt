@@ -1,8 +1,10 @@
 package com.github.panpf.sketch.blurhash.common.test.source
 
+import com.github.panpf.sketch.fetch.newBlurHashUri
 import com.github.panpf.sketch.source.BlurHashDataSource
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.util.toUri
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -15,20 +17,31 @@ class BlurHashDataSourceTest {
 
     @Test
     fun testConstructor() {
-        BlurHashDataSource(blurHash, DataFrom.LOCAL)
+        BlurHashDataSource(newBlurHashUri(blurHash).toUri())
     }
 
     @Test
     fun testKey() {
-        BlurHashDataSource(blurHash, DataFrom.LOCAL).apply {
-            assertEquals(expected = blurHash, actual = key)
-        }
+        val blurHashUri = newBlurHashUri(blurHash)
+        assertEquals(
+            expected = blurHashUri,
+            actual = BlurHashDataSource(blurHashUri.toUri()).key
+        )
+    }
+
+    @Test
+    fun testDataFrom() {
+        val blurHashUri = newBlurHashUri(blurHash)
+        assertEquals(
+            expected = DataFrom.MEMORY,
+            actual = BlurHashDataSource(blurHashUri.toUri()).dataFrom
+        )
     }
 
     @Test
     fun testOpenSource() {
         assertFailsWith(UnsupportedOperationException::class) {
-            BlurHashDataSource(blurHash, DataFrom.LOCAL).openSource()
+            BlurHashDataSource(newBlurHashUri(blurHash).toUri()).openSource()
         }
     }
 
@@ -36,35 +49,31 @@ class BlurHashDataSourceTest {
     fun testGetFile() {
         val (_, sketch) = getTestContextAndSketch()
         assertFailsWith(UnsupportedOperationException::class) {
-            BlurHashDataSource(blurHash, DataFrom.LOCAL).getFile(sketch)
+            BlurHashDataSource(newBlurHashUri(blurHash).toUri()).getFile(sketch)
         }
     }
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = BlurHashDataSource(blurHash, DataFrom.LOCAL)
-        val element11 = BlurHashDataSource(blurHash, DataFrom.LOCAL)
-        val element2 = BlurHashDataSource(blurHash2, DataFrom.LOCAL)
-        val element3 = BlurHashDataSource(blurHash, DataFrom.NETWORK)
+        val element1 = BlurHashDataSource(newBlurHashUri(blurHash).toUri())
+        val element11 = BlurHashDataSource(newBlurHashUri(blurHash).toUri())
+        val element2 = BlurHashDataSource(newBlurHashUri(blurHash2).toUri())
 
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
-        assertNotEquals(element1, element3)
-        assertNotEquals(element2, element3)
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
-        assertNotEquals(element1.hashCode(), element3.hashCode())
-        assertNotEquals(element2.hashCode(), element3.hashCode())
     }
 
     @Test
     fun testToString() {
+        val blurHashUri = newBlurHashUri(blurHash).toUri()
         assertEquals(
-            expected = "BlurHashDataSource(blurHash='$blurHash', dataFrom=LOCAL)",
-            actual = BlurHashDataSource(blurHash, DataFrom.LOCAL).toString()
+            expected = "BlurHashDataSource(blurHashUri='$blurHashUri')",
+            actual = BlurHashDataSource(blurHashUri).toString()
         )
     }
 }

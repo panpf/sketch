@@ -12,6 +12,14 @@ import kotlin.test.assertEquals
 class BlurHashUtilCommonTest {
 
     @Test
+    fun testDefaultBlurHashBitmapSize() {
+        assertEquals(
+            expected = Size(width = 100, height = 100),
+            actual = com.github.panpf.sketch.util.defaultBlurHashBitmapSize
+        )
+    }
+
+    @Test
     fun testResolveBlurHashBitmapSize() {
         assertEquals(
             expected = Size(width = 505, height = 707),

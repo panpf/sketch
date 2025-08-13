@@ -18,53 +18,57 @@ package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asImage
+import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.fetch.parseQueryParameters
-import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.fetch.readSizeFromBlurHashUri
+import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.BlurHashDataSource
 import com.github.panpf.sketch.util.BlurHashUtil
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.Uri
 import com.github.panpf.sketch.util.createBlurHashBitmap
+import com.github.panpf.sketch.util.defaultBlurHashBitmapSize
 import com.github.panpf.sketch.util.installPixels
+import com.github.panpf.sketch.util.resolveBlurHashBitmapSize
 
+/**
+ * A [DecodeHelper] that decodes images from a [BlurHashDataSource].
+ *
+ * @see com.github.panpf.sketch.blurhash.android.test.decode.internal.BlurHashDecodeHelperAndroidTest
+ * @see com.github.panpf.sketch.blurhash.nonandroid.test.decode.internal.BlurHashDecodeHelperNonAndroidTest
+ */
 class BlurHashDecodeHelper(
-    val request: ImageRequest,
-    val dataSource: BlurHashDataSource,
-    private val fallbackSize: Size = Size(100, 100)
+    val requestContext: RequestContext,
+    val blurHashUri: Uri,
 ) : DecodeHelper {
 
     override val imageInfo: ImageInfo by lazy {
-        val uriString = request.uri.toString()
-        val size = if (uriString.contains('&')) {
-            val queryStart = uriString.indexOf('&')
-            val queryString = uriString.substring(queryStart + 1)
-            parseQueryParameters(queryString) ?: fallbackSize
-        } else {
-            fallbackSize
-        }
-        ImageInfo(size, "")
+        val size: Size = readSizeFromBlurHashUri(blurHashUri) ?: defaultBlurHashBitmapSize
+        ImageInfo(size, mimeType = "image/jpeg")
     }
+
     override val supportRegion: Boolean = false
 
     override fun decode(sampleSize: Int): Image {
-        val pixelData = try {
-            BlurHashUtil.decodeByte(dataSource.blurHash, imageInfo.width, imageInfo.height)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw IllegalArgumentException()
-        }
+        val resize = requestContext.size
+        val bitmapSize = resolveBlurHashBitmapSize(blurHashUri = blurHashUri, size = resize)
 
-        val bitmap = createBlurHashBitmap(imageInfo.width, imageInfo.height)
-        bitmap.installPixels(pixelData)
+        val blurHash = requireNotNull(blurHashUri.authority) {
+            "Invalid BlurHash URI: '${blurHashUri}'. The authority part of the URI must contain a valid BlurHash string."
+        }
+        val pixels = BlurHashUtil.decodeByte(blurHash, bitmapSize.width, bitmapSize.height)
+
+        val decodeConfig =
+            DecodeConfig(requestContext.request, imageInfo.mimeType, isOpaque = false)
+        val bitmap = createBlurHashBitmap(bitmapSize.width, bitmapSize.height, decodeConfig)
+        bitmap.installPixels(pixels)
+
         return bitmap.asImage()
     }
 
-    override fun decodeRegion(
-        region: Rect,
-        sampleSize: Int
-    ): Image {
-        throw UnsupportedOperationException("Decoding not implemented yet.")
+    override fun decodeRegion(region: Rect, sampleSize: Int): Image {
+        throw UnsupportedOperationException("Region decoding is not supported for BlurHash.")
     }
 
     override fun close() {

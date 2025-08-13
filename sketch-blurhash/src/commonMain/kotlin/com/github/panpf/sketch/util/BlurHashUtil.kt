@@ -17,11 +17,19 @@
 package com.github.panpf.sketch.util
 
 import com.github.panpf.sketch.Bitmap
-import com.github.panpf.sketch.fetch.getSizeFromBlurHashUri
+import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.fetch.newBlurHashUri
+import com.github.panpf.sketch.fetch.readSizeFromBlurHashUri
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.pow
+
+/**
+ * Default size for decoding BlurHash bitmap.
+ *
+ * @see com.github.panpf.sketch.blurhash.common.test.util.BlurHashUtilCommonTest.testDefaultBlurHashBitmapSize
+ */
+val defaultBlurHashBitmapSize = Size(100, 100)
 
 /**
  * Resolve the size of the bitmap to decode the BlurHash.
@@ -34,12 +42,12 @@ fun resolveBlurHashBitmapSize(blurHashUri: Uri?, size: Size?): Size {
         return result
     }
 
-    result = blurHashUri?.let { getSizeFromBlurHashUri(it) }
+    result = blurHashUri?.let { readSizeFromBlurHashUri(it) }
     if (result != null && result.isNotEmpty) {
         return result
     }
 
-    return Size(100, 100)
+    return defaultBlurHashBitmapSize
 }
 
 /**
@@ -55,7 +63,7 @@ fun blurHashMemoryCacheKey(blurHash: String, size: Size): String = newBlurHashUr
  * @see com.github.panpf.sketch.blurhash.android.test.util.BlurHashUtilAndroidTest.testCreateBlurHashBitmap
  * @see com.github.panpf.sketch.blurhash.nonandroid.test.util.BlurHashUtilNonAndroidTest.testCreateBlurHashBitmap
  */
-expect fun createBlurHashBitmap(width: Int, height: Int): Bitmap
+expect fun createBlurHashBitmap(width: Int, height: Int, decodeConfig: DecodeConfig? = null): Bitmap
 
 /**
  * https://github.com/cbeyls/BlurHashAndroidBenchmark/
@@ -63,7 +71,8 @@ expect fun createBlurHashBitmap(width: Int, height: Int): Bitmap
 object BlurHashUtil {
 
     private val BASE83_REGEX = Regex("^[0-9A-Za-z#\\$%*+,\\-.:;=?@\\[\\]^_{|}~]+$")
-    private const val CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#$%*+,-.:;=?@[]^_{|}~"
+    private const val CHARS =
+        "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz#$%*+,-.:;=?@[]^_{|}~"
     private val CHAR_TO_CODE = IntArray(128) { -1 }.also { table ->
         CHARS.forEachIndexed { i, c -> table[c.code] = i }
     }
@@ -104,7 +113,16 @@ object BlurHashUtil {
             decodeAc(decode83(blurHash, index, index + 2), maxAc * punch, colors, i * 3)
         }
 
-        return composeBitmapAsByteArray(width, height, numCompX, numCompY, colors, outputwidth, outputheight, output)
+        return composeBitmapAsByteArray(
+            width,
+            height,
+            numCompX,
+            numCompY,
+            colors,
+            outputwidth,
+            outputheight,
+            output
+        )
     }
 
     private inline fun decode83(s: String, from: Int, to: Int): Int {
@@ -147,7 +165,10 @@ object BlurHashUtil {
     ): ByteArray {
         val output = output1 ?: ByteArray(width * height * 4)
         val cosinesX = createCosines(width, numCompX)
-        val cosinesY = if (width == height && numCompX == numCompY) cosinesX else createCosines(height, numCompY)
+        val cosinesY = if (width == height && numCompX == numCompY) cosinesX else createCosines(
+            height,
+            numCompY
+        )
 
         var pixelIndex = 0
 

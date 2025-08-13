@@ -4,23 +4,18 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.fetch.BlurHashUriFetcher
 import com.github.panpf.sketch.fetch.isBlurHashUri
 import com.github.panpf.sketch.fetch.newBlurHashUri
+import com.github.panpf.sketch.fetch.readSizeFromBlurHashUri
 import com.github.panpf.sketch.fetch.supportBlurHash
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.BlurHashDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
-import com.github.panpf.sketch.util.BlurHashUtil
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.test.runTest
-import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 class BlurHashUriFetcherTest {
 
@@ -70,47 +65,46 @@ class BlurHashUriFetcherTest {
     @Test
     fun testNewBlurHashUri() {
         assertEquals(
-            expected = "blurhash://LEHV6nWB2yk8pyo0adR*.7kCMdnj",
-            actual = newBlurHashUri("LEHV6nWB2yk8pyo0adR*.7kCMdnj")
+            expected = "blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252",
+            actual = newBlurHashUri("UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2")
+        )
+        assertEquals(
+            expected = "blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252",
+            actual = newBlurHashUri("UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2", null, 202)
+        )
+        assertEquals(
+            expected = "blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252",
+            actual = newBlurHashUri("UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2", 202, null)
+        )
+        assertEquals(
+            expected = "blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252",
+            actual = newBlurHashUri("UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2", null, null)
+        )
+        assertEquals(
+            expected = "blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252",
+            actual = newBlurHashUri("UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2", 0, 202)
+        )
+        assertEquals(
+            expected = "blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252",
+            actual = newBlurHashUri("UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2", 202, 0)
+        )
+        assertEquals(
+            expected = "blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252",
+            actual = newBlurHashUri("UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2", 0, 0)
+        )
+        assertEquals(
+            expected = "blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252?width=101&height=202",
+            actual = newBlurHashUri("UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2", 101, 202)
         )
 
         assertEquals(
-            expected = "blurhash://|HF5?xYk^6#M9wKSW@j=#*@-5b,1J5O[V=R:s;w[@[or[k6.O[TLtJnNnO};FxngOZE3NgNHsps,jMFxS#OtcXnzRjxZxHj]OYNeR:JCs9xunhwIbeIpNaxHNGr;v}aeo0Xmt6XS\$et6#*\$ft6nhxHnNV@w{nOenwfNHo0",
-            actual = newBlurHashUri("|HF5?xYk^6#M9wKSW@j=#*@-5b,1J5O[V=R:s;w[@[or[k6.O[TLtJnNnO};FxngOZE3NgNHsps,jMFxS#OtcXnzRjxZxHj]OYNeR:JCs9xunhwIbeIpNaxHNGr;v}aeo0Xmt6XS\$et6#*\$ft6nhxHnNV@w{nOenwfNHo0")
+            expected = "blurhash://blurhash%3A%2F%2FUEHLh%255BWB2yk8pyoJadR*.7kCMdnjS%2523M%257C%25251%25252%3Fwidth%3D101%26height%3D202?width=101&height=202",
+            actual = newBlurHashUri(
+                blurHash = newBlurHashUri("UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2", 101, 202),
+                width = 101,
+                height = 202
+            )
         )
-
-        assertEquals(
-            expected = "blurhash://LEHV6nWB2yk8pyo0adR*.7kCMdnj?width=100&height=100",
-            actual = newBlurHashUri("LEHV6nWB2yk8pyo0adR*.7kCMdnj", 100, 100)
-        )
-
-        assertEquals(
-            expected = "blurhash://UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2?width=200&height=150",
-            actual = newBlurHashUri("UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2", 200, 150)
-        )
-
-        val invalidBlurHashString = "SEHV6nWB2yk8pyo0adR*.7kCMdnj"
-        assertFalse(BlurHashUtil.isValid(invalidBlurHashString))
-
-        assertFailsWith(IllegalArgumentException::class) {
-            newBlurHashUri(invalidBlurHashString)
-        }
-
-        assertFailsWith(IllegalArgumentException::class) {
-            newBlurHashUri("moon.jpeg")
-        }
-
-        assertFailsWith(IllegalArgumentException::class) {
-            newBlurHashUri(invalidBlurHashString, 100, 100)
-        }
-
-        assertFailsWith(IllegalArgumentException::class) {
-            newBlurHashUri("moon.jpeg", 100, 100)
-        }
-
-        assertFailsWith(IllegalArgumentException::class) {
-            newBlurHashUri("LEHV6nWB2yk8pyo0adR*.7kCMdnj", -100, 100)
-        }
     }
 
     @Test
@@ -120,48 +114,63 @@ class BlurHashUriFetcherTest {
             actual = isBlurHashUri("blurhash://UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2".toUri())
         )
         assertEquals(
-            expected = true,
-            actual = isBlurHashUri("blurhash://|6PZfSi_.AyE8^m+%gt,o~_3t7t7R*WBs,ofR-a#*0o#DgR4.Tt,ITVYZ~_3R*D%xt%MIpRj%0oJMcV@%itSI9R5x]tRbcIot7-:IoM{%LoeIVjuNHoft7M{RkxuozM{ae%1WBg4tRV@M{kCxuog?vWB9Et7-=NGM{xaae".toUri())
-        )
-
-        // Test URIs with query parameters
-        assertEquals(
-            expected = true,
-            actual = isBlurHashUri("blurhash://UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2?width=100&height=100".toUri())
-        )
-        assertEquals(
-            expected = true,
-            actual = isBlurHashUri("blurhash://LEHV6nWB2yk8pyo0adR*.7kCMdnj?width=200&height=150".toUri())
-        )
-        assertEquals(
-            expected = true,
-            actual = isBlurHashUri("blurhash://|6PZfSi_.AyE8^m+%gt,o~_3t7t7R*WBs,ofR-a#*0o#DgR4.Tt,ITVYZ~_3R*D%xt%MIpRj%0oJMcV@%itSI9R5x]tRbcIot7-:IoM{%LoeIVjuNHoft7M{RkxuozM{ae%1WBg4tRV@M{kCxuog?vWB9Et7-=NGM{xaae?width=300&height=400".toUri())
+            expected = false,
+            actual = isBlurHashUri("blurhash1://UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2".toUri())
         )
 
         assertEquals(
-            expected = false,
-            actual = isBlurHashUri("blurhash:/UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2".toUri())
+            expected = true,
+            actual = isBlurHashUri("blurhash://UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2")
         )
         assertEquals(
             expected = false,
-            actual = isBlurHashUri("blurhash:///UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2".toUri())
+            actual = isBlurHashUri("blurhash1://UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2")
+        )
+    }
+
+    @Test
+    fun testReadSizeFromBlurHashUri() {
+        assertEquals(
+            expected = Size(101, 202),
+            actual = readSizeFromBlurHashUri(
+                "blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252?width=101&height=202".toUri()
+            )
         )
         assertEquals(
-            expected = false,
-            actual = isBlurHashUri("file://compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpgg?from=home".toUri())
+            expected = null,
+            actual = readSizeFromBlurHashUri(
+                "blurhash1://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252?width=101&height=202".toUri()
+            )
         )
         assertEquals(
-            expected = false,
-            actual = isBlurHashUri("LEHV6nWB2yk8pyo0adR*.7kCMdnj".toUri())
+            expected = null,
+            actual = readSizeFromBlurHashUri(
+                "blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252".toUri()
+            )
         )
         assertEquals(
-            expected = false,
-            actual = isBlurHashUri("blurhash://AEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2".toUri())
+            expected = null,
+            actual = readSizeFromBlurHashUri(
+                "blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252?width=101".toUri()
+            )
         )
-        // Test invalid blurHash with query parameters
         assertEquals(
-            expected = false,
-            actual = isBlurHashUri("blurhash://AEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2?width=100&height=100".toUri())
+            expected = null,
+            actual = readSizeFromBlurHashUri(
+                "blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252?height=202".toUri()
+            )
+        )
+        assertEquals(
+            expected = null,
+            actual = readSizeFromBlurHashUri(
+                "blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252?width=abc&height=202".toUri()
+            )
+        )
+        assertEquals(
+            expected = null,
+            actual = readSizeFromBlurHashUri(
+                "blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252?width=101&height=abc".toUri()
+            )
         )
     }
 
@@ -170,58 +179,43 @@ class BlurHashUriFetcherTest {
         assertEquals("blurhash", BlurHashUriFetcher.SCHEME)
     }
 
-    @OptIn(ExperimentalEncodingApi::class)
+    @Test
+    fun testConstructor() {
+        BlurHashUriFetcher("blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252?height=202".toUri())
+    }
+
     @Test
     fun testFetch() = runTest {
-        val (context, sketch) = getTestContextAndSketch()
-        val fetcherFactory = BlurHashUriFetcher.Factory()
-        val blurgashUri =
-            "blurhash://e6PZfSi_.AyE8^_3t7t7R*WB*0o#DgR4.T_3R*D%xt%MMcV@%itSI9"
-
-        val fetcher = fetcherFactory.create(
-            ImageRequest(context, blurgashUri)
-                .toRequestContext(sketch, Size(100, 100))
-        )!!
-        val source = fetcher.fetch().getOrThrow().dataSource
-        assertTrue(source is BlurHashDataSource)
+        val blurHashUri = newBlurHashUri("UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2").toUri()
+        val fetcher = BlurHashUriFetcher(blurHashUri)
+        val fetchResult = fetcher.fetch().getOrThrow()
+        assertEquals(BlurHashDataSource(fetcher.blurHashUri), fetchResult.dataSource)
+        assertEquals("image/jpeg", fetchResult.mimeType)
     }
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = BlurHashUriFetcher(
-            blurHashString = "K6PZfSi_.A_3t7t7*0o#Dg?width=100&height=100"
-        )
-        val element11 = BlurHashUriFetcher(
-            blurHashString = "K6PZfSi_.A_3t7t7*0o#Dg?width=100&height=100"
-        )
-        val element2 = BlurHashUriFetcher(
-            blurHashString = "KGF5?xYk^6@-5c,1@[or[Q?width=100&height=100"
-        )
-        val element3 = BlurHashUriFetcher(
-            blurHashString = "K6PZfSi_.A_3t7t7*0o#Dg?width=200&height=200"
-        )
+        val blurHashUri = newBlurHashUri("UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2").toUri()
+        val blurHashUri2 = newBlurHashUri("L9HL7nxu00WB~qj[ayfQ00WB~qj[").toUri()
+        val element1 = BlurHashUriFetcher(blurHashUri)
+        val element11 = BlurHashUriFetcher(blurHashUri)
+        val element2 = BlurHashUriFetcher(blurHashUri2)
 
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
-        assertNotEquals(element1, element3)
-        assertNotEquals(element2, element3)
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
-        assertNotEquals(element1.hashCode(), element3.hashCode())
-        assertNotEquals(element2.hashCode(), element3.hashCode())
     }
 
     @Test
     fun testToString() {
-        val base64UriFetcher = BlurHashUriFetcher(
-            blurHashString = "K6PZfSi_.A_3t7t7*0o#Dg?width=100&height=100"
-        )
+        val blurHashUri = newBlurHashUri("UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2").toUri()
         assertEquals(
-            expected = "BlurHashUriFetcher(blurHash='K6PZfSi_.A_3t7t7*0o#Dg', size=100x100)",
-            actual = base64UriFetcher.toString()
+            expected = "BlurHashUriFetcher(blurHashUri='$blurHashUri')",
+            actual = BlurHashUriFetcher(blurHashUri).toString()
         )
     }
 
@@ -233,95 +227,54 @@ class BlurHashUriFetcherTest {
         val blurHashUri1 = "blurhash://e6PZfSi_.AyE8^_3t7t7R*WB*0o#DgR4.T_3R*D%xt%MMcV@%itSI9"
         val blurHashUri2 = "blurhash://VEHLh[WB2yk8\$NpyoJadR*=s.7kCMdnjx]S#M|%1%2EN"
         assertNotEquals(blurHashUri1, blurHashUri2)
-        fetcherFactory.create(
-            ImageRequest(context, blurHashUri1)
-                .toRequestContext(sketch, Size(200, 200)),
-        )!!.apply {
-            assertEquals("e6PZfSi_.AyE8^_3t7t7R*WB*0o#DgR4.T_3R*D%xt%MMcV@%itSI9", blurHashString)
-            assertEquals(Size(200, 200), size)
-        }
-        fetcherFactory.create(
-            ImageRequest(context, blurHashUri2)
-                .toRequestContext(sketch, Size(100, 100))
-        )!!.apply {
-            assertEquals("VEHLh[WB2yk8\$NpyoJadR*=s.7kCMdnjx]S#M|%1%2EN", blurHashString)
-            assertEquals(Size(100, 100), size)
-        }
-        val invalidBlurHashString = "A6PZfSi_.AyE8^_3t7t7R*WB*0o#DgR4.T_3R*D%xt%MMcV@%itSI9"
-        assertFalse(BlurHashUtil.isValid(invalidBlurHashString))
 
-        val blurHashErrorUri1 = "blurhash://$invalidBlurHashString"
-        val blurHashErrorUri2 = "blurhash:///e6PZfSi_.AyE8^_3t7t7R*WB*0o#DgR4.T_3R*D%xt%MMcV@%itSI9"
-        val blurHashErrorUri3 = "data:image/png;base54,4y2u1412421089084901240129"
-        val errorSize = Size.Empty
+        ImageRequest(
+            context = context,
+            uri = "blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252?height=202"
+        ).toRequestContext(sketch, Size(200, 200))
+            .let { fetcherFactory.create(it) }
+            .apply {
+                assertEquals(
+                    expected = BlurHashUriFetcher("blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252?height=202".toUri()),
+                    actual = this
+                )
+            }
 
-        assertNull(
-            fetcherFactory.create(
-                ImageRequest(context, blurHashErrorUri1)
-                    .toRequestContext(sketch, Size(100, 100))
-            )
-        )
-        assertNull(
-            fetcherFactory.create(
-                ImageRequest(context, blurHashErrorUri2)
-                    .toRequestContext(sketch, Size(100, 100))
-            )
-        )
-        assertNull(
-            fetcherFactory.create(
-                ImageRequest(context, blurHashErrorUri3)
-                    .toRequestContext(sketch, Size(100, 100))
-            )
-        )
-        assertNull(
-            fetcherFactory.create(
-                ImageRequest(context, blurHashUri1)
-                    .toRequestContext(sketch, errorSize)
-            )
-        )
+        ImageRequest(
+            context = context,
+            uri = "blurhash1://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252?height=202"
+        ).toRequestContext(sketch, Size(200, 200))
+            .let { fetcherFactory.create(it) }
+            .apply {
+                assertEquals(
+                    expected = null,
+                    actual = this
+                )
+            }
 
-        val blurHashUriWithSize1 =
-            "blurhash://e6PZfSi_.AyE8^_3t7t7R*WB*0o#DgR4.T_3R*D%xt%MMcV@%itSI9?width=150&height=200"
-        val blurHashUriWithSize2 =
-            "blurhash://VEHLh[WB2yk8\$NpyoJadR*=s.7kCMdnjx]S#M|%1%2EN?width=300&height=250"
+        ImageRequest(
+            context = context,
+            uri = "UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252?height=202"
+        ).toRequestContext(sketch, Size(200, 200))
+            .let { fetcherFactory.create(it) }
+            .apply {
+                assertEquals(
+                    expected = null,
+                    actual = this
+                )
+            }
 
-        fetcherFactory.create(
-            ImageRequest(context, blurHashUriWithSize1)
-                .toRequestContext(sketch, Size(100, 100)),
-        )!!.apply {
-            assertEquals("e6PZfSi_.AyE8^_3t7t7R*WB*0o#DgR4.T_3R*D%xt%MMcV@%itSI9", blurHashString)
-            assertEquals(Size(150, 200), size)
-        }
-
-        fetcherFactory.create(
-            ImageRequest(context, blurHashUriWithSize2)
-                .toRequestContext(sketch, Size(400, 400))
-        )!!.apply {
-            assertEquals("VEHLh[WB2yk8\$NpyoJadR*=s.7kCMdnjx]S#M|%1%2EN", blurHashString)
-            assertEquals(Size(300, 250), size)
-        }
-
-        // Test URI with invalid query parameters (should fall back to request context size)
-        val blurHashUriWithInvalidParams =
-            "blurhash://e6PZfSi_.AyE8^_3t7t7R*WB*0o#DgR4.T_3R*D%xt%MMcV@%itSI9?width=invalid&height=200"
-        fetcherFactory.create(
-            ImageRequest(context, blurHashUriWithInvalidParams)
-                .toRequestContext(sketch, Size(500, 600))
-        )!!.apply {
-            assertEquals("e6PZfSi_.AyE8^_3t7t7R*WB*0o#DgR4.T_3R*D%xt%MMcV@%itSI9", blurHashString)
-            assertEquals(Size(500, 600), size) // Falls back to request context size
-        }
-
-        // Test URI with partial query parameters (should fall back to request context size)
-        val blurHashUriWithPartialParams =
-            "blurhash://e6PZfSi_.AyE8^_3t7t7R*WB*0o#DgR4.T_3R*D%xt%MMcV@%itSI9?width=100"
-        fetcherFactory.create(
-            ImageRequest(context, blurHashUriWithPartialParams)
-                .toRequestContext(sketch, Size(700, 800))
-        )!!.apply {
-            assertEquals("e6PZfSi_.AyE8^_3t7t7R*WB*0o#DgR4.T_3R*D%xt%MMcV@%itSI9", blurHashString)
-            assertEquals(Size(700, 800), size) // Falls back to request context size
-        }
+        ImageRequest(
+            context = context,
+            uri = "UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252"
+        ).toRequestContext(sketch, Size(200, 200))
+            .let { fetcherFactory.create(it) }
+            .apply {
+                assertEquals(
+                    expected = null,
+                    actual = this
+                )
+            }
     }
 
     @Test

@@ -21,12 +21,22 @@ import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.BlurHashDataSource
 
+/**
+ * A [Decoder] that decodes images from a [BlurHashDataSource].
+ *
+ * @see com.github.panpf.sketch.blurhash.android.test.decode.internal.BlurHashDecoderAndroidTest
+ * @see com.github.panpf.sketch.blurhash.nonandroid.test.decode.internal.BlurHashDecoderNonAndroidTest
+ */
 class BlurHashDecoder(
     requestContext: RequestContext,
     dataSource: BlurHashDataSource,
-) : HelperDecoder(requestContext, dataSource, {
-    BlurHashDecodeHelper(requestContext.request, dataSource)
-}) {
+) : HelperDecoder(
+    requestContext = requestContext,
+    dataSource = dataSource,
+    decodeHelperFactory = {
+        BlurHashDecodeHelper(requestContext = requestContext, blurHashUri = dataSource.blurHashUri)
+    }
+) {
 
     class Factory : Decoder.Factory {
 

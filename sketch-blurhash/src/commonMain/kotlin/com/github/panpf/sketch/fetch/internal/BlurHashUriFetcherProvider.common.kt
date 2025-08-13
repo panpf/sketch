@@ -17,7 +17,6 @@
 package com.github.panpf.sketch.fetch.internal
 
 import com.github.panpf.sketch.PlatformContext
-//import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.fetch.BlurHashUriFetcher
 import com.github.panpf.sketch.util.FetcherProvider
 

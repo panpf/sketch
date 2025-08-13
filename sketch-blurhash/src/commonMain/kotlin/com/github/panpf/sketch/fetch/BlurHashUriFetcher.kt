@@ -22,26 +22,25 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.BlurHashDataSource
-import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.Uri
 import com.github.panpf.sketch.util.UriCodec
 
 /**
- * Adds blur hash support
+ * Adds BlurHash support
  *
- * @see com.github.panpf.sketch.compose.resources.common.test.fetch.BlurHashUriFetcherTest.testSupportBlurHash
+ * @see com.github.panpf.sketch.blurhash.common.test.fetch.BlurHashUriFetcherTest.testSupportBlurHash
  */
 fun ComponentRegistry.Builder.supportBlurHash(): ComponentRegistry.Builder = apply {
     addFetcher(BlurHashUriFetcher.Factory())
 }
 
 /**
- * Create a blur hash uri
+ * Create a BlurHash uri
  *
- * Sample: 'blurhash://UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2?width=100&height=100'
+ * Sample: 'blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252?width=100&height=100'
  *
- * @see com.github.panpf.sketch.core.android.test.fetch.BlurHashUriFetcherTest.testNewBlurHashUri
+ * @see com.github.panpf.sketch.blurhash.common.test.fetch.BlurHashUriFetcherTest.testNewBlurHashUri
  */
 fun newBlurHashUri(blurHash: String, width: Int? = null, height: Int? = null): String {
     return if (width != null && height != null && width > 0 && height > 0) {
@@ -52,11 +51,11 @@ fun newBlurHashUri(blurHash: String, width: Int? = null, height: Int? = null): S
 }
 
 /**
- * Create a blur hash uri
+ * Create a BlurHash uri
  *
- * Sample: 'blurhash://UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2?width=100&height=100'
+ * Sample: 'blurhash://UEHLh%5BWB2yk8pyoJadR*.7kCMdnjS%23M%7C%251%252?width=100&height=100'
  *
- * @see com.github.panpf.sketch.core.android.test.fetch.BlurHashUriFetcherTest.testNewBlurHashUri
+ * @see com.github.panpf.sketch.blurhash.common.test.fetch.BlurHashUriFetcherTest.testNewBlurHashUri
  */
 fun newBlurHashUri(blurHash: String, size: Size? = null): String {
     return newBlurHashUri(blurHash = blurHash, size?.width, size?.height)
@@ -78,8 +77,10 @@ fun isBlurHashUri(uri: String): Boolean = uri.startsWith("${BlurHashUriFetcher.S
 
 /**
  * Get the size from the blurHash uri
+ *
+ * @see com.github.panpf.sketch.blurhash.common.test.fetch.BlurHashUriFetcherTest.testReadSizeFromBlurHashUri
  */
-fun getSizeFromBlurHashUri(uri: Uri): Size? {
+fun readSizeFromBlurHashUri(uri: Uri): Size? {
     if (!isBlurHashUri(uri)) return null
     val queryParameters: Map<String, String> = uri.queryParameters
     val width = queryParameters["width"]?.toIntOrNull() ?: return null
@@ -87,6 +88,7 @@ fun getSizeFromBlurHashUri(uri: Uri): Size? {
     return Size(width, height)
 }
 
+// TODO remove
 fun parseQueryParameters(queryString: String): Size? {
     val params = mutableMapOf<String, String>()
     queryString.split('&').forEach { param ->
@@ -106,26 +108,12 @@ fun parseQueryParameters(queryString: String): Size? {
     }
 }
 
-class BlurHashUriFetcher constructor(
-    blurHashString: String,
-    fallbackSize: Size? = null,
-) : Fetcher {
-
-    val blurHashString: String
-    val size: Size?
-
-    init {
-        if (blurHashString.contains('&')) {
-            val endIndex = blurHashString.indexOf('&')
-            this@BlurHashUriFetcher.blurHashString = blurHashString.substring(0, endIndex)
-            val queryString = blurHashString.substring(endIndex + 1)
-            val parsedSize = parseQueryParameters(queryString)
-            size = parsedSize ?: fallbackSize
-        } else {
-            this@BlurHashUriFetcher.blurHashString = blurHashString
-            size = fallbackSize
-        }
-    }
+/**
+ * A [Fetcher] that fetches images from a BlurHash uri.
+ *
+ * @see com.github.panpf.sketch.blurhash.common.test.fetch.BlurHashUriFetcherTest
+ */
+class BlurHashUriFetcher constructor(val blurHashUri: Uri) : Fetcher {
 
     companion object Companion {
         const val SCHEME = "blurhash"
@@ -133,48 +121,33 @@ class BlurHashUriFetcher constructor(
 
     @WorkerThread
     override suspend fun fetch(): Result<FetchResult> {
-        return Result.success(
-            FetchResult(
-                BlurHashDataSource(
-                    this@BlurHashUriFetcher.blurHashString,
-                    DataFrom.NETWORK
-                ), ""
-            )
-        )
+        val dataSource = BlurHashDataSource(blurHashUri)
+        val fetchResult = FetchResult(dataSource, mimeType = "image/jpeg")
+        return Result.success(fetchResult)
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as BlurHashUriFetcher
-        if (this@BlurHashUriFetcher.blurHashString != other.blurHashString) return false
-        if (size != other.size) return false
+        if (blurHashUri != other.blurHashUri) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = this@BlurHashUriFetcher.blurHashString.hashCode()
-        result = 31 * result + size.hashCode()
-        return result
+        return blurHashUri.hashCode()
     }
 
     override fun toString(): String {
-        return "BlurHashUriFetcher(blurHash='${this@BlurHashUriFetcher.blurHashString}', size=$size)"
+        return "BlurHashUriFetcher(blurHashUri='$blurHashUri')"
     }
 
     class Factory : Fetcher.Factory {
 
         override fun create(requestContext: RequestContext): BlurHashUriFetcher? {
-            val request = requestContext.request
-            val uri = request.uri
-            if (!isBlurHashUri(uri) || requestContext.size == Size.Empty) return null
-            val uriString = uri.toString()
-            val afterScheme = uriString.substring("${SCHEME}://".length)
-
-            return BlurHashUriFetcher(
-                blurHashString = afterScheme,
-                fallbackSize = requestContext.size
-            )
+            val uri: Uri = requestContext.request.uri
+            if (!isBlurHashUri(uri)) return null
+            return BlurHashUriFetcher(blurHashUri = uri)
         }
 
         override fun equals(other: Any?): Boolean {

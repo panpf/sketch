@@ -21,7 +21,7 @@ import com.github.panpf.sketch.state.BlurHashStateImage
 import com.github.panpf.sketch.util.Size
 
 /**
- * Set blur hash placeholder image when loading
+ * Set BlurHash placeholder image when loading
  *
  * @param blurHash 'LEHLh[WB2yk8pyoJadR*.7kCMdnj' or 'blurhash://LEHV6nWB2yk8pyo0adR*.7kCMdnj?width=200&height=100'.
  * When using the uri format, please use the [newBlurHashUri] function to build it, which will automatically encode characters that are not supported by url.
@@ -33,7 +33,7 @@ fun ImageRequest.Builder.blurHashPlaceholder(
 ): ImageRequest.Builder = placeholder(stateImage = BlurHashStateImage(blurHash, size))
 
 /**
- * Set blur hash placeholder image when uri is invalid
+ * Set BlurHash placeholder image when uri is invalid
  *
  * @param blurHash 'LEHLh[WB2yk8pyoJadR*.7kCMdnj' or 'blurhash://LEHV6nWB2yk8pyo0adR*.7kCMdnj?width=200&height=100'.
  * When using the uri format, please use the [newBlurHashUri] function to build it, which will automatically encode characters that are not supported by url.
@@ -45,7 +45,7 @@ fun ImageRequest.Builder.blurHashFallback(
 ): ImageRequest.Builder = fallback(stateImage = BlurHashStateImage(blurHash, size))
 
 /**
- * Set blur hash placeholder image when loading fails.
+ * Set BlurHash placeholder image when loading fails.
  *
  * @param blurHash 'LEHLh[WB2yk8pyoJadR*.7kCMdnj' or 'blurhash://LEHV6nWB2yk8pyo0adR*.7kCMdnj?width=200&height=100'.
  * When using the uri format, please use the [newBlurHashUri] function to build it, which will automatically encode characters that are not supported by url.
