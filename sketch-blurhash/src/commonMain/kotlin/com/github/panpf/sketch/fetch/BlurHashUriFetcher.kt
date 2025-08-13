@@ -64,14 +64,14 @@ fun newBlurHashUri(blurHash: String, size: Size? = null): String {
 /**
  * Check if the uri is a blurHash image uri
  *
- * @see com.github.panpf.sketch.core.common.test.fetch.BlurHashUriFetcherTest.testIsBlurHashUri
+ * @see com.github.panpf.sketch.blurhash.common.test.fetch.BlurHashUriFetcherTest.testIsBlurHashUri
  */
 fun isBlurHashUri(uri: Uri): Boolean = BlurHashUriFetcher.SCHEME == uri.scheme
 
 /**
  * Check if the uri string is a blurHash image uri
  *
- * @see com.github.panpf.sketch.core.common.test.fetch.BlurHashUriFetcherTest.testIsBlurHashUri
+ * @see com.github.panpf.sketch.blurhash.common.test.fetch.BlurHashUriFetcherTest.testIsBlurHashUri
  */
 fun isBlurHashUri(uri: String): Boolean = uri.startsWith("${BlurHashUriFetcher.SCHEME}://")
 
@@ -86,26 +86,6 @@ fun readSizeFromBlurHashUri(uri: Uri): Size? {
     val width = queryParameters["width"]?.toIntOrNull() ?: return null
     val height = queryParameters["height"]?.toIntOrNull() ?: return null
     return Size(width, height)
-}
-
-// TODO remove
-fun parseQueryParameters(queryString: String): Size? {
-    val params = mutableMapOf<String, String>()
-    queryString.split('&').forEach { param ->
-        val parts = param.split('=', limit = 2)
-        if (parts.size == 2) {
-            params[parts[0]] = parts[1]
-        }
-    }
-
-    val width = params["width"]?.toIntOrNull()
-    val height = params["height"]?.toIntOrNull()
-
-    return if (width != null && height != null && width > 0 && height > 0) {
-        Size(width, height)
-    } else {
-        null
-    }
 }
 
 /**
