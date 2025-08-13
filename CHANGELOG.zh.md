@@ -7,6 +7,10 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
+# new
+
+* improve: DecodeConfig 现在可以从 common 模块访问
+
 # 4.3.1
 
 * fix: 修复从 4.3.0 版本开始 ThumbnailMemoryCacheStateImage 在遇到缓存 key 和 uri 相同或者尺寸相同的情况时返回

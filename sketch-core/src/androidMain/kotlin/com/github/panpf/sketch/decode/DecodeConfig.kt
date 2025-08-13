@@ -27,16 +27,15 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.preferQualityOverSpeed
 import com.github.panpf.sketch.util.simpleName
 
-
 /**
  * Create a DecodeConfig based on the parameters related to image quality in the request
  *
  * @see com.github.panpf.sketch.core.android.test.decode.DecodeConfigTest.testDecodeConfig
  */
-fun DecodeConfig(
+actual fun DecodeConfig(
     request: ImageRequest,
-    mimeType: String? = null,
-    isOpaque: Boolean = false
+    mimeType: String?,
+    isOpaque: Boolean
 ): DecodeConfig =
     DecodeConfig().apply {
         if (request.preferQualityOverSpeed) {
@@ -61,7 +60,7 @@ fun DecodeConfig(
  *
  * @see com.github.panpf.sketch.core.android.test.decode.DecodeConfigTest
  */
-data class DecodeConfig(
+actual data class DecodeConfig(
     /**
      * If set to a value > 1, requests the decoder to subsample the original
      * image, returning a smaller image to save memory. The sample size is
