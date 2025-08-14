@@ -1,150 +1,315 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent" android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Basic"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <com.google.android.flexbox.FlexboxLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_marginTop="10dp"
+            app:dividerDrawable="@drawable/divider_14dp"
+            app:flexWrap="wrap"
+            app:showDivider="middle">
 
-        <TextView
-                android:id="@+id/text1"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-            android:text="Placeholder"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:gravity="center"/>
+                android:orientation="vertical">
 
-        <com.github.panpf.sketch.sample.ui.widget.MyImageView
-                android:id="@+id/myImage1"
-                android:layout_width="200dp"
-                android:layout_height="300dp"
-                android:layout_marginTop="20dp"
-                android:scaleType="centerCrop"
-                android:layout_gravity="center"
-                app:layout_constraintBottom_toTopOf="@id/text2"
-                app:layout_constraintDimensionRatio="1.0"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/text1"
-                tools:srcCompat="@drawable/im_placeholder"/>
+                <TextView
+                    android:id="@+id/basicText1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    tools:text="Source" />
 
-        <TextView
-                android:id="@+id/text2"
-                android:layout_width="match_parent"
+                <ImageView
+                    android:id="@+id/basicImage1"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/md_theme_secondaryContainer" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-            android:text="Android View Examples"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:gravity="center"/>
+                android:orientation="vertical">
 
-        <TextView
-                android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/basicText2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    tools:text="Source" />
+
+                <ImageView
+                    android:id="@+id/basicImage2"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/md_theme_secondaryContainer" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-            android:text="URI with SketchImageView"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:orientation="vertical">
 
-        <com.github.panpf.sketch.sample.ui.widget.MyImageView
-                android:id="@+id/imageView1"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/bg_rect_stroke"
-            android:contentDescription="URI example"
-                android:padding="2dp"/>
+                <TextView
+                    android:id="@+id/basicText3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    tools:text="Source" />
 
-        <TextView
-                android:layout_width="match_parent"
+                <ImageView
+                    android:id="@+id/basicImage3"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/md_theme_secondaryContainer" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-            android:text="As Placeholder"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:orientation="vertical">
 
-        <com.github.panpf.sketch.sample.ui.widget.MyImageView
-                android:id="@+id/imageView2"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/bg_rect_stroke"
-            android:contentDescription="placeholder example"
-                android:padding="2dp"/>
+                <TextView
+                    android:id="@+id/basicText4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    tools:text="Source" />
 
-        <TextView
-                android:layout_width="match_parent"
+                <ImageView
+                    android:id="@+id/basicImage4"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/md_theme_secondaryContainer" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-            android:text="As Error State"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:orientation="vertical">
 
-        <com.github.panpf.sketch.sample.ui.widget.MyImageView
-                android:id="@+id/imageView3"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/bg_rect_stroke"
-            android:contentDescription="error example"
-                android:padding="2dp"/>
+                <TextView
+                    android:id="@+id/basicText5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    tools:text="Source" />
 
-        <TextView
-                android:layout_width="match_parent"
+                <ImageView
+                    android:id="@+id/basicImage5"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/md_theme_secondaryContainer" />
+            </LinearLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-            android:text="Different Variations"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="Placeholder"
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
-        <com.github.panpf.sketch.sample.ui.widget.MyImageView
-                android:id="@+id/imageView4"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_rect_stroke"
-            android:contentDescription="variation 1"
-                android:padding="1dp"/>
+            <ImageView
+                android:id="@+id/placeholderRefreshIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_refresh" />
+        </LinearLayout>
 
-        <com.github.panpf.sketch.sample.ui.widget.MyImageView
-                android:id="@+id/imageView5"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_rect_stroke"
-            android:contentDescription="variation 2"
-                android:padding="1dp"/>
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:dividerDrawable="@drawable/divider_14dp"
+            app:flexWrap="wrap"
+            app:showDivider="middle">
 
-        <com.github.panpf.sketch.sample.ui.widget.MyImageView
-                android:id="@+id/imageView6"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_rect_stroke"
-            android:contentDescription="variation 3"
-                android:padding="1dp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <com.github.panpf.sketch.sample.ui.widget.MyImageView
-                android:id="@+id/imageView7"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp"
-                android:background="@drawable/bg_rect_stroke"
-            android:contentDescription="variation 4"
-                android:padding="1dp"/>
+                <TextView
+                    android:id="@+id/placeholderText1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    tools:text="Source" />
 
+                <ImageView
+                    android:id="@+id/placeholderImage1"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/md_theme_secondaryContainer" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/placeholderText2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    tools:text="Source" />
+
+                <ImageView
+                    android:id="@+id/placeholderImage2"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/md_theme_secondaryContainer" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/placeholderText3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    tools:text="Source" />
+
+                <ImageView
+                    android:id="@+id/placeholderImage3"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/md_theme_secondaryContainer" />
+            </LinearLayout>
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="Deocde"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/decodeRefreshIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_refresh" />
+        </LinearLayout>
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:dividerDrawable="@drawable/divider_14dp"
+            app:flexWrap="wrap"
+            app:showDivider="middle">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/deocdeText1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    tools:text="Source" />
+
+                <ImageView
+                    android:id="@+id/deocdeImage1"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/md_theme_secondaryContainer" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/deocdeText2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    tools:text="Source" />
+
+                <ImageView
+                    android:id="@+id/deocdeImage2"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/md_theme_secondaryContainer" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/deocdeText3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    tools:text="Source" />
+
+                <ImageView
+                    android:id="@+id/deocdeImage3"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/md_theme_secondaryContainer" />
+            </LinearLayout>
+        </com.google.android.flexbox.FlexboxLayout>
     </LinearLayout>
 </ScrollView>

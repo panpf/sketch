@@ -1,43 +1,56 @@
 package com.github.panpf.sketch.sample.ui.test
 
-import androidx.compose.foundation.border
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.cache.CachePolicy.DISABLED
+import com.github.panpf.sketch.asImage
+import com.github.panpf.sketch.asPainter
+import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.fetch.newBlurHashUri
 import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.request.ComposableImageRequest
+import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.blurHashPlaceholder
 import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
-import com.github.panpf.sketch.state.BlurHashStateImage
+import com.github.panpf.sketch.state.ColorPainterStateImage
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.decodeBlurHashToBitmap
+import com.github.panpf.sketch.util.limitSide
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
+import kotlin.math.min
+
+expect val alpha8ColorType: String
 
 class BlurHashTestScreen : BaseScreen() {
 
@@ -47,133 +60,342 @@ class BlurHashTestScreen : BaseScreen() {
             Column(
                 modifier = Modifier.fillMaxWidth()
                     .windowInsetsPadding(NavigationBarDefaults.windowInsets)
-                    .verticalScroll(rememberScrollState()).padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                    .verticalScroll(rememberScrollState()).padding(20.dp),
             ) {
-                Text(
-                    text = "BlurHash placeholder example",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
                 val context = LocalPlatformContext.current
-                val uri = ResourceImages.jpeg.uri
-                val request = ImageRequest(context, uri) {
-                    memoryCachePolicy(DISABLED)
-                    resultCachePolicy(DISABLED)
-                    blurHashPlaceholder("d7D+0q5W00^h01~A~B0gInR%?G9vR%R+NH=_I;NG\$\$-o")
-                    crossfade(true)
-                    components {
-                        addDecodeInterceptor(DelayDecodeInterceptor(2000))
+                val coroutineScope = rememberCoroutineScope()
+                val itemModifier = Modifier
+                    .size(110.dp)
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
+                val imageFile = ResourceImages.jpeg
+                val imageBlurHash = "d7D+0q5W00^h01~A~B0gInR%?G9vR%R+NH=_I;NG\$\$-o"
+                val imageBlurHashUri = newBlurHashUri(
+                    blurHash = imageBlurHash,
+                    width = imageFile.size.width,
+                    height = imageFile.size.height
+                )
+                val maxSide = 200
+
+                Text(
+                    text = "Basic",
+                    style = MaterialTheme.typography.titleLarge,
+                )
+                Spacer(Modifier.size(10.dp))
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(14.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp),
+                ) {
+                    Column {
+                        Text(
+                            text = "Source(${imageFile.size})",
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                        Spacer(Modifier.size(4.dp))
+                        MyAsyncImage(
+                            uri = imageFile.uri,
+                            contentDescription = "Source image",
+                            modifier = itemModifier,
+                        )
+                    }
+
+                    val items = remember {
+                        listOf(
+                            "Keep" to imageFile.size
+                                .limitSide(maxSide),
+                            "Square" to imageFile.size
+                                .let { min(a = it.width, b = it.height) }
+                                .let { Size(width = it, height = it) }
+                                .limitSide(maxSide),
+                            "Reverse" to imageFile.size
+                                .let { Size(width = it.height, height = it.width) }
+                                .limitSide(maxSide)
+                        )
+                    }
+                    items.forEach { (title, size) ->
+                        Column {
+                            val painter = remember {
+                                decodeBlurHashToBitmap(
+                                    blurHash = imageBlurHash,
+                                    width = size.width,
+                                    height = size.height
+                                ).asImage().asPainter()
+                            }
+                            Text(
+                                text = "${title}(${size})",
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                            Spacer(Modifier.size(4.dp))
+                            Image(
+                                painter = painter,
+                                contentDescription = "BlurHash example: $title",
+                                modifier = itemModifier,
+                            )
+                        }
+                    }
+
+                    Column {
+                        val painter = remember {
+                            val size = imageFile.size
+                                .limitSide(maxSide)
+                            decodeBlurHashToBitmap(
+                                blurHash = imageBlurHash,
+                                width = size.width,
+                                height = size.height
+                            ).asImage().asPainter()
+                        }
+                        Text(
+                            text = "Keep-Crop",
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                        Spacer(Modifier.size(4.dp))
+                        Image(
+                            painter = painter,
+                            contentDescription = "BlurHash example: Keep-Crop",
+                            modifier = itemModifier,
+                            contentScale = ContentScale.Crop,
+                        )
                     }
                 }
-                // Example blurHash placeholder
-                MyAsyncImage(
-                    request = request,
-                    contentDescription = "",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.height(300.dp).width(200.dp)
-                        .align(Alignment.CenterHorizontally)
-                )
 
-                Spacer(Modifier.size(20.dp))
+                Spacer(Modifier.size(30.dp))
 
-                // Example blurHash strings
-                val blurHash1 = "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
-                val blurHash2 = "UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2"
-                val blurHash3 = "L9HL7nxu00WB~qj[ayfQ00WB~qj["
-
-                // BlurHash URI usage
-                Text(
-                    text = "BlurHash URI with AsyncImage",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                AsyncImage(
-                    uri = newBlurHashUri(blurHash2),
-                    contentDescription = "BlurHash URI example",
-                    modifier = Modifier.size(150.dp).border(2.dp, Color.Gray).padding(2.dp)
-                )
-
-                Spacer(Modifier.size(20.dp))
-
-                // BlurHash state image example
-                Text(
-                    text = "BlurHash State Image",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-
-                AsyncImage(
-                    request = ComposableImageRequest("invalid_url") {
-                        placeholder(BlurHashStateImage(blurHash1, Size(100, 100)))
-                        error(BlurHashStateImage(blurHash3, Size(100, 100)))
-                    },
-                    contentDescription = "BlurHash state image example",
-                    modifier = Modifier.size(150.dp).border(2.dp, Color.Gray).padding(2.dp)
-                )
-
-                Spacer(Modifier.size(20.dp))
-
-                // Different blurHash ratios
-                Text(
-                    text = "Different BlurHash Ratios",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-
-                listOf(
-                    "LEHLh[WB2yk8pyoJadR*.7kCMdnj",
-                    "LGF5?xYk^6#M@-5c,1J5@[or[Q6.",
-                    "L6PZfSi_.AyE_3t7t7R**0o#DgR4",
-                    "LKN]Rv%2Tw=w]~RBVZRi};RPxuwH",
-                    "fEHLh[WB2yk8\$NxupyoJadR*=ss:.7kCMdnjx]S2S#M|%1%2ENRiSis.slNHW:WB",
-                    "fHF5?xYk^6#M9wKS@-5b,1J5O[V=@[or[k6.O[TL};FxngOZE3NgjMFxS#OtcXnz",
-                    "f6PZfSi_.AyE8^m+_3t7t7R*WBs,*0o#DgR4.Tt,_3R*D%xt%MIpMcV@%itSI9R5",
-                    "fKN]Rv%2Tw=wR6cE]~RBVZRip0W9};RPxuwH%3s8tLOtxZ%gixtQI.ENa0NZIVt6",
-                ).forEach { blurHash ->
-                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        AsyncImage(
-                            request = ComposableImageRequest("invalid_url") {
-                                placeholder(
-                                    BlurHashStateImage(
-                                        blurHash,
-                                        Size((1000 * 16f / 9).toInt(), 1000)
-                                    )
-                                )
-//                                error(BlurHashStateImage(blurHash3))
-                            },
-                            contentDescription = "BlurHash variation",
-                            modifier = Modifier.weight(1f).aspectRatio(16f / 9)
-                                .border(1.dp, Color.LightGray)
-                                .padding(1.dp)
+                val refreshFlow = remember { MutableSharedFlow<Int>() }
+                Row {
+                    Text(
+                        text = "Placeholder",
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                    )
+                    Spacer(Modifier.size(20.dp))
+                    IconButton(
+                        onClick = {
+                            coroutineScope.launch {
+                                refreshFlow.emit(1)
+                            }
+                        },
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    ) {
+                        Icon(imageVector = Icons.Filled.Refresh, contentDescription = "Restart")
+                    }
+                }
+                Spacer(Modifier.size(10.dp))
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(14.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp),
+                ) {
+                    Column {
+                        Text(
+                            text = "Fit",
+                            style = MaterialTheme.typography.bodySmall,
                         )
-                        AsyncImage(
-                            request = ComposableImageRequest("invalid_url") {
-                                placeholder(BlurHashStateImage(blurHash, Size(1000, 1000)))
-//                                error(BlurHashStateImage(blurHash3))
+                        Spacer(Modifier.size(4.dp))
+                        val imageState = rememberAsyncImageState()
+                        LaunchedEffect(Unit) {
+                            refreshFlow.collect {
+                                imageState.restart()
+                            }
+                        }
+                        MyAsyncImage(
+                            request = ImageRequest(context, imageFile.uri) {
+                                memoryCachePolicy(CachePolicy.DISABLED)
+                                resultCachePolicy(CachePolicy.DISABLED)
+                                blurHashPlaceholder(imageBlurHashUri, maxSide = maxSide)
+                                crossfade()
+                                components {
+                                    addDecodeInterceptor(DelayDecodeInterceptor(2000))
+                                }
                             },
-                            contentDescription = "BlurHash variation",
-                            modifier = Modifier.weight(1f).aspectRatio(1f)
-                                .border(1.dp, Color.LightGray).padding(1.dp)
-                        )
-                        AsyncImage(
-                            request = ComposableImageRequest("invalid_url") {
-                                placeholder(
-                                    BlurHashStateImage(
-                                        blurHash,
-                                        Size(1000, (1000 * 16f / 9).toInt())
-                                    )
-                                )
-//                                error(BlurHashStateImage(blurHash3))
-                            },
-                            contentDescription = "BlurHash variation",
-                            modifier = Modifier.weight(1f).aspectRatio(9f / 16)
-                                .border(1.dp, Color.LightGray)
-                                .padding(1.dp)
+                            contentDescription = "Placeholder Fit",
+                            state = imageState,
+                            modifier = itemModifier,
+                            contentScale = ContentScale.Fit,
                         )
                     }
-                    Spacer(Modifier.size(8.dp))
+
+                    Column {
+                        Text(
+                            text = "Crop",
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                        Spacer(Modifier.size(4.dp))
+                        val imageState = rememberAsyncImageState()
+                        LaunchedEffect(Unit) {
+                            refreshFlow.collect {
+                                imageState.restart()
+                            }
+                        }
+                        MyAsyncImage(
+                            request = ImageRequest(context, imageFile.uri) {
+                                memoryCachePolicy(CachePolicy.DISABLED)
+                                resultCachePolicy(CachePolicy.DISABLED)
+                                blurHashPlaceholder(
+                                    imageBlurHashUri,
+                                    maxSide = maxSide,
+                                )
+                                crossfade()
+                                components {
+                                    addDecodeInterceptor(DelayDecodeInterceptor(2000))
+                                }
+                            },
+                            contentDescription = "Placeholder Crop",
+                            state = imageState,
+                            modifier = itemModifier,
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
+
+                    Column {
+                        Text(
+                            text = "Crop-Square",
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                        Spacer(Modifier.size(4.dp))
+                        val imageState = rememberAsyncImageState()
+                        LaunchedEffect(Unit) {
+                            refreshFlow.collect {
+                                imageState.restart()
+                            }
+                        }
+                        MyAsyncImage(
+                            request = ImageRequest(context, imageFile.uri) {
+                                memoryCachePolicy(CachePolicy.DISABLED)
+                                resultCachePolicy(CachePolicy.DISABLED)
+                                blurHashPlaceholder(
+                                    imageBlurHashUri,
+                                    maxSide = maxSide,
+                                    size = imageFile.size
+                                        .let { min(a = it.width, b = it.height) }
+                                        .let { Size(width = it, height = it) }
+                                        .limitSide(maxSide)
+                                )
+                                crossfade()
+                                components {
+                                    addDecodeInterceptor(DelayDecodeInterceptor(2000))
+                                }
+                            },
+                            contentDescription = "Placeholder Crop Square",
+                            state = imageState,
+                            modifier = itemModifier,
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
+                }
+
+                Spacer(Modifier.size(30.dp))
+
+                val refresh2Flow = remember { MutableSharedFlow<Int>() }
+                Row {
+                    Text(
+                        text = "Decode",
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                    )
+                    Spacer(Modifier.size(20.dp))
+                    IconButton(
+                        onClick = {
+                            coroutineScope.launch {
+                                refresh2Flow.emit(1)
+                            }
+                        },
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    ) {
+                        Icon(imageVector = Icons.Filled.Refresh, contentDescription = "Restart")
+                    }
+                }
+                Spacer(Modifier.size(10.dp))
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(14.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp),
+                ) {
+                    Column {
+                        Text(
+                            text = "Fit",
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                        Spacer(Modifier.size(4.dp))
+                        val imageState = rememberAsyncImageState()
+                        LaunchedEffect(Unit) {
+                            refresh2Flow.collect {
+                                imageState.restart()
+                            }
+                        }
+                        MyAsyncImage(
+                            request = ImageRequest(context, imageBlurHashUri) {
+                                memoryCachePolicy(CachePolicy.DISABLED)
+                                resultCachePolicy(CachePolicy.DISABLED)
+                                placeholder(ColorPainterStateImage(Color.Transparent))
+                                crossfade()
+                                components {
+                                    addDecodeInterceptor(DelayDecodeInterceptor(2000))
+                                }
+                            },
+                            contentDescription = "Decode Fit",
+                            state = imageState,
+                            modifier = itemModifier,
+                            contentScale = ContentScale.Fit,
+                        )
+                    }
+
+                    Column {
+                        Text(
+                            text = "Crop",
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                        Spacer(Modifier.size(4.dp))
+                        val imageState = rememberAsyncImageState()
+                        LaunchedEffect(Unit) {
+                            refresh2Flow.collect {
+                                imageState.restart()
+                            }
+                        }
+                        MyAsyncImage(
+                            request = ImageRequest(context, imageBlurHashUri) {
+                                memoryCachePolicy(CachePolicy.DISABLED)
+                                resultCachePolicy(CachePolicy.DISABLED)
+                                placeholder(ColorPainterStateImage(Color.Transparent))
+                                crossfade()
+                                components {
+                                    addDecodeInterceptor(DelayDecodeInterceptor(2000))
+                                }
+                            },
+                            contentDescription = "Decode Crop",
+                            state = imageState,
+                            modifier = itemModifier,
+                            contentScale = ContentScale.Crop,
+                        )
+                    }
+
+                    Column {
+                        Text(
+                            text = "ALPHA_8",
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                        Spacer(Modifier.size(4.dp))
+                        val imageState = rememberAsyncImageState()
+                        LaunchedEffect(Unit) {
+                            refresh2Flow.collect {
+                                imageState.restart()
+                            }
+                        }
+                        MyAsyncImage(
+                            request = ImageRequest(context, imageBlurHashUri) {
+                                memoryCachePolicy(CachePolicy.DISABLED)
+                                resultCachePolicy(CachePolicy.DISABLED)
+                                placeholder(ColorPainterStateImage(Color.Transparent))
+                                colorType(alpha8ColorType)
+                                crossfade()
+                                components {
+                                    addDecodeInterceptor(DelayDecodeInterceptor(2000))
+                                }
+                            },
+                            contentDescription = "Decode ALPHA_8",
+                            state = imageState,
+                            modifier = itemModifier,
+                        )
+                    }
                 }
             }
         }

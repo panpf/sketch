@@ -16,18 +16,26 @@
 
 package com.github.panpf.sketch.sample.ui.test
 
+import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
-import com.github.panpf.sketch.cache.CachePolicy.DISABLED
+import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.fetch.newBlurHashUri
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.loadImage
+import com.github.panpf.sketch.request.blurHashPlaceholder
 import com.github.panpf.sketch.sample.databinding.FragmentTestBlurhashAndroidBinding
 import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
-import com.github.panpf.sketch.state.BlurHashStateImage
+import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.SketchUtils
+import com.github.panpf.sketch.util.decodeBlurHashToBitmap
+import com.github.panpf.sketch.util.limitSide
+import kotlin.math.min
 
 class BlurHashTestFragment : BaseToolbarBindingFragment<FragmentTestBlurhashAndroidBinding>() {
 
@@ -35,6 +43,7 @@ class BlurHashTestFragment : BaseToolbarBindingFragment<FragmentTestBlurhashAndr
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(
         toolbar: Toolbar,
         binding: FragmentTestBlurhashAndroidBinding,
@@ -42,44 +51,169 @@ class BlurHashTestFragment : BaseToolbarBindingFragment<FragmentTestBlurhashAndr
     ) {
         toolbar.title = "BlurHash"
 
-        binding.myImage1.loadImage(ResourceImages.jpeg.uri) {
-            memoryCachePolicy(DISABLED)
-            resultCachePolicy(DISABLED)
-            placeholder(
-                BlurHashStateImage(
-                    blurHash = "d7D+0q5W00^h01~A~B0gInR%?G9vR%R+NH=_I;NG\$\$-o",
-                    size = Size(100, 100)
-                )
+        val imageFile = ResourceImages.jpeg
+        val imageBlurHash = "d7D+0q5W00^h01~A~B0gInR%?G9vR%R+NH=_I;NG\$\$-o"
+        val imageBlurHashUri = newBlurHashUri(
+            blurHash = imageBlurHash,
+            width = imageFile.size.width,
+            height = imageFile.size.height
+        )
+        val maxSide = 200
+
+        (binding.basicText1 to binding.basicImage1).also { (titleText, imageView) ->
+            titleText.text = "Source(${imageFile.size})"
+            imageView.loadImage(imageFile.uri)
+        }
+
+        (binding.basicText2 to binding.basicImage2).also { (titleText, imageView) ->
+            val size = imageFile.size.limitSide(maxSide)
+            titleText.text = "Keep(${size})"
+            val bitmap = decodeBlurHashToBitmap(
+                blurHash = imageBlurHash,
+                width = size.width,
+                height = size.height
             )
-            components {
-                addDecodeInterceptor(DelayDecodeInterceptor(3000))
+            imageView.setImageBitmap(bitmap)
+        }
+
+        (binding.basicText3 to binding.basicImage3).also { (titleText, imageView) ->
+            val size = imageFile.size
+                .let { min(a = it.width, b = it.height) }
+                .let { Size(width = it, height = it) }
+                .limitSide(maxSide)
+            titleText.text = "Square(${size})"
+            val bitmap = decodeBlurHashToBitmap(
+                blurHash = imageBlurHash,
+                width = size.width,
+                height = size.height
+            )
+            imageView.setImageBitmap(bitmap)
+        }
+
+        (binding.basicText4 to binding.basicImage4).also { (titleText, imageView) ->
+            val size = imageFile.size
+                .let { Size(width = it.height, height = it.width) }
+                .limitSide(maxSide)
+            titleText.text = "Reverse(${size})"
+            val bitmap = decodeBlurHashToBitmap(
+                blurHash = imageBlurHash,
+                width = size.width,
+                height = size.height
+            )
+            imageView.setImageBitmap(bitmap)
+        }
+
+        (binding.basicText5 to binding.basicImage5).also { (titleText, imageView) ->
+            titleText.text = "Keep-Crop"
+            val size = imageFile.size.limitSide(maxSide)
+            val bitmap = decodeBlurHashToBitmap(
+                blurHash = imageBlurHash,
+                width = size.width,
+                height = size.height
+            )
+            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+            imageView.setImageBitmap(bitmap)
+        }
+
+        (binding.placeholderText1 to binding.placeholderImage1).also { (titleText, imageView) ->
+            titleText.text = "Fit"
+            imageView.loadImage(imageFile.uri) {
+                memoryCachePolicy(CachePolicy.DISABLED)
+                resultCachePolicy(CachePolicy.DISABLED)
+                blurHashPlaceholder(imageBlurHashUri, maxSide = maxSide)
+                crossfade()
+                components {
+                    addDecodeInterceptor(DelayDecodeInterceptor(2000))
+                }
             }
         }
 
-        // Example blurHash strings
-        val blurHash1 = "L6PZfSi_.AyE_3t7t7R**0o#DgR4"
-        val blurHash2 = "UEHLh[WB2yk8pyoJadR*.7kCMdnjS#M|%1%2"
-        val blurHash3 = "L9HL7nxu00WB~qj[ayfQ00WB~qj["
-        val blurHash4 = "LGF5]+Yk^6#M@-5c,1J5@[or[Q6."
-        val blurHash5 = "L6Pj0^jE.AyE_3t7t7R**0o#DgR4"
-
-        // BlurHash URI with SketchImageView
-        binding.imageView1.loadImage(newBlurHashUri(blurHash1))
-
-        // BlurHash as placeholder
-        binding.imageView2.loadImage("https://httpbin.org/delay/3") {
-            placeholder(BlurHashStateImage(blurHash2, Size(100, 100)))
+        (binding.placeholderText2 to binding.placeholderImage2).also { (titleText, imageView) ->
+            titleText.text = "Crop"
+            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+            imageView.loadImage(imageFile.uri) {
+                memoryCachePolicy(CachePolicy.DISABLED)
+                resultCachePolicy(CachePolicy.DISABLED)
+                blurHashPlaceholder(imageBlurHashUri, maxSide = maxSide)
+                crossfade()
+                components {
+                    addDecodeInterceptor(DelayDecodeInterceptor(2000))
+                }
+            }
         }
 
-        // BlurHash as error state
-        binding.imageView3.loadImage("invalid_url") {
-            error(BlurHashStateImage(blurHash3, Size(100, 100)))
+        (binding.placeholderText3 to binding.placeholderImage3).also { (titleText, imageView) ->
+            titleText.text = "Crop-Square"
+            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+            imageView.loadImage(imageFile.uri) {
+                memoryCachePolicy(CachePolicy.DISABLED)
+                resultCachePolicy(CachePolicy.DISABLED)
+                blurHashPlaceholder(
+                    imageBlurHashUri,
+                    maxSide = maxSide,
+                    size = imageFile.size
+                        .let { min(a = it.width, b = it.height) }
+                        .let { Size(width = it, height = it) }
+                        .limitSide(maxSide)
+                )
+                crossfade()
+                components {
+                    addDecodeInterceptor(DelayDecodeInterceptor(2000))
+                }
+            }
         }
 
-        // Different blurHash variations
-        binding.imageView4.loadImage(newBlurHashUri(blurHash1))
-        binding.imageView5.loadImage(newBlurHashUri(blurHash2))
-        binding.imageView6.loadImage(newBlurHashUri(blurHash4))
-        binding.imageView7.loadImage(newBlurHashUri(blurHash5))
+        (binding.deocdeText1 to binding.deocdeImage1).also { (titleText, imageView) ->
+            titleText.text = "Fit"
+            imageView.loadImage(imageBlurHashUri) {
+                memoryCachePolicy(CachePolicy.DISABLED)
+                resultCachePolicy(CachePolicy.DISABLED)
+                placeholder(IntColorDrawableStateImage(Color.TRANSPARENT))
+                crossfade()
+                components {
+                    addDecodeInterceptor(DelayDecodeInterceptor(2000))
+                }
+            }
+        }
+
+        (binding.deocdeText2 to binding.deocdeImage2).also { (titleText, imageView) ->
+            titleText.text = "Crop"
+            imageView.scaleType = ImageView.ScaleType.CENTER_CROP
+            imageView.loadImage(imageBlurHashUri) {
+                memoryCachePolicy(CachePolicy.DISABLED)
+                resultCachePolicy(CachePolicy.DISABLED)
+                placeholder(IntColorDrawableStateImage(Color.TRANSPARENT))
+                crossfade()
+                components {
+                    addDecodeInterceptor(DelayDecodeInterceptor(2000))
+                }
+            }
+        }
+
+        (binding.deocdeText3 to binding.deocdeImage3).also { (titleText, imageView) ->
+            titleText.text = "ALPHA_8"
+            imageView.loadImage(imageBlurHashUri) {
+                memoryCachePolicy(CachePolicy.DISABLED)
+                resultCachePolicy(CachePolicy.DISABLED)
+                placeholder(IntColorDrawableStateImage(Color.TRANSPARENT))
+                colorType(alpha8ColorType)
+                crossfade()
+                components {
+                    addDecodeInterceptor(DelayDecodeInterceptor(2000))
+                }
+            }
+        }
+
+        binding.placeholderRefreshIcon.setOnClickListener {
+            SketchUtils.restart(binding.placeholderImage1)
+            SketchUtils.restart(binding.placeholderImage2)
+            SketchUtils.restart(binding.placeholderImage3)
+        }
+
+        binding.decodeRefreshIcon.setOnClickListener {
+            SketchUtils.restart(binding.deocdeImage1)
+            SketchUtils.restart(binding.deocdeImage2)
+            SketchUtils.restart(binding.deocdeImage3)
+        }
     }
 }
