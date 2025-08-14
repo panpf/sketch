@@ -30,7 +30,6 @@ import com.github.panpf.sketch.util.Uri
 import com.github.panpf.sketch.util.createBlurHashBitmap
 import com.github.panpf.sketch.util.defaultBlurHashBitmapSize
 import com.github.panpf.sketch.util.installPixels
-import com.github.panpf.sketch.util.resolveBlurHashBitmapSize
 
 /**
  * A [DecodeHelper] that decodes images from a [BlurHashDataSource].
@@ -51,8 +50,11 @@ class BlurHashDecodeHelper(
     override val supportRegion: Boolean = false
 
     override fun decode(sampleSize: Int): Image {
-        val resize = requestContext.size
-        val bitmapSize = resolveBlurHashBitmapSize(blurHashUri = blurHashUri, size = resize)
+        val bitmapSize = calculateSampledBitmapSize(
+            imageSize = imageInfo.size,
+            sampleSize = sampleSize,
+            mimeType = imageInfo.mimeType
+        )
 
         val blurHash = requireNotNull(blurHashUri.authority) {
             "Invalid BlurHash URI: '${blurHashUri}'. The authority part of the URI must contain a valid BlurHash string."

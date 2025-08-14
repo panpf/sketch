@@ -12,8 +12,6 @@ import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Rect
-import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.screenSize
 import com.github.panpf.sketch.util.toInfoString
 import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.test.runTest
@@ -73,7 +71,6 @@ class BlurHashDecodeHelperAndroidTest {
     @Test
     fun testDecode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val screenSize = context.screenSize()
 
         ImageRequest(context, blurHashUri)
             .let { BlurHashDecodeHelper(it.toRequestContext(sketch), it.uri) }
@@ -82,12 +79,12 @@ class BlurHashDecodeHelperAndroidTest {
             .apply {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     assertEquals(
-                        expected = "Bitmap(width=${screenSize.width}, height=${screenSize.height}, config=ARGB_8888, colorSpace=SRGB)",
+                        expected = "Bitmap(width=200, height=300, config=ARGB_8888, colorSpace=SRGB)",
                         actual = this.toInfoString()
                     )
                 } else {
                     assertEquals(
-                        expected = "Bitmap(width=${screenSize.width}, height=${screenSize.height}, config=ARGB_8888)",
+                        expected = "Bitmap(width=200, height=300, config=ARGB_8888)",
                         actual = this.toInfoString()
                     )
                 }
@@ -95,26 +92,6 @@ class BlurHashDecodeHelperAndroidTest {
 
         ImageRequest(context, blurHashUri) {
             size(700, 500)
-        }
-            .let { BlurHashDecodeHelper(it.toRequestContext(sketch), it.uri) }
-            .decode(1)
-            .let { (it as BitmapImage).bitmap }
-            .apply {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    assertEquals(
-                        expected = "Bitmap(width=700, height=500, config=ARGB_8888, colorSpace=SRGB)",
-                        actual = this.toInfoString()
-                    )
-                } else {
-                    assertEquals(
-                        expected = "Bitmap(width=700, height=500, config=ARGB_8888)",
-                        actual = this.toInfoString()
-                    )
-                }
-            }
-
-        ImageRequest(context, blurHashUri) {
-            size(Size.Origin)
         }
             .let { BlurHashDecodeHelper(it.toRequestContext(sketch), it.uri) }
             .decode(1)
@@ -133,8 +110,44 @@ class BlurHashDecodeHelperAndroidTest {
                 }
             }
 
+        ImageRequest(context, blurHashUri)
+            .let { BlurHashDecodeHelper(it.toRequestContext(sketch), it.uri) }
+            .decode(2)
+            .let { (it as BitmapImage).bitmap }
+            .apply {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    assertEquals(
+                        expected = "Bitmap(width=100, height=150, config=ARGB_8888, colorSpace=SRGB)",
+                        actual = this.toInfoString()
+                    )
+                } else {
+                    assertEquals(
+                        expected = "Bitmap(width=100, height=150, config=ARGB_8888)",
+                        actual = this.toInfoString()
+                    )
+                }
+            }
+
+        ImageRequest(context, blurHashUriNoSize)
+            .let { BlurHashDecodeHelper(it.toRequestContext(sketch), it.uri) }
+            .decode(1)
+            .let { (it as BitmapImage).bitmap }
+            .apply {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    assertEquals(
+                        expected = "Bitmap(width=100, height=100, config=ARGB_8888, colorSpace=SRGB)",
+                        actual = this.toInfoString()
+                    )
+                } else {
+                    assertEquals(
+                        expected = "Bitmap(width=100, height=100, config=ARGB_8888)",
+                        actual = this.toInfoString()
+                    )
+                }
+            }
+
         ImageRequest(context, blurHashUriNoSize) {
-            size(Size.Origin)
+            size(700, 500)
         }
             .let { BlurHashDecodeHelper(it.toRequestContext(sketch), it.uri) }
             .decode(1)
@@ -153,8 +166,25 @@ class BlurHashDecodeHelperAndroidTest {
                 }
             }
 
+        ImageRequest(context, blurHashUriNoSize)
+            .let { BlurHashDecodeHelper(it.toRequestContext(sketch), it.uri) }
+            .decode(2)
+            .let { (it as BitmapImage).bitmap }
+            .apply {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    assertEquals(
+                        expected = "Bitmap(width=50, height=50, config=ARGB_8888, colorSpace=SRGB)",
+                        actual = this.toInfoString()
+                    )
+                } else {
+                    assertEquals(
+                        expected = "Bitmap(width=50, height=50, config=ARGB_8888)",
+                        actual = this.toInfoString()
+                    )
+                }
+            }
+
         ImageRequest(context, blurHashUri) {
-            size(Size.Origin)
             colorType(ColorType.RGB_565)
         }
             .let { BlurHashDecodeHelper(it.toRequestContext(sketch), it.uri) }
@@ -175,7 +205,6 @@ class BlurHashDecodeHelperAndroidTest {
             }
 
         ImageRequest(context, blurHashUri) {
-            size(Size.Origin)
             colorType(ColorType.RGB_565)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 colorSpace(ColorSpace.Named.DISPLAY_P3)

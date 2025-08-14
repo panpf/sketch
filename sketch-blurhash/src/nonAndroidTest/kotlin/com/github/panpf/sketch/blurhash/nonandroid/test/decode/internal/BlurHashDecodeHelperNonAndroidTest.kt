@@ -10,8 +10,6 @@ import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Rect
-import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.screenSize
 import com.github.panpf.sketch.util.toInfoString
 import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.test.runTest
@@ -72,7 +70,6 @@ class BlurHashDecodeHelperNonAndroidTest {
     @Test
     fun testDecode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val screenSize = context.screenSize()
 
         ImageRequest(context, blurHashUri)
             .let { BlurHashDecodeHelper(it.toRequestContext(sketch), it.uri) }
@@ -80,7 +77,7 @@ class BlurHashDecodeHelperNonAndroidTest {
             .let { (it as BitmapImage).bitmap }
             .apply {
                 assertEquals(
-                    expected = "Bitmap(width=${screenSize.width}, height=${screenSize.height}, colorType=RGBA_8888, colorSpace=sRGB)",
+                    expected = "Bitmap(width=200, height=300, colorType=RGBA_8888, colorSpace=sRGB)",
                     actual = this.toInfoString()
                 )
             }
@@ -93,26 +90,35 @@ class BlurHashDecodeHelperNonAndroidTest {
             .let { (it as BitmapImage).bitmap }
             .apply {
                 assertEquals(
-                    expected = "Bitmap(width=700, height=500, colorType=RGBA_8888, colorSpace=sRGB)",
-                    actual = this.toInfoString()
-                )
-            }
-
-        ImageRequest(context, blurHashUri) {
-            size(Size.Origin)
-        }
-            .let { BlurHashDecodeHelper(it.toRequestContext(sketch), it.uri) }
-            .decode(1)
-            .let { (it as BitmapImage).bitmap }
-            .apply {
-                assertEquals(
                     expected = "Bitmap(width=200, height=300, colorType=RGBA_8888, colorSpace=sRGB)",
                     actual = this.toInfoString()
                 )
             }
 
+        ImageRequest(context, blurHashUri)
+            .let { BlurHashDecodeHelper(it.toRequestContext(sketch), it.uri) }
+            .decode(2)
+            .let { (it as BitmapImage).bitmap }
+            .apply {
+                assertEquals(
+                    expected = "Bitmap(width=100, height=150, colorType=RGBA_8888, colorSpace=sRGB)",
+                    actual = this.toInfoString()
+                )
+            }
+
+        ImageRequest(context, blurHashUriNoSize)
+            .let { BlurHashDecodeHelper(it.toRequestContext(sketch), it.uri) }
+            .decode(1)
+            .let { (it as BitmapImage).bitmap }
+            .apply {
+                assertEquals(
+                    expected = "Bitmap(width=100, height=100, colorType=RGBA_8888, colorSpace=sRGB)",
+                    actual = this.toInfoString()
+                )
+            }
+
         ImageRequest(context, blurHashUriNoSize) {
-            size(Size.Origin)
+            size(700, 500)
         }
             .let { BlurHashDecodeHelper(it.toRequestContext(sketch), it.uri) }
             .decode(1)
@@ -124,8 +130,18 @@ class BlurHashDecodeHelperNonAndroidTest {
                 )
             }
 
+        ImageRequest(context, blurHashUriNoSize)
+            .let { BlurHashDecodeHelper(it.toRequestContext(sketch), it.uri) }
+            .decode(2)
+            .let { (it as BitmapImage).bitmap }
+            .apply {
+                assertEquals(
+                    expected = "Bitmap(width=50, height=50, colorType=RGBA_8888, colorSpace=sRGB)",
+                    actual = this.toInfoString()
+                )
+            }
+
         ImageRequest(context, blurHashUri) {
-            size(Size.Origin)
             colorType(ColorType.BGRA_8888)
         }
             .let { BlurHashDecodeHelper(it.toRequestContext(sketch), it.uri) }
@@ -139,7 +155,6 @@ class BlurHashDecodeHelperNonAndroidTest {
             }
 
         ImageRequest(context, blurHashUri) {
-            size(Size.Origin)
             colorType(ColorType.BGRA_8888)
             colorSpace(ColorSpace.displayP3)
         }
