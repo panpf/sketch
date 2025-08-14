@@ -23,13 +23,11 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.fetch.readSizeFromBlurHashUri
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.BlurHashDataSource
-import com.github.panpf.sketch.util.BlurHashUtil
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.Uri
-import com.github.panpf.sketch.util.createBlurHashBitmap
+import com.github.panpf.sketch.util.decodeBlurHashToBitmap
 import com.github.panpf.sketch.util.defaultBlurHashBitmapSize
-import com.github.panpf.sketch.util.installPixels
 
 /**
  * A [DecodeHelper] that decodes images from a [BlurHashDataSource].
@@ -50,22 +48,25 @@ class BlurHashDecodeHelper(
     override val supportRegion: Boolean = false
 
     override fun decode(sampleSize: Int): Image {
+        val blurHash = requireNotNull(blurHashUri.authority) {
+            "Invalid BlurHash URI: '${blurHashUri}'. The authority part of the URI must contain a valid BlurHash string."
+        }
         val bitmapSize = calculateSampledBitmapSize(
             imageSize = imageInfo.size,
             sampleSize = sampleSize,
             mimeType = imageInfo.mimeType
         )
-
-        val blurHash = requireNotNull(blurHashUri.authority) {
-            "Invalid BlurHash URI: '${blurHashUri}'. The authority part of the URI must contain a valid BlurHash string."
-        }
-        val pixels = BlurHashUtil.decodeByte(blurHash, bitmapSize.width, bitmapSize.height)
-
-        val decodeConfig =
-            DecodeConfig(requestContext.request, imageInfo.mimeType, isOpaque = false)
-        val bitmap = createBlurHashBitmap(bitmapSize.width, bitmapSize.height, decodeConfig)
-        bitmap.installPixels(pixels)
-
+        val decodeConfig = DecodeConfig(
+            request = requestContext.request,
+            mimeType = imageInfo.mimeType,
+            isOpaque = false
+        )
+        val bitmap = decodeBlurHashToBitmap(
+            blurHash = blurHash,
+            width = bitmapSize.width,
+            height = bitmapSize.height,
+            decodeConfig = decodeConfig
+        )
         return bitmap.asImage()
     }
 

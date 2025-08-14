@@ -66,6 +66,25 @@ fun blurHashMemoryCacheKey(blurHash: String, size: Size): String = newBlurHashUr
 expect fun createBlurHashBitmap(width: Int, height: Int, decodeConfig: DecodeConfig? = null): Bitmap
 
 /**
+ * Decode a BlurHash string into a [Bitmap].
+ *
+ * @see com.github.panpf.sketch.blurhash.android.test.util.BlurHashUtilAndroidTest.testDecodeBlurHashToBitmap
+ * @see com.github.panpf.sketch.blurhash.nonandroid.test.util.BlurHashUtilNonAndroidTest.testDecodeBlurHashToBitmap
+ */
+fun decodeBlurHashToBitmap(
+    blurHash: String,
+    width: Int,
+    height: Int,
+    punch: Float = 1f,
+    decodeConfig: DecodeConfig? = null,
+): Bitmap {
+    val byteArray = BlurHashUtil.decodeByte(blurHash, width, height, punch)
+    val bitmap = createBlurHashBitmap(width, height, decodeConfig)
+    bitmap.installPixels(byteArray)
+    return bitmap
+}
+
+/**
  * https://github.com/cbeyls/BlurHashAndroidBenchmark/
  */
 object BlurHashUtil {

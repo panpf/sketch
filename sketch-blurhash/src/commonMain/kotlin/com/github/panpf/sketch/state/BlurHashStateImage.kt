@@ -26,8 +26,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.util.BlurHashUtil
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.blurHashMemoryCacheKey
-import com.github.panpf.sketch.util.createBlurHashBitmap
-import com.github.panpf.sketch.util.installPixels
+import com.github.panpf.sketch.util.decodeBlurHashToBitmap
 import com.github.panpf.sketch.util.resolveBlurHashBitmapSize
 import com.github.panpf.sketch.util.toUri
 
@@ -65,17 +64,17 @@ data class BlurHashStateImage(val blurHash: String, val size: Size? = null) : St
 
         // If you go to IO thread decoding, you must complete the decoding before the user sees it (actually this is not guaranteed), otherwise the user will see an empty picture
         // So we cannot go to IO thread decoding here. To improve decoding performance, we can only reduce the size of the image.
-        val result = runCatching {
-            BlurHashUtil.decodeByte(realBlurHash, bitmapSize.width, bitmapSize.height)
+        val bitmap = runCatching {
+            decodeBlurHashToBitmap(
+                blurHash = realBlurHash,
+                width = bitmapSize.width,
+                height = bitmapSize.height
+            )
         }.onFailure {
             sketch.logger.w {
                 "BlurHashStateImage decode blurHash failed, blurHash=$realBlurHash, size=$bitmapSize, error=${it.message}"
             }
-        }
-
-        val pixels = result.getOrNull() ?: return null
-        val bitmap = createBlurHashBitmap(bitmapSize.width, bitmapSize.height)
-        bitmap.installPixels(pixels)
+        }.getOrNull() ?: return null
 
         val bitmapImage = bitmap.asImage()
         memoryCache.put(cacheKey, ImageCacheValue(bitmapImage))
