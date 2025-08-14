@@ -498,6 +498,7 @@ Basic functions:
 * [Target: Apply the load results to the target][target]
 * [SVG: Decode SVG still images][svg]
 * [VideoFrames: Decode video frames][video_frame]
+* [BlurHash][blurhash]
 * [ExifOrientation: Correct the image orientation][exif_orientation]
 * [ImageOptions: Manage image configurations in a unified manner][image_options]
 * [RequestInterceptor: Intercept ImageRequest][request_interceptor]
@@ -620,3 +621,5 @@ Featured functions:
 [video_frame]: video_frame.md
 
 [migrate]: migrate.md
+
+[blurhash]: blurhash.md

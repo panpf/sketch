@@ -10,6 +10,8 @@
 # new
 
 * improve: DecodeConfig 现在可以从 common 模块访问
+* new: 新增 'sketch-blurhash' 模块以支持
+  BlurHash，详情请参考文档 [BlurHash](docs/blurhash.zh.md)。[#261](https://github.com/panpf/sketch/issues/261)
 
 # 4.3.1
 

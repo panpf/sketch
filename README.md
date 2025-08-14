@@ -80,6 +80,9 @@ implementation("io.github.panpf.sketch4:sketch-animated-heif:${LAST_VERSION}")
 // Use Android or Skia's built-in decoder to decode webp animations and play them
 implementation("io.github.panpf.sketch4:sketch-animated-webp:${LAST_VERSION}")
 
+// Supports BlurHash format image
+implementation("io.github.panpf.sketch4:sketch-blurhash:${LAST_VERSION}")
+
 // Support accessing compose resources through uri or placeholder, fallback, error, etc.
 implementation("io.github.panpf.sketch4:sketch-compose-resources:${LAST_VERSION}")
 implementation("io.github.panpf.sketch4:sketch-extensions-compose-resources:${LAST_VERSION}")
@@ -251,6 +254,7 @@ Basic functions:
 * [Target: Apply the load results to the target][target]
 * [SVG: Decode SVG still images][svg]
 * [VideoFrames: Decode video frames][video_frame]
+* [BlurHash][blurhash]
 * [ExifOrientation: Correct the image orientation][exif_orientation]
 * [ImageOptions: Manage image configurations in a unified manner][image_options]
 * [RequestInterceptor: Intercept ImageRequest][request_interceptor]
@@ -422,6 +426,8 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 [video_frame]: docs/video_frame.md
 
 [migrate]: docs/migrate.md
+
+[blurhash]: docs/blurhash.md
 
 
 [comment]: <> (links)

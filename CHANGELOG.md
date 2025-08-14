@@ -12,6 +12,8 @@ Translations: [简体中文](CHANGELOG.zh.md)
 # new
 
 * improve: DecodeConfig is now accessible from the common module
+* new: Added the 'sketch-blurhash' module to support BlurHash. Please refer to the documentation for
+  details. [BlurHash](docs/blurhash.md). [#261](https://github.com/panpf/sketch/issues/261)
 
 # 4.3.1
 

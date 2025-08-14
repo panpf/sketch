@@ -83,6 +83,7 @@ nav:
   - 'Target': target.md
   - 'SVG': svg.md
   - 'Video Frames': video_frame.md
+  - 'BlurHash': blurhash.md
   - 'Exif Orientation': exif_orientation.md
   - 'ImageOptions': image_options.md
   - 'RequestInterceptor': request_interceptor.md
@@ -109,16 +110,16 @@ markdown_extensions:
       anchor_linenums: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences  # 支持代码块嵌套
-  - pymdownx.tabbed       # 支持选项卡
-  - pymdownx.tasklist     # 支持任务列表
-  - pymdownx.emoji        # 支持 Emoji
-  - pymdownx.details      # 支持折叠内容
-  - pymdownx.highlight    # 支持代码高亮
-  - tables                # 支持表格
-  - footnotes             # 支持脚注
-  - attr_list             # 支持属性列表
-  - md_in_html            # 支持在 HTML 中嵌入 Markdown
+  - pymdownx.superfences  # Support code block nesting
+  - pymdownx.tabbed       # Support tabs
+  - pymdownx.tasklist     # Supported task list
+  - pymdownx.emoji        # Support Emoji
+  - pymdownx.details      # Supports folded content
+  - pymdownx.highlight    # Support code highlighting
+  - tables                # Support Form
+  - footnotes             # Support footnotes
+  - attr_list             # Supported attribute list
+  - md_in_html            # Support embedding Markdown in HTML
 
 plugins:
   - i18n:

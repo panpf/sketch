@@ -70,6 +70,9 @@ implementation("io.github.panpf.sketch4:sketch-animated-heif:${LAST_VERSION}")
 // 使用 Android 或 Skia 内置的解码器解码 webp 动图并播放
 implementation("io.github.panpf.sketch4:sketch-animated-webp:${LAST_VERSION}")
 
+// 支持 BlurHash 格式图片
+implementation("io.github.panpf.sketch4:sketch-blurhash:${LAST_VERSION}")
+
 // 支持通过 uri 或 placeholder、fallback、error 访问 compose resources 资源
 implementation("io.github.panpf.sketch4:sketch-compose-resources:${LAST_VERSION}")
 implementation("io.github.panpf.sketch4:sketch-extensions-compose-resources:${LAST_VERSION}")
@@ -233,6 +236,7 @@ context.sketch.enqueue(request)
 * [Target：将加载结果应用到目标上][target]
 * [SVG：解码 SVG 静态图片][svg]
 * [VideoFrames：解码视频帧][video_frame]
+* [BlurHash][blurhash]
 * [ExifOrientation：纠正图片方向][exif_orientation]
 * [ImageOptions：统一管理图片配置][image_options]
 * [RequestInterceptor：拦截 ImageRequest][request_interceptor]
@@ -396,6 +400,8 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 [video_frame]: docs/video_frame.zh.md
 
 [migrate]: docs/migrate.zh.md
+
+[blurhash]: docs/blurhash.zh.md
 
 
 [comment]: <> (links)

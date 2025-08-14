@@ -475,6 +475,7 @@ val imageResult: ImageResult? = imageView.imageResult
 * [Target：将加载结果应用到目标上][target]
 * [SVG：解码 SVG 静态图片][svg]
 * [VideoFrames：解码视频帧][video_frame]
+* [BlurHash][blurhash]
 * [ExifOrientation：纠正图片方向][exif_orientation]
 * [ImageOptions：统一管理图片配置][image_options]
 * [RequestInterceptor：拦截 ImageRequest][request_interceptor]
@@ -597,3 +598,5 @@ val imageResult: ImageResult? = imageView.imageResult
 [video_frame]: video_frame.zh.md
 
 [migrate]: migrate.zh.md
+
+[blurhash]: blurhash.zh.md
