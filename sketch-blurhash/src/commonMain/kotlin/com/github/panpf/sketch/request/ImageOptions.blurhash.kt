@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.request
 
+import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.fetch.newBlurHashUri
 import com.github.panpf.sketch.state.BlurHashStateImage
 import com.github.panpf.sketch.util.Size
@@ -31,7 +32,9 @@ fun ImageOptions.Builder.blurHashPlaceholder(
     blurHash: String,
     size: Size? = null,
     maxSide: Int? = null,
-): ImageOptions.Builder = placeholder(stateImage = BlurHashStateImage(blurHash, size, maxSide))
+    cachePolicy: CachePolicy? = null,
+): ImageOptions.Builder =
+    placeholder(stateImage = BlurHashStateImage(blurHash, size, maxSide, cachePolicy))
 
 /**
  * Set BlurHash placeholder image when uri is invalid
@@ -44,7 +47,9 @@ fun ImageOptions.Builder.blurHashFallback(
     blurHash: String,
     size: Size? = null,
     maxSide: Int? = null,
-): ImageOptions.Builder = fallback(stateImage = BlurHashStateImage(blurHash, size, maxSide))
+    cachePolicy: CachePolicy? = null,
+): ImageOptions.Builder =
+    fallback(stateImage = BlurHashStateImage(blurHash, size, maxSide, cachePolicy))
 
 /**
  * Set BlurHash placeholder image when loading fails.
@@ -57,4 +62,6 @@ fun ImageOptions.Builder.blurHashError(
     blurHash: String,
     size: Size? = null,
     maxSide: Int? = null,
-): ImageOptions.Builder = error(stateImage = BlurHashStateImage(blurHash, size, maxSide))
+    cachePolicy: CachePolicy? = null,
+): ImageOptions.Builder =
+    error(stateImage = BlurHashStateImage(blurHash, size, maxSide, cachePolicy))

@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.blurhash.common.test.request
 
+import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.blurHashError
 import com.github.panpf.sketch.request.blurHashFallback
@@ -54,6 +55,25 @@ class ImageRequestBlurHashTest {
                 actual = placeholder
             )
         }
+
+        ImageRequest(context, uri = uri) {
+            blurHashPlaceholder(
+                blurHash,
+                Size(100, 200),
+                maxSide = 99,
+                cachePolicy = CachePolicy.WRITE_ONLY
+            )
+        }.apply {
+            assertEquals(
+                expected = BlurHashStateImage(
+                    blurHash,
+                    Size(100, 200),
+                    maxSide = 99,
+                    cachePolicy = CachePolicy.WRITE_ONLY
+                ),
+                actual = placeholder
+            )
+        }
     }
 
     @Test
@@ -95,6 +115,25 @@ class ImageRequestBlurHashTest {
                 actual = fallback
             )
         }
+
+        ImageRequest(context, uri = uri) {
+            blurHashFallback(
+                blurHash,
+                Size(100, 200),
+                maxSide = 99,
+                cachePolicy = CachePolicy.WRITE_ONLY
+            )
+        }.apply {
+            assertEquals(
+                expected = BlurHashStateImage(
+                    blurHash,
+                    Size(100, 200),
+                    maxSide = 99,
+                    cachePolicy = CachePolicy.WRITE_ONLY
+                ),
+                actual = fallback
+            )
+        }
     }
 
     @Test
@@ -133,6 +172,25 @@ class ImageRequestBlurHashTest {
         }.apply {
             assertEquals(
                 expected = BlurHashStateImage(blurHash, Size(100, 200), maxSide = 99),
+                actual = error
+            )
+        }
+
+        ImageRequest(context, uri = uri) {
+            blurHashError(
+                blurHash,
+                Size(100, 200),
+                maxSide = 99,
+                cachePolicy = CachePolicy.WRITE_ONLY
+            )
+        }.apply {
+            assertEquals(
+                expected = BlurHashStateImage(
+                    blurHash,
+                    Size(100, 200),
+                    maxSide = 99,
+                    cachePolicy = CachePolicy.WRITE_ONLY
+                ),
                 actual = error
             )
         }
