@@ -37,7 +37,7 @@ class EngineSketchComposeSubsamplingImageGenerator : SketchComposeSubsamplingIma
         result: ImageResult.Success,
         painter: Painter
     ): SubsamplingImageGenerateResult {
-        val imageSource = SketchImageSource.Factory(sketch, result.request.uri.toString())
+        val imageSource = SketchImageSource.Factory(sketch, result.request)
         val imageInfo = ImageInfo(
             width = result.imageInfo.width,
             height = result.imageInfo.height,

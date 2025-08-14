@@ -93,7 +93,8 @@ class UserZoomTestScreen : BaseScreen() {
                         ?.takeIf { it.isSpecified }
                         ?.roundToIntSize()
                         ?.takeIf { it.isNotEmpty() }
-                    zoomState.zoomable.contentSize = painterSize ?: IntSize.Zero
+                        ?: IntSize.Zero
+                    zoomState.zoomable.setContentSize(painterSize)
                 }
             }
             AsyncImage(

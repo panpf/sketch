@@ -39,11 +39,14 @@ fun MyZoomAsyncImage(
 ) {
     val appSettings: AppSettings = koinInject()
 
+    val zoomImageLogLevel by appSettings.zoomImageLogLevel.collectAsState()
+    zoomState.logger.level = zoomImageLogLevel
+
     val showTileBounds by appSettings.showTileBounds.collectAsState()
     val readModeEnabled by appSettings.readModeEnabled.collectAsState()
-    zoomState.subsampling.showTileBounds = showTileBounds
-    zoomState.zoomable.readMode = if (readModeEnabled) ReadMode.Default else null
-    zoomState.zoomable.keepTransformWhenSameAspectRatioContentSizeChanged = true
+    zoomState.subsampling.setShowTileBounds(showTileBounds)
+    zoomState.zoomable.setReadMode(if (readModeEnabled) ReadMode.Default else null)
+    zoomState.zoomable.setKeepTransformWhenSameAspectRatioContentSizeChanged(true)
 
     val request = ComposableImageRequest(uri) {
         val memoryCache by appSettings.memoryCache.collectAsState()

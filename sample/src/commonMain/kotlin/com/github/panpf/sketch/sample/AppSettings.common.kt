@@ -95,6 +95,8 @@ expect class AppSettings(context: PlatformContext) {
 
     val logLevel: SettingsStateFlow<Logger.Level>
 
+    val zoomImageLogLevel: SettingsStateFlow<com.github.panpf.zoomimage.util.Logger.Level>
+
     val httpClient: SettingsStateFlow<String>
 
     val networkParallelismLimited: SettingsStateFlow<Int>

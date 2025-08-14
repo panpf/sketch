@@ -201,7 +201,7 @@ class AsyncImageState internal constructor(
             }
         }
         val coroutineScope =
-            CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate + exceptionHandler)
+            CoroutineScope(SupervisorJob() + Dispatchers.Main + exceptionHandler)
         this.coroutineScope = coroutineScope
 
         currentTarget?.onRemembered()
@@ -222,7 +222,7 @@ class AsyncImageState internal constructor(
     }
 
     private fun launchLoadImageTask(coroutineScope: CoroutineScope) {
-        coroutineScope.launch {
+        coroutineScope.launch(Dispatchers.Main.immediate) {
             combine(
                 flows = listOf(
                     snapshotFlow { sketch }.filterNotNull(),
@@ -334,7 +334,7 @@ class AsyncImageState internal constructor(
         val fullRequest = request.newRequest {
             target(target)
         }
-        currentLoadJob = coroutineScope.launch {
+        currentLoadJob = coroutineScope.launch(Dispatchers.Main.immediate) {
             sketch.execute(fullRequest)
         }
     }

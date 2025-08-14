@@ -72,6 +72,7 @@ class AppSettingsViewModel(
             appSettings.showDataFromLogoInList.ignoreFirst(),
             appSettings.showTileBounds.ignoreFirst(),
             appSettings.logLevel.ignoreFirst(),
+            appSettings.zoomImageLogLevel.ignoreFirst(),
         )
         viewModelScope.launch {
             merge(*states.toTypedArray()).collect {
@@ -425,11 +426,23 @@ class AppSettingsViewModel(
         add(
             MultiSelectMenu(
                 title = "Logger Level",
-                desc = if (sketch.logger.level <= Logger.Level.Debug) "DEBUG and below will reduce UI fluency" else "",
+                desc = if (appSettings.logLevel.value <= Logger.Level.Debug) "DEBUG and below will reduce UI fluency" else "",
                 values = Logger.Level.values().map { it.name },
-                getValue = { sketch.logger.level.name },
+                getValue = { appSettings.logLevel.value.name },
                 onSelect = { _, value ->
                     appSettings.logLevel.value = Logger.Level.valueOf(value)
+                }
+            )
+        )
+        add(
+            MultiSelectMenu(
+                title = "ZoomImage Logger Level",
+                desc = if (appSettings.zoomImageLogLevel.value <= com.github.panpf.zoomimage.util.Logger.Level.Debug) "DEBUG and below will reduce UI fluency" else "",
+                values = Logger.Level.values().map { it.name },
+                getValue = { appSettings.zoomImageLogLevel.value.name },
+                onSelect = { _, value ->
+                    appSettings.zoomImageLogLevel.value =
+                        com.github.panpf.zoomimage.util.Logger.Level.valueOf(value)
                 }
             )
         )

@@ -101,7 +101,7 @@ open class SketchZoomImageView @JvmOverloads constructor(
             val subsamplingEngine = _subsamplingEngine ?: return@post
             val tileImageCacheState = subsamplingEngine.tileImageCacheState
             if (tileImageCacheState.value == null && sketch != null) {
-                tileImageCacheState.value = SketchTileImageCache(sketch)
+                subsamplingEngine.setTileImageCache(SketchTileImageCache(sketch))
             }
 
             val result = SketchUtils.getResult(this)
@@ -112,14 +112,17 @@ open class SketchZoomImageView @JvmOverloads constructor(
                     val generateResult = subsamplingImageGenerators.firstNotNullOfOrNull {
                         it.generateImage(sketch, result, drawable)
                     }
-                    if (generateResult is SubsamplingImageGenerateResult.Error) {
-                        logger.d {
-                            "SketchZoomImageView. ${generateResult.message}. uri='${result.request.uri}'"
-                        }
-                    }
                     if (generateResult is SubsamplingImageGenerateResult.Success) {
                         setSubsamplingImage(generateResult.subsamplingImage)
                     } else {
+                        logger.d {
+                            val errorMessage =
+                                if (generateResult is SubsamplingImageGenerateResult.Error)
+                                    generateResult.message else "unknown error"
+                            "SketchZoomImageView. setSubsamplingImage failed. $errorMessage. " +
+                                    "result=${result}, drawable=${drawable}. " +
+                                    "uri='${result.request.uri}'"
+                        }
                         setSubsamplingImage(null as SubsamplingImage?)
                     }
                 }

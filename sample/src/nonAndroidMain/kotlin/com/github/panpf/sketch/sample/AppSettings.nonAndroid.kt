@@ -201,6 +201,16 @@ actual class AppSettings actual constructor(val context: PlatformContext) {
         enumSettingsStateFlow(context, "newNewLogLevel2", defaultState) { Logger.Level.valueOf(it) }
     }
 
+    actual val zoomImageLogLevel: SettingsStateFlow<com.github.panpf.zoomimage.util.Logger.Level> by lazy {
+        val defaultState =
+            if (isDebugMode()) com.github.panpf.zoomimage.util.Logger.Level.Debug else com.github.panpf.zoomimage.util.Logger.Level.Info
+        enumSettingsStateFlow(
+            context,
+            "zoomImageLogLevel",
+            defaultState
+        ) { com.github.panpf.zoomimage.util.Logger.Level.valueOf(it) }
+    }
+
     actual val httpClient: SettingsStateFlow<String> by lazy {
         stringSettingsStateFlow(context, key = "httpClient", initialize = "Ktor")
     }

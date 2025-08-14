@@ -70,8 +70,9 @@ fun AppSettingsList(page: Page) {
         val appEvents: AppEvents = koinInject()
         val sketch: Sketch = koinInject()
         val logLevel by appSettings.logLevel.collectAsState()
+        val zoomImageLogLevel by appSettings.zoomImageLogLevel.collectAsState()
         val recreateCount by recreateSettingItems
-        val settingItems = remember(logLevel, recreateCount) {
+        val settingItems = remember(logLevel, zoomImageLogLevel, recreateCount) {
             createSettingItems(appSettings, appEvents, sketch, page, recreateSettingItems)
         }
         settingItems.forEach { settingItem ->
@@ -392,6 +393,15 @@ private fun otherMenuList(appSettings: AppSettings, appEvents: AppEvents): List<
                     "DEBUG and below will reduce UI fluency" else null,
                 values = Logger.Level.values().toList(),
                 state = appSettings.logLevel,
+            )
+        )
+        add(
+            DropdownSettingItem(
+                title = "ZoomImage Logger Level",
+                desc = if (appSettings.zoomImageLogLevel.value <= com.github.panpf.zoomimage.util.Logger.Level.Debug)
+                    "DEBUG and below will reduce UI fluency" else null,
+                values = com.github.panpf.zoomimage.util.Logger.Level.values().toList(),
+                state = appSettings.zoomImageLogLevel,
             )
         )
         add(
