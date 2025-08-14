@@ -17,6 +17,7 @@
 package com.github.panpf.sketch.util
 
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
@@ -179,3 +180,19 @@ operator fun Size.plus(other: Size): Size =
  */
 operator fun Size.minus(other: Size): Size =
     Size(this.width - other.width, this.height - other.height)
+
+/**
+ * Limit the size of the larger side to [maxSide].
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.SizeTest.testLimitMaxSide
+ */
+fun Size.limitSide(maxSide: Int?): Size {
+    if (maxSide == null || maxSide <= 0) return this
+    val max = max(width, height)
+    if (max <= maxSide) return this
+    val ratio = maxSide.toFloat() / max
+    return Size(
+        width = (width * ratio).roundToInt(),
+        height = (height * ratio).roundToInt()
+    )
+}

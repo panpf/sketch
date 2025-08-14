@@ -23,6 +23,7 @@ import com.github.panpf.sketch.util.coerceAtMost
 import com.github.panpf.sketch.util.div
 import com.github.panpf.sketch.util.isNotEmpty
 import com.github.panpf.sketch.util.isSameAspectRatio
+import com.github.panpf.sketch.util.limitSide
 import com.github.panpf.sketch.util.minus
 import com.github.panpf.sketch.util.plus
 import com.github.panpf.sketch.util.rotate
@@ -257,6 +258,31 @@ class SizeTest {
         assertEquals(
             expected = "15x37",
             actual = (Size(11, 22) - Size(-4, -15)).toString()
+        )
+    }
+
+    @Test
+    fun testLimitMaxSide() {
+        assertEquals(
+            expected = Size(200, 500),
+            actual = Size(200, 500).limitSide(null)
+        )
+        assertEquals(
+            expected = Size(200, 500),
+            actual = Size(200, 500).limitSide(0)
+        )
+        assertEquals(
+            expected = Size(200, 500),
+            actual = Size(200, 500).limitSide(-299)
+        )
+        assertEquals(
+            expected = Size(200, 500),
+            actual = Size(200, 500).limitSide(599)
+        )
+
+        assertEquals(
+            expected = Size(120, 299),
+            actual = Size(200, 500).limitSide(299)
         )
     }
 }

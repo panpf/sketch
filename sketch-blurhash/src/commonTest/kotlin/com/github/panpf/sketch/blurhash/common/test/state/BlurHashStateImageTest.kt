@@ -22,25 +22,26 @@ class BlurHashStateImageTest {
     @Test
     fun testConstructor() {
         BlurHashStateImage(blurHash)
-        BlurHashStateImage(blurHash, Size.Empty)
-        BlurHashStateImage(blurHash, null)
-        BlurHashStateImage(blurHash = blurHash, size = Size.Empty)
-        BlurHashStateImage(blurHash = blurHash, size = null)
+        BlurHashStateImage(blurHash, null, null)
+        BlurHashStateImage(blurHash, Size(100, 100), 99)
+        BlurHashStateImage(blurHash = blurHash)
+        BlurHashStateImage(blurHash = blurHash, size = null, maxSide = null)
+        BlurHashStateImage(blurHash = blurHash, size = Size(100, 100), maxSide = 99)
     }
 
     @Test
     fun testKey() {
         BlurHashStateImage(blurHash).apply {
             assertEquals(
-                expected = "BlurHashStateImage('$blurHash',null)",
+                expected = "BlurHashStateImage('$blurHash',null,null)",
                 actual = key
             )
         }
 
         val size = Size(200, 100)
-        BlurHashStateImage(blurHash, size).apply {
+        BlurHashStateImage(blurHash, size, 99).apply {
             assertEquals(
-                expected = "BlurHashStateImage('$blurHash',${size})",
+                expected = "BlurHashStateImage('$blurHash',${size},99)",
                 actual = key
             )
         }
@@ -118,6 +119,16 @@ class BlurHashStateImageTest {
         assertFailsWith(IllegalArgumentException::class) {
             BlurHashStateImage(newBlurHashUri("invalid_uri")).getImage(sketch, request, null)
         }
+
+        BlurHashStateImage(blurHash, maxSide = 99)
+            .getImage(sketch, request, null)!!.apply {
+                assertEquals(Size(99, 99), this.size)
+            }
+
+        BlurHashStateImage(newBlurHashUri(blurHash, 300, 500), maxSide = 299)
+            .getImage(sketch, request, null)!!.apply {
+                assertEquals(Size(179, 299), this.size)
+            }
     }
 
     @Test
@@ -126,26 +137,33 @@ class BlurHashStateImageTest {
         val element11 = BlurHashStateImage(blurHash)
         val element2 = BlurHashStateImage(blurHash = blurHash2)
         val element3 = BlurHashStateImage(blurHash, Size(100, 200))
+        val element4 = BlurHashStateImage(blurHash, Size(100, 200), 99)
 
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
         assertNotEquals(element1, element3)
+        assertNotEquals(element1, element4)
         assertNotEquals(element2, element3)
+        assertNotEquals(element2, element4)
+        assertNotEquals(element3, element4)
         assertNotEquals(element1, null as Any?)
         assertNotEquals(element1, Any())
 
         assertEquals(element1.hashCode(), element11.hashCode())
         assertNotEquals(element1.hashCode(), element2.hashCode())
         assertNotEquals(element1.hashCode(), element3.hashCode())
+        assertNotEquals(element1.hashCode(), element4.hashCode())
         assertNotEquals(element2.hashCode(), element3.hashCode())
+        assertNotEquals(element2.hashCode(), element4.hashCode())
+        assertNotEquals(element3.hashCode(), element4.hashCode())
     }
 
     @Test
     fun testToString() {
         val size = Size(100, 200)
         assertEquals(
-            expected = "BlurHashStateImage(blurHash='${blurHash}', size=$size)",
-            actual = BlurHashStateImage(blurHash, size).toString()
+            expected = "BlurHashStateImage(blurHash='${blurHash}', size=$size, maxSide=99)",
+            actual = BlurHashStateImage(blurHash, size, 99).toString()
         )
     }
 }

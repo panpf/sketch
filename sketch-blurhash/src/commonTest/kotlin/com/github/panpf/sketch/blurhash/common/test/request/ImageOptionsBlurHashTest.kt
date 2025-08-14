@@ -41,6 +41,15 @@ class ImageOptionsBlurHashTest {
                 actual = placeholder
             )
         }
+
+        ImageOptions {
+            blurHashPlaceholder(blurHash, Size(100, 200), maxSide = 99)
+        }.apply {
+            assertEquals(
+                expected = BlurHashStateImage(blurHash, Size(100, 200), maxSide = 99),
+                actual = placeholder
+            )
+        }
     }
 
     @Test
@@ -71,6 +80,15 @@ class ImageOptionsBlurHashTest {
                 actual = fallback
             )
         }
+
+        ImageOptions {
+            blurHashFallback(blurHash, Size(100, 200), maxSide = 99)
+        }.apply {
+            assertEquals(
+                expected = BlurHashStateImage(blurHash, Size(100, 200), maxSide = 99),
+                actual = fallback
+            )
+        }
     }
 
     @Test
@@ -98,6 +116,15 @@ class ImageOptionsBlurHashTest {
         }.apply {
             assertEquals(
                 expected = BlurHashStateImage(blurHash, Size(100, 200)),
+                actual = error
+            )
+        }
+
+        ImageOptions {
+            blurHashError(blurHash, Size(100, 200), maxSide = 99)
+        }.apply {
+            assertEquals(
+                expected = BlurHashStateImage(blurHash, Size(100, 200), maxSide = 99),
                 actual = error
             )
         }

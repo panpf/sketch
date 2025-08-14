@@ -45,6 +45,15 @@ class ImageRequestBlurHashTest {
                 actual = placeholder
             )
         }
+
+        ImageRequest(context, uri = uri) {
+            blurHashPlaceholder(blurHash, Size(100, 200), maxSide = 99)
+        }.apply {
+            assertEquals(
+                expected = BlurHashStateImage(blurHash, Size(100, 200), maxSide = 99),
+                actual = placeholder
+            )
+        }
     }
 
     @Test
@@ -77,6 +86,15 @@ class ImageRequestBlurHashTest {
                 actual = fallback
             )
         }
+
+        ImageRequest(context, uri = uri) {
+            blurHashFallback(blurHash, Size(100, 200), maxSide = 99)
+        }.apply {
+            assertEquals(
+                expected = BlurHashStateImage(blurHash, Size(100, 200), maxSide = 99),
+                actual = fallback
+            )
+        }
     }
 
     @Test
@@ -106,6 +124,15 @@ class ImageRequestBlurHashTest {
         }.apply {
             assertEquals(
                 expected = BlurHashStateImage(blurHash, Size(100, 200)),
+                actual = error
+            )
+        }
+
+        ImageRequest(context, uri = uri) {
+            blurHashError(blurHash, Size(100, 200), maxSide = 99)
+        }.apply {
+            assertEquals(
+                expected = BlurHashStateImage(blurHash, Size(100, 200), maxSide = 99),
                 actual = error
             )
         }

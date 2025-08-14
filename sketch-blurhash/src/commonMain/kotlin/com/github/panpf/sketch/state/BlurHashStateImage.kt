@@ -27,6 +27,7 @@ import com.github.panpf.sketch.util.BlurHashUtil
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.blurHashMemoryCacheKey
 import com.github.panpf.sketch.util.decodeBlurHashToBitmap
+import com.github.panpf.sketch.util.limitSide
 import com.github.panpf.sketch.util.resolveBlurHashBitmapSize
 import com.github.panpf.sketch.util.toUri
 
@@ -37,19 +38,23 @@ import com.github.panpf.sketch.util.toUri
  * When using the uri format, please use the [newBlurHashUri] function to build it, which will automatically encode characters that are not supported by url.
  * @see com.github.panpf.sketch.blurhash.common.test.state.BlurHashStateImageTest
  */
-data class BlurHashStateImage(val blurHash: String, val size: Size? = null) : StateImage {
+data class BlurHashStateImage constructor(
+    val blurHash: String,
+    val size: Size? = null,
+    val maxSide: Int? = null,
+) : StateImage {
 
-    override val key: String = "BlurHashStateImage('${blurHash}',${size})"
+    override val key: String = "BlurHashStateImage('${blurHash}',${size},${maxSide})"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image? {
         val (realBlurHash, bitmapSize) = if (isBlurHashUri(blurHash)) {
             val blurHashUri = blurHash.toUri()
             val bitmapSize = resolveBlurHashBitmapSize(blurHashUri, size)
             val realBlurHash = blurHashUri.authority.orEmpty()
-            realBlurHash to bitmapSize
+            realBlurHash to bitmapSize.limitSide(maxSide)
         } else {
             val bitmapSize = resolveBlurHashBitmapSize(blurHashUri = null, size = size)
-            blurHash to bitmapSize
+            blurHash to bitmapSize.limitSide(maxSide)
         }
         require(BlurHashUtil.isValid(realBlurHash)) {
             "Invalid blurHash: $blurHash"
@@ -82,5 +87,6 @@ data class BlurHashStateImage(val blurHash: String, val size: Size? = null) : St
         return bitmapImage
     }
 
-    override fun toString(): String = "BlurHashStateImage(blurHash='${blurHash}', size=$size)"
+    override fun toString(): String =
+        "BlurHashStateImage(blurHash='${blurHash}', size=$size, maxSide=$maxSide)"
 }

@@ -29,8 +29,9 @@ import com.github.panpf.sketch.util.Size
  */
 fun ImageOptions.Builder.blurHashPlaceholder(
     blurHash: String,
-    size: Size? = null
-): ImageOptions.Builder = placeholder(stateImage = BlurHashStateImage(blurHash, size))
+    size: Size? = null,
+    maxSide: Int? = null,
+): ImageOptions.Builder = placeholder(stateImage = BlurHashStateImage(blurHash, size, maxSide))
 
 /**
  * Set BlurHash placeholder image when uri is invalid
@@ -41,8 +42,9 @@ fun ImageOptions.Builder.blurHashPlaceholder(
  */
 fun ImageOptions.Builder.blurHashFallback(
     blurHash: String,
-    size: Size? = null
-): ImageOptions.Builder = fallback(stateImage = BlurHashStateImage(blurHash, size))
+    size: Size? = null,
+    maxSide: Int? = null,
+): ImageOptions.Builder = fallback(stateImage = BlurHashStateImage(blurHash, size, maxSide))
 
 /**
  * Set BlurHash placeholder image when loading fails.
@@ -53,5 +55,6 @@ fun ImageOptions.Builder.blurHashFallback(
  */
 fun ImageOptions.Builder.blurHashError(
     blurHash: String,
-    size: Size? = null
-): ImageOptions.Builder = error(stateImage = BlurHashStateImage(blurHash, size))
+    size: Size? = null,
+    maxSide: Int? = null,
+): ImageOptions.Builder = error(stateImage = BlurHashStateImage(blurHash, size, maxSide))
