@@ -93,9 +93,6 @@ object BlurHashUtil {
         blurHash: String,
         width: Int,
         height: Int,
-        outputwidth: Int = width,
-        outputheight: Int = height,
-        output: ByteArray? = null,
         punch: Float = 1f
     ): ByteArray {
         val numCompEnc = decode83(blurHash, 0, 1)
@@ -119,15 +116,12 @@ object BlurHashUtil {
             numCompX,
             numCompY,
             colors,
-            outputwidth,
-            outputheight,
-            output
         )
     }
 
-    private inline fun decode83(s: String, from: Int, to: Int): Int {
+    private inline fun decode83(str: String, from: Int, to: Int): Int {
         var acc = 0
-        for (p in from until to) acc = acc * 83 + CHAR_TO_CODE[s[p].code]
+        for (p in from until to) acc = acc * 83 + CHAR_TO_CODE[str[p].code]
         return acc
     }
 
@@ -138,7 +132,6 @@ object BlurHashUtil {
     }
 
     private inline fun srgbToLinear(enc: Int) = SRGB_TO_LINEAR[enc]
-    private inline fun linearToSrgb(v: Float) = LINEAR_TO_SRGB[(v.coerceIn(0f, 1f) * 4095f).toInt()]
 
     private fun decodeAc(value: Int, maxAc: Float, out: FloatArray, outIndex: Int) {
         val oneNinth = 1f / 9f
@@ -151,7 +144,7 @@ object BlurHashUtil {
         out[outIndex + 2] = signedPow2((b - 9) * oneNinth) * maxAc
     }
 
-    private fun signedPow2(v: Float) = if (v < 0) -(v * v) else v * v
+    private fun signedPow2(value: Float) = if (value < 0) -(value * value) else value * value
 
     private fun composeBitmapAsByteArray(
         width: Int,
@@ -159,11 +152,8 @@ object BlurHashUtil {
         numCompX: Int,
         numCompY: Int,
         colors: FloatArray,
-        outputwidth: Int = width,
-        outputheight: Int = height,
-        output1: ByteArray? = null,
     ): ByteArray {
-        val output = output1 ?: ByteArray(width * height * 4)
+        val output = ByteArray(width * height * 4)
         val cosinesX = createCosines(width, numCompX)
         val cosinesY = if (width == height && numCompX == numCompY) cosinesX else createCosines(
             height,
@@ -199,7 +189,6 @@ object BlurHashUtil {
                 output[base + 3] = 255.toByte()
                 pixelIndex++
             }
-            pixelIndex += (outputwidth - width)
         }
 
         return output
@@ -210,6 +199,8 @@ object BlurHashUtil {
         val i = index % numComp
         cos(PI * x * i / size).toFloat()
     }
+
+    private inline fun linearToSrgb(v: Float) = LINEAR_TO_SRGB[(v.coerceIn(0f, 1f) * 4095f).toInt()]
 
     fun isValid(blurHash: String?): Boolean {
         if (blurHash == null || blurHash.length < 6) return false
