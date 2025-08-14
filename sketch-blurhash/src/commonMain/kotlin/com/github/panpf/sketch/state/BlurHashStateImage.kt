@@ -19,6 +19,7 @@ package com.github.panpf.sketch.state
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
+import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.ImageCacheValue
 import com.github.panpf.sketch.fetch.isBlurHashUri
 import com.github.panpf.sketch.fetch.newBlurHashUri
@@ -42,9 +43,10 @@ data class BlurHashStateImage constructor(
     val blurHash: String,
     val size: Size? = null,
     val maxSide: Int? = null,
+    val cachePolicy: CachePolicy? = null,
 ) : StateImage {
 
-    override val key: String = "BlurHashStateImage('${blurHash}',${size},${maxSide})"
+    override val key: String = "BlurHashStateImage('${blurHash}',${size},${maxSide},${cachePolicy})"
 
     override fun getImage(sketch: Sketch, request: ImageRequest, throwable: Throwable?): Image? {
         val (realBlurHash, bitmapSize) = if (isBlurHashUri(blurHash)) {
@@ -62,9 +64,11 @@ data class BlurHashStateImage constructor(
 
         val cacheKey = blurHashMemoryCacheKey(realBlurHash, bitmapSize)
         val memoryCache = sketch.memoryCache
-        val cachedValue = memoryCache[cacheKey]
-        if (cachedValue != null) {
-            return cachedValue.image
+        if (cachePolicy == null || cachePolicy.readEnabled) {
+            val cachedValue = memoryCache[cacheKey]
+            if (cachedValue != null) {
+                return cachedValue.image
+            }
         }
 
         // If you go to IO thread decoding, you must complete the decoding before the user sees it (actually this is not guaranteed), otherwise the user will see an empty picture
@@ -82,11 +86,14 @@ data class BlurHashStateImage constructor(
         }.getOrNull() ?: return null
 
         val bitmapImage = bitmap.asImage()
-        memoryCache.put(cacheKey, ImageCacheValue(bitmapImage))
+
+        if (cachePolicy == null || cachePolicy.writeEnabled) {
+            memoryCache.put(cacheKey, ImageCacheValue(bitmapImage))
+        }
 
         return bitmapImage
     }
 
     override fun toString(): String =
-        "BlurHashStateImage(blurHash='${blurHash}', size=$size, maxSide=$maxSide)"
+        "BlurHashStateImage(blurHash='${blurHash}', size=$size, maxSide=$maxSide, cachePolicy=$cachePolicy)"
 }
