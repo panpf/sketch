@@ -1,17 +1,12 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
-$dokka.location:com.github.panpf.sketch.decode/DecodeConfig///PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/[non-android]-decode-config/index.html
-$dokka.location:com.github.panpf.sketch.decode/DecodeConfig/DecodeConfig/#kotlin.Int?#android.graphics.Bitmap.Config?#android.graphics.ColorSpace?#kotlin.Boolean?/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/[android]-decode-config/-decode-config.html
-$dokka.location:com.github.panpf.sketch.decode/DecodeConfig/DecodeConfig/#kotlin.Int?#org.jetbrains.skia.ColorType?#org.jetbrains.skia.ColorSpace?/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/[non-android]-decode-config/-decode-config.html
-$dokka.location:com.github.panpf.sketch.decode/DecodeConfig/colorSpace/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/[non-android]-decode-config/color-space.html
-$dokka.location:com.github.panpf.sketch.decode/DecodeConfig/colorType/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/[non-android]-decode-config/color-type.html
-$dokka.location:com.github.panpf.sketch.decode/DecodeConfig/preferQualityOverSpeed/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/[android]-decode-config/prefer-quality-over-speed.html
-$dokka.location:com.github.panpf.sketch.decode/DecodeConfig/sampleSize/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/[non-android]-decode-config/sample-size.html
-$dokka.location:com.github.panpf.sketch.decode/DecodeConfig/toString/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/[non-android]-decode-config/to-string.html
+$dokka.location:com.github.panpf.sketch.decode/DecodeConfig/colorSpace/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/-decode-config/[non-android]color-space.html
+$dokka.location:com.github.panpf.sketch.decode/DecodeConfig/colorType/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/-decode-config/[non-android]color-type.html
+$dokka.location:com.github.panpf.sketch.decode/DecodeConfig/sampleSize/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/-decode-config/[non-android]sample-size.html
+$dokka.location:com.github.panpf.sketch.decode/DecodeConfig/toString/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/-decode-config/[non-android]to-string.html
 $dokka.location:com.github.panpf.sketch.decode/FixedColorSpace/value/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/-fixed-color-space/[non-android]value.html
 $dokka.location:com.github.panpf.sketch.decode/FixedColorType/value/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/-fixed-color-type/[non-android]value.html
 $dokka.location:com.github.panpf.sketch.decode/PlatformColorSpace/colorSpace/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/-platform-color-space/[non-android]color-space.html
-$dokka.location:com.github.panpf.sketch.decode/PlatformColorType/colorType/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.decode/-platform-color-type/[non-android]color-type.html
 $dokka.location:com.github.panpf.sketch.fetch//isKotlinResourceUri/#[Error type: Unresolved type for Uri]/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]is-kotlin-resource-uri.html
 $dokka.location:com.github.panpf.sketch.fetch//newKotlinResourceUri/#kotlin.String/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]new-kotlin-resource-uri.html
 $dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion///PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-companion/index.html
@@ -66,6 +61,15 @@ com.github.panpf.sketch.decode.internal
 module:sketch-animated-webp
 com.github.panpf.sketch.decode
 com.github.panpf.sketch.decode.internal
+module:sketch-blurhash
+com.github.panpf.sketch.decode
+com.github.panpf.sketch.decode.internal
+com.github.panpf.sketch.fetch
+com.github.panpf.sketch.fetch.internal
+com.github.panpf.sketch.request
+com.github.panpf.sketch.source
+com.github.panpf.sketch.state
+com.github.panpf.sketch.util
 module:sketch-compose
 com.github.panpf.sketch
 module:sketch-compose-core
