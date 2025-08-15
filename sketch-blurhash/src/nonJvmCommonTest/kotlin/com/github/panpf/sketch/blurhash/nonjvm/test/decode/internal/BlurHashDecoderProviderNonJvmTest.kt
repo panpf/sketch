@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.blurhash.nonjvm.test.decode.internal
 
-import com.github.panpf.sketch.decode.internal.BlurHashDecoder
+import com.github.panpf.sketch.decode.BlurHashDecoder
 import com.github.panpf.sketch.decode.internal.BlurHashDecoderProvider
 import com.github.panpf.sketch.test.utils.getTestContext
 import kotlin.test.Test

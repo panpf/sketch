@@ -25,7 +25,7 @@ import org.jetbrains.skia.ColorType
 /**
  * Create a [Bitmap] for decoding BlurHash, the [ColorType] is [ColorType.RGBA_8888].
  *
- * @see com.github.panpf.sketch.blurhash.nonandroid.test.util.BlurHashUtilNonAndroidTest.testCreateBlurHashBitmap
+ * @see com.github.panpf.sketch.blurhash.nonandroid.test.util.BlurhashsNonAndroidTest.testCreateBlurHashBitmap
  */
 actual fun createBlurHashBitmap(width: Int, height: Int, decodeConfig: DecodeConfig?): Bitmap {
     return createBitmap(

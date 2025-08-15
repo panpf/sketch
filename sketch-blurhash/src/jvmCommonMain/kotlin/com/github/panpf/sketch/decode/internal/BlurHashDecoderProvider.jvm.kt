@@ -18,6 +18,7 @@ package com.github.panpf.sketch.decode.internal
 
 import androidx.annotation.Keep
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.decode.BlurHashDecoder
 import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.DecoderProvider
 

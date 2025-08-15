@@ -8,7 +8,7 @@ import org.jetbrains.skia.ColorSpace
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BlurHashUtilNonAndroidTest {
+class BlurhashsNonAndroidTest {
 
     @Test
     fun testCreateBlurHashBitmap() {

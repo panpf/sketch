@@ -1,6 +1,6 @@
-package com.github.panpf.sketch.blurhash.nonandroid.test.decode.internal
+package com.github.panpf.sketch.blurhash.nonandroid.test.decode
 
-import com.github.panpf.sketch.decode.internal.BlurHashDecoder
+import com.github.panpf.sketch.decode.BlurHashDecoder
 import com.github.panpf.sketch.fetch.newBlurHashUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.BlurHashDataSource

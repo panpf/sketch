@@ -26,7 +26,7 @@ import com.github.panpf.sketch.decode.DecodeConfig
 /**
  * Create a [Bitmap] for decoding BlurHash, the [ColorType] is [ColorType.ARGB_8888].
  *
- * @see com.github.panpf.sketch.blurhash.android.test.util.BlurHashUtilAndroidTest.testCreateBlurHashBitmap
+ * @see com.github.panpf.sketch.blurhash.android.test.util.BlurhashsAndroidTest.testCreateBlurHashBitmap
  */
 actual fun createBlurHashBitmap(width: Int, height: Int, decodeConfig: DecodeConfig?): Bitmap {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

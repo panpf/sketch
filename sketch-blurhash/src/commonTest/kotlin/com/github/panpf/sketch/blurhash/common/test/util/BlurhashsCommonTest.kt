@@ -9,7 +9,7 @@ import com.github.panpf.sketch.util.toUri
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BlurHashUtilCommonTest {
+class BlurhashsCommonTest {
 
     @Test
     fun testDefaultBlurHashBitmapSize() {

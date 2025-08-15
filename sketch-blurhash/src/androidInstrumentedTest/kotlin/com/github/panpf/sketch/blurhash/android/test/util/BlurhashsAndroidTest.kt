@@ -10,7 +10,7 @@ import com.github.panpf.sketch.util.decodeBlurHashToBitmap
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BlurHashUtilAndroidTest {
+class BlurhashsAndroidTest {
 
     @Test
     fun testCreateBlurHashBitmap() {

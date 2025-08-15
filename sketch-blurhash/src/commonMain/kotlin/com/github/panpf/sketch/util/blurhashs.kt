@@ -27,14 +27,14 @@ import kotlin.math.pow
 /**
  * Default size for decoding BlurHash bitmap.
  *
- * @see com.github.panpf.sketch.blurhash.common.test.util.BlurHashUtilCommonTest.testDefaultBlurHashBitmapSize
+ * @see com.github.panpf.sketch.blurhash.common.test.util.BlurhashsCommonTest.testDefaultBlurHashBitmapSize
  */
 val defaultBlurHashBitmapSize = Size(100, 100)
 
 /**
  * Resolve the size of the bitmap to decode the BlurHash.
  *
- * @see com.github.panpf.sketch.blurhash.common.test.util.BlurHashUtilCommonTest.testResolveBlurHashBitmapSize
+ * @see com.github.panpf.sketch.blurhash.common.test.util.BlurhashsCommonTest.testResolveBlurHashBitmapSize
  */
 fun resolveBlurHashBitmapSize(blurHashUri: Uri?, size: Size?): Size {
     var result = size
@@ -53,23 +53,23 @@ fun resolveBlurHashBitmapSize(blurHashUri: Uri?, size: Size?): Size {
 /**
  * Create a memory cache key for the BlurHash. The uri format is not supported in the blurHash here
  *
- * @see com.github.panpf.sketch.blurhash.common.test.util.BlurHashUtilCommonTest.testBlurHashMemoryCacheKey
+ * @see com.github.panpf.sketch.blurhash.common.test.util.BlurhashsCommonTest.testBlurHashMemoryCacheKey
  */
 fun blurHashMemoryCacheKey(blurHash: String, size: Size): String = newBlurHashUri(blurHash, size)
 
 /**
  * Create a [Bitmap] for decoding BlurHash.
  *
- * @see com.github.panpf.sketch.blurhash.android.test.util.BlurHashUtilAndroidTest.testCreateBlurHashBitmap
- * @see com.github.panpf.sketch.blurhash.nonandroid.test.util.BlurHashUtilNonAndroidTest.testCreateBlurHashBitmap
+ * @see com.github.panpf.sketch.blurhash.android.test.util.BlurhashsAndroidTest.testCreateBlurHashBitmap
+ * @see com.github.panpf.sketch.blurhash.nonandroid.test.util.BlurhashsNonAndroidTest.testCreateBlurHashBitmap
  */
 expect fun createBlurHashBitmap(width: Int, height: Int, decodeConfig: DecodeConfig? = null): Bitmap
 
 /**
  * Decode a BlurHash string into a [Bitmap].
  *
- * @see com.github.panpf.sketch.blurhash.android.test.util.BlurHashUtilAndroidTest.testDecodeBlurHashToBitmap
- * @see com.github.panpf.sketch.blurhash.nonandroid.test.util.BlurHashUtilNonAndroidTest.testDecodeBlurHashToBitmap
+ * @see com.github.panpf.sketch.blurhash.android.test.util.BlurhashsAndroidTest.testDecodeBlurHashToBitmap
+ * @see com.github.panpf.sketch.blurhash.nonandroid.test.util.BlurhashsNonAndroidTest.testDecodeBlurHashToBitmap
  */
 fun decodeBlurHashToBitmap(
     blurHash: String,

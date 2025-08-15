@@ -17,6 +17,7 @@
 package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.decode.BlurHashDecoder
 import com.github.panpf.sketch.util.DecoderProvider
 
 /**
