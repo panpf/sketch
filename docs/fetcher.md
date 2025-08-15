@@ -20,6 +20,7 @@ following table:
 | android.resource://       | [ResourceUriFetcher]        | newResourceUri()        | -                         | ✅       | ❌   | ❌       | ❌   |
 | app.icon://               | [AppIconUriFetcher]         | newAppIconUri()         | sketch-extensions-appicon | ✅       | ❌   | ❌       | ❌   |
 | file:///kotlin_resource/  | [KotlinResourceUriFetcher]  | newKotlinResourceUri()  | -                         | ❌       | ✅   | ✅       | ❌   |
+| blurhash://               | [BlurHashUriFetcher]        | newBlurHashUri()        | sketch-blurhash           | ✅       | ✅   | ✅       | ✅   |
 
 * [HurlHttpUriFetcher]: Use the HttpURLConnection that comes with jvm to load images from the
   network. [Learn more](http.md)
@@ -35,6 +36,7 @@ following table:
 * [ComposeResourceUriFetcher]: is used to load images from the composeResources directory of
   Compose Multiplatform, it also needs to depend on the `sketch-compose-resources` module.
 * [KotlinResourceUriFetcher]: is used to load images from the resources directory of kotlin
+* [BlurHashUriFetcher]：Supports loading images from BlurHash strings
 
 > [!IMPORTANT]
 > The above components all support automatic registration. You only need to import them without
@@ -80,3 +82,5 @@ Then refer to the document [《Register component》](register_component.md) to 
 [KotlinResourceUriFetcher]: ../sketch-core/src/desktopMain/kotlin/com/github/panpf/sketch/fetch/KotlinResourceUriFetcher.kt
 
 [ComposeResourceUriFetcher]: ../sketch-compose-resources/src/commonMain/kotlin/com/github/panpf/sketch/fetch/ComposeResourceUriFetcher.kt
+
+[BlurHashUriFetcher]: ../sketch-blurhash/src/commonMain/kotlin/com/github/panpf/sketch/fetch/BlurHashUriFetcher.kt

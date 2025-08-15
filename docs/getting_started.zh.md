@@ -124,6 +124,7 @@ context.sketch.enqueue(request)
 | data:image/, data:img/    | Base64                   | newBase64Uri()          | _                                                                                |
 | file:///compose_resource/ | Compose Resource         | newComposeResourceUri() | sketch-compose-resources                                                         |
 | file:///kotlin_resource/  | Kotlin Resource          | newKotlinResourceUri()  | _                                                                                |
+| blurhash://               | BlurHash                 | newBlurHashUri()        | sketch-blurhash                                                                  |
 | app.icon://               | Android App Icon         | newAppIconUri()         | sketch-extensions-appicon                                                        |
 
 每一种 URI 都有对应的 Fetcher 对其提供支持，[详细了解 Fetcher][fetcher]
@@ -142,6 +143,7 @@ context.sketch.enqueue(request)
 | webp 动图                                                                                   | ✅ (API 28)    | ✅               | ✅               | ✅               |
 | heif 动图                                                                                   | ✅ (API 30)    | ❌               | ❌               | ❌               |
 | 视频帧                                                                                       | ✅             | ❌               | ❌               | ❌               |
+| BlurHash                                                                                  | ✅             | ✅               | ✅               | ✅               |
 | http://, https://<br/>file://, /<br/>file:///compose_resource/<br/>data:image/, data:img/ | ✅             | ✅               | ✅               | ✅               |
 | file:///android_asset/<br/>content://<br/>android.resource://                             | ✅             | ❌               | ❌               | ❌               |
 | file:///kotlin_resource/                                                                  | ❌             | ✅               | ✅               | ❌               |
@@ -237,12 +239,13 @@ Koin 模式，同样也提供了更加便捷的组件或加载函数，如下：
 startKoin {
     modules(
          module {
-             single<Sketch> { Sketch.Builder(get()).apply{
-                 logger(level = Logger.Level.Debug)
-                 // There is a lot more...
-             }.build() 
-        }
-    })
+              single<Sketch> {
+                   Sketch.Builder(get()).apply {
+                        logger(level = Logger.Level.Debug)
+                        // There is a lot more...
+                   }.build()
+              }
+         })
 }
 
 // 在任意位置获取实例

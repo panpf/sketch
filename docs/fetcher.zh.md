@@ -19,6 +19,7 @@
 | android.resource://       | [ResourceUriFetcher]        | newResourceUri()        | -                         | ✅       | ❌   | ❌       | ❌   |
 | app.icon://               | [AppIconUriFetcher]         | newAppIconUri()         | sketch-extensions-appicon | ✅       | ❌   | ❌       | ❌   |
 | file:///kotlin_resource/  | [KotlinResourceUriFetcher]  | newKotlinResourceUri()  | -                         | ❌       | ✅   | ✅       | ❌   |
+| blurhash://               | [BlurHashUriFetcher]        | newBlurHashUri()        | sketch-blurhash           | ✅       | ✅   | ✅       | ✅   |
 
 * [HurlHttpUriFetcher]：使用 jvm 自带的 HttpURLConnection 从网络加载图片。[了解更多](http.zh.md)
 * [OkHttpHttpUriFetcher]：使用 OkHttp 从网络加载图片。[了解更多](http.zh.md)
@@ -32,6 +33,7 @@
 * [ComposeResourceUriFetcher]：用于从 Compose Multiplatform 的 composeResources
   目录加载图片，它还需要依赖 `sketch-compose-resources` 模块。
 * [KotlinResourceUriFetcher]：用于从 kotlin 的 resources 目录加载图片
+* [BlurHashUriFetcher]：支持从 BlurHash 字符串加载图片
 
 > [!IMPORTANT]
 > 上述组件都支持自动注册，你只需要导入即可，无需额外配置，如果你需要手动注册，
@@ -76,3 +78,5 @@
 [KotlinResourceUriFetcher]: ../sketch-core/src/desktopMain/kotlin/com/github/panpf/sketch/fetch/KotlinResourceUriFetcher.kt
 
 [ComposeResourceUriFetcher]: ../sketch-compose-resources/src/commonMain/kotlin/com/github/panpf/sketch/fetch/ComposeResourceUriFetcher.kt
+
+[BlurHashUriFetcher]: ../sketch-blurhash/src/commonMain/kotlin/com/github/panpf/sketch/fetch/BlurHashUriFetcher.kt

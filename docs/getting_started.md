@@ -130,6 +130,7 @@ resources, as follows:
 | data:image/, data:img/    | Base64                   | newBase64Uri()          | _                                                                                |
 | file:///compose_resource/ | Compose Resource         | newComposeResourceUri() | sketch-compose-resources                                                         |
 | file:///kotlin_resource/  | Kotlin Resource          | newKotlinResourceUri()  | _                                                                                |
+| blurhash://               | BlurHash                 | newBlurHashUri()        | sketch-blurhash                                                                  |
 | app.icon://               | Android App Icon         | newAppIconUri()         | sketch-extensions-appicon                                                        |
 
 Each URI has its own Fetcher to support it, [Learn more about Fetcher][fetcher]
@@ -149,6 +150,7 @@ different, as follows:
 | Animated webp                                                                                | ✅ (API 28)    | ✅                       | ✅                       | ✅                       |
 | Animated heif                                                                                | ✅ (API 30)    | ❌                       | ❌                       | ❌                       |
 | Video frames                                                                                 | ✅             | ❌                       | ❌                       | ❌                       |
+| BlurHash                                                                                     | ✅             | ✅                       | ✅                       | ✅                       |
 | http://<br/>https://<br/>file://, /<br/>file:///compose_resource/<br/>data:image/jpeg;base64 | ✅             | ✅                       | ✅                       | ✅                       |
 | file:///android_asset/<br/>content://<br/>android.resource://                                | ✅             | ❌                       | ❌                       | ❌                       |
 | file:///kotlin_resource/                                                                     | ❌             | ✅                       | ✅                       | ❌                       |

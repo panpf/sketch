@@ -27,6 +27,7 @@ implementation, as shown in the following table:
 | svg           | [SvgDecoder]                                       | sketch-svg                | ✅          | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) |
 | Video frames  | [VideoFrameDecoder]                                | sketch-video              | ✅          | ❌                       | ❌                       | ❌                       |
 | Video frames  | [FFmpegVideoFrameDecoder]                          | sketch-video-ffmpeg       | ✅          | ❌                       | ❌                       | ❌                       |
+| BlurHash      | [BlurHashDecoder]                                  | sketch-blurhash           | ✅          | ✅                       | ✅                       | ✅                       |
 | Apk Icon      | [ApkIconDecoder]                                   | sketch-extensions-core    | ✅          | ❌                       | ❌                       | ❌                       |
 
 * [ApkIconDecoder] Decoding the icon of an Apk file on
@@ -58,6 +59,7 @@ implementation, as shown in the following table:
   class on the Android platform ([Learn more](video_frame.md))
 * [FFmpegVideoFrameDecoder] Decoding video frames using wseemann's [FFmpegMediaMetadataRetriever]
   library on Android ([Learn more](video_frame.md))
+* [BlurHashDecoder] Decode blurred images from BlurHash string （[了解更多](blurhash.zh.md)）
 
 > [!IMPORTANT]
 > The above components all support automatic registration. You only need to import them without
@@ -193,3 +195,5 @@ ImageRequest(context, "https://example.com/image.jpg") {
 [SkiaGifDecoder]: ../sketch-animated-gif/src/nonAndroidMain/kotlin/com/github/panpf/sketch/decode/SkiaGifDecoder.kt
 
 [SkiaAnimatedWebpDecoder]: ../sketch-animated-webp/src/nonAndroidMain/kotlin/com/github/panpf/sketch/decode/SkiaAnimatedWebpDecoder.kt
+
+[BlurHashDecoder]: ../sketch-blurhash/src/commonMain/kotlin/com/github/panpf/sketch/decode/BlurHashDecoder.kt

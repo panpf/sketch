@@ -26,6 +26,7 @@
 | svg      | [SvgDecoder]                               | sketch-svg                | ✅          | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) |
 | 视频帧      | [VideoFrameDecoder]                        | sketch-video              | ✅          | ❌               | ❌               | ❌               |
 | 视频帧      | [FFmpegVideoFrameDecoder]                  | sketch-video-ffmpeg       | ✅          | ❌               | ❌               | ❌               |
+| BlurHash | [BlurHashDecoder]                          | sketch-blurhash           | ✅          | ✅               | ✅               | ✅               |
 | Apk Icon | [ApkIconDecoder]                           | sketch-extensions-core    | ✅          | ❌               | ❌               | ❌               |
 
 * [ApkIconDecoder] 在 Android 平台上解码 Apk
@@ -53,6 +54,7 @@
   类解码视频文件的帧（[了解更多](video_frame.zh.md)）
 * [FFmpegVideoFrameDecoder] 在 Android 平台上使用 wseemann 的 [FFmpegMediaMetadataRetriever]
   库解码视频帧（[了解更多](video_frame.zh.md)）
+* [BlurHashDecoder] 从 BlurHash 字符串解码模糊图像 （[了解更多](blurhash.zh.md)）
 
 > [!IMPORTANT]
 > 上述组件都支持自动注册，你只需要导入即可，无需额外配置，如果你需要手动注册，
@@ -184,3 +186,5 @@ ImageRequest(context, "https://example.com/image.jpg") {
 [SkiaGifDecoder]: ../sketch-animated-gif/src/nonAndroidMain/kotlin/com/github/panpf/sketch/decode/SkiaGifDecoder.kt
 
 [SkiaAnimatedWebpDecoder]: ../sketch-animated-webp/src/nonAndroidMain/kotlin/com/github/panpf/sketch/decode/SkiaAnimatedWebpDecoder.kt
+
+[BlurHashDecoder]: ../sketch-blurhash/src/commonMain/kotlin/com/github/panpf/sketch/decode/BlurHashDecoder.kt
