@@ -3,6 +3,8 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
+cd ../../
+
 ./test_desktop.sh
 ./test_js.sh
 ./test_wasmJs.sh

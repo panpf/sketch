@@ -3,6 +3,8 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
+cd ../../
+
 if [ "$1" != "--skipClean" ]; then
   ./gradlew clean
 fi
