@@ -940,7 +940,7 @@ class BitmapsAndroidTest {
     fun testInstallPixels() {
         val sourceBitmap = ResourceImages.jpeg.decode().bitmap.apply {
             assertEquals(
-                expected = "Bitmap(1291x1936,ARGB_8888,SRGB)",
+                expected = "Bitmap(1291x1936,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 actual = toShortInfoString()
             )
         }

@@ -38,7 +38,7 @@ class BitmapNonAndroidTest {
 
         createBitmap(100, 200).apply {
             assertEquals(
-                expected = org.jetbrains.skia.ColorType.RGBA_8888,
+                expected = org.jetbrains.skia.ColorType.BGRA_8888,
                 actual = this.colorType
             )
         }

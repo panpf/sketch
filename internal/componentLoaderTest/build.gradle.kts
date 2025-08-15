@@ -17,6 +17,7 @@ kotlin {
             api(projects.sketchComposeResources)
             api(projects.sketchHttpKtor3)
             api(projects.sketchSvg)
+            api(projects.sketchBlurhash)
         }
         jvmCommonMain.dependencies {
             api(projects.sketchHttpHurl)
@@ -27,7 +28,6 @@ kotlin {
             api(projects.sketchAnimatedHeif)
             api(projects.sketchExtensionsApkicon)
             api(projects.sketchExtensionsAppicon)
-            api(projects.sketchBlurhash)
             api(projects.sketchVideo)
             api(projects.sketchVideoFfmpeg)
         }
