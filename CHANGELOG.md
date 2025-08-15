@@ -9,7 +9,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
-# new
+# 4.4.0-alpha01
 
 * improve: DecodeConfig is now accessible from the common module
 * new: Added the 'sketch-blurhash' module to support BlurHash. Please refer to the documentation for
