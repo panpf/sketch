@@ -26,6 +26,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.ColorPainter
@@ -227,7 +228,7 @@ open class IconPainter constructor(
     override val key: String =
         "IconPainter(${icon.key},${background?.key},${iconSize?.toLogString()},${iconTint?.toArgb()})"
 
-    private var alpha: Float = 1.0f
+    private var alpha: Float = DefaultAlpha
     private var colorFilter: ColorFilter? = null
 
     override val intrinsicSize: Size = Size.Unspecified

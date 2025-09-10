@@ -7,6 +7,11 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
+# new
+
+* fix: 修复了 AsyncImage 在使用 colorFilter 属性并且开启 crossfade 时 colorFilter 无效的
+  bug。[#266](https://github.com/panpf/sketch/issues/266)
+
 # 4.4.0-alpha01
 
 * improve: DecodeConfig 现在可以从 common 模块访问

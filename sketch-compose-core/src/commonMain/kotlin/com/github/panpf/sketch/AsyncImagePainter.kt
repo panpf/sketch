@@ -24,11 +24,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ColorFilter
@@ -229,8 +225,8 @@ class AsyncImagePainter internal constructor(
     val state: AsyncImageState,
 ) : Painter(), SketchPainter {
 
-    private var alpha: Float by mutableFloatStateOf(DefaultAlpha)
-    private var colorFilter: ColorFilter? by mutableStateOf(null)
+    private var alpha: Float = DefaultAlpha
+    private var colorFilter: ColorFilter? = null
 
     override val intrinsicSize: Size
         get() = state.painter?.intrinsicSize ?: Size.Unspecified

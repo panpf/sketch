@@ -20,9 +20,7 @@ package com.github.panpf.sketch.painter
 import androidx.compose.runtime.RememberObserver
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Size
@@ -62,6 +60,7 @@ import kotlin.time.TimeSource
  * @see com.github.panpf.sketch.compose.core.common.test.painter.CrossfadePainterTest
  */
 @Stable
+@Suppress("RedundantConstructorKeyword")
 class CrossfadePainter constructor(
     @JsName("startPainter") val start: Painter?,
     @JsName("endPainter") val end: Painter?,
@@ -81,8 +80,8 @@ class CrossfadePainter constructor(
     private var invalidateTick by mutableIntStateOf(0)
 
     private var startTime: TimeSource.Monotonic.ValueTimeMark? = null
-    private var maxAlpha: Float by mutableFloatStateOf(DefaultAlpha)
-    private var colorFilter: ColorFilter? by mutableStateOf(null)
+    private var maxAlpha: Float = DefaultAlpha
+    private var colorFilter: ColorFilter? = null
     private var state = STATE_START
     private var startPainter1: Painter? = start
     private val endPainter1: Painter? = end
@@ -145,9 +144,8 @@ class CrossfadePainter constructor(
 
         if (isDone) {
             markDone()
-        } else {
-            invalidateSelf()
         }
+        invalidateSelf()
     }
 
     private fun invalidateSelf() {

@@ -24,6 +24,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Paint
@@ -68,7 +69,8 @@ class AnimatedImagePainter constructor(
 
     internal val rememberedCounter: RememberedCounter = RememberedCounter()
     internal var coroutineScope: CoroutineScope? = null
-    private var alpha: Float = 1.0f
+
+    private var alpha: Float = DefaultAlpha
     private var colorFilter: ColorFilter? = null
     private var invalidateTick by mutableIntStateOf(0)
     private var loadFirstFrameJob: Job? = null

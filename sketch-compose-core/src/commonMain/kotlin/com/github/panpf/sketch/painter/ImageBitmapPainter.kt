@@ -18,6 +18,8 @@ package com.github.panpf.sketch.painter
 
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -47,13 +49,32 @@ class ImageBitmapPainter(
 
     override val intrinsicSize = Size(bitmap.width.toFloat(), bitmap.height.toFloat())
 
+    private var alpha: Float = DefaultAlpha
+    private var colorFilter: ColorFilter? = null
+
     override fun DrawScope.onDraw() {
         // ceil must be used here instead of round, because when size is a decimal and downward round, the image cannot completely overwrite dst
         val dstSize = IntSize(
             width = ceil(size.width).toInt(),
             height = ceil(size.height).toInt()
         )
-        drawImage(bitmap, dstSize = dstSize, filterQuality = filterQuality)
+        drawImage(
+            image = bitmap,
+            dstSize = dstSize,
+            alpha = alpha,
+            colorFilter = colorFilter,
+            filterQuality = filterQuality,
+        )
+    }
+
+    override fun applyAlpha(alpha: Float): Boolean {
+        this.alpha = alpha
+        return true
+    }
+
+    override fun applyColorFilter(colorFilter: ColorFilter?): Boolean {
+        this.colorFilter = colorFilter
+        return true
     }
 
     override fun equals(other: Any?): Boolean {

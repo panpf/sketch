@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.painter.Painter
@@ -111,7 +112,7 @@ open class ResizePainter constructor(
 
     override val intrinsicSize: Size = size
 
-    private var alpha: Float = 1.0f
+    private var alpha: Float = DefaultAlpha
     private var colorFilter: ColorFilter? = null
 
     @Deprecated("Use contentScale and alignment instead.")
@@ -156,7 +157,7 @@ open class ResizePainter constructor(
             val dstSize: Size = this@onDraw.size
             val srcSize: Size = this@with.intrinsicSize
             if (dstSize.isUnspecified || dstSize.isEmpty()) {
-                draw(srcSize, alpha, colorFilter)
+                draw(size = srcSize, alpha = alpha, colorFilter = colorFilter)
             } else {
                 val drawSize = computeScaledSize(srcSize, dstSize)
                 val offset = alignment.floatAlign(size = drawSize, space = dstSize)

@@ -9,6 +9,11 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
+# new
+
+* fix: Fixed a bug where AsyncImage was invalid when using the colorFilter property and enabling
+  crossfade. [#266](https://github.com/panpf/sketch/issues/266
+
 # 4.4.0-alpha01
 
 * improve: DecodeConfig is now accessible from the common module
