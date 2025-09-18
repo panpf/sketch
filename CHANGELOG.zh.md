@@ -11,6 +11,8 @@
 
 * fix: 修复了 AsyncImage 在使用 colorFilter 属性并且开启 crossfade 时 colorFilter 无效的
   bug。[#266](https://github.com/panpf/sketch/issues/266)
+* fix: 修复了 Android 平台 ImageDecoder 无法解码只有一帧的 gif 的
+  bug。[#179](https://github.com/panpf/sketch/issues/179)
 
 # 4.4.0-alpha01
 

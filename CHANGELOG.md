@@ -13,6 +13,8 @@ Translations: [简体中文](CHANGELOG.zh.md)
 
 * fix: Fixed a bug where AsyncImage was invalid when using the colorFilter property and enabling
   crossfade. [#266](https://github.com/panpf/sketch/issues/266
+* fix: Fixed a bug where ImageDecoder on Android platform cannot decode gifs with only one
+  frame. [#179](https://github.com/panpf/sketch/issues/179)
 
 # 4.4.0-alpha01
 

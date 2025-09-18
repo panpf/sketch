@@ -23,12 +23,13 @@ import android.graphics.ImageDecoder
 import android.graphics.PixelFormat
 import android.graphics.PostProcessor
 import android.graphics.drawable.AnimatedImageDrawable
+import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.WorkerThread
+import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
-import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
@@ -148,11 +149,12 @@ open class ImageDecoderAnimatedDecoder(
                     mimeType = info.mimeType,
                 ).apply { checkImageInfo(this) }
                 val imageSize = Size(info.size.width, info.size.height)
-                resize = requestContext.computeResize(imageSize)
+                val curResize = requestContext.computeResize(imageSize)
+                resize = curResize
                 inSampleSize = calculateSampleSize(
                     imageSize = imageSize,
-                    targetSize = resize!!.size,
-                    smallerSizeMode = resize!!.precision.isSmallerSizeMode()
+                    targetSize = curResize.size,
+                    smallerSizeMode = curResize.precision.isSmallerSizeMode()
                 )
                 decoder.setTargetSampleSize(inSampleSize)
 
@@ -167,37 +169,49 @@ open class ImageDecoderAnimatedDecoder(
         } finally {
             imageDecoder?.close()
         }
+        requireNotNull(imageInfo)
+        requireNotNull(resize)
 
-        if (drawable !is AnimatedImageDrawable) {
-            throw DecodeException("This image is not a animated image, please modify your DrawableDecoder.Factory.create() method to match the image accurately")
-        }
-
-        val transformeds: List<String>? =
-            if (inSampleSize != 1) listOf(createInSampledTransformed(inSampleSize)) else null
-        drawable.repeatCount = request.repeatCount
-            ?.takeIf { it != ANIMATION_REPEAT_INFINITE }
-            ?: AnimatedImageDrawable.REPEAT_INFINITE
-        // AnimatedImageDrawable cannot be scaled using bounds, which will be exposed in the ResizeDrawable
-        // Use ScaledAnimatableDrawable package solution to this it
-        val animatableDrawable = ScaledAnimatableDrawable(drawable).apply {
-            val onStart = request.animationStartCallback
-            val onEnd = request.animationEndCallback
-            if (onStart != null || onEnd != null) {
-                // Will be executed before EngineRequestInterceptor.intercept() return
-                @Suppress("OPT_IN_USAGE")
-                GlobalScope.launch(Dispatchers.Main) {
-                    registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
+        val image: Image = when (drawable) {
+            is AnimatedImageDrawable -> {
+                drawable.repeatCount = request.repeatCount
+                    ?.takeIf { it != ANIMATION_REPEAT_INFINITE }
+                    ?: AnimatedImageDrawable.REPEAT_INFINITE
+                // AnimatedImageDrawable cannot be scaled using bounds, which will be exposed in the ResizeDrawable
+                // Use ScaledAnimatableDrawable package solution to this it
+                val animatableDrawable = ScaledAnimatableDrawable(drawable).apply {
+                    val onStart = request.animationStartCallback
+                    val onEnd = request.animationEndCallback
+                    if (onStart != null || onEnd != null) {
+                        // Will be executed before EngineRequestInterceptor.intercept() return
+                        @Suppress("OPT_IN_USAGE")
+                        GlobalScope.launch(Dispatchers.Main) {
+                            registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
+                        }
+                    }
                 }
+                animatableDrawable.asImage()
+            }
+
+            is BitmapDrawable -> {
+                drawable.bitmap.asImage()
+            }
+
+            else -> {
+                drawable.asImage()
             }
         }
+
+        val transformeds: List<String>? = if (inSampleSize != 1)
+            listOf(createInSampledTransformed(inSampleSize)) else null
         return DecodeResult(
-            image = animatableDrawable.asImage(),
-            imageInfo = imageInfo!!,
+            image = image,
+            imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,
-            resize = resize!!,
+            resize = resize,
             transformeds = transformeds,
             extras = null,
-        )
+        ).resize(resize)
     }
 
     private fun AnimatedTransformation.asPostProcessor() = object : PostProcessor {

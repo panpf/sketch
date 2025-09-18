@@ -5,7 +5,9 @@ import android.graphics.drawable.AnimatedImageDrawable
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.ComponentRegistry
+import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.decode.ImageDecoderGifDecoder
 import com.github.panpf.sketch.decode.ImageDecoderGifDecoder.Factory
 import com.github.panpf.sketch.decode.ImageInfo
@@ -132,6 +134,7 @@ class ImageDecoderGifDecoderTest {
             assertEquals(expected = Size(480, 480), actual = image.size)
             assertEquals(expected = LOCAL, actual = this.dataFrom)
             assertEquals(expected = null, actual = this.transformeds)
+            assertTrue(image is DrawableImage)
             val animatedImageDrawable = image.getDrawableOrThrow()
                 .asOrThrow<ScaledAnimatableDrawable>()
                 .drawable as AnimatedImageDrawable
@@ -149,11 +152,21 @@ class ImageDecoderGifDecoderTest {
                 expected = listOf(createInSampledTransformed(2)),
                 actual = this.transformeds
             )
+            assertTrue(image is DrawableImage)
             val animatedImageDrawable = image.getDrawableOrThrow()
                 .asOrThrow<ScaledAnimatableDrawable>()
                 .drawable as AnimatedImageDrawable
             assertEquals(expected = 3, actual = animatedImageDrawable.repeatCount)
         }
+
+        ImageRequest(context, ResourceImages.singleFrameGif.uri)
+            .decode(sketch, factory)
+            .apply {
+                assertEquals(expected = ImageInfo(500, 667, "image/gif"), actual = this.imageInfo)
+                assertEquals(expected = Size(500, 667), actual = image.size)
+                assertEquals(expected = LOCAL, actual = this.dataFrom)
+                assertTrue(image is BitmapImage)
+            }
     }
 
     @Test

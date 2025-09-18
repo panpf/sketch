@@ -270,4 +270,12 @@ object ResourceImages {
         .plus(arrayOf(clockHor, clockVer))
         .plus(numbers)
         .plus(numbersGif)
+
+    val singleFrameGif: ResourceImageFile = ResourceImageFile(
+        resourceName = "single_frame.gif",
+        name = "SINGLE_FRAME",
+        size = Size(500, 667),
+        mimeType = "image/gif",
+        animated = true
+    )
 }
