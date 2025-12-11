@@ -31,7 +31,6 @@ import okio.Path
 import okio.Path.Companion.toPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
@@ -69,9 +68,10 @@ class FileUriFetcherTest {
                 expected = "file:///storage/sample.jpg",
                 actual = newFileUri("/storage/sample.jpg".toPath())
             )
-            assertFailsWith(IllegalArgumentException::class) {
-                newFileUri("file:///storage1/sample1.jpg".toPath())
-            }
+            assertEquals(
+                expected = "file:/storage1/sample1.jpg",
+                actual = newFileUri("file:///storage1/sample1.jpg".toPath())
+            )
         } else {
             assertEquals(
                 expected = "D:\\test\\relative\\image.jpg",

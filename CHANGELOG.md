@@ -15,8 +15,8 @@ Translations: [简体中文](CHANGELOG.zh.md)
   crossfade. [#266](https://github.com/panpf/sketch/issues/266
 * fix: Fixed a bug where ImageDecoder on Android platform cannot decode gifs with only one
   frame. [#179](https://github.com/panpf/sketch/issues/179)
-* fix: Now the newFileUri(Path) function throws an exception when it encounters a Path starting
-  with 'file:'. [#270](https://github.com/panpf/sketch/issues/270)
+* fix: Now the newFileUri(String) function skips the uri starting with '
+  file:'. [#270](https://github.com/panpf/sketch/issues/270)
 
 # 4.4.0-alpha01
 

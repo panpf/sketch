@@ -34,25 +34,18 @@ import okio.Path.Companion.toPath
  *
  * @see com.github.panpf.sketch.core.common.test.fetch.FileUriFetcherTest.testNewFileUri
  */
-fun newFileUri(path: String): String =
-    if (Path.DIRECTORY_SEPARATOR == "/" && !path.startsWith("${FileUriFetcher.SCHEME}://")) {
-        "${FileUriFetcher.SCHEME}://$path"
-    } else {
-        path
-    }
+fun newFileUri(path: String): String = when {
+    Path.DIRECTORY_SEPARATOR != "/" -> path // Windows path like: 'D:\test\relative\image.jpg', '\\qnap\photos\dog.jpg'
+    path.startsWith("${FileUriFetcher.SCHEME}:") -> path    // Already a file uri
+    else -> "${FileUriFetcher.SCHEME}://$path"
+}
 
 /**
  * Return sample: 'file:///sdcard/sample.jpg', 'D:\test\relative\image.jpg', '\\qnap\photos\dog.jpg'
  *
  * @see com.github.panpf.sketch.core.common.test.fetch.FileUriFetcherTest.testNewFileUri2
  */
-fun newFileUri(path: Path): String {
-    val pathString = path.toString()
-    require(!pathString.startsWith("file:")) {
-        "The path string of the Path parameter cannot start with 'file:'. path: $pathString"
-    }
-    return newFileUri(pathString)
-}
+fun newFileUri(path: Path): String = newFileUri(path.toString())
 
 /**
  * Check if the uri is a file uri
