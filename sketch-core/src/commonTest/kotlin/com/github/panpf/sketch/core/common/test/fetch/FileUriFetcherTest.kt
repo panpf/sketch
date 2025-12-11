@@ -31,6 +31,7 @@ import okio.Path
 import okio.Path.Companion.toPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
@@ -42,17 +43,21 @@ class FileUriFetcherTest {
     fun testNewFileUri() {
         if (Path.DIRECTORY_SEPARATOR == "/") {
             assertEquals(
-                expected = "file:///sdcard/sample.jpg",
-                actual = newFileUri("/sdcard/sample.jpg")
+                expected = "file:///storage/sample.jpg",
+                actual = newFileUri("/storage/sample.jpg")
             )
             assertEquals(
-                expected = "file:///sdcard1/sample1.jpg",
-                actual = newFileUri("file:///sdcard1/sample1.jpg")
+                expected = "file:///storage1/sample1.jpg",
+                actual = newFileUri("file:///storage1/sample1.jpg")
             )
         } else {
             assertEquals(
                 expected = "D:\\test\\relative\\image.jpg",
                 actual = newFileUri("D:\\test\\relative\\image.jpg")
+            )
+            assertEquals(
+                expected = "\\\\qnap\\photos\\dog.jpg",
+                actual = newFileUri("\\\\qnap\\photos\\dog.jpg")
             )
         }
     }
@@ -61,27 +66,36 @@ class FileUriFetcherTest {
     fun testNewFileUri2() {
         if (Path.DIRECTORY_SEPARATOR == "/") {
             assertEquals(
-                expected = "file:///sdcard1/sample1.jpg",
-                actual = newFileUri("/sdcard1/sample1.jpg".toPath())
+                expected = "file:///storage/sample.jpg",
+                actual = newFileUri("/storage/sample.jpg".toPath())
             )
+            assertFailsWith(IllegalArgumentException::class) {
+                newFileUri("file:///storage1/sample1.jpg".toPath())
+            }
         } else {
             assertEquals(
                 expected = "D:\\test\\relative\\image.jpg",
                 actual = newFileUri("D:\\test\\relative\\image.jpg".toPath())
+            )
+            assertEquals(
+                expected = "\\\\qnap\\photos\\dog.jpg",
+                actual = newFileUri("\\\\qnap\\photos\\dog.jpg".toPath())
             )
         }
     }
 
     @Test
     fun testIsFileUri() {
-        assertTrue(isFileUri("/sdcard/sample.jpg".toUri()))
-        assertTrue(isFileUri("file:///sdcard/sample.jpg".toUri()))
+        assertTrue(isFileUri("/storage/sample.jpg".toUri()))
+        assertTrue(isFileUri("file:///storage/sample.jpg".toUri()))
+        assertTrue(isFileUri("D:\\test\\relative\\image.jpg".toUri("\\")))
+        assertTrue(isFileUri("\\\\qnap\\photos\\dog.jpg".toUri("\\")))
         assertFalse(isFileUri("http://sample.com/sample.jpg".toUri()))
     }
 
     @Test
     fun testConstructor() {
-        FileUriFetcher(path = "/sdcard/sample.jpg".toPath(), fileSystem = defaultFileSystem())
+        FileUriFetcher(path = "/storage/sample.jpg".toPath(), fileSystem = defaultFileSystem())
     }
 
     @Test
@@ -93,7 +107,7 @@ class FileUriFetcherTest {
     fun testFetch() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val fetcherFactory = FileUriFetcher.Factory()
-        val fileUri = "file:///sdcard/sample.jpg"
+        val fileUri = "file:///storage/sample.jpg"
 
         val fetcher = fetcherFactory.create(
             ImageRequest(context, fileUri)
@@ -105,10 +119,10 @@ class FileUriFetcherTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = FileUriFetcher("/sdcard/sample.jpg".toPath())
-        val element11 = FileUriFetcher("/sdcard/sample.jpg".toPath())
+        val element1 = FileUriFetcher("/storage/sample.jpg".toPath())
+        val element11 = FileUriFetcher("/storage/sample.jpg".toPath())
         val element2 =
-            FileUriFetcher("/sdcard/sample.png".toPath())
+            FileUriFetcher("/storage/sample.png".toPath())
 
         assertEquals(element1, element11)
         assertNotEquals(element1, element2)
@@ -122,22 +136,22 @@ class FileUriFetcherTest {
     @Test
     fun testToString() {
         assertEquals(
-            expected = "FileUriFetcher('/sdcard/sample.jpg')",
-            actual = FileUriFetcher("/sdcard/sample.jpg".toPath()).toString()
+            expected = "FileUriFetcher('/storage/sample.jpg')",
+            actual = FileUriFetcher("/storage/sample.jpg".toPath()).toString()
         )
     }
 
     @Test
     fun testFactoryCreate() {
         val (context, sketch) = getTestContextAndSketch()
-        val filePath = "/sdcard/sample.jpg"
-        val filePathUri = "file:///sdcard/sample.jpg"
-        val filePath2 = "/sdcard/sample .jpg"
-        val filePath2Uri = "file:///sdcard/sample%20.jpg"
-        val filePath3 = "/sdcard/sample.png"
-        val filePath3Uri = "file:///sdcard/sample.png?from=bing"
-        val filePath4 = "/sdcard/sample.gif"
-        val filePath4Uri = "file:///sdcard/sample.gif#/main/"
+        val filePath = "/storage/sample.jpg"
+        val filePathUri = "file:///storage/sample.jpg"
+        val filePath2 = "/storage/sample .jpg"
+        val filePath2Uri = "file:///storage/sample%20.jpg"
+        val filePath3 = "/storage/sample.png"
+        val filePath3Uri = "file:///storage/sample.png?from=bing"
+        val filePath4 = "/storage/sample.gif"
+        val filePath4Uri = "file:///storage/sample.gif#/main/"
         val ftpUri = "ftp:///sample.com/sample.jpg"
         val contentUri = "content://sample_app/sample"
 

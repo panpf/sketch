@@ -13,6 +13,8 @@
   bug。[#266](https://github.com/panpf/sketch/issues/266)
 * fix: 修复了 Android 平台 ImageDecoder 无法解码只有一帧的 gif 的
   bug。[#179](https://github.com/panpf/sketch/issues/179)
+* fix: 现在 newFileUri(Path) 函数在遇到 'file:' 开头的 Path
+  时会抛出异常。[#270](https://github.com/panpf/sketch/issues/270)
 
 # 4.4.0-alpha01
 
