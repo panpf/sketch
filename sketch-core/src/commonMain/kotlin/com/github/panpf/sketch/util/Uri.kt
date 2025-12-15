@@ -150,7 +150,20 @@ class Uri internal constructor(
         if (pathSegments.isEmpty()) {
             null
         } else {
-            val prefix = if (path!!.startsWith(separator)) separator else ""
+            val path = path!!
+            val prefix = if (path.startsWith(separator)) {
+                separator
+            } else {
+                // Handle Windows network paths (e.g. \\server\share\dog.jpg).
+                // toUri will convert leading '\' to '/' so the '//' prefix should be judged
+                // path.startsWith(windowsNetworkPathPrefix) is to prevent future conversions of leading '\' and forgetting to modify the problem that this will cause
+                val windowsNetworkPathPrefix = separator + separator
+                if (path.startsWith("//") || path.startsWith(windowsNetworkPathPrefix)) {
+                    windowsNetworkPathPrefix
+                } else {
+                    ""
+                }
+            }
             pathSegments.joinToString(prefix = prefix, separator = separator)
         }
     }

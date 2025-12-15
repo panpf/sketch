@@ -15,6 +15,7 @@
   bug。[#179](https://github.com/panpf/sketch/issues/179)
 * fix: 现在 newFileUri(String) 函数会跳过以 'file:' 开头
   uri。[#270](https://github.com/panpf/sketch/issues/270)
+* fix: 修复无法加载 windows network uri 的 bug。[#267](https://github.com/panpf/sketch/issues/267)
 
 # 4.4.0-alpha01
 

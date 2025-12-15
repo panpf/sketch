@@ -50,7 +50,7 @@ fun newFileUri(path: Path): String = newFileUri(path.toString())
 /**
  * Check if the uri is a file uri
  *
- * Support 'file:///sdcard/sample.jpg', '/sdcard/sample.jpg', 'D:\test\relative\image.jpg', '\\qnap\photos\dog.jpg' uri
+ * Support 'file:///sdcard/sample.jpg', 'file:/sdcard/sample.jpg', '/sdcard/sample.jpg', 'D:\test\relative\image.jpg', '\\qnap\photos\dog.jpg' uri
  *
  * @see com.github.panpf.sketch.core.common.test.fetch.FileUriFetcherTest.testIsFileUri
  */
@@ -60,7 +60,7 @@ fun isFileUri(uri: Uri): Boolean =
             && uri.path?.takeIf { it.isNotEmpty() } != null
 
 /**
- * Support 'file:///sdcard/sample.jpg', '/sdcard/sample.jpg', 'D:\test\relative\image.jpg' uri
+ * Support 'file:///sdcard/sample.jpg', 'file:/sdcard/sample.jpg', '/sdcard/sample.jpg', 'D:\test\relative\image.jpg', '\\qnap\photos\dog.jpg' uri uri
  *
  * @see com.github.panpf.sketch.core.common.test.fetch.FileUriFetcherTest
  */
@@ -109,7 +109,7 @@ class FileUriFetcher constructor(
             val uri = requestContext.request.uri
             if (!isFileUri(uri)) return null
             return FileUriFetcher(
-                path = uri.path.orEmpty().toPath(),
+                path = uri.filePath.orEmpty().toPath(),
                 fileSystem = requestContext.sketch.fileSystem
             )
         }

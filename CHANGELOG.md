@@ -17,6 +17,8 @@ Translations: [简体中文](CHANGELOG.zh.md)
   frame. [#179](https://github.com/panpf/sketch/issues/179)
 * fix: Now the newFileUri(String) function skips the uri starting with '
   file:'. [#270](https://github.com/panpf/sketch/issues/270)
+* fix: Fixed a bug that prevented Windows Network URIs from
+  loading. [#267](https://github.com/panpf/sketch/issues/267)
 
 # 4.4.0-alpha01
 

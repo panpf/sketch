@@ -330,6 +330,18 @@ class UriTest {
     }
 
     @Test
+    fun windowsNetworkDir() {
+        val uri = "\\\\qnap\\photos\\dog.jpg".toUri(separator = "\\")
+        assertEquals(null, uri.scheme)
+        assertEquals(null, uri.authority)
+        assertEquals("//qnap/photos/dog.jpg", uri.path)
+        assertEquals("\\\\qnap\\photos\\dog.jpg", uri.filePath)
+        assertEquals(listOf("qnap", "photos", "dog.jpg"), uri.pathSegments)
+        assertNull(uri.query)
+        assertNull(uri.fragment)
+    }
+
+    @Test
     fun windowsPathFormattedAsUri() {
         val uri = "file:///H:/1.png".toUri(separator = "\\")
         assertEquals("file", uri.scheme)
@@ -351,6 +363,21 @@ class UriTest {
         assertEquals("/outer/path/test.apk!/internal/path/1.png", uri.filePath)
         assertEquals(
             listOf("outer", "path", "test.apk!", "internal", "path", "1.png"),
+            uri.pathSegments
+        )
+        assertNull(uri.query)
+        assertNull(uri.fragment)
+    }
+
+    @Test
+    fun pathFileUri() {
+        val uri = "file:/outer/path/test.apk".toUri()
+        assertEquals("file", uri.scheme)
+        assertEquals("", uri.authority)
+        assertEquals("/outer/path/test.apk", uri.path)
+        assertEquals("/outer/path/test.apk", uri.filePath)
+        assertEquals(
+            listOf("outer", "path", "test.apk"),
             uri.pathSegments
         )
         assertNull(uri.query)
