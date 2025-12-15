@@ -15,5 +15,6 @@ actual fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem>
 
 actual fun platformOtherMenuList(
     appSettings: AppSettings,
+    page: Page,
     appEvents: AppEvents
 ): List<SettingItem> = emptyList()

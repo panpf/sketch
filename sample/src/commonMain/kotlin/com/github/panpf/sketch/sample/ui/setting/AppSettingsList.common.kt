@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +44,7 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.AppEvents
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.resources.Res.drawable
+import com.github.panpf.sketch.sample.resources.ic_arrow_right
 import com.github.panpf.sketch.sample.resources.ic_expand_more
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
 import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
@@ -80,6 +82,7 @@ fun AppSettingsList(page: Page) {
                 is SwitchSettingItem -> SwitchSetting(settingItem)
                 is DropdownSettingItem<*> -> DropdownSetting(settingItem)
                 is GroupSettingItem -> GroupSetting(settingItem)
+                is ClickableSettingItem -> ClickableSetting(settingItem)
             }
         }
     }
@@ -117,7 +120,7 @@ fun createSettingItems(
 
     add(GroupSettingItem("Other"))
     addAll(otherMenuList(appSettings, appEvents))
-    addAll(platformOtherMenuList(appSettings, appEvents))
+    addAll(platformOtherMenuList(appSettings, page, appEvents))
 }
 
 
@@ -428,7 +431,11 @@ private fun otherMenuList(appSettings: AppSettings, appEvents: AppEvents): List<
         )
     }
 
-expect fun platformOtherMenuList(appSettings: AppSettings, appEvents: AppEvents): List<SettingItem>
+expect fun platformOtherMenuList(
+    appSettings: AppSettings,
+    page: Page,
+    appEvents: AppEvents
+): List<SettingItem>
 
 interface SettingItem {
     val title: String
@@ -441,7 +448,7 @@ data class SwitchSettingItem(
     val state: MutableStateFlow<Boolean>,
     override val desc: String? = null,
     override val enabled: Flow<Boolean> = MutableStateFlow(true),
-    val onLongClick: (() -> Unit)? = null,
+    val onLongClick: (suspend () -> Unit)? = null,
 ) : SettingItem
 
 data class DropdownSettingItem<T>(
@@ -455,6 +462,16 @@ data class DropdownSettingItem<T>(
 
 data class GroupSettingItem(override val title: String) : SettingItem {
     override val desc: String? = null
+    override val enabled: Flow<Boolean> = MutableStateFlow(true)
+}
+
+data class ClickableSettingItem(
+    override val title: String,
+    val value: MutableStateFlow<String>,
+    override val desc: String? = null,
+    val onClick: suspend () -> Unit,
+    val onLongClick: (suspend () -> Unit)? = null,
+) : SettingItem {
     override val enabled: Flow<Boolean> = MutableStateFlow(true)
 }
 
@@ -483,6 +500,7 @@ val menuItemHeight = 50.dp
 fun SwitchSetting(settingItem: SwitchSettingItem) {
     val enabled by settingItem.enabled.collectAsState(false)
     if (enabled) {
+        val coroutineScope = rememberCoroutineScope()
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -490,7 +508,11 @@ fun SwitchSetting(settingItem: SwitchSettingItem) {
                 .pointerInput(settingItem) {
                     detectTapGestures(
                         onTap = { settingItem.state.value = !settingItem.state.value },
-                        onLongPress = { settingItem.onLongClick?.invoke() },
+                        onLongPress = {
+                            coroutineScope.launch {
+                                settingItem.onLongClick?.invoke()
+                            }
+                        },
                     )
                 }
                 .padding(horizontal = 20.dp, vertical = 12.dp),
@@ -602,6 +624,64 @@ fun <T> DropdownSetting(settingItem: DropdownSettingItem<T>) {
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun ClickableSetting(settingItem: ClickableSettingItem) {
+    val enabled by settingItem.enabled.collectAsState(false)
+    if (enabled) {
+        val coroutineScope = rememberCoroutineScope()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = menuItemHeight)
+                .clickable {
+                }
+                .pointerInput(settingItem) {
+                    detectTapGestures(
+                        onTap = {
+                            coroutineScope.launch {
+                                settingItem.onClick()
+                            }
+                        },
+                        onLongPress = {
+                            coroutineScope.launch {
+                                settingItem.onLongClick?.invoke()
+                            }
+                        },
+                    )
+                }
+                .padding(horizontal = 20.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.CenterVertically),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = settingItem.title,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 16.sp,
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                val value by settingItem.value.collectAsState()
+                val desc by remember { derivedStateOf { value.ifEmpty { settingItem.desc ?: "" } } }
+                Text(
+                    text = desc,
+                    fontSize = 12.sp,
+                    lineHeight = 14.sp,
+                )
+            }
+            Spacer(modifier = Modifier.width(10.dp))
+            Icon(
+                painter = painterResource(drawable.ic_arrow_right),
+                contentDescription = "more"
+            )
         }
     }
 }

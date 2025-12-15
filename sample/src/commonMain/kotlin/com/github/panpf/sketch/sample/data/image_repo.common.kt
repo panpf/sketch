@@ -11,7 +11,7 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.withContext
 
-fun builtinImages(): List<ImageFile> {
+suspend fun builtinImages(): List<ImageFile> {
     return ResourceImages.statics
         .asSequence()
         .plus(ResourceImages.anims)
@@ -23,19 +23,14 @@ fun builtinImages(): List<ImageFile> {
         .toList()
 }
 
-expect suspend fun localImages(
-    context: PlatformContext,
-    startPosition: Int,
-    pageSize: Int
-): List<String>
+expect suspend fun localImages(context: PlatformContext): List<String>
 
 suspend fun readImageInfoOrNull(
-    context: PlatformContext,
     sketch: Sketch,
     uri: String,
 ): ImageInfo? = withContext(ioCoroutineDispatcher()) {
     runCatching {
-        val request = ImageRequest(context, uri)
+        val request = ImageRequest(sketch.context, uri)
         val requestContext = RequestContext(sketch, request, Size.Empty)
         val fetcher = sketch.components.newFetcherOrThrow(requestContext)
         val fetchResult = fetcher.fetch().getOrThrow()

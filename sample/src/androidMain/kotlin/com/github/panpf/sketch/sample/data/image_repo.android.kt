@@ -5,11 +5,7 @@ import androidx.core.content.PermissionChecker
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.tools4k.coroutines.withToIO
 
-actual suspend fun localImages(
-    context: PlatformContext,
-    startPosition: Int,
-    pageSize: Int
-): List<String> {
+actual suspend fun localImages(context: PlatformContext): List<String> {
     val checkSelfPermission = PermissionChecker
         .checkSelfPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE)
     if (checkSelfPermission != PermissionChecker.PERMISSION_GRANTED) {
@@ -30,7 +26,7 @@ actual suspend fun localImages(
             /* selectionArgs = */
             null,
             /* sortOrder = */
-            Media.DATE_TAKEN + " DESC" + " limit " + startPosition + "," + pageSize
+            Media.DATE_TAKEN + " DESC"
         )
         ArrayList<String>(cursor?.count ?: 0).apply {
             cursor?.use {

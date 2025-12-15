@@ -19,6 +19,7 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -35,6 +36,7 @@ import com.github.panpf.sketch.sample.ui.common.PagingListAppendState
 import com.github.panpf.sketch.sample.ui.common.PagingListRefreshState
 import com.github.panpf.sketch.sample.ui.components.VerticalScrollbarCompat
 import com.github.panpf.sketch.sample.ui.model.Photo
+import com.github.panpf.sketch.sample.util.ignoreFirst
 import kotlinx.coroutines.flow.Flow
 import org.koin.compose.koinInject
 
@@ -45,10 +47,19 @@ fun PagingPhotoList(
     animatedPlaceholder: Boolean,
     modifier: Modifier = Modifier,
     gridCellsMinSize: Dp = 100.dp,
+    refreshWhen: Flow<Any>? = null,
     onClick: (items: List<Photo>, photo: Photo, index: Int) -> Unit,
 ) {
     val pagingItems = photoPagingFlow.collectAsLazyPagingItems()
     val appSettings: AppSettings = koinInject()
+
+    if (refreshWhen != null) {
+        LaunchedEffect(Unit) {
+            refreshWhen.ignoreFirst().collect {
+                pagingItems.refresh()
+            }
+        }
+    }
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = pagingItems.loadState.refresh is Loading,
