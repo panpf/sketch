@@ -60,7 +60,8 @@ class LocalPhotoListPagingSource(val sketch: Sketch) : PagingSource<Int, Photo>(
                 height = imageInfo?.height,
             )
         }
-        val nextKey = if (pagePhotos.isNotEmpty()) startPosition + pageSize else null
+        val nextKey = if (pagePhotos.isNotEmpty() && toIndex < photos.size)
+            startPosition + pageSize else null
         val filteredPhotos = pagePhotos.filter { keySet.add(it.originalUrl) }
         return createPagingSourceLoadResultPage(
             data = filteredPhotos,
