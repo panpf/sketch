@@ -53,7 +53,7 @@ class KtorStackTest {
     fun testGetResponseTime() = runTest {
         val time1 = Clock.System.now().toEpochMilliseconds()
         val response = KtorStack().getResponse(
-            url = "https://img.picgo.net/2025/06/15/1de439443053e5edd.webp",
+            url = "https://panpf.github.io/sketch/app/files/sample_long_qmsht.jpg",
             httpHeaders = null,
             extras = null
         )
@@ -62,7 +62,7 @@ class KtorStackTest {
         val bytes = response.readAllBytes()
         val time3 = Clock.System.now().toEpochMilliseconds()
         val totalTime = time3 - time1
-        assertEquals(expected = 13365162, actual = bytes.size)
+        assertEquals(expected = 8063397, actual = bytes.size)
         assertTrue(
             actual = openTime >= totalTime * 0.9,
             message = "openTime=${openTime}ms, totalTime=${totalTime}ms"
@@ -106,7 +106,7 @@ class KtorStackTest {
     fun testRequestTime() = runTest {
         val time1 = Clock.System.now().toEpochMilliseconds()
         KtorStack().request(
-            url = "https://img.picgo.net/2025/06/15/1de439443053e5edd.webp",
+            url = "https://panpf.github.io/sketch/app/files/sample_long_qmsht.jpg",
             httpHeaders = null,
             extras = null
         ) { response ->
@@ -115,9 +115,9 @@ class KtorStackTest {
             val bytes = response.readAllBytes()
             val time3 = Clock.System.now().toEpochMilliseconds()
             val totalTime = time3 - time1
-            assertEquals(expected = 13365162, actual = bytes.size)
+            assertEquals(expected = 8063397, actual = bytes.size)
             assertTrue(
-                actual = openTime <= totalTime / 2,
+                actual = openTime <= totalTime * 0.5,
                 message = "openTime=${openTime}ms, totalTime=${totalTime}ms"
             )
         }

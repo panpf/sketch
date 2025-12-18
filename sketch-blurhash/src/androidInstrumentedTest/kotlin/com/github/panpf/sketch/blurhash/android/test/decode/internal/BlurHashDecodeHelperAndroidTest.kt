@@ -214,9 +214,14 @@ class BlurHashDecodeHelperAndroidTest {
             .decode(1)
             .let { (it as BitmapImage).bitmap }
             .apply {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     assertEquals(
                         expected = "Bitmap(width=200, height=300, config=RGB_565, colorSpace=DISPLAY_P3)",
+                        actual = this.toInfoString()
+                    )
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    assertEquals(
+                        expected = "Bitmap(width=200, height=300, config=RGB_565, colorSpace=SRGB)",
                         actual = this.toInfoString()
                     )
                 } else {

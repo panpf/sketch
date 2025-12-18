@@ -35,9 +35,14 @@ class BlurhashsAndroidTest {
             assertEquals(expected = 101, actual = width)
             assertEquals(expected = 202, actual = height)
             assertEquals(expected = ColorType.RGB_565, actual = colorType)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 assertEquals(
                     expected = ColorSpace.get(ColorSpace.Named.DISPLAY_P3),
+                    actual = colorSpace
+                )
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                assertEquals(
+                    expected = ColorSpace.get(ColorSpace.Named.SRGB),
                     actual = colorSpace
                 )
             }
@@ -69,9 +74,14 @@ class BlurhashsAndroidTest {
             assertEquals(expected = 101, actual = width)
             assertEquals(expected = 202, actual = height)
             assertEquals(expected = ColorType.RGB_565, actual = colorType)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 assertEquals(
                     expected = ColorSpace.get(ColorSpace.Named.DISPLAY_P3),
+                    actual = colorSpace
+                )
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                assertEquals(
+                    expected = ColorSpace.get(ColorSpace.Named.SRGB),
                     actual = colorSpace
                 )
             }
