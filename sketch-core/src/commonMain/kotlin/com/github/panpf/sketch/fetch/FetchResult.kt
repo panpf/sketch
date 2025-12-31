@@ -52,9 +52,8 @@ data class FetchResult constructor(
     val headerBytes: ByteArray by lazy {
         val dataSource = dataSource
         val byteArray = ByteArray(100)
-        val readLength = dataSource.openSourceOrNull()?.use {
-            it.buffer().read(byteArray)
-        } ?: -1
+        val readLength = dataSource.openSourceOrNull()?.buffer()
+            ?.use { it.read(byteArray) } ?: -1
         if (readLength != -1) {
             if (readLength == byteArray.size) byteArray else byteArray.copyOf(readLength)
         } else {

@@ -45,13 +45,13 @@ class KotlinResourceDataSourceTest {
 
     @Test
     fun testOpenSource() {
-        KotlinResourceDataSource(ResourceImages.jpeg.resourceName).openSource().buffer().use {
-            it.readByteArray()
-        }
+        KotlinResourceDataSource(ResourceImages.jpeg.resourceName)
+            .openSource().buffer()
+            .use { it.readByteArray() }
 
-        KotlinResourceDataSource(ResourceImages.png.resourceName).openSource().buffer().use {
-            it.readByteArray().decodeToString()
-        }
+        KotlinResourceDataSource(ResourceImages.png.resourceName)
+            .openSource().buffer()
+            .use { it.readByteArray().decodeToString() }
     }
 
     @Test

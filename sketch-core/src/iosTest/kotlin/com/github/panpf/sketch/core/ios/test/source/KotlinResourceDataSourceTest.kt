@@ -50,15 +50,15 @@ class KotlinResourceDataSourceTest {
         // TODO test: Files in kotlin resources cannot be accessed in ios test environment.
         //      There are other places where this problem also occurs, search for it
         assertFailsWith(FileNotFoundException::class) {
-            KotlinResourceDataSource(ResourceImages.jpeg.resourceName).openSource().buffer().use {
-                it.readByteArray()
-            }
+            KotlinResourceDataSource(ResourceImages.jpeg.resourceName)
+                .openSource().buffer()
+                .use { it.readByteArray() }
         }
 
         assertFailsWith(FileNotFoundException::class) {
-            KotlinResourceDataSource(ResourceImages.png.resourceName).openSource().buffer().use {
-                it.readByteArray().decodeToString()
-            }
+            KotlinResourceDataSource(ResourceImages.png.resourceName)
+                .openSource().buffer()
+                .use { it.readByteArray().decodeToString() }
         }
     }
 

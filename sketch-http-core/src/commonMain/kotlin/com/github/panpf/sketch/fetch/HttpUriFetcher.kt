@@ -151,9 +151,9 @@ open class HttpUriFetcher constructor(
             return downloadCache.openSnapshot(downloadCacheKey)?.use { snapshot ->
                 val contentType: String? = runCatching {
                     if (downloadCache.fileSystem.exists(snapshot.metadata)) {
-                        downloadCache.fileSystem.source(snapshot.metadata).use {
-                            it.buffer().readUtf8()
-                        }.takeIf { it.isNotEmpty() && it.isNotBlank() }
+                        downloadCache.fileSystem.source(snapshot.metadata).buffer()
+                            .use { it.readUtf8() }
+                            .takeIf { it.isNotEmpty() && it.isNotBlank() }
                     } else {
                         null
                     }
