@@ -8,6 +8,7 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.asOrThrow
 import okio.ByteString.Companion.toByteString
 import okio.Closeable
+import okio.Path
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -57,7 +58,7 @@ class ByteArrayDataSourceTest {
             data = data,
             dataFrom = MEMORY,
         ).getFile(sketch).apply {
-            assertTrue(actual = toString().contains("/${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}/"))
+            assertTrue(actual = toString().contains("${Path.DIRECTORY_SEPARATOR}${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}${Path.DIRECTORY_SEPARATOR}"))
         }
     }
 

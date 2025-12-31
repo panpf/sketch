@@ -10,3 +10,5 @@ enum class Platform {
 }
 
 expect val Platform.Companion.current: Platform
+
+expect val Platform.isWindows: Boolean

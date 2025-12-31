@@ -26,6 +26,7 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.defaultColorType
 import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.asOrThrow
 import kotlinx.coroutines.test.runTest
@@ -45,7 +46,7 @@ class ImageRequestExecuteNonAndroidTest {
             memoryCachePolicy(DISABLED)
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
             assertEquals(
-                expected = ColorType.RGBA_8888,
+                expected = defaultColorType,
                 actual = image.asOrThrow<BitmapImage>().bitmap.colorType
             )
         }

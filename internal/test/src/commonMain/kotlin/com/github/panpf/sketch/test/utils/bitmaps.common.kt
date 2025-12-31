@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.test.utils
 
 import com.github.panpf.sketch.Bitmap
+import com.github.panpf.sketch.ColorType
 import com.github.panpf.sketch.height
 import com.github.panpf.sketch.util.readIntPixel
 import com.github.panpf.sketch.width
@@ -32,3 +33,5 @@ fun Bitmap.corners(block: Bitmap.() -> List<Int>): List<Int> {
 fun Bitmap.corners(): List<Int> = listOf(cornerA, cornerB, cornerC, cornerD)
 
 expect fun Bitmap.toPreviewBitmap(): Any
+
+expect val defaultColorType: ColorType

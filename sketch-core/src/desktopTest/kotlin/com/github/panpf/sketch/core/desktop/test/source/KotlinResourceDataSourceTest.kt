@@ -61,14 +61,14 @@ class KotlinResourceDataSourceTest {
         KotlinResourceDataSource(ResourceImages.jpeg.resourceName)
             .getFile(sketch).apply {
                 path1 = this
-                assertTrue(actual = toString().contains("/${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}/"))
+                assertTrue(actual = toString().contains("${Path.DIRECTORY_SEPARATOR}${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}${Path.DIRECTORY_SEPARATOR}"))
             }
 
         val path2: Path
         KotlinResourceDataSource(ResourceImages.jpeg.resourceName)
             .getFile(sketch).apply {
                 path2 = this
-                assertTrue(actual = toString().contains("/${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}/"))
+                assertTrue(actual = toString().contains("${Path.DIRECTORY_SEPARATOR}${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}${Path.DIRECTORY_SEPARATOR}"))
             }
 
         assertEquals(expected = path1, actual = path2)

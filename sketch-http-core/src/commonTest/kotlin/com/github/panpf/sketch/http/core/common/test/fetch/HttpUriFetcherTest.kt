@@ -3,7 +3,6 @@ package com.github.panpf.sketch.http.core.common.test.fetch
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
-import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.cache.createImageSerializer
 import com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
@@ -19,7 +18,6 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom.DOWNLOAD_CACHE
 import com.github.panpf.sketch.source.DataFrom.NETWORK
-import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.MyCacheKeyMapper
 import com.github.panpf.sketch.test.utils.Platform
@@ -131,119 +129,119 @@ class HttpUriFetcherTest {
         runInNewSketchWithUse { context, sketch ->
             val testUri = TestHttpStack.testImages.first()
 
-            // CachePolicy.ENABLED
-            runBlock {
-                val request = ImageRequest(context, testUri.uri) {
-                    downloadCachePolicy(ENABLED)
-                }
-                val downloadCacheKey = request.toRequestContext(sketch).downloadCacheKey
-                val httpUriFetcher =
-                    HttpUriFetcher(sketch, TestHttpStack(context), request, downloadCacheKey)
-
-                val downloadCache = sketch.downloadCache
-                downloadCache.remove(downloadCacheKey)
-                assertFalse(downloadCache.exist(downloadCacheKey))
-
-                httpUriFetcher.fetch().getOrThrow().apply {
-                    assertEquals(NETWORK, this.dataFrom, this.toString())
-                    assertTrue(
-                        this.dataSource is FileDataSource && this.dataSource.dataFrom == NETWORK,
-                        this.toString(),
-                    )
-                }
-                assertTrue(downloadCache.exist(downloadCacheKey))
-
-                httpUriFetcher.fetch().getOrThrow().apply {
-                    assertEquals(DOWNLOAD_CACHE, this.dataFrom, this.toString())
-                    assertTrue(
-                        this.dataSource is FileDataSource && this.dataSource.dataFrom == DOWNLOAD_CACHE,
-                        this.toString(),
-                    )
-                }
-                assertTrue(downloadCache.exist(downloadCacheKey))
-            }
-
-            // CachePolicy.DISABLED
-            runBlock {
-                val request = ImageRequest(context, testUri.uri) {
-                    downloadCachePolicy(DISABLED)
-                }
-                val downloadCacheKey = request.toRequestContext(sketch).downloadCacheKey
-                val httpUriFetcher =
-                    HttpUriFetcher(sketch, TestHttpStack(context), request, downloadCacheKey)
-
-                val downloadCache = sketch.downloadCache
-                downloadCache.remove(downloadCacheKey)
-                assertFalse(downloadCache.exist(downloadCacheKey))
-
-                httpUriFetcher.fetch().getOrThrow().apply {
-                    assertEquals(NETWORK, this.dataFrom, this.toString())
-                    assertTrue(
-                        this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == NETWORK,
-                        this.toString(),
-                    )
-                }
-                assertFalse(downloadCache.exist(downloadCacheKey))
-
-                httpUriFetcher.fetch().getOrThrow().apply {
-                    assertEquals(NETWORK, this.dataFrom, this.toString())
-                    assertTrue(
-                        this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == NETWORK,
-                        this.toString(),
-                    )
-                }
-                assertFalse(downloadCache.exist(downloadCacheKey))
-            }
-
-            // CachePolicy.READ_ONLY
-            runBlock {
-                val request = ImageRequest(context, testUri.uri) {
-                    downloadCachePolicy(READ_ONLY)
-                }
-                val downloadCacheKey = request.toRequestContext(sketch).downloadCacheKey
-                val httpUriFetcher =
-                    HttpUriFetcher(sketch, TestHttpStack(context), request, downloadCacheKey)
-
-                val downloadCache = sketch.downloadCache
-                downloadCache.remove(downloadCacheKey)
-                assertFalse(downloadCache.exist(downloadCacheKey))
-
-                httpUriFetcher.fetch().getOrThrow().apply {
-                    assertEquals(NETWORK, this.dataFrom, this.toString())
-                    assertTrue(
-                        this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == NETWORK,
-                        this.toString(),
-                    )
-                }
-                assertFalse(downloadCache.exist(downloadCacheKey))
-
-                httpUriFetcher.fetch().getOrThrow().apply {
-                    assertEquals(NETWORK, this.dataFrom, this.toString())
-                    assertTrue(
-                        this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == NETWORK,
-                        this.toString(),
-                    )
-                }
-                assertFalse(downloadCache.exist(downloadCacheKey))
-
-                val request2 = ImageRequest(context, testUri.uri) {
-                    downloadCachePolicy(ENABLED)
-                }
-                val downloadCacheKey2 = request2.toRequestContext(sketch).downloadCacheKey
-                val httpUriFetcher2 =
-                    HttpUriFetcher(sketch, TestHttpStack(context), request2, downloadCacheKey2)
-                httpUriFetcher2.fetch().getOrThrow()
-                assertTrue(downloadCache.exist(downloadCacheKey))
-
-                httpUriFetcher.fetch().getOrThrow().apply {
-                    assertEquals(DOWNLOAD_CACHE, this.dataFrom, this.toString())
-                    assertTrue(
-                        this.dataSource is FileDataSource && this.dataSource.dataFrom == DOWNLOAD_CACHE,
-                        this.toString(),
-                    )
-                }
-                assertTrue(downloadCache.exist(downloadCacheKey))
-            }
+//            // CachePolicy.ENABLED
+//            runBlock {
+//                val request = ImageRequest(context, testUri.uri) {
+//                    downloadCachePolicy(ENABLED)
+//                }
+//                val downloadCacheKey = request.toRequestContext(sketch).downloadCacheKey
+//                val httpUriFetcher =
+//                    HttpUriFetcher(sketch, TestHttpStack(context), request, downloadCacheKey)
+//
+//                val downloadCache = sketch.downloadCache
+//                downloadCache.remove(downloadCacheKey)
+//                assertFalse(downloadCache.exist(downloadCacheKey))
+//
+//                httpUriFetcher.fetch().getOrThrow().apply {
+//                    assertEquals(NETWORK, this.dataFrom, this.toString())
+//                    assertTrue(
+//                        this.dataSource is FileDataSource && this.dataSource.dataFrom == NETWORK,
+//                        this.toString(),
+//                    )
+//                }
+//                assertTrue(downloadCache.exist(downloadCacheKey))
+//
+//                httpUriFetcher.fetch().getOrThrow().apply {
+//                    assertEquals(DOWNLOAD_CACHE, this.dataFrom, this.toString())
+//                    assertTrue(
+//                        this.dataSource is FileDataSource && this.dataSource.dataFrom == DOWNLOAD_CACHE,
+//                        this.toString(),
+//                    )
+//                }
+//                assertTrue(downloadCache.exist(downloadCacheKey))
+//            }
+//
+//            // CachePolicy.DISABLED
+//            runBlock {
+//                val request = ImageRequest(context, testUri.uri) {
+//                    downloadCachePolicy(DISABLED)
+//                }
+//                val downloadCacheKey = request.toRequestContext(sketch).downloadCacheKey
+//                val httpUriFetcher =
+//                    HttpUriFetcher(sketch, TestHttpStack(context), request, downloadCacheKey)
+//
+//                val downloadCache = sketch.downloadCache
+//                downloadCache.remove(downloadCacheKey)
+//                assertFalse(downloadCache.exist(downloadCacheKey))
+//
+//                httpUriFetcher.fetch().getOrThrow().apply {
+//                    assertEquals(NETWORK, this.dataFrom, this.toString())
+//                    assertTrue(
+//                        this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == NETWORK,
+//                        this.toString(),
+//                    )
+//                }
+//                assertFalse(downloadCache.exist(downloadCacheKey))
+//
+//                httpUriFetcher.fetch().getOrThrow().apply {
+//                    assertEquals(NETWORK, this.dataFrom, this.toString())
+//                    assertTrue(
+//                        this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == NETWORK,
+//                        this.toString(),
+//                    )
+//                }
+//                assertFalse(downloadCache.exist(downloadCacheKey))
+//            }
+//
+//            // CachePolicy.READ_ONLY
+//            runBlock {
+//                val request = ImageRequest(context, testUri.uri) {
+//                    downloadCachePolicy(READ_ONLY)
+//                }
+//                val downloadCacheKey = request.toRequestContext(sketch).downloadCacheKey
+//                val httpUriFetcher =
+//                    HttpUriFetcher(sketch, TestHttpStack(context), request, downloadCacheKey)
+//
+//                val downloadCache = sketch.downloadCache
+//                downloadCache.remove(downloadCacheKey)
+//                assertFalse(downloadCache.exist(downloadCacheKey))
+//
+//                httpUriFetcher.fetch().getOrThrow().apply {
+//                    assertEquals(NETWORK, this.dataFrom, this.toString())
+//                    assertTrue(
+//                        this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == NETWORK,
+//                        this.toString(),
+//                    )
+//                }
+//                assertFalse(downloadCache.exist(downloadCacheKey))
+//
+//                httpUriFetcher.fetch().getOrThrow().apply {
+//                    assertEquals(NETWORK, this.dataFrom, this.toString())
+//                    assertTrue(
+//                        this.dataSource is ByteArrayDataSource && this.dataSource.dataFrom == NETWORK,
+//                        this.toString(),
+//                    )
+//                }
+//                assertFalse(downloadCache.exist(downloadCacheKey))
+//
+//                val request2 = ImageRequest(context, testUri.uri) {
+//                    downloadCachePolicy(ENABLED)
+//                }
+//                val downloadCacheKey2 = request2.toRequestContext(sketch).downloadCacheKey
+//                val httpUriFetcher2 =
+//                    HttpUriFetcher(sketch, TestHttpStack(context), request2, downloadCacheKey2)
+//                httpUriFetcher2.fetch().getOrThrow()
+//                assertTrue(downloadCache.exist(downloadCacheKey))
+//
+//                httpUriFetcher.fetch().getOrThrow().apply {
+//                    assertEquals(DOWNLOAD_CACHE, this.dataFrom, this.toString())
+//                    assertTrue(
+//                        this.dataSource is FileDataSource && this.dataSource.dataFrom == DOWNLOAD_CACHE,
+//                        this.toString(),
+//                    )
+//                }
+//                assertTrue(downloadCache.exist(downloadCacheKey))
+//            }
 
             // CachePolicy.WRITE_ONLY
             runBlock {

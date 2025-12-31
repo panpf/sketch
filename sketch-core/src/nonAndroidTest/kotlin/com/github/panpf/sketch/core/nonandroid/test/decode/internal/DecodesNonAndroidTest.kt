@@ -36,6 +36,7 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.assertSizeEquals
 import com.github.panpf.sketch.test.utils.chunkingFour
 import com.github.panpf.sketch.test.utils.decode
+import com.github.panpf.sketch.test.utils.defaultColorType
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.similarity
@@ -1199,7 +1200,7 @@ class DecodesNonAndroidTest {
             .decode()
             .apply {
                 assertEquals(
-                    expected = ColorType.RGBA_8888,
+                    expected = defaultColorType,
                     actual = colorType,
                 )
             }
@@ -1402,7 +1403,7 @@ class DecodesNonAndroidTest {
             .decodeRegion(imageInfo.size.toRect())
             .apply {
                 assertEquals(
-                    expected = ColorType.RGBA_8888,
+                    expected = defaultColorType,
                     actual = colorType,
                 )
             }

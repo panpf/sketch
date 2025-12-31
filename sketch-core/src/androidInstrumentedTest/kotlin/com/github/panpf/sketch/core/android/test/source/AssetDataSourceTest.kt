@@ -10,6 +10,7 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
 import okio.Closeable
+import okio.Path
 import org.junit.runner.RunWith
 import java.io.FileNotFoundException
 import kotlin.test.Test
@@ -76,7 +77,7 @@ class AssetDataSourceTest {
             context = context,
             fileName = ResourceImages.jpeg.resourceName
         ).getFile(sketch).apply {
-            assertTrue(actual = toString().contains("/${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}/"))
+            assertTrue(actual = toString().contains("${Path.DIRECTORY_SEPARATOR}${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}${Path.DIRECTORY_SEPARATOR}"))
         }
     }
 

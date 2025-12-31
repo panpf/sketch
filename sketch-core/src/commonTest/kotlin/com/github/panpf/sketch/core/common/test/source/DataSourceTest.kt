@@ -10,6 +10,7 @@ import com.github.panpf.sketch.source.openSourceOrNull
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.FakeDataSource
 import okio.IOException
+import okio.Path
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
@@ -41,7 +42,7 @@ class DataSourceTest {
         val (context, sketch) = getTestContextAndSketch()
         val dataSource = ResourceImages.jpeg.toDataSource(context)
         dataSource.cacheFile(sketch).apply {
-            assertTrue(actual = toString().contains("/${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}/"))
+            assertTrue(actual = toString().contains("${Path.DIRECTORY_SEPARATOR}${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}${Path.DIRECTORY_SEPARATOR}"))
         }
     }
 

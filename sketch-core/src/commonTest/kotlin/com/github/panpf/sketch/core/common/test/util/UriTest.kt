@@ -1,5 +1,8 @@
 package com.github.panpf.sketch.core.common.test.util
 
+import com.github.panpf.sketch.test.utils.Platform
+import com.github.panpf.sketch.test.utils.current
+import com.github.panpf.sketch.test.utils.isWindows
 import com.github.panpf.sketch.util.buildUri
 import com.github.panpf.sketch.util.toUri
 import kotlin.test.Test
@@ -107,7 +110,11 @@ class UriTest {
         assertEquals("https", uri.scheme)
         assertEquals("www.example.com", uri.authority)
         assertEquals("/image.jpg", uri.path)
-        assertEquals("/image.jpg", uri.filePath)
+        if (!Platform.current.isWindows) {
+            assertEquals("/image.jpg", uri.filePath)
+        } else {
+            assertEquals("image.jpg", uri.filePath)
+        }
         assertEquals(listOf("image.jpg"), uri.pathSegments)
         assertEquals("q=jpg", uri.query)
         assertEquals("fragment", uri.fragment)
@@ -119,7 +126,11 @@ class UriTest {
         assertNull(uri.scheme)
         assertNull(uri.authority)
         assertEquals("/test/absolute/image.jpg", uri.path)
-        assertEquals("/test/absolute/image.jpg", uri.filePath)
+        if (!Platform.current.isWindows) {
+            assertEquals("/test/absolute/image.jpg", uri.filePath)
+        } else {
+            assertEquals("test\\absolute\\image.jpg", uri.filePath)
+        }
         assertEquals(listOf("test", "absolute", "image.jpg"), uri.pathSegments)
         assertNull(uri.query)
         assertEquals("something", uri.fragment)
@@ -131,7 +142,11 @@ class UriTest {
         assertNull(uri.scheme)
         assertNull(uri.authority)
         assertEquals("test/relative/image.jpg", uri.path)
-        assertEquals("test/relative/image.jpg", uri.filePath)
+        if (!Platform.current.isWindows) {
+            assertEquals("test/relative/image.jpg", uri.filePath)
+        } else {
+            assertEquals("test\\relative\\image.jpg", uri.filePath)
+        }
         assertEquals(listOf("test", "relative", "image.jpg"), uri.pathSegments)
         assertNull(uri.query)
         assertEquals("something", uri.fragment)
@@ -143,7 +158,11 @@ class UriTest {
         assertEquals("file", uri.scheme)
         assertEquals("", uri.authority)
         assertEquals("/test/absolute/image.jpg", uri.path)
-        assertEquals("/test/absolute/image.jpg", uri.filePath)
+        if (!Platform.current.isWindows) {
+            assertEquals("/test/absolute/image.jpg", uri.filePath)
+        } else {
+            assertEquals("test\\absolute\\image.jpg", uri.filePath)
+        }
         assertEquals(listOf("test", "absolute", "image.jpg"), uri.pathSegments)
         assertNull(uri.query)
         assertEquals("something", uri.fragment)
@@ -157,7 +176,11 @@ class UriTest {
         // The authority is always the first path after the scheme and "://".
         assertEquals("test", uri.authority)
         assertEquals("/relative/image.jpg", uri.path)
-        assertEquals("/relative/image.jpg", uri.filePath)
+        if (!Platform.current.isWindows) {
+            assertEquals("/relative/image.jpg", uri.filePath)
+        } else {
+            assertEquals("relative\\image.jpg", uri.filePath)
+        }
         assertEquals(listOf("relative", "image.jpg"), uri.pathSegments)
         assertNull(uri.query)
         assertEquals("something", uri.fragment)
@@ -169,7 +192,11 @@ class UriTest {
         assertEquals("file", uri.scheme)
         assertEquals("", uri.authority)
         assertEquals("/test/image.jpg", uri.path)
-        assertEquals("/test/image.jpg", uri.filePath)
+        if (!Platform.current.isWindows) {
+            assertEquals("/test/image.jpg", uri.filePath)
+        } else {
+            assertEquals("test\\image.jpg", uri.filePath)
+        }
         assertEquals(listOf("test", "image.jpg"), uri.pathSegments)
         assertNull(uri.query)
         assertNull(uri.fragment)
@@ -181,7 +208,11 @@ class UriTest {
         assertEquals("file", uri.scheme)
         assertEquals("", uri.authority)
         assertEquals("test/image.jpg", uri.path)
-        assertEquals("test/image.jpg", uri.filePath)
+        if (!Platform.current.isWindows) {
+            assertEquals("test/image.jpg", uri.filePath)
+        } else {
+            assertEquals("test\\image.jpg", uri.filePath)
+        }
         assertEquals(listOf("test", "image.jpg"), uri.pathSegments)
         assertNull(uri.query)
         assertNull(uri.fragment)
@@ -218,7 +249,11 @@ class UriTest {
         assertEquals("https", uri.scheme)
         assertEquals("images.unsplash.com", uri.authority)
         assertEquals("/photo-1550939810-cb345b2f4ad7", uri.path)
-        assertEquals("/photo-1550939810-cb345b2f4ad7", uri.filePath)
+        if (!Platform.current.isWindows) {
+            assertEquals("/photo-1550939810-cb345b2f4ad7", uri.filePath)
+        } else {
+            assertEquals("photo-1550939810-cb345b2f4ad7", uri.filePath)
+        }
         assertEquals(listOf("photo-1550939810-cb345b2f4ad7"), uri.pathSegments)
         assertEquals(
             "ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjU4MjM5fQ",
@@ -234,7 +269,11 @@ class UriTest {
         assertEquals("https", uri.scheme)
         assertEquals("example.com", uri.authority)
         assertEquals("/上海+中國", uri.path)
-        assertEquals("/上海+中國", uri.filePath)
+        if (!Platform.current.isWindows) {
+            assertEquals("/上海+中國", uri.filePath)
+        } else {
+            assertEquals("上海+中國", uri.filePath)
+        }
         assertEquals(listOf("上海+中國"), uri.pathSegments)
         assertNull(uri.query)
         assertNull(uri.fragment)
@@ -248,7 +287,11 @@ class UriTest {
         assertEquals("https", uri.scheme)
         assertEquals("example.com", uri.authority)
         assertEquals("/something ", uri.path)
-        assertEquals("/something ", uri.filePath)
+        if (!Platform.current.isWindows) {
+            assertEquals("/something ", uri.filePath)
+        } else {
+            assertEquals("something ", uri.filePath)
+        }
         assertEquals(listOf("something "), uri.pathSegments)
         assertNull(uri.query)
         assertNull(uri.fragment)
@@ -262,7 +305,11 @@ class UriTest {
         assertEquals("https", uri.scheme)
         assertEquals("example.com", uri.authority)
         assertEquals("/上海+中國%", uri.path)
-        assertEquals("/上海+中國%", uri.filePath)
+        if (!Platform.current.isWindows) {
+            assertEquals("/上海+中國%", uri.filePath)
+        } else {
+            assertEquals("上海+中國%", uri.filePath)
+        }
         assertEquals(listOf("上海+中國%"), uri.pathSegments)
         assertNull(uri.query)
         assertNull(uri.fragment)
@@ -275,7 +322,11 @@ class UriTest {
         assertEquals("file", uri.scheme)
         assertEquals("", uri.authority)
         assertEquals("/test///image.jpg", uri.path)
-        assertEquals("/test/image.jpg", uri.filePath)
+        if (!Platform.current.isWindows) {
+            assertEquals("/test/image.jpg", uri.filePath)
+        } else {
+            assertEquals("test\\image.jpg", uri.filePath)
+        }
         assertEquals(listOf("test", "image.jpg"), uri.pathSegments)
         assertNull(uri.query)
         assertNull(uri.fragment)
@@ -360,7 +411,11 @@ class UriTest {
         assertEquals("jar:file", uri.scheme)
         assertEquals("", uri.authority)
         assertEquals("/outer/path/test.apk!/internal/path/1.png", uri.path)
-        assertEquals("/outer/path/test.apk!/internal/path/1.png", uri.filePath)
+        if (!Platform.current.isWindows) {
+            assertEquals("/outer/path/test.apk!/internal/path/1.png", uri.filePath)
+        } else {
+            assertEquals("outer\\path\\test.apk!\\internal\\path\\1.png", uri.filePath)
+        }
         assertEquals(
             listOf("outer", "path", "test.apk!", "internal", "path", "1.png"),
             uri.pathSegments
@@ -375,7 +430,11 @@ class UriTest {
         assertEquals("file", uri.scheme)
         assertEquals("", uri.authority)
         assertEquals("/outer/path/test.apk", uri.path)
-        assertEquals("/outer/path/test.apk", uri.filePath)
+        if (!Platform.current.isWindows) {
+            assertEquals("/outer/path/test.apk", uri.filePath)
+        } else {
+            assertEquals("outer\\path\\test.apk", uri.filePath)
+        }
         assertEquals(
             listOf("outer", "path", "test.apk"),
             uri.pathSegments
@@ -402,7 +461,11 @@ class UriTest {
         assertEquals("data", uri.scheme)
         assertEquals("", uri.authority)
         assertEquals("image/png;base64,FAKE_DATA", uri.path)
-        assertEquals("image/png;base64,FAKE_DATA", uri.filePath)
+        if (!Platform.current.isWindows) {
+            assertEquals("image/png;base64,FAKE_DATA", uri.filePath)
+        } else {
+            assertEquals("image\\png;base64,FAKE_DATA", uri.filePath)
+        }
         assertEquals(listOf("image", "png;base64,FAKE_DATA"), uri.pathSegments)
         assertNull(uri.query)
         assertNull(uri.fragment)

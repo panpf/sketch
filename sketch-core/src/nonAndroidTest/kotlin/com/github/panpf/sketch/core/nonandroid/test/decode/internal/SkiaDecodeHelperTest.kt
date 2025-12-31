@@ -17,6 +17,7 @@ import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.utils.assertSizeEquals
 import com.github.panpf.sketch.test.utils.chunkingFour
+import com.github.panpf.sketch.test.utils.defaultColorType
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.similarity
 import com.github.panpf.sketch.test.utils.toPreviewBitmap
@@ -72,7 +73,7 @@ class SkiaDecodeHelperTest {
             .asOrThrow<BitmapImage>().bitmap
             .apply {
                 assertEquals(
-                    expected = ColorType.RGBA_8888,
+                    expected = defaultColorType,
                     actual = colorType,
                 )
             }
@@ -296,7 +297,7 @@ class SkiaDecodeHelperTest {
             .asOrThrow<BitmapImage>().bitmap
             .apply {
                 assertEquals(
-                    expected = ColorType.RGBA_8888,
+                    expected = defaultColorType,
                     actual = colorType,
                 )
             }

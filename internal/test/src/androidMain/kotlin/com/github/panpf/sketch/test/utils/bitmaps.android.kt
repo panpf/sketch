@@ -86,3 +86,6 @@ fun ColorType.expectedRgb565(mimeType: String): ColorType {
         this
     }
 }
+
+actual val defaultColorType: ColorType
+    get() = Bitmap.Config.ARGB_8888

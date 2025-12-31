@@ -28,6 +28,7 @@ import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.createDecoderOrDefault
 import com.github.panpf.sketch.test.utils.createDecoderOrNull
 import com.github.panpf.sketch.test.utils.decode
+import com.github.panpf.sketch.test.utils.defaultColorType
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.similarity
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -94,7 +95,7 @@ class SkiaDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                expected = "Bitmap(1291x1936,RGBA_8888,sRGB)",
+                expected = "Bitmap(1291x1936,${defaultColorType.name},sRGB)",
                 actual = bitmap.toShortInfoString()
             )
             assertEquals(
@@ -111,7 +112,7 @@ class SkiaDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                expected = "Bitmap(1080x1344,RGBA_8888,sRGB)",
+                expected = "Bitmap(1080x1344,${defaultColorType.name},sRGB)",
                 actual = bitmap.toShortInfoString()
             )
             assertEquals(
@@ -130,7 +131,7 @@ class SkiaDecoderTest {
             }.decode(sketch).apply {
                 val bitmap = image.getBitmapOrThrow()
                 assertEquals(
-                    expected = "Bitmap(1500x750,RGBA_8888,sRGB)",
+                    expected = "Bitmap(1500x750,${defaultColorType.name},sRGB)",
                     actual = bitmap.toShortInfoString()
                 )
                 assertEquals(
@@ -194,7 +195,7 @@ class SkiaDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                expected = "Bitmap(1291x1936,RGBA_8888,sRGB)",
+                expected = "Bitmap(1291x1936,${defaultColorType.name},sRGB)",
                 actual = bitmap.toShortInfoString()
             )
             assertEquals(
@@ -212,7 +213,7 @@ class SkiaDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                expected = "Bitmap(1080x1344,RGBA_8888,sRGB)",
+                expected = "Bitmap(1080x1344,${defaultColorType.name},sRGB)",
                 actual = bitmap.toShortInfoString()
             )
             assertEquals(
@@ -231,7 +232,7 @@ class SkiaDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                expected = "Bitmap(1291x1936,RGBA_8888,displayP3)",
+                expected = "Bitmap(1291x1936,${defaultColorType.name},displayP3)",
                 actual = bitmap.toShortInfoString()
             )
             assertEquals(
@@ -250,7 +251,7 @@ class SkiaDecoderTest {
         }.decode(sketch).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
-                expected = "Bitmap(1080x1344,RGBA_8888,displayP3)",
+                expected = "Bitmap(1080x1344,${defaultColorType.name},displayP3)",
                 actual = bitmap.toShortInfoString()
             )
             assertEquals(

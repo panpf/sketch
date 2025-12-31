@@ -2,6 +2,7 @@ package com.github.panpf.sketch.animated.core.nonandroid.test.util
 
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.test.utils.defaultColorType
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.toLogString
 import okio.buffer
@@ -22,7 +23,9 @@ class AnimatedImagesTest {
         val data = Data.Companion.makeFromBytes(bytes)
         val codec = Codec.Companion.makeFromData(data)
         assertEquals(
-            expected = "Codec@${codec.hashCode().toString(16)}(1291x1936,RGBA_8888,sRGB)",
+            expected = "Codec@${
+                codec.hashCode().toString(16)
+            }(1291x1936,${defaultColorType.name},sRGB)",
             actual = codec.toLogString()
         )
     }

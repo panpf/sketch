@@ -32,14 +32,16 @@ suspend inline fun runInNewSketchWithUse(
     crossinline block2: suspend (PlatformContext, Sketch) -> Unit
 ) {
     val context = getTestContext()
+    val directory = context.newAloneTestDiskCacheDirectory()!!
     val sketch = Sketch(context) {
         logger(level = Logger.Level.Verbose)
-        val directory = context.newAloneTestDiskCacheDirectory()
         downloadCacheOptions(DiskCache.Options(appCacheDirectory = directory))
         resultCacheOptions(DiskCache.Options(appCacheDirectory = directory))
         builder.invoke(this, context)
     }
     try {
+        sketch.downloadCache.clear()
+        sketch.resultCache.clear()
         block2(context, sketch)
     } finally {
         try {
@@ -47,10 +49,8 @@ suspend inline fun runInNewSketchWithUse(
             sketch.resultCache.clear()
             sketch.shutdown()
             val fileSystem = sketch.fileSystem
-            fileSystem.deleteRecursively(sketch.downloadCache.directory)
-            fileSystem.delete(sketch.downloadCache.directory)
-            fileSystem.deleteRecursively(sketch.resultCache.directory)
-            fileSystem.delete(sketch.resultCache.directory)
+            fileSystem.deleteRecursively(directory)
+            fileSystem.delete(directory)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -61,13 +61,15 @@ suspend inline fun runInNewSketchWithUse(
     crossinline block2: suspend (PlatformContext, Sketch) -> Unit
 ) {
     val context = getTestContext()
+    val directory = context.newAloneTestDiskCacheDirectory()!!
     val sketch = Sketch(context) {
         logger(level = Logger.Level.Verbose)
-        val directory = context.newAloneTestDiskCacheDirectory()
         downloadCacheOptions(DiskCache.Options(appCacheDirectory = directory))
         resultCacheOptions(DiskCache.Options(appCacheDirectory = directory))
     }
     try {
+        sketch.downloadCache.clear()
+        sketch.resultCache.clear()
         block2(context, sketch)
     } finally {
         try {
@@ -75,10 +77,8 @@ suspend inline fun runInNewSketchWithUse(
             sketch.resultCache.clear()
             sketch.shutdown()
             val fileSystem = sketch.fileSystem
-            fileSystem.deleteRecursively(sketch.downloadCache.directory)
-            fileSystem.delete(sketch.downloadCache.directory)
-            fileSystem.deleteRecursively(sketch.resultCache.directory)
-            fileSystem.delete(sketch.resultCache.directory)
+            fileSystem.deleteRecursively(directory)
+            fileSystem.delete(directory)
         } catch (e: Exception) {
             e.printStackTrace()
         }

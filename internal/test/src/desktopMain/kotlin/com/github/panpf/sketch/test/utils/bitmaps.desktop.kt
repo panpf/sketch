@@ -12,3 +12,16 @@ actual fun Bitmap.toPreviewBitmap(): Any {
         else -> this.copyWith(colorInfo.withColorType(ColorType.BGRA_8888))
     }.toBufferedImage()
 }
+
+actual val defaultColorType: ColorType
+    get() {
+        val os: String =
+            System.getProperty("os.name").lowercase(java.util.Locale.getDefault())
+        return if (os.startsWith("mac os x")) {
+            ColorType.RGBA_8888
+        } else if (os.startsWith("windows")) {
+            ColorType.BGRA_8888
+        } else {
+            ColorType.RGBA_8888
+        }
+    }

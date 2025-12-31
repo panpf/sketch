@@ -22,6 +22,9 @@ import com.github.panpf.sketch.fetch.newFileUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.Platform
+import com.github.panpf.sketch.test.utils.current
+import com.github.panpf.sketch.test.utils.isWindows
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.defaultFileSystem
@@ -161,111 +164,183 @@ class FileUriFetcherTest {
             ImageRequest(context, filePath)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(filePath, this.path.toString())
+            if (!Platform.current.isWindows) {
+                assertEquals(filePath, this.path.toString())
+            } else {
+                assertEquals("storage\\sample.jpg", this.path.toString())
+            }
         }
         factory.create(
             ImageRequest(context, filePathUri)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(filePath, this.path.toString())
+            if (!Platform.current.isWindows) {
+                assertEquals(filePath, this.path.toString())
+            } else {
+                assertEquals("storage\\sample.jpg", this.path.toString())
+            }
         }
         factory.create(
             ImageRequest(context, filePath2)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(filePath2, this.path.toString())
+            if (!Platform.current.isWindows) {
+                assertEquals(filePath2, this.path.toString())
+            } else {
+                assertEquals("storage\\sample .jpg", this.path.toString())
+            }
         }
         factory.create(
             ImageRequest(context, filePath2Uri)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(filePath2, this.path.toString())
+            if (!Platform.current.isWindows) {
+                assertEquals(filePath2, this.path.toString())
+            } else {
+                assertEquals("storage\\sample .jpg", this.path.toString())
+            }
         }
         factory.create(
             ImageRequest(context, filePath3Uri)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(filePath3, this.path.toString())
+            if (!Platform.current.isWindows) {
+                assertEquals(filePath3, this.path.toString())
+            } else {
+                assertEquals("storage\\sample.png", this.path.toString())
+            }
         }
         factory.create(
             ImageRequest(context, filePath4Uri)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(filePath4, this.path.toString())
+            if (!Platform.current.isWindows) {
+                assertEquals(filePath4, this.path.toString())
+            } else {
+                assertEquals("storage\\sample.gif", this.path.toString())
+            }
         }
 
         factory.create(
             ImageRequest(context, filePath)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(filePath, this.path.toString())
+            if (!Platform.current.isWindows) {
+                assertEquals(filePath, this.path.toString())
+            } else {
+                assertEquals("storage\\sample.jpg", this.path.toString())
+            }
         }
         factory.create(
             ImageRequest(context, filePathUri)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(filePath, this.path.toString())
+            if (!Platform.current.isWindows) {
+                assertEquals(filePath, this.path.toString())
+            } else {
+                assertEquals("storage\\sample.jpg", this.path.toString())
+            }
         }
         factory.create(
             ImageRequest(context, filePath2)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(filePath2, this.path.toString())
+            if (!Platform.current.isWindows) {
+                assertEquals(filePath2, this.path.toString())
+            } else {
+                assertEquals("storage\\sample .jpg", this.path.toString())
+            }
         }
         factory.create(
             ImageRequest(context, filePath2Uri)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(filePath2, this.path.toString())
+            if (!Platform.current.isWindows) {
+                assertEquals(filePath2, this.path.toString())
+            } else {
+                assertEquals("storage\\sample .jpg", this.path.toString())
+            }
         }
         factory.create(
             ImageRequest(context, filePath3Uri)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(filePath3, this.path.toString())
+            if (!Platform.current.isWindows) {
+                assertEquals(filePath3, this.path.toString())
+            } else {
+                assertEquals("storage\\sample.png", this.path.toString())
+            }
         }
         factory.create(
             ImageRequest(context, filePath4Uri)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(filePath4, this.path.toString())
+            if (!Platform.current.isWindows) {
+                assertEquals(filePath4, this.path.toString())
+            } else {
+                assertEquals("storage\\sample.gif", this.path.toString())
+            }
         }
 
         factory.create(
             ImageRequest(context, filePath)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(filePath, this.path.toString())
+            if (!Platform.current.isWindows) {
+                assertEquals(filePath, this.path.toString())
+            } else {
+                assertEquals("storage\\sample.jpg", this.path.toString())
+            }
         }
         factory.create(
             ImageRequest(context, filePathUri)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(filePath, this.path.toString())
+            if (!Platform.current.isWindows) {
+                assertEquals(filePath, this.path.toString())
+            } else {
+                assertEquals("storage\\sample.jpg", this.path.toString())
+            }
         }
         factory.create(
             ImageRequest(context, filePath2)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(filePath2, this.path.toString())
+            if (!Platform.current.isWindows) {
+                assertEquals(filePath2, this.path.toString())
+            } else {
+                assertEquals("storage\\sample .jpg", this.path.toString())
+            }
         }
         factory.create(
             ImageRequest(context, filePath2Uri)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(filePath2, this.path.toString())
+            if (!Platform.current.isWindows) {
+                assertEquals(filePath2, this.path.toString())
+            } else {
+                assertEquals("storage\\sample .jpg", this.path.toString())
+            }
         }
         factory.create(
             ImageRequest(context, filePath3Uri)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(filePath3, this.path.toString())
+            if (!Platform.current.isWindows) {
+                assertEquals(filePath3, this.path.toString())
+            } else {
+                assertEquals("storage\\sample.png", this.path.toString())
+            }
         }
         factory.create(
             ImageRequest(context, filePath4Uri)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(filePath4, this.path.toString())
+            if (!Platform.current.isWindows) {
+                assertEquals(filePath4, this.path.toString())
+            } else {
+                assertEquals("storage\\sample.gif", this.path.toString())
+            }
         }
 
         assertNull(
