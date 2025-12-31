@@ -18,6 +18,8 @@
 * fix: 修复无法加载 windows network uri 的 bug。[#267](https://github.com/panpf/sketch/issues/267)
 * fix: 修复 HttpUriFetcher 和 SkiaAnimatedDecoder 没有关闭输入流的
   bug。[#272](https://github.com/panpf/sketch/issues/272)
+* fix: 修复非 Android 平台使用 Skia 解码动图时帧持续时间为 0 时没有修改为默认值 100 的
+  bug。[#273](https://github.com/panpf/sketch/issues/273)
 
 # 4.4.0-alpha01
 

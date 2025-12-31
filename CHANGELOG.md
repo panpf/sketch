@@ -21,6 +21,8 @@ Translations: [简体中文](CHANGELOG.zh.md)
   loading. [#267](https://github.com/panpf/sketch/issues/267)
 * fix: Fixed a bug where HttpUriFetcher and SkiaAnimatedDecoder did not close the input
   stream. [#272](https://github.com/panpf/sketch/issues/272)
+* fix: Fixed a bug where non-Android platforms used Skia to decode GIFs when the frame duration was
+  0 and not modified to the default value of 100. [#273](https://github.com/panpf/sketch/issues/273)
 
 # 4.4.0-alpha01
 
