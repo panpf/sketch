@@ -19,6 +19,8 @@ Translations: [简体中文](CHANGELOG.zh.md)
   file:'. [#270](https://github.com/panpf/sketch/issues/270)
 * fix: Fixed a bug that prevented Windows Network URIs from
   loading. [#267](https://github.com/panpf/sketch/issues/267)
+* fix: Fixed a bug where HttpUriFetcher and SkiaAnimatedDecoder did not close the input
+  stream. [#272](https://github.com/panpf/sketch/issues/272)
 
 # 4.4.0-alpha01
 

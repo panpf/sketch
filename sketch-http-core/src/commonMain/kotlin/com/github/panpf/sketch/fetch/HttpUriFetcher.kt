@@ -231,7 +231,8 @@ open class HttpUriFetcher constructor(
             )
         } else {
             try {
-                val byteArray = sketch.fileSystem.source(cachePath).buffer().readByteArray()
+                val byteArray = sketch.fileSystem.source(cachePath).buffer()
+                    .use { it.readByteArray() }
                 ByteArrayDataSource(data = byteArray, dataFrom = NETWORK)
             } catch (e: Throwable) {
                 return Result.failure(e)

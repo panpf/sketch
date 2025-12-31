@@ -33,6 +33,7 @@ import com.github.panpf.sketch.util.Rect
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 import okio.buffer
+import okio.use
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
 import org.jetbrains.skia.impl.use
@@ -69,7 +70,7 @@ open class SkiaAnimatedDecoder(
     private var _imageInfo: ImageInfo? = null
     private val imageInfoLock = SynchronizedObject()
     private val data by lazy {
-        val bytes = dataSource.openSource().buffer().readByteArray()
+        val bytes = dataSource.openSource().buffer().use { it.readByteArray() }
         Data.makeFromBytes(bytes)
     }
 
