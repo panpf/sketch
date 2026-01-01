@@ -38,9 +38,7 @@ data class SkiaAnimatedImage constructor(
 
     override val frameCount: Int = codec.frameCount
     override val frameDurations: Array<Int> by lazy {
-        codec.framesInfo
-            .map { it.duration.takeIf { it > 0 } ?: 100 }
-            .toTypedArray()
+        codec.framesInfo.map { it.duration }.toTypedArray()
     }
 
     override var animatedTransformation: ((Any, Rect) -> Unit)? = null

@@ -383,7 +383,10 @@ class AnimatedImagePainter constructor(
         }
 
         private fun frameDuration(index: Int): Long {
-            return animatedImage.frameDurations.getOrNull(index)?.toLong() ?: 50L
+            return animatedImage.frameDurations
+                .getOrNull(index)?.toLong()
+                ?.takeIf { it > 0L }
+                ?: 100L
         }
 
         private class FrameBitmap(val bitmap: Bitmap) {
