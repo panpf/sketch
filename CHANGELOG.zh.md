@@ -20,6 +20,7 @@
   bug。[#272](https://github.com/panpf/sketch/issues/272)
 * fix: 修复非 Android 平台使用 Skia 解码动图时帧持续时间为 0 时没有修改为默认值 100 的
   bug。[#273](https://github.com/panpf/sketch/issues/273)
+* change: ResultCacheDecodeInterceptor 改为 ResultCacheRequestInterceptor
 
 # 4.4.0-alpha01
 

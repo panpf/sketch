@@ -5,7 +5,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.cache.createImageSerializer
-import com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
+import com.github.panpf.sketch.cache.internal.ResultCacheRequestInterceptor
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.HttpUriFetcher
@@ -35,6 +35,7 @@ import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import okio.IOException
@@ -100,7 +101,7 @@ class HttpUriFetcherTest {
                     }
                     deferredList.add(deferred)
                 }
-                val resultList = deferredList.map { it.await() }
+                val resultList = deferredList.awaitAll()
                 assertEquals(100, resultList.size)
                 val fromNetworkList = resultList.mapIndexedNotNull { index, fetchResult ->
                     if (fetchResult!!.dataFrom == NETWORK) {
@@ -305,7 +306,7 @@ class HttpUriFetcherTest {
             createImageSerializer().compress(bitmapImage, it)
         }
         downloadCache.fileSystem.sink(editor.metadata).buffer().use {
-            val metadata = ResultCacheDecodeInterceptor.Metadata(
+            val metadata = ResultCacheRequestInterceptor.Metadata(
                 imageInfo = ImageInfo(width = 100, height = 100, mimeType = "image/png"),
                 resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
                 transformeds = null,
@@ -360,7 +361,7 @@ class HttpUriFetcherTest {
                 HttpUriFetcher(sketch, TestHttpStack(context), request, downloadCacheKey)
             httpUriFetcher.fetch().getOrThrow()
             block(1000)
-            assertTrue(progressList.size > 0)
+            assertTrue(progressList.isNotEmpty())
             assertEquals(testUri.contentLength, progressList.last())
 
             var lastProgress: Long? = null
@@ -399,7 +400,7 @@ class HttpUriFetcherTest {
             }
             block(2000)
             job.cancel()
-            assertTrue(progressList.size > 0)
+            assertTrue(progressList.isNotEmpty())
             assertNull(progressList.find { it == testUri.contentLength })
         }
     }
@@ -433,7 +434,7 @@ class HttpUriFetcherTest {
             }
             block(500)
             job.cancel()
-            assertTrue(progressList.size == 0)
+            assertEquals(progressList.size, 0)
         }
     }
 
@@ -551,7 +552,7 @@ class HttpUriFetcherTest {
                 e.printStackTrace()
             }
             block(1000)
-            assertTrue(progressList.size > 0)
+            assertTrue(progressList.isNotEmpty())
             assertNotNull(progressList.find { it == testUri.contentLength + 1 })
 
             assertFalse(sketch.downloadCache.exist(downloadCacheKey))

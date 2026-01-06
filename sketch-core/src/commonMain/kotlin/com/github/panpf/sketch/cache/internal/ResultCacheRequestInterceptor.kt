@@ -18,13 +18,15 @@
 
 package com.github.panpf.sketch.cache.internal
 
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.cache.createImageSerializer
 import com.github.panpf.sketch.cache.isReadOrWrite
-import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
@@ -32,23 +34,25 @@ import com.github.panpf.sketch.source.DataFrom.RESULT_CACHE
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.closeQuietly
+import kotlinx.coroutines.withContext
 import okio.buffer
 import okio.use
 
 /**
- * Result cache decode interceptor, used to read and write the decode result to the disk cache
+ * Result cache request interceptor, used to read and write the decode result to the disk cache
  *
- * @see com.github.panpf.sketch.core.common.test.cache.internal.ResultCacheDecodeInterceptorTest
+ * @see com.github.panpf.sketch.core.common.test.cache.internal.ResultCacheRequestInterceptorTest
  */
-class ResultCacheDecodeInterceptor : DecodeInterceptor {
+class ResultCacheRequestInterceptor : RequestInterceptor {
 
     override val key: String? = null
 
-    override val sortWeight: Int = 80
+    override val sortWeight: Int = 95
 
-    @WorkerThread
-    override suspend fun intercept(chain: DecodeInterceptor.Chain): Result<DecodeResult> {
+    @MainThread
+    override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
         val sketch = chain.sketch
+        val request = chain.request
         val requestContext = chain.requestContext
         val resultCache = sketch.resultCache
         val resultCachePolicy = requestContext.request.resultCachePolicy
@@ -56,20 +60,32 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         return if (resultCachePolicy.isReadOrWrite) {
             val resultCacheKey = requestContext.resultCacheKey
             resultCache.withLock(resultCacheKey) {
-                val decodeResultFromCache = readCache(requestContext)
-                if (decodeResultFromCache != null) {
-                    Result.success(decodeResultFromCache)
+                val cachedDecodeResult = withContext(sketch.decodeTaskDispatcher) {
+                    readCache(requestContext)
+                }
+                if (cachedDecodeResult != null) {
+                    val imageData = ImageData(
+                        image = cachedDecodeResult.image,
+                        imageInfo = cachedDecodeResult.imageInfo,
+                        dataFrom = cachedDecodeResult.dataFrom,
+                        resize = cachedDecodeResult.resize,
+                        transformeds = cachedDecodeResult.transformeds,
+                        extras = cachedDecodeResult.extras
+                    )
+                    Result.success(imageData)
                 } else {
-                    chain.proceed().apply {
-                        val newDecodeResult = getOrNull()
-                        if (newDecodeResult != null) {
-                            writeCache(requestContext, decodeResult = newDecodeResult)
+                    val result = chain.proceed(request)
+                    val imageData = result.getOrNull()
+                    if (imageData != null) {
+                        withContext(sketch.decodeTaskDispatcher) {
+                            writeCache(requestContext, imageData = imageData)
                         }
                     }
+                    result
                 }
             }
         } else {
-            chain.proceed()
+            chain.proceed(request)
         }
     }
 
@@ -105,7 +121,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         result.onFailure {
             it.printStackTrace()
             requestContext.sketch.logger.w {
-                "ResultCacheDecodeInterceptor. read result cache error. $it. '${requestContext.logKey}'"
+                "ResultCacheRequestInterceptor. read result cache error. $it. '${requestContext.logKey}'"
             }
             resultCache.remove(resultCacheKey)
         }
@@ -113,14 +129,11 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
     }
 
     @WorkerThread
-    private fun writeCache(
-        requestContext: RequestContext,
-        decodeResult: DecodeResult,
-    ): Boolean {
+    private fun writeCache(requestContext: RequestContext, imageData: ImageData): Boolean {
         if (!requestContext.request.resultCachePolicy.writeEnabled) return false
-        val transformeds = decodeResult.transformeds
+        val transformeds = imageData.transformeds
         if (transformeds.isNullOrEmpty()) return false
-        val image = decodeResult.image
+        val image = imageData.image
         val imageSerializer =
             createImageSerializer().takeIf { it.supportImage(image) } ?: return false
         val resultCache = requestContext.sketch.resultCache
@@ -133,10 +146,10 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
             }
 
             val metadataString = Metadata(
-                imageInfo = decodeResult.imageInfo,
+                imageInfo = imageData.imageInfo,
                 transformeds = transformeds,
-                resize = decodeResult.resize,
-                extras = decodeResult.extras
+                resize = imageData.resize,
+                extras = imageData.extras
             ).toMetadataString()
             resultCache.fileSystem.sink(editor.metadata).buffer().use { writer ->
                 writer.writeUtf8(metadataString)
@@ -161,7 +174,7 @@ class ResultCacheDecodeInterceptor : DecodeInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "ResultCacheDecodeInterceptor(sortWeight=$sortWeight)"
+    override fun toString(): String = "ResultCacheRequestInterceptor(sortWeight=$sortWeight)"
 
     class Metadata(
         val imageInfo: ImageInfo,

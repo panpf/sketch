@@ -194,7 +194,7 @@ data class ImageRequest(
     /**
      * Disk caching policy for Bitmaps affected by [sizeResolver] or [transformations]
      *
-     * @see com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
+     * @see com.github.panpf.sketch.cache.internal.ResultCacheRequestInterceptor
      */
     val resultCachePolicy: CachePolicy,
 

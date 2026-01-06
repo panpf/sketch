@@ -6,7 +6,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
-import com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
+import com.github.panpf.sketch.cache.internal.ResultCacheRequestInterceptor
 import com.github.panpf.sketch.commonComponents
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
@@ -288,6 +288,7 @@ class SketchTest {
             assertEquals(
                 listOf(
                     MemoryCacheRequestInterceptor(),
+                    ResultCacheRequestInterceptor(),
                     EngineRequestInterceptor(),
                 ),
                 components.getRequestInterceptorList(ImageRequest(context, ""))
@@ -303,6 +304,7 @@ class SketchTest {
                 listOf(
                     TestRequestInterceptor(),
                     MemoryCacheRequestInterceptor(),
+                    ResultCacheRequestInterceptor(),
                     EngineRequestInterceptor()
                 ),
                 components.getRequestInterceptorList(ImageRequest(context, ""))
@@ -320,7 +322,6 @@ class SketchTest {
         Sketch.Builder(context).build().apply {
             assertEquals(
                 listOf(
-                    ResultCacheDecodeInterceptor(),
                     TransformationDecodeInterceptor(),
                     EngineDecodeInterceptor()
                 ),
@@ -336,7 +337,6 @@ class SketchTest {
             assertEquals(
                 listOf(
                     TestDecodeInterceptor(),
-                    ResultCacheDecodeInterceptor(),
                     TransformationDecodeInterceptor(),
                     EngineDecodeInterceptor()
                 ),
@@ -344,7 +344,6 @@ class SketchTest {
             )
             assertNotEquals(
                 listOf(
-                    ResultCacheDecodeInterceptor(),
                     TransformationDecodeInterceptor(),
                     EngineDecodeInterceptor()
                 ),
@@ -479,9 +478,9 @@ class SketchTest {
                 addFetcher(FileUriFetcher.Factory())
 
                 addRequestInterceptor(MemoryCacheRequestInterceptor())
+                addRequestInterceptor(ResultCacheRequestInterceptor())
                 addRequestInterceptor(EngineRequestInterceptor())
 
-                addDecodeInterceptor(ResultCacheDecodeInterceptor())
                 addDecodeInterceptor(TransformationDecodeInterceptor())
                 addDecodeInterceptor(EngineDecodeInterceptor())
             },

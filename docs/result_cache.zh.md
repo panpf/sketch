@@ -4,7 +4,7 @@
 
 为了避免重复转换图片并提高图片的加载速度 [Sketch] 引入了结果缓存，结果缓存功能会将转换后的图片持久的存储在磁盘上，下次直接从磁盘读取跳过转换过程。
 
-结果缓存功能由 [ResultCacheDecodeInterceptor] 负责核心逻辑，[DiskCache] 负责存储管理
+结果缓存功能由 [ResultCacheRequestInterceptor] 负责核心逻辑，[DiskCache] 负责存储管理
 
 [DiskCache] 的默认实现是 [LruDiskCache]：
 
@@ -212,6 +212,6 @@ scope.launch {
 
 [ImageOptions]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.common.kt
 
-[ResultCacheDecodeInterceptor]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/internal/ResultCacheDecodeInterceptor.kt
+[ResultCacheRequestInterceptor]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/internal/ResultCacheRequestInterceptor.kt
 
 [CachePolicy]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/CachePolicy.kt

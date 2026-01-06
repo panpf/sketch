@@ -19,13 +19,16 @@ package com.github.panpf.sketch.core.common.test.decode
 import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
+import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.resize.Precision.EXACTLY
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.resize.Scale.FILL
+import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DataFrom.MEMORY
+import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.transform.createCircleCropTransformed
 import com.github.panpf.sketch.transform.createRotateTransformed
@@ -67,6 +70,73 @@ class DecodeResultTest {
                 this.extras
             )
         }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() {
+        val element1 = DecodeResult(
+            image = FakeImage(100, 100),
+            imageInfo = ImageInfo(100, 100, "image/jpeg"),
+            dataFrom = LOCAL,
+            resize = Resize(200, 200),
+            transformeds = listOf(createScaledTransformed(1.5f)),
+            extras = mapOf("key" to "value"),
+        )
+        val element11 = element1.copy()
+        val element2 = element1.copy(image = FakeImage(200, 200))
+        val element3 = element1.copy(imageInfo = ImageInfo(200, 200, "image/png"))
+        val element4 = element1.copy(dataFrom = DataFrom.NETWORK)
+        val element5 = element1.copy(resize = Resize(300, 300))
+        val element6 = element1.copy(transformeds = listOf(createScaledTransformed(2.0f)))
+        val element7 = element1.copy(extras = mapOf("key" to "value2"))
+
+        assertEquals(expected = element1, actual = element11)
+        assertNotEquals(illegal = element1, actual = element2)
+        assertNotEquals(illegal = element1, actual = element3)
+        assertNotEquals(illegal = element1, actual = element4)
+        assertNotEquals(illegal = element1, actual = element5)
+        assertNotEquals(illegal = element1, actual = element6)
+        assertNotEquals(illegal = element1, actual = element7)
+        assertNotEquals(illegal = element2, actual = element3)
+        assertNotEquals(illegal = element2, actual = element4)
+        assertNotEquals(illegal = element2, actual = element5)
+        assertNotEquals(illegal = element2, actual = element6)
+        assertNotEquals(illegal = element2, actual = element7)
+        assertNotEquals(illegal = element3, actual = element4)
+        assertNotEquals(illegal = element3, actual = element5)
+        assertNotEquals(illegal = element3, actual = element6)
+        assertNotEquals(illegal = element3, actual = element7)
+        assertNotEquals(illegal = element4, actual = element5)
+        assertNotEquals(illegal = element4, actual = element6)
+        assertNotEquals(illegal = element4, actual = element7)
+        assertNotEquals(illegal = element5, actual = element6)
+        assertNotEquals(illegal = element5, actual = element7)
+        assertNotEquals(illegal = element6, actual = element7)
+        assertNotEquals(illegal = element1, actual = null as Any?)
+        assertNotEquals(illegal = element1, actual = Any())
+
+        assertEquals(expected = element1.hashCode(), actual = element11.hashCode())
+        assertNotEquals(illegal = element1.hashCode(), actual = element2.hashCode())
+        assertNotEquals(illegal = element1.hashCode(), actual = element3.hashCode())
+        assertNotEquals(illegal = element1.hashCode(), actual = element4.hashCode())
+        assertNotEquals(illegal = element1.hashCode(), actual = element5.hashCode())
+        assertNotEquals(illegal = element1.hashCode(), actual = element6.hashCode())
+        assertNotEquals(illegal = element1.hashCode(), actual = element7.hashCode())
+        assertNotEquals(illegal = element2.hashCode(), actual = element3.hashCode())
+        assertNotEquals(illegal = element2.hashCode(), actual = element4.hashCode())
+        assertNotEquals(illegal = element2.hashCode(), actual = element5.hashCode())
+        assertNotEquals(illegal = element2.hashCode(), actual = element6.hashCode())
+        assertNotEquals(illegal = element2.hashCode(), actual = element7.hashCode())
+        assertNotEquals(illegal = element3.hashCode(), actual = element4.hashCode())
+        assertNotEquals(illegal = element3.hashCode(), actual = element5.hashCode())
+        assertNotEquals(illegal = element3.hashCode(), actual = element6.hashCode())
+        assertNotEquals(illegal = element3.hashCode(), actual = element7.hashCode())
+        assertNotEquals(illegal = element4.hashCode(), actual = element5.hashCode())
+        assertNotEquals(illegal = element4.hashCode(), actual = element6.hashCode())
+        assertNotEquals(illegal = element4.hashCode(), actual = element7.hashCode())
+        assertNotEquals(illegal = element5.hashCode(), actual = element6.hashCode())
+        assertNotEquals(illegal = element5.hashCode(), actual = element7.hashCode())
+        assertNotEquals(illegal = element6.hashCode(), actual = element7.hashCode())
     }
 
     @Test
@@ -154,7 +224,7 @@ class DecodeResultTest {
             )
         }
 
-        result.newResult(imageInfo = result.imageInfo.copy(Size(200, 200)))
+        result.newResult(imageInfo = result.imageInfo.copy(size = Size(200, 200)))
             .apply {
                 assertNotSame(result, this)
                 assertNotEquals(result, this)

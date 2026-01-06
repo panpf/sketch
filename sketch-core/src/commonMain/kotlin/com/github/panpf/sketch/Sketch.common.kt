@@ -21,7 +21,7 @@ import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
-import com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
+import com.github.panpf.sketch.cache.internal.ResultCacheRequestInterceptor
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
@@ -532,9 +532,9 @@ internal fun commonComponents(): ComponentRegistry = ComponentRegistry {
     addFetcher(FileUriFetcher.Factory())
 
     addRequestInterceptor(MemoryCacheRequestInterceptor())
+    addRequestInterceptor(ResultCacheRequestInterceptor())
     addRequestInterceptor(EngineRequestInterceptor())
 
-    addDecodeInterceptor(ResultCacheDecodeInterceptor())
     addDecodeInterceptor(TransformationDecodeInterceptor())
     addDecodeInterceptor(EngineDecodeInterceptor())
 }

@@ -1,14 +1,26 @@
 package com.github.panpf.sketch.core.common.test.request
 
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.request.ImageData
+import com.github.panpf.sketch.resize.Precision.EXACTLY
+import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
+import com.github.panpf.sketch.resize.Scale.CENTER_CROP
+import com.github.panpf.sketch.resize.Scale.FILL
 import com.github.panpf.sketch.source.DataFrom
+import com.github.panpf.sketch.source.DataFrom.LOCAL
+import com.github.panpf.sketch.source.DataFrom.MEMORY
 import com.github.panpf.sketch.test.utils.FakeImage
+import com.github.panpf.sketch.test.utils.createBitmapImage
+import com.github.panpf.sketch.transform.createCircleCropTransformed
+import com.github.panpf.sketch.transform.createRotateTransformed
+import com.github.panpf.sketch.util.Size
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotSame
 
 class ImageDataTest {
 
@@ -17,7 +29,7 @@ class ImageDataTest {
         ImageData(
             image = FakeImage(100, 100),
             imageInfo = ImageInfo(100, 100, "image/jpeg"),
-            dataFrom = DataFrom.LOCAL,
+            dataFrom = LOCAL,
             resize = Resize(200, 200),
             transformeds = listOf(createScaledTransformed(1.5f)),
             extras = mapOf("key" to "value"),
@@ -26,7 +38,7 @@ class ImageDataTest {
         ImageData(
             FakeImage(100, 100),
             ImageInfo(100, 100, "image/jpeg"),
-            DataFrom.LOCAL,
+            LOCAL,
             Resize(200, 200),
             listOf(createScaledTransformed(1.5f)),
             mapOf("key" to "value"),
@@ -34,11 +46,167 @@ class ImageDataTest {
     }
 
     @Test
+    fun testNewResult() {
+        val image1 = createBitmapImage(100, 100)
+        val image2 = createBitmapImage(200, 200)
+
+        val result = ImageData(
+            image = image1,
+            imageInfo = ImageInfo(3000, 500, "image/png"),
+            dataFrom = LOCAL,
+            resize = Resize(100, 100, LESS_PIXELS, CENTER_CROP),
+            transformeds = listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+            extras = mapOf("age" to "16"),
+        ).apply {
+            assertEquals(image1, image)
+            assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
+            assertEquals(
+                listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+                transformeds
+            )
+            assertEquals(
+                mapOf("age" to "16"),
+                this.extras
+            )
+        }
+
+        result.newImageData().apply {
+            assertNotSame(result, this)
+            assertEquals(result, this)
+            assertEquals(image1, image)
+            assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
+            assertEquals(
+                listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+                transformeds
+            )
+            assertEquals(
+                mapOf("age" to "16"),
+                this.extras
+            )
+        }
+
+        result.newImageData(image = image2).apply {
+            assertNotSame(result, this)
+            assertNotEquals(result, this)
+            assertEquals(image2, image)
+            assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
+            assertEquals(
+                listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+                transformeds
+            )
+            assertEquals(
+                mapOf("age" to "16"),
+                this.extras
+            )
+        }
+
+        result.newImageData(imageInfo = result.imageInfo.copy(size = Size(200, 200)))
+            .apply {
+                assertNotSame(result, this)
+                assertNotEquals(result, this)
+                assertEquals(image1, image)
+                assertEquals(ImageInfo(200, 200, "image/png"), imageInfo)
+                assertEquals(expected = LOCAL, actual = dataFrom)
+                assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
+                assertEquals(
+                    listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+                    transformeds
+                )
+                assertEquals(
+                    mapOf("age" to "16"),
+                    this.extras
+                )
+            }
+
+        result.newImageData(dataFrom = MEMORY).apply {
+            assertNotSame(result, this)
+            assertNotEquals(result, this)
+            assertEquals(image1, image)
+            assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
+            assertEquals(MEMORY, dataFrom)
+            assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
+            assertEquals(
+                listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+                transformeds
+            )
+            assertEquals(
+                mapOf("age" to "16"),
+                this.extras
+            )
+        }
+
+        result.newImageData {
+            addTransformed(createCircleCropTransformed(FILL))
+        }.apply {
+            assertNotSame(result, this)
+            assertNotEquals(result, this)
+            assertEquals(image1, image)
+            assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
+            assertEquals(
+                listOf(
+                    createInSampledTransformed(4),
+                    createRotateTransformed(45),
+                    createCircleCropTransformed(FILL)
+                ),
+                transformeds
+            )
+            assertEquals(
+                mapOf("age" to "16"),
+                this.extras
+            )
+        }
+
+        result.newImageData {
+            addExtras("sex", "male")
+        }.apply {
+            assertNotSame(result, this)
+            assertNotEquals(result, this)
+            assertEquals(image1, image)
+            assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertEquals(Resize(100, 100, LESS_PIXELS, CENTER_CROP), resize)
+            assertEquals(
+                listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+                transformeds
+            )
+            assertEquals(
+                mapOf("age" to "16", "sex" to "male"),
+                this.extras
+            )
+        }
+
+        result.newImageData(resize = Resize(200, 300, EXACTLY, FILL)).apply {
+            assertNotSame(result, this)
+            assertNotEquals(result, this)
+            assertEquals(image1, image)
+            assertEquals(ImageInfo(3000, 500, "image/png"), imageInfo)
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertEquals(Resize(200, 300, EXACTLY, FILL), resize)
+            assertEquals(
+                listOf(createInSampledTransformed(4), createRotateTransformed(45)),
+                transformeds
+            )
+            assertEquals(
+                mapOf("age" to "16"),
+                this.extras
+            )
+        }
+    }
+
+    @Test
     fun testEqualsAndHashCode() {
         val element1 = ImageData(
             image = FakeImage(100, 100),
             imageInfo = ImageInfo(100, 100, "image/jpeg"),
-            dataFrom = DataFrom.LOCAL,
+            dataFrom = LOCAL,
             resize = Resize(200, 200),
             transformeds = listOf(createScaledTransformed(1.5f)),
             extras = mapOf("key" to "value"),
@@ -105,7 +273,7 @@ class ImageDataTest {
         val element1 = ImageData(
             image = FakeImage(100, 100),
             imageInfo = ImageInfo(100, 100, "image/jpeg"),
-            dataFrom = DataFrom.LOCAL,
+            dataFrom = LOCAL,
             resize = Resize(200, 200),
             transformeds = listOf(createScaledTransformed(1.5f)),
             extras = mapOf("key" to "value"),

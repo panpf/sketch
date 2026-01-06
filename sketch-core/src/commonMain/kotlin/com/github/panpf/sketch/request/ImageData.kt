@@ -56,4 +56,62 @@ data class ImageData(
      * Store some additional information for consumer use
      */
     val extras: Map<String, String>?,
-)
+) {
+
+    fun newImageData(
+        image: Image = this.image,
+        imageInfo: ImageInfo = this.imageInfo,
+        dataFrom: DataFrom = this.dataFrom,
+        resize: Resize = this.resize,
+        block: (Builder.() -> Unit)? = null
+    ): ImageData = Builder(
+        image = image,
+        imageInfo = imageInfo,
+        dataFrom = dataFrom,
+        resize = resize,
+        transformeds = transformeds?.toMutableList(),
+        extras = extras?.toMutableMap(),
+    ).apply {
+        block?.invoke(this)
+    }.build()
+
+    override fun toString(): String = "ImageData(" +
+            "image=$image, " +
+            "imageInfo=$imageInfo, " +
+            "dataFrom=$dataFrom, " +
+            "resize=$resize, " +
+            "transformeds=$transformeds, " +
+            "extras=$extras" +
+            ")"
+
+    class Builder internal constructor(
+        private val image: Image,
+        private val imageInfo: ImageInfo,
+        private val dataFrom: DataFrom,
+        private val resize: Resize,
+        private var transformeds: MutableList<String>? = null,
+        private var extras: MutableMap<String, String>? = null,
+    ) {
+
+        fun addTransformed(transformed: String): Builder = apply {
+            this.transformeds = (this.transformeds ?: mutableListOf()).apply {
+                add(transformed)
+            }
+        }
+
+        fun addExtras(key: String, value: String): Builder = apply {
+            this.extras = (this.extras ?: mutableMapOf()).apply {
+                put(key, value)
+            }
+        }
+
+        fun build(): ImageData = ImageData(
+            image = image,
+            imageInfo = imageInfo,
+            dataFrom = dataFrom,
+            resize = resize,
+            transformeds = transformeds?.toList(),
+            extras = extras?.toMap(),
+        )
+    }
+}

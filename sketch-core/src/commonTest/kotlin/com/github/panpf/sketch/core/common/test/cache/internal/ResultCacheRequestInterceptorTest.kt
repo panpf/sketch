@@ -21,15 +21,15 @@ import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.cache.createImageSerializer
-import com.github.panpf.sketch.cache.internal.ResultCacheDecodeInterceptor
-import com.github.panpf.sketch.decode.DecodeInterceptor
-import com.github.panpf.sketch.decode.DecodeResult
+import com.github.panpf.sketch.cache.internal.ResultCacheRequestInterceptor
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
-import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.Depth
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.RequestInterceptor
+import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
+import com.github.panpf.sketch.request.internal.RequestInterceptorChain
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
@@ -42,7 +42,9 @@ import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.toRequestContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import okio.buffer
 import okio.use
 import kotlin.test.Test
@@ -54,7 +56,7 @@ import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class ResultCacheDecodeInterceptorTest {
+class ResultCacheRequestInterceptorTest {
 
     @Test
     fun testIntercept() = runTest {
@@ -65,17 +67,18 @@ class ResultCacheDecodeInterceptorTest {
         val (context, sketch) = getTestContextAndSketch()
         val resultCache = sketch.resultCache
 
-        val executeRequest: suspend (ImageRequest) -> DecodeResult = { request ->
-            DecodeInterceptorChain(
-                requestContext = request.toRequestContext(sketch),
-                fetchResult = null,
-                interceptors = listOf(
-                    ResultCacheDecodeInterceptor(),
-                    ExtrasTestDecodeInterceptor(),
-                    EngineDecodeInterceptor()
-                ),
-                index = 0
-            ).proceed().getOrThrow()
+        val executeRequest: suspend (ImageRequest) -> ImageData = { request ->
+            withContext(Dispatchers.Main) {
+                RequestInterceptorChain(
+                    requestContext = request.toRequestContext(sketch),
+                    interceptors = listOf(
+                        ResultCacheRequestInterceptor(),
+                        ExtrasTestRequestInterceptor(),
+                        EngineRequestInterceptor()
+                    ),
+                    index = 0
+                ).proceed(request).getOrThrow()
+            }
         }
 
         val request = ImageRequest(context, ResourceImages.jpeg.uri) {
@@ -242,17 +245,18 @@ class ResultCacheDecodeInterceptorTest {
         val (context, sketch) = getTestContextAndSketch()
         val resultCache = sketch.resultCache
 
-        val executeRequest: suspend (ImageRequest) -> DecodeResult? = { request ->
-            DecodeInterceptorChain(
-                requestContext = request.toRequestContext(sketch),
-                fetchResult = null,
-                interceptors = listOf(
-                    ResultCacheDecodeInterceptor(),
-                    ExtrasTestDecodeInterceptor(),
-                    EngineDecodeInterceptor()
-                ),
-                index = 0
-            ).proceed().getOrNull()
+        val executeRequest: suspend (ImageRequest) -> ImageData? = { request ->
+            withContext(Dispatchers.Main) {
+                RequestInterceptorChain(
+                    requestContext = request.toRequestContext(sketch),
+                    interceptors = listOf(
+                        ResultCacheRequestInterceptor(),
+                        ExtrasTestRequestInterceptor(),
+                        EngineRequestInterceptor()
+                    ),
+                    index = 0
+                ).proceed(request).getOrNull()
+            }
         }
 
         resultCache.clear()
@@ -264,7 +268,7 @@ class ResultCacheDecodeInterceptorTest {
             createImageSerializer().compress(bitmapImage, it)
         }
         resultCache.fileSystem.sink(editor.metadata).buffer().use {
-            val metadata = ResultCacheDecodeInterceptor.Metadata(
+            val metadata = ResultCacheRequestInterceptor.Metadata(
                 imageInfo = ImageInfo(width = 100, height = 100, mimeType = "image/png"),
                 resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
                 transformeds = null,
@@ -301,9 +305,9 @@ class ResultCacheDecodeInterceptorTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = ResultCacheDecodeInterceptor()
-        val element11 = ResultCacheDecodeInterceptor()
-        val element2 = ResultCacheDecodeInterceptor()
+        val element1 = ResultCacheRequestInterceptor()
+        val element11 = ResultCacheRequestInterceptor()
+        val element2 = ResultCacheRequestInterceptor()
 
         assertNotSame(illegal = element1, actual = element11)
         assertNotSame(illegal = element1, actual = element2)
@@ -323,30 +327,31 @@ class ResultCacheDecodeInterceptorTest {
     @Test
     fun testSortWeight() {
         assertEquals(
-            expected = 80,
-            actual = ResultCacheDecodeInterceptor().sortWeight
+            expected = 95,
+            actual = ResultCacheRequestInterceptor().sortWeight
         )
     }
 
     @Test
     fun testToString() {
         assertEquals(
-            expected = "ResultCacheDecodeInterceptor(sortWeight=80)",
-            actual = ResultCacheDecodeInterceptor().toString()
+            expected = "ResultCacheRequestInterceptor(sortWeight=95)",
+            actual = ResultCacheRequestInterceptor().toString()
         )
     }
 
-    class ExtrasTestDecodeInterceptor : DecodeInterceptor {
+    class ExtrasTestRequestInterceptor : RequestInterceptor {
 
         override val key: String? = null
 
         override val sortWeight: Int = 0
 
-        override suspend fun intercept(chain: DecodeInterceptor.Chain): Result<DecodeResult> {
-            val decodeResult = chain.proceed().let {
+        override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
+            val request = chain.request
+            val imageData = chain.proceed(request).let {
                 it.getOrNull() ?: return it
             }
-            val newDecodeResult = decodeResult.newResult {
+            val newDecodeResult = imageData.newImageData {
                 addExtras("key", "hasExtras")
             }
             return Result.success(newDecodeResult)
@@ -362,7 +367,7 @@ class ResultCacheDecodeInterceptorTest {
         }
 
         override fun toString(): String {
-            return "ExtrasTestDecodeInterceptor(sortWeight=$sortWeight)"
+            return "ExtrasTestRequestInterceptor(sortWeight=$sortWeight)"
         }
     }
 }

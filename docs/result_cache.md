@@ -6,7 +6,8 @@ In order to avoid repeated conversion of pictures and improve the loading speed 
 pictures [Sketch], the result cache function will store the converted pictures on disk for a long
 time, and skip the conversion process next time you read them directly from disk.
 
-The result caching function is managed by [ResultCacheDecodeInterceptor], and [DiskCache] is managed
+The result caching function is managed by [ResultCacheRequestInterceptor], and [DiskCache] is
+managed
 by the storage management.
 
 The default implementation of [DiskCache] is [LruDiskCache]:
@@ -221,6 +222,6 @@ The results cache is cleared under the following circumstances:
 
 [ImageOptions]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.common.kt
 
-[ResultCacheDecodeInterceptor]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/internal/ResultCacheDecodeInterceptor.kt
+[ResultCacheRequestInterceptor]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/internal/ResultCacheRequestInterceptor.kt
 
 [CachePolicy]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/CachePolicy.kt

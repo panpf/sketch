@@ -25,6 +25,7 @@ import com.github.panpf.sketch.source.DataFrom
  *
  * @see com.github.panpf.sketch.core.common.test.decode.DecodeResultTest
  */
+// TODO Discard it and use it instead ImageData
 data class DecodeResult(
     /**
      * The decoded Image
