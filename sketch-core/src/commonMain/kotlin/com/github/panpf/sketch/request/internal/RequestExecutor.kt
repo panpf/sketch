@@ -31,14 +31,15 @@ import com.github.panpf.sketch.util.SketchException
 import com.github.panpf.sketch.util.awaitStarted
 import com.github.panpf.sketch.util.requiredMainThread
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.job
-import kotlin.coroutines.coroutineContext
 
 /**
  * All requests start and end here
  *
  * @see com.github.panpf.sketch.core.common.test.request.internal.RequestExecutorTest
  */
+@Suppress("RedundantConstructorKeyword")
 class RequestExecutor constructor(val sketch: Sketch) {
 
     companion object {
@@ -50,7 +51,7 @@ class RequestExecutor constructor(val sketch: Sketch) {
         requiredMainThread()
 
         // Wrap the request to manage its lifecycle.
-        val requestDelegate = requestDelegate(sketch, request, coroutineContext.job)
+        val requestDelegate = requestDelegate(sketch, request, currentCoroutineContext().job)
         requestDelegate.assertActive()
 
         val request1 = applyGlobalOptions(sketch, request)
@@ -145,7 +146,7 @@ class RequestExecutor constructor(val sketch: Sketch) {
         val target = lastRequest.target
         val sketch = requestContext.sketch
         if (target != null) {
-            setImage(sketch, lastRequest, target, result) {
+            setupImageWithTransition(sketch, lastRequest, target, result) {
                 target.onSuccess(sketch, lastRequest, result, result.image)
             }
         }
@@ -182,7 +183,7 @@ class RequestExecutor constructor(val sketch: Sketch) {
         val target = lastRequest.target
         val throwable1 = errorResult.throwable
         if (target != null) {
-            setImage(sketch, lastRequest, target, errorResult) {
+            setupImageWithTransition(sketch, lastRequest, target, errorResult) {
                 target.onError(sketch, lastRequest, errorResult, errorResult.image)
             }
         }
@@ -210,33 +211,6 @@ class RequestExecutor constructor(val sketch: Sketch) {
         lastRequest.listener?.onCancel(lastRequest)
     }
 
-    @MainThread
-    private fun setImage(
-        sketch: Sketch,
-        request: ImageRequest,
-        target: Target?,
-        result: ImageResult,
-        setImage: () -> Unit
-    ) {
-        if (result.image == null) {
-            return
-        }
-
-        if (target == null) {
-            setImage()
-            return
-        }
-
-        val transition =
-            result.request.transitionFactory?.create(sketch, request, target, result)
-        if (transition == null) {
-            setImage()
-            return
-        }
-
-        transition.transition()
-    }
-
     private fun getErrorDrawable(
         sketch: Sketch,
         request: ImageRequest,
@@ -251,4 +225,31 @@ class RequestExecutor constructor(val sketch: Sketch) {
         return (stateImage?.getImage(sketch, request, throwable)
             ?: request.placeholder?.getImage(sketch, request, throwable))
     }
+}
+
+@MainThread
+fun setupImageWithTransition(
+    sketch: Sketch,
+    request: ImageRequest,
+    target: Target?,
+    result: ImageResult,
+    setImage: () -> Unit
+) {
+    if (result.image == null) {
+        return
+    }
+
+    if (target == null) {
+        setImage()
+        return
+    }
+
+    val transition =
+        result.request.transitionFactory?.create(sketch, request, target, result)
+    if (transition == null) {
+        setImage()
+        return
+    }
+
+    transition.transition()
 }

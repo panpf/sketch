@@ -22,6 +22,7 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ImageResult.Success
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
+import com.github.panpf.sketch.request.internal.PlaceholderRequestInterceptor
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.DelayDecodeInterceptor
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
@@ -288,6 +289,7 @@ class SketchTest {
             assertEquals(
                 listOf(
                     MemoryCacheRequestInterceptor(),
+                    PlaceholderRequestInterceptor(),
                     ResultCacheRequestInterceptor(),
                     EngineRequestInterceptor(),
                 ),
@@ -304,6 +306,7 @@ class SketchTest {
                 listOf(
                     TestRequestInterceptor(),
                     MemoryCacheRequestInterceptor(),
+                    PlaceholderRequestInterceptor(),
                     ResultCacheRequestInterceptor(),
                     EngineRequestInterceptor()
                 ),
@@ -312,6 +315,8 @@ class SketchTest {
             assertNotEquals(
                 listOf(
                     MemoryCacheRequestInterceptor(),
+                    PlaceholderRequestInterceptor(),
+                    ResultCacheRequestInterceptor(),
                     EngineRequestInterceptor()
                 ),
                 components.getRequestInterceptorList(ImageRequest(context, ""))
@@ -478,6 +483,7 @@ class SketchTest {
                 addFetcher(FileUriFetcher.Factory())
 
                 addRequestInterceptor(MemoryCacheRequestInterceptor())
+                addRequestInterceptor(PlaceholderRequestInterceptor())
                 addRequestInterceptor(ResultCacheRequestInterceptor())
                 addRequestInterceptor(EngineRequestInterceptor())
 

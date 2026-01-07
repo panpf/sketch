@@ -30,7 +30,6 @@ import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.RequestInterceptor.Chain
-import com.github.panpf.sketch.resize.resizeOnDraw
 import com.github.panpf.sketch.source.DataFrom
 
 /**
@@ -62,7 +61,6 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
                 } else if (memoryCachePolicy.readEnabled && request.depthHolder.depth >= Depth.MEMORY) {
                     Result.failure(DepthException("Request depth limited to ${request.depthHolder.depth}. ${request.key}"))
                 } else {
-                    callbackPlaceholder(chain)
                     chain.proceed(request).apply {
                         val newImageData = getOrNull()
                         if (newImageData != null) {
@@ -72,7 +70,6 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
                 }
             }
         } else {
-            callbackPlaceholder(chain)
             return chain.proceed(request)
         }
     }
@@ -93,33 +90,6 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
             extras = cachedValue.getExtras(),
             dataFrom = DataFrom.MEMORY_CACHE,
         )
-    }
-
-    private fun callbackPlaceholder(chain: Chain) {
-        val sketch = chain.sketch
-        val request = chain.request
-        val requestContext = chain.requestContext
-        val target = request.target
-        if (target != null) {
-            val placeholderDrawable = runCatching {
-                request.placeholder
-                    ?.getImage(sketch, request, null)
-                    ?.resizeOnDraw(request, requestContext.size)
-            }.apply {
-                if (isFailure) {
-                    val exception = exceptionOrNull()
-                    if (exception != null) {
-                        sketch.logger.e(
-                            tr = exception,
-                            msg = "Failed to get the placeholder image. '${request.key}'"
-                        )
-                    } else {
-                        sketch.logger.e(msg = "Failed to get the placeholder image. '${request.key}'")
-                    }
-                }
-            }.getOrNull()
-            target.onStart(sketch, request, placeholderDrawable)
-        }
     }
 
     @MainThread

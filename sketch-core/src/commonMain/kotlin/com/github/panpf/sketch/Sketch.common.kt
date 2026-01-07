@@ -36,6 +36,7 @@ import com.github.panpf.sketch.request.OneShotDisposable
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
+import com.github.panpf.sketch.request.internal.PlaceholderRequestInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.FileDataSource
@@ -532,6 +533,7 @@ internal fun commonComponents(): ComponentRegistry = ComponentRegistry {
     addFetcher(FileUriFetcher.Factory())
 
     addRequestInterceptor(MemoryCacheRequestInterceptor())
+    addRequestInterceptor(PlaceholderRequestInterceptor())
     addRequestInterceptor(ResultCacheRequestInterceptor())
     addRequestInterceptor(EngineRequestInterceptor())
 

@@ -29,14 +29,13 @@ import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.RequestInterceptor.Chain
 import com.github.panpf.sketch.request.internal.RequestInterceptorChain
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.FakeRequestInterceptor
 import com.github.panpf.sketch.test.utils.MyCacheKeyMapper
 import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestCountTarget
@@ -335,36 +334,5 @@ class MemoryCacheRequestInterceptorTest {
             expected = "MemoryCacheRequestInterceptor(sortWeight=90)",
             actual = MemoryCacheRequestInterceptor().toString()
         )
-    }
-
-    class FakeRequestInterceptor : RequestInterceptor {
-
-        override val key: String? = null
-
-        override val sortWeight: Int = 0
-
-        override suspend fun intercept(chain: Chain): Result<ImageData> = kotlin.runCatching {
-            val image = createBitmapImage(100, 100)
-            val imageInfo = ImageInfo(100, 100, "image/png")
-            ImageData(
-                image = image,
-                imageInfo = imageInfo,
-                resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
-                dataFrom = DataFrom.LOCAL,
-                transformeds = null,
-                extras = null
-            )
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            return other != null && this::class == other::class
-        }
-
-        override fun hashCode(): Int {
-            return this::class.hashCode()
-        }
-
-        override fun toString(): String = "FakeRequestInterceptor(sortWeight=$sortWeight)"
     }
 }
