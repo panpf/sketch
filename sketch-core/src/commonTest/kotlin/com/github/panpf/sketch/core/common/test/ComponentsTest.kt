@@ -23,7 +23,6 @@ import com.github.panpf.sketch.test.utils.TestRequestInterceptor2
 import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
-import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
@@ -105,12 +104,12 @@ class ComponentsTest {
         }
 
         Components(ComponentRegistry {
-            addDecodeInterceptor(TransformationDecodeInterceptor())
+            addDecodeInterceptor(TestDecodeInterceptor())
             addDecodeInterceptor(EngineDecodeInterceptor())
         }).apply {
             assertEquals(
                 listOf(
-                    TransformationDecodeInterceptor(),
+                    TestDecodeInterceptor(),
                     EngineDecodeInterceptor()
                 ),
                 getDecodeInterceptorList(emptyRequest)
@@ -118,7 +117,7 @@ class ComponentsTest {
             assertEquals(
                 listOf(
                     TestDecodeInterceptor2(),
-                    TransformationDecodeInterceptor(),
+                    TestDecodeInterceptor(),
                     TestDecodeInterceptor(95),
                     EngineDecodeInterceptor()
                 ),
@@ -338,14 +337,14 @@ class ComponentsTest {
             addDecoder(TestDecoder2.Factory())
             addRequestInterceptor(EngineRequestInterceptor())
             addDecodeInterceptor(EngineDecodeInterceptor())
-            addDecodeInterceptor(TransformationDecodeInterceptor())
+            addDecodeInterceptor(TestDecodeInterceptor())
         }).apply {
             assertEquals(
                 "Components(ComponentRegistry(" +
                         "fetcherFactoryList=[Base64UriFetcher,TestFetcher]," +
                         "decoderFactoryList=[TestDecoder,TestDecoder2]," +
                         "requestInterceptorList=[EngineRequestInterceptor(sortWeight=100)]," +
-                        "decodeInterceptorList=[TransformationDecodeInterceptor(sortWeight=90),EngineDecodeInterceptor(sortWeight=100)]" +
+                        "decodeInterceptorList=[TestDecodeInterceptor(sortWeight=0),EngineDecodeInterceptor(sortWeight=100)]" +
                         "))",
                 toString()
             )

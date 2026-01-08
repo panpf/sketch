@@ -20,7 +20,6 @@ import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.toRequestContext
-import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -400,14 +399,14 @@ class ComponentRegistryTest {
             addDecoder(TestDecoder2.Factory())
             addRequestInterceptor(EngineRequestInterceptor())
             addDecodeInterceptor(EngineDecodeInterceptor())
-            addDecodeInterceptor(TransformationDecodeInterceptor())
+            addDecodeInterceptor(TestDecodeInterceptor())
         }.apply {
             assertEquals(
                 "ComponentRegistry(" +
                         "fetcherFactoryList=[Base64UriFetcher,TestFetcher]," +
                         "decoderFactoryList=[TestDecoder,TestDecoder2]," +
                         "requestInterceptorList=[EngineRequestInterceptor(sortWeight=100)]," +
-                        "decodeInterceptorList=[TransformationDecodeInterceptor(sortWeight=90),EngineDecodeInterceptor(sortWeight=100)]" +
+                        "decodeInterceptorList=[TestDecodeInterceptor(sortWeight=0),EngineDecodeInterceptor(sortWeight=100)]" +
                         ")",
                 toString()
             )
@@ -517,7 +516,7 @@ class ComponentRegistryTest {
                 addDecoder(TestDecoder2.Factory())
                 addRequestInterceptor(MemoryCacheRequestInterceptor())
                 addRequestInterceptor(TestRequestInterceptor(95))
-                addDecodeInterceptor(TransformationDecodeInterceptor())
+                addDecodeInterceptor(TestDecodeInterceptor2())
                 addDecodeInterceptor(TestDecodeInterceptor(95))
             })
         }.apply {
@@ -545,7 +544,7 @@ class ComponentRegistryTest {
             )
             assertEquals(
                 listOf(
-                    TransformationDecodeInterceptor(),
+                    TestDecodeInterceptor2(),
                     TestDecodeInterceptor(95),
                     EngineDecodeInterceptor(),
                 ),

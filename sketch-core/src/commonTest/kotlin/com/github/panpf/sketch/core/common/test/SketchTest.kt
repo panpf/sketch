@@ -34,7 +34,7 @@ import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
-import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
+import com.github.panpf.sketch.transform.internal.TransformationRequestInterceptor
 import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.defaultFileSystem
@@ -291,6 +291,7 @@ class SketchTest {
                     MemoryCacheRequestInterceptor(),
                     PlaceholderRequestInterceptor(),
                     ResultCacheRequestInterceptor(),
+                    TransformationRequestInterceptor(),
                     EngineRequestInterceptor(),
                 ),
                 components.getRequestInterceptorList(ImageRequest(context, ""))
@@ -308,6 +309,7 @@ class SketchTest {
                     MemoryCacheRequestInterceptor(),
                     PlaceholderRequestInterceptor(),
                     ResultCacheRequestInterceptor(),
+                    TransformationRequestInterceptor(),
                     EngineRequestInterceptor()
                 ),
                 components.getRequestInterceptorList(ImageRequest(context, ""))
@@ -317,6 +319,7 @@ class SketchTest {
                     MemoryCacheRequestInterceptor(),
                     PlaceholderRequestInterceptor(),
                     ResultCacheRequestInterceptor(),
+                    TransformationRequestInterceptor(),
                     EngineRequestInterceptor()
                 ),
                 components.getRequestInterceptorList(ImageRequest(context, ""))
@@ -327,7 +330,6 @@ class SketchTest {
         Sketch.Builder(context).build().apply {
             assertEquals(
                 listOf(
-                    TransformationDecodeInterceptor(),
                     EngineDecodeInterceptor()
                 ),
                 components.getDecodeInterceptorList(ImageRequest(context, ""))
@@ -342,14 +344,12 @@ class SketchTest {
             assertEquals(
                 listOf(
                     TestDecodeInterceptor(),
-                    TransformationDecodeInterceptor(),
                     EngineDecodeInterceptor()
                 ),
                 components.getDecodeInterceptorList(ImageRequest(context, ""))
             )
             assertNotEquals(
                 listOf(
-                    TransformationDecodeInterceptor(),
                     EngineDecodeInterceptor()
                 ),
                 components.getDecodeInterceptorList(ImageRequest(context, ""))
@@ -485,9 +485,9 @@ class SketchTest {
                 addRequestInterceptor(MemoryCacheRequestInterceptor())
                 addRequestInterceptor(PlaceholderRequestInterceptor())
                 addRequestInterceptor(ResultCacheRequestInterceptor())
+                addRequestInterceptor(TransformationRequestInterceptor())
                 addRequestInterceptor(EngineRequestInterceptor())
 
-                addDecodeInterceptor(TransformationDecodeInterceptor())
                 addDecodeInterceptor(EngineDecodeInterceptor())
             },
             actual = commonComponents()

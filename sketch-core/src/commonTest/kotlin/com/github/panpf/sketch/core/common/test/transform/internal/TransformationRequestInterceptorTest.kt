@@ -17,11 +17,11 @@
 package com.github.panpf.sketch.core.common.test.transform.internal
 
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
-import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
+import com.github.panpf.sketch.request.internal.RequestInterceptorChain
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.size
@@ -34,35 +34,37 @@ import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.TransformResult
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transform.createCircleCropTransformed
-import com.github.panpf.sketch.transform.internal.TransformationDecodeInterceptor
+import com.github.panpf.sketch.transform.internal.TransformationRequestInterceptor
 import com.github.panpf.sketch.util.Size
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-class TransformationDecodeInterceptorTest {
+class TransformationRequestInterceptorTest {
 
     @Test
     fun testIntercept() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val interceptors =
-            listOf(EngineDecodeInterceptor())
+        val interceptors = listOf(EngineRequestInterceptor())
 
         runBlock {
             val request = ImageRequest(context, ResourceImages.jpeg.uri) {
                 size(3000, 3000)
                 precision(LESS_PIXELS)
             }
-            val chain = DecodeInterceptorChain(
+            val chain = RequestInterceptorChain(
                 requestContext = request.toRequestContext(sketch),
-                fetchResult = null,
                 interceptors = interceptors,
                 index = 0
             )
-            TransformationDecodeInterceptor().intercept(chain)
+            withContext(Dispatchers.Main) {
+                TransformationRequestInterceptor().intercept(chain)
+            }
         }.getOrThrow().apply {
             assertEquals(Size(1291, 1936), image.size)
             assertNotEquals(
@@ -83,13 +85,14 @@ class TransformationDecodeInterceptorTest {
                 precision(LESS_PIXELS)
                 transformations(CircleCropTransformation())
             }
-            val chain = DecodeInterceptorChain(
+            val chain = RequestInterceptorChain(
                 requestContext = request.toRequestContext(sketch),
-                fetchResult = null,
                 interceptors = interceptors,
                 index = 0
             )
-            TransformationDecodeInterceptor().intercept(chain)
+            withContext(Dispatchers.Main) {
+                TransformationRequestInterceptor().intercept(chain)
+            }
         }.getOrThrow().apply {
             assertEquals(Size(1291, 1291), image.size)
             assertEquals(
@@ -130,13 +133,14 @@ class TransformationDecodeInterceptorTest {
                     }
                 })
             }
-            val chain = DecodeInterceptorChain(
+            val chain = RequestInterceptorChain(
                 requestContext = request.toRequestContext(sketch),
-                fetchResult = null,
                 interceptors = interceptors,
                 index = 0
             )
-            TransformationDecodeInterceptor().intercept(chain)
+            withContext(Dispatchers.Main) {
+                TransformationRequestInterceptor().intercept(chain)
+            }
         }.getOrThrow().apply {
             assertEquals(Size(1291, 1936), image.size)
             assertNotEquals(
@@ -177,13 +181,14 @@ class TransformationDecodeInterceptorTest {
                     }
                 })
             }
-            val chain = DecodeInterceptorChain(
+            val chain = RequestInterceptorChain(
                 requestContext = request.toRequestContext(sketch),
-                fetchResult = null,
                 interceptors = interceptors,
                 index = 0
             )
-            TransformationDecodeInterceptor().intercept(chain)
+            withContext(Dispatchers.Main) {
+                TransformationRequestInterceptor().intercept(chain)
+            }
         }.getOrThrow().apply {
             assertEquals(Size(1291, 1936), image.size)
             assertNotEquals(
@@ -201,15 +206,15 @@ class TransformationDecodeInterceptorTest {
 
     @Test
     fun testSortWeight() {
-        TransformationDecodeInterceptor().apply {
-            assertEquals(90, sortWeight)
+        TransformationRequestInterceptor().apply {
+            assertEquals(97, sortWeight)
         }
     }
 
     @Test
     fun testEqualsAndHashCode() {
-        val ele1 = TransformationDecodeInterceptor()
-        val ele11 = TransformationDecodeInterceptor()
+        val ele1 = TransformationRequestInterceptor()
+        val ele11 = TransformationRequestInterceptor()
 
         assertEquals(ele1, ele11)
         assertNotEquals(ele1, Any())
@@ -221,8 +226,8 @@ class TransformationDecodeInterceptorTest {
     @Test
     fun testToString() {
         assertEquals(
-            "TransformationDecodeInterceptor(sortWeight=90)",
-            TransformationDecodeInterceptor().toString()
+            "TransformationRequestInterceptor(sortWeight=97)",
+            TransformationRequestInterceptor().toString()
         )
     }
 }
