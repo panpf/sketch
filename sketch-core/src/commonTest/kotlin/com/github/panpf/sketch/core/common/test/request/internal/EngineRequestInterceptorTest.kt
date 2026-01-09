@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.core.common.test.request.internal
 
+import com.github.panpf.sketch.fetch.internal.FetcherRequestInterceptor
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
@@ -31,12 +32,38 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 
 class EngineRequestInterceptorTest {
 
     @Test
     fun testIntercept() = runTest {
+        runInNewSketchWithUse({
+            components {
+                addFetcher(TestHttpUriFetcher.Factory(it))
+            }
+        }) { context, sketch ->
+            val executeRequest: suspend (ImageRequest) -> ImageData = { request ->
+                val chain = RequestInterceptorChain(
+                    requestContext = request.toRequestContext(sketch),
+                    interceptors = listOf(FetcherRequestInterceptor(), EngineRequestInterceptor()),
+                    index = 0,
+                )
+                withContext(Dispatchers.Main) {
+                    chain.proceed(request)
+                }.getOrThrow()
+            }
+
+            executeRequest(ImageRequest(context, ResourceImages.jpeg.uri)).asOrThrow<ImageData>()
+
+            executeRequest(ImageRequest(context, TestHttpStack.testImages.first().uri))
+                .asOrThrow<ImageData>()
+        }
+    }
+
+    @Test
+    fun testIntercept2() = runTest {
         runInNewSketchWithUse({
             components {
                 addFetcher(TestHttpUriFetcher.Factory(it))
@@ -53,10 +80,9 @@ class EngineRequestInterceptorTest {
                 }.getOrThrow()
             }
 
-            executeRequest(ImageRequest(context, ResourceImages.jpeg.uri)).asOrThrow<ImageData>()
-
-            executeRequest(ImageRequest(context, TestHttpStack.testImages.first().uri))
-                .asOrThrow<ImageData>()
+            assertFailsWith(IllegalArgumentException::class) {
+                executeRequest(ImageRequest(context, ResourceImages.jpeg.uri))
+            }
         }
     }
 

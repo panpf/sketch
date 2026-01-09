@@ -28,6 +28,7 @@ import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
+import com.github.panpf.sketch.fetch.internal.FetcherRequestInterceptor
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
@@ -536,6 +537,7 @@ internal fun commonComponents(): ComponentRegistry = ComponentRegistry {
     addRequestInterceptor(PlaceholderRequestInterceptor())
     addRequestInterceptor(ResultCacheRequestInterceptor())
     addRequestInterceptor(TransformationRequestInterceptor())
+    addRequestInterceptor(FetcherRequestInterceptor())
     addRequestInterceptor(EngineRequestInterceptor())
 
     addDecodeInterceptor(EngineDecodeInterceptor())

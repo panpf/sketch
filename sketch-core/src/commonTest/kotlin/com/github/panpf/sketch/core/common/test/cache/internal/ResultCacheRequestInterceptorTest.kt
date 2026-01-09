@@ -23,6 +23,7 @@ import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.cache.createImageSerializer
 import com.github.panpf.sketch.cache.internal.ResultCacheRequestInterceptor
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.fetch.internal.FetcherRequestInterceptor
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.ImageData
@@ -74,6 +75,7 @@ class ResultCacheRequestInterceptorTest {
                     interceptors = listOf(
                         ResultCacheRequestInterceptor(),
                         ExtrasTestRequestInterceptor(),
+                        FetcherRequestInterceptor(),
                         EngineRequestInterceptor()
                     ),
                     index = 0
@@ -252,6 +254,7 @@ class ResultCacheRequestInterceptorTest {
                     interceptors = listOf(
                         ResultCacheRequestInterceptor(),
                         ExtrasTestRequestInterceptor(),
+                        FetcherRequestInterceptor(),
                         EngineRequestInterceptor()
                     ),
                     index = 0

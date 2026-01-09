@@ -16,12 +16,9 @@
 
 package com.github.panpf.sketch.decode.internal
 
-import com.github.panpf.sketch.Components
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.DecodeResult
-import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.RequestContext
 
 /**
  * The final decode interceptor is used to actually execute the decode
@@ -40,19 +37,12 @@ class EngineDecodeInterceptor : DecodeInterceptor {
     ): Result<DecodeResult> = runCatching {
         val components = chain.sketch.components
         val requestContext = chain.requestContext
-        val fetchResult = chain.fetchResult ?: newFetch(components, requestContext)
+        val fetchResult = requireNotNull(chain.fetchResult) {
+            "FetchResult is null, please make sure to add FetcherRequestInterceptor before EngineDecodeInterceptor"
+        }
         val decoder = components.newDecoderOrThrow(requestContext, fetchResult)
         val decodeResult = decoder.decode()
         decodeResult
-    }
-
-    private suspend fun newFetch(
-        components: Components,
-        requestContext: RequestContext
-    ): FetchResult {
-        val fetcher = components.newFetcherOrThrow(requestContext)
-        val fetchResult = fetcher.fetch().getOrThrow()
-        return fetchResult
     }
 
     override fun equals(other: Any?): Boolean {

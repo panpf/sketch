@@ -23,6 +23,7 @@
 * change: ResultCacheDecodeInterceptor 改为 ResultCacheRequestInterceptor
 * change: TransformationDecodeInterceptor 改为 TransformationRequestInterceptor
 * change: 新增 PlaceholderRequestInterceptor 负责创建和回调 placeholder
+* change: 新增 FetcherRequestInterceptor 负责执行 Fetcher
 
 # 4.4.0-alpha01
 

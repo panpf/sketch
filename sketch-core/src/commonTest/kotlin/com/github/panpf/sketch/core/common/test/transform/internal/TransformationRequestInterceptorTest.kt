@@ -17,6 +17,7 @@
 package com.github.panpf.sketch.core.common.test.transform.internal
 
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.fetch.internal.FetcherRequestInterceptor
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
@@ -50,7 +51,11 @@ class TransformationRequestInterceptorTest {
     @Test
     fun testIntercept() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val interceptors = listOf(EngineRequestInterceptor())
+        val interceptors = listOf(
+            TransformationRequestInterceptor(),
+            FetcherRequestInterceptor(),
+            EngineRequestInterceptor()
+        )
 
         runBlock {
             val request = ImageRequest(context, ResourceImages.jpeg.uri) {
@@ -63,7 +68,7 @@ class TransformationRequestInterceptorTest {
                 index = 0
             )
             withContext(Dispatchers.Main) {
-                TransformationRequestInterceptor().intercept(chain)
+                chain.proceed(request)
             }
         }.getOrThrow().apply {
             assertEquals(Size(1291, 1936), image.size)
@@ -91,7 +96,7 @@ class TransformationRequestInterceptorTest {
                 index = 0
             )
             withContext(Dispatchers.Main) {
-                TransformationRequestInterceptor().intercept(chain)
+                chain.proceed(request)
             }
         }.getOrThrow().apply {
             assertEquals(Size(1291, 1291), image.size)
@@ -139,7 +144,7 @@ class TransformationRequestInterceptorTest {
                 index = 0
             )
             withContext(Dispatchers.Main) {
-                TransformationRequestInterceptor().intercept(chain)
+                chain.proceed(request)
             }
         }.getOrThrow().apply {
             assertEquals(Size(1291, 1936), image.size)
@@ -187,7 +192,7 @@ class TransformationRequestInterceptorTest {
                 index = 0
             )
             withContext(Dispatchers.Main) {
-                TransformationRequestInterceptor().intercept(chain)
+                chain.proceed(request)
             }
         }.getOrThrow().apply {
             assertEquals(Size(1291, 1936), image.size)

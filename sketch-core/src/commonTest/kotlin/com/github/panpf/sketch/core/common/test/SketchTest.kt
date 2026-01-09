@@ -12,6 +12,7 @@ import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.KtorHttpUriFetcher
+import com.github.panpf.sketch.fetch.internal.FetcherRequestInterceptor
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.merged
 import com.github.panpf.sketch.platformComponents
@@ -292,6 +293,7 @@ class SketchTest {
                     PlaceholderRequestInterceptor(),
                     ResultCacheRequestInterceptor(),
                     TransformationRequestInterceptor(),
+                    FetcherRequestInterceptor(),
                     EngineRequestInterceptor(),
                 ),
                 components.getRequestInterceptorList(ImageRequest(context, ""))
@@ -310,6 +312,7 @@ class SketchTest {
                     PlaceholderRequestInterceptor(),
                     ResultCacheRequestInterceptor(),
                     TransformationRequestInterceptor(),
+                    FetcherRequestInterceptor(),
                     EngineRequestInterceptor()
                 ),
                 components.getRequestInterceptorList(ImageRequest(context, ""))
@@ -320,6 +323,7 @@ class SketchTest {
                     PlaceholderRequestInterceptor(),
                     ResultCacheRequestInterceptor(),
                     TransformationRequestInterceptor(),
+                    FetcherRequestInterceptor(),
                     EngineRequestInterceptor()
                 ),
                 components.getRequestInterceptorList(ImageRequest(context, ""))
@@ -486,6 +490,7 @@ class SketchTest {
                 addRequestInterceptor(PlaceholderRequestInterceptor())
                 addRequestInterceptor(ResultCacheRequestInterceptor())
                 addRequestInterceptor(TransformationRequestInterceptor())
+                addRequestInterceptor(FetcherRequestInterceptor())
                 addRequestInterceptor(EngineRequestInterceptor())
 
                 addDecodeInterceptor(EngineDecodeInterceptor())

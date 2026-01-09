@@ -26,6 +26,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
 * change: ResultCacheDecodeInterceptor change to ResultCacheRequestInterceptor
 * change: TransformationDecodeInterceptor change to TransformationRequestInterceptor
 * change: Added PlaceholderRequestInterceptor responsible for creating and calling back placeholders
+* change: Added FetcherRequestInterceptor responsible for executing Fetcher
 
 # 4.4.0-alpha01
 

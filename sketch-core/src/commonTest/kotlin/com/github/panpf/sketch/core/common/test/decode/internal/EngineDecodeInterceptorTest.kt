@@ -29,6 +29,7 @@ import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
 
@@ -46,9 +47,14 @@ class EngineDecodeInterceptorTest {
             size(3000, 3000)
             precision(LESS_PIXELS)
         }
+        val requestContext = request.toRequestContext(sketch)
+        val fetchResult = sketch.components
+            .newFetcherOrThrow(requestContext)
+            .fetch()
+            .getOrThrow()
         val chain = DecodeInterceptorChain(
-            requestContext = request.toRequestContext(sketch),
-            fetchResult = null,
+            requestContext = requestContext,
+            fetchResult = fetchResult,
             interceptors = interceptors,
             index = 0
         )
@@ -61,6 +67,29 @@ class EngineDecodeInterceptorTest {
         )
         assertEquals(DataFrom.LOCAL, result.dataFrom)
         assertNull(result.transformeds)
+    }
+
+    @Test
+    fun testIntercept2() = runTest {
+        if (Platform.current == Platform.iOS) {
+            // Files in kotlin resources cannot be accessed in ios test environment.
+            return@runTest
+        }
+        val (context, sketch) = getTestContextAndSketch()
+        val interceptors = listOf(EngineDecodeInterceptor())
+        val request = ImageRequest(context, ResourceImages.jpeg.uri) {
+            size(3000, 3000)
+            precision(LESS_PIXELS)
+        }
+        val chain = DecodeInterceptorChain(
+            requestContext = request.toRequestContext(sketch),
+            fetchResult = null,
+            interceptors = interceptors,
+            index = 0
+        )
+        assertFailsWith(IllegalArgumentException::class) {
+            chain.proceed().getOrThrow()
+        }
     }
 
     @Test

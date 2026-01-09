@@ -38,10 +38,13 @@ class EngineRequestInterceptor : RequestInterceptor {
         val sketch = chain.sketch
         val request = chain.request
         val requestContext = chain.requestContext
+        val fetchResult = requireNotNull(requestContext.fetchResult) {
+            "FetchResult is null, please make sure to add FetcherRequestInterceptor before EngineRequestInterceptor"
+        }
         val decodeResult = withContext(sketch.decodeTaskDispatcher) {
             DecodeInterceptorChain(
                 requestContext = requestContext,
-                fetchResult = null,
+                fetchResult = fetchResult,
                 interceptors = sketch.components.getDecodeInterceptorList(request),
                 index = 0,
             ).proceed()

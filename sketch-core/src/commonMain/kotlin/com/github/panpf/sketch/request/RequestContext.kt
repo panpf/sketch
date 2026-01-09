@@ -20,6 +20,7 @@ package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CacheKeyMapper
+import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.internal.newCacheKey
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.util.Size
@@ -149,6 +150,11 @@ class RequestContext constructor(
      */
     val downloadCacheKey: String
         get() = downloadCacheKeyLazy.value
+
+    /**
+     * The result of fetch, null if not fetched yet
+     */
+    var fetchResult: FetchResult? = null
 
 
     /**
