@@ -11,8 +11,12 @@ import com.github.panpf.sketch.source.DataFrom
 
 class TestMemoryCacheRequestIntercept : RequestInterceptor {
 
+    companion object {
+        const val SORT_WEIGHT = 100
+    }
+
     override val key: String = "endRequestInterceptor"
-    override val sortWeight: Int = 100
+    override val sortWeight: Int = SORT_WEIGHT
 
     var executeCount = 0
 

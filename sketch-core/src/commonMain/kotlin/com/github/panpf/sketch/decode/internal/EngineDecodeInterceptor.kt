@@ -27,9 +27,12 @@ import com.github.panpf.sketch.decode.DecodeResult
  */
 class EngineDecodeInterceptor : DecodeInterceptor {
 
-    override val key: String? = null
+    companion object {
+        const val SORT_WEIGHT = 100
+    }
 
-    override val sortWeight: Int = 100
+    override val key: String? = null
+    override val sortWeight: Int = SORT_WEIGHT
 
     @WorkerThread
     override suspend fun intercept(

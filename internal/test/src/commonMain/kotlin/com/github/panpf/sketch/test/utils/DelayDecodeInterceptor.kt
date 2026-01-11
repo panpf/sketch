@@ -9,10 +9,12 @@ data class DelayDecodeInterceptor(
     val onIntercept: (() -> Unit)? = null
 ) : DecodeInterceptor {
 
-    override val key: String? = null
+    companion object {
+        const val SORT_WEIGHT = 0
+    }
 
-    override val sortWeight: Int
-        get() = 0
+    override val key: String? = null
+    override val sortWeight: Int = SORT_WEIGHT
 
     override suspend fun intercept(chain: DecodeInterceptor.Chain): Result<DecodeResult> {
         onIntercept?.invoke()

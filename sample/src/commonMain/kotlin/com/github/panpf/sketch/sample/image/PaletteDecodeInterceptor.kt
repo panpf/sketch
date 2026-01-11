@@ -9,9 +9,12 @@ import com.kmpalette.palette.graphics.Palette
 
 class PaletteDecodeInterceptor : DecodeInterceptor {
 
-    override val key: String? = null
+    companion object {
+        const val SORT_WEIGHT = 95
+    }
 
-    override val sortWeight: Int = 95
+    override val key: String? = null
+    override val sortWeight: Int = SORT_WEIGHT
 
     override suspend fun intercept(chain: Chain): Result<DecodeResult> {
         val result = chain.proceed()

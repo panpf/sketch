@@ -29,9 +29,12 @@ import kotlinx.coroutines.withContext
  */
 class EngineRequestInterceptor : RequestInterceptor {
 
-    override val key: String? = null
+    companion object {
+        const val SORT_WEIGHT = 100
+    }
 
-    override val sortWeight: Int = 100
+    override val key: String? = null
+    override val sortWeight: Int = SORT_WEIGHT
 
     @MainThread
     override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {

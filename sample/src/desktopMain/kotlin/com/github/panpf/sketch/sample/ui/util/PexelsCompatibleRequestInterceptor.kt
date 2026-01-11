@@ -9,9 +9,12 @@ import com.github.panpf.sketch.request.httpHeaders
 
 class PexelsCompatibleRequestInterceptor : RequestInterceptor {
 
-    override val key: String? = null
+    companion object {
+        const val SORT_WEIGHT = 80
+    }
 
-    override val sortWeight: Int = 80
+    override val key: String? = null
+    override val sortWeight: Int = SORT_WEIGHT
 
     override suspend fun intercept(chain: Chain): Result<ImageData> {
         val request = chain.request

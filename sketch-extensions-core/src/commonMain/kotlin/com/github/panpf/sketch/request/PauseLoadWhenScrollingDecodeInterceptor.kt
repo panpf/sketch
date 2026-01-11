@@ -41,6 +41,7 @@ fun ComponentRegistry.Builder.supportPauseLoadWhenScrolling(): ComponentRegistry
 class PauseLoadWhenScrollingDecodeInterceptor() : DecodeInterceptor {
 
     companion object {
+        const val SORT_WEIGHT = 0
         private val scrollingFlow = MutableStateFlow(false)
 
         var scrolling: Boolean
@@ -51,7 +52,7 @@ class PauseLoadWhenScrollingDecodeInterceptor() : DecodeInterceptor {
     }
 
     override val key: String? = null
-    override val sortWeight: Int = 0
+    override val sortWeight: Int = SORT_WEIGHT
     var enabled = true
 
     override suspend fun intercept(chain: DecodeInterceptor.Chain): Result<DecodeResult> {

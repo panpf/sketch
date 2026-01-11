@@ -45,9 +45,12 @@ import okio.use
  */
 class ResultCacheRequestInterceptor : RequestInterceptor {
 
-    override val key: String? = null
+    companion object {
+        const val SORT_WEIGHT = 95
+    }
 
-    override val sortWeight: Int = 95
+    override val key: String? = null
+    override val sortWeight: Int = SORT_WEIGHT
 
     @MainThread
     override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {

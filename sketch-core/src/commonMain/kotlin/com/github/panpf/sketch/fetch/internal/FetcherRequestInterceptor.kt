@@ -28,9 +28,12 @@ import kotlinx.coroutines.withContext
  */
 class FetcherRequestInterceptor : RequestInterceptor {
 
-    override val key: String? = null
+    companion object {
+        const val SORT_WEIGHT = 99
+    }
 
-    override val sortWeight: Int = 99
+    override val key: String? = null
+    override val sortWeight: Int = SORT_WEIGHT
 
     @MainThread
     override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {

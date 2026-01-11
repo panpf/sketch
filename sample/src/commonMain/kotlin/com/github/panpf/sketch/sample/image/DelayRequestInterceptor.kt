@@ -9,10 +9,12 @@ data class DelayRequestInterceptor(
     val onIntercept: (() -> Unit)? = null
 ) : RequestInterceptor {
 
-    override val key: String? = null
+    companion object {
+        const val SORT_WEIGHT = 0
+    }
 
-    override val sortWeight: Int
-        get() = 0
+    override val key: String? = null
+    override val sortWeight: Int = SORT_WEIGHT
 
     override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
         onIntercept?.invoke()

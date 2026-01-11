@@ -42,12 +42,13 @@ class SaveCellularTrafficRequestInterceptor constructor(
 ) : RequestInterceptor {
 
     companion object {
+        const val SORT_WEIGHT = 0
         private const val SAVE_CELLULAR_TRAFFIC_OLD_DEPTH_KEY =
             "sketch#save_cellular_traffic_old_depth"
     }
 
     override val key: String? = null
-    override val sortWeight: Int = 0
+    override val sortWeight: Int = SORT_WEIGHT
     var enabled = true
 
     private val isCellularNetworkConnected: (Sketch) -> Boolean =

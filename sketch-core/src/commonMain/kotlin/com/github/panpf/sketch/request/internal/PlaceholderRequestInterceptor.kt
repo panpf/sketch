@@ -28,9 +28,12 @@ import com.github.panpf.sketch.resize.resizeOnDraw
  */
 class PlaceholderRequestInterceptor : RequestInterceptor {
 
-    override val key: String? = null
+    companion object {
+        const val SORT_WEIGHT = 93
+    }
 
-    override val sortWeight: Int = 93
+    override val key: String? = null
+    override val sortWeight: Int = SORT_WEIGHT
 
     @MainThread
     override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {

@@ -41,9 +41,12 @@ import com.github.panpf.sketch.source.DataFrom
  */
 class MemoryCacheRequestInterceptor : RequestInterceptor {
 
-    override val key: String? = null
+    companion object {
+        const val SORT_WEIGHT = 90
+    }
 
-    override val sortWeight: Int = 90
+    override val key: String? = null
+    override val sortWeight: Int = SORT_WEIGHT
 
     @MainThread
     override suspend fun intercept(chain: Chain): Result<ImageData> {

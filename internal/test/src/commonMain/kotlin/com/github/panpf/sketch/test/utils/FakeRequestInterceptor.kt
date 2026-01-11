@@ -10,9 +10,12 @@ import com.github.panpf.sketch.source.DataFrom
 
 class FakeRequestInterceptor : RequestInterceptor {
 
-    override val key: String? = null
+    companion object {
+        const val SORT_WEIGHT = 0
+    }
 
-    override val sortWeight: Int = 0
+    override val key: String? = null
+    override val sortWeight: Int = SORT_WEIGHT
 
     override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> =
         runCatching {
