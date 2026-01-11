@@ -84,7 +84,7 @@ class FetcherRequestInterceptorTest {
     @Test
     fun testToString() {
         assertEquals(
-            "FetcherRequestInterceptor(sortWeight=99)",
+            "FetcherRequestInterceptor",
             FetcherRequestInterceptor().toString()
         )
     }

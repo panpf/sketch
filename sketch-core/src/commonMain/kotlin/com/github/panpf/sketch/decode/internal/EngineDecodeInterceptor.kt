@@ -54,5 +54,5 @@ class EngineDecodeInterceptor : DecodeInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "EngineDecodeInterceptor(sortWeight=$sortWeight)"
+    override fun toString(): String = "EngineDecodeInterceptor"
 }

@@ -112,7 +112,7 @@ class EngineRequestInterceptorTest {
     @Test
     fun testToString() {
         assertEquals(
-            "EngineRequestInterceptor(sortWeight=100)",
+            "EngineRequestInterceptor",
             EngineRequestInterceptor().toString()
         )
     }

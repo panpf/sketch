@@ -338,7 +338,7 @@ class ResultCacheRequestInterceptorTest {
     @Test
     fun testToString() {
         assertEquals(
-            expected = "ResultCacheRequestInterceptor(sortWeight=95)",
+            expected = "ResultCacheRequestInterceptor",
             actual = ResultCacheRequestInterceptor().toString()
         )
     }
@@ -346,7 +346,6 @@ class ResultCacheRequestInterceptorTest {
     class ExtrasTestRequestInterceptor : RequestInterceptor {
 
         override val key: String? = null
-
         override val sortWeight: Int = 0
 
         override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
@@ -370,7 +369,7 @@ class ResultCacheRequestInterceptorTest {
         }
 
         override fun toString(): String {
-            return "ExtrasTestRequestInterceptor(sortWeight=$sortWeight)"
+            return "ExtrasTestRequestInterceptor"
         }
     }
 }

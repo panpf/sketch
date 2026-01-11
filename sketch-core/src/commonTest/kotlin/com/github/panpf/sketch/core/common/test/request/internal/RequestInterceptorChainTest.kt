@@ -101,7 +101,7 @@ class RequestInterceptorChainTest {
         }
 
         override fun toString(): String {
-            return "TestRequestInterceptor1(sortWeight=$sortWeight)"
+            return "TestRequestInterceptor1"
         }
     }
 
@@ -127,7 +127,7 @@ class RequestInterceptorChainTest {
         }
 
         override fun toString(): String {
-            return "TestRequestInterceptor2(sortWeight=$sortWeight)"
+            return "TestRequestInterceptor2"
         }
     }
 
@@ -162,7 +162,7 @@ class RequestInterceptorChainTest {
         }
 
         override fun toString(): String {
-            return "TestRequestInterceptor3(sortWeight=$sortWeight)"
+            return "TestRequestInterceptor3"
         }
     }
 }

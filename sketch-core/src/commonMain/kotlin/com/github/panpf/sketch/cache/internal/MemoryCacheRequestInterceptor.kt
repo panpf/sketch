@@ -128,5 +128,5 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "MemoryCacheRequestInterceptor(sortWeight=$sortWeight)"
+    override fun toString(): String = "MemoryCacheRequestInterceptor"
 }

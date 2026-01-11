@@ -90,6 +90,5 @@ class TransformationRequestInterceptor : RequestInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String =
-        "TransformationRequestInterceptor(sortWeight=$sortWeight)"
+    override fun toString(): String = "TransformationRequestInterceptor"
 }

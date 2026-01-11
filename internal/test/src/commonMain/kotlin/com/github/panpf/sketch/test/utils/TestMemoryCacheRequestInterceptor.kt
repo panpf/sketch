@@ -39,5 +39,5 @@ class TestMemoryCacheRequestIntercept : RequestInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "TestMemoryCacheRequestIntercept(sortWeight=$sortWeight)"
+    override fun toString(): String = "TestMemoryCacheRequestIntercept"
 }

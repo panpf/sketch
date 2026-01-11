@@ -64,5 +64,5 @@ class PlaceholderRequestInterceptor : RequestInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "PlaceholderRequestInterceptor(sortWeight=$sortWeight)"
+    override fun toString(): String = "PlaceholderRequestInterceptor"
 }

@@ -331,7 +331,7 @@ class MemoryCacheRequestInterceptorTest {
     @Test
     fun testToString() {
         assertEquals(
-            expected = "MemoryCacheRequestInterceptor(sortWeight=90)",
+            expected = "MemoryCacheRequestInterceptor",
             actual = MemoryCacheRequestInterceptor().toString()
         )
     }

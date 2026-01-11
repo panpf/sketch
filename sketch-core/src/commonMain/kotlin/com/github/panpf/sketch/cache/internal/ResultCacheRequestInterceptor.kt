@@ -174,7 +174,7 @@ class ResultCacheRequestInterceptor : RequestInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "ResultCacheRequestInterceptor(sortWeight=$sortWeight)"
+    override fun toString(): String = "ResultCacheRequestInterceptor"
 
     class Metadata(
         val imageInfo: ImageInfo,

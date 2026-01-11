@@ -231,7 +231,7 @@ class TransformationRequestInterceptorTest {
     @Test
     fun testToString() {
         assertEquals(
-            "TransformationRequestInterceptor(sortWeight=97)",
+            "TransformationRequestInterceptor",
             TransformationRequestInterceptor().toString()
         )
     }

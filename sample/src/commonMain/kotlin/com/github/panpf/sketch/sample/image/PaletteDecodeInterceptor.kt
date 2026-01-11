@@ -49,7 +49,7 @@ class PaletteDecodeInterceptor : DecodeInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "PaletteDecodeInterceptor(sortWeight=$sortWeight)"
+    override fun toString(): String = "PaletteDecodeInterceptor"
 }
 
 val DecodeResult.simplePalette: SimplePalette?

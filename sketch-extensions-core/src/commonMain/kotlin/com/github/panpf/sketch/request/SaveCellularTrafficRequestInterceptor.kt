@@ -38,17 +38,16 @@ fun ComponentRegistry.Builder.supportSaveCellularTraffic(): ComponentRegistry.Bu
  * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficRequestInterceptorTest
  */
 class SaveCellularTrafficRequestInterceptor constructor(
-    override val sortWeight: Int = 0,
     isCellularNetworkConnected: ((Sketch) -> Boolean)? = null
 ) : RequestInterceptor {
-
-    override val key: String? = null
 
     companion object {
         private const val SAVE_CELLULAR_TRAFFIC_OLD_DEPTH_KEY =
             "sketch#save_cellular_traffic_old_depth"
     }
 
+    override val key: String? = null
+    override val sortWeight: Int = 0
     var enabled = true
 
     private val isCellularNetworkConnected: (Sketch) -> Boolean =
@@ -102,16 +101,12 @@ class SaveCellularTrafficRequestInterceptor constructor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as SaveCellularTrafficRequestInterceptor
-        if (sortWeight != other.sortWeight) return false
-        return true
+        return other != null && this::class == other::class
     }
 
     override fun hashCode(): Int {
-        return sortWeight
+        return this::class.hashCode()
     }
 
-    override fun toString(): String =
-        "SaveCellularTrafficRequestInterceptor(sortWeight=$sortWeight,enabled=$enabled)"
+    override fun toString(): String = "SaveCellularTrafficRequestInterceptor"
 }

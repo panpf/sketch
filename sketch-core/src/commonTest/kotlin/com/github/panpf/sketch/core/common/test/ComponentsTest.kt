@@ -343,8 +343,8 @@ class ComponentsTest {
                 "Components(ComponentRegistry(" +
                         "fetcherFactoryList=[Base64UriFetcher,TestFetcher]," +
                         "decoderFactoryList=[TestDecoder,TestDecoder2]," +
-                        "requestInterceptorList=[EngineRequestInterceptor(sortWeight=100)]," +
-                        "decodeInterceptorList=[TestDecodeInterceptor(sortWeight=0),EngineDecodeInterceptor(sortWeight=100)]" +
+                        "requestInterceptorList=[EngineRequestInterceptor]," +
+                        "decodeInterceptorList=[TestDecodeInterceptor(sortWeight=0),EngineDecodeInterceptor]" +
                         "))",
                 toString()
             )

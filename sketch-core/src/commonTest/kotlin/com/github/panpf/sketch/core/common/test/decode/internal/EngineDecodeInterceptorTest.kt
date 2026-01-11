@@ -118,7 +118,7 @@ class EngineDecodeInterceptorTest {
     @Test
     fun testToString() {
         assertEquals(
-            "EngineDecodeInterceptor(sortWeight=100)",
+            "EngineDecodeInterceptor",
             EngineDecodeInterceptor().toString()
         )
     }

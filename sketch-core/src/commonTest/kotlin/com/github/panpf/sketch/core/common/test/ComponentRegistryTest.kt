@@ -353,7 +353,7 @@ class ComponentRegistryTest {
                 "ComponentRegistry(" +
                         "fetcherFactoryList=[TestFetcher]," +
                         "decoderFactoryList=[TestDecoder]," +
-                        "requestInterceptorList=[EngineRequestInterceptor(sortWeight=100)]," +
+                        "requestInterceptorList=[EngineRequestInterceptor]," +
                         "decodeInterceptorList=[TestDecodeInterceptor2(sortWeight=0)]" +
                         ")",
                 toString()
@@ -366,7 +366,7 @@ class ComponentRegistryTest {
                 "ComponentRegistry(" +
                         "fetcherFactoryList=[TestFetcher,TestFetcher]," +
                         "decoderFactoryList=[TestDecoder,TestDecoder]," +
-                        "requestInterceptorList=[TestRequestInterceptor(sortWeight=0),EngineRequestInterceptor(sortWeight=100)]," +
+                        "requestInterceptorList=[TestRequestInterceptor(sortWeight=0),EngineRequestInterceptor]," +
                         "decodeInterceptorList=[TestDecodeInterceptor(sortWeight=0),TestDecodeInterceptor2(sortWeight=0)]" +
                         ")",
                 toString()
@@ -405,8 +405,8 @@ class ComponentRegistryTest {
                 "ComponentRegistry(" +
                         "fetcherFactoryList=[Base64UriFetcher,TestFetcher]," +
                         "decoderFactoryList=[TestDecoder,TestDecoder2]," +
-                        "requestInterceptorList=[EngineRequestInterceptor(sortWeight=100)]," +
-                        "decodeInterceptorList=[TestDecodeInterceptor(sortWeight=0),EngineDecodeInterceptor(sortWeight=100)]" +
+                        "requestInterceptorList=[EngineRequestInterceptor]," +
+                        "decodeInterceptorList=[TestDecodeInterceptor(sortWeight=0),EngineDecodeInterceptor]" +
                         ")",
                 toString()
             )

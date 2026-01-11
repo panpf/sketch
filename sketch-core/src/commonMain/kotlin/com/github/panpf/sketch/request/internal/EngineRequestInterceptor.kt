@@ -72,5 +72,5 @@ class EngineRequestInterceptor : RequestInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "EngineRequestInterceptor(sortWeight=$sortWeight)"
+    override fun toString(): String = "EngineRequestInterceptor"
 }

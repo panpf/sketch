@@ -120,7 +120,7 @@ class DecodeInterceptorChainTest {
         }
 
         override fun toString(): String {
-            return "TestDecodeInterceptor1(sortWeight=$sortWeight)"
+            return "TestDecodeInterceptor1"
         }
     }
 
@@ -146,7 +146,7 @@ class DecodeInterceptorChainTest {
         }
 
         override fun toString(): String {
-            return "TestDecodeInterceptor2(sortWeight=$sortWeight)"
+            return "TestDecodeInterceptor2"
         }
     }
 
@@ -181,7 +181,7 @@ class DecodeInterceptorChainTest {
         }
 
         override fun toString(): String {
-            return "TestDecodeInterceptor3(sortWeight=$sortWeight)"
+            return "TestDecodeInterceptor3"
         }
     }
 }

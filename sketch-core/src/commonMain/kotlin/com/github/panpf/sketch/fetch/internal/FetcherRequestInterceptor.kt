@@ -63,6 +63,5 @@ class FetcherRequestInterceptor : RequestInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String =
-        "FetcherRequestInterceptor(sortWeight=$sortWeight)"
+    override fun toString(): String = "FetcherRequestInterceptor"
 }

@@ -71,7 +71,7 @@ class SaveCellularTrafficRequestInterceptorTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[]," +
-                        "requestInterceptorList=[SaveCellularTrafficRequestInterceptor(sortWeight=0,enabled=true)]," +
+                        "requestInterceptorList=[SaveCellularTrafficRequestInterceptor]," +
                         "decodeInterceptorList=[]" +
                         ")",
                 actual = toString()
@@ -86,7 +86,7 @@ class SaveCellularTrafficRequestInterceptorTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[]," +
-                        "requestInterceptorList=[SaveCellularTrafficRequestInterceptor(sortWeight=0,enabled=true),SaveCellularTrafficRequestInterceptor(sortWeight=0,enabled=true)]," +
+                        "requestInterceptorList=[SaveCellularTrafficRequestInterceptor,SaveCellularTrafficRequestInterceptor]," +
                         "decodeInterceptorList=[]" +
                         ")",
                 actual = toString()
@@ -302,41 +302,26 @@ class SaveCellularTrafficRequestInterceptorTest {
         SaveCellularTrafficRequestInterceptor().apply {
             assertEquals(0, sortWeight)
         }
-
-        SaveCellularTrafficRequestInterceptor(30).apply {
-            assertEquals(30, sortWeight)
-        }
     }
 
     @Test
     fun testEqualsAndHashCode() {
         val element1 = SaveCellularTrafficRequestInterceptor()
         val element11 = SaveCellularTrafficRequestInterceptor().apply { enabled = false }
-        val element2 = SaveCellularTrafficRequestInterceptor(30)
 
 
         assertEquals(element1, element11)
-        assertNotEquals(element1, element2)
         assertNotEquals(element1, null as SaveCellularTrafficRequestInterceptor?)
         assertNotEquals(element1, Any())
 
         assertEquals(element1.hashCode(), element11.hashCode())
-        assertNotEquals(element1.hashCode(), element2.hashCode())
     }
 
     @Test
     fun testToString() {
         SaveCellularTrafficRequestInterceptor().apply {
             assertEquals(
-                "SaveCellularTrafficRequestInterceptor(sortWeight=0,enabled=true)",
-                toString()
-            )
-        }
-
-        SaveCellularTrafficRequestInterceptor(30).apply {
-            enabled = false
-            assertEquals(
-                "SaveCellularTrafficRequestInterceptor(sortWeight=30,enabled=false)",
+                "SaveCellularTrafficRequestInterceptor",
                 toString()
             )
         }

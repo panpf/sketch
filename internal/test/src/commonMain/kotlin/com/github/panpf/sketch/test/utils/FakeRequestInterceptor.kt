@@ -37,5 +37,5 @@ class FakeRequestInterceptor : RequestInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "FakeRequestInterceptor(sortWeight=$sortWeight)"
+    override fun toString(): String = "FakeRequestInterceptor"
 }

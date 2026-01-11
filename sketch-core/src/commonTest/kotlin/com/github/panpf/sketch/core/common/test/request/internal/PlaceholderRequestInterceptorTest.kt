@@ -109,7 +109,7 @@ class PlaceholderRequestInterceptorTest {
     @Test
     fun testToString() {
         assertEquals(
-            expected = "PlaceholderRequestInterceptor(sortWeight=93)",
+            expected = "PlaceholderRequestInterceptor",
             actual = PlaceholderRequestInterceptor().toString()
         )
     }

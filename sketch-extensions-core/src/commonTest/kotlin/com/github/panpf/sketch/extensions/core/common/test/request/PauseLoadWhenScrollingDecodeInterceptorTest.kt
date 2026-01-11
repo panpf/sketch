@@ -73,7 +73,7 @@ class PauseLoadWhenScrollingDecodeInterceptorTest {
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[]," +
                         "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[PauseLoadWhenScrollingDecodeInterceptor(sortWeight=0,enabled=true)]" +
+                        "decodeInterceptorList=[PauseLoadWhenScrollingDecodeInterceptor]" +
                         ")",
                 actual = toString()
             )
@@ -88,7 +88,7 @@ class PauseLoadWhenScrollingDecodeInterceptorTest {
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[]," +
                         "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[PauseLoadWhenScrollingDecodeInterceptor(sortWeight=0,enabled=true),PauseLoadWhenScrollingDecodeInterceptor(sortWeight=0,enabled=true)]" +
+                        "decodeInterceptorList=[PauseLoadWhenScrollingDecodeInterceptor,PauseLoadWhenScrollingDecodeInterceptor]" +
                         ")",
                 actual = toString()
             )
@@ -169,41 +169,25 @@ class PauseLoadWhenScrollingDecodeInterceptorTest {
         PauseLoadWhenScrollingDecodeInterceptor().apply {
             assertEquals(0, sortWeight)
         }
-
-        PauseLoadWhenScrollingDecodeInterceptor(30).apply {
-            assertEquals(30, sortWeight)
-        }
     }
 
     @Test
     fun testEqualsAndHashCode() {
         val element1 = PauseLoadWhenScrollingDecodeInterceptor()
         val element11 = PauseLoadWhenScrollingDecodeInterceptor().apply { enabled = false }
-        val element2 = PauseLoadWhenScrollingDecodeInterceptor(30)
-
 
         assertEquals(element1, element11)
-        assertNotEquals(element1, element2)
         assertNotEquals(element1, null as PauseLoadWhenScrollingDecodeInterceptor?)
         assertNotEquals(element1, Any())
 
         assertEquals(element1.hashCode(), element11.hashCode())
-        assertNotEquals(element1.hashCode(), element2.hashCode())
     }
 
     @Test
     fun testToString() {
         PauseLoadWhenScrollingDecodeInterceptor().apply {
             assertEquals(
-                "PauseLoadWhenScrollingDecodeInterceptor(sortWeight=0,enabled=true)",
-                toString()
-            )
-        }
-
-        PauseLoadWhenScrollingDecodeInterceptor(30).apply {
-            enabled = false
-            assertEquals(
-                "PauseLoadWhenScrollingDecodeInterceptor(sortWeight=30,enabled=false)",
+                "PauseLoadWhenScrollingDecodeInterceptor",
                 toString()
             )
         }

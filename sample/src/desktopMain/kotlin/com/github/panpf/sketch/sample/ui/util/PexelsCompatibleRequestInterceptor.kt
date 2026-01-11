@@ -42,6 +42,6 @@ class PexelsCompatibleRequestInterceptor : RequestInterceptor {
     }
 
     override fun toString(): String {
-        return "PexelsCompatibleRequestInterceptor(sortWeight=$sortWeight)"
+        return "PexelsCompatibleRequestInterceptor"
     }
 }

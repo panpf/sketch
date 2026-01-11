@@ -38,9 +38,7 @@ fun ComponentRegistry.Builder.supportPauseLoadWhenScrolling(): ComponentRegistry
  * @see ImageRequest.Builder.pauseLoadWhenScrolling
  * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingDecodeInterceptorTest
  */
-class PauseLoadWhenScrollingDecodeInterceptor(
-    override val sortWeight: Int = 0
-) : DecodeInterceptor {
+class PauseLoadWhenScrollingDecodeInterceptor() : DecodeInterceptor {
 
     companion object {
         private val scrollingFlow = MutableStateFlow(false)
@@ -52,9 +50,9 @@ class PauseLoadWhenScrollingDecodeInterceptor(
             }
     }
 
-    var enabled = true
-
     override val key: String? = null
+    override val sortWeight: Int = 0
+    var enabled = true
 
     override suspend fun intercept(chain: DecodeInterceptor.Chain): Result<DecodeResult> {
         val request = chain.request
@@ -70,16 +68,12 @@ class PauseLoadWhenScrollingDecodeInterceptor(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other == null || this::class != other::class) return false
-        other as PauseLoadWhenScrollingDecodeInterceptor
-        if (sortWeight != other.sortWeight) return false
-        return true
+        return other != null && this::class == other::class
     }
 
     override fun hashCode(): Int {
-        return sortWeight
+        return this::class.hashCode()
     }
 
-    override fun toString(): String =
-        "PauseLoadWhenScrollingDecodeInterceptor(sortWeight=$sortWeight,enabled=$enabled)"
+    override fun toString(): String = "PauseLoadWhenScrollingDecodeInterceptor"
 }

@@ -30,10 +30,6 @@ class TestRequestInterceptor(override val sortWeight: Int = 0) : RequestIntercep
         })
     }
 
-    override fun toString(): String {
-        return "TestRequestInterceptor(sortWeight=$sortWeight)"
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
@@ -44,5 +40,9 @@ class TestRequestInterceptor(override val sortWeight: Int = 0) : RequestIntercep
 
     override fun hashCode(): Int {
         return sortWeight
+    }
+
+    override fun toString(): String {
+        return "TestRequestInterceptor(sortWeight=$sortWeight)"
     }
 }
