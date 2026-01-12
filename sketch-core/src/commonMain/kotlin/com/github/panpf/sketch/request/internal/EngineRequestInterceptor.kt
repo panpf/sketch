@@ -26,6 +26,7 @@ import kotlinx.coroutines.withContext
  *
  * @see com.github.panpf.sketch.core.common.test.request.internal.EngineRequestInterceptorTest
  */
+// TODO Change to DecoderInterceptor
 class EngineRequestInterceptor : RequestInterceptor {
 
     companion object {
