@@ -49,6 +49,7 @@ class KtorStackTest {
         }
     }
 
+    // TODO Needs to be refactored. Because it often fails
     @Test
     fun testGetResponseTime() = runTest {
         val time1 = Clock.System.now().toEpochMilliseconds()
