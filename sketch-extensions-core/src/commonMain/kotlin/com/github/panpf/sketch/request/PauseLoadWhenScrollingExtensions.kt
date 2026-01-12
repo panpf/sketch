@@ -20,7 +20,7 @@ private const val PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY = "sketch#pause_load_whe
 private const val PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY = "sketch#pause_load_when_scrolling_ignored"
 
 /**
- * Set to enable or disable the function of pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDecodeInterceptor]
+ * Set to enable or disable the function of pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingRequestInterceptor]
  *
  * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingExtensionsTest.testPauseLoadWhenScrolling
  */
@@ -42,7 +42,7 @@ val ImageRequest.isPauseLoadWhenScrolling: Boolean
     get() = extras?.value<Boolean>(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY) == true
 
 /**
- * Set to enable or disable the function of pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDecodeInterceptor]
+ * Set to enable or disable the function of pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingRequestInterceptor]
  *
  * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingExtensionsTest.testPauseLoadWhenScrolling
  */
@@ -69,7 +69,7 @@ val ImageOptions.isPauseLoadWhenScrolling: Boolean
 
 
 /**
- * Set to enable or disable the function of ignore pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDecodeInterceptor]
+ * Set to enable or disable the function of ignore pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingRequestInterceptor]
  *
  * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingExtensionsTest.testIgnorePauseLoadWhenScrolling
  */
@@ -91,7 +91,7 @@ val ImageRequest.isIgnoredPauseLoadWhenScrolling: Boolean
     get() = extras?.value<Boolean>(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY) == true
 
 /**
- * Set to enable or disable the function of ignore pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingDecodeInterceptor]
+ * Set to enable or disable the function of ignore pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingRequestInterceptor]
  *
  * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingExtensionsTest.testIgnorePauseLoadWhenScrolling
  */

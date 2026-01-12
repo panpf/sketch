@@ -36,20 +36,20 @@ fun ListContent() {
 }
 ```
 
-再注册 [PauseLoadWhenScrollingDecodeInterceptor] 请求拦截器，如下：
+再注册 [PauseLoadWhenScrollingRequestInterceptor] 请求拦截器，如下：
 
 ```kotlin
 // 在自定义 Sketch 时为所有 ImageRequest 注册
 Sketch.Builder(context).apply {
     components {
-        addDecodeInterceptor(PauseLoadWhenScrollingDecodeInterceptor())
+        addRequestInterceptor(PauseLoadWhenScrollingRequestInterceptor())
     }
 }.build()
 
 // 加载图片时为单个 ImageRequest 注册
 ImageRequest(context, "https://example.com/image.jpg") {
     components {
-        addDecodeInterceptor(PauseLoadWhenScrollingDecodeInterceptor())
+        addRequestInterceptor(PauseLoadWhenScrollingRequestInterceptor())
     }
 }
 ```
@@ -70,4 +70,4 @@ ImageRequest(context, "https://example.com/image.jpg") {
 
 [ImageRequest]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
 
-[PauseLoadWhenScrollingDecodeInterceptor]: ../sketch-extensions-core/src/commonMain/kotlin/com/github/panpf/sketch/request/PauseLoadWhenScrollingDecodeInterceptor.kt
+[PauseLoadWhenScrollingRequestInterceptor]: ../sketch-extensions-core/src/commonMain/kotlin/com/github/panpf/sketch/request/PauseLoadWhenScrollingRequestInterceptor.kt

@@ -24,6 +24,7 @@
 * change: TransformationDecodeInterceptor 改为 TransformationRequestInterceptor
 * change: 新增 PlaceholderRequestInterceptor 负责创建和回调 placeholder
 * change: 新增 FetcherRequestInterceptor 负责执行 Fetcher
+* change: PauseLoadWhenScrollingDecodeInterceptor 改为 PauseLoadWhenScrollingRequestInterceptor
 
 # 4.4.0-alpha01
 

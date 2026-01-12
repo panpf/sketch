@@ -18,7 +18,7 @@ package com.github.panpf.sketch.util
 
 import android.widget.AbsListView
 import androidx.recyclerview.widget.RecyclerView
-import com.github.panpf.sketch.request.PauseLoadWhenScrollingDecodeInterceptor
+import com.github.panpf.sketch.request.PauseLoadWhenScrollingRequestInterceptor
 
 /**
  * Listen to the scrolling events of RecyclerView and AbsListView, pause loading of images when scrolling starts, and resume loading of images when scrolling ends.
@@ -33,12 +33,12 @@ class PauseLoadWhenScrollingMixedScrollListener(
         super.onScrollStateChanged(recyclerView, newState)
         if (recyclerView.adapter != null) {
             if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                if (!PauseLoadWhenScrollingDecodeInterceptor.scrolling) {
-                    PauseLoadWhenScrollingDecodeInterceptor.scrolling = true
+                if (!PauseLoadWhenScrollingRequestInterceptor.scrolling) {
+                    PauseLoadWhenScrollingRequestInterceptor.scrolling = true
                 }
             } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                if (PauseLoadWhenScrollingDecodeInterceptor.scrolling) {
-                    PauseLoadWhenScrollingDecodeInterceptor.scrolling = false
+                if (PauseLoadWhenScrollingRequestInterceptor.scrolling) {
+                    PauseLoadWhenScrollingRequestInterceptor.scrolling = false
                 }
             }
         }
@@ -47,12 +47,12 @@ class PauseLoadWhenScrollingMixedScrollListener(
     override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {
         if (view.adapter != null) {
             if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-                if (!PauseLoadWhenScrollingDecodeInterceptor.scrolling) {
-                    PauseLoadWhenScrollingDecodeInterceptor.scrolling = true
+                if (!PauseLoadWhenScrollingRequestInterceptor.scrolling) {
+                    PauseLoadWhenScrollingRequestInterceptor.scrolling = true
                 }
             } else if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                if (PauseLoadWhenScrollingDecodeInterceptor.scrolling) {
-                    PauseLoadWhenScrollingDecodeInterceptor.scrolling = false
+                if (PauseLoadWhenScrollingRequestInterceptor.scrolling) {
+                    PauseLoadWhenScrollingRequestInterceptor.scrolling = false
                 }
             }
         }

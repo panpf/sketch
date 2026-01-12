@@ -20,10 +20,10 @@ import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
-import com.github.panpf.sketch.request.PauseLoadWhenScrollingDecodeInterceptor
+import com.github.panpf.sketch.request.PauseLoadWhenScrollingRequestInterceptor
 
 /**
- * Bind [PauseLoadWhenScrollingDecodeInterceptor] to [ScrollableState], so that when the user scrolls, the image loading will be paused
+ * Bind [PauseLoadWhenScrollingRequestInterceptor] to [ScrollableState], so that when the user scrolls, the image loading will be paused
  *
  * @see com.github.panpf.sketch.extensions.compose.common.test.ability.PauseLoadWhenScrollingTest.testBindPauseLoadWhenScrolling
  */
@@ -31,7 +31,7 @@ import com.github.panpf.sketch.request.PauseLoadWhenScrollingDecodeInterceptor
 fun bindPauseLoadWhenScrolling(scrollableState: ScrollableState) {
     LaunchedEffect(scrollableState) {
         snapshotFlow { scrollableState.isScrollInProgress }.collect {
-            PauseLoadWhenScrollingDecodeInterceptor.scrolling = it
+            PauseLoadWhenScrollingRequestInterceptor.scrolling = it
         }
     }
 }

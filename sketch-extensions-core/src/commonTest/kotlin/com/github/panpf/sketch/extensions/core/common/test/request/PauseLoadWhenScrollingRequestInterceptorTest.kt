@@ -18,14 +18,13 @@ package com.github.panpf.sketch.extensions.core.common.test.request
 
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.DecodeInterceptor
-import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.PauseLoadWhenScrollingDecodeInterceptor
+import com.github.panpf.sketch.request.PauseLoadWhenScrollingRequestInterceptor
 import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.request.ignorePauseLoadWhenScrolling
 import com.github.panpf.sketch.request.isIgnoredPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.isPauseLoadWhenScrolling
@@ -49,7 +48,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
-class PauseLoadWhenScrollingDecodeInterceptorTest {
+class PauseLoadWhenScrollingRequestInterceptorTest {
 
     @Test
     fun testSupportPauseLoadWhenScrolling() {
@@ -72,8 +71,8 @@ class PauseLoadWhenScrollingDecodeInterceptorTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[PauseLoadWhenScrollingDecodeInterceptor]" +
+                        "requestInterceptorList=[PauseLoadWhenScrollingRequestInterceptor]," +
+                        "decodeInterceptorList=[]" +
                         ")",
                 actual = toString()
             )
@@ -87,8 +86,8 @@ class PauseLoadWhenScrollingDecodeInterceptorTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[PauseLoadWhenScrollingDecodeInterceptor,PauseLoadWhenScrollingDecodeInterceptor]" +
+                        "requestInterceptorList=[PauseLoadWhenScrollingRequestInterceptor,PauseLoadWhenScrollingRequestInterceptor]," +
+                        "decodeInterceptorList=[]" +
                         ")",
                 actual = toString()
             )
@@ -98,29 +97,29 @@ class PauseLoadWhenScrollingDecodeInterceptorTest {
     @Test
     fun test() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val interceptor = PauseLoadWhenScrollingDecodeInterceptor()
+        val interceptor = PauseLoadWhenScrollingRequestInterceptor()
 
         try {
             ImageRequest(context, ResourceImages.jpeg.uri).let { request ->
                 assertTrue(interceptor.enabled)
-                assertFalse(PauseLoadWhenScrollingDecodeInterceptor.scrolling)
+                assertFalse(PauseLoadWhenScrollingRequestInterceptor.scrolling)
                 assertFalse(request.isPauseLoadWhenScrolling)
                 assertFalse(request.isIgnoredPauseLoadWhenScrolling)
                 val job = async {
-                    interceptor.intercept(request.toDecodeInterceptorChain(sketch))
+                    interceptor.intercept(request.toRequestInterceptorChain(sketch))
                 }
                 delay(1000)
                 assertTrue(job.isCompleted)
             }
 
             ImageRequest(context, ResourceImages.jpeg.uri).let { request ->
-                PauseLoadWhenScrollingDecodeInterceptor.scrolling = true
+                PauseLoadWhenScrollingRequestInterceptor.scrolling = true
                 assertTrue(interceptor.enabled)
-                assertTrue(PauseLoadWhenScrollingDecodeInterceptor.scrolling)
+                assertTrue(PauseLoadWhenScrollingRequestInterceptor.scrolling)
                 assertFalse(request.isPauseLoadWhenScrolling)
                 assertFalse(request.isIgnoredPauseLoadWhenScrolling)
                 val job = async {
-                    interceptor.intercept(request.toDecodeInterceptorChain(sketch))
+                    interceptor.intercept(request.toRequestInterceptorChain(sketch))
                 }
                 delay(1000)
                 assertTrue(job.isCompleted)
@@ -129,17 +128,17 @@ class PauseLoadWhenScrollingDecodeInterceptorTest {
             ImageRequest(context, ResourceImages.jpeg.uri) {
                 pauseLoadWhenScrolling()
             }.let { request ->
-                PauseLoadWhenScrollingDecodeInterceptor.scrolling = true
+                PauseLoadWhenScrollingRequestInterceptor.scrolling = true
                 assertTrue(interceptor.enabled)
-                assertTrue(PauseLoadWhenScrollingDecodeInterceptor.scrolling)
+                assertTrue(PauseLoadWhenScrollingRequestInterceptor.scrolling)
                 assertTrue(request.isPauseLoadWhenScrolling)
                 assertFalse(request.isIgnoredPauseLoadWhenScrolling)
                 val job = async {
-                    interceptor.intercept(request.toDecodeInterceptorChain(sketch))
+                    interceptor.intercept(request.toRequestInterceptorChain(sketch))
                 }
                 delay(1000)
                 assertFalse(job.isCompleted)
-                PauseLoadWhenScrollingDecodeInterceptor.scrolling = false
+                PauseLoadWhenScrollingRequestInterceptor.scrolling = false
                 delay(1000)
                 assertTrue(job.isCompleted)
             }
@@ -148,36 +147,36 @@ class PauseLoadWhenScrollingDecodeInterceptorTest {
                 pauseLoadWhenScrolling()
                 ignorePauseLoadWhenScrolling()
             }.let { request ->
-                PauseLoadWhenScrollingDecodeInterceptor.scrolling = true
+                PauseLoadWhenScrollingRequestInterceptor.scrolling = true
                 assertTrue(interceptor.enabled)
-                assertTrue(PauseLoadWhenScrollingDecodeInterceptor.scrolling)
+                assertTrue(PauseLoadWhenScrollingRequestInterceptor.scrolling)
                 assertTrue(request.isPauseLoadWhenScrolling)
                 assertTrue(request.isIgnoredPauseLoadWhenScrolling)
                 val job = async {
-                    interceptor.intercept(request.toDecodeInterceptorChain(sketch))
+                    interceptor.intercept(request.toRequestInterceptorChain(sketch))
                 }
                 delay(1000)
                 assertTrue(job.isCompleted)
             }
         } finally {
-            PauseLoadWhenScrollingDecodeInterceptor.scrolling = false
+            PauseLoadWhenScrollingRequestInterceptor.scrolling = false
         }
     }
 
     @Test
     fun testSortWeight() {
-        PauseLoadWhenScrollingDecodeInterceptor().apply {
-            assertEquals(0, sortWeight)
+        PauseLoadWhenScrollingRequestInterceptor().apply {
+            assertEquals(94, sortWeight)
         }
     }
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = PauseLoadWhenScrollingDecodeInterceptor()
-        val element11 = PauseLoadWhenScrollingDecodeInterceptor().apply { enabled = false }
+        val element1 = PauseLoadWhenScrollingRequestInterceptor()
+        val element11 = PauseLoadWhenScrollingRequestInterceptor().apply { enabled = false }
 
         assertEquals(element1, element11)
-        assertNotEquals(element1, null as PauseLoadWhenScrollingDecodeInterceptor?)
+        assertNotEquals(element1, null as PauseLoadWhenScrollingRequestInterceptor?)
         assertNotEquals(element1, Any())
 
         assertEquals(element1.hashCode(), element11.hashCode())
@@ -185,39 +184,40 @@ class PauseLoadWhenScrollingDecodeInterceptorTest {
 
     @Test
     fun testToString() {
-        PauseLoadWhenScrollingDecodeInterceptor().apply {
+        PauseLoadWhenScrollingRequestInterceptor().apply {
             assertEquals(
-                "PauseLoadWhenScrollingDecodeInterceptor",
+                "PauseLoadWhenScrollingRequestInterceptor",
                 toString()
             )
         }
     }
 
-    private suspend fun ImageRequest.toDecodeInterceptorChain(sketch: Sketch): DecodeInterceptor.Chain {
-        return TestDecodeInterceptorChain(
+    private suspend fun ImageRequest.toRequestInterceptorChain(sketch: Sketch): RequestInterceptor.Chain {
+        val fetchResult = sketch.components.newFetcherOrThrow(
+            this@toRequestInterceptorChain.toRequestContext(sketch, Size.Empty)
+        ).fetch()
+            .getOrThrow()
+        val requestContext = this.toRequestContext(sketch)
+        requestContext.fetchResult = fetchResult
+        return TestRequestInterceptorChain(
             sketch = sketch,
             request = this,
-            requestContext = this.toRequestContext(sketch),
-            fetchResult = sketch.components.newFetcherOrThrow(
-                this@toDecodeInterceptorChain.toRequestContext(sketch, Size.Empty)
-            ).fetch()
-                .getOrThrow()
+            requestContext = requestContext,
         )
     }
 
-    class TestDecodeInterceptorChain(
+    class TestRequestInterceptorChain(
         override val sketch: Sketch,
         override val request: ImageRequest,
         override val requestContext: RequestContext,
-        override val fetchResult: FetchResult?
-    ) : DecodeInterceptor.Chain {
+    ) : RequestInterceptor.Chain {
 
         private var finalRequest = request
 
-        override suspend fun proceed(): Result<DecodeResult> {
+        override suspend fun proceed(request: ImageRequest): Result<ImageData> {
             finalRequest = request
             return Result.success(
-                DecodeResult(
+                ImageData(
                     image = FakeImage(SketchSize(100, 100)),
                     imageInfo = ImageInfo(100, 100, "image/xml"),
                     dataFrom = LOCAL,

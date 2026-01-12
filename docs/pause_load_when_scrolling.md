@@ -37,20 +37,20 @@ fun ListContent() {
 }
 ```
 
-Then register the [PauseLoadWhenScrollingDecodeInterceptor] request interceptor, as follows:
+Then register the [PauseLoadWhenScrollingRequestInterceptor] request interceptor, as follows:
 
 ```kotlin
 // Register for all ImageRequests when customizing Sketch
 Sketch.Builder(context).apply {
     components {
-        addDecodeInterceptor(PauseLoadWhenScrollingDecodeInterceptor())
+        addRequestInterceptor(PauseLoadWhenScrollingRequestInterceptor())
     }
 }.build()
 
 // Register for a single ImageRequest when loading an image
 ImageRequest(context, "https://example.com/image.jpg") {
     components {
-        addDecodeInterceptor(PauseLoadWhenScrollingDecodeInterceptor())
+        addRequestInterceptor(PauseLoadWhenScrollingRequestInterceptor())
     }
 }
 ```
@@ -71,4 +71,4 @@ ImageRequest(context, "https://example.com/image.jpg") {
 
 [ImageRequest]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
 
-[PauseLoadWhenScrollingDecodeInterceptor]: ../sketch-extensions-core/src/commonMain/kotlin/com/github/panpf/sketch/request/PauseLoadWhenScrollingDecodeInterceptor.kt
+[PauseLoadWhenScrollingRequestInterceptor]: ../sketch-extensions-core/src/commonMain/kotlin/com/github/panpf/sketch/request/PauseLoadWhenScrollingRequestInterceptor.kt

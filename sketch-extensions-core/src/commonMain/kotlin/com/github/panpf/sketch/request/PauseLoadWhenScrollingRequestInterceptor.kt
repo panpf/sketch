@@ -17,8 +17,7 @@
 package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.decode.DecodeInterceptor
-import com.github.panpf.sketch.decode.DecodeResult
+import com.github.panpf.sketch.cache.internal.ResultCacheRequestInterceptor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -26,22 +25,22 @@ import kotlinx.coroutines.flow.first
 /**
  * Adds Pause loading new images while the list is scrolling support
  *
- * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingDecodeInterceptorTest.testSupportPauseLoadWhenScrolling
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingRequestInterceptorTest.testSupportPauseLoadWhenScrolling
  */
 fun ComponentRegistry.Builder.supportPauseLoadWhenScrolling(): ComponentRegistry.Builder = apply {
-    addDecodeInterceptor(PauseLoadWhenScrollingDecodeInterceptor())
+    addRequestInterceptor(PauseLoadWhenScrollingRequestInterceptor())
 }
 
 /**
  * Pause loading new images while the list is scrolling
  *
  * @see ImageRequest.Builder.pauseLoadWhenScrolling
- * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingDecodeInterceptorTest
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingRequestInterceptorTest
  */
-class PauseLoadWhenScrollingDecodeInterceptor() : DecodeInterceptor {
+class PauseLoadWhenScrollingRequestInterceptor() : RequestInterceptor {
 
-    companion object {
-        const val SORT_WEIGHT = 0
+    companion object Companion {
+        const val SORT_WEIGHT = ResultCacheRequestInterceptor.SORT_WEIGHT - 1
         private val scrollingFlow = MutableStateFlow(false)
 
         var scrolling: Boolean
@@ -55,7 +54,7 @@ class PauseLoadWhenScrollingDecodeInterceptor() : DecodeInterceptor {
     override val sortWeight: Int = SORT_WEIGHT
     var enabled = true
 
-    override suspend fun intercept(chain: DecodeInterceptor.Chain): Result<DecodeResult> {
+    override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
         val request = chain.request
         if (enabled
             && request.isPauseLoadWhenScrolling
@@ -64,7 +63,7 @@ class PauseLoadWhenScrollingDecodeInterceptor() : DecodeInterceptor {
         ) {
             scrollingFlow.filter { !it }.first()
         }
-        return chain.proceed()
+        return chain.proceed(request)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -76,5 +75,5 @@ class PauseLoadWhenScrollingDecodeInterceptor() : DecodeInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "PauseLoadWhenScrollingDecodeInterceptor"
+    override fun toString(): String = "PauseLoadWhenScrollingRequestInterceptor"
 }
