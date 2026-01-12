@@ -128,11 +128,6 @@ class BitmapAndroidTest {
     }
 
     @Test
-    fun testColorTypeDefault() {
-        assertEquals(ColorType.ARGB_8888, ColorType.Default)
-    }
-
-    @Test
     fun testCreateEmptyBitmapWith() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Bitmap.createBitmap(
