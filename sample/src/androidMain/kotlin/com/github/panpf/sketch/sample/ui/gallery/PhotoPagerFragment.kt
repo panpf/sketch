@@ -35,7 +35,7 @@ import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentImagePagerBinding
-import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor
+import com.github.panpf.sketch.sample.image.PaletteRequestInterceptor
 import com.github.panpf.sketch.sample.image.palette.PhotoPalette
 import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
@@ -183,7 +183,7 @@ class PhotoPagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
             crossfade(alwaysUse = true, durationMillis = 400)
             resizeOnDraw()
             components {
-                addDecodeInterceptor(PaletteDecodeInterceptor())
+                addRequestInterceptor(PaletteRequestInterceptor())
             }
         }
     }

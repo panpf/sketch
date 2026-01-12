@@ -1,46 +1,44 @@
 package com.github.panpf.sketch.sample.image
 
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.BitmapImage
-import com.github.panpf.sketch.decode.DecodeInterceptor
-import com.github.panpf.sketch.decode.DecodeInterceptor.Chain
-import com.github.panpf.sketch.decode.DecodeResult
+import com.github.panpf.sketch.cache.internal.ResultCacheRequestInterceptor
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.RequestInterceptor
 import com.kmpalette.palette.graphics.Palette
+import kotlinx.coroutines.withContext
 
-class PaletteDecodeInterceptor : DecodeInterceptor {
+class PaletteRequestInterceptor : RequestInterceptor {
 
-    companion object {
-        const val SORT_WEIGHT = 95
+    companion object Companion {
+        const val SORT_WEIGHT = ResultCacheRequestInterceptor.SORT_WEIGHT + 1
     }
 
-    override val key: String? = null
+    override val key: String = "Palette"
     override val sortWeight: Int = SORT_WEIGHT
 
-    override suspend fun intercept(chain: Chain): Result<DecodeResult> {
-        val result = chain.proceed()
-        val decodeResult = result.getOrNull() ?: return result
-        val image = decodeResult.image
-        val bitmap = if (image is BitmapImage) {
-            image.bitmap
-        } else {
-            return result
-        }
-        val palette = try {
-            Palette.Builder(bitmap).generate()
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            return result
-        }
-        val propertyString = palette.toPropertyString()
-        @Suppress("FoldInitializerAndIfToElvis", "RedundantSuppression")
-        if (propertyString == null) {
-            chain.sketch.logger.e("PaletteDecodeInterceptor. palette is empty")
-            return result
-        }
-        val newDecodeResult = decodeResult.newResult {
-            addExtras("simple_palette", propertyString)
-        }
-        return Result.success(newDecodeResult)
+    @MainThread
+    override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
+        val result = chain.proceed(chain.request)
+        val imageData = result.getOrNull() ?: return result
+        val image = imageData.image
+        if (image !is BitmapImage) return result
+        val bitmap = image.bitmap
+        val newImageData = withContext(chain.sketch.decodeTaskDispatcher) {
+            runCatching {
+                val palette = Palette.Builder(bitmap).generate()
+                val propertyString = palette.toPropertyString()
+                    ?: throw Exception("Palette is empty")
+                imageData.newImageData {
+                    addExtras("simple_palette", propertyString)
+                }
+            }
+        }.onFailure {
+            chain.sketch.logger.e("PaletteRequestInterceptor. $it")
+        }.getOrNull()
+            ?: return result
+        return Result.success(newImageData)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -52,10 +50,10 @@ class PaletteDecodeInterceptor : DecodeInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "PaletteDecodeInterceptor"
+    override fun toString(): String = "PaletteRequestInterceptor"
 }
 
-val DecodeResult.simplePalette: SimplePalette?
+val ImageData.simplePalette: SimplePalette?
     get() = extras?.get("simple_palette")
         ?.trim()?.takeIf { it.isNotEmpty() }
         ?.let {

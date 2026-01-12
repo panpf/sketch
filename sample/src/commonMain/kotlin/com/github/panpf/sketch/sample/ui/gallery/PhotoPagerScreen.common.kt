@@ -55,7 +55,7 @@ import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.resize.Precision.SMALLER_SIZE
 import com.github.panpf.sketch.sample.AppEvents
 import com.github.panpf.sketch.sample.AppSettings
-import com.github.panpf.sketch.sample.image.PaletteDecodeInterceptor
+import com.github.panpf.sketch.sample.image.PaletteRequestInterceptor
 import com.github.panpf.sketch.sample.image.palette.PhotoPalette
 import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.resources.Res
@@ -166,7 +166,7 @@ fun PhotoPagerBackground(
         crossfade(alwaysUse = true, durationMillis = 400)
         resizeOnDraw()
         components {
-            addDecodeInterceptor(PaletteDecodeInterceptor())
+            addRequestInterceptor(PaletteRequestInterceptor())
         }
     }
     AsyncImage(
