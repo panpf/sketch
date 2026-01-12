@@ -504,7 +504,6 @@ Basic functions:
 * [ExifOrientation: Correct the image orientation][exif_orientation]
 * [ImageOptions: Manage image configurations in a unified manner][image_options]
 * [RequestInterceptor: Intercept ImageRequest][request_interceptor]
-* [DecodeInterceptor: Intercept the decoding process][decode_interceptor]
 * [Preload images into memory][preload]
 * [Download images][download]
 * [Lifecycle][lifecycle]
@@ -599,8 +598,6 @@ Featured functions:
 [progress_indicator]: progress_indicator.md
 
 [request_interceptor]: request_interceptor.md
-
-[decode_interceptor]: decode_interceptor.md
 
 [resize]: resize.md
 

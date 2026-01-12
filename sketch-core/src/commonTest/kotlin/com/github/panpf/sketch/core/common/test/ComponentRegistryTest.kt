@@ -2,7 +2,6 @@ package com.github.panpf.sketch.core.common.test
 
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
-import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.isNotEmpty
@@ -11,8 +10,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.Platform
-import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
-import com.github.panpf.sketch.test.utils.TestDecodeInterceptor2
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestDecoder2
 import com.github.panpf.sketch.test.utils.TestFetcher
@@ -49,7 +46,6 @@ class ComponentRegistryTest {
                 decoderFactoryList
             )
             assertTrue(requestInterceptorList.isEmpty())
-            assertTrue(decodeInterceptorList.isEmpty())
         }.newBuilder().build().apply {
             assertEquals(
                 listOf(TestFetcher.Factory()),
@@ -60,10 +56,8 @@ class ComponentRegistryTest {
                 decoderFactoryList
             )
             assertTrue(requestInterceptorList.isEmpty())
-            assertTrue(decodeInterceptorList.isEmpty())
         }.newBuilder {
             addRequestInterceptor(EngineRequestInterceptor())
-            addDecodeInterceptor(EngineDecodeInterceptor())
         }.build().apply {
             assertEquals(
                 listOf(TestFetcher.Factory()),
@@ -74,10 +68,6 @@ class ComponentRegistryTest {
                 decoderFactoryList
             )
             assertEquals(listOf(EngineRequestInterceptor()), requestInterceptorList)
-            assertEquals(
-                listOf(EngineDecodeInterceptor()),
-                decodeInterceptorList
-            )
         }
     }
 
@@ -96,7 +86,6 @@ class ComponentRegistryTest {
                 decoderFactoryList
             )
             assertTrue(requestInterceptorList.isEmpty())
-            assertTrue(decodeInterceptorList.isEmpty())
         }.newRegistry().apply {
             assertEquals(
                 listOf(TestFetcher.Factory()),
@@ -107,10 +96,8 @@ class ComponentRegistryTest {
                 decoderFactoryList
             )
             assertTrue(requestInterceptorList.isEmpty())
-            assertTrue(decodeInterceptorList.isEmpty())
         }.newRegistry {
             addRequestInterceptor(EngineRequestInterceptor())
-            addDecodeInterceptor(EngineDecodeInterceptor())
         }.apply {
             assertEquals(
                 listOf(TestFetcher.Factory()),
@@ -121,10 +108,6 @@ class ComponentRegistryTest {
                 decoderFactoryList
             )
             assertEquals(listOf(EngineRequestInterceptor()), requestInterceptorList)
-            assertEquals(
-                listOf(EngineDecodeInterceptor()),
-                decodeInterceptorList
-            )
         }
     }
 
@@ -151,13 +134,6 @@ class ComponentRegistryTest {
 
         ComponentRegistry {
             addRequestInterceptor(EngineRequestInterceptor())
-        }.apply {
-            assertFalse(isEmpty())
-            assertTrue(isNotEmpty())
-        }
-
-        ComponentRegistry {
-            addDecodeInterceptor(EngineDecodeInterceptor())
         }.apply {
             assertFalse(isEmpty())
             assertTrue(isNotEmpty())
@@ -331,14 +307,12 @@ class ComponentRegistryTest {
             addFetcher(TestFetcher.Factory())
             addDecoder(TestDecoder.Factory())
             addRequestInterceptor(TestRequestInterceptor())
-            addDecodeInterceptor(TestDecodeInterceptor())
         }.apply {
             assertEquals(
                 "ComponentRegistry(" +
                         "fetcherFactoryList=[TestFetcher]," +
                         "decoderFactoryList=[TestDecoder]," +
-                        "requestInterceptorList=[TestRequestInterceptor(sortWeight=0)]," +
-                        "decodeInterceptorList=[TestDecodeInterceptor(sortWeight=0)]" +
+                        "requestInterceptorList=[TestRequestInterceptor(sortWeight=0)]" +
                         ")",
                 toString()
             )
@@ -347,14 +321,12 @@ class ComponentRegistryTest {
             addFetcher(TestFetcher.Factory())
             addDecoder(TestDecoder.Factory())
             addRequestInterceptor(EngineRequestInterceptor())
-            addDecodeInterceptor(TestDecodeInterceptor2())
         }.apply {
             assertEquals(
                 "ComponentRegistry(" +
                         "fetcherFactoryList=[TestFetcher]," +
                         "decoderFactoryList=[TestDecoder]," +
-                        "requestInterceptorList=[EngineRequestInterceptor]," +
-                        "decodeInterceptorList=[TestDecodeInterceptor2(sortWeight=0)]" +
+                        "requestInterceptorList=[EngineRequestInterceptor]" +
                         ")",
                 toString()
             )
@@ -366,8 +338,7 @@ class ComponentRegistryTest {
                 "ComponentRegistry(" +
                         "fetcherFactoryList=[TestFetcher,TestFetcher]," +
                         "decoderFactoryList=[TestDecoder,TestDecoder]," +
-                        "requestInterceptorList=[TestRequestInterceptor(sortWeight=0),EngineRequestInterceptor]," +
-                        "decodeInterceptorList=[TestDecodeInterceptor(sortWeight=0),TestDecodeInterceptor2(sortWeight=0)]" +
+                        "requestInterceptorList=[TestRequestInterceptor(sortWeight=0),EngineRequestInterceptor]" +
                         ")",
                 toString()
             )
@@ -386,8 +357,7 @@ class ComponentRegistryTest {
                 "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[]" +
+                        "requestInterceptorList=[]" +
                         ")",
                 toString()
             )
@@ -398,15 +368,12 @@ class ComponentRegistryTest {
             addDecoder(TestDecoder.Factory())
             addDecoder(TestDecoder2.Factory())
             addRequestInterceptor(EngineRequestInterceptor())
-            addDecodeInterceptor(EngineDecodeInterceptor())
-            addDecodeInterceptor(TestDecodeInterceptor())
         }.apply {
             assertEquals(
                 "ComponentRegistry(" +
                         "fetcherFactoryList=[Base64UriFetcher,TestFetcher]," +
                         "decoderFactoryList=[TestDecoder,TestDecoder2]," +
-                        "requestInterceptorList=[EngineRequestInterceptor]," +
-                        "decodeInterceptorList=[TestDecodeInterceptor(sortWeight=0),EngineDecodeInterceptor]" +
+                        "requestInterceptorList=[EngineRequestInterceptor]" +
                         ")",
                 toString()
             )
@@ -428,9 +395,6 @@ class ComponentRegistryTest {
         val componentRegistry4 = ComponentRegistry {
             addRequestInterceptor(EngineRequestInterceptor())
         }
-        val componentRegistry5 = ComponentRegistry {
-            addDecodeInterceptor(EngineDecodeInterceptor())
-        }
 
         assertEquals(componentRegistry0, componentRegistry0)
         assertEquals(componentRegistry1, componentRegistry11)
@@ -439,24 +403,16 @@ class ComponentRegistryTest {
         assertNotEquals(componentRegistry0, componentRegistry1)
         assertNotEquals(componentRegistry0, componentRegistry2)
         assertNotEquals(componentRegistry0, componentRegistry4)
-        assertNotEquals(componentRegistry0, componentRegistry5)
         assertNotEquals(componentRegistry1, componentRegistry2)
         assertNotEquals(componentRegistry1, componentRegistry4)
-        assertNotEquals(componentRegistry1, componentRegistry5)
         assertNotEquals(componentRegistry2, componentRegistry4)
-        assertNotEquals(componentRegistry2, componentRegistry5)
-        assertNotEquals(componentRegistry4, componentRegistry5)
 
         assertNotEquals(componentRegistry0.hashCode(), componentRegistry1.hashCode())
         assertNotEquals(componentRegistry0.hashCode(), componentRegistry2.hashCode())
         assertNotEquals(componentRegistry0.hashCode(), componentRegistry4.hashCode())
-        assertNotEquals(componentRegistry0.hashCode(), componentRegistry5.hashCode())
         assertNotEquals(componentRegistry1.hashCode(), componentRegistry2.hashCode())
         assertNotEquals(componentRegistry1.hashCode(), componentRegistry4.hashCode())
-        assertNotEquals(componentRegistry1.hashCode(), componentRegistry5.hashCode())
         assertNotEquals(componentRegistry2.hashCode(), componentRegistry4.hashCode())
-        assertNotEquals(componentRegistry2.hashCode(), componentRegistry5.hashCode())
-        assertNotEquals(componentRegistry4.hashCode(), componentRegistry5.hashCode())
     }
 
     @Test
@@ -465,7 +421,6 @@ class ComponentRegistryTest {
             assertTrue(fetcherFactoryList.isEmpty())
             assertTrue(decoderFactoryList.isEmpty())
             assertTrue(requestInterceptorList.isEmpty())
-            assertTrue(decodeInterceptorList.isEmpty())
         }
 
         ComponentRegistry {
@@ -477,13 +432,6 @@ class ComponentRegistryTest {
             }
             assertFailsWith(IllegalArgumentException::class) {
                 addRequestInterceptor(TestRequestInterceptor(100))
-            }
-            addDecodeInterceptor(EngineDecodeInterceptor())
-            assertFailsWith(IllegalArgumentException::class) {
-                addDecodeInterceptor(TestDecodeInterceptor(-1))
-            }
-            assertFailsWith(IllegalArgumentException::class) {
-                addDecodeInterceptor(TestDecodeInterceptor(100))
             }
         }.apply {
             assertEquals(
@@ -504,20 +452,12 @@ class ComponentRegistryTest {
                 ),
                 requestInterceptorList
             )
-            assertEquals(
-                listOf(
-                    EngineDecodeInterceptor(),
-                ),
-                decodeInterceptorList
-            )
         }.newRegistry {
             addComponents(ComponentRegistry {
                 addFetcher(TestFetcher.Factory())
                 addDecoder(TestDecoder2.Factory())
                 addRequestInterceptor(MemoryCacheRequestInterceptor())
                 addRequestInterceptor(TestRequestInterceptor(95))
-                addDecodeInterceptor(TestDecodeInterceptor2())
-                addDecodeInterceptor(TestDecodeInterceptor(95))
             })
         }.apply {
             assertEquals(
@@ -541,14 +481,6 @@ class ComponentRegistryTest {
                     EngineRequestInterceptor()
                 ),
                 requestInterceptorList
-            )
-            assertEquals(
-                listOf(
-                    TestDecodeInterceptor2(),
-                    TestDecodeInterceptor(95),
-                    EngineDecodeInterceptor(),
-                ),
-                decodeInterceptorList
             )
         }
     }

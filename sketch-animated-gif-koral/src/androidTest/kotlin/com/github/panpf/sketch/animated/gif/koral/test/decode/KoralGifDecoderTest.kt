@@ -64,8 +64,7 @@ class KoralGifDecoderTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[]" +
+                        "requestInterceptorList=[]" +
                         ")",
                 actual = toString()
             )
@@ -78,8 +77,7 @@ class KoralGifDecoderTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[KoralGifDecoder]," +
-                        "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[]" +
+                        "requestInterceptorList=[]" +
                         ")",
                 actual = toString()
             )
@@ -93,8 +91,7 @@ class KoralGifDecoderTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[KoralGifDecoder,KoralGifDecoder]," +
-                        "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[]" +
+                        "requestInterceptorList=[]" +
                         ")",
                 actual = toString()
             )

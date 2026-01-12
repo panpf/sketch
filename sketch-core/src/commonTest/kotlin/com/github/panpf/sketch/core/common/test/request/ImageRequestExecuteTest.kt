@@ -34,7 +34,6 @@ import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestCountTarget
-import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestErrorDecoder
 import com.github.panpf.sketch.test.utils.TestFetcherFactory
 import com.github.panpf.sketch.test.utils.TestHttpStack
@@ -1423,22 +1422,6 @@ class ImageRequestExecuteTest {
             }
         }.execute().asOrThrow<ImageResult.Success>().apply {
             assertEquals("true", request.extras?.get("TestRequestInterceptor"))
-        }
-
-        ImageRequest(context, ResourceImages.jpeg.uri) {
-            resultCachePolicy(DISABLED)
-            memoryCachePolicy(DISABLED)
-        }.execute().asOrThrow<ImageResult.Success>().apply {
-            assertFalse(transformeds?.contains("TestDecodeInterceptor") == true)
-        }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
-            resultCachePolicy(DISABLED)
-            memoryCachePolicy(DISABLED)
-            components {
-                addDecodeInterceptor(TestDecodeInterceptor())
-            }
-        }.execute().asOrThrow<ImageResult.Success>().apply {
-            assertTrue(transformeds?.contains("TestDecodeInterceptor") == true)
         }
 
         ImageRequest(context, TestFetcherFactory.createUri(ResourceImages.jpeg.uri)) {

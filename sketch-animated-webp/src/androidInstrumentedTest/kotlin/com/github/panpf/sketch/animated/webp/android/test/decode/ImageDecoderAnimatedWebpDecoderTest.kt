@@ -50,8 +50,7 @@ class ImageDecoderAnimatedWebpDecoderTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[]" +
+                        "requestInterceptorList=[]" +
                         ")",
                 actual = toString()
             )
@@ -64,8 +63,7 @@ class ImageDecoderAnimatedWebpDecoderTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[ImageDecoderAnimatedWebpDecoder]," +
-                        "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[]" +
+                        "requestInterceptorList=[]" +
                         ")",
                 actual = toString()
             )
@@ -79,8 +77,7 @@ class ImageDecoderAnimatedWebpDecoderTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[ImageDecoderAnimatedWebpDecoder,ImageDecoderAnimatedWebpDecoder]," +
-                        "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[]" +
+                        "requestInterceptorList=[]" +
                         ")",
                 actual = toString()
             )

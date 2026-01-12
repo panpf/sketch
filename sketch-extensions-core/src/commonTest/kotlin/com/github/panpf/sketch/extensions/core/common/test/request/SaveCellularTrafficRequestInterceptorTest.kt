@@ -57,8 +57,7 @@ class SaveCellularTrafficRequestInterceptorTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[]" +
+                        "requestInterceptorList=[]" +
                         ")",
                 actual = toString()
             )
@@ -71,8 +70,7 @@ class SaveCellularTrafficRequestInterceptorTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[]," +
-                        "requestInterceptorList=[SaveCellularTrafficRequestInterceptor]," +
-                        "decodeInterceptorList=[]" +
+                        "requestInterceptorList=[SaveCellularTrafficRequestInterceptor]" +
                         ")",
                 actual = toString()
             )
@@ -86,8 +84,7 @@ class SaveCellularTrafficRequestInterceptorTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[]," +
-                        "requestInterceptorList=[SaveCellularTrafficRequestInterceptor,SaveCellularTrafficRequestInterceptor]," +
-                        "decodeInterceptorList=[]" +
+                        "requestInterceptorList=[SaveCellularTrafficRequestInterceptor,SaveCellularTrafficRequestInterceptor]" +
                         ")",
                 actual = toString()
             )

@@ -36,8 +36,7 @@ class AppIconUriFetcherTest {
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[]," +
                             "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]," +
-                            "decodeInterceptorList=[]" +
+                            "requestInterceptorList=[]" +
                             ")",
                     toString()
                 )
@@ -49,8 +48,7 @@ class AppIconUriFetcherTest {
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[AppIconUriFetcher]," +
                             "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]," +
-                            "decodeInterceptorList=[]" +
+                            "requestInterceptorList=[]" +
                             ")",
                     toString()
                 )
@@ -62,8 +60,7 @@ class AppIconUriFetcherTest {
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[AppIconUriFetcher,AppIconUriFetcher]," +
                             "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]," +
-                            "decodeInterceptorList=[]" +
+                            "requestInterceptorList=[]" +
                             ")",
                     toString()
                 )

@@ -17,9 +17,7 @@
 package com.github.panpf.sketch
 
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.Decoder
-import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.ImageRequest
@@ -41,7 +39,7 @@ fun ComponentRegistry(block: (ComponentRegistry.Builder.() -> Unit)? = null): Co
 
 /**
  * Register components that are required to perform [ImageRequest] and can be extended,
- * such as [Fetcher], [Decoder], [RequestInterceptor], [DecodeInterceptor]
+ * such as [Fetcher], [Decoder], [RequestInterceptor]
  *
  * @see com.github.panpf.sketch.core.common.test.ComponentRegistryTest
  */
@@ -58,17 +56,12 @@ open class ComponentRegistry private constructor(
      * All [RequestInterceptor]
      */
     val requestInterceptorList: List<RequestInterceptor>,
-    /**
-     * All [DecodeInterceptor]
-     */
-    val decodeInterceptorList: List<DecodeInterceptor>,
 ) {
 
     fun isEmpty(): Boolean {
         return fetcherFactoryList.isEmpty()
                 && decoderFactoryList.isEmpty()
                 && requestInterceptorList.isEmpty()
-                && decodeInterceptorList.isEmpty()
     }
 
     /**
@@ -149,7 +142,6 @@ open class ComponentRegistry private constructor(
         if (fetcherFactoryList != other.fetcherFactoryList) return false
         if (decoderFactoryList != other.decoderFactoryList) return false
         if (requestInterceptorList != other.requestInterceptorList) return false
-        if (decodeInterceptorList != other.decodeInterceptorList) return false
         return true
     }
 
@@ -157,7 +149,6 @@ open class ComponentRegistry private constructor(
         var result = fetcherFactoryList.hashCode()
         result = 31 * result + decoderFactoryList.hashCode()
         result = 31 * result + requestInterceptorList.hashCode()
-        result = 31 * result + decodeInterceptorList.hashCode()
         return result
     }
 
@@ -168,13 +159,10 @@ open class ComponentRegistry private constructor(
             .joinToString(prefix = "[", postfix = "]", separator = ",")
         val requestInterceptorsString = requestInterceptorList
             .joinToString(prefix = "[", postfix = "]", separator = ",")
-        val decodeInterceptorsString = decodeInterceptorList
-            .joinToString(prefix = "[", postfix = "]", separator = ",")
         return "ComponentRegistry(" +
                 "fetcherFactoryList=${fetchersString}," +
                 "decoderFactoryList=${decodersString}," +
-                "requestInterceptorList=${requestInterceptorsString}," +
-                "decodeInterceptorList=${decodeInterceptorsString}" +
+                "requestInterceptorList=${requestInterceptorsString}" +
                 ")"
     }
 
@@ -183,13 +171,11 @@ open class ComponentRegistry private constructor(
         private val fetcherFactoryList: MutableList<Fetcher.Factory>
         private val decoderFactoryList: MutableList<Decoder.Factory>
         private val requestInterceptorList: MutableList<RequestInterceptor>
-        private val decodeInterceptorList: MutableList<DecodeInterceptor>
 
         constructor() {
             this.fetcherFactoryList = mutableListOf()
             this.decoderFactoryList = mutableListOf()
             this.requestInterceptorList = mutableListOf()
-            this.decodeInterceptorList = mutableListOf()
         }
 
         constructor(componentRegistry: ComponentRegistry) {
@@ -197,8 +183,6 @@ open class ComponentRegistry private constructor(
             this.decoderFactoryList =
                 componentRegistry.decoderFactoryList.toMutableList()
             this.requestInterceptorList = componentRegistry.requestInterceptorList.toMutableList()
-            this.decodeInterceptorList =
-                componentRegistry.decodeInterceptorList.toMutableList()
         }
 
         /**
@@ -226,23 +210,9 @@ open class ComponentRegistry private constructor(
         }
 
         /**
-         * Append an [DecodeInterceptor]
-         */
-        fun addDecodeInterceptor(decodeInterceptor: DecodeInterceptor): Builder =
-            apply {
-                require(if (decodeInterceptor is EngineDecodeInterceptor) decodeInterceptor.sortWeight == 100 else decodeInterceptor.sortWeight in 0..99) {
-                    "sortWeight has a valid range of 0 to 100, and only EngineRequestInterceptor can be 100"
-                }
-                this.decodeInterceptorList.add(decodeInterceptor)
-            }
-
-        /**
          * Merge the [ComponentRegistry]
          */
         fun addComponents(components: ComponentRegistry) {
-            components.decodeInterceptorList.forEach {
-                addDecodeInterceptor(it)
-            }
             components.requestInterceptorList.forEach {
                 addRequestInterceptor(it)
             }
@@ -258,7 +228,6 @@ open class ComponentRegistry private constructor(
             fetcherFactoryList = fetcherFactoryList.toList(),
             decoderFactoryList = decoderFactoryList.toList(),
             requestInterceptorList = requestInterceptorList.sortedBy { it.sortWeight },
-            decodeInterceptorList = decodeInterceptorList.sortedBy { it.sortWeight },
         )
     }
 }
@@ -289,9 +258,6 @@ fun ComponentRegistry?.merged(other: ComponentRegistry?): ComponentRegistry? {
         other.requestInterceptorList.forEach {
             addRequestInterceptor(it)
         }
-        other.decodeInterceptorList.forEach {
-            addDecodeInterceptor(it)
-        }
     }.build()
 }
 
@@ -310,16 +276,6 @@ class Components constructor(val registry: ComponentRegistry) {
             request.componentRegistry?.requestInterceptorList?.takeIf { it.isNotEmpty() }
         return (localRequestInterceptorList?.plus(registry.requestInterceptorList))?.sortedBy { it.sortWeight }
             ?: registry.requestInterceptorList
-    }
-
-    /**
-     * Get the [ImageRequest] plus the global [DecodeInterceptor] list
-     */
-    fun getDecodeInterceptorList(request: ImageRequest): List<DecodeInterceptor> {
-        val localDecodeInterceptorList =
-            request.componentRegistry?.decodeInterceptorList?.takeIf { it.isNotEmpty() }
-        return (localDecodeInterceptorList?.plus(registry.decodeInterceptorList))?.sortedBy { it.sortWeight }
-            ?: registry.decodeInterceptorList
     }
 
     /**

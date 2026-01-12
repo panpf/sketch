@@ -52,8 +52,7 @@ class ImageDecoderGifDecoderTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[]" +
+                        "requestInterceptorList=[]" +
                         ")",
                 actual = toString()
             )
@@ -66,8 +65,7 @@ class ImageDecoderGifDecoderTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[ImageDecoderGifDecoder]," +
-                        "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[]" +
+                        "requestInterceptorList=[]" +
                         ")",
                 actual = toString()
             )
@@ -81,8 +79,7 @@ class ImageDecoderGifDecoderTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[ImageDecoderGifDecoder,ImageDecoderGifDecoder]," +
-                        "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[]" +
+                        "requestInterceptorList=[]" +
                         ")",
                 actual = toString()
             )

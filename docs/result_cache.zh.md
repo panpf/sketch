@@ -129,7 +129,7 @@ ImageOptions {
 你还可以通过以下方式和获取最终的结果缓存 key：
 
 ```kotlin
-// 在自定义的 RequestInterceptor、DecodeInterceptor、Transformation、Fetcher、Decoder 组件中
+// 在自定义的 RequestInterceptor、Transformation、Fetcher、Decoder 组件中
 // 可以通过 RequestContext 获取结果缓存 key
 val requestContext: RequestContext = ...
 requestContext.resultCacheKey

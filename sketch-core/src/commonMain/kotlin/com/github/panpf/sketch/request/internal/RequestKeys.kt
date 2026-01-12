@@ -46,7 +46,6 @@ internal fun ImageRequest.newKey(): String = ImageRequestKeyBuilder(this)
     .appendFallback()
     .appendError()
     .appendDecoders()
-    .appendDecodeInterceptors()
     .appendRequestInterceptors()
     .build()
 
@@ -65,7 +64,6 @@ internal fun ImageRequest.newCacheKey(size: Size?): String = ImageRequestKeyBuil
     .appendScale()
     .appendTransformations()
     .appendDecoders()
-    .appendDecodeInterceptors()
     .appendRequestInterceptors()
     .build()
 
@@ -168,17 +166,6 @@ private class ImageRequestKeyBuilder(private val request: ImageRequest) {
             ?.also { list ->
                 val decoderKeys = list.joinToString(prefix = "[", postfix = "]", separator = ",")
                 appendQueryParameter("_decoders", decoderKeys)
-            }
-    }
-
-    fun appendDecodeInterceptors(): ImageRequestKeyBuilder = apply {
-        request.componentRegistry?.decodeInterceptorList.orEmpty()
-            .mapNotNull { it.key }
-            .takeIf { it.isNotEmpty() }
-            ?.also { list ->
-                val decodeInterceptorKeys =
-                    list.joinToString(prefix = "[", postfix = "]", separator = ",")
-                appendQueryParameter("_decodeInterceptors", decodeInterceptorKeys)
             }
     }
 

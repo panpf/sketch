@@ -25,8 +25,7 @@ class HurlHttpUriFetcherTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[]" +
+                        "requestInterceptorList=[]" +
                         ")",
                 actual = toString()
             )
@@ -39,8 +38,7 @@ class HurlHttpUriFetcherTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[HurlHttpUriFetcher]," +
                         "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[])",
+                        "requestInterceptorList=[])",
                 actual = toString()
             )
         }
@@ -53,8 +51,7 @@ class HurlHttpUriFetcherTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[HurlHttpUriFetcher,HurlHttpUriFetcher]," +
                         "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[])",
+                        "requestInterceptorList=[])",
                 actual = toString()
             )
         }

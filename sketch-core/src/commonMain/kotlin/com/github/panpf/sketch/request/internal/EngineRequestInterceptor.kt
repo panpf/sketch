@@ -17,7 +17,6 @@
 package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
-import com.github.panpf.sketch.decode.internal.DecodeInterceptorChain
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestInterceptor
 import kotlinx.coroutines.withContext
@@ -39,31 +38,27 @@ class EngineRequestInterceptor : RequestInterceptor {
     @MainThread
     override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
         val sketch = chain.sketch
-        val request = chain.request
         val requestContext = chain.requestContext
-        val fetchResult = requireNotNull(requestContext.fetchResult) {
-            "FetchResult is null, please make sure to add FetcherRequestInterceptor before EngineRequestInterceptor"
+        val fetchResult = requestContext.fetchResult
+            ?: return Result.failure(Exception("FetchResult is null, please make sure to add FetcherRequestInterceptor"))
+        val result = withContext(sketch.decodeTaskDispatcher) {
+            runCatching {
+                val components = sketch.components
+                val decoder = components.newDecoderOrThrow(requestContext, fetchResult)
+                decoder.decode()
+            }
         }
-        val decodeResult = withContext(sketch.decodeTaskDispatcher) {
-            DecodeInterceptorChain(
-                requestContext = requestContext,
-                fetchResult = fetchResult,
-                interceptors = sketch.components.getDecodeInterceptorList(request),
-                index = 0,
-            ).proceed()
-        }.let {
-            it.getOrNull() ?: return Result.failure(it.exceptionOrNull()!!)
-        }
-        return Result.success(
-            ImageData(
-                image = decodeResult.image,
-                imageInfo = decodeResult.imageInfo,
-                dataFrom = decodeResult.dataFrom,
-                resize = decodeResult.resize,
-                transformeds = decodeResult.transformeds,
-                extras = decodeResult.extras
-            )
+        val decodeResult = result.getOrNull()
+            ?: return Result.failure(result.exceptionOrNull()!!)
+        val imageData = ImageData(
+            image = decodeResult.image,
+            imageInfo = decodeResult.imageInfo,
+            dataFrom = decodeResult.dataFrom,
+            resize = decodeResult.resize,
+            transformeds = decodeResult.transformeds,
+            extras = decodeResult.extras
         )
+        return Result.success(imageData)
     }
 
     override fun equals(other: Any?): Boolean {

@@ -3,7 +3,6 @@ package com.github.panpf.sketch.core.common.test
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Components
 import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
-import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
@@ -12,8 +11,6 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.AllFetcher
 import com.github.panpf.sketch.test.utils.FakeDecoder
 import com.github.panpf.sketch.test.utils.Platform
-import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
-import com.github.panpf.sketch.test.utils.TestDecodeInterceptor2
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestDecoder2
 import com.github.panpf.sketch.test.utils.TestFetcher
@@ -74,54 +71,6 @@ class ComponentsTest {
                     EngineRequestInterceptor()
                 ),
                 getRequestInterceptorList(notEmptyRequest)
-            )
-        }
-    }
-
-    @Test
-    fun testDecodeInterceptors() {
-        val context = getTestContext()
-        val emptyRequest = ImageRequest(context, "")
-        val notEmptyRequest = ImageRequest(context, "") {
-            components {
-                addDecodeInterceptor(TestDecodeInterceptor(95))
-                addDecodeInterceptor(TestDecodeInterceptor2())
-            }
-        }
-
-        Components(ComponentRegistry()).apply {
-            assertEquals(
-                listOf(),
-                getDecodeInterceptorList(emptyRequest)
-            )
-            assertEquals(
-                listOf(
-                    TestDecodeInterceptor2(),
-                    TestDecodeInterceptor(95),
-                ),
-                getDecodeInterceptorList(notEmptyRequest)
-            )
-        }
-
-        Components(ComponentRegistry {
-            addDecodeInterceptor(TestDecodeInterceptor())
-            addDecodeInterceptor(EngineDecodeInterceptor())
-        }).apply {
-            assertEquals(
-                listOf(
-                    TestDecodeInterceptor(),
-                    EngineDecodeInterceptor()
-                ),
-                getDecodeInterceptorList(emptyRequest)
-            )
-            assertEquals(
-                listOf(
-                    TestDecodeInterceptor2(),
-                    TestDecodeInterceptor(),
-                    TestDecodeInterceptor(95),
-                    EngineDecodeInterceptor()
-                ),
-                getDecodeInterceptorList(notEmptyRequest)
             )
         }
     }
@@ -324,8 +273,7 @@ class ComponentsTest {
                 "Components(ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[]" +
+                        "requestInterceptorList=[]" +
                         "))",
                 toString()
             )
@@ -336,15 +284,12 @@ class ComponentsTest {
             addDecoder(TestDecoder.Factory())
             addDecoder(TestDecoder2.Factory())
             addRequestInterceptor(EngineRequestInterceptor())
-            addDecodeInterceptor(EngineDecodeInterceptor())
-            addDecodeInterceptor(TestDecodeInterceptor())
         }).apply {
             assertEquals(
                 "Components(ComponentRegistry(" +
                         "fetcherFactoryList=[Base64UriFetcher,TestFetcher]," +
                         "decoderFactoryList=[TestDecoder,TestDecoder2]," +
-                        "requestInterceptorList=[EngineRequestInterceptor]," +
-                        "decodeInterceptorList=[TestDecodeInterceptor(sortWeight=0),EngineDecodeInterceptor]" +
+                        "requestInterceptorList=[EngineRequestInterceptor]" +
                         "))",
                 toString()
             )
@@ -366,9 +311,6 @@ class ComponentsTest {
         val components4 = Components(ComponentRegistry {
             addRequestInterceptor(EngineRequestInterceptor())
         })
-        val components5 = Components(ComponentRegistry {
-            addDecodeInterceptor(EngineDecodeInterceptor())
-        })
 
         assertEquals(components0, components0)
         assertEquals(components1, components11)
@@ -377,23 +319,15 @@ class ComponentsTest {
         assertNotEquals(components0, components1)
         assertNotEquals(components0, components2)
         assertNotEquals(components0, components4)
-        assertNotEquals(components0, components5)
         assertNotEquals(components1, components2)
         assertNotEquals(components1, components4)
-        assertNotEquals(components1, components5)
         assertNotEquals(components2, components4)
-        assertNotEquals(components2, components5)
-        assertNotEquals(components4, components5)
 
         assertNotEquals(components0.hashCode(), components1.hashCode())
         assertNotEquals(components0.hashCode(), components2.hashCode())
         assertNotEquals(components0.hashCode(), components4.hashCode())
-        assertNotEquals(components0.hashCode(), components5.hashCode())
         assertNotEquals(components1.hashCode(), components2.hashCode())
         assertNotEquals(components1.hashCode(), components4.hashCode())
-        assertNotEquals(components1.hashCode(), components5.hashCode())
         assertNotEquals(components2.hashCode(), components4.hashCode())
-        assertNotEquals(components2.hashCode(), components5.hashCode())
-        assertNotEquals(components4.hashCode(), components5.hashCode())
     }
 }

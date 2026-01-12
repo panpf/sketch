@@ -64,8 +64,7 @@ class ApkIconDecoderTest {
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[]," +
                             "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]," +
-                            "decodeInterceptorList=[]" +
+                            "requestInterceptorList=[]" +
                             ")",
                     toString()
                 )
@@ -77,8 +76,7 @@ class ApkIconDecoderTest {
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[]," +
                             "decoderFactoryList=[ApkIconDecoder]," +
-                            "requestInterceptorList=[]," +
-                            "decodeInterceptorList=[]" +
+                            "requestInterceptorList=[]" +
                             ")",
                     toString()
                 )
@@ -90,8 +88,7 @@ class ApkIconDecoderTest {
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[]," +
                             "decoderFactoryList=[ApkIconDecoder,ApkIconDecoder]," +
-                            "requestInterceptorList=[]," +
-                            "decodeInterceptorList=[]" +
+                            "requestInterceptorList=[]" +
                             ")",
                     toString()
                 )

@@ -87,7 +87,6 @@ nav:
   - 'Exif Orientation': exif_orientation.md
   - 'ImageOptions': image_options.md
   - 'RequestInterceptor': request_interceptor.md
-  - 'DecodeInterceptor': decode_interceptor.md
   - 'Preload': preload.md
   - 'Download Image': download_image.md
   - 'Lifecycle': lifecycle.md

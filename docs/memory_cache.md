@@ -84,7 +84,7 @@ You can also get the final memory cache key through the following methods:
 
 ```kotlin
 // The memory cache key can be obtained through RequestContext in the customized RequestInterceptor, 
-// DecodeInterceptor, Transformation, Fetcher, and Decoder components.
+// Transformation, Fetcher, and Decoder components.
 val requestContext: RequestContext = ...
 requestContext.memoryCacheKey
 

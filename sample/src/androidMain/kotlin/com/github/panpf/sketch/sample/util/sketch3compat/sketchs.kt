@@ -5,9 +5,7 @@ package com.github.panpf.sketch
 import android.net.Uri
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
-import com.github.panpf.sketch.decode.BitmapDecodeInterceptor
 import com.github.panpf.sketch.decode.Decoder
-import com.github.panpf.sketch.decode.DrawableDecodeInterceptor
 import com.github.panpf.sketch.fetch.newAppIconUri
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageRequest
@@ -43,24 +41,6 @@ fun ComponentRegistry.Builder.addBitmapDecoder(decoder: Decoder.Factory): Compon
 fun ComponentRegistry.Builder.addDrawableDecoder(decoder: Decoder.Factory): ComponentRegistry.Builder =
     apply {
         addDecoder(decoder)
-    }
-
-@Deprecated(
-    message = "Use addDecodeInterceptor instead",
-    replaceWith = ReplaceWith("addDecodeInterceptor(bitmapDecodeInterceptor)")
-)
-fun ComponentRegistry.Builder.addBitmapDecodeInterceptor(bitmapDecodeInterceptor: BitmapDecodeInterceptor): ComponentRegistry.Builder =
-    apply {
-        addDecodeInterceptor(bitmapDecodeInterceptor)
-    }
-
-@Deprecated(
-    message = "Use addDecodeInterceptor instead",
-    replaceWith = ReplaceWith("addDecodeInterceptor(bitmapDecodeInterceptor)")
-)
-fun ComponentRegistry.Builder.addDrawableDecodeInterceptor(drawableDecodeInterceptor: DrawableDecodeInterceptor): ComponentRegistry.Builder =
-    apply {
-        addDecodeInterceptor(drawableDecodeInterceptor)
     }
 
 @Deprecated(

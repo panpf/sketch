@@ -138,7 +138,7 @@ You can also get the final download cache key through the following methods:
 
 ```kotlin
 // The download cache key can be obtained through RequestContext in the customized RequestInterceptor, 
-// DecodeInterceptor, Transformation, Fetcher, and Decoder components.
+// Transformation, Fetcher, and Decoder components.
 val requestContext: RequestContext = ...
 requestContext.downloadCacheKey
 

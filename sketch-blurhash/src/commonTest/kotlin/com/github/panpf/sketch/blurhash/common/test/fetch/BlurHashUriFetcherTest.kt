@@ -27,8 +27,7 @@ class BlurHashUriFetcherTest {
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[]," +
                             "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]," +
-                            "decodeInterceptorList=[]" +
+                            "requestInterceptorList=[]" +
                             ")",
                     toString()
                 )
@@ -40,8 +39,7 @@ class BlurHashUriFetcherTest {
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[BlurHashUriFetcher]," +
                             "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]," +
-                            "decodeInterceptorList=[]" +
+                            "requestInterceptorList=[]" +
                             ")",
                     toString()
                 )
@@ -53,8 +51,7 @@ class BlurHashUriFetcherTest {
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[BlurHashUriFetcher,BlurHashUriFetcher]," +
                             "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]," +
-                            "decodeInterceptorList=[]" +
+                            "requestInterceptorList=[]" +
                             ")",
                     toString()
                 )

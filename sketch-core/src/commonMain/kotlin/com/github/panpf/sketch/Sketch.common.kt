@@ -22,9 +22,7 @@ import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.cache.internal.ResultCacheRequestInterceptor
-import com.github.panpf.sketch.decode.DecodeInterceptor
 import com.github.panpf.sketch.decode.Decoder
-import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
@@ -133,7 +131,7 @@ class Sketch private constructor(
     val resultCache: DiskCache by resultCacheLazy
 
     /** Register components that are required to perform [ImageRequest] and can be extended,
-     * such as [Fetcher], [Decoder], [RequestInterceptor], [DecodeInterceptor] */
+     * such as [Fetcher], [Decoder], [RequestInterceptor] */
     val components: Components = Components(componentRegistry)
 
     /** Monitor network connection and system status */
@@ -172,7 +170,6 @@ class Sketch private constructor(
                 appendLine().append("fetchers: ${components.registry.fetcherFactoryList}")
                 appendLine().append("decoders: ${components.registry.decoderFactoryList}")
                 appendLine().append("requestInterceptors: ${components.registry.requestInterceptorList}")
-                appendLine().append("decodeInterceptors: ${components.registry.decodeInterceptorList}")
                 appendLine().append("networkParallelismLimited: $networkParallelismLimited")
                 appendLine().append("decodeParallelismLimited: $decodeParallelismLimited")
             }
@@ -539,6 +536,4 @@ internal fun commonComponents(): ComponentRegistry = ComponentRegistry {
     addRequestInterceptor(TransformationRequestInterceptor())
     addRequestInterceptor(FetcherRequestInterceptor())
     addRequestInterceptor(EngineRequestInterceptor())
-
-    addDecodeInterceptor(EngineDecodeInterceptor())
 }

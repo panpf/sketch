@@ -57,8 +57,7 @@ class PauseLoadWhenScrollingRequestInterceptorTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]," +
-                        "decodeInterceptorList=[]" +
+                        "requestInterceptorList=[]" +
                         ")",
                 actual = toString()
             )
@@ -71,8 +70,7 @@ class PauseLoadWhenScrollingRequestInterceptorTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[]," +
-                        "requestInterceptorList=[PauseLoadWhenScrollingRequestInterceptor]," +
-                        "decodeInterceptorList=[]" +
+                        "requestInterceptorList=[PauseLoadWhenScrollingRequestInterceptor]" +
                         ")",
                 actual = toString()
             )
@@ -86,8 +84,7 @@ class PauseLoadWhenScrollingRequestInterceptorTest {
                 expected = "ComponentRegistry(" +
                         "fetcherFactoryList=[]," +
                         "decoderFactoryList=[]," +
-                        "requestInterceptorList=[PauseLoadWhenScrollingRequestInterceptor,PauseLoadWhenScrollingRequestInterceptor]," +
-                        "decodeInterceptorList=[]" +
+                        "requestInterceptorList=[PauseLoadWhenScrollingRequestInterceptor,PauseLoadWhenScrollingRequestInterceptor]" +
                         ")",
                 actual = toString()
             )

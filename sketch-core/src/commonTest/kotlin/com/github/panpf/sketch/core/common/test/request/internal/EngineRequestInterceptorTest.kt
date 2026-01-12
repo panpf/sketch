@@ -80,7 +80,7 @@ class EngineRequestInterceptorTest {
                 }.getOrThrow()
             }
 
-            assertFailsWith(IllegalArgumentException::class) {
+            assertFailsWith(Exception::class) {
                 executeRequest(ImageRequest(context, ResourceImages.jpeg.uri))
             }
         }

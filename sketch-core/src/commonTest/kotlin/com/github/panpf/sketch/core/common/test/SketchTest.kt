@@ -8,7 +8,6 @@ import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
 import com.github.panpf.sketch.cache.internal.ResultCacheRequestInterceptor
 import com.github.panpf.sketch.commonComponents
-import com.github.panpf.sketch.decode.internal.EngineDecodeInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.KtorHttpUriFetcher
@@ -28,7 +27,6 @@ import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.DelayRequestInterceptor
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import com.github.panpf.sketch.test.utils.Platform
-import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestRequestInterceptor
@@ -330,36 +328,6 @@ class SketchTest {
             )
         }
 
-        // components: DecodeInterceptor
-        Sketch.Builder(context).build().apply {
-            assertEquals(
-                listOf(
-                    EngineDecodeInterceptor()
-                ),
-                components.getDecodeInterceptorList(ImageRequest(context, ""))
-            )
-        }
-
-        Sketch.Builder(context).apply {
-            components {
-                addDecodeInterceptor(TestDecodeInterceptor())
-            }
-        }.build().apply {
-            assertEquals(
-                listOf(
-                    TestDecodeInterceptor(),
-                    EngineDecodeInterceptor()
-                ),
-                components.getDecodeInterceptorList(ImageRequest(context, ""))
-            )
-            assertNotEquals(
-                listOf(
-                    EngineDecodeInterceptor()
-                ),
-                components.getDecodeInterceptorList(ImageRequest(context, ""))
-            )
-        }
-
         // globalImageOptions
         Sketch.Builder(context).build().apply {
             assertNull(globalImageOptions)
@@ -492,8 +460,6 @@ class SketchTest {
                 addRequestInterceptor(TransformationRequestInterceptor())
                 addRequestInterceptor(FetcherRequestInterceptor())
                 addRequestInterceptor(EngineRequestInterceptor())
-
-                addDecodeInterceptor(EngineDecodeInterceptor())
             },
             actual = commonComponents()
         )

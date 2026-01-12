@@ -35,8 +35,7 @@ class ComposeResourceUriFetcherTest {
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[]," +
                             "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]," +
-                            "decodeInterceptorList=[]" +
+                            "requestInterceptorList=[]" +
                             ")",
                     toString()
                 )
@@ -48,8 +47,7 @@ class ComposeResourceUriFetcherTest {
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[ComposeResourceUriFetcher]," +
                             "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]," +
-                            "decodeInterceptorList=[]" +
+                            "requestInterceptorList=[]" +
                             ")",
                     toString()
                 )
@@ -61,8 +59,7 @@ class ComposeResourceUriFetcherTest {
                     "ComponentRegistry(" +
                             "fetcherFactoryList=[ComposeResourceUriFetcher,ComposeResourceUriFetcher]," +
                             "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]," +
-                            "decodeInterceptorList=[]" +
+                            "requestInterceptorList=[]" +
                             ")",
                     toString()
                 )
