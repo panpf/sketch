@@ -28,7 +28,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.painter.asEquitable
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
+import com.github.panpf.sketch.sample.image.DelayRequestInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
@@ -71,7 +71,7 @@ class AnimatablePlaceholderTestScreen : BaseScreen() {
                     resultCachePolicy(DISABLED)
                     placeholder(placeholderStateImage)
                     components {
-                        addDecodeInterceptor(DelayDecodeInterceptor(3000))
+                        addRequestInterceptor(DelayRequestInterceptor(3000))
                     }
                 }
                 Spacer(modifier = Modifier.size(20.dp))

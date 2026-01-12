@@ -25,7 +25,7 @@ import com.github.panpf.sketch.request.ImageResult.Success
 import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
 import com.github.panpf.sketch.request.internal.PlaceholderRequestInterceptor
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.DelayDecodeInterceptor
+import com.github.panpf.sketch.test.utils.DelayRequestInterceptor
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestDecodeInterceptor
@@ -410,7 +410,7 @@ class SketchTest {
             resultCachePolicy(DISABLED)
             // Make the execution slower, cancellation can take effect
             components {
-                addDecodeInterceptor(DelayDecodeInterceptor(1000) {
+                addRequestInterceptor(DelayRequestInterceptor(1000) {
                     disposable3?.job?.cancel()
                 })
             }

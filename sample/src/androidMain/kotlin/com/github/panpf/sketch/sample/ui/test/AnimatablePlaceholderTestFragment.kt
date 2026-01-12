@@ -24,7 +24,7 @@ import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentTestAnimatablePlaceholderBinding
-import com.github.panpf.sketch.sample.image.DelayDecodeInterceptor
+import com.github.panpf.sketch.sample.image.DelayRequestInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.components.NewMoonLoadingDrawable
 import com.github.panpf.sketch.state.IconAnimatableDrawableStateImage
@@ -71,7 +71,7 @@ class AnimatablePlaceholderTestFragment :
                 )
             )
             components {
-                addDecodeInterceptor(DelayDecodeInterceptor(3000))
+                addRequestInterceptor(DelayRequestInterceptor(3000))
             }
         }
         binding.myImage2.loadImage(urlString) {
@@ -86,7 +86,7 @@ class AnimatablePlaceholderTestFragment :
                 )
             )
             components {
-                addDecodeInterceptor(DelayDecodeInterceptor(3000))
+                addRequestInterceptor(DelayRequestInterceptor(3000))
             }
         }
         binding.myImage3.loadImage(urlString) {
@@ -101,7 +101,7 @@ class AnimatablePlaceholderTestFragment :
                 )
             )
             components {
-                addDecodeInterceptor(DelayDecodeInterceptor(3000))
+                addRequestInterceptor(DelayRequestInterceptor(3000))
             }
         }
     }
