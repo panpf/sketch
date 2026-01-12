@@ -29,6 +29,7 @@ import com.github.panpf.sketch.util.NullableKey
  * that is, the equals() and hashCode() methods of instances created with the same
  * construction parameters return consistent results. This is important in Compose
  */
+// TODO Change to Interceptor
 interface RequestInterceptor : NullableKey {
 
     /**
