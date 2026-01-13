@@ -31,6 +31,7 @@ import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.drawable.MovieDrawable
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
@@ -54,7 +55,7 @@ import okio.buffer
  * @see com.github.panpf.sketch.animated.gif.android.test.decode.MovieGifDecoderTest.testSupportMovieGif
  */
 fun ComponentRegistry.Builder.supportMovieGif(): ComponentRegistry.Builder = apply {
-    addDecoder(MovieGifDecoder.Factory())
+    add(MovieGifDecoder.Factory())
 }
 
 /**
@@ -107,7 +108,7 @@ class MovieGifDecoder(
         }
 
     @WorkerThread
-    override fun decode(): DecodeResult {
+    override fun decode(): ImageData {
         val request = requestContext.request
         val movie: Movie? = dataSource.openSource()
             .buffer().inputStream().use { Movie.decodeStream(it) }
@@ -135,7 +136,7 @@ class MovieGifDecoder(
             val onStart = request.animationStartCallback
             val onEnd = request.animationEndCallback
             if (onStart != null || onEnd != null) {
-                // Will be executed before EngineRequestInterceptor.intercept() return
+                // Will be executed before DecoderInterceptor.intercept() return
                 @Suppress("OPT_IN_USAGE")
                 GlobalScope.launch(Dispatchers.Main) {
                     registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
@@ -144,7 +145,7 @@ class MovieGifDecoder(
         }
 
         val resize = requestContext.computeResize(imageInfo.size)
-        return DecodeResult(
+        return ImageData(
             image = animatableDrawable.asImage(),
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,

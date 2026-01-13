@@ -18,9 +18,9 @@ package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.SkiaAnimatedImage
 import com.github.panpf.sketch.decode.DecodeConfig
-import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
@@ -83,7 +83,7 @@ open class SkiaAnimatedDecoder(
             }
         }
 
-    override fun decode(): DecodeResult {
+    override fun decode(): ImageData {
         val codec = Codec.makeFromData(data)
         val imageInfo = synchronized(imageInfoLock) {
             _imageInfo ?: readImageInfoWithIgnoreExifOrientation(codec)
@@ -111,7 +111,7 @@ open class SkiaAnimatedDecoder(
             animationEndCallback = request.animationEndCallback
         }
         val resize = requestContext.computeResize(imageInfo.size)
-        return DecodeResult(
+        return ImageData(
             image = animatedImage,
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,

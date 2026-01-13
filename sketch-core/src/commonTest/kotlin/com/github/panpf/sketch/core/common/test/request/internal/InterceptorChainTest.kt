@@ -4,8 +4,8 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.internal.RequestInterceptorChain
+import com.github.panpf.sketch.request.Interceptor
+import com.github.panpf.sketch.request.internal.InterceptorChain
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
@@ -20,7 +20,7 @@ import kotlinx.coroutines.withContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class RequestInterceptorChainTest {
+class InterceptorChainTest {
 
     @Test
     fun test() = runTest {
@@ -29,12 +29,12 @@ class RequestInterceptorChainTest {
         runBlock {
             val historyList = mutableListOf<String>()
             val interceptors = listOf(
-                TestBitmapRequestInterceptor1(historyList),
-                TestBitmapRequestInterceptor2(historyList),
-                TestBitmapRequestInterceptor3(historyList)
+                TestBitmapInterceptor1(historyList),
+                TestBitmapInterceptor2(historyList),
+                TestBitmapInterceptor3(historyList)
             )
             val request = ImageRequest(context, ResourceImages.jpeg.uri)
-            val chain = RequestInterceptorChain(
+            val chain = InterceptorChain(
                 requestContext = request.toRequestContext(sketch),
                 interceptors = interceptors,
                 index = 0
@@ -44,9 +44,9 @@ class RequestInterceptorChainTest {
             }
             assertEquals(
                 expected = listOf(
-                    "TestRequestInterceptor1",
-                    "TestRequestInterceptor2",
-                    "TestRequestInterceptor3",
+                    "TestInterceptor1",
+                    "TestInterceptor2",
+                    "TestInterceptor3",
                 ),
                 actual = historyList
             )
@@ -55,12 +55,12 @@ class RequestInterceptorChainTest {
         runBlock {
             val historyList = mutableListOf<String>()
             val interceptors = listOf(
-                TestBitmapRequestInterceptor2(historyList),
-                TestBitmapRequestInterceptor1(historyList),
-                TestBitmapRequestInterceptor3(historyList),
+                TestBitmapInterceptor2(historyList),
+                TestBitmapInterceptor1(historyList),
+                TestBitmapInterceptor3(historyList),
             )
             val request = ImageRequest(context, ResourceImages.jpeg.uri)
-            val chain = RequestInterceptorChain(
+            val chain = InterceptorChain(
                 requestContext = request.toRequestContext(sketch),
                 interceptors = interceptors,
                 index = 0
@@ -70,24 +70,24 @@ class RequestInterceptorChainTest {
             }
             assertEquals(
                 expected = listOf(
-                    "TestRequestInterceptor2",
-                    "TestRequestInterceptor1",
-                    "TestRequestInterceptor3",
+                    "TestInterceptor2",
+                    "TestInterceptor1",
+                    "TestInterceptor3",
                 ),
                 actual = historyList
             )
         }
     }
 
-    private class TestBitmapRequestInterceptor1(val historyList: MutableList<String>) :
-        RequestInterceptor {
+    private class TestBitmapInterceptor1(val historyList: MutableList<String>) :
+        Interceptor {
 
         override val key: String? = null
 
         override val sortWeight: Int = 0
 
-        override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
-            historyList.add("TestRequestInterceptor1")
+        override suspend fun intercept(chain: Interceptor.Chain): Result<ImageData> {
+            historyList.add("TestInterceptor1")
             return chain.proceed(chain.request)
         }
 
@@ -101,19 +101,19 @@ class RequestInterceptorChainTest {
         }
 
         override fun toString(): String {
-            return "TestRequestInterceptor1"
+            return "TestInterceptor1"
         }
     }
 
-    private class TestBitmapRequestInterceptor2(val historyList: MutableList<String>) :
-        RequestInterceptor {
+    private class TestBitmapInterceptor2(val historyList: MutableList<String>) :
+        Interceptor {
 
         override val key: String? = null
 
         override val sortWeight: Int = 0
 
-        override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
-            historyList.add("TestRequestInterceptor2")
+        override suspend fun intercept(chain: Interceptor.Chain): Result<ImageData> {
+            historyList.add("TestInterceptor2")
             return chain.proceed(chain.request)
         }
 
@@ -127,19 +127,18 @@ class RequestInterceptorChainTest {
         }
 
         override fun toString(): String {
-            return "TestRequestInterceptor2"
+            return "TestInterceptor2"
         }
     }
 
-    private class TestBitmapRequestInterceptor3(val historyList: MutableList<String>) :
-        RequestInterceptor {
+    private class TestBitmapInterceptor3(val historyList: MutableList<String>) : Interceptor {
 
         override val key: String? = null
 
         override val sortWeight: Int = 0
 
-        override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
-            historyList.add("TestRequestInterceptor3")
+        override suspend fun intercept(chain: Interceptor.Chain): Result<ImageData> {
+            historyList.add("TestInterceptor3")
             return Result.success(
                 ImageData(
                     image = createBitmapImage(12, 45),
@@ -162,7 +161,7 @@ class RequestInterceptorChainTest {
         }
 
         override fun toString(): String {
-            return "TestRequestInterceptor3"
+            return "TestInterceptor3"
         }
     }
 }

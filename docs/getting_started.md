@@ -503,7 +503,7 @@ Basic functions:
 * [BlurHash][blurhash]
 * [ExifOrientation: Correct the image orientation][exif_orientation]
 * [ImageOptions: Manage image configurations in a unified manner][image_options]
-* [RequestInterceptor: Intercept ImageRequest][request_interceptor]
+* [Interceptor: Intercept ImageRequest][interceptor]
 * [Preload images into memory][preload]
 * [Download images][download]
 * [Lifecycle][lifecycle]
@@ -597,7 +597,7 @@ Featured functions:
 
 [progress_indicator]: progress_indicator.md
 
-[request_interceptor]: request_interceptor.md
+[interceptor]: interceptor.md
 
 [resize]: resize.md
 

@@ -129,7 +129,7 @@ data class ImageOptions(
     /**
      * Disk caching policy for Bitmaps affected by [sizeResolver] or [transformations]
      *
-     * @see com.github.panpf.sketch.cache.internal.ResultCacheRequestInterceptor
+     * @see com.github.panpf.sketch.cache.internal.ResultCacheInterceptor
      */
     val resultCachePolicy: CachePolicy?,
 
@@ -181,7 +181,7 @@ data class ImageOptions(
     /**
      * Bitmap memory caching policy
      *
-     * @see com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
+     * @see com.github.panpf.sketch.cache.internal.MemoryCacheInterceptor
      */
     val memoryCachePolicy: CachePolicy?,
 

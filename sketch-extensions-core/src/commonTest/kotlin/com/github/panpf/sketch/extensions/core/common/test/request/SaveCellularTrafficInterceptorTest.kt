@@ -24,9 +24,9 @@ import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.SaveCellularTrafficRequestInterceptor
+import com.github.panpf.sketch.request.SaveCellularTrafficInterceptor
 import com.github.panpf.sketch.request.ignoreSaveCellularTraffic
 import com.github.panpf.sketch.request.isDepthFromSaveCellularTraffic
 import com.github.panpf.sketch.request.isIgnoredSaveCellularTraffic
@@ -48,16 +48,16 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
-class SaveCellularTrafficRequestInterceptorTest {
+class SaveCellularTrafficInterceptorTest {
 
     @Test
     fun testSupportSaveCellularTraffic() {
         ComponentRegistry().apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -68,9 +68,9 @@ class SaveCellularTrafficRequestInterceptorTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[]," +
-                        "requestInterceptorList=[SaveCellularTrafficRequestInterceptor]" +
+                        "fetchers=[]," +
+                        "decoders=[]," +
+                        "interceptors=[SaveCellularTrafficInterceptor]" +
                         ")",
                 actual = toString()
             )
@@ -82,9 +82,9 @@ class SaveCellularTrafficRequestInterceptorTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[]," +
-                        "requestInterceptorList=[SaveCellularTrafficRequestInterceptor,SaveCellularTrafficRequestInterceptor]" +
+                        "fetchers=[]," +
+                        "decoders=[]," +
+                        "interceptors=[SaveCellularTrafficInterceptor,SaveCellularTrafficInterceptor]" +
                         ")",
                 actual = toString()
             )
@@ -94,16 +94,16 @@ class SaveCellularTrafficRequestInterceptorTest {
     @Test
     fun test() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val interceptor = SaveCellularTrafficRequestInterceptor {
+        val interceptor = SaveCellularTrafficInterceptor {
             true
         }
-        val errorInterceptor = SaveCellularTrafficRequestInterceptor {
+        val errorInterceptor = SaveCellularTrafficInterceptor {
             false
         }
 
         // default
         ImageRequest(context, "http://sample.com/sample.jpeg").let { request ->
-            val chain = TestRequestInterceptorChain(
+            val chain = TestInterceptorChain(
                 sketch = sketch,
                 initialRequest = request,
                 request = request,
@@ -126,7 +126,7 @@ class SaveCellularTrafficRequestInterceptorTest {
         ImageRequest(context, "http://sample.com/sample.jpeg") {
             saveCellularTraffic()
         }.let { request ->
-            val chain = TestRequestInterceptorChain(
+            val chain = TestInterceptorChain(
                 sketch = sketch,
                 initialRequest = request,
                 request = request,
@@ -149,7 +149,7 @@ class SaveCellularTrafficRequestInterceptorTest {
         ImageRequest(context, "http://sample.com/sample.jpeg") {
             saveCellularTraffic()
         }.let { request ->
-            val chain = TestRequestInterceptorChain(
+            val chain = TestInterceptorChain(
                 sketch = sketch,
                 initialRequest = request,
                 request = request,
@@ -170,7 +170,7 @@ class SaveCellularTrafficRequestInterceptorTest {
         // isSaveCellularTraffic false
         interceptor.enabled = true
         ImageRequest(context, "http://sample.com/sample.jpeg").let { request ->
-            val chain = TestRequestInterceptorChain(
+            val chain = TestInterceptorChain(
                 sketch = sketch,
                 initialRequest = request,
                 request = request,
@@ -194,7 +194,7 @@ class SaveCellularTrafficRequestInterceptorTest {
             saveCellularTraffic()
             ignoreSaveCellularTraffic()
         }.let { request ->
-            val chain = TestRequestInterceptorChain(
+            val chain = TestInterceptorChain(
                 sketch = sketch,
                 initialRequest = request,
                 request = request,
@@ -217,7 +217,7 @@ class SaveCellularTrafficRequestInterceptorTest {
         ImageRequest(context, "http://sample.com/sample.jpeg") {
             saveCellularTraffic()
         }.let { request ->
-            val chain = TestRequestInterceptorChain(
+            val chain = TestInterceptorChain(
                 sketch = sketch,
                 initialRequest = request,
                 request = request,
@@ -241,7 +241,7 @@ class SaveCellularTrafficRequestInterceptorTest {
             saveCellularTraffic()
             depth(MEMORY)
         }.let { request ->
-            val chain = TestRequestInterceptorChain(
+            val chain = TestInterceptorChain(
                 sketch = sketch,
                 initialRequest = request,
                 request = request,
@@ -271,7 +271,7 @@ class SaveCellularTrafficRequestInterceptorTest {
             assertEquals(NETWORK, request.depthHolder.depth)
             assertFalse(request.isDepthFromSaveCellularTraffic)
 
-            val chain = TestRequestInterceptorChain(
+            val chain = TestInterceptorChain(
                 sketch = sketch,
                 initialRequest = request,
                 request = request,
@@ -282,7 +282,7 @@ class SaveCellularTrafficRequestInterceptorTest {
             assertTrue(chain.finalRequest.isDepthFromSaveCellularTraffic)
 
             interceptor.enabled = false
-            val chain1 = TestRequestInterceptorChain(
+            val chain1 = TestInterceptorChain(
                 sketch,
                 chain.finalRequest,
                 chain.finalRequest,
@@ -296,19 +296,24 @@ class SaveCellularTrafficRequestInterceptorTest {
 
     @Test
     fun testSortWeight() {
-        SaveCellularTrafficRequestInterceptor().apply {
-            assertEquals(0, sortWeight)
-        }
+        assertEquals(
+            expected = 0,
+            actual = SaveCellularTrafficInterceptor().sortWeight
+        )
+        assertEquals(
+            expected = 0,
+            actual = SaveCellularTrafficInterceptor.SORT_WEIGHT
+        )
     }
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = SaveCellularTrafficRequestInterceptor()
-        val element11 = SaveCellularTrafficRequestInterceptor().apply { enabled = false }
+        val element1 = SaveCellularTrafficInterceptor()
+        val element11 = SaveCellularTrafficInterceptor().apply { enabled = false }
 
 
         assertEquals(element1, element11)
-        assertNotEquals(element1, null as SaveCellularTrafficRequestInterceptor?)
+        assertNotEquals(element1, null as SaveCellularTrafficInterceptor?)
         assertNotEquals(element1, Any())
 
         assertEquals(element1.hashCode(), element11.hashCode())
@@ -316,20 +321,20 @@ class SaveCellularTrafficRequestInterceptorTest {
 
     @Test
     fun testToString() {
-        SaveCellularTrafficRequestInterceptor().apply {
+        SaveCellularTrafficInterceptor().apply {
             assertEquals(
-                "SaveCellularTrafficRequestInterceptor",
+                "SaveCellularTrafficInterceptor",
                 toString()
             )
         }
     }
 
-    class TestRequestInterceptorChain(
+    class TestInterceptorChain(
         override val sketch: Sketch,
         override val initialRequest: ImageRequest,
         override val request: ImageRequest,
         override val requestContext: RequestContext,
-    ) : RequestInterceptor.Chain {
+    ) : Interceptor.Chain {
 
         var finalRequest = request
 

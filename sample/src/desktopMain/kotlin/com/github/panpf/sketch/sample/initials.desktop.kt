@@ -8,7 +8,7 @@ import com.github.panpf.sketch.fetch.internal.OkHttpHttpUriFetcherProvider
 import com.github.panpf.sketch.fetch.supportHurlHttpUri
 import com.github.panpf.sketch.fetch.supportKtorHttpUri
 import com.github.panpf.sketch.fetch.supportOkHttpHttpUri
-import com.github.panpf.sketch.sample.ui.util.PexelsCompatibleRequestInterceptor
+import com.github.panpf.sketch.sample.ui.util.PexelsCompatibleInterceptor
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -41,6 +41,6 @@ actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
             else -> throw IllegalArgumentException("Unknown httpClient: $httpClient")
         }
 
-        addRequestInterceptor(PexelsCompatibleRequestInterceptor())
+        add(PexelsCompatibleInterceptor())
     }
 }

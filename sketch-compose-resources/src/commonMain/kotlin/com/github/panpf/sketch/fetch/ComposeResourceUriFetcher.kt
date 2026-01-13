@@ -33,7 +33,7 @@ import org.jetbrains.compose.resources.readResourceBytes
  * @see com.github.panpf.sketch.compose.resources.common.test.fetch.ComposeResourceUriFetcherTest.testSupportComposeResources
  */
 fun ComponentRegistry.Builder.supportComposeResources(): ComponentRegistry.Builder = apply {
-    addFetcher(ComposeResourceUriFetcher.Factory())
+    add(ComposeResourceUriFetcher.Factory())
 }
 
 /**

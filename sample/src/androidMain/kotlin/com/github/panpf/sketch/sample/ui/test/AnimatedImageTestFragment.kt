@@ -122,7 +122,7 @@ class AnimatedImageTestFragment :
                     )
                 )
                 components {
-                    addDecoder(factory)
+                    add(factory)
                 }
                 repeatCount(0)
             }
@@ -163,7 +163,7 @@ class AnimatedImageTestFragment :
                     )
                 )
                 components {
-                    addDecoder(factory)
+                    add(factory)
                 }
                 repeatCount(0)
                 onAnimationStart {
@@ -215,7 +215,7 @@ class AnimatedImageTestFragment :
                 )
                 animatedTransformation(TestAnimatedTransformation)
                 components {
-                    addDecoder(factory)
+                    add(factory)
                 }
             }
         }

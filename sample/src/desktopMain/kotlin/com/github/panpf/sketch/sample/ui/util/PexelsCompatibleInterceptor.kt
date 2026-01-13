@@ -3,11 +3,11 @@ package com.github.panpf.sketch.sample.ui.util
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.merged
 import com.github.panpf.sketch.request.ImageData
-import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.RequestInterceptor.Chain
+import com.github.panpf.sketch.request.Interceptor
+import com.github.panpf.sketch.request.Interceptor.Chain
 import com.github.panpf.sketch.request.httpHeaders
 
-class PexelsCompatibleRequestInterceptor : RequestInterceptor {
+class PexelsCompatibleInterceptor : Interceptor {
 
     companion object {
         const val SORT_WEIGHT = 80
@@ -45,6 +45,6 @@ class PexelsCompatibleRequestInterceptor : RequestInterceptor {
     }
 
     override fun toString(): String {
-        return "PexelsCompatibleRequestInterceptor"
+        return "PexelsCompatibleInterceptor"
     }
 }

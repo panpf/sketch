@@ -16,12 +16,12 @@
 
 package com.github.panpf.sketch.core.common.test.request.internal
 
-import com.github.panpf.sketch.fetch.internal.FetcherRequestInterceptor
+import com.github.panpf.sketch.fetch.internal.FetcherInterceptor
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
-import com.github.panpf.sketch.request.internal.RequestInterceptorChain
+import com.github.panpf.sketch.request.internal.DecoderInterceptor
+import com.github.panpf.sketch.request.internal.InterceptorChain
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
@@ -35,19 +35,19 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 
-class EngineRequestInterceptorTest {
+class DecoderInterceptorTest {
 
     @Test
     fun testIntercept() = runTest {
         runInNewSketchWithUse({
             components {
-                addFetcher(TestHttpUriFetcher.Factory(it))
+                add(TestHttpUriFetcher.Factory(it))
             }
         }) { context, sketch ->
             val executeRequest: suspend (ImageRequest) -> ImageData = { request ->
-                val chain = RequestInterceptorChain(
+                val chain = InterceptorChain(
                     requestContext = request.toRequestContext(sketch),
-                    interceptors = listOf(FetcherRequestInterceptor(), EngineRequestInterceptor()),
+                    interceptors = listOf(FetcherInterceptor(), DecoderInterceptor()),
                     index = 0,
                 )
                 withContext(Dispatchers.Main) {
@@ -66,13 +66,13 @@ class EngineRequestInterceptorTest {
     fun testIntercept2() = runTest {
         runInNewSketchWithUse({
             components {
-                addFetcher(TestHttpUriFetcher.Factory(it))
+                add(TestHttpUriFetcher.Factory(it))
             }
         }) { context, sketch ->
             val executeRequest: suspend (ImageRequest) -> ImageData = { request ->
-                val chain = RequestInterceptorChain(
+                val chain = InterceptorChain(
                     requestContext = request.toRequestContext(sketch),
-                    interceptors = listOf(EngineRequestInterceptor()),
+                    interceptors = listOf(DecoderInterceptor()),
                     index = 0,
                 )
                 withContext(Dispatchers.Main) {
@@ -88,16 +88,21 @@ class EngineRequestInterceptorTest {
 
     @Test
     fun testSortWeight() {
-        EngineRequestInterceptor().apply {
-            assertEquals(100, sortWeight)
-        }
+        assertEquals(
+            expected = 100,
+            actual = DecoderInterceptor().sortWeight
+        )
+        assertEquals(
+            expected = 100,
+            actual = DecoderInterceptor.SORT_WEIGHT
+        )
     }
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = EngineRequestInterceptor()
-        val element11 = EngineRequestInterceptor()
-        val element2 = EngineRequestInterceptor()
+        val element1 = DecoderInterceptor()
+        val element11 = DecoderInterceptor()
+        val element2 = DecoderInterceptor()
 
         assertEquals(element1, element11)
         assertEquals(element1, element2)
@@ -112,8 +117,8 @@ class EngineRequestInterceptorTest {
     @Test
     fun testToString() {
         assertEquals(
-            "EngineRequestInterceptor",
-            EngineRequestInterceptor().toString()
+            "DecoderInterceptor",
+            DecoderInterceptor().toString()
         )
     }
 }

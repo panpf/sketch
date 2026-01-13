@@ -1,13 +1,13 @@
 package com.github.panpf.sketch.core.common.test.decode.internal
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.HelperDecoder
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
 import com.github.panpf.sketch.decode.internal.createSubsamplingTransformed
 import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.size
@@ -27,7 +27,7 @@ import kotlin.test.assertNull
 
 class HelperDecoderTest {
 
-    private suspend fun ImageRequest.helperDecode(sketch: Sketch): DecodeResult {
+    private suspend fun ImageRequest.helperDecode(sketch: Sketch): ImageData {
         val request = this
         val requestContext = request.toRequestContext(sketch)
         val fetchResult =

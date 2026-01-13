@@ -14,7 +14,7 @@ import com.github.panpf.sketch.request.RequestContext
 fun ComponentRegistry.Builder.supportKtorHttpUri(
     httpStack: KtorStack = KtorStack()
 ): ComponentRegistry.Builder = apply {
-    addFetcher(KtorHttpUriFetcher.Factory(httpStack))
+    add(KtorHttpUriFetcher.Factory(httpStack))
 }
 
 /**

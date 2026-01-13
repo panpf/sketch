@@ -33,7 +33,7 @@ import com.github.panpf.sketch.source.DataSource
  */
 @RequiresApi(Build.VERSION_CODES.P)
 fun ComponentRegistry.Builder.supportImageDecoderAnimatedWebp(): ComponentRegistry.Builder = apply {
-    addDecoder(ImageDecoderAnimatedWebpDecoder.Factory())
+    add(ImageDecoderAnimatedWebpDecoder.Factory())
 }
 
 /**

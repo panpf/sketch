@@ -34,9 +34,9 @@ class AppIconUriFetcherTest {
             build().apply {
                 assertEquals(
                     "ComponentRegistry(" +
-                            "fetcherFactoryList=[]," +
-                            "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]" +
+                            "fetchers=[]," +
+                            "decoders=[]," +
+                            "interceptors=[]" +
                             ")",
                     toString()
                 )
@@ -46,9 +46,9 @@ class AppIconUriFetcherTest {
             build().apply {
                 assertEquals(
                     "ComponentRegistry(" +
-                            "fetcherFactoryList=[AppIconUriFetcher]," +
-                            "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]" +
+                            "fetchers=[AppIconUriFetcher]," +
+                            "decoders=[]," +
+                            "interceptors=[]" +
                             ")",
                     toString()
                 )
@@ -58,9 +58,9 @@ class AppIconUriFetcherTest {
             build().apply {
                 assertEquals(
                     "ComponentRegistry(" +
-                            "fetcherFactoryList=[AppIconUriFetcher,AppIconUriFetcher]," +
-                            "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]" +
+                            "fetchers=[AppIconUriFetcher,AppIconUriFetcher]," +
+                            "decoders=[]," +
+                            "interceptors=[]" +
                             ")",
                     toString()
                 )

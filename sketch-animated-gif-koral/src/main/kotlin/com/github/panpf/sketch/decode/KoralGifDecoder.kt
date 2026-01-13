@@ -33,6 +33,7 @@ import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
 import com.github.panpf.sketch.fetch.FetchResult
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
@@ -58,7 +59,7 @@ import pl.droidsonroids.gif.transforms.Transform
  * @see com.github.panpf.sketch.animated.gif.koral.test.decode.KoralGifDecoderTest.testSupportKoralGif
  */
 fun ComponentRegistry.Builder.supportKoralGif(): ComponentRegistry.Builder = apply {
-    addDecoder(KoralGifDecoder.Factory())
+    add(KoralGifDecoder.Factory())
 }
 
 /**
@@ -114,7 +115,7 @@ class KoralGifDecoder(
         }
 
     @WorkerThread
-    override fun decode(): DecodeResult {
+    override fun decode(): ImageData {
         val imageInfo = imageInfo
         val resize = requestContext.computeResize(imageInfo.size)
         val inSampleSize = calculateSampleSize(
@@ -162,7 +163,7 @@ class KoralGifDecoder(
                 val onStart = request.animationStartCallback
                 val onEnd = request.animationEndCallback
                 if (onStart != null || onEnd != null) {
-                    // Will be executed before EngineRequestInterceptor.intercept() return
+                    // Will be executed before DecoderInterceptor.intercept() return
                     @Suppress("OPT_IN_USAGE")
                     GlobalScope.launch(Dispatchers.Main) {
                         registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
@@ -170,7 +171,7 @@ class KoralGifDecoder(
                 }
             }
 
-        return DecodeResult(
+        return ImageData(
             image = animatableDrawable.asImage(),
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,

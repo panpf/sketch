@@ -3,7 +3,6 @@ package com.github.panpf.sketch.core.nonandroid.test.decode.internal
 import com.github.panpf.sketch.Bitmap
 import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.decode.DecodeConfig
-import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
 import com.github.panpf.sketch.decode.internal.calculateSampleSizeForRegion
@@ -20,6 +19,7 @@ import com.github.panpf.sketch.decode.internal.resize
 import com.github.panpf.sketch.decode.internal.supportDecodeRegion
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.EXACTLY
@@ -866,7 +866,7 @@ class DecodesNonAndroidTest {
         val sourceImage = ResourceImages.jpeg.decode().apply {
             assertEquals(Size(1291, 1936), size)
         }
-        val decodeResult = DecodeResult(
+        val imageData = ImageData(
             image = sourceImage,
             imageInfo = ImageInfo(sourceImage.width, sourceImage.height, "image/jpeg"),
             dataFrom = MEMORY,
@@ -875,14 +875,14 @@ class DecodesNonAndroidTest {
             extras = null,
         )
 
-        val executeResize: suspend (Size, Precision, Scale) -> DecodeResult =
+        val executeResize: suspend (Size, Precision, Scale) -> ImageData =
             { size, precision, scale ->
                 val request = ImageRequest(context, ResourceImages.jpeg.uri) {
                     resize(size, precision, scale)
                 }
                 val realResize = request.toRequestContext(sketch)
-                    .computeResize(decodeResult.imageInfo.size)
-                decodeResult.resize(realResize)
+                    .computeResize(imageData.imageInfo.size)
+                imageData.resize(realResize)
             }
 
         listOf(
@@ -903,17 +903,17 @@ class DecodesNonAndroidTest {
             if (change) {
                 assertEquals(
                     expected = true,
-                    actual = resizeResult !== decodeResult,
+                    actual = resizeResult !== imageData,
                     message = "item=$item"
                 )
                 assertEquals(
                     expected = true,
-                    actual = resizeResult.image !== decodeResult.image,
+                    actual = resizeResult.image !== imageData.image,
                     message = "item=$item"
                 )
                 assertEquals(
                     expected = true,
-                    actual = resizeResult.image.getBitmapOrThrow() !== decodeResult.image.getBitmapOrThrow(),
+                    actual = resizeResult.image.getBitmapOrThrow() !== imageData.image.getBitmapOrThrow(),
                     message = "item=$item"
                 )
                 if (!sourceImage.size.isSameAspectRatio(resizeResult.image.size, 0.2f)) {
@@ -929,7 +929,7 @@ class DecodesNonAndroidTest {
                 assertNull(resizeResult.transformeds?.getResizeTransformed())
                 assertEquals(
                     expected = false,
-                    actual = resizeResult !== decodeResult,
+                    actual = resizeResult !== imageData,
                     message = "item=$item"
                 )
             }

@@ -34,7 +34,7 @@ import com.github.panpf.sketch.util.Uri
  * @see com.github.panpf.sketch.extensions.appicon.test.fetch.AppIconUriFetcherTest.testSupportAppIcon
  */
 fun ComponentRegistry.Builder.supportAppIcon(): ComponentRegistry.Builder = apply {
-    addFetcher(AppIconUriFetcher.Factory())
+    add(AppIconUriFetcher.Factory())
 }
 
 /**

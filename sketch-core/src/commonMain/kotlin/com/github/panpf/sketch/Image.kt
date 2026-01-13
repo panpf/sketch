@@ -68,7 +68,7 @@ interface Image {
      *
      * Only shareable images can be automatically cached in memory.
      *
-     * @see com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor.saveToMemoryCache
+     * @see com.github.panpf.sketch.cache.internal.MemoryCacheInterceptor.saveToMemoryCache
      */
     val shareable: Boolean
 

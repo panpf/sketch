@@ -96,7 +96,7 @@ class DecoderTestScreen : BaseScreen() {
                                     request = ImageRequest(context, imageUri) {
                                         if (testItem.imageDecoder != null) {
                                             components {
-                                                addDecoder(testItem.imageDecoder)
+                                                add(testItem.imageDecoder)
                                             }
                                         }
                                     },

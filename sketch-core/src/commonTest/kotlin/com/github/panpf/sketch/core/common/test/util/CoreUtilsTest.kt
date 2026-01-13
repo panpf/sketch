@@ -489,7 +489,7 @@ class CoreUtilsTest {
             resizeOnDraw(true)
             memoryCachePolicy(CachePolicy.ENABLED)
             components {
-                addDecoder(TestDecoder.Factory())
+                add(TestDecoder.Factory())
             }
             defaultOptions(ImageOptions {
                 size(Size(99, 99))
@@ -699,8 +699,8 @@ class CoreUtilsTest {
         }
         request.newRequest {
             components {
-                addDecoder(TestDecoder.Factory())
-                addFetcher(TestFetcher.Factory())
+                add(TestDecoder.Factory())
+                add(TestFetcher.Factory())
             }
         }.apply {
             assertEquals(
@@ -741,7 +741,7 @@ class CoreUtilsTest {
             resizeOnDraw(true)
             memoryCachePolicy(CachePolicy.ENABLED)
             components {
-                addDecoder(TestDecoder.Factory())
+                add(TestDecoder.Factory())
             }
         }
         assertEquals(
@@ -903,8 +903,8 @@ class CoreUtilsTest {
         }
         options.newOptions {
             components {
-                addDecoder(TestDecoder.Factory())
-                addFetcher(TestFetcher.Factory())
+                add(TestDecoder.Factory())
+                add(TestFetcher.Factory())
             }
         }.apply {
             assertEquals(

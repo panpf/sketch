@@ -29,7 +29,7 @@ import com.github.panpf.sketch.source.DataSource
  * @see com.github.panpf.sketch.video.ffmpeg.test.decode.FFmpegVideoFrameDecoderTest.testSupportApkIcon
  */
 fun ComponentRegistry.Builder.supportFFmpegVideoFrame(): ComponentRegistry.Builder = apply {
-    addDecoder(FFmpegVideoFrameDecoder.Factory())
+    add(FFmpegVideoFrameDecoder.Factory())
 }
 
 /**

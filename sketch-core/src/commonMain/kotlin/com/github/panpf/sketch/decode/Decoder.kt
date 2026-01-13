@@ -19,6 +19,7 @@ package com.github.panpf.sketch.decode
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.fetch.FetchResult
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Key
@@ -35,10 +36,10 @@ interface Decoder {
     val imageInfo: ImageInfo
 
     /**
-     * Decode Image from [DataSource] and wrap it as a [DecodeResult] return.
+     * Decode Image from [DataSource] and wrap it as a [ImageData] return.
      */
     @WorkerThread
-    fun decode(): DecodeResult
+    fun decode(): ImageData
 
     /**
      * [Factory] will be registered in [ComponentRegistry], and will traverse [Factory]

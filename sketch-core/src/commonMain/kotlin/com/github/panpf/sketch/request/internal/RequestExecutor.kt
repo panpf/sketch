@@ -75,9 +75,9 @@ class RequestExecutor constructor(val sketch: Sketch) {
                 throw UriInvalidException(URI_EMPTY_MESSAGE)
             }
 
-            val result = RequestInterceptorChain(
+            val result = InterceptorChain(
                 requestContext = requestContext,
-                interceptors = sketch.components.getRequestInterceptorList(requestContext.request),
+                interceptors = sketch.components.getInterceptors(requestContext.request),
                 index = 0,
             ).proceed(requestContext.request)
             val imageData = result.getOrNull()

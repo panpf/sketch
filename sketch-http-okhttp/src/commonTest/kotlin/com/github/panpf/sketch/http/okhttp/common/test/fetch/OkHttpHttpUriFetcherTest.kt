@@ -23,9 +23,9 @@ class OkHttpHttpUriFetcherTest {
         ComponentRegistry().apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -36,9 +36,9 @@ class OkHttpHttpUriFetcherTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[OkHttpHttpUriFetcher]," +
-                        "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[OkHttpHttpUriFetcher]," +
+                        "decoders=[]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -50,9 +50,9 @@ class OkHttpHttpUriFetcherTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[OkHttpHttpUriFetcher,OkHttpHttpUriFetcher]," +
-                        "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[OkHttpHttpUriFetcher,OkHttpHttpUriFetcher]," +
+                        "decoders=[]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )

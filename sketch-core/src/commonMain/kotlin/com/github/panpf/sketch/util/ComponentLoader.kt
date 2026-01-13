@@ -78,14 +78,14 @@ fun ComponentLoader.toComponentRegistry(
                 fetcherProvider::class == ignoreProviderClass
             } == null
         }.forEach { fetcherComponent ->
-            fetcherComponent.factory(context)?.let { factory -> addFetcher(factory) }
+            fetcherComponent.factory(context)?.let { factory -> add(factory) }
         }
         decoders.filter { decoderProvider ->
             ignoreDecoderProviders?.find { ignoreProviderClass ->
                 decoderProvider::class == ignoreProviderClass
             } == null
         }.forEach { decoderComponent ->
-            decoderComponent.factory(context)?.let { factory -> addDecoder(factory) }
+            decoderComponent.factory(context)?.let { factory -> add(factory) }
         }
     }
 }

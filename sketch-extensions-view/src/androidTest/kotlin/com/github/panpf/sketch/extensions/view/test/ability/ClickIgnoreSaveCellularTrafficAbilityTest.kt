@@ -26,7 +26,7 @@ import com.github.panpf.sketch.ability.isClickIgnoreSaveCellularTrafficEnabled
 import com.github.panpf.sketch.ability.setClickIgnoreSaveCellularTrafficEnabled
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.SaveCellularTrafficRequestInterceptor
+import com.github.panpf.sketch.request.SaveCellularTrafficInterceptor
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.request.target
 import com.github.panpf.sketch.state.ColorDrawableStateImage
@@ -75,7 +75,7 @@ class ClickIgnoreSaveCellularTrafficAbilityTest {
     fun test() = runTest {
         runInNewSketchWithUse({
             components {
-                addFetcher(TestHttpUriFetcher.Factory(it))
+                add(TestHttpUriFetcher.Factory(it))
             }
         }) { _, sketch ->
             TestActivity::class.launchActivity().use { scenario ->
@@ -90,8 +90,8 @@ class ClickIgnoreSaveCellularTrafficAbilityTest {
 
                     ImageRequest(activity, TestHttpStack.testImages.first().uri) {
                         components {
-                            addRequestInterceptor(
-                                SaveCellularTrafficRequestInterceptor(
+                            add(
+                                SaveCellularTrafficInterceptor(
                                     isCellularNetworkConnected = {
                                         true
                                     }

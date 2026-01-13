@@ -23,7 +23,7 @@ private const val SAVE_CELLULAR_TRAFFIC_ENABLED_KEY = "sketch#save_cellular_traf
 private const val SAVE_CELLULAR_TRAFFIC_IGNORED_KEY = "sketch#save_cellular_traffic_ignored"
 
 /**
- * Set to enable or disable the function of saving cellular data, it needs to be used together with [SaveCellularTrafficRequestInterceptor]
+ * Set to enable or disable the function of saving cellular data, it needs to be used together with [SaveCellularTrafficInterceptor]
  *
  * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficExtensionsTest.testSaveCellularTraffic
  */
@@ -45,7 +45,7 @@ val ImageRequest.isSaveCellularTraffic: Boolean
     get() = extras?.value<Boolean>(SAVE_CELLULAR_TRAFFIC_ENABLED_KEY) == true
 
 /**
- * Set to enable or disable the function of saving cellular data, it needs to be used together with [SaveCellularTrafficRequestInterceptor]
+ * Set to enable or disable the function of saving cellular data, it needs to be used together with [SaveCellularTrafficInterceptor]
  *
  * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficExtensionsTest.testSaveCellularTraffic
  */
@@ -68,7 +68,7 @@ val ImageOptions.isSaveCellularTraffic: Boolean
 
 
 /**
- * Set to enable or disable the function of ignore saving cellular data, it needs to be used together with [SaveCellularTrafficRequestInterceptor]
+ * Set to enable or disable the function of ignore saving cellular data, it needs to be used together with [SaveCellularTrafficInterceptor]
  *
  * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficExtensionsTest.testIgnoreSaveCellularTraffic
  */
@@ -90,7 +90,7 @@ val ImageRequest.isIgnoredSaveCellularTraffic: Boolean
     get() = extras?.value<Boolean>(SAVE_CELLULAR_TRAFFIC_IGNORED_KEY) == true
 
 /**
- * Set to enable or disable the function of ignore saving cellular data, it needs to be used together with [SaveCellularTrafficRequestInterceptor]
+ * Set to enable or disable the function of ignore saving cellular data, it needs to be used together with [SaveCellularTrafficInterceptor]
  *
  * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficExtensionsTest.testIgnoreSaveCellularTraffic
  */

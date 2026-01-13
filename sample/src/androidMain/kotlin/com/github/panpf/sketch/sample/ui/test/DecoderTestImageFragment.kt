@@ -36,7 +36,7 @@ class DecoderTestImageFragment : BaseBindingFragment<FragmentImageBinding>() {
                             downloadCachePolicy(DISABLED)
                             if (testItem.imageDecoder != null) {
                                 components {
-                                    addDecoder(testItem.imageDecoder)
+                                    add(testItem.imageDecoder)
                                 }
                             }
                         }

@@ -18,25 +18,25 @@ package com.github.panpf.sketch.fetch.internal
 
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.request.ImageData
-import com.github.panpf.sketch.request.RequestInterceptor
+import com.github.panpf.sketch.request.Interceptor
 import kotlinx.coroutines.withContext
 
 /**
  * The request interceptor that fetches data
  *
- * @see com.github.panpf.sketch.core.common.test.fetch.internal.FetcherRequestInterceptorTest
+ * @see com.github.panpf.sketch.core.common.test.fetch.internal.FetcherInterceptorTest
  */
-class FetcherRequestInterceptor : RequestInterceptor {
+class FetcherInterceptor : Interceptor {
 
     companion object {
-        const val SORT_WEIGHT = 99
+        const val SORT_WEIGHT = 90
     }
 
     override val key: String? = null
     override val sortWeight: Int = SORT_WEIGHT
 
     @MainThread
-    override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
+    override suspend fun intercept(chain: Interceptor.Chain): Result<ImageData> {
         val sketch = chain.sketch
         val request = chain.request
         val requestContext = chain.requestContext
@@ -66,5 +66,5 @@ class FetcherRequestInterceptor : RequestInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "FetcherRequestInterceptor"
+    override fun toString(): String = "FetcherInterceptor"
 }

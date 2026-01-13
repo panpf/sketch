@@ -5,13 +5,13 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
-import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
-import com.github.panpf.sketch.cache.internal.ResultCacheRequestInterceptor
+import com.github.panpf.sketch.cache.internal.MemoryCacheInterceptor
+import com.github.panpf.sketch.cache.internal.ResultCacheInterceptor
 import com.github.panpf.sketch.commonComponents
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.KtorHttpUriFetcher
-import com.github.panpf.sketch.fetch.internal.FetcherRequestInterceptor
+import com.github.panpf.sketch.fetch.internal.FetcherInterceptor
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.merged
 import com.github.panpf.sketch.platformComponents
@@ -21,19 +21,19 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ImageResult.Success
-import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
-import com.github.panpf.sketch.request.internal.PlaceholderRequestInterceptor
+import com.github.panpf.sketch.request.internal.DecoderInterceptor
+import com.github.panpf.sketch.request.internal.PlaceholderInterceptor
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.DelayRequestInterceptor
+import com.github.panpf.sketch.test.utils.DelayInterceptor
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
-import com.github.panpf.sketch.test.utils.TestRequestInterceptor
+import com.github.panpf.sketch.test.utils.TestInterceptor
 import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
-import com.github.panpf.sketch.transform.internal.TransformationRequestInterceptor
+import com.github.panpf.sketch.transform.internal.TransformationInterceptor
 import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.defaultFileSystem
@@ -234,7 +234,7 @@ class SketchTest {
                     .merged(platformComponents(context)).merged(commonComponents()).toString(),
                 actual = components.registry.toString()
             )
-            assertNotNull(components.registry.fetcherFactoryList.find { it is KtorHttpUriFetcher.Factory })
+            assertNotNull(components.registry.fetchers.find { it is KtorHttpUriFetcher.Factory })
         }
 
         // components: Fetcher, Decoder
@@ -245,21 +245,21 @@ class SketchTest {
                 expected = platformComponents(context).merged(commonComponents()),
                 actual = components.registry
             )
-            assertNull(components.registry.fetcherFactoryList.find { it is KtorHttpUriFetcher.Factory })
+            assertNull(components.registry.fetchers.find { it is KtorHttpUriFetcher.Factory })
         }
 
         Sketch.Builder(context).apply {
             componentLoaderEnabled(false)
         }.apply {
             components {
-                addFetcher(TestFetcher.Factory())
-                addDecoder(TestDecoder.Factory())
+                add(TestFetcher.Factory())
+                add(TestDecoder.Factory())
             }
         }.build().apply {
             assertEquals(
                 expected = ComponentRegistry {
-                    addFetcher(TestFetcher.Factory())
-                    addDecoder(TestDecoder.Factory())
+                    add(TestFetcher.Factory())
+                    add(TestDecoder.Factory())
                 }.merged(platformComponents(context).merged(commonComponents())),
                 actual = components.registry
             )
@@ -283,48 +283,48 @@ class SketchTest {
             )
         }
 
-        // components: RequestInterceptor
+        // components: Interceptor
         Sketch.Builder(context).build().apply {
             assertEquals(
                 listOf(
-                    MemoryCacheRequestInterceptor(),
-                    PlaceholderRequestInterceptor(),
-                    ResultCacheRequestInterceptor(),
-                    TransformationRequestInterceptor(),
-                    FetcherRequestInterceptor(),
-                    EngineRequestInterceptor(),
+                    MemoryCacheInterceptor(),
+                    PlaceholderInterceptor(),
+                    ResultCacheInterceptor(),
+                    TransformationInterceptor(),
+                    FetcherInterceptor(),
+                    DecoderInterceptor(),
                 ),
-                components.getRequestInterceptorList(ImageRequest(context, ""))
+                components.getInterceptors(ImageRequest(context, ""))
             )
         }
 
         Sketch.Builder(context).apply {
             components {
-                addRequestInterceptor(TestRequestInterceptor())
+                add(TestInterceptor())
             }
         }.build().apply {
             assertEquals(
                 listOf(
-                    TestRequestInterceptor(),
-                    MemoryCacheRequestInterceptor(),
-                    PlaceholderRequestInterceptor(),
-                    ResultCacheRequestInterceptor(),
-                    TransformationRequestInterceptor(),
-                    FetcherRequestInterceptor(),
-                    EngineRequestInterceptor()
+                    TestInterceptor(),
+                    MemoryCacheInterceptor(),
+                    PlaceholderInterceptor(),
+                    ResultCacheInterceptor(),
+                    TransformationInterceptor(),
+                    FetcherInterceptor(),
+                    DecoderInterceptor()
                 ),
-                components.getRequestInterceptorList(ImageRequest(context, ""))
+                components.getInterceptors(ImageRequest(context, ""))
             )
             assertNotEquals(
                 listOf(
-                    MemoryCacheRequestInterceptor(),
-                    PlaceholderRequestInterceptor(),
-                    ResultCacheRequestInterceptor(),
-                    TransformationRequestInterceptor(),
-                    FetcherRequestInterceptor(),
-                    EngineRequestInterceptor()
+                    MemoryCacheInterceptor(),
+                    PlaceholderInterceptor(),
+                    ResultCacheInterceptor(),
+                    TransformationInterceptor(),
+                    FetcherInterceptor(),
+                    DecoderInterceptor()
                 ),
-                components.getRequestInterceptorList(ImageRequest(context, ""))
+                components.getInterceptors(ImageRequest(context, ""))
             )
         }
 
@@ -378,7 +378,7 @@ class SketchTest {
             resultCachePolicy(DISABLED)
             // Make the execution slower, cancellation can take effect
             components {
-                addRequestInterceptor(DelayRequestInterceptor(1000) {
+                add(DelayInterceptor(1000) {
                     disposable3?.job?.cancel()
                 })
             }
@@ -451,15 +451,15 @@ class SketchTest {
     fun testCommonComponents() {
         assertEquals(
             expected = ComponentRegistry {
-                addFetcher(Base64UriFetcher.Factory())
-                addFetcher(FileUriFetcher.Factory())
+                add(Base64UriFetcher.Factory())
+                add(FileUriFetcher.Factory())
 
-                addRequestInterceptor(MemoryCacheRequestInterceptor())
-                addRequestInterceptor(PlaceholderRequestInterceptor())
-                addRequestInterceptor(ResultCacheRequestInterceptor())
-                addRequestInterceptor(TransformationRequestInterceptor())
-                addRequestInterceptor(FetcherRequestInterceptor())
-                addRequestInterceptor(EngineRequestInterceptor())
+                add(MemoryCacheInterceptor())
+                add(PlaceholderInterceptor())
+                add(ResultCacheInterceptor())
+                add(TransformationInterceptor())
+                add(FetcherInterceptor())
+                add(DecoderInterceptor())
             },
             actual = commonComponents()
         )

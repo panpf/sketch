@@ -257,7 +257,7 @@ Basic functions:
 * [BlurHash][blurhash]
 * [ExifOrientation: Correct the image orientation][exif_orientation]
 * [ImageOptions: Manage image configurations in a unified manner][image_options]
-* [RequestInterceptor: Intercept ImageRequest][request_interceptor]
+* [Interceptor: Intercept ImageRequest][interceptor]
 * [Preload images into memory][preload]
 * [Download images][download]
 * [Lifecycle][lifecycle]
@@ -400,7 +400,7 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 
 [progress_indicator]: docs/progress_indicator.md
 
-[request_interceptor]: docs/request_interceptor.md
+[interceptor]: docs/interceptor.md
 
 [resize]: docs/resize.md
 

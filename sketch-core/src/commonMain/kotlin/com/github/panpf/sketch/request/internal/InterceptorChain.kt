@@ -19,20 +19,20 @@ package com.github.panpf.sketch.request.internal
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.request.RequestInterceptor
 import com.github.panpf.sketch.util.requiredMainThread
 
 /**
- * Chain execution [RequestInterceptor]
+ * Chain execution [Interceptor]
  *
- * @see com.github.panpf.sketch.core.common.test.request.internal.RequestInterceptorChainTest
+ * @see com.github.panpf.sketch.core.common.test.request.internal.InterceptorChainTest
  */
-internal class RequestInterceptorChain constructor(
+internal class InterceptorChain constructor(
     override val requestContext: RequestContext,
-    private val interceptors: List<RequestInterceptor>,
+    private val interceptors: List<Interceptor>,
     private val index: Int,
-) : RequestInterceptor.Chain {
+) : Interceptor.Chain {
 
     @MainThread
     override suspend fun proceed(request: ImageRequest): Result<ImageData> {
@@ -42,7 +42,7 @@ internal class RequestInterceptorChain constructor(
         }
 
         val interceptor = interceptors[index]
-        val next = RequestInterceptorChain(
+        val next = InterceptorChain(
             requestContext = requestContext,
             interceptors = interceptors,
             index = index + 1

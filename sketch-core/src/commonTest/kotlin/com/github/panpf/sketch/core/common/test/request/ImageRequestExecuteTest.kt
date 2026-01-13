@@ -38,8 +38,8 @@ import com.github.panpf.sketch.test.utils.TestErrorDecoder
 import com.github.panpf.sketch.test.utils.TestFetcherFactory
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
+import com.github.panpf.sketch.test.utils.TestInterceptor
 import com.github.panpf.sketch.test.utils.TestLifecycle
-import com.github.panpf.sketch.test.utils.TestRequestInterceptor
 import com.github.panpf.sketch.test.utils.TestResizeOnDrawImage
 import com.github.panpf.sketch.test.utils.TestResizeOnDrawTarget
 import com.github.panpf.sketch.test.utils.TestTarget
@@ -90,7 +90,7 @@ class ImageRequestExecuteTest {
         }
         runInNewSketchWithUse({
             components {
-                addFetcher(TestHttpUriFetcher.Factory(it))
+                add(TestHttpUriFetcher.Factory(it))
             }
         }) { context, sketch ->
             val imageUri = TestHttpStack.testImages.first().uri
@@ -188,7 +188,7 @@ class ImageRequestExecuteTest {
         }
         runInNewSketchWithUse({
             components {
-                addFetcher(TestHttpUriFetcher.Factory(it))
+                add(TestHttpUriFetcher.Factory(it))
             }
         }) { context, sketch ->
             val diskCache = sketch.downloadCache
@@ -1373,7 +1373,7 @@ class ImageRequestExecuteTest {
         }
         runInNewSketchWithUse({
             components {
-                addFetcher(TestHttpUriFetcher.Factory(it, readDelayMillis = 20))
+                add(TestHttpUriFetcher.Factory(it, readDelayMillis = 20))
             }
         }) { context, sketch ->
             val testImage = TestHttpStack.testImages.first()
@@ -1414,14 +1414,14 @@ class ImageRequestExecuteTest {
 
         ImageRequest(context, ResourceImages.jpeg.uri)
             .execute().asOrThrow<ImageResult.Success>().apply {
-                assertNull(request.extras?.get("TestRequestInterceptor"))
+                assertNull(request.extras?.get("TestInterceptor"))
             }
         ImageRequest(context, ResourceImages.jpeg.uri) {
             components {
-                addRequestInterceptor(TestRequestInterceptor())
+                add(TestInterceptor())
             }
         }.execute().asOrThrow<ImageResult.Success>().apply {
-            assertEquals("true", request.extras?.get("TestRequestInterceptor"))
+            assertEquals("true", request.extras?.get("TestInterceptor"))
         }
 
         ImageRequest(context, TestFetcherFactory.createUri(ResourceImages.jpeg.uri)) {
@@ -1434,7 +1434,7 @@ class ImageRequestExecuteTest {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             components {
-                addFetcher(TestFetcherFactory())
+                add(TestFetcherFactory())
             }
         }.execute().apply {
             assertTrue(this is ImageResult.Success)
@@ -1450,7 +1450,7 @@ class ImageRequestExecuteTest {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             components {
-                addDecoder(TestErrorDecoder.Factory())
+                add(TestErrorDecoder.Factory())
             }
         }.execute().apply {
             assertTrue(this is ImageResult.Error)

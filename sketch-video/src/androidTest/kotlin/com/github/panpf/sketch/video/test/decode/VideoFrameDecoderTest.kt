@@ -65,9 +65,9 @@ class VideoFrameDecoderTest {
         ComponentRegistry().apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -78,9 +78,9 @@ class VideoFrameDecoderTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[VideoFrameDecoder]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[VideoFrameDecoder]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -92,9 +92,9 @@ class VideoFrameDecoderTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[VideoFrameDecoder,VideoFrameDecoder]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[VideoFrameDecoder,VideoFrameDecoder]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )

@@ -2,11 +2,11 @@ package com.github.panpf.sketch.core.common.test
 
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Components
-import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
+import com.github.panpf.sketch.cache.internal.MemoryCacheInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
+import com.github.panpf.sketch.request.internal.DecoderInterceptor
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.AllFetcher
 import com.github.panpf.sketch.test.utils.FakeDecoder
@@ -15,8 +15,8 @@ import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestDecoder2
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
-import com.github.panpf.sketch.test.utils.TestRequestInterceptor
-import com.github.panpf.sketch.test.utils.TestRequestInterceptor2
+import com.github.panpf.sketch.test.utils.TestInterceptor
+import com.github.panpf.sketch.test.utils.TestInterceptor2
 import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -34,43 +34,43 @@ import kotlin.test.assertTrue
 class ComponentsTest {
 
     @Test
-    fun testRequestInterceptors() {
+    fun testInterceptors() {
         val context = getTestContext()
         val emptyRequest = ImageRequest(context, "")
         val notEmptyRequest = ImageRequest(context, "") {
             components {
-                addRequestInterceptor(TestRequestInterceptor(95))
-                addRequestInterceptor(TestRequestInterceptor2())
+                add(TestInterceptor(95))
+                add(TestInterceptor2())
             }
         }
 
         Components(ComponentRegistry()).apply {
             assertEquals(
                 listOf(),
-                getRequestInterceptorList(emptyRequest)
+                getInterceptors(emptyRequest)
             )
             assertEquals(
-                listOf(TestRequestInterceptor2(), TestRequestInterceptor(95)),
-                getRequestInterceptorList(notEmptyRequest)
+                listOf(TestInterceptor2(), TestInterceptor(95)),
+                getInterceptors(notEmptyRequest)
             )
         }
 
         Components(ComponentRegistry {
-            addRequestInterceptor(MemoryCacheRequestInterceptor())
-            addRequestInterceptor(EngineRequestInterceptor())
+            add(MemoryCacheInterceptor())
+            add(DecoderInterceptor())
         }).apply {
             assertEquals(
-                listOf(MemoryCacheRequestInterceptor(), EngineRequestInterceptor()),
-                getRequestInterceptorList(emptyRequest)
+                listOf(MemoryCacheInterceptor(), DecoderInterceptor()),
+                getInterceptors(emptyRequest)
             )
             assertEquals(
                 listOf(
-                    TestRequestInterceptor2(),
-                    MemoryCacheRequestInterceptor(),
-                    TestRequestInterceptor(95),
-                    EngineRequestInterceptor()
+                    TestInterceptor2(),
+                    MemoryCacheInterceptor(),
+                    TestInterceptor(95),
+                    DecoderInterceptor()
                 ),
-                getRequestInterceptorList(notEmptyRequest)
+                getInterceptors(notEmptyRequest)
             )
         }
     }
@@ -91,13 +91,13 @@ class ComponentsTest {
             assertFailsWith(IllegalArgumentException::class) {
                 newFetcherOrThrow(ImageRequest(context, "file:///sdcard/sample.jpeg") {
                     components {
-                        addFetcher(TestHttpUriFetcher.Factory(context))
+                        add(TestHttpUriFetcher.Factory(context))
                     }
                 }.toRequestContext(sketch, Size.Empty))
             }
             newFetcherOrThrow(ImageRequest(context, "file:///sdcard/sample.jpeg") {
                 components {
-                    addFetcher(FileUriFetcher.Factory())
+                    add(FileUriFetcher.Factory())
                 }
             }.toRequestContext(sketch, Size.Empty))
 
@@ -110,20 +110,20 @@ class ComponentsTest {
             assertFailsWith(IllegalArgumentException::class) {
                 newFetcherOrThrow(ImageRequest(context, "http://sample.com/sample.jpeg") {
                     components {
-                        addFetcher(FileUriFetcher.Factory())
+                        add(FileUriFetcher.Factory())
                     }
                 }.toRequestContext(sketch, Size.Empty))
             }
             newFetcherOrThrow(ImageRequest(context, "http://sample.com/sample.jpeg") {
                 components {
-                    addFetcher(TestHttpUriFetcher.Factory(context))
+                    add(TestHttpUriFetcher.Factory(context))
                 }
             }.toRequestContext(sketch, Size.Empty))
         }
 
         Components(ComponentRegistry {
-            addFetcher(FileUriFetcher.Factory())
-            addFetcher(TestHttpUriFetcher.Factory(context))
+            add(FileUriFetcher.Factory())
+            add(TestHttpUriFetcher.Factory(context))
         }).apply {
             assertTrue(
                 newFetcherOrThrow(
@@ -154,7 +154,7 @@ class ComponentsTest {
                 newFetcherOrThrow(
                     ImageRequest(context, "file:///sdcard/sample.jpeg") {
                         components {
-                            addFetcher(AllFetcher.Factory())
+                            add(AllFetcher.Factory())
                         }
                     }.toRequestContext(sketch, Size.Empty)
                 ) is AllFetcher
@@ -163,7 +163,7 @@ class ComponentsTest {
                 newFetcherOrThrow(
                     ImageRequest(context, "http://sample.com/sample.jpeg") {
                         components {
-                            addFetcher(AllFetcher.Factory())
+                            add(AllFetcher.Factory())
                         }
                     }.toRequestContext(sketch, Size.Empty)
                 ) is AllFetcher
@@ -172,7 +172,7 @@ class ComponentsTest {
                 newFetcherOrThrow(
                     ImageRequest(context, "file:///sdcard/sample.jpeg") {
                         components {
-                            addFetcher(AllFetcher.Factory())
+                            add(AllFetcher.Factory())
                         }
                     }.toRequestContext(sketch, Size.Empty)
                 ) is AllFetcher
@@ -189,7 +189,7 @@ class ComponentsTest {
         val (context, sketch) = getTestContextAndSketch()
 
         Components(ComponentRegistry {
-            addFetcher(FileUriFetcher.Factory())
+            add(FileUriFetcher.Factory())
         }).apply {
             assertFails {
                 val request = ImageRequest(context, "file:///sdcard/sample.jpeg")
@@ -204,7 +204,7 @@ class ComponentsTest {
         }
 
         Components(ComponentRegistry {
-            addFetcher(FileUriFetcher.Factory())
+            add(FileUriFetcher.Factory())
         }).apply {
             assertFails {
                 val request = ImageRequest(context, "file:///sdcard/sample.jpeg")
@@ -217,7 +217,7 @@ class ComponentsTest {
             assertFails {
                 val request = ImageRequest(context, "file:///sdcard/sample.jpeg") {
                     components {
-                        addDecoder(FakeDecoder.Factory())
+                        add(FakeDecoder.Factory())
                     }
                 }
                 val requestContext = request.toRequestContext(sketch)
@@ -228,7 +228,7 @@ class ComponentsTest {
             }
             val request = ImageRequest(context, "file:///sdcard/sample.jpeg") {
                 components {
-                    addDecoder(TestDecoder.Factory())
+                    add(TestDecoder.Factory())
                 }
             }
             val requestContext = request.toRequestContext(sketch)
@@ -240,8 +240,8 @@ class ComponentsTest {
         }
 
         Components(ComponentRegistry {
-            addFetcher(FileUriFetcher.Factory())
-            addDecoder(TestDecoder.Factory())
+            add(FileUriFetcher.Factory())
+            add(TestDecoder.Factory())
         }).apply {
             val request = ImageRequest(context, "file:///sdcard/sample.jpeg")
             val requestContext = request.toRequestContext(sketch)
@@ -253,7 +253,7 @@ class ComponentsTest {
 
             val request2 = ImageRequest(context, "file:///sdcard/sample.jpeg") {
                 components {
-                    addDecoder(TestDecoder.Factory())
+                    add(TestDecoder.Factory())
                 }
             }
             val requestContext2 = request2.toRequestContext(sketch)
@@ -271,25 +271,25 @@ class ComponentsTest {
         Components(ComponentRegistry()).apply {
             assertEquals(
                 "Components(ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[]," +
+                        "interceptors=[]" +
                         "))",
                 toString()
             )
         }
         Components(ComponentRegistry {
-            addFetcher(Base64UriFetcher.Factory())
-            addFetcher(TestFetcher.Factory())
-            addDecoder(TestDecoder.Factory())
-            addDecoder(TestDecoder2.Factory())
-            addRequestInterceptor(EngineRequestInterceptor())
+            add(Base64UriFetcher.Factory())
+            add(TestFetcher.Factory())
+            add(TestDecoder.Factory())
+            add(TestDecoder2.Factory())
+            add(DecoderInterceptor())
         }).apply {
             assertEquals(
                 "Components(ComponentRegistry(" +
-                        "fetcherFactoryList=[Base64UriFetcher,TestFetcher]," +
-                        "decoderFactoryList=[TestDecoder,TestDecoder2]," +
-                        "requestInterceptorList=[EngineRequestInterceptor]" +
+                        "fetchers=[Base64UriFetcher,TestFetcher]," +
+                        "decoders=[TestDecoder,TestDecoder2]," +
+                        "interceptors=[DecoderInterceptor]" +
                         "))",
                 toString()
             )
@@ -300,16 +300,16 @@ class ComponentsTest {
     fun testEqualsAndHashCode() {
         val components0 = Components(ComponentRegistry())
         val components1 = Components(ComponentRegistry {
-            addFetcher(TestFetcher.Factory())
+            add(TestFetcher.Factory())
         })
         val components11 = Components(ComponentRegistry {
-            addFetcher(TestFetcher.Factory())
+            add(TestFetcher.Factory())
         })
         val components2 = Components(ComponentRegistry {
-            addDecoder(TestDecoder.Factory())
+            add(TestDecoder.Factory())
         })
         val components4 = Components(ComponentRegistry {
-            addRequestInterceptor(EngineRequestInterceptor())
+            add(DecoderInterceptor())
         })
 
         assertEquals(components0, components0)

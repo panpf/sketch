@@ -45,9 +45,9 @@ class SkiaAnimatedWebpDecoderTest {
         ComponentRegistry().apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -58,9 +58,9 @@ class SkiaAnimatedWebpDecoderTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[SkiaAnimatedWebpDecoder]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[SkiaAnimatedWebpDecoder]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -72,9 +72,9 @@ class SkiaAnimatedWebpDecoderTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[SkiaAnimatedWebpDecoder,SkiaAnimatedWebpDecoder]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[SkiaAnimatedWebpDecoder,SkiaAnimatedWebpDecoder]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )

@@ -17,12 +17,12 @@
 package com.github.panpf.sketch.core.common.test.transform.internal
 
 import com.github.panpf.sketch.Image
-import com.github.panpf.sketch.fetch.internal.FetcherRequestInterceptor
+import com.github.panpf.sketch.fetch.internal.FetcherInterceptor
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
-import com.github.panpf.sketch.request.internal.RequestInterceptorChain
+import com.github.panpf.sketch.request.internal.DecoderInterceptor
+import com.github.panpf.sketch.request.internal.InterceptorChain
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
 import com.github.panpf.sketch.size
@@ -35,7 +35,7 @@ import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.TransformResult
 import com.github.panpf.sketch.transform.Transformation
 import com.github.panpf.sketch.transform.createCircleCropTransformed
-import com.github.panpf.sketch.transform.internal.TransformationRequestInterceptor
+import com.github.panpf.sketch.transform.internal.TransformationInterceptor
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
@@ -46,15 +46,15 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-class TransformationRequestInterceptorTest {
+class TransformationInterceptorTest {
 
     @Test
     fun testIntercept() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val interceptors = listOf(
-            TransformationRequestInterceptor(),
-            FetcherRequestInterceptor(),
-            EngineRequestInterceptor()
+            TransformationInterceptor(),
+            FetcherInterceptor(),
+            DecoderInterceptor()
         )
 
         runBlock {
@@ -62,7 +62,7 @@ class TransformationRequestInterceptorTest {
                 size(3000, 3000)
                 precision(LESS_PIXELS)
             }
-            val chain = RequestInterceptorChain(
+            val chain = InterceptorChain(
                 requestContext = request.toRequestContext(sketch),
                 interceptors = interceptors,
                 index = 0
@@ -90,7 +90,7 @@ class TransformationRequestInterceptorTest {
                 precision(LESS_PIXELS)
                 transformations(CircleCropTransformation())
             }
-            val chain = RequestInterceptorChain(
+            val chain = InterceptorChain(
                 requestContext = request.toRequestContext(sketch),
                 interceptors = interceptors,
                 index = 0
@@ -138,7 +138,7 @@ class TransformationRequestInterceptorTest {
                     }
                 })
             }
-            val chain = RequestInterceptorChain(
+            val chain = InterceptorChain(
                 requestContext = request.toRequestContext(sketch),
                 interceptors = interceptors,
                 index = 0
@@ -186,7 +186,7 @@ class TransformationRequestInterceptorTest {
                     }
                 })
             }
-            val chain = RequestInterceptorChain(
+            val chain = InterceptorChain(
                 requestContext = request.toRequestContext(sketch),
                 interceptors = interceptors,
                 index = 0
@@ -211,15 +211,20 @@ class TransformationRequestInterceptorTest {
 
     @Test
     fun testSortWeight() {
-        TransformationRequestInterceptor().apply {
-            assertEquals(97, sortWeight)
-        }
+        assertEquals(
+            expected = 75,
+            actual = TransformationInterceptor().sortWeight
+        )
+        assertEquals(
+            expected = 75,
+            actual = TransformationInterceptor.SORT_WEIGHT
+        )
     }
 
     @Test
     fun testEqualsAndHashCode() {
-        val ele1 = TransformationRequestInterceptor()
-        val ele11 = TransformationRequestInterceptor()
+        val ele1 = TransformationInterceptor()
+        val ele11 = TransformationInterceptor()
 
         assertEquals(ele1, ele11)
         assertNotEquals(ele1, Any())
@@ -231,8 +236,8 @@ class TransformationRequestInterceptorTest {
     @Test
     fun testToString() {
         assertEquals(
-            "TransformationRequestInterceptor",
-            TransformationRequestInterceptor().toString()
+            "TransformationInterceptor",
+            TransformationInterceptor().toString()
         )
     }
 }

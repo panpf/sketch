@@ -30,7 +30,7 @@ import com.github.panpf.sketch.source.DataSource
  * @see com.github.panpf.sketch.animated.gif.nonandroid.test.decode.GifSkiaAnimatedDecoderTest.testSupportGif
  */
 fun ComponentRegistry.Builder.supportSkiaGif(): ComponentRegistry.Builder = apply {
-    addDecoder(SkiaGifDecoder.Factory())
+    add(SkiaGifDecoder.Factory())
 }
 
 /**

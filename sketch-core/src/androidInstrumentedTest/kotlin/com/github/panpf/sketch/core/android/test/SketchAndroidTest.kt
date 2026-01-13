@@ -34,12 +34,12 @@ class SketchAndroidTest {
         val context = getTestContext()
         assertEquals(
             expected = ComponentRegistry {
-                addFetcher(ContentUriFetcher.Factory())
-                addFetcher(ResourceUriFetcher.Factory())
-                addFetcher(AssetUriFetcher.Factory())
+                add(ContentUriFetcher.Factory())
+                add(ResourceUriFetcher.Factory())
+                add(AssetUriFetcher.Factory())
 
-                addDecoder(DrawableDecoder.Factory())
-                addDecoder(BitmapFactoryDecoder.Factory())
+                add(DrawableDecoder.Factory())
+                add(BitmapFactoryDecoder.Factory())
             },
             actual = platformComponents(context)
         )

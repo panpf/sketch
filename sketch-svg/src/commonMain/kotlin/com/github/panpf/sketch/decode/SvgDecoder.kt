@@ -22,6 +22,7 @@ import com.github.panpf.sketch.decode.internal.decodeSvg
 import com.github.panpf.sketch.decode.internal.isSvg
 import com.github.panpf.sketch.decode.internal.readSvgImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
 import kotlinx.atomicfu.locks.SynchronizedObject
@@ -33,7 +34,7 @@ import kotlinx.atomicfu.locks.synchronized
  * @see com.github.panpf.sketch.svg.common.test.decode.SvgDecoderTest.testSupportSvg
  */
 fun ComponentRegistry.Builder.supportSvg(): ComponentRegistry.Builder = apply {
-    addDecoder(Factory())
+    add(Factory())
 }
 
 /**
@@ -78,7 +79,7 @@ class SvgDecoder(
             }
         }
 
-    override fun decode(): DecodeResult {
+    override fun decode(): ImageData {
         return dataSource.decodeSvg(
             requestContext = requestContext,
             useViewBoundsAsIntrinsicSize = useViewBoundsAsIntrinsicSize,

@@ -44,7 +44,7 @@ import com.github.panpf.sketch.target.AsyncImageTarget
 import com.github.panpf.sketch.test.singleton.SingletonSketch
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ComposeSize
-import com.github.panpf.sketch.test.utils.DelayRequestInterceptor
+import com.github.panpf.sketch.test.utils.DelayInterceptor
 import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestErrorEqualsSizeResolver
 import com.github.panpf.sketch.test.utils.TestHttpStack
@@ -759,7 +759,7 @@ class AsyncImageStateTest {
         }
         runInNewSketchWithUse({
             components {
-                addFetcher(TestHttpUriFetcher.Factory(it, readDelayMillis = 20))
+                add(TestHttpUriFetcher.Factory(it, readDelayMillis = 20))
             }
         }) { context, sketch ->
             // success
@@ -1106,7 +1106,7 @@ class AsyncImageStateTest {
                         imageState.sketch = SingletonSketch.get(context)
                         imageState.request = ImageRequest(context, ResourceImages.jpeg.uri) {
                             components {
-                                addRequestInterceptor(DelayRequestInterceptor(1000))
+                                add(DelayInterceptor(1000))
                             }
                         }
                         imageState.setSizeWithLeast(IntSize(500, 500))

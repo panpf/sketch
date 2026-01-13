@@ -14,7 +14,7 @@ class SketchJsCommonTest {
         val context = getTestContext()
         assertEquals(
             expected = ComponentRegistry {
-                addDecoder(SkiaDecoder.Factory())
+                add(SkiaDecoder.Factory())
             },
             actual = platformComponents(context)
         )

@@ -33,7 +33,7 @@ import com.github.panpf.sketch.source.DataSource
  */
 @RequiresApi(Build.VERSION_CODES.R)
 fun ComponentRegistry.Builder.supportAnimatedHeif(): ComponentRegistry.Builder = apply {
-    addDecoder(ImageDecoderAnimatedHeifDecoder.Factory())
+    add(ImageDecoderAnimatedHeifDecoder.Factory())
 }
 
 /**

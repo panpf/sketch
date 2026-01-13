@@ -43,7 +43,7 @@ class ImageRequestExecuteAnimatedTest {
 
         runInNewSketchWithUse({
             components {
-                addDecoder(ImageDecoderGifDecoder.Factory())
+                add(ImageDecoderGifDecoder.Factory())
             }
         }) { context, sketch ->
             val imageUri = ResourceImages.animGif.uri

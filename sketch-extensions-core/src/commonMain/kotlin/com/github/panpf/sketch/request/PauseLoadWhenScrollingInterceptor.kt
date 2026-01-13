@@ -17,7 +17,7 @@
 package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.cache.internal.ResultCacheRequestInterceptor
+import com.github.panpf.sketch.cache.internal.ResultCacheInterceptor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -25,22 +25,22 @@ import kotlinx.coroutines.flow.first
 /**
  * Adds Pause loading new images while the list is scrolling support
  *
- * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingRequestInterceptorTest.testSupportPauseLoadWhenScrolling
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingInterceptorTest.testSupportPauseLoadWhenScrolling
  */
 fun ComponentRegistry.Builder.supportPauseLoadWhenScrolling(): ComponentRegistry.Builder = apply {
-    addRequestInterceptor(PauseLoadWhenScrollingRequestInterceptor())
+    add(PauseLoadWhenScrollingInterceptor())
 }
 
 /**
  * Pause loading new images while the list is scrolling
  *
  * @see ImageRequest.Builder.pauseLoadWhenScrolling
- * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingRequestInterceptorTest
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.PauseLoadWhenScrollingInterceptorTest
  */
-class PauseLoadWhenScrollingRequestInterceptor() : RequestInterceptor {
+class PauseLoadWhenScrollingInterceptor() : Interceptor {
 
     companion object Companion {
-        const val SORT_WEIGHT = ResultCacheRequestInterceptor.SORT_WEIGHT - 1
+        const val SORT_WEIGHT = ResultCacheInterceptor.SORT_WEIGHT - 1
         private val scrollingFlow = MutableStateFlow(false)
 
         var scrolling: Boolean
@@ -54,7 +54,7 @@ class PauseLoadWhenScrollingRequestInterceptor() : RequestInterceptor {
     override val sortWeight: Int = SORT_WEIGHT
     var enabled = true
 
-    override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
+    override suspend fun intercept(chain: Interceptor.Chain): Result<ImageData> {
         val request = chain.request
         if (enabled
             && request.isPauseLoadWhenScrolling
@@ -75,5 +75,5 @@ class PauseLoadWhenScrollingRequestInterceptor() : RequestInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "PauseLoadWhenScrollingRequestInterceptor"
+    override fun toString(): String = "PauseLoadWhenScrollingInterceptor"
 }

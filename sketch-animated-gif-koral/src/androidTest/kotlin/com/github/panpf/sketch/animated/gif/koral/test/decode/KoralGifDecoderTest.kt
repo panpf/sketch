@@ -62,9 +62,9 @@ class KoralGifDecoderTest {
         ComponentRegistry().apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -75,9 +75,9 @@ class KoralGifDecoderTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[KoralGifDecoder]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[KoralGifDecoder]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -89,9 +89,9 @@ class KoralGifDecoderTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[KoralGifDecoder,KoralGifDecoder]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[KoralGifDecoder,KoralGifDecoder]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )

@@ -30,11 +30,11 @@ import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
-import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.ScaledAnimatableDrawable
 import com.github.panpf.sketch.request.ANIMATION_REPEAT_INFINITE
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
@@ -105,7 +105,7 @@ open class ImageDecoderAnimatedDecoder(
         }
 
     @WorkerThread
-    override fun decode(): DecodeResult {
+    override fun decode(): ImageData {
         val context = requestContext.request.context
         val source = when (dataSource) {
             is AssetDataSource -> {
@@ -183,7 +183,7 @@ open class ImageDecoderAnimatedDecoder(
                     val onStart = request.animationStartCallback
                     val onEnd = request.animationEndCallback
                     if (onStart != null || onEnd != null) {
-                        // Will be executed before EngineRequestInterceptor.intercept() return
+                        // Will be executed before DecoderInterceptor.intercept() return
                         @Suppress("OPT_IN_USAGE")
                         GlobalScope.launch(Dispatchers.Main) {
                             registerAnimationCallback(animatable2CompatCallbackOf(onStart, onEnd))
@@ -204,7 +204,7 @@ open class ImageDecoderAnimatedDecoder(
 
         val transformeds: List<String>? = if (inSampleSize != 1)
             listOf(createInSampledTransformed(inSampleSize)) else null
-        return DecodeResult(
+        return ImageData(
             image = image,
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,

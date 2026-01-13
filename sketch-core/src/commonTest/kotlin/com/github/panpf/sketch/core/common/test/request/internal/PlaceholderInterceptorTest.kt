@@ -3,12 +3,12 @@ package com.github.panpf.sketch.core.common.test.request.internal
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.PlaceholderRequestInterceptor
-import com.github.panpf.sketch.request.internal.RequestInterceptorChain
+import com.github.panpf.sketch.request.internal.InterceptorChain
+import com.github.panpf.sketch.request.internal.PlaceholderInterceptor
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ErrorStateImage
 import com.github.panpf.sketch.test.utils.FakeImage
-import com.github.panpf.sketch.test.utils.FakeRequestInterceptor
+import com.github.panpf.sketch.test.utils.FakeInterceptor
 import com.github.panpf.sketch.test.utils.FakeStateImage
 import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestTarget
@@ -25,7 +25,7 @@ import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class PlaceholderRequestInterceptorTest {
+class PlaceholderInterceptorTest {
 
     @Test
     fun testIntercept() = runTest {
@@ -35,15 +35,15 @@ class PlaceholderRequestInterceptorTest {
         }
         val (context, sketch) = getTestContextAndSketch()
 
-        val requestInterceptorList = listOf(
-            PlaceholderRequestInterceptor(),
-            FakeRequestInterceptor()
+        val interceptors = listOf(
+            PlaceholderInterceptor(),
+            FakeInterceptor()
         )
         val executeRequest: suspend (ImageRequest) -> ImageData = { request ->
             withContext(Dispatchers.Main) {
-                RequestInterceptorChain(
+                InterceptorChain(
                     requestContext = request.toRequestContext(sketch),
-                    interceptors = requestInterceptorList,
+                    interceptors = interceptors,
                     index = 0,
                 ).proceed(request)
             }.getOrThrow()
@@ -79,9 +79,9 @@ class PlaceholderRequestInterceptorTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = PlaceholderRequestInterceptor()
-        val element11 = PlaceholderRequestInterceptor()
-        val element2 = PlaceholderRequestInterceptor()
+        val element1 = PlaceholderInterceptor()
+        val element11 = PlaceholderInterceptor()
+        val element2 = PlaceholderInterceptor()
 
         assertNotSame(illegal = element1, actual = element11)
         assertNotSame(illegal = element1, actual = element2)
@@ -101,16 +101,20 @@ class PlaceholderRequestInterceptorTest {
     @Test
     fun testSortWeight() {
         assertEquals(
-            expected = 93,
-            actual = PlaceholderRequestInterceptor().sortWeight
+            expected = 30,
+            actual = PlaceholderInterceptor().sortWeight
+        )
+        assertEquals(
+            expected = 30,
+            actual = PlaceholderInterceptor.SORT_WEIGHT
         )
     }
 
     @Test
     fun testToString() {
         assertEquals(
-            expected = "PlaceholderRequestInterceptor",
-            actual = PlaceholderRequestInterceptor().toString()
+            expected = "PlaceholderInterceptor",
+            actual = PlaceholderInterceptor().toString()
         )
     }
 }

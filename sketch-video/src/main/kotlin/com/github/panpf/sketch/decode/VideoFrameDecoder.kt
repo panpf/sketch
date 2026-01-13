@@ -34,7 +34,7 @@ import com.github.panpf.sketch.source.DataSource
  */
 @TargetApi(Build.VERSION_CODES.O_MR1)
 fun ComponentRegistry.Builder.supportVideoFrame(): ComponentRegistry.Builder = apply {
-    addDecoder(VideoFrameDecoder.Factory())
+    add(VideoFrameDecoder.Factory())
 }
 
 /**

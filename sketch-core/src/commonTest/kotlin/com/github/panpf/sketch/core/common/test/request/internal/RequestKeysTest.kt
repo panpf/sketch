@@ -31,7 +31,7 @@ import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeStateImage
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
-import com.github.panpf.sketch.test.utils.TestRequestInterceptor
+import com.github.panpf.sketch.test.utils.TestInterceptor
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
@@ -228,19 +228,19 @@ class RequestKeysTest {
 
         request = request.newRequest {
             components {
-                addFetcher(TestFetcher.Factory())
-                addRequestInterceptor(TestRequestInterceptor())
-                addDecoder(TestDecoder.Factory())
+                add(TestFetcher.Factory())
+                add(TestInterceptor())
+                add(TestDecoder.Factory())
             }
         }
         val _decoders = "&_decoders=[TestDecoder]"
-        val _requestInterceptors = "&_requestInterceptors=[TestRequestInterceptor]"
+        val _interceptors = "&_interceptors=[TestInterceptor]"
         verifyKey(
             uri + _depth + _extras + _downloadCachePolicy + _colorType + _colorSpace +
                     _size + _sizeMultiplier + _precision + _scale +
                     _transformations + _resultCachePolicy + _resizeOnDraw +
                     _allowNullImage + _memoryCachePolicy + _transitionFactory + _placeholder +
-                    _fallback + _error + _decoders + _requestInterceptors
+                    _fallback + _error + _decoders + _interceptors
         )
     }
 
@@ -401,16 +401,16 @@ class RequestKeysTest {
 
         request = request.newRequest {
             components {
-                addFetcher(TestFetcher.Factory())
-                addRequestInterceptor(TestRequestInterceptor())
-                addDecoder(TestDecoder.Factory())
+                add(TestFetcher.Factory())
+                add(TestInterceptor())
+                add(TestDecoder.Factory())
             }
         }
         val _decoders = "&_decoders=[TestDecoder]"
-        val _requestInterceptors = "&_requestInterceptors=[TestRequestInterceptor]"
+        val _interceptors = "&_interceptors=[TestInterceptor]"
         verifyCacheKey(
             uri + _extras + _colorType + _colorSpace +
-                    _size + _sizeMultiplier + _precision + _scale + _transformations + _decoders + _requestInterceptors
+                    _size + _sizeMultiplier + _precision + _scale + _transformations + _decoders + _interceptors
         )
     }
 }

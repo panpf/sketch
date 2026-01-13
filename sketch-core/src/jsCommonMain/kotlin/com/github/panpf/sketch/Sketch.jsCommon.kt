@@ -25,6 +25,6 @@ import com.github.panpf.sketch.decode.SkiaDecoder
  */
 internal actual fun platformComponents(context: PlatformContext): ComponentRegistry {
     return ComponentRegistry {
-        addDecoder(SkiaDecoder.Factory())
+        add(SkiaDecoder.Factory())
     }
 }

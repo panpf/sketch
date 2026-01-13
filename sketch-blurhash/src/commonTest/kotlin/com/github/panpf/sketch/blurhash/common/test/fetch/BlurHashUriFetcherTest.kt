@@ -25,9 +25,9 @@ class BlurHashUriFetcherTest {
             build().apply {
                 assertEquals(
                     "ComponentRegistry(" +
-                            "fetcherFactoryList=[]," +
-                            "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]" +
+                            "fetchers=[]," +
+                            "decoders=[]," +
+                            "interceptors=[]" +
                             ")",
                     toString()
                 )
@@ -37,9 +37,9 @@ class BlurHashUriFetcherTest {
             build().apply {
                 assertEquals(
                     "ComponentRegistry(" +
-                            "fetcherFactoryList=[BlurHashUriFetcher]," +
-                            "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]" +
+                            "fetchers=[BlurHashUriFetcher]," +
+                            "decoders=[]," +
+                            "interceptors=[]" +
                             ")",
                     toString()
                 )
@@ -49,9 +49,9 @@ class BlurHashUriFetcherTest {
             build().apply {
                 assertEquals(
                     "ComponentRegistry(" +
-                            "fetcherFactoryList=[BlurHashUriFetcher,BlurHashUriFetcher]," +
-                            "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]" +
+                            "fetchers=[BlurHashUriFetcher,BlurHashUriFetcher]," +
+                            "decoders=[]," +
+                            "interceptors=[]" +
                             ")",
                     toString()
                 )

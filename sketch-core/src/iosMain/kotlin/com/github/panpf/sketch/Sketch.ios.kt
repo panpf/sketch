@@ -26,7 +26,7 @@ import com.github.panpf.sketch.fetch.KotlinResourceUriFetcher
  */
 internal actual fun platformComponents(context: PlatformContext): ComponentRegistry {
     return ComponentRegistry {
-        addFetcher(KotlinResourceUriFetcher.Factory())
-        addDecoder(SkiaDecoder.Factory())
+        add(KotlinResourceUriFetcher.Factory())
+        add(SkiaDecoder.Factory())
     }
 }

@@ -38,7 +38,7 @@ import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.blurHashPlaceholder
-import com.github.panpf.sketch.sample.image.DelayRequestInterceptor
+import com.github.panpf.sketch.sample.image.DelayInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
@@ -204,7 +204,7 @@ class BlurHashTestScreen : BaseScreen() {
                                 blurHashPlaceholder(imageBlurHashUri, maxSide = maxSide)
                                 crossfade()
                                 components {
-                                    addRequestInterceptor(DelayRequestInterceptor(2000))
+                                    add(DelayInterceptor(2000))
                                 }
                             },
                             contentDescription = "Placeholder Fit",
@@ -236,7 +236,7 @@ class BlurHashTestScreen : BaseScreen() {
                                 )
                                 crossfade()
                                 components {
-                                    addRequestInterceptor(DelayRequestInterceptor(2000))
+                                    add(DelayInterceptor(2000))
                                 }
                             },
                             contentDescription = "Placeholder Crop",
@@ -272,7 +272,7 @@ class BlurHashTestScreen : BaseScreen() {
                                 )
                                 crossfade()
                                 components {
-                                    addRequestInterceptor(DelayRequestInterceptor(2000))
+                                    add(DelayInterceptor(2000))
                                 }
                             },
                             contentDescription = "Placeholder Crop Square",
@@ -329,7 +329,7 @@ class BlurHashTestScreen : BaseScreen() {
                                 placeholder(ColorPainterStateImage(Color.Transparent))
                                 crossfade()
                                 components {
-                                    addRequestInterceptor(DelayRequestInterceptor(2000))
+                                    add(DelayInterceptor(2000))
                                 }
                             },
                             contentDescription = "Decode Fit",
@@ -358,7 +358,7 @@ class BlurHashTestScreen : BaseScreen() {
                                 placeholder(ColorPainterStateImage(Color.Transparent))
                                 crossfade()
                                 components {
-                                    addRequestInterceptor(DelayRequestInterceptor(2000))
+                                    add(DelayInterceptor(2000))
                                 }
                             },
                             contentDescription = "Decode Crop",
@@ -388,7 +388,7 @@ class BlurHashTestScreen : BaseScreen() {
                                 colorType(alpha8ColorType)
                                 crossfade()
                                 components {
-                                    addRequestInterceptor(DelayRequestInterceptor(2000))
+                                    add(DelayInterceptor(2000))
                                 }
                             },
                             contentDescription = "Decode ALPHA_8",

@@ -21,9 +21,9 @@ import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
+import com.github.panpf.sketch.request.internal.DecoderInterceptor
 import com.github.panpf.sketch.util.requiredWorkThread
 
 /**
@@ -39,7 +39,7 @@ fun ComponentRegistry(block: (ComponentRegistry.Builder.() -> Unit)? = null): Co
 
 /**
  * Register components that are required to perform [ImageRequest] and can be extended,
- * such as [Fetcher], [Decoder], [RequestInterceptor]
+ * such as [Fetcher], [Decoder], [Interceptor]
  *
  * @see com.github.panpf.sketch.core.common.test.ComponentRegistryTest
  */
@@ -47,21 +47,39 @@ open class ComponentRegistry private constructor(
     /**
      * Registered [Fetcher.Factory]
      */
-    val fetcherFactoryList: List<Fetcher.Factory>,
+    val fetchers: List<Fetcher.Factory>,
     /**
      * Registered [Decoder.Factory]
      */
-    val decoderFactoryList: List<Decoder.Factory>,
+    val decoders: List<Decoder.Factory>,
     /**
-     * All [RequestInterceptor]
+     * All [Interceptor]
      */
-    val requestInterceptorList: List<RequestInterceptor>,
+    val interceptors: List<Interceptor>,
 ) {
 
+    /**
+     * Registered [Fetcher.Factory]
+     */
+    @Deprecated("Use fetchers instead", ReplaceWith("fetchers"))
+    val fetcherFactoryList: List<Fetcher.Factory> = fetchers
+
+    /**
+     * Registered [Decoder.Factory]
+     */
+    @Deprecated("Use decoders instead", ReplaceWith("decoders"))
+    val decoderFactoryList: List<Decoder.Factory> = decoders
+
+    /**
+     * All [Interceptor]
+     */
+    @Deprecated("Use interceptors instead", ReplaceWith("interceptors"))
+    val interceptorLists: List<Interceptor> = interceptors
+
     fun isEmpty(): Boolean {
-        return fetcherFactoryList.isEmpty()
-                && decoderFactoryList.isEmpty()
-                && requestInterceptorList.isEmpty()
+        return fetchers.isEmpty()
+                && decoders.isEmpty()
+                && interceptors.isEmpty()
     }
 
     /**
@@ -90,7 +108,7 @@ open class ComponentRegistry private constructor(
      * Create a [Fetcher] with the registered [Fetcher.Factory]
      */
     internal fun newFetcherOrNull(requestContext: RequestContext): Fetcher? {
-        return fetcherFactoryList.firstNotNullOfOrNull {
+        return fetchers.firstNotNullOfOrNull {
             it.create(requestContext)
         }
     }
@@ -116,7 +134,7 @@ open class ComponentRegistry private constructor(
         fetchResult: FetchResult,
     ): Decoder? {
         requiredWorkThread()
-        return decoderFactoryList.firstNotNullOfOrNull {
+        return decoders.firstNotNullOfOrNull {
             it.create(requestContext, fetchResult)
         }
     }
@@ -139,95 +157,119 @@ open class ComponentRegistry private constructor(
         if (this === other) return true
         if (other == null || this::class != other::class) return false
         other as ComponentRegistry
-        if (fetcherFactoryList != other.fetcherFactoryList) return false
-        if (decoderFactoryList != other.decoderFactoryList) return false
-        if (requestInterceptorList != other.requestInterceptorList) return false
+        if (fetchers != other.fetchers) return false
+        if (decoders != other.decoders) return false
+        if (interceptors != other.interceptors) return false
         return true
     }
 
     override fun hashCode(): Int {
-        var result = fetcherFactoryList.hashCode()
-        result = 31 * result + decoderFactoryList.hashCode()
-        result = 31 * result + requestInterceptorList.hashCode()
+        var result = fetchers.hashCode()
+        result = 31 * result + decoders.hashCode()
+        result = 31 * result + interceptors.hashCode()
         return result
     }
 
     override fun toString(): String {
-        val fetchersString = fetcherFactoryList
+        val fetchersString = fetchers
             .joinToString(prefix = "[", postfix = "]", separator = ",")
-        val decodersString = decoderFactoryList
+        val decodersString = decoders
             .joinToString(prefix = "[", postfix = "]", separator = ",")
-        val requestInterceptorsString = requestInterceptorList
+        val interceptorsString = interceptors
             .joinToString(prefix = "[", postfix = "]", separator = ",")
         return "ComponentRegistry(" +
-                "fetcherFactoryList=${fetchersString}," +
-                "decoderFactoryList=${decodersString}," +
-                "requestInterceptorList=${requestInterceptorsString}" +
+                "fetchers=${fetchersString}," +
+                "decoders=${decodersString}," +
+                "interceptors=${interceptorsString}" +
                 ")"
     }
 
     class Builder {
 
-        private val fetcherFactoryList: MutableList<Fetcher.Factory>
-        private val decoderFactoryList: MutableList<Decoder.Factory>
-        private val requestInterceptorList: MutableList<RequestInterceptor>
+        private val fetchers: MutableList<Fetcher.Factory>
+        private val decoders: MutableList<Decoder.Factory>
+        private val interceptors: MutableList<Interceptor>
 
         constructor() {
-            this.fetcherFactoryList = mutableListOf()
-            this.decoderFactoryList = mutableListOf()
-            this.requestInterceptorList = mutableListOf()
+            this.fetchers = mutableListOf()
+            this.decoders = mutableListOf()
+            this.interceptors = mutableListOf()
         }
 
         constructor(componentRegistry: ComponentRegistry) {
-            this.fetcherFactoryList = componentRegistry.fetcherFactoryList.toMutableList()
-            this.decoderFactoryList =
-                componentRegistry.decoderFactoryList.toMutableList()
-            this.requestInterceptorList = componentRegistry.requestInterceptorList.toMutableList()
+            this.fetchers = componentRegistry.fetchers.toMutableList()
+            this.decoders =
+                componentRegistry.decoders.toMutableList()
+            this.interceptors = componentRegistry.interceptors.toMutableList()
         }
 
         /**
          * Register an [Fetcher.Factory]
          */
-        fun addFetcher(fetchFactory: Fetcher.Factory): Builder = apply {
-            fetcherFactoryList.add(fetchFactory)
+        fun add(fetchFactory: Fetcher.Factory): Builder = apply {
+            fetchers.add(fetchFactory)
+        }
+
+        /**
+         * Register an [Fetcher.Factory]
+         */
+        fun addFetcher(fetchFactory: Fetcher.Factory): Builder = add(fetchFactory)
+
+        /**
+         * Register an [Decoder.Factory]
+         */
+        fun add(decoderFactory: Decoder.Factory): Builder = apply {
+            decoders.add(decoderFactory)
         }
 
         /**
          * Register an [Decoder.Factory]
          */
-        fun addDecoder(decoderFactory: Decoder.Factory): Builder = apply {
-            decoderFactoryList.add(decoderFactory)
+        fun addDecoder(decoderFactory: Decoder.Factory): Builder = add(decoderFactory)
+
+        /**
+         * Append an [Interceptor]
+         */
+        fun add(interceptor: Interceptor): Builder = apply {
+            require(if (interceptor is DecoderInterceptor) interceptor.sortWeight == 100 else interceptor.sortWeight in 0..99) {
+                "sortWeight has a valid range of 0 to 100, and only DecoderInterceptor can be 100"
+            }
+            this.interceptors.add(interceptor)
         }
 
         /**
-         * Append an [RequestInterceptor]
+         * Append an [Interceptor]
          */
-        fun addRequestInterceptor(interceptor: RequestInterceptor): Builder = apply {
-            require(if (interceptor is EngineRequestInterceptor) interceptor.sortWeight == 100 else interceptor.sortWeight in 0..99) {
-                "sortWeight has a valid range of 0 to 100, and only EngineRequestInterceptor can be 100"
-            }
-            this.requestInterceptorList.add(interceptor)
-        }
+        fun addInterceptor(interceptor: Interceptor): Builder = add(interceptor)
+
+        /**
+         * Append an [Interceptor]
+         */
+        @Deprecated(
+            message = "Use add instead. Will be removed in the future",
+            replaceWith = ReplaceWith("add(interceptor)")
+        )
+        fun addRequestInterceptor(interceptor: Interceptor): Builder = add(interceptor)
 
         /**
          * Merge the [ComponentRegistry]
          */
         fun addComponents(components: ComponentRegistry) {
-            components.requestInterceptorList.forEach {
-                addRequestInterceptor(it)
+            components.interceptors.forEach {
+                add(it)
             }
-            components.decoderFactoryList.forEach {
-                addDecoder(it)
+            components.decoders.forEach {
+                add(it)
             }
-            components.fetcherFactoryList.forEach {
-                addFetcher(it)
+            components.fetchers.forEach {
+                add(it)
             }
         }
 
         fun build(): ComponentRegistry = ComponentRegistry(
-            fetcherFactoryList = fetcherFactoryList.toList(),
-            decoderFactoryList = decoderFactoryList.toList(),
-            requestInterceptorList = requestInterceptorList.sortedBy { it.sortWeight },
+            fetchers = fetchers.toList(),
+            decoders = decoders.toList(),
+            interceptors = interceptors.sortedBy { it.sortWeight },
         )
     }
 }
@@ -249,14 +291,14 @@ fun ComponentRegistry?.merged(other: ComponentRegistry?): ComponentRegistry? {
         return this ?: other
     }
     return this.newBuilder().apply {
-        other.fetcherFactoryList.forEach {
-            addFetcher(it)
+        other.fetchers.forEach {
+            add(it)
         }
-        other.decoderFactoryList.forEach {
-            addDecoder(it)
+        other.decoders.forEach {
+            add(it)
         }
-        other.requestInterceptorList.forEach {
-            addRequestInterceptor(it)
+        other.interceptors.forEach {
+            add(it)
         }
     }.build()
 }
@@ -269,14 +311,24 @@ fun ComponentRegistry?.merged(other: ComponentRegistry?): ComponentRegistry? {
 class Components constructor(val registry: ComponentRegistry) {
 
     /**
-     * Get the [ImageRequest] plus the global [RequestInterceptor] list
+     * Get the [ImageRequest] plus the global [Interceptor] list
      */
-    fun getRequestInterceptorList(request: ImageRequest): List<RequestInterceptor> {
-        val localRequestInterceptorList =
-            request.componentRegistry?.requestInterceptorList?.takeIf { it.isNotEmpty() }
-        return (localRequestInterceptorList?.plus(registry.requestInterceptorList))?.sortedBy { it.sortWeight }
-            ?: registry.requestInterceptorList
+    fun getInterceptors(request: ImageRequest): List<Interceptor> {
+        val localInterceptorList =
+            request.componentRegistry?.interceptors?.takeIf { it.isNotEmpty() }
+        return (localInterceptorList?.plus(registry.interceptors))?.sortedBy { it.sortWeight }
+            ?: registry.interceptors
     }
+
+    /**
+     * Get the [ImageRequest] plus the global [Interceptor] list
+     */
+    @Deprecated(
+        message = "Use getInterceptors instead. Will be removed in the future",
+        replaceWith = ReplaceWith("getInterceptors(request)")
+    )
+    fun getRequestInterceptorList(request: ImageRequest): List<Interceptor> =
+        getInterceptors(request)
 
     /**
      * Create a [Fetcher] with [ImageRequest]'s (preferred) and global [Fetcher.Factory]

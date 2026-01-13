@@ -9,7 +9,7 @@ import com.github.panpf.sketch.disposeLoad
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.test.singleton.loadImage
-import com.github.panpf.sketch.test.utils.DelayRequestInterceptor
+import com.github.panpf.sketch.test.utils.DelayInterceptor
 import com.github.panpf.sketch.test.utils.MediumImageViewTestActivity
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.block
@@ -63,7 +63,7 @@ class SketchUtilsTest {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
                 components {
-                    addRequestInterceptor(DelayRequestInterceptor(1000) {
+                    add(DelayInterceptor(1000) {
                         SketchUtils.dispose(imageView)
                     })
                 }
@@ -90,7 +90,7 @@ class SketchUtilsTest {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
                 components {
-                    addRequestInterceptor(DelayRequestInterceptor(1000) {
+                    add(DelayInterceptor(1000) {
                         imageView.disposeLoad()
                     })
                 }

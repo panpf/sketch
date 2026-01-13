@@ -18,9 +18,9 @@ package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.asImage
-import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.isSmallerSizeMode
@@ -259,7 +259,7 @@ expect fun DataSource.readImageInfo(): ImageInfo
  * @see com.github.panpf.sketch.core.android.test.decode.internal.DecodesAndroidTest.testResize
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testResize
  */
-fun DecodeResult.resize(resize: Resize): DecodeResult {
+fun ImageData.resize(resize: Resize): ImageData {
     if (resize.size.isEmpty) return this
     if (image !is BitmapImage) return this
     val inputBitmap = image.bitmap

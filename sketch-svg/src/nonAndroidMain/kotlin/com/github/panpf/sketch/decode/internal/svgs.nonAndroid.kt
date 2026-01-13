@@ -19,10 +19,10 @@ package com.github.panpf.sketch.decode.internal
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.decode.DecodeConfig
-import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.SvgDecoder.Companion.MIME_TYPE
 import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.svgBackgroundColor
 import com.github.panpf.sketch.source.DataSource
@@ -85,7 +85,7 @@ internal actual fun DataSource.readSvgImageInfo(
 internal actual fun DataSource.decodeSvg(
     requestContext: RequestContext,
     useViewBoundsAsIntrinsicSize: Boolean,
-): DecodeResult {
+): ImageData {
     val bytes = openSource().buffer().use { it.readByteArray() }
     val svg = SVGDOM(Data.makeFromBytes(bytes))
 
@@ -150,7 +150,7 @@ internal actual fun DataSource.decodeSvg(
 
     val transformeds: List<String>? = if (targetScale != 1f)
         listOf(createScaledTransformed(targetScale)) else null
-    val decodeResult = DecodeResult(
+    val imageData = ImageData(
         image = bitmap.asImage(),
         imageInfo = imageInfo,
         dataFrom = dataFrom,
@@ -160,6 +160,6 @@ internal actual fun DataSource.decodeSvg(
     )
 
     @Suppress("UnnecessaryVariable", "RedundantSuppression")
-    val resizeResult = decodeResult.resize(resize)
+    val resizeResult = imageData.resize(resize)
     return resizeResult
 }

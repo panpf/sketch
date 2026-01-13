@@ -19,7 +19,7 @@ fun ResourceImageFile.toResourceHttpUri(): String {
 fun ComponentRegistry.Builder.supportResourcesHttpUri(
     context: PlatformContext
 ): ComponentRegistry.Builder = apply {
-    addFetcher(ResourcesHttpUriFetcher.Factory(ResourcesHttpStack(context)))
+    add(ResourcesHttpUriFetcher.Factory(ResourcesHttpStack(context)))
 }
 
 /**

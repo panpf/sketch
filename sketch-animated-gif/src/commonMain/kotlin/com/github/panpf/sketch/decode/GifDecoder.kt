@@ -26,7 +26,7 @@ import com.github.panpf.sketch.request.RequestContext
  * @see com.github.panpf.sketch.animated.gif.common.test.decode.GifDecoderTest.testSupportGif
  */
 fun ComponentRegistry.Builder.supportGif(): ComponentRegistry.Builder = apply {
-    addDecoder(GifDecoder.Factory())
+    add(GifDecoder.Factory())
 }
 
 /**

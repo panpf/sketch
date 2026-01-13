@@ -28,9 +28,9 @@ class AnimatedWebpDecoderTest {
         ComponentRegistry().apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -41,9 +41,9 @@ class AnimatedWebpDecoderTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[AnimatedWebpDecoder(decoderFactory=${defaultAnimatedWebpDecoderFactory()})]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[AnimatedWebpDecoder(decoderFactory=${defaultAnimatedWebpDecoderFactory()})]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -55,9 +55,9 @@ class AnimatedWebpDecoderTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[AnimatedWebpDecoder(decoderFactory=${defaultAnimatedWebpDecoderFactory()}),AnimatedWebpDecoder(decoderFactory=${defaultAnimatedWebpDecoderFactory()})]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[AnimatedWebpDecoder(decoderFactory=${defaultAnimatedWebpDecoderFactory()}),AnimatedWebpDecoder(decoderFactory=${defaultAnimatedWebpDecoderFactory()})]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )

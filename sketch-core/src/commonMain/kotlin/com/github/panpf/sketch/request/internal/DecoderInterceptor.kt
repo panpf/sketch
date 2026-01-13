@@ -18,18 +18,17 @@ package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.request.ImageData
-import com.github.panpf.sketch.request.RequestInterceptor
+import com.github.panpf.sketch.request.Interceptor
 import kotlinx.coroutines.withContext
 
 /**
  * The final request interceptor is used to actually execute the request
  *
- * @see com.github.panpf.sketch.core.common.test.request.internal.EngineRequestInterceptorTest
+ * @see com.github.panpf.sketch.core.common.test.request.internal.DecoderInterceptorTest
  */
-// TODO Change to DecoderInterceptor
-class EngineRequestInterceptor : RequestInterceptor {
+class DecoderInterceptor : Interceptor {
 
-    companion object {
+    companion object Companion {
         const val SORT_WEIGHT = 100
     }
 
@@ -37,11 +36,11 @@ class EngineRequestInterceptor : RequestInterceptor {
     override val sortWeight: Int = SORT_WEIGHT
 
     @MainThread
-    override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
+    override suspend fun intercept(chain: Interceptor.Chain): Result<ImageData> {
         val sketch = chain.sketch
         val requestContext = chain.requestContext
         val fetchResult = requestContext.fetchResult
-            ?: return Result.failure(Exception("FetchResult is null, please make sure to add FetcherRequestInterceptor"))
+            ?: return Result.failure(Exception("FetchResult is null, please make sure to add FetcherInterceptor"))
         val result = withContext(sketch.decodeTaskDispatcher) {
             runCatching {
                 val components = sketch.components
@@ -49,17 +48,7 @@ class EngineRequestInterceptor : RequestInterceptor {
                 decoder.decode()
             }
         }
-        val decodeResult = result.getOrNull()
-            ?: return Result.failure(result.exceptionOrNull()!!)
-        val imageData = ImageData(
-            image = decodeResult.image,
-            imageInfo = decodeResult.imageInfo,
-            dataFrom = decodeResult.dataFrom,
-            resize = decodeResult.resize,
-            transformeds = decodeResult.transformeds,
-            extras = decodeResult.extras
-        )
-        return Result.success(imageData)
+        return result
     }
 
     override fun equals(other: Any?): Boolean {
@@ -71,5 +60,5 @@ class EngineRequestInterceptor : RequestInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "EngineRequestInterceptor"
+    override fun toString(): String = "DecoderInterceptor"
 }

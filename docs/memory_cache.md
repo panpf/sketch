@@ -7,7 +7,7 @@ introduced memory cache, which will convert the loaded Image
 Cache is in memory, and the loading process is skipped when you read it directly from memory next
 time.
 
-The memory cache function is responsible for the core logic by [MemoryCacheRequestInterceptor],
+The memory cache function is responsible for the core logic by [MemoryCacheInterceptor],
 and [MemoryCache] is responsible for the storage management.
 
 The default implementation of [MemoryCache] is [LruMemoryCache]:
@@ -83,7 +83,7 @@ ImageOptions {
 You can also get the final memory cache key through the following methods:
 
 ```kotlin
-// The memory cache key can be obtained through RequestContext in the customized RequestInterceptor, 
+// The memory cache key can be obtained through RequestContext in the customized Interceptor, 
 // Transformation, Fetcher, and Decoder components.
 val requestContext: RequestContext = ...
 requestContext.memoryCacheKey
@@ -153,6 +153,6 @@ The memory cache is cleared under the following circumstances:
 
 [ImageOptions]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.common.kt
 
-[MemoryCacheRequestInterceptor]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/internal/MemoryCacheRequestInterceptor.kt
+[MemoryCacheInterceptor]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/internal/MemoryCacheInterceptor.kt
 
 [CachePolicy]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/CachePolicy.kt

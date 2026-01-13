@@ -18,10 +18,10 @@ package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.annotation.WorkerThread
-import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.isSmallerSizeMode
@@ -65,7 +65,7 @@ open class HelperDecoder(
         }
 
     @WorkerThread
-    override fun decode(): DecodeResult {
+    override fun decode(): ImageData {
         requiredWorkThread()
         val decodeHelper = decodeHelperFactory()
         try {
@@ -86,7 +86,7 @@ open class HelperDecoder(
             if (image.size.isEmpty) {
                 throw ImageInvalidException("Invalid image size. size=${image.size}")
             }
-            val decodeResult = DecodeResult(
+            val imageData = ImageData(
                 image = image,
                 imageInfo = imageInfo,
                 dataFrom = dataSource.dataFrom,
@@ -94,7 +94,7 @@ open class HelperDecoder(
                 transformeds = transformeds,
                 extras = null,
             )
-            val resizeResult = decodeResult.resize(resize)
+            val resizeResult = imageData.resize(resize)
             return resizeResult
         } finally {
             decodeHelper.close()

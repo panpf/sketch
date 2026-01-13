@@ -27,9 +27,9 @@ import com.github.panpf.sketch.cache.newCacheValueExtras
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageData
+import com.github.panpf.sketch.request.Interceptor
+import com.github.panpf.sketch.request.Interceptor.Chain
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.RequestInterceptor.Chain
 import com.github.panpf.sketch.source.DataFrom
 
 /**
@@ -37,12 +37,12 @@ import com.github.panpf.sketch.source.DataFrom
  *
  * Note: Although LruMemoryCache is thread-unsafe, Sketch requests are executed in the main thread, so there is no need to do thread-safety processing here.
  *
- * @see com.github.panpf.sketch.core.common.test.cache.internal.MemoryCacheRequestInterceptorTest
+ * @see com.github.panpf.sketch.core.common.test.cache.internal.MemoryCacheInterceptorTest
  */
-class MemoryCacheRequestInterceptor : RequestInterceptor {
+class MemoryCacheInterceptor : Interceptor {
 
     companion object {
-        const val SORT_WEIGHT = 90
+        const val SORT_WEIGHT = 15
     }
 
     override val key: String? = null
@@ -114,7 +114,7 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         val saveState = sketch.memoryCache.put(memoryCacheKey, cacheValue)
         if (saveState != 0) {
             sketch.logger.w(
-                "MemoryCacheRequestInterceptor. " +
+                "MemoryCacheInterceptor. " +
                         "Memory cache save failed. " +
                         "state is $saveState. ${imageData.image}. ${request.key}"
             )
@@ -131,5 +131,5 @@ class MemoryCacheRequestInterceptor : RequestInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "MemoryCacheRequestInterceptor"
+    override fun toString(): String = "MemoryCacheInterceptor"
 }

@@ -33,9 +33,9 @@ class ComposeResourceUriFetcherTest {
             build().apply {
                 assertEquals(
                     "ComponentRegistry(" +
-                            "fetcherFactoryList=[]," +
-                            "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]" +
+                            "fetchers=[]," +
+                            "decoders=[]," +
+                            "interceptors=[]" +
                             ")",
                     toString()
                 )
@@ -45,9 +45,9 @@ class ComposeResourceUriFetcherTest {
             build().apply {
                 assertEquals(
                     "ComponentRegistry(" +
-                            "fetcherFactoryList=[ComposeResourceUriFetcher]," +
-                            "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]" +
+                            "fetchers=[ComposeResourceUriFetcher]," +
+                            "decoders=[]," +
+                            "interceptors=[]" +
                             ")",
                     toString()
                 )
@@ -57,9 +57,9 @@ class ComposeResourceUriFetcherTest {
             build().apply {
                 assertEquals(
                     "ComponentRegistry(" +
-                            "fetcherFactoryList=[ComposeResourceUriFetcher,ComposeResourceUriFetcher]," +
-                            "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]" +
+                            "fetchers=[ComposeResourceUriFetcher,ComposeResourceUriFetcher]," +
+                            "decoders=[]," +
+                            "interceptors=[]" +
                             ")",
                     toString()
                 )

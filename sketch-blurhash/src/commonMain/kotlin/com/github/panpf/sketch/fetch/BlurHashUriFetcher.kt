@@ -32,7 +32,7 @@ import com.github.panpf.sketch.util.UriCodec
  * @see com.github.panpf.sketch.blurhash.common.test.fetch.BlurHashUriFetcherTest.testSupportBlurHash
  */
 fun ComponentRegistry.Builder.supportBlurHash(): ComponentRegistry.Builder = apply {
-    addFetcher(BlurHashUriFetcher.Factory())
+    add(BlurHashUriFetcher.Factory())
 }
 
 /**

@@ -33,7 +33,7 @@ import com.github.panpf.sketch.source.DataSource
  */
 @RequiresApi(Build.VERSION_CODES.P)
 fun ComponentRegistry.Builder.supportImageDecoderGif(): ComponentRegistry.Builder = apply {
-    addDecoder(ImageDecoderGifDecoder.Factory())
+    add(ImageDecoderGifDecoder.Factory())
 }
 
 /**

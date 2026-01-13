@@ -15,7 +15,7 @@ import com.github.panpf.sketch.request.RequestContext
 fun ComponentRegistry.Builder.supportHurlHttpUri(
     httpStack: HurlStack = Builder().build()
 ): ComponentRegistry.Builder = apply {
-    addFetcher(HurlHttpUriFetcher.Factory(httpStack))
+    add(HurlHttpUriFetcher.Factory(httpStack))
 }
 
 /**

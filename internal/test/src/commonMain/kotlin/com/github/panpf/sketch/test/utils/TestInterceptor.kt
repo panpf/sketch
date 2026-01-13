@@ -17,27 +17,32 @@
 package com.github.panpf.sketch.test.utils
 
 import com.github.panpf.sketch.request.ImageData
-import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.RequestInterceptor.Chain
+import com.github.panpf.sketch.request.Interceptor
+import com.github.panpf.sketch.request.Interceptor.Chain
 
-class TestRequestInterceptor2(override val sortWeight: Int = 0) : RequestInterceptor {
+class TestInterceptor(override val sortWeight: Int = 0) : Interceptor {
 
-    override val key: String = "TestRequestInterceptor2"
+    override val key: String = "TestInterceptor"
 
     override suspend fun intercept(chain: Chain): Result<ImageData> {
-        return chain.proceed(chain.request)
+        return chain.proceed(chain.request.newRequest {
+            setExtra("TestInterceptor", "true")
+        })
     }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        return other != null && this::class == other::class
+        if (other == null || this::class != other::class) return false
+        other as TestInterceptor
+        if (sortWeight != other.sortWeight) return false
+        return true
     }
 
     override fun hashCode(): Int {
-        return this::class.hashCode()
+        return sortWeight
     }
 
     override fun toString(): String {
-        return "TestRequestInterceptor2(sortWeight=$sortWeight)"
+        return "TestInterceptor(sortWeight=$sortWeight)"
     }
 }

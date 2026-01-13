@@ -11,6 +11,9 @@ Translations: [简体中文](CHANGELOG.zh.md)
 
 # new
 
+* broken: By merging RequestInterceptor and DecodeInterceptor, binary compatibility is broken and
+  libraries that depend on this need to modify their code and
+  recompile. [#274](https://github.com/panpf/sketch/issues/274)
 * fix: Fixed a bug where AsyncImage was invalid when using the colorFilter property and enabling
   crossfade. [#266](https://github.com/panpf/sketch/issues/266
 * fix: Fixed a bug where ImageDecoder on Android platform cannot decode gifs with only one
@@ -23,11 +26,6 @@ Translations: [简体中文](CHANGELOG.zh.md)
   stream. [#272](https://github.com/panpf/sketch/issues/272)
 * fix: Fixed a bug where non-Android platforms used Skia to decode GIFs when the frame duration was
   0 and not modified to the default value of 100. [#273](https://github.com/panpf/sketch/issues/273)
-* change: ResultCacheDecodeInterceptor change to ResultCacheRequestInterceptor
-* change: TransformationDecodeInterceptor change to TransformationRequestInterceptor
-* change: Added PlaceholderRequestInterceptor responsible for creating and calling back placeholders
-* change: Added FetcherRequestInterceptor responsible for executing Fetcher
-* change: Remove DecodeInterceptor
 
 # 4.4.0-alpha01
 

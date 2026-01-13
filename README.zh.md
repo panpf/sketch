@@ -239,7 +239,7 @@ context.sketch.enqueue(request)
 * [BlurHash][blurhash]
 * [ExifOrientation：纠正图片方向][exif_orientation]
 * [ImageOptions：统一管理图片配置][image_options]
-* [RequestInterceptor：拦截 ImageRequest][request_interceptor]
+* [Interceptor：拦截 ImageRequest][interceptor]
 * [预加载图片到内存中][preload]
 * [下载图片][download]
 * [Lifecycle][lifecycle]
@@ -374,7 +374,7 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 
 [progress_indicator]: docs/progress_indicator.zh.md
 
-[request_interceptor]: docs/request_interceptor.zh.md
+[interceptor]: docs/interceptor.zh.md
 
 [resize]: docs/resize.zh.md
 

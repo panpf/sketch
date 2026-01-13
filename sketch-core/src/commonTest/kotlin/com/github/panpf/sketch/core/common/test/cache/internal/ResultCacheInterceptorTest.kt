@@ -21,16 +21,16 @@ import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.cache.createImageSerializer
-import com.github.panpf.sketch.cache.internal.ResultCacheRequestInterceptor
+import com.github.panpf.sketch.cache.internal.ResultCacheInterceptor
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.fetch.internal.FetcherRequestInterceptor
+import com.github.panpf.sketch.fetch.internal.FetcherInterceptor
 import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
-import com.github.panpf.sketch.request.internal.RequestInterceptorChain
+import com.github.panpf.sketch.request.Interceptor
+import com.github.panpf.sketch.request.internal.DecoderInterceptor
+import com.github.panpf.sketch.request.internal.InterceptorChain
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
@@ -57,7 +57,7 @@ import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class ResultCacheRequestInterceptorTest {
+class ResultCacheInterceptorTest {
 
     @Test
     fun testIntercept() = runTest {
@@ -70,13 +70,13 @@ class ResultCacheRequestInterceptorTest {
 
         val executeRequest: suspend (ImageRequest) -> ImageData = { request ->
             withContext(Dispatchers.Main) {
-                RequestInterceptorChain(
+                InterceptorChain(
                     requestContext = request.toRequestContext(sketch),
                     interceptors = listOf(
-                        ResultCacheRequestInterceptor(),
-                        ExtrasTestRequestInterceptor(),
-                        FetcherRequestInterceptor(),
-                        EngineRequestInterceptor()
+                        ResultCacheInterceptor(),
+                        ExtrasTestInterceptor(),
+                        FetcherInterceptor(),
+                        DecoderInterceptor()
                     ),
                     index = 0
                 ).proceed(request).getOrThrow()
@@ -249,13 +249,13 @@ class ResultCacheRequestInterceptorTest {
 
         val executeRequest: suspend (ImageRequest) -> ImageData? = { request ->
             withContext(Dispatchers.Main) {
-                RequestInterceptorChain(
+                InterceptorChain(
                     requestContext = request.toRequestContext(sketch),
                     interceptors = listOf(
-                        ResultCacheRequestInterceptor(),
-                        ExtrasTestRequestInterceptor(),
-                        FetcherRequestInterceptor(),
-                        EngineRequestInterceptor()
+                        ResultCacheInterceptor(),
+                        ExtrasTestInterceptor(),
+                        FetcherInterceptor(),
+                        DecoderInterceptor()
                     ),
                     index = 0
                 ).proceed(request).getOrNull()
@@ -271,7 +271,7 @@ class ResultCacheRequestInterceptorTest {
             createImageSerializer().compress(bitmapImage, it)
         }
         resultCache.fileSystem.sink(editor.metadata).buffer().use {
-            val metadata = ResultCacheRequestInterceptor.Metadata(
+            val metadata = ResultCacheInterceptor.Metadata(
                 imageInfo = ImageInfo(width = 100, height = 100, mimeType = "image/png"),
                 resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
                 transformeds = null,
@@ -308,9 +308,9 @@ class ResultCacheRequestInterceptorTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = ResultCacheRequestInterceptor()
-        val element11 = ResultCacheRequestInterceptor()
-        val element2 = ResultCacheRequestInterceptor()
+        val element1 = ResultCacheInterceptor()
+        val element11 = ResultCacheInterceptor()
+        val element2 = ResultCacheInterceptor()
 
         assertNotSame(illegal = element1, actual = element11)
         assertNotSame(illegal = element1, actual = element2)
@@ -330,33 +330,37 @@ class ResultCacheRequestInterceptorTest {
     @Test
     fun testSortWeight() {
         assertEquals(
-            expected = 95,
-            actual = ResultCacheRequestInterceptor().sortWeight
+            expected = 45,
+            actual = ResultCacheInterceptor().sortWeight
+        )
+        assertEquals(
+            expected = 45,
+            actual = ResultCacheInterceptor.SORT_WEIGHT
         )
     }
 
     @Test
     fun testToString() {
         assertEquals(
-            expected = "ResultCacheRequestInterceptor",
-            actual = ResultCacheRequestInterceptor().toString()
+            expected = "ResultCacheInterceptor",
+            actual = ResultCacheInterceptor().toString()
         )
     }
 
-    class ExtrasTestRequestInterceptor : RequestInterceptor {
+    class ExtrasTestInterceptor : Interceptor {
 
         override val key: String? = null
         override val sortWeight: Int = 0
 
-        override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
+        override suspend fun intercept(chain: Interceptor.Chain): Result<ImageData> {
             val request = chain.request
             val imageData = chain.proceed(request).let {
                 it.getOrNull() ?: return it
             }
-            val newDecodeResult = imageData.newImageData {
+            val newImageData = imageData.newImageData {
                 addExtras("key", "hasExtras")
             }
-            return Result.success(newDecodeResult)
+            return Result.success(newImageData)
         }
 
         override fun equals(other: Any?): Boolean {
@@ -369,7 +373,7 @@ class ResultCacheRequestInterceptorTest {
         }
 
         override fun toString(): String {
-            return "ExtrasTestRequestInterceptor"
+            return "ExtrasTestInterceptor"
         }
     }
 }

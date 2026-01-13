@@ -364,7 +364,7 @@ class AbsAbilityImageViewTest {
     fun testRequestProgressListenerObserver() = runTest {
         runInNewSketchWithUse({
             components {
-                addFetcher(TestHttpUriFetcher.Factory(it))
+                add(TestHttpUriFetcher.Factory(it))
             }
         }) { _, sketch ->
             ViewAbilityTestActivity::class.launchActivity().use { activityScenario ->

@@ -2,6 +2,8 @@
 
 package com.github.panpf.sketch.decode
 
+import com.github.panpf.sketch.request.ImageData
+
 @Deprecated(
     message = "Use Decoder instead",
     replaceWith = ReplaceWith("Decoder", "com.github.panpf.sketch.decode.Decoder")
@@ -9,10 +11,10 @@ package com.github.panpf.sketch.decode
 typealias BitmapDecoder = Decoder
 
 @Deprecated(
-    message = "Use DecodeResult instead",
-    replaceWith = ReplaceWith("DecodeResult", "com.github.panpf.sketch.decode.DecodeResult")
+    message = "Use com.github.panpf.sketch.request.ImageData instead",
+    replaceWith = ReplaceWith("com.github.panpf.sketch.request.ImageData")
 )
-typealias BitmapDecodeResult = DecodeResult
+typealias BitmapDecodeResult = ImageData
 
 
 @Deprecated(
@@ -22,7 +24,7 @@ typealias BitmapDecodeResult = DecodeResult
 typealias DrawableDecoder = Decoder
 
 @Deprecated(
-    message = "Use DecodeResult instead",
-    replaceWith = ReplaceWith("DecodeResult", "com.github.panpf.sketch.decode.DecodeResult")
+    message = "Use com.github.panpf.sketch.request.ImageData instead",
+    replaceWith = ReplaceWith("com.github.panpf.sketch.request.ImageData")
 )
-typealias DrawableDecodeResult = DecodeResult
+typealias DrawableDecodeResult = ImageData

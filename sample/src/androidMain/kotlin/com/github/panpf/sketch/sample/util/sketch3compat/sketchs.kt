@@ -26,21 +26,21 @@ import java.io.File
 //}
 
 @Deprecated(
-    message = "Use addDecoder instead",
-    replaceWith = ReplaceWith("addDecoder(decoder)")
+    message = "Use add instead",
+    replaceWith = ReplaceWith("add(decoder)")
 )
 fun ComponentRegistry.Builder.addBitmapDecoder(decoder: Decoder.Factory): ComponentRegistry.Builder =
     apply {
-        addDecoder(decoder)
+        add(decoder)
     }
 
 @Deprecated(
-    message = "Use addDecoder instead",
-    replaceWith = ReplaceWith("addDecoder(decoder)")
+    message = "Use add instead",
+    replaceWith = ReplaceWith("add(decoder)")
 )
 fun ComponentRegistry.Builder.addDrawableDecoder(decoder: Decoder.Factory): ComponentRegistry.Builder =
     apply {
-        addDecoder(decoder)
+        add(decoder)
     }
 
 @Deprecated(

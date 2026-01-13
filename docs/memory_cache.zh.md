@@ -5,7 +5,7 @@
 为了避免重复加载图片并提高图片的加载速度 Sketch 引入了内存缓存，内存缓存功能会将已加载的 Image
 缓存在内存中，下次直接从内存中读取跳过加载过程。
 
-内存缓存功能由 [MemoryCacheRequestInterceptor] 负责核心逻辑，[MemoryCache] 负责存储管理
+内存缓存功能由 [MemoryCacheInterceptor] 负责核心逻辑，[MemoryCache] 负责存储管理
 
 [MemoryCache] 的默认实现是 [LruMemoryCache]：
 
@@ -76,7 +76,7 @@ ImageOptions {
 你还可以通过以下方式和获取最终的内存缓存 key：
 
 ```kotlin
-// 在自定义的 RequestInterceptor、Transformation、Fetcher、Decoder 组件中
+// 在自定义的 Interceptor、Transformation、Fetcher、Decoder 组件中
 // 可以通过 RequestContext 获取内存缓存 key
 val requestContext: RequestContext = ...
 requestContext.memoryCacheKey
@@ -143,6 +143,6 @@ scope.launch {
 
 [ImageOptions]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageOptions.common.kt
 
-[MemoryCacheRequestInterceptor]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/internal/MemoryCacheRequestInterceptor.kt
+[MemoryCacheInterceptor]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/internal/MemoryCacheInterceptor.kt
 
 [CachePolicy]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/cache/CachePolicy.kt

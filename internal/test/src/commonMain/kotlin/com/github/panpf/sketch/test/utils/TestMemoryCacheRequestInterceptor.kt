@@ -2,20 +2,20 @@ package com.github.panpf.sketch.test.utils
 
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageData
-import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.RequestInterceptor.Chain
+import com.github.panpf.sketch.request.Interceptor
+import com.github.panpf.sketch.request.Interceptor.Chain
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom
 
-class TestMemoryCacheRequestIntercept : RequestInterceptor {
+class TestMemoryCacheInterceptor : Interceptor {
 
-    companion object {
+    companion object Companion {
         const val SORT_WEIGHT = 100
     }
 
-    override val key: String = "endRequestInterceptor"
+    override val key: String = "endInterceptor"
     override val sortWeight: Int = SORT_WEIGHT
 
     var executeCount = 0

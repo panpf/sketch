@@ -30,7 +30,7 @@ import com.github.panpf.sketch.source.DataSource
  * @see com.github.panpf.sketch.animated.webp.nonandroid.test.decode.SkiaAnimatedWebpDecoderTest.testSupportAnimatedWebp
  */
 fun ComponentRegistry.Builder.supportSkiaAnimatedWebp(): ComponentRegistry.Builder = apply {
-    addDecoder(SkiaAnimatedWebpDecoder.Factory())
+    add(SkiaAnimatedWebpDecoder.Factory())
 }
 
 /**

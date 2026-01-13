@@ -9,6 +9,8 @@
 
 # new
 
+* broken: 合并 RequestInterceptor 和
+  DecodeInterceptor，二进制兼容性被破坏，依赖于此的库需要修改代码并重新编译。[#274](https://github.com/panpf/sketch/issues/274)
 * fix: 修复了 AsyncImage 在使用 colorFilter 属性并且开启 crossfade 时 colorFilter 无效的
   bug。[#266](https://github.com/panpf/sketch/issues/266)
 * fix: 修复了 Android 平台 ImageDecoder 无法解码只有一帧的 gif 的
@@ -20,12 +22,6 @@
   bug。[#272](https://github.com/panpf/sketch/issues/272)
 * fix: 修复非 Android 平台使用 Skia 解码动图时帧持续时间为 0 时没有修改为默认值 100 的
   bug。[#273](https://github.com/panpf/sketch/issues/273)
-* change: ResultCacheDecodeInterceptor 改为 ResultCacheRequestInterceptor
-* change: TransformationDecodeInterceptor 改为 TransformationRequestInterceptor
-* change: 新增 PlaceholderRequestInterceptor 负责创建和回调 placeholder
-* change: 新增 FetcherRequestInterceptor 负责执行 Fetcher
-* change: PauseLoadWhenScrollingDecodeInterceptor 改为 PauseLoadWhenScrollingRequestInterceptor
-* change: 移除 DecodeInterceptor
 
 # 4.4.0-alpha01
 

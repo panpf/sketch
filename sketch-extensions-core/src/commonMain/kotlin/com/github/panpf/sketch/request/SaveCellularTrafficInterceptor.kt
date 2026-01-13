@@ -19,15 +19,15 @@ package com.github.panpf.sketch.request
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.Depth.LOCAL
-import com.github.panpf.sketch.request.RequestInterceptor.Chain
+import com.github.panpf.sketch.request.Interceptor.Chain
 
 /**
  * Adds save cellular traffic support
  *
- * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficRequestInterceptorTest.testSupportSaveCellularTraffic
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficInterceptorTest.testSupportSaveCellularTraffic
  */
 fun ComponentRegistry.Builder.supportSaveCellularTraffic(): ComponentRegistry.Builder = apply {
-    addRequestInterceptor(SaveCellularTrafficRequestInterceptor())
+    add(SaveCellularTrafficInterceptor())
 }
 
 /**
@@ -35,11 +35,11 @@ fun ComponentRegistry.Builder.supportSaveCellularTraffic(): ComponentRegistry.Bu
  * Then can also cooperate with saveCellularTrafficError custom error image display
  *
  * @see ImageRequest.Builder.saveCellularTraffic
- * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficRequestInterceptorTest
+ * @see com.github.panpf.sketch.extensions.core.common.test.request.SaveCellularTrafficInterceptorTest
  */
-class SaveCellularTrafficRequestInterceptor constructor(
+class SaveCellularTrafficInterceptor constructor(
     isCellularNetworkConnected: ((Sketch) -> Boolean)? = null
-) : RequestInterceptor {
+) : Interceptor {
 
     companion object {
         const val SORT_WEIGHT = 0
@@ -109,5 +109,5 @@ class SaveCellularTrafficRequestInterceptor constructor(
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "SaveCellularTrafficRequestInterceptor"
+    override fun toString(): String = "SaveCellularTrafficInterceptor"
 }

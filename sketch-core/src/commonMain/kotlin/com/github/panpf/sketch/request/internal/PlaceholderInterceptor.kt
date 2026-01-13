@@ -18,25 +18,25 @@ package com.github.panpf.sketch.request.internal
 
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.request.ImageData
-import com.github.panpf.sketch.request.RequestInterceptor
+import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.resize.resizeOnDraw
 
 /**
  * Placeholder request interceptor, used to display the placeholder image when the request starts
  *
- * @see com.github.panpf.sketch.core.common.test.request.internal.PlaceholderRequestInterceptorTest
+ * @see com.github.panpf.sketch.core.common.test.request.internal.PlaceholderInterceptorTest
  */
-class PlaceholderRequestInterceptor : RequestInterceptor {
+class PlaceholderInterceptor : Interceptor {
 
     companion object {
-        const val SORT_WEIGHT = 93
+        const val SORT_WEIGHT = 30
     }
 
     override val key: String? = null
     override val sortWeight: Int = SORT_WEIGHT
 
     @MainThread
-    override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
+    override suspend fun intercept(chain: Interceptor.Chain): Result<ImageData> {
         val sketch = chain.sketch
         val request = chain.request
         val requestContext = chain.requestContext
@@ -67,5 +67,5 @@ class PlaceholderRequestInterceptor : RequestInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "PlaceholderRequestInterceptor"
+    override fun toString(): String = "PlaceholderInterceptor"
 }

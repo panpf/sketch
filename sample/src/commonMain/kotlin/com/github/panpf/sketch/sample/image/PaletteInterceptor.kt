@@ -2,24 +2,24 @@ package com.github.panpf.sketch.sample.image
 
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.BitmapImage
-import com.github.panpf.sketch.cache.internal.ResultCacheRequestInterceptor
+import com.github.panpf.sketch.cache.internal.ResultCacheInterceptor
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageResult
-import com.github.panpf.sketch.request.RequestInterceptor
+import com.github.panpf.sketch.request.Interceptor
 import com.kmpalette.palette.graphics.Palette
 import kotlinx.coroutines.withContext
 
-class PaletteRequestInterceptor : RequestInterceptor {
+class PaletteInterceptor : Interceptor {
 
     companion object Companion {
-        const val SORT_WEIGHT = ResultCacheRequestInterceptor.SORT_WEIGHT + 1
+        const val SORT_WEIGHT = ResultCacheInterceptor.SORT_WEIGHT + 1
     }
 
     override val key: String = "Palette"
     override val sortWeight: Int = SORT_WEIGHT
 
     @MainThread
-    override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
+    override suspend fun intercept(chain: Interceptor.Chain): Result<ImageData> {
         val result = chain.proceed(chain.request)
         val imageData = result.getOrNull() ?: return result
         val image = imageData.image
@@ -35,7 +35,7 @@ class PaletteRequestInterceptor : RequestInterceptor {
                 }
             }
         }.onFailure {
-            chain.sketch.logger.e("PaletteRequestInterceptor. $it")
+            chain.sketch.logger.e("PaletteInterceptor. $it")
         }.getOrNull()
             ?: return result
         return Result.success(newImageData)
@@ -50,7 +50,7 @@ class PaletteRequestInterceptor : RequestInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "PaletteRequestInterceptor"
+    override fun toString(): String = "PaletteInterceptor"
 }
 
 val ImageData.simplePalette: SimplePalette?

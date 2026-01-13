@@ -19,11 +19,11 @@ package com.github.panpf.sketch.decode.internal
 import androidx.annotation.WorkerThread
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
-import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.ImageFormat.PNG
 import com.github.panpf.sketch.fetch.FetchResult
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DrawableDataSource
@@ -66,7 +66,7 @@ open class DrawableDecoder(
         }
 
     @WorkerThread
-    override fun decode(): DecodeResult {
+    override fun decode(): ImageData {
         val request = requestContext.request
         val drawable = dataSource.drawable
 
@@ -91,7 +91,7 @@ open class DrawableDecoder(
             colorSpace = decodeConfig.colorSpace,
             targetSize = bitmapSize
         )
-        val decodeResult = DecodeResult(
+        val imageData = ImageData(
             image = bitmap.asImage(),
             imageInfo = imageInfo,
             dataFrom = LOCAL,
@@ -99,7 +99,7 @@ open class DrawableDecoder(
             transformeds = transformeds,
             extras = null
         )
-        val resizeResult = decodeResult.resize(resize)
+        val resizeResult = imageData.resize(resize)
         return resizeResult
     }
 

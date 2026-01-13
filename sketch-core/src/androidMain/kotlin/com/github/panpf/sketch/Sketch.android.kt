@@ -29,11 +29,11 @@ import com.github.panpf.sketch.fetch.ResourceUriFetcher
  */
 internal actual fun platformComponents(context: PlatformContext): ComponentRegistry {
     return ComponentRegistry {
-        addFetcher(ContentUriFetcher.Factory())
-        addFetcher(ResourceUriFetcher.Factory())
-        addFetcher(AssetUriFetcher.Factory())
+        add(ContentUriFetcher.Factory())
+        add(ResourceUriFetcher.Factory())
+        add(AssetUriFetcher.Factory())
 
-        addDecoder(DrawableDecoder.Factory())
-        addDecoder(BitmapFactoryDecoder.Factory())
+        add(DrawableDecoder.Factory())
+        add(BitmapFactoryDecoder.Factory())
     }
 }

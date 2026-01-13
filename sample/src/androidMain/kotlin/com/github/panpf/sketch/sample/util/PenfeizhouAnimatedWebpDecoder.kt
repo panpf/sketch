@@ -18,7 +18,6 @@ package com.github.panpf.sketch.sample.util
 
 import android.content.Context
 import com.github.panpf.sketch.asImage
-import com.github.panpf.sketch.decode.DecodeResult
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.ImageFormat
@@ -27,6 +26,7 @@ import com.github.panpf.sketch.decode.internal.isAnimatedWebP
 import com.github.panpf.sketch.decode.internal.resize
 import com.github.panpf.sketch.drawable.ScaledAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
+import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.resize.isSmallerSizeMode
@@ -67,7 +67,7 @@ class PenfeizhouAnimatedWebpDecoder(
         )
     }
 
-    override fun decode(): DecodeResult {
+    override fun decode(): ImageData {
         val loader = dataSource.toStreamLoader(requestContext.request.context)
         val webpDecoder = WebPDecoder(loader, null)
 
@@ -101,7 +101,7 @@ class PenfeizhouAnimatedWebpDecoder(
             ScaledAnimatableDrawable(WebPDrawable(webpDecoder)).asImage()
         }
 
-        val decodeResult = DecodeResult(
+        val imageData = ImageData(
             image = image,
             imageInfo = imageInfo,
             dataFrom = dataSource.dataFrom,
@@ -109,7 +109,7 @@ class PenfeizhouAnimatedWebpDecoder(
             transformeds = null,
             extras = null,
         )
-        val resizeResult = decodeResult.resize(resize)
+        val resizeResult = imageData.resize(resize)
         return resizeResult
     }
 

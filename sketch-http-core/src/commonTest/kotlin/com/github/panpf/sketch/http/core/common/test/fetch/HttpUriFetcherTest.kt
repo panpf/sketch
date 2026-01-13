@@ -5,7 +5,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.cache.createImageSerializer
-import com.github.panpf.sketch.cache.internal.ResultCacheRequestInterceptor
+import com.github.panpf.sketch.cache.internal.ResultCacheInterceptor
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.HttpUriFetcher
@@ -306,7 +306,7 @@ class HttpUriFetcherTest {
             createImageSerializer().compress(bitmapImage, it)
         }
         downloadCache.fileSystem.sink(editor.metadata).buffer().use {
-            val metadata = ResultCacheRequestInterceptor.Metadata(
+            val metadata = ResultCacheInterceptor.Metadata(
                 imageInfo = ImageInfo(width = 100, height = 100, mimeType = "image/png"),
                 resize = Resize(100, 100, Precision.LESS_PIXELS, Scale.CENTER_CROP),
                 transformeds = null,

@@ -28,7 +28,7 @@ import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.blurHashPlaceholder
 import com.github.panpf.sketch.sample.databinding.FragmentTestBlurhashAndroidBinding
-import com.github.panpf.sketch.sample.image.DelayRequestInterceptor
+import com.github.panpf.sketch.sample.image.DelayInterceptor
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.state.IntColorDrawableStateImage
 import com.github.panpf.sketch.util.Size
@@ -123,7 +123,7 @@ class BlurHashTestFragment : BaseToolbarBindingFragment<FragmentTestBlurhashAndr
                 blurHashPlaceholder(imageBlurHashUri, maxSide = maxSide)
                 crossfade()
                 components {
-                    addRequestInterceptor(DelayRequestInterceptor(2000))
+                    add(DelayInterceptor(2000))
                 }
             }
         }
@@ -137,7 +137,7 @@ class BlurHashTestFragment : BaseToolbarBindingFragment<FragmentTestBlurhashAndr
                 blurHashPlaceholder(imageBlurHashUri, maxSide = maxSide)
                 crossfade()
                 components {
-                    addRequestInterceptor(DelayRequestInterceptor(2000))
+                    add(DelayInterceptor(2000))
                 }
             }
         }
@@ -158,7 +158,7 @@ class BlurHashTestFragment : BaseToolbarBindingFragment<FragmentTestBlurhashAndr
                 )
                 crossfade()
                 components {
-                    addRequestInterceptor(DelayRequestInterceptor(2000))
+                    add(DelayInterceptor(2000))
                 }
             }
         }
@@ -171,7 +171,7 @@ class BlurHashTestFragment : BaseToolbarBindingFragment<FragmentTestBlurhashAndr
                 placeholder(IntColorDrawableStateImage(Color.TRANSPARENT))
                 crossfade()
                 components {
-                    addRequestInterceptor(DelayRequestInterceptor(2000))
+                    add(DelayInterceptor(2000))
                 }
             }
         }
@@ -185,7 +185,7 @@ class BlurHashTestFragment : BaseToolbarBindingFragment<FragmentTestBlurhashAndr
                 placeholder(IntColorDrawableStateImage(Color.TRANSPARENT))
                 crossfade()
                 components {
-                    addRequestInterceptor(DelayRequestInterceptor(2000))
+                    add(DelayInterceptor(2000))
                 }
             }
         }
@@ -199,7 +199,7 @@ class BlurHashTestFragment : BaseToolbarBindingFragment<FragmentTestBlurhashAndr
                 colorType(alpha8ColorType)
                 crossfade()
                 components {
-                    addRequestInterceptor(DelayRequestInterceptor(2000))
+                    add(DelayInterceptor(2000))
                 }
             }
         }

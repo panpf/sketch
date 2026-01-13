@@ -111,7 +111,7 @@ actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
         }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
-            addDecoder(PenfeizhouAnimatedWebpDecoder.Factory())
+            add(PenfeizhouAnimatedWebpDecoder.Factory())
         }
     }
 }

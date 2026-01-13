@@ -31,7 +31,7 @@ import java.io.File
  * @see com.github.panpf.sketch.extensions.apkicon.test.decode.ApkIconDecoderTest.testSupportApkIcon
  */
 fun ComponentRegistry.Builder.supportApkIcon(): ComponentRegistry.Builder = apply {
-    addDecoder(ApkIconDecoder.Factory())
+    add(ApkIconDecoder.Factory())
 }
 
 /**

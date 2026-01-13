@@ -62,9 +62,9 @@ class ApkIconDecoderTest {
             build().apply {
                 assertEquals(
                     "ComponentRegistry(" +
-                            "fetcherFactoryList=[]," +
-                            "decoderFactoryList=[]," +
-                            "requestInterceptorList=[]" +
+                            "fetchers=[]," +
+                            "decoders=[]," +
+                            "interceptors=[]" +
                             ")",
                     toString()
                 )
@@ -74,9 +74,9 @@ class ApkIconDecoderTest {
             build().apply {
                 assertEquals(
                     "ComponentRegistry(" +
-                            "fetcherFactoryList=[]," +
-                            "decoderFactoryList=[ApkIconDecoder]," +
-                            "requestInterceptorList=[]" +
+                            "fetchers=[]," +
+                            "decoders=[ApkIconDecoder]," +
+                            "interceptors=[]" +
                             ")",
                     toString()
                 )
@@ -86,9 +86,9 @@ class ApkIconDecoderTest {
             build().apply {
                 assertEquals(
                     "ComponentRegistry(" +
-                            "fetcherFactoryList=[]," +
-                            "decoderFactoryList=[ApkIconDecoder,ApkIconDecoder]," +
-                            "requestInterceptorList=[]" +
+                            "fetchers=[]," +
+                            "decoders=[ApkIconDecoder,ApkIconDecoder]," +
+                            "interceptors=[]" +
                             ")",
                     toString()
                 )

@@ -1,23 +1,23 @@
 package com.github.panpf.sketch.test.utils
 
-import com.github.panpf.sketch.cache.internal.ResultCacheRequestInterceptor
+import com.github.panpf.sketch.cache.internal.ResultCacheInterceptor
 import com.github.panpf.sketch.request.ImageData
-import com.github.panpf.sketch.request.RequestInterceptor
+import com.github.panpf.sketch.request.Interceptor
 import kotlinx.coroutines.delay
 
-data class DelayRequestInterceptor(
+data class DelayInterceptor(
     val delay: Long,
     val onIntercept: (() -> Unit)? = null
-) : RequestInterceptor {
+) : Interceptor {
 
     companion object {
-        const val SORT_WEIGHT = ResultCacheRequestInterceptor.SORT_WEIGHT - 1
+        const val SORT_WEIGHT = ResultCacheInterceptor.SORT_WEIGHT - 1
     }
 
     override val key: String? = null
     override val sortWeight: Int = SORT_WEIGHT
 
-    override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
+    override suspend fun intercept(chain: Interceptor.Chain): Result<ImageData> {
         onIntercept?.invoke()
         delay(delay)
         return chain.proceed(chain.request)

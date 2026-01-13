@@ -20,26 +20,26 @@ import androidx.annotation.AnyThread
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.cache.MemoryCache
-import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
-import com.github.panpf.sketch.cache.internal.ResultCacheRequestInterceptor
+import com.github.panpf.sketch.cache.internal.MemoryCacheInterceptor
+import com.github.panpf.sketch.cache.internal.ResultCacheInterceptor
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
-import com.github.panpf.sketch.fetch.internal.FetcherRequestInterceptor
+import com.github.panpf.sketch.fetch.internal.FetcherInterceptor
 import com.github.panpf.sketch.request.Disposable
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
+import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.OneShotDisposable
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.request.RequestInterceptor
-import com.github.panpf.sketch.request.internal.EngineRequestInterceptor
-import com.github.panpf.sketch.request.internal.PlaceholderRequestInterceptor
+import com.github.panpf.sketch.request.internal.DecoderInterceptor
+import com.github.panpf.sketch.request.internal.PlaceholderInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.FileDataSource
-import com.github.panpf.sketch.transform.internal.TransformationRequestInterceptor
+import com.github.panpf.sketch.transform.internal.TransformationInterceptor
 import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.DecoderProvider
 import com.github.panpf.sketch.util.DownloadData
@@ -131,7 +131,7 @@ class Sketch private constructor(
     val resultCache: DiskCache by resultCacheLazy
 
     /** Register components that are required to perform [ImageRequest] and can be extended,
-     * such as [Fetcher], [Decoder], [RequestInterceptor] */
+     * such as [Fetcher], [Decoder], [Interceptor] */
     val components: Components = Components(componentRegistry)
 
     /** Monitor network connection and system status */
@@ -167,9 +167,9 @@ class Sketch private constructor(
                 appendLine().append("memoryCache: $memoryCache")
                 appendLine().append("resultCache: $resultCache")
                 appendLine().append("downloadCache: $downloadCache")
-                appendLine().append("fetchers: ${components.registry.fetcherFactoryList}")
-                appendLine().append("decoders: ${components.registry.decoderFactoryList}")
-                appendLine().append("requestInterceptors: ${components.registry.requestInterceptorList}")
+                appendLine().append("fetchers: ${components.registry.fetchers}")
+                appendLine().append("decoders: ${components.registry.decoders}")
+                appendLine().append("interceptors: ${components.registry.interceptors}")
                 appendLine().append("networkParallelismLimited: $networkParallelismLimited")
                 appendLine().append("decodeParallelismLimited: $decodeParallelismLimited")
             }
@@ -527,13 +527,14 @@ internal expect fun platformComponents(context: PlatformContext): ComponentRegis
  * @see com.github.panpf.sketch.core.common.test.SketchTest.testCommonComponents
  */
 internal fun commonComponents(): ComponentRegistry = ComponentRegistry {
-    addFetcher(Base64UriFetcher.Factory())
-    addFetcher(FileUriFetcher.Factory())
+    add(Base64UriFetcher.Factory())
+    add(FileUriFetcher.Factory())
 
-    addRequestInterceptor(MemoryCacheRequestInterceptor())
-    addRequestInterceptor(PlaceholderRequestInterceptor())
-    addRequestInterceptor(ResultCacheRequestInterceptor())
-    addRequestInterceptor(TransformationRequestInterceptor())
-    addRequestInterceptor(FetcherRequestInterceptor())
-    addRequestInterceptor(EngineRequestInterceptor())
+    add(MemoryCacheInterceptor())   // 15
+    add(PlaceholderInterceptor())   // 30
+    add(ResultCacheInterceptor())   // 45
+//    add(ThumbnailInterceptor())   // 60
+    add(TransformationInterceptor())    // 75
+    add(FetcherInterceptor())   // 90
+    add(DecoderInterceptor())   // 100
 }

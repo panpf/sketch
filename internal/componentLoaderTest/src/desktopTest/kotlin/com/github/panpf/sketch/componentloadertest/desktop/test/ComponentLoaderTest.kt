@@ -55,18 +55,18 @@ class ComponentLoaderTest {
         val componentLoader = ComponentLoader
         val componentRegistry = componentLoader.toComponentRegistry(context)
 
-        assertEquals(5, componentRegistry.fetcherFactoryList.size)
-        assertNotNull(componentRegistry.fetcherFactoryList.find { it is ComposeResourceUriFetcher.Factory })
-        assertNotNull(componentRegistry.fetcherFactoryList.find { it is KtorHttpUriFetcher.Factory })
-        assertNotNull(componentRegistry.fetcherFactoryList.find { it is HurlHttpUriFetcher.Factory })
-        assertNotNull(componentRegistry.fetcherFactoryList.find { it is OkHttpHttpUriFetcher.Factory })
-        assertNotNull(componentRegistry.fetcherFactoryList.find { it is BlurHashUriFetcher.Factory })
+        assertEquals(5, componentRegistry.fetchers.size)
+        assertNotNull(componentRegistry.fetchers.find { it is ComposeResourceUriFetcher.Factory })
+        assertNotNull(componentRegistry.fetchers.find { it is KtorHttpUriFetcher.Factory })
+        assertNotNull(componentRegistry.fetchers.find { it is HurlHttpUriFetcher.Factory })
+        assertNotNull(componentRegistry.fetchers.find { it is OkHttpHttpUriFetcher.Factory })
+        assertNotNull(componentRegistry.fetchers.find { it is BlurHashUriFetcher.Factory })
 
-        assertEquals(4, componentRegistry.decoderFactoryList.size)
-        assertNotNull(componentRegistry.decoderFactoryList.find { it is GifDecoder.Factory })
-        assertNotNull(componentRegistry.decoderFactoryList.find { it is AnimatedWebpDecoder.Factory })
-        assertNotNull(componentRegistry.decoderFactoryList.find { it is SvgDecoder.Factory })
-        assertNotNull(componentRegistry.decoderFactoryList.find { it is BlurHashDecoder.Factory })
+        assertEquals(4, componentRegistry.decoders.size)
+        assertNotNull(componentRegistry.decoders.find { it is GifDecoder.Factory })
+        assertNotNull(componentRegistry.decoders.find { it is AnimatedWebpDecoder.Factory })
+        assertNotNull(componentRegistry.decoders.find { it is SvgDecoder.Factory })
+        assertNotNull(componentRegistry.decoders.find { it is BlurHashDecoder.Factory })
 
         // ignoreProviderClasses
         val componentRegistry2 = componentLoader.toComponentRegistry(
@@ -75,17 +75,17 @@ class ComponentLoaderTest {
             ignoreDecoderProviders = listOf(SvgDecoderProvider::class),
         )
 
-        assertEquals(4, componentRegistry2.fetcherFactoryList.size)
-        assertNull(componentRegistry2.fetcherFactoryList.find { it is ComposeResourceUriFetcher.Factory })
-        assertNotNull(componentRegistry2.fetcherFactoryList.find { it is KtorHttpUriFetcher.Factory })
-        assertNotNull(componentRegistry2.fetcherFactoryList.find { it is HurlHttpUriFetcher.Factory })
-        assertNotNull(componentRegistry2.fetcherFactoryList.find { it is OkHttpHttpUriFetcher.Factory })
-        assertNotNull(componentRegistry2.fetcherFactoryList.find { it is BlurHashUriFetcher.Factory })
+        assertEquals(4, componentRegistry2.fetchers.size)
+        assertNull(componentRegistry2.fetchers.find { it is ComposeResourceUriFetcher.Factory })
+        assertNotNull(componentRegistry2.fetchers.find { it is KtorHttpUriFetcher.Factory })
+        assertNotNull(componentRegistry2.fetchers.find { it is HurlHttpUriFetcher.Factory })
+        assertNotNull(componentRegistry2.fetchers.find { it is OkHttpHttpUriFetcher.Factory })
+        assertNotNull(componentRegistry2.fetchers.find { it is BlurHashUriFetcher.Factory })
 
-        assertEquals(3, componentRegistry2.decoderFactoryList.size)
-        assertNotNull(componentRegistry2.decoderFactoryList.find { it is GifDecoder.Factory })
-        assertNotNull(componentRegistry2.decoderFactoryList.find { it is AnimatedWebpDecoder.Factory })
-        assertNull(componentRegistry2.decoderFactoryList.find { it is SvgDecoder.Factory })
-        assertNotNull(componentRegistry2.decoderFactoryList.find { it is BlurHashDecoder.Factory })
+        assertEquals(3, componentRegistry2.decoders.size)
+        assertNotNull(componentRegistry2.decoders.find { it is GifDecoder.Factory })
+        assertNotNull(componentRegistry2.decoders.find { it is AnimatedWebpDecoder.Factory })
+        assertNull(componentRegistry2.decoders.find { it is SvgDecoder.Factory })
+        assertNotNull(componentRegistry2.decoders.find { it is BlurHashDecoder.Factory })
     }
 }

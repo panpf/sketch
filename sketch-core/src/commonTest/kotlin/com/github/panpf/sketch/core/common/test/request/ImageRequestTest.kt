@@ -67,11 +67,11 @@ import com.github.panpf.sketch.test.utils.TestDecoder2
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestFetcher2
 import com.github.panpf.sketch.test.utils.TestImageOptionsTarget
+import com.github.panpf.sketch.test.utils.TestInterceptor
+import com.github.panpf.sketch.test.utils.TestInterceptor2
 import com.github.panpf.sketch.test.utils.TestLifecycle
 import com.github.panpf.sketch.test.utils.TestLifecycleTarget
 import com.github.panpf.sketch.test.utils.TestListenerTarget
-import com.github.panpf.sketch.test.utils.TestRequestInterceptor
-import com.github.panpf.sketch.test.utils.TestRequestInterceptor2
 import com.github.panpf.sketch.test.utils.TestScaleResolverTarget
 import com.github.panpf.sketch.test.utils.TestSizeResolverTarget
 import com.github.panpf.sketch.test.utils.TestTarget
@@ -1585,16 +1585,16 @@ class ImageRequestTest {
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             components {
-                addFetcher(TestFetcher.Factory())
-                addDecoder(TestDecoder.Factory())
-                addRequestInterceptor(TestRequestInterceptor())
+                add(TestFetcher.Factory())
+                add(TestDecoder.Factory())
+                add(TestInterceptor())
             }
         }.apply {
             assertEquals(
                 ComponentRegistry.Builder().apply {
-                    addFetcher(TestFetcher.Factory())
-                    addDecoder(TestDecoder.Factory())
-                    addRequestInterceptor(TestRequestInterceptor())
+                    add(TestFetcher.Factory())
+                    add(TestDecoder.Factory())
+                    add(TestInterceptor())
                 }.build(),
                 componentRegistry
             )
@@ -1602,16 +1602,16 @@ class ImageRequestTest {
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             components {
-                addFetcher(TestFetcher.Factory())
-                addDecoder(TestDecoder.Factory())
+                add(TestFetcher.Factory())
+                add(TestDecoder.Factory())
             }
             components {
-                addRequestInterceptor(TestRequestInterceptor())
+                add(TestInterceptor())
             }
         }.apply {
             assertEquals(
                 ComponentRegistry.Builder().apply {
-                    addRequestInterceptor(TestRequestInterceptor())
+                    add(TestInterceptor())
                 }.build(),
                 componentRegistry
             )
@@ -1619,24 +1619,24 @@ class ImageRequestTest {
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             components {
-                addFetcher(TestFetcher.Factory())
-                addDecoder(TestDecoder.Factory())
-                addRequestInterceptor(TestRequestInterceptor())
+                add(TestFetcher.Factory())
+                add(TestDecoder.Factory())
+                add(TestInterceptor())
             }
             target(TestComponentsTarget(ComponentRegistry {
-                addFetcher(TestFetcher2.Factory())
-                addDecoder(TestDecoder2.Factory())
-                addRequestInterceptor(TestRequestInterceptor2())
+                add(TestFetcher2.Factory())
+                add(TestDecoder2.Factory())
+                add(TestInterceptor2())
             }))
         }.apply {
             assertEquals(
                 ComponentRegistry.Builder().apply {
-                    addFetcher(TestFetcher.Factory())
-                    addDecoder(TestDecoder.Factory())
-                    addRequestInterceptor(TestRequestInterceptor())
-                    addFetcher(TestFetcher2.Factory())
-                    addDecoder(TestDecoder2.Factory())
-                    addRequestInterceptor(TestRequestInterceptor2())
+                    add(TestFetcher.Factory())
+                    add(TestDecoder.Factory())
+                    add(TestInterceptor())
+                    add(TestFetcher2.Factory())
+                    add(TestDecoder2.Factory())
+                    add(TestInterceptor2())
                 }.build(),
                 componentRegistry
             )
@@ -1652,18 +1652,18 @@ class ImageRequestTest {
 
         ImageRequest(context, ResourceImages.jpeg.uri) {
             components {
-                addFetcher(TestFetcher.Factory())
-                addDecoder(TestDecoder.Factory())
+                add(TestFetcher.Factory())
+                add(TestDecoder.Factory())
             }
             addComponents {
-                addRequestInterceptor(TestRequestInterceptor())
+                add(TestInterceptor())
             }
         }.apply {
             assertEquals(
                 ComponentRegistry.Builder().apply {
-                    addFetcher(TestFetcher.Factory())
-                    addDecoder(TestDecoder.Factory())
-                    addRequestInterceptor(TestRequestInterceptor())
+                    add(TestFetcher.Factory())
+                    add(TestDecoder.Factory())
+                    add(TestInterceptor())
                 }.build(),
                 componentRegistry
             )
@@ -1772,9 +1772,9 @@ class ImageRequestTest {
             },
             ScopeAction {
                 components {
-                    addFetcher(TestFetcher.Factory())
-                    addRequestInterceptor(TestRequestInterceptor())
-                    addDecoder(TestDecoder.Factory())
+                    add(TestFetcher.Factory())
+                    add(TestInterceptor())
+                    add(TestDecoder.Factory())
                 }
             },
         )
@@ -1847,7 +1847,7 @@ class ImageRequestTest {
             memoryCacheKey("testMemoryCacheKey")
             memoryCacheKeyMapper(FakeCacheKeyMapper())
             components {
-                addFetcher(TestFetcher.Factory())
+                add(TestFetcher.Factory())
             }
         }.apply {
             assertEquals(
@@ -1859,7 +1859,7 @@ class ImageRequestTest {
                         "progressListener=$testProgressListener, " +
                         "lifecycleResolver=FixedLifecycleResolver($testLifecycle), " +
                         "definedRequestOptions=RequestOptions(listener=$testListener, progressListener=$testProgressListener, lifecycleResolver=FixedLifecycleResolver($testLifecycle)), " +
-                        "definedOptions=ImageOptions(depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), downloadCachePolicy=WRITE_ONLY, downloadCacheKey=testDownloadCacheKey, downloadCacheKeyMapper=FakeCacheKeyMapper, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], resultCachePolicy=READ_ONLY, resultCacheKey=testResultCacheKey, resultCacheKeyMapper=FakeCacheKeyMapper, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, memoryCacheKey=testMemoryCacheKey, memoryCacheKeyMapper=FakeCacheKeyMapper, componentRegistry=ComponentRegistry(fetcherFactoryList=[TestFetcher],decoderFactoryList=[],requestInterceptorList=[])), defaultOptions=null, depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), downloadCachePolicy=WRITE_ONLY, downloadCacheKey=testDownloadCacheKey, downloadCacheKeyMapper=FakeCacheKeyMapper, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], resultCachePolicy=READ_ONLY, resultCacheKey=testResultCacheKey, resultCacheKeyMapper=FakeCacheKeyMapper, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, memoryCacheKey=testMemoryCacheKey, memoryCacheKeyMapper=FakeCacheKeyMapper, componentRegistry=ComponentRegistry(fetcherFactoryList=[TestFetcher],decoderFactoryList=[],requestInterceptorList=[]))",
+                        "definedOptions=ImageOptions(depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), downloadCachePolicy=WRITE_ONLY, downloadCacheKey=testDownloadCacheKey, downloadCacheKeyMapper=FakeCacheKeyMapper, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], resultCachePolicy=READ_ONLY, resultCacheKey=testResultCacheKey, resultCacheKeyMapper=FakeCacheKeyMapper, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, memoryCacheKey=testMemoryCacheKey, memoryCacheKeyMapper=FakeCacheKeyMapper, componentRegistry=ComponentRegistry(fetchers=[TestFetcher],decoders=[],interceptors=[])), defaultOptions=null, depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), downloadCachePolicy=WRITE_ONLY, downloadCacheKey=testDownloadCacheKey, downloadCacheKeyMapper=FakeCacheKeyMapper, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], resultCachePolicy=READ_ONLY, resultCacheKey=testResultCacheKey, resultCacheKeyMapper=FakeCacheKeyMapper, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, memoryCacheKey=testMemoryCacheKey, memoryCacheKeyMapper=FakeCacheKeyMapper, componentRegistry=ComponentRegistry(fetchers=[TestFetcher],decoders=[],interceptors=[]))",
                 actual = this.toString()
             )
         }

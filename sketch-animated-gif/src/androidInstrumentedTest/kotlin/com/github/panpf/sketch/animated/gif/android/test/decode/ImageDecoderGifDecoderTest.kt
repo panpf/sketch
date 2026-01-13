@@ -50,9 +50,9 @@ class ImageDecoderGifDecoderTest {
         ComponentRegistry().apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -63,9 +63,9 @@ class ImageDecoderGifDecoderTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[ImageDecoderGifDecoder]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[ImageDecoderGifDecoder]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -77,9 +77,9 @@ class ImageDecoderGifDecoderTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[ImageDecoderGifDecoder,ImageDecoderGifDecoder]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[ImageDecoderGifDecoder,ImageDecoderGifDecoder]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )

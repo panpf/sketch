@@ -19,20 +19,20 @@ implementation("io.github.panpf.sketch4:sketch-extensions-core:${LAST_VERSION}")
 
 ### Configure
 
-First register the [SaveCellularTrafficRequestInterceptor] request interceptor, as follows:
+First register the [SaveCellularTrafficInterceptor] request interceptor, as follows:
 
 ```kotlin
 // Register for all ImageRequests when customizing Sketch
 Sketch.Builder(context).apply {
     components {
-        addRequestInterceptor(SaveCellularTrafficRequestInterceptor())
+        addInterceptor(SaveCellularTrafficInterceptor())
     }
 }.build()
 
 // Register for a single ImageRequest when loading an image
 ImageRequest(context, "https://example.com/image.jpg") {
     components {
-        addRequestInterceptor(SaveCellularTrafficRequestInterceptor())
+        addInterceptor(SaveCellularTrafficInterceptor())
     }
 }
 ```
@@ -96,7 +96,7 @@ sketchImageView.setClickIgnoreSaveCellularTrafficEnabled(true)
 
 [SketchImageView]: ../sketch-extensions-view/src/main/kotlin/com/github/panpf/sketch/SketchImageView.kt
 
-[SaveCellularTrafficRequestInterceptor]: ../sketch-extensions-core/src/commonMain/kotlin/com/github/panpf/sketch/request/SaveCellularTrafficRequestInterceptor.kt
+[SaveCellularTrafficInterceptor]: ../sketch-extensions-core/src/commonMain/kotlin/com/github/panpf/sketch/request/SaveCellularTrafficInterceptor.kt
 
 [ImageRequest]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/request/ImageRequest.common.kt
 

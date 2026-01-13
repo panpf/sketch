@@ -23,9 +23,9 @@ class HurlHttpUriFetcherTest {
         ComponentRegistry().apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[]," +
-                        "decoderFactoryList=[]," +
-                        "requestInterceptorList=[]" +
+                        "fetchers=[]," +
+                        "decoders=[]," +
+                        "interceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -36,9 +36,9 @@ class HurlHttpUriFetcherTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[HurlHttpUriFetcher]," +
-                        "decoderFactoryList=[]," +
-                        "requestInterceptorList=[])",
+                        "fetchers=[HurlHttpUriFetcher]," +
+                        "decoders=[]," +
+                        "interceptors=[])",
                 actual = toString()
             )
         }
@@ -49,9 +49,9 @@ class HurlHttpUriFetcherTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetcherFactoryList=[HurlHttpUriFetcher,HurlHttpUriFetcher]," +
-                        "decoderFactoryList=[]," +
-                        "requestInterceptorList=[])",
+                        "fetchers=[HurlHttpUriFetcher,HurlHttpUriFetcher]," +
+                        "decoders=[]," +
+                        "interceptors=[])",
                 actual = toString()
             )
         }

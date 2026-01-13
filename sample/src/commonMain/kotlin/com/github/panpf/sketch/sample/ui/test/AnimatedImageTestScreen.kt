@@ -120,7 +120,7 @@ class AnimatedImageTestScreen : BaseScreen() {
                             AsyncImage(
                                 request = buildImageRequest(ResourceImages.numbersGif.uri) {
                                     components {
-                                        addDecoder(gifDecoder)
+                                        add(gifDecoder)
                                     }
                                     repeatCount(0)
                                 },
@@ -154,7 +154,7 @@ class AnimatedImageTestScreen : BaseScreen() {
                             AsyncImage(
                                 request = buildImageRequest(ResourceImages.numbersGif.uri) {
                                     components {
-                                        addDecoder(gifDecoder)
+                                        add(gifDecoder)
                                     }
                                     repeatCount(0)
                                     onAnimationStart(startCallback)
@@ -204,7 +204,7 @@ class AnimatedImageTestScreen : BaseScreen() {
                                 request = buildImageRequest(ResourceImages.animGif.uri) {
                                     animatedTransformation(TestAnimatedTransformation)
                                     components {
-                                        addDecoder(gifDecoder)
+                                        add(gifDecoder)
                                     }
                                 },
                                 contentDescription = "example",

@@ -21,7 +21,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.cache.internal.MemoryCacheRequestInterceptor
+import com.github.panpf.sketch.cache.internal.MemoryCacheInterceptor
 import com.github.panpf.sketch.cache.newCacheValueExtras
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.images.ResourceImages
@@ -29,17 +29,17 @@ import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.RequestInterceptorChain
+import com.github.panpf.sketch.request.internal.InterceptorChain
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.FakeRequestInterceptor
+import com.github.panpf.sketch.test.utils.FakeInterceptor
 import com.github.panpf.sketch.test.utils.MyCacheKeyMapper
 import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestCountTarget
-import com.github.panpf.sketch.test.utils.TestMemoryCacheRequestIntercept
+import com.github.panpf.sketch.test.utils.TestMemoryCacheInterceptor
 import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.test.utils.createCacheValue
 import com.github.panpf.sketch.test.utils.current
@@ -56,7 +56,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 
-class MemoryCacheRequestInterceptorTest {
+class MemoryCacheInterceptorTest {
 
     @Test
     fun testIntercept() = runTest {
@@ -67,13 +67,12 @@ class MemoryCacheRequestInterceptorTest {
         val (context, sketch) = getTestContextAndSketch()
         val memoryCache = sketch.memoryCache
 
-        val requestInterceptorList =
-            listOf(MemoryCacheRequestInterceptor(), FakeRequestInterceptor())
+        val interceptors = listOf(MemoryCacheInterceptor(), FakeInterceptor())
         val executeRequest: suspend (ImageRequest) -> ImageData = { request ->
             withContext(Dispatchers.Main) {
-                RequestInterceptorChain(
+                InterceptorChain(
                     requestContext = request.toRequestContext(sketch),
-                    interceptors = requestInterceptorList,
+                    interceptors = interceptors,
                     index = 0,
                 ).proceed(request)
             }.getOrThrow()
@@ -214,13 +213,13 @@ class MemoryCacheRequestInterceptorTest {
         val (context, sketch) = getTestContextAndSketch()
         val memoryCache = sketch.memoryCache
 
-        val requestInterceptorList =
-            listOf(MemoryCacheRequestInterceptor(), FakeRequestInterceptor())
+        val interceptors =
+            listOf(MemoryCacheInterceptor(), FakeInterceptor())
         val executeRequest: suspend (ImageRequest) -> ImageData? = { request ->
             withContext(Dispatchers.Main) {
-                RequestInterceptorChain(
+                InterceptorChain(
                     requestContext = request.toRequestContext(sketch),
-                    interceptors = requestInterceptorList,
+                    interceptors = interceptors,
                     index = 0,
                 ).proceed(request)
             }.getOrNull()
@@ -278,22 +277,22 @@ class MemoryCacheRequestInterceptorTest {
         assertEquals(expected = 0, actual = memoryCache.size)
 
         runTest {
-            val endRequestInterceptor = TestMemoryCacheRequestIntercept()
+            val endInterceptor = TestMemoryCacheInterceptor()
             val request = ImageRequest(context, ResourceImages.jpeg.uri)
             val requestContext = request.toRequestContext(sketch)
             repeat(10) {
-                val chain = RequestInterceptorChain(
+                val chain = InterceptorChain(
                     requestContext = requestContext,
-                    interceptors = listOf(endRequestInterceptor),
+                    interceptors = listOf(endInterceptor),
                     index = 0
                 )
-                val interceptor = MemoryCacheRequestInterceptor()
+                val interceptor = MemoryCacheInterceptor()
                 withContext(Dispatchers.Main) {
                     interceptor.intercept(chain)
                 }
             }
 
-            assertEquals(expected = 1, actual = endRequestInterceptor.executeCount)
+            assertEquals(expected = 1, actual = endInterceptor.executeCount)
         }
 
         assertEquals(expected = 100 * 100 * 4L, actual = memoryCache.size)
@@ -301,9 +300,9 @@ class MemoryCacheRequestInterceptorTest {
 
     @Test
     fun testEqualsAndHashCode() {
-        val element1 = MemoryCacheRequestInterceptor()
-        val element11 = MemoryCacheRequestInterceptor()
-        val element2 = MemoryCacheRequestInterceptor()
+        val element1 = MemoryCacheInterceptor()
+        val element11 = MemoryCacheInterceptor()
+        val element2 = MemoryCacheInterceptor()
 
         assertNotSame(illegal = element1, actual = element11)
         assertNotSame(illegal = element1, actual = element2)
@@ -323,16 +322,20 @@ class MemoryCacheRequestInterceptorTest {
     @Test
     fun testSortWeight() {
         assertEquals(
-            expected = 90,
-            actual = MemoryCacheRequestInterceptor().sortWeight
+            expected = 15,
+            actual = MemoryCacheInterceptor().sortWeight
+        )
+        assertEquals(
+            expected = 15,
+            actual = MemoryCacheInterceptor.SORT_WEIGHT
         )
     }
 
     @Test
     fun testToString() {
         assertEquals(
-            expected = "MemoryCacheRequestInterceptor",
-            actual = MemoryCacheRequestInterceptor().toString()
+            expected = "MemoryCacheInterceptor",
+            actual = MemoryCacheInterceptor().toString()
         )
     }
 }

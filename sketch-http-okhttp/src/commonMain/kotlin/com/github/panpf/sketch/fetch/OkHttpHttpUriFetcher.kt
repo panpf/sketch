@@ -14,7 +14,7 @@ import com.github.panpf.sketch.request.RequestContext
 fun ComponentRegistry.Builder.supportOkHttpHttpUri(
     httpStack: OkHttpStack = OkHttpStack.Builder().build()
 ): ComponentRegistry.Builder = apply {
-    addFetcher(OkHttpHttpUriFetcher.Factory(httpStack))
+    add(OkHttpHttpUriFetcher.Factory(httpStack))
 }
 
 /**

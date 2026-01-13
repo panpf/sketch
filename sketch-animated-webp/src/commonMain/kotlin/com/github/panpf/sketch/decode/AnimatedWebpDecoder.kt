@@ -26,7 +26,7 @@ import com.github.panpf.sketch.request.RequestContext
  * @see com.github.panpf.sketch.animated.webp.common.test.decode.AnimatedWebpDecoderTest.testSupportAnimatedWebp
  */
 fun ComponentRegistry.Builder.supportAnimatedWebp(): ComponentRegistry.Builder = apply {
-    addDecoder(AnimatedWebpDecoder.Factory())
+    add(AnimatedWebpDecoder.Factory())
 }
 
 /**

@@ -22,7 +22,7 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.source.DataFrom
 
 /**
- * Data of [RequestInterceptor]
+ * Data of [Interceptor]
  *
  * @see com.github.panpf.sketch.core.common.test.request.ImageDataTest
  */
@@ -74,6 +74,24 @@ data class ImageData(
     ).apply {
         block?.invoke(this)
     }.build()
+
+    @Deprecated(
+        "Use newImageData instead",
+        ReplaceWith("newImageData(image, imageInfo, dataFrom, resize, block)")
+    )
+    fun newResult(
+        image: Image = this.image,
+        imageInfo: ImageInfo = this.imageInfo,
+        dataFrom: DataFrom = this.dataFrom,
+        resize: Resize = this.resize,
+        block: (ImageData.Builder.() -> Unit)? = null
+    ): ImageData = newImageData(
+        image = image,
+        imageInfo = imageInfo,
+        dataFrom = dataFrom,
+        resize = resize,
+        block = block
+    )
 
     override fun toString(): String = "ImageData(" +
             "image=$image, " +

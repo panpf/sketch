@@ -13,7 +13,7 @@ import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.ability.bindPauseLoadWhenScrolling
-import com.github.panpf.sketch.request.PauseLoadWhenScrollingRequestInterceptor
+import com.github.panpf.sketch.request.PauseLoadWhenScrollingInterceptor
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -31,7 +31,7 @@ class PauseLoadWhenScrollingTest {
             bindPauseLoadWhenScrolling(scrollableState)
 
             LaunchedEffect(scrollableState.isScrollInProgress) {
-                scrollingList.add(PauseLoadWhenScrollingRequestInterceptor.scrolling)
+                scrollingList.add(PauseLoadWhenScrollingInterceptor.scrolling)
             }
 
             LaunchedEffect(Unit) {

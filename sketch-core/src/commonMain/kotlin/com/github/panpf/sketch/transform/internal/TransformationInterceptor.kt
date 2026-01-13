@@ -18,32 +18,32 @@ package com.github.panpf.sketch.transform.internal
 
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.request.ImageData
-import com.github.panpf.sketch.request.RequestInterceptor
+import com.github.panpf.sketch.request.Interceptor
 import kotlinx.coroutines.withContext
 
 /**
  * Transformation request interceptor, used to transformation the image after decoding is completed
  *
- * @see com.github.panpf.sketch.core.common.test.transform.internal.TransformationRequestInterceptorTest
+ * @see com.github.panpf.sketch.core.common.test.transform.internal.TransformationInterceptorTest
  */
-class TransformationRequestInterceptor : RequestInterceptor {
+class TransformationInterceptor : Interceptor {
 
     companion object {
-        const val SORT_WEIGHT = 97
+        const val SORT_WEIGHT = 75
     }
 
     override val key: String? = null
     override val sortWeight: Int = SORT_WEIGHT
 
     @MainThread
-    override suspend fun intercept(chain: RequestInterceptor.Chain): Result<ImageData> {
+    override suspend fun intercept(chain: Interceptor.Chain): Result<ImageData> {
         val request = chain.request
         val requestContext = chain.requestContext
         val result = chain.proceed(request)
         val transformations = request.transformations ?: return result
-        val decodeResult = result.let { it.getOrNull() ?: return it }
+        val imageData = result.let { it.getOrNull() ?: return it }
 
-        val oldImage = decodeResult.image
+        val oldImage = imageData.image
         val transformeds = mutableListOf<String>()
         val transformResult = withContext(chain.sketch.decodeTaskDispatcher) {
             runCatching {
@@ -70,16 +70,16 @@ class TransformationRequestInterceptor : RequestInterceptor {
             }
 
             transformeds.isNotEmpty() -> {
-                val newDecodeResult = decodeResult.newImageData(image = newImage) {
+                val newImageData = imageData.newImageData(image = newImage) {
                     transformeds.forEach {
                         addTransformed(it)
                     }
                 }
-                Result.success(newDecodeResult)
+                Result.success(newImageData)
             }
 
             else -> {
-                Result.success(decodeResult)
+                Result.success(imageData)
             }
         }
     }
@@ -93,5 +93,5 @@ class TransformationRequestInterceptor : RequestInterceptor {
         return this::class.hashCode()
     }
 
-    override fun toString(): String = "TransformationRequestInterceptor"
+    override fun toString(): String = "TransformationInterceptor"
 }
