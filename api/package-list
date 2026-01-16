@@ -102,6 +102,7 @@ com.github.panpf.sketch.decode.internal
 com.github.panpf.sketch.drawable
 com.github.panpf.sketch.drawable.internal
 com.github.panpf.sketch.fetch
+com.github.panpf.sketch.fetch.internal
 com.github.panpf.sketch.request
 com.github.panpf.sketch.request.internal
 com.github.panpf.sketch.resize
