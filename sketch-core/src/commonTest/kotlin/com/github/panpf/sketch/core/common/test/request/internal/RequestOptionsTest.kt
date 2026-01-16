@@ -44,6 +44,19 @@ class RequestOptionsTest {
             assertEquals(expected = null, actual = progressListener)
             assertEquals(expected = null, actual = lifecycleResolver)
         }
+
+        RequestOptions.Builder().apply {
+            addListener(listener1)
+            addProgressListener(progressListener1)
+            lifecycle(lifecycle1)
+            clearListeners()
+            clearProgressListeners()
+            lifecycle(null)
+        }.build().apply {
+            assertEquals(expected = null, actual = listener)
+            assertEquals(expected = null, actual = progressListener)
+            assertEquals(expected = null, actual = lifecycleResolver)
+        }
     }
 
     @Test
@@ -66,6 +79,13 @@ class RequestOptionsTest {
         }.build().apply {
             assertEquals(expected = listener1, actual = listener)
             assertEquals(expected = progressListener1, actual = progressListener)
+            assertEquals(expected = lifecycle1, actual = lifecycleResolver)
+        }.newBuilder().apply {
+            clearListeners()
+            clearProgressListeners()
+        }.build().apply {
+            assertEquals(expected = null, actual = listener)
+            assertEquals(expected = null, actual = progressListener)
             assertEquals(expected = lifecycle1, actual = lifecycleResolver)
         }
     }

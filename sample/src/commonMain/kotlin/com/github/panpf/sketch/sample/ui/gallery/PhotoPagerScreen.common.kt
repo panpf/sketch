@@ -67,7 +67,7 @@ import com.github.panpf.sketch.sample.ui.components.MyDialog
 import com.github.panpf.sketch.sample.ui.components.TurnPageIndicator
 import com.github.panpf.sketch.sample.ui.components.rememberMyDialogState
 import com.github.panpf.sketch.sample.ui.setting.AppSettingsList
-import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
+import com.github.panpf.sketch.sample.ui.setting.Page.VIEWER
 import com.github.panpf.sketch.sample.util.Platform
 import com.github.panpf.sketch.sample.util.current
 import com.github.panpf.sketch.sample.util.isMobile
@@ -267,7 +267,7 @@ fun PhotoPagerHeaders(
                 )
             }
             MyDialog(settingsDialogState) {
-                AppSettingsList(ZOOM)
+                AppSettingsList(VIEWER)
             }
 
             Spacer(modifier = Modifier.size(10.dp))

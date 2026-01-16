@@ -10,7 +10,7 @@ import com.github.panpf.sketch.request.httpHeaders
 class PexelsCompatibleInterceptor : Interceptor {
 
     companion object {
-        const val SORT_WEIGHT = 80
+        const val SORT_WEIGHT = 0
     }
 
     override val key: String? = null

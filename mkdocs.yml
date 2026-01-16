@@ -74,6 +74,7 @@ nav:
   - 'Transformation': transformation.md
   - 'Transition': transition.md
   - 'StateImage': state_image.md
+  - 'Thumbnail': thumbnail.md
   - 'Listener': listener.md
   - 'DownloadCache': download_cache.md
   - 'ResultCache': result_cache.md

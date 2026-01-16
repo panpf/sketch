@@ -21,6 +21,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.test.singleton.SingletonSketch.get
 import com.github.panpf.sketch.test.singleton.SingletonSketch.setSafe
 import com.github.panpf.sketch.test.singleton.SingletonSketch.setUnsafe
+import com.github.panpf.sketch.util.Logger
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.updateAndGet
 import kotlin.jvm.JvmStatic
@@ -146,5 +147,7 @@ object SingletonSketch {
 internal expect fun PlatformContext.applicationSketchFactory(): SingletonSketch.Factory?
 
 private val DefaultSketchFactory = SingletonSketch.Factory { context ->
-    Sketch(context)
+    Sketch(context) {
+        logger(Logger.Level.Verbose)
+    }
 }

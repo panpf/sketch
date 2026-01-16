@@ -26,6 +26,8 @@ Translations: [简体中文](CHANGELOG.zh.md)
   stream. [#272](https://github.com/panpf/sketch/issues/272)
 * fix: Fixed a bug where non-Android platforms used Skia to decode GIFs when the frame duration was
   0 and not modified to the default value of 100. [#273](https://github.com/panpf/sketch/issues/273)
+* new: Added the function of loading thumbnail first, please refer to the documentation for
+  details [Thumbnail.md](docs/thumbnail.md). [#241](https://github.com/panpf/sketch/issues/241)
 
 # 4.4.0-alpha01
 
@@ -129,9 +131,9 @@ Translations: [简体中文](CHANGELOG.zh.md)
 # 4.0.6
 
 compose:
- 
+
 * improve: AsyncImage now no longer crashes when the window size is 0, but is a minimum of
-  100. [#244](https://github.com/panpf/sketch/issues/244
+    100. [#244](https://github.com/panpf/sketch/issues/244
 
 # 4.0.5
 

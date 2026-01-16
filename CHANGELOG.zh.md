@@ -22,6 +22,8 @@
   bug。[#272](https://github.com/panpf/sketch/issues/272)
 * fix: 修复非 Android 平台使用 Skia 解码动图时帧持续时间为 0 时没有修改为默认值 100 的
   bug。[#273](https://github.com/panpf/sketch/issues/273)
+* new:
+  新增优先加载缩略图功能，详情请参考文档 [Thumbnail.md](docs/thumbnail.zh.md)。[#241](https://github.com/panpf/sketch/issues/241)
 
 # 4.4.0-alpha01
 

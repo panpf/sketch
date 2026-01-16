@@ -168,10 +168,10 @@ val sketch = Sketch(context)
 
 // Compose
 AsyncImage(
-     uri = "https://www.example.com/image.jpg",
-     sketch = sketch,
-     moidifier = Modifier.fillMaxSize(),
-     contentDescription = "photo",
+    uri = "https://www.example.com/image.jpg",
+    sketch = sketch,
+    moidifier = Modifier.fillMaxSize(),
+    contentDescription = "photo",
 )
 
 // View
@@ -195,9 +195,9 @@ val sketch = SingletonSketch.get()
 
 // Compose
 AsyncImage(
-     uri = "https://www.example.com/image.jpg",
-     moidifier = Modifier.fillMaxSize(),
-     contentDescription = "photo",
+    uri = "https://www.example.com/image.jpg",
+    moidifier = Modifier.fillMaxSize(),
+    contentDescription = "photo",
 )
 
 // View
@@ -238,14 +238,14 @@ Koin 模式，同样也提供了更加便捷的组件或加载函数，如下：
 // 在 App 的入口函数或 Application 的 onCreate 中初始化 koin
 startKoin {
     modules(
-         module {
-              single<Sketch> {
-                   Sketch.Builder(get()).apply {
-                        logger(level = Logger.Level.Debug)
-                        // There is a lot more...
-                   }.build()
-              }
-         })
+        module {
+            single<Sketch> {
+                Sketch.Builder(get()).apply {
+                    logger(level = Logger.Level.Debug)
+                    // There is a lot more...
+                }.build()
+            }
+        })
 }
 
 // 在任意位置获取实例
@@ -253,9 +253,9 @@ val sketch = KoinPlatform.getKoin().get<Sketch>()
 
 // Compose
 AsyncImage(
-     uri = "https://www.example.com/image.jpg",
-     moidifier = Modifier.fillMaxSize(),
-     contentDescription = "photo",
+    uri = "https://www.example.com/image.jpg",
+    moidifier = Modifier.fillMaxSize(),
+    contentDescription = "photo",
 )
 
 // View
@@ -399,9 +399,9 @@ when (image) {
     }
 }
 if (imageResult is ImageResult.Success) {
-     val memoryCacheKey: String = imageResult.memoryCacheKey
-     val resultCacheKey: String = imageResult.resultCacheKey
-     val downloadCacheKey: String = imageResult.downloadCacheKey
+    val memoryCacheKey: String = imageResult.memoryCacheKey
+    val resultCacheKey: String = imageResult.resultCacheKey
+    val downloadCacheKey: String = imageResult.downloadCacheKey
     val imageInfo: ImageInfo = imageResult.imageInfo
     val dataFrom: DataFrom = imageResult.dataFrom
     val resize: Resize = imageResult.resize
@@ -469,6 +469,7 @@ val imageResult: ImageResult? = imageView.imageResult
 * [Transformation：转换图片][transformation]
 * [Transition：用炫酷的过渡方式显示图片][transition]
 * [StateImage：占位图和错误图][state_image]
+* [Thumbnail：先加载低分辨率的缩略图][thumbnail]
 * [Listener：监听请求状态和下载进度][listener]
 * [DownloadCache：了解下载缓存，避免重复下载][download_cache]
 * [ResultCache：了解结果缓存，避免重复转换][result_cache]
@@ -586,6 +587,8 @@ val imageResult: ImageResult? = imageView.imageResult
 [sketch_image_view]: sketch_image_view.zh.md
 
 [state_image]: state_image.zh.md
+
+[thumbnail]: thumbnail.zh.md
 
 [svg]: svg.zh.md
 

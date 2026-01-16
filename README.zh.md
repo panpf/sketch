@@ -227,6 +227,7 @@ context.sketch.enqueue(request)
 * [Transformation：转换图片][transformation]
 * [Transition：用炫酷的过渡方式显示图片][transition]
 * [StateImage：占位图和错误图][state_image]
+* [Thumbnail：先加载低分辨率的缩略图][thumbnail]
 * [Listener：监听请求状态和下载进度][listener]
 * [DownloadCache：了解下载缓存，避免重复下载][download_cache]
 * [ResultCache：了解结果缓存，避免重复转换][result_cache]
@@ -385,6 +386,8 @@ Apache 2.0. 有关详细信息，请参阅 [LICENSE](LICENSE.txt) 文件.
 [sketch_image_view]: docs/sketch_image_view.zh.md
 
 [state_image]: docs/state_image.zh.md
+
+[thumbnail]: docs/thumbnail.zh.md
 
 [svg]: docs/svg.zh.md
 

@@ -23,6 +23,7 @@ import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ImageResult.Success
 import com.github.panpf.sketch.request.internal.DecoderInterceptor
 import com.github.panpf.sketch.request.internal.PlaceholderInterceptor
+import com.github.panpf.sketch.request.internal.ThumbnailInterceptor
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.DelayInterceptor
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
@@ -290,6 +291,7 @@ class SketchTest {
                     MemoryCacheInterceptor(),
                     PlaceholderInterceptor(),
                     ResultCacheInterceptor(),
+                    ThumbnailInterceptor(),
                     TransformationInterceptor(),
                     FetcherInterceptor(),
                     DecoderInterceptor(),
@@ -309,6 +311,7 @@ class SketchTest {
                     MemoryCacheInterceptor(),
                     PlaceholderInterceptor(),
                     ResultCacheInterceptor(),
+                    ThumbnailInterceptor(),
                     TransformationInterceptor(),
                     FetcherInterceptor(),
                     DecoderInterceptor()
@@ -320,6 +323,7 @@ class SketchTest {
                     MemoryCacheInterceptor(),
                     PlaceholderInterceptor(),
                     ResultCacheInterceptor(),
+                    ThumbnailInterceptor(),
                     TransformationInterceptor(),
                     FetcherInterceptor(),
                     DecoderInterceptor()
@@ -457,6 +461,7 @@ class SketchTest {
                 add(MemoryCacheInterceptor())
                 add(PlaceholderInterceptor())
                 add(ResultCacheInterceptor())
+                add(ThumbnailInterceptor())
                 add(TransformationInterceptor())
                 add(FetcherInterceptor())
                 add(DecoderInterceptor())

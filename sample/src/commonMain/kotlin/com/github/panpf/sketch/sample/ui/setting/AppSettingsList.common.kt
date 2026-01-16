@@ -47,7 +47,7 @@ import com.github.panpf.sketch.sample.resources.Res.drawable
 import com.github.panpf.sketch.sample.resources.ic_arrow_right
 import com.github.panpf.sketch.sample.resources.ic_expand_more
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
-import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
+import com.github.panpf.sketch.sample.ui.setting.Page.VIEWER
 import com.github.panpf.sketch.sample.util.formatFileSize
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.zoomimage.zoom.AlignmentCompat
@@ -98,7 +98,9 @@ fun createSettingItems(
     if (page == LIST) {
         add(GroupSettingItem("List"))
         addAll(listMenuList(appSettings))
-    } else if (page == ZOOM) {
+    } else if (page == VIEWER) {
+        add(GroupSettingItem("Viewer"))
+        addAll(viewerMenuList(appSettings))
         add(GroupSettingItem("Zoom"))
         addAll(zoomMenuList(appSettings))
     }
@@ -241,7 +243,7 @@ private fun listMenuList(appSettings: AppSettings): List<SettingItem> = buildLis
     )
 }
 
-fun zoomMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
+fun viewerMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     val contentScales = listOf(
         ContentScaleCompat.Fit,
         ContentScaleCompat.Crop,
@@ -279,6 +281,17 @@ fun zoomMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
             state = appSettings.alignmentName,
         )
     )
+
+    add(
+        SwitchSettingItem(
+            title = "Thumbnail Mode",
+            desc = "Load low-resolution thumbnails first",
+            state = appSettings.thumbnailMode,
+        )
+    )
+}
+
+fun zoomMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     add(
         SwitchSettingItem(
             title = "Scroll Bar",

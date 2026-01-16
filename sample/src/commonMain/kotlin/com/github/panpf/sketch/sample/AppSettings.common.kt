@@ -99,6 +99,8 @@ expect class AppSettings(context: PlatformContext) {
 
     val showOriginImage: SettingsStateFlow<Boolean>
 
+    val thumbnailMode: SettingsStateFlow<Boolean>
+
 
     // -------------------------------------- other --------------------------------------
 
@@ -278,6 +280,10 @@ abstract class BaseAppSettings constructor(val context: PlatformContext) {
 
     val showOriginImage: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "showOriginImage", true)
+    }
+
+    val thumbnailMode: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow(context, "thumbnailMode", false)
     }
 
 

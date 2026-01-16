@@ -505,6 +505,13 @@ data class ImageRequest(
         }
 
         /**
+         * Clear all [Listener]s from set
+         */
+        fun clearListeners(): Builder = apply {
+            definedRequestOptionsBuilder.clearListeners()
+        }
+
+        /**
          * Add the [ProgressListener] to set
          */
         fun addProgressListener(
@@ -520,6 +527,13 @@ data class ImageRequest(
             progressListener: ProgressListener
         ): Builder = apply {
             definedRequestOptionsBuilder.removeProgressListener(progressListener)
+        }
+
+        /**
+         * Clear all [ProgressListener]s from set
+         */
+        fun clearProgressListeners(): Builder = apply {
+            definedRequestOptionsBuilder.clearProgressListeners()
         }
 
         /**
@@ -941,6 +955,25 @@ data class ImageRequest(
          */
         fun addComponents(block: (ComponentRegistry.Builder.() -> Unit)): Builder = apply {
             definedOptionsBuilder.addComponents(block)
+        }
+
+
+        /**
+         * Set thumbnail image uri. Thumbnails will be requested and displayed first when there is no memory or result cache for the original image.
+         *
+         * @see com.github.panpf.sketch.request.internal.ThumbnailInterceptor
+         */
+        fun thumbnail(thumbnailUri: String?): Builder = apply {
+            definedOptionsBuilder.thumbnail(thumbnailUri)
+        }
+
+        /**
+         * Set thumbnail image request. Thumbnails will be requested and displayed first when there is no memory or result cache for the original image.
+         *
+         * @see com.github.panpf.sketch.request.internal.ThumbnailInterceptor
+         */
+        fun thumbnail(thumbnailRequest: ImageRequest?): Builder = apply {
+            definedOptionsBuilder.thumbnail(thumbnailRequest)
         }
 
 

@@ -41,6 +41,7 @@ import com.github.panpf.sketch.request.internal.Listeners
 import com.github.panpf.sketch.request.internal.PairListener
 import com.github.panpf.sketch.request.internal.PairProgressListener
 import com.github.panpf.sketch.request.internal.ProgressListeners
+import com.github.panpf.sketch.request.internal.ThumbnailInterceptor.Companion.KEY_THUMBNAIL
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.FixedSizeResolver
@@ -78,6 +79,7 @@ import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.target
+import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
@@ -1411,6 +1413,15 @@ class ImageRequestTest {
             assertEquals(listener3, listener)
             assertNull(target)
         }
+        ImageRequest(context1, uri) {
+            addListener(listener1)
+            addListener(listener2)
+            addListener(listener3)
+            clearListeners()
+        }.apply {
+            assertNull(listener)
+            assertNull(target)
+        }
 
         val listenerTarget = TestListenerTarget()
 
@@ -1534,6 +1545,15 @@ class ImageRequestTest {
             removeProgressListener(listener1)
         }.apply {
             assertEquals(listener3, progressListener)
+            assertNull(target)
+        }
+        ImageRequest(context1, uri) {
+            addProgressListener(listener1)
+            addProgressListener(listener2)
+            addProgressListener(listener3)
+            clearProgressListeners()
+        }.apply {
+            assertNull(progressListener)
             assertNull(target)
         }
 
@@ -1668,6 +1688,78 @@ class ImageRequestTest {
                 componentRegistry
             )
         }
+    }
+
+    @Test
+    fun testThumbnail() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val request = ImageRequest(context, ResourceImages.jpeg.uri).apply {
+            assertNull(extras?.get(KEY_THUMBNAIL))
+        }
+        val requestContext = request.toRequestContext(sketch)
+
+        val request1 = ImageRequest(context, ResourceImages.jpeg.uri) {
+            thumbnail("thumbnail1")
+        }.apply {
+            assertEquals(
+                expected = "thumbnail1",
+                actual = extras?.get(KEY_THUMBNAIL)
+            )
+        }
+        val requestContext1 = request1.toRequestContext(sketch)
+
+        request1.newRequest {
+
+        }.apply {
+            assertEquals(
+                expected = "thumbnail1",
+                actual = extras?.get(KEY_THUMBNAIL)
+            )
+        }.newRequest {
+            thumbnail(null as String?)
+        }.apply {
+            assertNull(extras?.get(KEY_THUMBNAIL))
+        }
+
+        val request2 = ImageRequest(context, ResourceImages.jpeg.uri) {
+            thumbnail(ImageRequest(context, "thumbnail2"))
+        }.apply {
+            assertEquals(
+                expected = ImageRequest(context, "thumbnail2"),
+                actual = extras?.get(KEY_THUMBNAIL)
+            )
+        }
+        val requestContext2 = request2.toRequestContext(sketch)
+
+        request2.newRequest {
+
+        }.apply {
+            assertEquals(
+                expected = ImageRequest(context, "thumbnail2"),
+                actual = extras?.get(KEY_THUMBNAIL)
+            )
+        }.newRequest {
+            thumbnail(null as ImageRequest?)
+        }.apply {
+            assertNull(extras?.get(KEY_THUMBNAIL))
+        }
+
+        assertEquals(requestContext.memoryCacheKey, requestContext1.memoryCacheKey)
+        assertEquals(requestContext.memoryCacheKey, requestContext2.memoryCacheKey)
+        assertEquals(requestContext1.memoryCacheKey, requestContext2.memoryCacheKey)
+
+        assertEquals(requestContext.resultCacheKey, requestContext1.resultCacheKey)
+        assertEquals(requestContext.resultCacheKey, requestContext2.resultCacheKey)
+        assertEquals(requestContext1.resultCacheKey, requestContext2.resultCacheKey)
+
+        assertEquals(requestContext.downloadCacheKey, requestContext1.downloadCacheKey)
+        assertEquals(requestContext.downloadCacheKey, requestContext2.downloadCacheKey)
+        assertEquals(requestContext1.downloadCacheKey, requestContext2.downloadCacheKey)
+
+        assertEquals(request.key, request1.key)
+        assertEquals(request.key, request2.key)
+        assertEquals(request1.key, request2.key)
     }
 
     @Test

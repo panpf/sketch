@@ -37,6 +37,7 @@ import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.internal.DecoderInterceptor
 import com.github.panpf.sketch.request.internal.PlaceholderInterceptor
 import com.github.panpf.sketch.request.internal.RequestExecutor
+import com.github.panpf.sketch.request.internal.ThumbnailInterceptor
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.transform.internal.TransformationInterceptor
@@ -530,11 +531,11 @@ internal fun commonComponents(): ComponentRegistry = ComponentRegistry {
     add(Base64UriFetcher.Factory())
     add(FileUriFetcher.Factory())
 
-    add(MemoryCacheInterceptor())   // 15
-    add(PlaceholderInterceptor())   // 30
-    add(ResultCacheInterceptor())   // 45
-//    add(ThumbnailInterceptor())   // 60
-    add(TransformationInterceptor())    // 75
-    add(FetcherInterceptor())   // 90
-    add(DecoderInterceptor())   // 100
+    add(MemoryCacheInterceptor())
+    add(PlaceholderInterceptor())
+    add(ResultCacheInterceptor())
+    add(ThumbnailInterceptor())
+    add(TransformationInterceptor())
+    add(FetcherInterceptor())
+    add(DecoderInterceptor())
 }

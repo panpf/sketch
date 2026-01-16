@@ -63,7 +63,7 @@ fun PhotoViewer(
         MyZoomAsyncImage(
             uri = imageUri,
             contentDescription = "view image",
-            placeholderUri = photo.thumbnailUrl,
+            thumbnailUri = photo.thumbnailUrl,
             modifier = Modifier.fillMaxSize(),
             imageState = imageState,
             zoomState = zoomState,

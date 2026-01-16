@@ -177,10 +177,10 @@ val sketch = Sketch(context)
 
 // Compose
 AsyncImage(
-     uri = "https://www.example.com/image.jpg",
-     sketch = sketch,
-     moidifier = Modifier.fillMaxSize(),
-     contentDescription = "photo",
+    uri = "https://www.example.com/image.jpg",
+    sketch = sketch,
+    moidifier = Modifier.fillMaxSize(),
+    contentDescription = "photo",
 )
 
 // View
@@ -206,9 +206,9 @@ val sketch = SingletonSketch.get()
 
 // Compose
 AsyncImage(
-     uri = "https://www.example.com/image.jpg",
-     moidifier = Modifier.fillMaxSize(),
-     contentDescription = "photo",
+    uri = "https://www.example.com/image.jpg",
+    moidifier = Modifier.fillMaxSize(),
+    contentDescription = "photo",
 )
 
 // View
@@ -249,15 +249,15 @@ loading functions, as follows:
 ```kotlin
 // Initialize koin in the app's entry function or onCreate in the Application
 startKoin {
-     modules(
-          module {
-               single<Sketch> {
-                    Sketch.Builder(get()).apply {
-                         logger(level = Logger.Level.Debug)
-                         // There is a lot more...
-                    }.build()
-               }
-          })
+    modules(
+        module {
+            single<Sketch> {
+                Sketch.Builder(get()).apply {
+                    logger(level = Logger.Level.Debug)
+                    // There is a lot more...
+                }.build()
+            }
+        })
 }
 
 // Get instances anywhere
@@ -265,9 +265,9 @@ val sketch = KoinPlatform.getKoin().get<Sketch>()
 
 // Compose
 AsyncImage(
-     uri = "https://www.example.com/image.jpg",
-     moidifier = Modifier.fillMaxSize(),
-     contentDescription = "photo",
+    uri = "https://www.example.com/image.jpg",
+    moidifier = Modifier.fillMaxSize(),
+    contentDescription = "photo",
 )
 
 // View
@@ -491,6 +491,7 @@ Basic functions:
 * [Transformation: Transformation image][transformation]
 * [Transition: Display images in cool transitions][transition]
 * [StateImage: Placeholder and error images][state_image]
+* [Thumbnail: Load low-resolution thumbnails first][thumbnail]
 * [Listener: Listen for request status and download progress][listener]
 * [DownloadCache: Understand download caching to avoid repeated downloads][download_cache]
 * [ResultCache: Understand result caching to avoid duplicate conversions][result_cache]
@@ -608,6 +609,8 @@ Featured functions:
 [sketch_image_view]: sketch_image_view.md
 
 [state_image]: state_image.md
+
+[thumbnail]: thumbnail.md
 
 [svg]: svg.md
 

@@ -30,7 +30,7 @@ fun MyZoomAsyncImage(
     uri: String,
     contentDescription: String,
     modifier: Modifier = Modifier,
-    placeholderUri: String? = null,
+    thumbnailUri: String? = null,
     imageState: AsyncImageState = rememberAsyncImageState(),
     zoomState: SketchZoomState = rememberSketchZoomState(),
     highlightColor: Color? = null,
@@ -67,7 +67,15 @@ fun MyZoomAsyncImage(
         val repeatCount by appSettings.repeatCount.collectAsState()
         repeatCount(repeatCount)
 
-        placeholder(ThumbnailMemoryCacheStateImage(placeholderUri))
+        val thumbnailMode by appSettings.thumbnailMode.collectAsState()
+        if (thumbnailUri != null) {
+            if (thumbnailMode) {
+                thumbnail(thumbnailUri)
+            } else {
+                placeholder(ThumbnailMemoryCacheStateImage(thumbnailUri))
+            }
+        }
+
         crossfade(fadeStart = false)
 
         val platformAsyncImageSettings = composablePlatformAsyncImageSettings(appSettings)

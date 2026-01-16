@@ -84,6 +84,13 @@ data class RequestOptions(
         }
 
         /**
+         * Clear all [Listener]s from set
+         */
+        fun clearListeners(): Builder = apply {
+            listeners = null
+        }
+
+        /**
          * Add the [ProgressListener] to set
          */
         fun addProgressListener(
@@ -103,6 +110,13 @@ data class RequestOptions(
             progressListener: ProgressListener
         ): Builder = apply {
             progressListeners?.remove(progressListener)
+        }
+
+        /**
+         * Clear all [ProgressListener]s from set
+         */
+        fun clearProgressListeners(): Builder = apply {
+            progressListeners = null
         }
 
         /**

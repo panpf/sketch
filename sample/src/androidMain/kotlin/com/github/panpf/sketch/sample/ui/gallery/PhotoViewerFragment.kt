@@ -118,15 +118,32 @@ class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
                 true
             }
 
+            val thumbnailImageUrl = args.thumbnailImageUrl
+            if (thumbnailImageUrl != null) {
+                appSettings.thumbnailMode
+                    .repeatCollectWithLifecycle(
+                        viewLifecycleOwner,
+                        State.CREATED
+                    ) { thumbnailMode ->
+                        updateImageOptions {
+                            if (thumbnailMode) {
+                                thumbnail(thumbnailImageUrl)
+                                placeholder(null)
+                            } else {
+                                thumbnail(null as String?)
+                                placeholder(ThumbnailMemoryCacheStateImage(uri = thumbnailImageUrl))
+                            }
+                        }
+                    }
+            }
+            updateImageOptions {
+                crossfade(fadeStart = false)
+            }
+
             appSettings.showOriginImage
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     loadImage(binding)
                 }
-
-            updateImageOptions {
-                placeholder(ThumbnailMemoryCacheStateImage(uri = args.thumbnailImageUrl))
-                crossfade(fadeStart = false)
-            }
         }
 
         binding.shareIcon.setOnClickListener {

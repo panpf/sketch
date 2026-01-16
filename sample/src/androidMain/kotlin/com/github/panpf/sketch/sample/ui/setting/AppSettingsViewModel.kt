@@ -30,7 +30,7 @@ import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.model.MultiSelectMenu
 import com.github.panpf.sketch.sample.model.SwitchMenuFlow
 import com.github.panpf.sketch.sample.ui.setting.Page.LIST
-import com.github.panpf.sketch.sample.ui.setting.Page.ZOOM
+import com.github.panpf.sketch.sample.ui.setting.Page.VIEWER
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.tools4a.toast.Toastx
@@ -71,6 +71,7 @@ class AppSettingsViewModel(
             appSettings.downloadCacheName.ignoreFirst(),
             appSettings.showDataFromLogoInList.ignoreFirst(),
             appSettings.showTileBounds.ignoreFirst(),
+            appSettings.thumbnailMode.ignoreFirst(),
             appSettings.logLevel.ignoreFirst(),
             appSettings.zoomImageLogLevel.ignoreFirst(),
         )
@@ -88,7 +89,9 @@ class AppSettingsViewModel(
             if (page == LIST) {
                 add(ListSeparator("List"))
                 addAll(makeListMenuList())
-            } else if (page == ZOOM) {
+            } else if (page == VIEWER) {
+                add(ListSeparator("Viewer"))
+                addAll(viewerZoomMenuList())
                 add(ListSeparator("Zoom"))
                 addAll(makeZoomMenuList())
             }
@@ -237,7 +240,7 @@ class AppSettingsViewModel(
         }
     }
 
-    private fun makeZoomMenuList(): List<Any> = buildList {
+    private fun viewerZoomMenuList(): List<Any> = buildList {
         val contentScales = listOf(
             ContentScaleCompat.Fit,
             ContentScaleCompat.Crop,
@@ -281,6 +284,16 @@ class AppSettingsViewModel(
                 }
             )
         )
+        add(
+            SwitchMenuFlow(
+                title = "Thumbnail Mode",
+                desc = "Load low-resolution thumbnails first",
+                data = appSettings.thumbnailMode,
+            )
+        )
+    }
+
+    private fun makeZoomMenuList(): List<Any> = buildList {
         add(
             SwitchMenuFlow(
                 title = "Scroll Bar",

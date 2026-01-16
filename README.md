@@ -245,6 +245,7 @@ Basic functions:
 * [Transformation: Transformation image][transformation]
 * [Transition: Display images in cool transitions][transition]
 * [StateImage: Placeholder and error images][state_image]
+* [Thumbnail: Load low-resolution thumbnails first][thumbnail]
 * [Listener: Listen for request status and download progress][listener]
 * [DownloadCache: Understand download caching to avoid repeated downloads][download_cache]
 * [ResultCache: Understand result caching to avoid duplicate conversions][result_cache]
@@ -411,6 +412,8 @@ Apache 2.0. See the [LICENSE](LICENSE.txt) file for details.
 [sketch_image_view]: docs/sketch_image_view.md
 
 [state_image]: docs/state_image.md
+
+[thumbnail]: docs/thumbnail.md
 
 [svg]: docs/svg.md
 

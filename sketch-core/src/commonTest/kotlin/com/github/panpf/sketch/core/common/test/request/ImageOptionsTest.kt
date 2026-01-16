@@ -30,8 +30,10 @@ import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.Extras
 import com.github.panpf.sketch.request.ImageOptions
+import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.DecoderInterceptor
+import com.github.panpf.sketch.request.internal.ThumbnailInterceptor.Companion.KEY_THUMBNAIL
 import com.github.panpf.sketch.request.isNotEmpty
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
@@ -57,6 +59,7 @@ import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestFetcher2
 import com.github.panpf.sketch.test.utils.TestInterceptor
 import com.github.panpf.sketch.test.utils.TestTransition
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.sketch.transform.CircleCropTransformation
 import com.github.panpf.sketch.transform.RotateTransformation
@@ -1538,6 +1541,55 @@ class ImageOptionsTest {
                 }.build(),
                 componentRegistry
             )
+        }
+    }
+
+    @Test
+    fun testThumbnail() {
+        val context = getTestContext()
+
+        ImageOptions().apply {
+            assertNull(extras?.get(KEY_THUMBNAIL))
+        }
+
+        ImageOptions {
+            thumbnail("thumbnail1")
+        }.apply {
+            assertEquals(
+                expected = "thumbnail1",
+                actual = extras?.get(KEY_THUMBNAIL)
+            )
+        }.newOptions {
+
+        }.apply {
+            assertEquals(
+                expected = "thumbnail1",
+                actual = extras?.get(KEY_THUMBNAIL)
+            )
+        }.newOptions {
+            thumbnail(null as String?)
+        }.apply {
+            assertNull(extras?.get(KEY_THUMBNAIL))
+        }
+
+        ImageOptions {
+            thumbnail(ImageRequest(context, "thumbnail2"))
+        }.apply {
+            assertEquals(
+                expected = ImageRequest(context, "thumbnail2"),
+                actual = extras?.get(KEY_THUMBNAIL)
+            )
+        }.newOptions {
+
+        }.apply {
+            assertEquals(
+                expected = ImageRequest(context, "thumbnail2"),
+                actual = extras?.get(KEY_THUMBNAIL)
+            )
+        }.newOptions {
+            thumbnail(null as ImageRequest?)
+        }.apply {
+            assertNull(extras?.get(KEY_THUMBNAIL))
         }
     }
 

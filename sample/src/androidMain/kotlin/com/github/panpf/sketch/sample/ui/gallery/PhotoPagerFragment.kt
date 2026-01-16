@@ -143,7 +143,7 @@ class PhotoPagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
 
         binding.settingsImage.setOnClickListener {
             findNavController().navigate(
-                NavMainDirections.actionSettingsDialogFragment(Page.ZOOM.name)
+                NavMainDirections.actionSettingsDialogFragment(Page.VIEWER.name)
             )
         }
 

@@ -24,6 +24,7 @@ import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.merged
+import com.github.panpf.sketch.request.internal.ThumbnailInterceptor
 import com.github.panpf.sketch.resize.FixedSizeResolver
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.PrecisionDecider
@@ -809,6 +810,42 @@ data class ImageOptions(
         fun addComponents(block: (ComponentRegistry.Builder.() -> Unit)): Builder =
             addComponents(ComponentRegistry.Builder().apply(block).build())
 
+
+        /**
+         * Set thumbnail image uri. Thumbnails will be requested and displayed first when there is no memory or result cache for the original image.
+         *
+         * @see com.github.panpf.sketch.request.internal.ThumbnailInterceptor
+         */
+        fun thumbnail(thumbnailUri: String?): Builder = apply {
+            if (thumbnailUri != null) {
+                setExtra(
+                    key = ThumbnailInterceptor.KEY_THUMBNAIL,
+                    value = thumbnailUri,
+                    cacheKey = null,
+                    requestKey = null
+                )
+            } else {
+                removeExtra(key = ThumbnailInterceptor.KEY_THUMBNAIL)
+            }
+        }
+
+        /**
+         * Set thumbnail image request. Thumbnails will be requested and displayed first when there is no memory or result cache for the original image.
+         *
+         * @see com.github.panpf.sketch.request.internal.ThumbnailInterceptor
+         */
+        fun thumbnail(thumbnailRequest: ImageRequest?): Builder = apply {
+            if (thumbnailRequest != null) {
+                setExtra(
+                    key = ThumbnailInterceptor.KEY_THUMBNAIL,
+                    value = thumbnailRequest,
+                    cacheKey = null,
+                    requestKey = null
+                )
+            } else {
+                removeExtra(key = ThumbnailInterceptor.KEY_THUMBNAIL)
+            }
+        }
 
         /**
          * Merge the specified [ImageOptions] into the current [Builder]. Currently [Builder] takes precedence
