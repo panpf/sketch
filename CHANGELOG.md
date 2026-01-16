@@ -9,7 +9,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
-# new
+# 4.4.0-alpha02
 
 * broken: By merging RequestInterceptor and DecodeInterceptor, binary compatibility is broken and
   libraries that depend on this need to modify their code and

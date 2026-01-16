@@ -7,7 +7,7 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
-# new
+# 4.4.0-alpha02
 
 * broken: 合并 RequestInterceptor 和
   DecodeInterceptor，二进制兼容性被破坏，依赖于此的库需要修改代码并重新编译。[#274](https://github.com/panpf/sketch/issues/274)
