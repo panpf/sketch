@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.test.utils
 
+import androidx.annotation.MainThread
 import com.github.panpf.sketch.cache.internal.ResultCacheInterceptor
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.Interceptor
@@ -17,6 +18,7 @@ data class DelayInterceptor(
     override val key: String? = null
     override val sortWeight: Int = SORT_WEIGHT
 
+    @MainThread
     override suspend fun intercept(chain: Interceptor.Chain): Result<ImageData> {
         onIntercept?.invoke()
         delay(delay)

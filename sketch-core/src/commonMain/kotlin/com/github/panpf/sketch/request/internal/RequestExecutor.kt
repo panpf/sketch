@@ -25,6 +25,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.UriInvalidException
+import com.github.panpf.sketch.request.buildSuccessResult
 import com.github.panpf.sketch.resize.resizeOnDraw
 import com.github.panpf.sketch.target.Target
 import com.github.panpf.sketch.util.SketchException
@@ -130,18 +131,11 @@ class RequestExecutor constructor(val sketch: Sketch) {
     ): ImageResult.Success {
         val lastRequest = requestContext.request
         val successImage = imageData.image.resizeOnDraw(lastRequest, requestContext.size)
-        val result = ImageResult.Success(
+        val result = buildSuccessResult(
+            requestContext = requestContext,
             request = lastRequest,
+            imageData = imageData,
             image = successImage,
-            cacheKey = requestContext.cacheKey,
-            memoryCacheKey = requestContext.memoryCacheKey,
-            resultCacheKey = requestContext.resultCacheKey,
-            downloadCacheKey = requestContext.downloadCacheKey,
-            imageInfo = imageData.imageInfo,
-            dataFrom = imageData.dataFrom,
-            resize = imageData.resize,
-            transformeds = imageData.transformeds,
-            extras = imageData.extras,
         )
         val target = lastRequest.target
         val sketch = requestContext.sketch
@@ -158,7 +152,7 @@ class RequestExecutor constructor(val sketch: Sketch) {
                     "resize=${result.resize}, " +
                     "transformeds=${result.transformeds}, " +
                     "extras=${result.extras}"
-            "Request Successful. Result($resultString). '${requestContext.logKey}'"
+            "Request successful. Result($resultString). '${requestContext.logKey}'"
         }
         return result
     }

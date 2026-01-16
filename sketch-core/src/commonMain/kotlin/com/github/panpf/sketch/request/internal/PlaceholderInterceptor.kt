@@ -37,12 +37,12 @@ class PlaceholderInterceptor : Interceptor {
 
     @MainThread
     override suspend fun intercept(chain: Interceptor.Chain): Result<ImageData> {
-        val sketch = chain.sketch
         val request = chain.request
-        val requestContext = chain.requestContext
-        val target = request.target
         val placeholder = request.placeholder
-        if (target != null && placeholder != null) {
+        val target = request.target
+        if (placeholder != null && target != null) {
+            val sketch = chain.sketch
+            val requestContext = chain.requestContext
             val placeholderImage = runCatching {
                 placeholder.getImage(sketch, request, null)
                     ?.resizeOnDraw(request, requestContext.size)

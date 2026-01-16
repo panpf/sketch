@@ -120,3 +120,22 @@ interface ImageResult {
         val throwable: Throwable,
     ) : ImageResult
 }
+
+internal fun buildSuccessResult(
+    requestContext: RequestContext,
+    request: ImageRequest,
+    imageData: ImageData,
+    image: Image = imageData.image,
+): ImageResult.Success = ImageResult.Success(
+    request = request,
+    image = image,
+    cacheKey = requestContext.cacheKey,
+    memoryCacheKey = requestContext.memoryCacheKey,
+    resultCacheKey = requestContext.resultCacheKey,
+    downloadCacheKey = requestContext.downloadCacheKey,
+    imageInfo = imageData.imageInfo,
+    dataFrom = imageData.dataFrom,
+    resize = imageData.resize,
+    transformeds = imageData.transformeds,
+    extras = imageData.extras,
+)

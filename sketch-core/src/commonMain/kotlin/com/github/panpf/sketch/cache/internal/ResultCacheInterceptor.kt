@@ -121,8 +121,7 @@ class ResultCacheInterceptor : Interceptor {
         snapshot.closeQuietly()
 
         result.onFailure {
-            it.printStackTrace()
-            requestContext.sketch.logger.w {
+            requestContext.sketch.logger.w(tr = it) {
                 "ResultCacheInterceptor. read result cache error. $it. '${requestContext.logKey}'"
             }
             resultCache.remove(resultCacheKey)

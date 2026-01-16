@@ -84,7 +84,7 @@ data class ImageData(
         imageInfo: ImageInfo = this.imageInfo,
         dataFrom: DataFrom = this.dataFrom,
         resize: Resize = this.resize,
-        block: (ImageData.Builder.() -> Unit)? = null
+        block: (Builder.() -> Unit)? = null
     ): ImageData = newImageData(
         image = image,
         imageInfo = imageInfo,
