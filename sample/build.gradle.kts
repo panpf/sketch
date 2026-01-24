@@ -137,6 +137,7 @@ kotlin {
             // This may be a bug of kmp.
             resources.srcDirs("../internal/images/files")
             dependencies {
+                implementation(projects.sketchVideo)
                 implementation(libs.moko.permissions)
                 implementation(libs.moko.permissions.storage)
             }
