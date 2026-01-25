@@ -26,12 +26,19 @@ buildscript {
     }
 }
 
-//plugins {
-//    alias(libs.plugins.dokka)
-//}
+plugins {
+    alias(libs.plugins.dokka)
+}
 
 tasks.register("cleanRootBuild", Delete::class) {
     delete(rootProject.project.layout.buildDirectory.get().asFile.absolutePath)
+}
+
+// Aggregate dokka documentation for all submodules
+dependencies {
+    for (module in publicModules) {
+        dokka(project(":$module"))
+    }
 }
 
 allprojects {
@@ -130,8 +137,8 @@ allprojects {
         }
     }
 
-//    // Configure Dokka plugin for all publishable library modules
-//    if (hasProperty("POM_ARTIFACT_ID")) {   // configured in the module/gradle.properties file
-//        apply { plugin("org.jetbrains.dokka") }
-//    }
+    // Configure Dokka plugin for all publishable library modules
+    if (hasProperty("POM_ARTIFACT_ID")) {   // configured in the module/gradle.properties file
+        apply { plugin("org.jetbrains.dokka") }
+    }
 }

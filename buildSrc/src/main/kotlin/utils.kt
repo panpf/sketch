@@ -16,6 +16,43 @@
  */
 import org.gradle.api.Project
 
+val publicModules = setOf(
+    "sketch-animated-core",
+    "sketch-animated-gif",
+    "sketch-animated-gif-koral",
+    "sketch-animated-heif",
+    "sketch-animated-webp",
+    "sketch-blurhash",
+    "sketch-compose",
+    "sketch-compose-core",
+    "sketch-compose-koin",
+    "sketch-compose-resources",
+    "sketch-core",
+    "sketch-extensions-appicon",
+    "sketch-extensions-apkicon",
+    "sketch-extensions-core",
+    "sketch-extensions-compose",
+    "sketch-extensions-compose-resources",
+    "sketch-extensions-view",
+    "sketch-extensions-viewability",
+    "sketch-http",
+    "sketch-http-core",
+    "sketch-http-hurl",
+    "sketch-http-ktor2",
+    "sketch-http-ktor2-core",
+    "sketch-http-ktor3",
+    "sketch-http-ktor3-core",
+    "sketch-http-okhttp",
+    "sketch-koin",
+    "sketch-singleton",
+    "sketch-svg",
+    "sketch-video",
+    "sketch-video-core",
+    "sketch-video-ffmpeg",
+    "sketch-view",
+    "sketch-view-core",
+    "sketch-view-koin",
+)
 
 val Project.minSdk: Int
     get() = intProperty("minSdk")

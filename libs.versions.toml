@@ -22,7 +22,7 @@ appdirs = "1.5.0"
 
 buildkonfig = "0.17.1"
 
-#dokka = "2.1.0"    # 2.0.0 There is a problem with the version configuration, so I won't upgrade it yet
+dokka = "2.1.0"
 
 ffmpegMediaMetadataRetriever = "1.0.21"
 
@@ -78,7 +78,6 @@ gradlePlugin-kotlinSerialization = { module = "org.jetbrains.kotlin:kotlin-seria
 gradlePlugin-kotlinxAtomicfu = { module = "org.jetbrains.kotlinx:atomicfu-gradle-plugin", version.ref = "kotlinx-atomicfu" }
 gradlePlugin-kotlinxCover = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kotlinx-cover" }
 gradlePlugin-mavenPublish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "gradle-maven-publish-plugin" }
-#gradlePlugin-dokka = { module = "org.jetbrains.dokka:org.jetbrains.dokka.gradle.plugin", version.ref = "dokka" }
 
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
@@ -212,5 +211,5 @@ voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", vers
 #voyager-kodein = { module = "cafe.adriel.voyager:voyager-kodein", version.ref = "voyager" }
 #voyager-rxjava = { module = "cafe.adriel.voyager:voyager-rxjava", version.ref = "voyager" }
 
-#[plugins]
-#dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+[plugins]
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }

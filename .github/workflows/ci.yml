@@ -230,7 +230,7 @@ jobs:
           java-version: 17
 
       - name: Build the api docs
-        run: ./gradlew dokkaHtmlMultiModule
+        run: ./gradlew dokkaGenerate
 
       - name: Check out the gh-pages branch
         run: |
@@ -246,7 +246,7 @@ jobs:
 
       - name: Move build artifacts to api directory
         run: |
-          mv build/dokka/htmlMultiModule/* api/
+          mv build/dokka/html/* api/
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v4
