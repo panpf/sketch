@@ -207,7 +207,7 @@ fun supportDecodeRegion(mimeType: String): Boolean? {
         "image/jpeg", "image/png", "image/webp", "image/bmp", "image/gif" -> true
         "image/svg+xml" -> false
         "image/heic", "image/heif", "image/avif" ->
-            if (compareVersions(BuildKonfig.SKIKO_VERSION_NAME, "0.9.4") <= 0) false else null
+            if (compareVersions(BuildKonfig.SKIKO_VERSION_NAME, "0.9.37.3") <= 0) false else null
 
         else -> null
     }

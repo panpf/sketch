@@ -31,7 +31,7 @@ kotlin {
     }
 
     js {
-        moduleName = "composeApp"
+        outputModuleName = "composeApp"
         browser {
             commonWebpackConfig {
                 outputFileName = "composeApp.js"
@@ -42,7 +42,7 @@ kotlin {
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        moduleName = "composeApp"
+        outputModuleName = "composeApp"
         browser {
             commonWebpackConfig {
                 outputFileName = "composeApp.js"
@@ -63,10 +63,11 @@ kotlin {
             implementation(projects.sketchExtensionsComposeResources)
             implementation(projects.sketchHttpKtor3)
             implementation(projects.sketchSvg)
-            implementation(compose.components.resources)
-            implementation(compose.material)    // pull refresh
-            implementation(compose.material3)
+            implementation(libs.jetbrains.compose.components.resources)
+            implementation(libs.jetbrains.compose.material)    // pull refresh
+            implementation(libs.jetbrains.compose.material3)
             implementation(libs.jetbrains.compose.material.icons.core)
+            implementation(libs.jetbrains.compose.ui.tooling.preview)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
@@ -87,7 +88,6 @@ kotlin {
             implementation(projects.sketchVideo)
             implementation(projects.sketchVideoFfmpeg)
             implementation(projects.sketchViewKoin)
-            implementation(compose.preview) // Only available on Android and desktop platforms
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.appcompat)
             implementation(libs.androidx.constraintlayout)
@@ -126,7 +126,6 @@ kotlin {
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
-            implementation(compose.preview) // Only available on Android and desktop platforms
         }
         jvmCommonMain.dependencies {
             implementation(projects.sketchHttpHurl)
@@ -143,10 +142,6 @@ kotlin {
         }
         nonJsCommonMain.dependencies {
             implementation(libs.multiplatform.paging)
-        }
-        wasmJsMain.dependencies {
-            // https://youtrack.jetbrains.com/issue/KTOR-7934/JS-WASM-fails-with-IllegalStateException-Content-Length-mismatch-on-requesting-gzipped-content
-            implementation(libs.ktor31.client.wasmJs)
         }
 
         commonTest.dependencies {

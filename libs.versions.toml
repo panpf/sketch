@@ -1,60 +1,59 @@
 [versions]
-android-plugin = "8.13.0"
-androidx-activity = "1.10.1"
-androidx-appcompat = "1.7.0"
-androidx-compose = "1.8.0" # sync with jetbrains-compose
+android-plugin = "8.13.2"
+androidx-activity = "1.12.2"
+androidx-appcompat = "1.7.1"
+androidx-compose = "1.10.0" # sync with jetbrains-compose
 androidx-constraintlayout = "2.2.1"
 androidx-constraintlayout-compose = "1.1.1"
-androidx-core = "1.16.0"
-androidx-exifinterface = "1.4.1"
-androidx-fragment = "1.8.6"
-androidx-lifecycle = "2.8.5" # sync with jetbrains-lifecycle
-androidx-navigation = "2.9.0"
+androidx-core = "1.17.0"
+androidx-exifinterface = "1.4.2"
+androidx-fragment = "1.8.9"
+androidx-lifecycle = "2.10.0" # sync with jetbrains-lifecycle
+androidx-navigation = "2.9.6"
 androidx-recyclerview = "1.4.0"
-androidx-swiperefreshlayout = "1.1.0"
-androidx-test-ext-junit = "1.2.1"
-androidx-test-rules = "1.6.1"
-androidx-test-runner = "1.6.2"
+androidx-swiperefreshlayout = "1.2.0"
+androidx-test-ext-junit = "1.3.0"
+androidx-test-rules = "1.7.0"
+androidx-test-runner = "1.7.0"
 
-androidgifdrawable = "1.2.29"
+androidgifdrawable = "1.2.30"
 androidsvg = "1.4"
-appdirs = "1.4.0"
+appdirs = "1.5.0"
 
 buildkonfig = "0.17.1"
 
-dokka = "1.9.20"    # 2.0.0 There is a problem with the version configuration, so I won't upgrade it yet
+#dokka = "2.1.0"    # 2.0.0 There is a problem with the version configuration, so I won't upgrade it yet
 
-ffmpegMediaMetadataRetriever = "1.0.19"
+ffmpegMediaMetadataRetriever = "1.0.21"
 
 google-flexbox = "3.0.0"
-google-material = "1.12.0"
-gradle-maven-publish-plugin = "0.33.0"
+google-material = "1.13.0"
+gradle-maven-publish-plugin = "0.36.0"
 
-jetbrains-compose = "1.8.0"
-jetbrains-lifecycle = "2.8.4"
+jetbrains-compose = "1.10.0"
+jetbrains-lifecycle = "2.10.0-alpha07"
 jetbrains-compose-material-icons-core = "1.7.3"
+jetbrains-compose-material3 = "1.9.0"
 
-koin = "4.1.0"
+koin = "4.1.1"
 
-kotlin = "2.1.10" # 2.1.20 version will report an error when sync 'kotlin-project-structure-metadata.json (No such file or directory)', but it does not affect the compilation
-kotlinx-atomicfu = "0.27.0" # sync with kotlin
+kotlin = "2.3.0"
+kotlinx-atomicfu = "0.30.0"
 kotlinx-coroutines = "1.10.2"
-kotlinx-cover = "0.9.1"
-kotlinx-datetime = "0.6.2"
-kotlinx-serialization-json = "1.8.1"
-#noinspection GradleDependency
+kotlinx-cover = "0.9.4"
+kotlinx-datetime = "0.7.1"
+kotlinx-serialization-json = "1.10.0"
 ktor2 = "2.3.13"
-ktor3 = "3.0.3" # 3.1.0+ Error when publishing packaging obfuscation on desktop platform: 'https://youtrack.jetbrains.com/issue/KTOR-8325/Proguard-cant-find-enclosing-method-attachFor-error-since-3.1.0'
-ktor31 = "3.1.3" # https://youtrack.jetbrains.com/issue/KTOR-7934/JS-WASM-fails-with-IllegalStateException-Content-Length-mismatch-on-requesting-gzipped-content
+ktor3 = "3.4.0"
 
 leakcanary = "2.14"
 
-moko-permissions = "0.19.1"
+moko-permissions = "0.20.1"
 multiplatform-paging = "3.3.0-alpha02-0.5.1"
 multiplatform-settings = "1.3.0"
 
 okhttp3 = "4.12.0"
-okio = "3.11.0"
+okio = "3.16.4"
 
 panpf-assemblyadapter4 = "4.1.0"
 panpf-tools4a = "1.0.0"
@@ -62,9 +61,9 @@ panpf-tools4j = "1.0.0"
 panpf-tools4k = "1.0.1"
 panpf-zoomimage = "1.4.0"
 
-penfeizhou-animation = "3.0.4"
+penfeizhou-animation = "3.0.5"
 
-skiko = "0.9.4"    # sync with jetbrains-compose. 'decodes.nonAndroid#supportDecodeRegion()' must be modified
+skiko = "0.9.37.3"    # sync with jetbrains-compose. 'decodes.nonAndroid#supportDecodeRegion()' must be modified
 
 voyager = "1.1.0-beta03"
 
@@ -115,9 +114,17 @@ ffmpegMediaMetadataRetriever-native = { module = "com.github.wseemann:FFmpegMedi
 google-material = { module = "com.google.android.material:material", version.ref = "google-material" }
 google-flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "google-flexbox" }
 
+jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "jetbrains-compose" }
+jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "jetbrains-compose" }
+jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "jetbrains-compose" }
+jetbrains-compose-ui-test = { module = "org.jetbrains.compose.ui:ui-test", version.ref = "jetbrains-compose" }
+jetbrains-compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "jetbrains-compose" }
+jetbrains-compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "jetbrains-compose" }
+jetbrains-compose-material = { module = "org.jetbrains.compose.material:material", version.ref = "jetbrains-compose" }
+jetbrains-compose-material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "jetbrains-compose-material-icons-core" }
+jetbrains-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "jetbrains-compose-material3" }
 jetbrains-lifecycle-common = { module = "org.jetbrains.androidx.lifecycle:lifecycle-common", version.ref = "jetbrains-lifecycle" }
 jetbrains-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "jetbrains-lifecycle" }
-jetbrains-compose-material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "jetbrains-compose-material-icons-core" }
 
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
@@ -152,7 +159,6 @@ ktor3-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "kt
 ktor3-client-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor3" }
 ktor3-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor3" }
 ktor3-client-wasmJs = { module = "io.ktor:ktor-client-js-wasm-js", version.ref = "ktor3" }
-ktor31-client-wasmJs = { module = "io.ktor:ktor-client-js-wasm-js", version.ref = "ktor31" }
 ktor3-serialization-kotlinxJson = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor3" }
 
 leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
@@ -206,5 +212,5 @@ voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", vers
 #voyager-kodein = { module = "cafe.adriel.voyager:voyager-kodein", version.ref = "voyager" }
 #voyager-rxjava = { module = "cafe.adriel.voyager:voyager-rxjava", version.ref = "voyager" }
 
-[plugins]
-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+#[plugins]
+#dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }

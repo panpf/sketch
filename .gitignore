@@ -36,6 +36,7 @@ captures/
 *.jks
 
 kotlin-js-store/yarn.lock
+kotlin-js-store/wasm/yarn.lock
 webpack.config.d/
 
 .kotlin/

@@ -1,8 +1,5 @@
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
-import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 buildscript {
@@ -29,9 +26,9 @@ buildscript {
     }
 }
 
-plugins {
-    alias(libs.plugins.dokka)
-}
+//plugins {
+//    alias(libs.plugins.dokka)
+//}
 
 tasks.register("cleanRootBuild", Delete::class) {
     delete(rootProject.project.layout.buildDirectory.get().asFile.absolutePath)
@@ -71,9 +68,6 @@ allprojects {
     // Add compilation configuration for Compose module
     plugins.withId("org.jetbrains.kotlin.plugin.compose") {
         extensions.configure<ComposeCompilerGradlePluginExtension> {
-            featureFlags.addAll(
-                ComposeFeatureFlag.OptimizeNonSkippingGroups
-            )
             stabilityConfigurationFiles.add {
                 rootDir.resolve("sketch-core/compose_compiler_config.conf")
             }
@@ -136,56 +130,8 @@ allprojects {
         }
     }
 
-    // Configure Dokka plugin for all publishable library modules
-    if (hasProperty("POM_ARTIFACT_ID")) {   // configured in the module/gradle.properties file
-        apply { plugin("org.jetbrains.dokka") }
-    }
-
-    applyOkioJsTestWorkaround()
-}
-
-// https://github.com/square/okio/issues/1163
-fun Project.applyOkioJsTestWorkaround() {
-    if (":sample" in displayName) {
-        // The polyfills cause issues with the sample.
-        return
-    }
-
-    plugins.withId("org.jetbrains.kotlin.multiplatform") {
-        val applyNodePolyfillPlugin by lazy {
-            tasks.register("applyNodePolyfillPlugin") {
-                val applyPluginFile = projectDir
-                    .resolve("webpack.config.d/applyNodePolyfillPlugin.js")
-                onlyIf {
-                    !applyPluginFile.exists()
-                }
-                doLast {
-                    applyPluginFile.parentFile.mkdirs()
-                    applyPluginFile.writeText(
-                        """
-                        const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
-                        config.plugins.push(new NodePolyfillPlugin());
-                        """.trimIndent(),
-                    )
-                }
-            }
-        }
-
-        extensions.configure<KotlinMultiplatformExtension> {
-            sourceSets {
-                targets.configureEach {
-                    compilations.configureEach {
-                        if (platformType == KotlinPlatformType.js && name == "test") {
-                            tasks
-                                .getByName(compileKotlinTaskName)
-                                .dependsOn(applyNodePolyfillPlugin)
-                            dependencies {
-                                implementation(devNpm("node-polyfill-webpack-plugin", "^2.0.1"))
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    // Configure Dokka plugin for all publishable library modules
+//    if (hasProperty("POM_ARTIFACT_ID")) {   // configured in the module/gradle.properties file
+//        apply { plugin("org.jetbrains.dokka") }
+//    }
 }

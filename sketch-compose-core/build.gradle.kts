@@ -14,9 +14,9 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.sketchCore)
-            api(compose.foundation)
-            api(compose.runtime)
-            api(compose.ui)
+            api(libs.jetbrains.compose.foundation)
+            api(libs.jetbrains.compose.runtime)
+            api(libs.jetbrains.compose.ui)
             api(libs.jetbrains.lifecycle.runtime.compose)
         }
 

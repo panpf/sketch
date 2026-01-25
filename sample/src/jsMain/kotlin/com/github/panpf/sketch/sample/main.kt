@@ -1,15 +1,14 @@
 package com.github.panpf.sketch.sample
 
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.window.CanvasBasedWindow
+import androidx.compose.ui.window.ComposeViewport
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.sample.ui.App
-import org.jetbrains.skiko.wasm.onWasmReady
 
 @OptIn(ExperimentalComposeUiApi::class)
-fun main() = onWasmReady {
+fun main() {
     initialApp(PlatformContext.INSTANCE)
-    CanvasBasedWindow("SketchSample") {
+    ComposeViewport {
         App()
     }
 }

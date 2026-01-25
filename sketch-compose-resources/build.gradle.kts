@@ -20,7 +20,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.sketchComposeCore)
-            api(compose.components.resources)
+            api(libs.jetbrains.compose.components.resources)
         }
 
         commonTest.dependencies {

@@ -23,10 +23,10 @@ kotlin {
         commonMain.dependencies {
             api(projects.internal.test)
             api(projects.sketchComposeCore)
-            api(compose.foundation)
-            api(compose.ui)
-            api(compose.uiTest)
-            api(compose.components.resources)
+            api(libs.jetbrains.compose.foundation)
+            api(libs.jetbrains.compose.ui)
+            api(libs.jetbrains.compose.ui.test)
+            api(libs.jetbrains.compose.components.resources)
         }
         androidMain.dependencies {
             api(libs.androidx.compose.ui.test.junit4.android)
