@@ -3,7 +3,9 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-cd ../../
+if [ "$1" != "--skipFindRootDir" ]; then
+  cd ../../
+fi
 
 ./gradlew iosSimulatorArm64Test
 

@@ -7,11 +7,11 @@ cd ../../
 
 ./gradlew clean
 
-./package_android.sh --skipClean
-./package_ios.sh --skipClean
-./package_desktop.sh --skipClean
-./package_js.sh --skipClean
-./package_wasmJs.sh --skipClean
+"$(pwd)/internal/scripts/package_android.sh" --skipFindRootDir --skipClean
+"$(pwd)/internal/scripts/package_ios.sh" --skipFindRootDir --skipClean
+"$(pwd)/internal/scripts/package_desktop.sh" --skipFindRootDir --skipClean
+"$(pwd)/internal/scripts/package_js.sh" --skipFindRootDir --skipClean
+"$(pwd)/internal/scripts/package_wasmJs.sh" --skipFindRootDir --skipClean
 
 echo "Android distribution is written to $(pwd)/sample/build/outputs/apk/release/"
 echo "Desktop distribution is written to $(pwd)sample/build/compose/binaries/main/"
