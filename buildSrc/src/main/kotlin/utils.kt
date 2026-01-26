@@ -16,6 +16,11 @@
  */
 import org.gradle.api.Project
 
+/**
+ * A list of all public modules in the project.
+ *
+ * Synced with settings.gradle.kts include list.
+ */
 val publicModules = setOf(
     "sketch-animated-core",
     "sketch-animated-gif",

@@ -11,7 +11,9 @@ dependencyResolutionManagement {
 }
 
 /*
- * Release
+ * Public Modules
+ *
+ * Synced with buildSrc/src/main/kotlin/utils.kt publicModules list.
  */
 include(":sketch-animated-core")
 include(":sketch-animated-gif")
