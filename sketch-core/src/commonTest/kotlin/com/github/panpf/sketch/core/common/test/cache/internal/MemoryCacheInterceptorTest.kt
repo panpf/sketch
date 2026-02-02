@@ -24,7 +24,7 @@ import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.cache.internal.MemoryCacheInterceptor
 import com.github.panpf.sketch.cache.newCacheValueExtras
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageData
@@ -37,12 +37,10 @@ import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.FakeInterceptor
 import com.github.panpf.sketch.test.utils.MyCacheKeyMapper
-import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestCountTarget
 import com.github.panpf.sketch.test.utils.TestMemoryCacheInterceptor
 import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.test.utils.createCacheValue
-import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.asOrThrow
 import kotlinx.coroutines.Dispatchers
@@ -60,10 +58,6 @@ class MemoryCacheInterceptorTest {
 
     @Test
     fun testIntercept() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Will get stuck forever in iOS test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
         val memoryCache = sketch.memoryCache
 
@@ -82,7 +76,7 @@ class MemoryCacheInterceptorTest {
         assertEquals(expected = 0, actual = memoryCache.size)
 
         /* ImageRequest */
-        executeRequest(ImageRequest(context, ResourceImages.jpeg.uri) {
+        executeRequest(ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             memoryCachePolicy(ENABLED)
         }).asOrThrow<ImageData>()
         assertEquals(expected = 40000, actual = memoryCache.size)
@@ -93,7 +87,7 @@ class MemoryCacheInterceptorTest {
         /* ImageRequest - ENABLED */
         val cacheImage: BitmapImage
         val imageData: ImageData
-        val request = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             target(TestCountTarget())
         }
         executeRequest(request.newRequest {
@@ -206,10 +200,6 @@ class MemoryCacheInterceptorTest {
 
     @Test
     fun testMemoryCacheKey() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Will get stuck forever in iOS test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
         val memoryCache = sketch.memoryCache
 
@@ -240,14 +230,14 @@ class MemoryCacheInterceptorTest {
         )
         assertEquals(expected = 40000, actual = memoryCache.size)
 
-        executeRequest(ImageRequest(context, ResourceImages.jpeg.uri) {
+        executeRequest(ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             memoryCachePolicy(ENABLED)
             depth(MEMORY)
         }).apply {
             assertNull(this)
         }
 
-        executeRequest(ImageRequest(context, ResourceImages.jpeg.uri) {
+        executeRequest(ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             memoryCachePolicy(ENABLED)
             depth(MEMORY)
             memoryCacheKey("memoryCacheKey1")
@@ -255,7 +245,7 @@ class MemoryCacheInterceptorTest {
             assertNotNull(this)
         }
 
-        executeRequest(ImageRequest(context, ResourceImages.jpeg.uri) {
+        executeRequest(ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             memoryCachePolicy(ENABLED)
             depth(MEMORY)
             memoryCacheKeyMapper(MyCacheKeyMapper("memoryCacheKey1"))
@@ -266,10 +256,6 @@ class MemoryCacheInterceptorTest {
 
     @Test
     fun testWithLock() {
-        if (Platform.current == Platform.iOS) {
-            // Will get stuck forever in iOS test environment.
-            return
-        }
         val (context, sketch) = getTestContextAndSketch()
         val memoryCache = sketch.memoryCache
 
@@ -278,7 +264,7 @@ class MemoryCacheInterceptorTest {
 
         runTest {
             val endInterceptor = TestMemoryCacheInterceptor()
-            val request = ImageRequest(context, ResourceImages.jpeg.uri)
+            val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
             val requestContext = request.toRequestContext(sketch)
             repeat(10) {
                 val chain = InterceptorChain(

@@ -37,30 +37,29 @@ enum class MultiplatformTargets {
 //    MacosArm64
 }
 
-fun Project.addAllMultiplatformTargets(vararg targets: MultiplatformTargets) {
+fun Project.addMultiplatformTargets(targets: Array<MultiplatformTargets>) {
     plugins.withId("org.jetbrains.kotlin.multiplatform") {
         extensions.configure<KotlinMultiplatformExtension> {
             applyMyHierarchyTemplate()
 
-            if (targets.isEmpty() || targets.contains(MultiplatformTargets.Android)) {
-                val isAndroidApp = plugins.hasPlugin("com.android.application")
-                val isAndroidLibrary = plugins.hasPlugin("com.android.library")
-                if (isAndroidApp || isAndroidLibrary) {
-                    androidTarget {
-                        if (isAndroidLibrary) {
-                            publishLibraryVariants("release")
-                        }
-                    }
-                }
+            if (targets.contains(MultiplatformTargets.Android)) {
+                androidLibrary {}
             }
 
-            if (targets.isEmpty() || targets.contains(MultiplatformTargets.Desktop)) {
+            if (targets.contains(MultiplatformTargets.Desktop)) {
                 jvm("desktop")
             }
 
-            if (targets.isEmpty() || targets.contains(MultiplatformTargets.Js)) {
+            if (targets.contains(MultiplatformTargets.Js)) {
                 js {
-                    browser()
+                    browser {
+                        testTask {
+                            enabled = false
+                            useKarma {
+                                useChrome()
+                            }
+                        }
+                    }
                     nodejs {
                         testTask {
                             useMocha {
@@ -73,7 +72,7 @@ fun Project.addAllMultiplatformTargets(vararg targets: MultiplatformTargets) {
                 }
             }
 
-            if (targets.isEmpty() || targets.contains(MultiplatformTargets.WasmJs)) {
+            if (targets.contains(MultiplatformTargets.WasmJs)) {
                 @OptIn(ExperimentalWasmDsl::class)
                 wasmJs {
                     // TODO: Fix wasm tests.
@@ -92,36 +91,35 @@ fun Project.addAllMultiplatformTargets(vararg targets: MultiplatformTargets) {
                 }
             }
 
-            if (targets.isEmpty() || targets.contains(MultiplatformTargets.IosX64)) {
+            if (targets.contains(MultiplatformTargets.IosX64)) {
                 iosX64()
             }
-            if (targets.isEmpty() || targets.contains(MultiplatformTargets.IosArm64)) {
+            if (targets.contains(MultiplatformTargets.IosArm64)) {
                 iosArm64()
             }
-            if (targets.isEmpty() || targets.contains(MultiplatformTargets.IosSimulatorArm64)) {
+            if (targets.contains(MultiplatformTargets.IosSimulatorArm64)) {
                 iosSimulatorArm64()
             }
 
-//            if (targets.isEmpty() || targets.contains(MultiplatformTargets.MacosX64)) {
+//            if (targets.contains(MultiplatformTargets.MacosX64)) {
 //                macosX64()
 //            }
-//            if (targets.isEmpty() || targets.contains(MultiplatformTargets.MacosArm64)) {
+//            if (targets.contains(MultiplatformTargets.MacosArm64)) {
 //                macosArm64()
 //            }
         }
 
-        if (targets.isEmpty() || targets.contains(MultiplatformTargets.Js)) {
+        if (targets.contains(MultiplatformTargets.Js)) {
             applyKotlinJsImplicitDependencyWorkaround()
         }
-        if (targets.isEmpty() || targets.contains(MultiplatformTargets.WasmJs)) {
+        if (targets.contains(MultiplatformTargets.WasmJs)) {
             applyKotlinWasmJsImplicitDependencyWorkaround()
-        }
-        // An error occurs when compiling js or wasmJs:
-        // Resolving dependency configuration 'androidDebugAndroidTestCompilationApi' is not allowed as it is defined as 'canBeResolved=false'.
-        //Instead, a resolvable ('canBeResolved=true') dependency configuration that extends 'androidDebugAndroidTestCompilationApi' should be resolved.
-//        if (targets.isEmpty() || targets.contains(MultiplatformTargets.WasmJs)) {
+
+            // An error occurs when compiling js or wasmJs:
+            // Resolving dependency configuration 'androidDebugAndroidTestCompilationApi' is not allowed as it is defined as 'canBeResolved=false'.
+            // Instead, a resolvable ('canBeResolved=true') dependency configuration that extends 'androidDebugAndroidTestCompilationApi' should be resolved.
 //            createSkikoWasmJsRuntimeDependency()
-//        }
+        }
     }
 }
 
@@ -174,6 +172,9 @@ val NamedDomainObjectContainer<KotlinSourceSet>.androidUnitTest: NamedDomainObje
 
 val NamedDomainObjectContainer<KotlinSourceSet>.androidInstrumentedTest: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("androidInstrumentedTest")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.androidDeviceTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("androidDeviceTest")
 
 val NamedDomainObjectContainer<KotlinSourceSet>.desktopMain: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("desktopMain")

@@ -1,12 +1,12 @@
 package com.github.panpf.sketch.core.common.test.source
 
 import com.github.panpf.sketch.fetch.newFileUri
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.asOrThrow
+import kotlinx.coroutines.test.runTest
 import okio.Closeable
 import okio.FileNotFoundException
 import okio.Path.Companion.toPath
@@ -18,9 +18,9 @@ import kotlin.test.assertNotEquals
 class FileDataSourceTest {
 
     @Test
-    fun testConstructor() {
+    fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val file = ResourceImages.jpeg.toDataSource(context).getFile(sketch)
+        val file = ComposeResImageFiles.jpeg.toDataSource(context).getFile(sketch)
         FileDataSource(path = file).apply {
             assertEquals(file, this.getFile(sketch))
             assertEquals(DataFrom.LOCAL, this.dataFrom)
@@ -41,9 +41,9 @@ class FileDataSourceTest {
     }
 
     @Test
-    fun testOpenSource() {
+    fun testOpenSource() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val file = ResourceImages.jpeg.toDataSource(context).getFile(sketch)
+        val file = ComposeResImageFiles.jpeg.toDataSource(context).getFile(sketch)
         FileDataSource(path = file).apply {
             openSource().asOrThrow<Closeable>().close()
         }
@@ -56,9 +56,9 @@ class FileDataSourceTest {
     }
 
     @Test
-    fun testGetFile() {
+    fun testGetFile() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val file = ResourceImages.jpeg.toDataSource(context).getFile(sketch)
+        val file = ComposeResImageFiles.jpeg.toDataSource(context).getFile(sketch)
         FileDataSource(path = file).getFile(sketch).apply {
             assertEquals(file, this)
         }
@@ -97,9 +97,9 @@ class FileDataSourceTest {
     }
 
     @Test
-    fun testToString() {
+    fun testToString() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val file = ResourceImages.jpeg.toDataSource(context).getFile(sketch)
+        val file = ComposeResImageFiles.jpeg.toDataSource(context).getFile(sketch)
         FileDataSource(path = file).apply {
             assertEquals(
                 "FileDataSource(path='${file}', from=LOCAL)",

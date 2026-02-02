@@ -19,10 +19,9 @@ package com.github.panpf.sketch.test.utils
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.HttpStack
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.images.content
 import com.github.panpf.sketch.images.slow
-import com.github.panpf.sketch.images.toDataSource
 import com.github.panpf.sketch.request.Extras
 import com.github.panpf.sketch.util.toUri
 
@@ -120,7 +119,7 @@ class TestHttpStack(
         override suspend fun content(): HttpStack.Content {
             val imageUri = testImage.uri
             val filePath = imageUri.toUri().pathSegments.joinToString("/")
-            val image = ResourceImages.values.find { it.resourceName == filePath }
+            val image = ComposeResImageFiles.values.find { it.name == filePath }
                 ?: throw IllegalArgumentException(
                     "Not found resource image. filePath='$filePath'. uri='$imageUri'"
                 )

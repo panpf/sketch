@@ -163,7 +163,7 @@ ImageRequest(context, "https://www.example.com/image.gif") {
 
 [ImageDecoderAnimatedHeifDecoderProvider]: ../sketch-animated-heif/src/main/kotlin/com/github/panpf/sketch/decode/internal/ImageDecoderAnimatedHeifDecoderProvider.kt
 
-[PenfeizhouAnimatedWebpDecoder]: ../sample/src/androidMain/kotlin/com/github/panpf/sketch/sample/util/PenfeizhouAnimatedWebpDecoder.kt
+[PenfeizhouAnimatedWebpDecoder]: ../samples/shared/src/androidMain/kotlin/com/github/panpf/sketch/sample/util/PenfeizhouAnimatedWebpDecoder.kt
 
 [comment]: <> (wiki)
 

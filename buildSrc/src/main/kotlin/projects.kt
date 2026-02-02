@@ -14,28 +14,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import com.android.build.gradle.BaseExtension
-import com.android.build.gradle.LibraryExtension
-import com.android.build.gradle.TestExtension
-import com.android.build.gradle.internal.dsl.BaseAppModuleExtension
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 fun Project.androidLibrary(
     nameSpace: String,
     action: LibraryExtension.() -> Unit = {},
-) = androidBase<LibraryExtension>(nameSpace) {
-    buildTypes {
-        debug {
-            enableUnitTestCoverage = true
-            enableAndroidTestCoverage = true
-        }
+) = android<LibraryExtension> {
+    namespace = nameSpace
+    compileSdk = project.compileSdk
+    defaultConfig {
+        minSdk = project.minSdk
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    // Compose Multiplatform 1.8.0 must use JVM target 11+, and Android View also requires 1.8+
+    val (version, target) = if (plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null) {
+        JavaVersion.VERSION_11 to JvmTarget.JVM_11
+    } else {
+        JavaVersion.VERSION_1_8 to JvmTarget.JVM_1_8
+    }
+    compileOptions {
+        sourceCompatibility = version
+        targetCompatibility = version
+    }
+    tasks.withType<KotlinCompile>().configureEach {
+        compilerOptions.jvmTarget.set(target)
+    }
+
     testOptions {
+        unitTests.isIncludeAndroidResources = true
         unitTests.all { test ->
             test.testLogging {
                 exceptionFormat = TestExceptionFormat.FULL
@@ -45,141 +62,114 @@ fun Project.androidLibrary(
             }
         }
     }
+
+    buildTypes {
+        debug {
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
+        }
+    }
+
+    packaging {
+        resources.pickFirsts += listOf(
+            "META-INF/AL2.0",
+            "META-INF/LGPL2.1",
+            "META-INF/*kotlin_module",
+        )
+    }
+
     action()
 }
 
 fun Project.androidApplication(
     nameSpace: String,
     applicationId: String = nameSpace,
-    action: BaseAppModuleExtension.() -> Unit = {},
-) = androidBase<BaseAppModuleExtension>(nameSpace) {
+    action: ApplicationExtension.() -> Unit = {},
+) = android<ApplicationExtension> {
+    namespace = nameSpace
+    compileSdk = project.compileSdk
     defaultConfig {
         this.applicationId = applicationId
-        this.versionCode = project.versionCode
-        this.versionName = project.versionName
-        this.vectorDrawables.useSupportLibrary = true
-    }
-    action()
-}
-
-fun Project.androidTest(
-    name: String,
-    action: TestExtension.() -> Unit = {},
-) = androidBase<TestExtension>(name) {
-    defaultConfig {
+        versionCode = project.versionCode
+        versionName = project.versionName
         vectorDrawables.useSupportLibrary = true
+        minSdk = project.minSdk
+        targetSdk = project.targetSdk
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    // Compose Multiplatform 1.8.0 must use JVM target 11+, and Android View also requires 1.8+
+    val (version, target) = if (plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null) {
+        JavaVersion.VERSION_11 to JvmTarget.JVM_11
+    } else {
+        JavaVersion.VERSION_1_8 to JvmTarget.JVM_1_8
+    }
+    compileOptions {
+        sourceCompatibility = version
+        targetCompatibility = version
+    }
+    tasks.withType<KotlinCompile>().configureEach {
+        compilerOptions.jvmTarget.set(target)
+    }
+
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+    }
+
+    packaging {
+        resources.pickFirsts += listOf(
+            "META-INF/AL2.0",
+            "META-INF/LGPL2.1",
+            "META-INF/*kotlin_module",
+        )
+    }
+
+    action()
+}
+
+fun KotlinMultiplatformExtension.androidKmpLibrary(
+    nameSpace: String,
+    action: KotlinMultiplatformAndroidLibraryExtension.() -> Unit = {},
+) = androidLibrary {
+    namespace = nameSpace
+    compileSdk = project.compileSdk
+    minSdk = project.minSdk
+
+    // Enable Android resource processing. Multiplatform library modules do not enable this by default.
+    androidResources {
+        enable = true
+    }
+
+    // Opt-in to enable and configure host-side (unit) tests. Multiplatform library modules do not enable this by default.
+    withHostTest {
+        isIncludeAndroidResources = true
+        enableCoverage = true
+    }
+    // Opt-in to enable and configure device-side (instrumented) tests. Multiplatform library modules do not enable this by default.
+    withDeviceTest {
+        instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        execution = "HOST"
+        enableCoverage = true
+    }
+
+    packaging {
+        resources.pickFirsts += listOf(
+            "META-INF/AL2.0",
+            "META-INF/LGPL2.1",
+            "META-INF/*kotlin_module",
+        )
     }
     action()
 }
 
-private fun <T : BaseExtension> Project.androidBase(
-    nameSpace: String,
-    action: T.() -> Unit,
+private fun <T : CommonExtension> Project.android(
+    action: T.() -> Unit
 ) {
-    android<T> {
-        this.namespace = nameSpace
-        compileSdkVersion(project.compileSdk)
-        defaultConfig {
-            minSdk = project.minSdk
-            targetSdk = project.targetSdk
-            testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        }
-        packagingOptions {
-            resources.pickFirsts += listOf(
-                "META-INF/AL2.0",
-                "META-INF/LGPL2.1",
-                "META-INF/*kotlin_module",
-            )
-        }
-        testOptions {
-            unitTests.isIncludeAndroidResources = true
-        }
-//        lint {
-//            warningsAsErrors = true
-//            disable += listOf(
-//                "ComposableNaming",
-//                "UnknownIssueId",
-//                "UnsafeOptInUsageWarning",
-//                "UnusedResources",
-//                "UseSdkSuppress",
-//                "VectorPath",
-//                "VectorRaster",
-//            )
-//        }
-        // Compose Multiplatform 1.8.0 must use JVM target 11+, and Android View also requires 1.8+
-        val (version, target) = if (plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null) {
-            JavaVersion.VERSION_11 to JvmTarget.JVM_11
-        } else {
-            JavaVersion.VERSION_1_8 to JvmTarget.JVM_1_8
-        }
-        compileOptions {
-            sourceCompatibility = version
-            targetCompatibility = version
-        }
-        tasks.withType<KotlinCompile>().configureEach {
-            compilerOptions.jvmTarget.set(target)
-        }
-        action()
-    }
-//    plugins.withId("org.jetbrains.kotlin.multiplatform") {
-//        extensions.configure<KotlinMultiplatformExtension> {
-//            sourceSets.configureEach {
-//                languageSettings {
-//                    optIn("com.github.panpf.sketch.annotation.DelicateCoilApi")
-//                    optIn("com.github.panpf.sketch.annotation.ExperimentalCoilApi")
-//                    optIn("com.github.panpf.sketch.annotation.InternalCoilApi")
-//                }
-//            }
-//            targets.configureEach {
-//                compilations.configureEach {
-//                    // https://youtrack.jetbrains.com/issue/KT-61573#focus=Comments-27-9822729.0-0
-//                    @Suppress("DEPRECATION")
-//                    compilerOptions.configure {
-//                        val arguments = listOf(
-//                            // https://kotlinlang.org/docs/compiler-reference.html#progressive
-//                            "-progressive",
-//                            // https://youtrack.jetbrains.com/issue/KT-61573
-//                            "-Xexpect-actual-classes",
-//                        )
-//                        freeCompilerArgs.addAll(arguments)
-//                    }
-//                }
-//            }
-//        }
-//    }
-//    tasks.withType<KotlinCompile>().configureEach {
-//        compilerOptions {
-//            // Temporarily disable due to https://youtrack.jetbrains.com/issue/KT-60866.
-//            allWarningsAsErrors.set(System.getenv("CI").toBoolean())
-//
-//            val arguments = mutableListOf<String>()
-//
-//            // https://kotlinlang.org/docs/compiler-reference.html#progressive
-//            arguments += "-progressive"
-//
-//            // Enable Java default method generation.
-//            arguments += "-Xjvm-default=all"
-//
-//            // Generate smaller bytecode by not generating runtime not-null assertions.
-//            arguments += "-Xno-call-assertions"
-//            arguments += "-Xno-param-assertions"
-//            arguments += "-Xno-receiver-assertions"
-//
-//            if (project.name != "benchmark") {
-//                arguments += "-opt-in=com.github.panpf.sketch.annotation.DelicateCoilApi"
-//                arguments += "-opt-in=com.github.panpf.sketch.annotation.ExperimentalCoilApi"
-//                arguments += "-opt-in=com.github.panpf.sketch.annotation.InternalCoilApi"
-//            }
-//
-//            freeCompilerArgs.addAll(arguments)
-//        }
-//    }
-}
-
-private fun <T : BaseExtension> Project.android(action: T.() -> Unit) {
     extensions.configure("android", action)
 }
 
-//private fun BaseExtension.lint(action: Lint.() -> Unit) {
-//    (this as CommonExtension<*, *, *, *, *, *>).lint(action)
-//}
+internal fun KotlinMultiplatformExtension.androidLibrary(
+    action: KotlinMultiplatformAndroidLibraryExtension.() -> Unit
+) {
+    extensions.configure("androidLibrary", action)
+}

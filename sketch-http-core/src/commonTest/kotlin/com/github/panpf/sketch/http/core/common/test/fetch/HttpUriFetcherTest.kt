@@ -20,11 +20,9 @@ import com.github.panpf.sketch.source.DataFrom.DOWNLOAD_CACHE
 import com.github.panpf.sketch.source.DataFrom.NETWORK
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.MyCacheKeyMapper
-import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.createBitmapImage
-import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.runBlock
@@ -280,10 +278,6 @@ class HttpUriFetcherTest {
 
     @Test
     fun testResultCacheKey() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
         val downloadCache = sketch.downloadCache
         val testUri = TestHttpStack.testImages.first()

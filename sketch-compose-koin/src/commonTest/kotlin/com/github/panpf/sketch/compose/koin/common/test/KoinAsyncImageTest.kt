@@ -9,7 +9,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
 import com.github.panpf.sketch.AsyncImage
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.test.utils.Koins
@@ -28,10 +28,10 @@ class KoinAsyncImageTest {
         runComposeUiTest {
             setContent {
                 LifecycleContainer {
-                    AsyncImage(ResourceImages.jpeg.uri, "test image")
+                    AsyncImage(ComposeResImageFiles.jpeg.uri, "test image")
 
                     AsyncImage(
-                        ResourceImages.jpeg.uri,
+                        ComposeResImageFiles.jpeg.uri,
                         "test image",
                         Modifier,
                         rememberAsyncImageState(),
@@ -44,7 +44,7 @@ class KoinAsyncImageTest {
                     )
 
                     AsyncImage(
-                        uri = ResourceImages.jpeg.uri,
+                        uri = ComposeResImageFiles.jpeg.uri,
                         contentDescription = "test image",
                         modifier = Modifier,
                         state = rememberAsyncImageState(),
@@ -67,10 +67,10 @@ class KoinAsyncImageTest {
         runComposeUiTest {
             setContent {
                 LifecycleContainer {
-                    AsyncImage(ComposableImageRequest(ResourceImages.jpeg.uri), "test image")
+                    AsyncImage(ComposableImageRequest(ComposeResImageFiles.jpeg.uri), "test image")
 
                     AsyncImage(
-                        ComposableImageRequest(ResourceImages.jpeg.uri),
+                        ComposableImageRequest(ComposeResImageFiles.jpeg.uri),
                         "test image",
                         Modifier,
                         rememberAsyncImageState(),
@@ -83,7 +83,7 @@ class KoinAsyncImageTest {
                     )
 
                     AsyncImage(
-                        request = ComposableImageRequest(ResourceImages.jpeg.uri),
+                        request = ComposableImageRequest(ComposeResImageFiles.jpeg.uri),
                         contentDescription = "test image",
                         modifier = Modifier,
                         state = rememberAsyncImageState(),

@@ -6,15 +6,14 @@ import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.internal.DecodeHelper
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.images.ResourceImageFile
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFile
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DataSource
 
 expect fun createDecodeHelper(request: ImageRequest, dataSource: DataSource): DecodeHelper
 
-fun ResourceImageFile.decode(
+suspend fun ComposeResImageFile.decode(
     colorType: BitmapColorType? = null,
     colorSpace: String? = null
 ): BitmapImage {

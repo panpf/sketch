@@ -23,11 +23,9 @@ import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.createBitmapImage
 import com.github.panpf.sketch.test.utils.createCacheValue
-import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.util.formatFileSize
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.Deferred
@@ -241,10 +239,6 @@ class LruMemoryCacheTest {
     @OptIn(InternalCoroutinesApi::class)
     @Test
     fun testWithLock() {
-        if (Platform.current == Platform.iOS) {
-            // Will get stuck forever in iOS test environment.
-            return
-        }
 //        runTest {
 //            var value: String? = null
 //            var initialCount = 0

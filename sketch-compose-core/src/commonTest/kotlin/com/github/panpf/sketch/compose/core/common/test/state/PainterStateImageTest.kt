@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
 import com.github.panpf.sketch.asImage
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.painter.asEquitable
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.state.PainterStateImage
@@ -46,7 +46,7 @@ class PainterStateImageTest {
     @Test
     fun testGetImage() {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
 
         PainterStateImage(ColorPainter(Color.Red).asEquitable()).apply {
             assertEquals(

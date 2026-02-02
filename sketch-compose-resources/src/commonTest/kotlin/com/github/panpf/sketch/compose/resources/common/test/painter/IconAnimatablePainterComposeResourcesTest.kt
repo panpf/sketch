@@ -7,17 +7,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
+import com.github.panpf.sketch.images.Res
+import com.github.panpf.sketch.images.desert
 import com.github.panpf.sketch.painter.IconAnimatablePainter
 import com.github.panpf.sketch.painter.asEquitable
 import com.github.panpf.sketch.painter.equitablePainterResource
 import com.github.panpf.sketch.painter.rememberIconAnimatablePainter
-import com.github.panpf.sketch.test.compose.resources.Res
-import com.github.panpf.sketch.test.compose.resources.desert
-import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.SizeColorPainter
 import com.github.panpf.sketch.test.utils.asAnimatablePainter
 import com.github.panpf.sketch.test.utils.asEquitableWithThis
-import com.github.panpf.sketch.test.utils.current
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -25,10 +23,6 @@ class IconAnimatablePainterComposeResourcesTest {
 
     @Test
     fun testRememberIconAnimatablePainterWithPainterIcon() {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return
-        }
         // One parameters
         runComposeUiTest {
             setContent {

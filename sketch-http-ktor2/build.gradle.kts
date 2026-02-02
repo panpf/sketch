@@ -1,18 +1,18 @@
 plugins {
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.kotlinx.kover")
 }
 
-addAllMultiplatformTargets(
-    *MultiplatformTargets.values()
+addMultiplatformTargets(
+    MultiplatformTargets.entries.toTypedArray()
         .filter { it != MultiplatformTargets.WasmJs }
         .toTypedArray()
 )
 
-androidLibrary(nameSpace = "com.github.panpf.sketch.http.ktor2")
-
 kotlin {
+    androidKmpLibrary(nameSpace = "com.github.panpf.sketch.http.ktor2")
+
     sourceSets {
         commonMain.dependencies {
             api(projects.sketchHttpKtor2Core)
@@ -34,7 +34,7 @@ kotlin {
             implementation(projects.internal.test)
             implementation(projects.internal.testSingleton)
         }
-        androidInstrumentedTest.dependencies {
+        androidDeviceTest.dependencies {
             implementation(projects.internal.test)
             implementation(projects.internal.testSingleton)
         }

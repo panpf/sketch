@@ -16,21 +16,22 @@
 
 package com.github.panpf.sketch.test.utils
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
+import com.github.panpf.sketch.source.DataSource
+import okio.buffer
+import java.nio.ByteBuffer
 
 @RequiresApi(VERSION_CODES.P)
-fun decodeImageUseImageDecoder(
-    context: Context,
-    imageAssetName: String,
+fun DataSource.decodeImageUseImageDecoder(
     sampleSize: Int? = null,
     mutable: Boolean? = null
 ): Bitmap {
+    val byteArray = openSource().buffer().use { it.readByteArray() }
     return ImageDecoder.decodeBitmap(
-        ImageDecoder.createSource(context.assets, imageAssetName)
+        ImageDecoder.createSource(ByteBuffer.wrap(byteArray))
     ) { decoder, _, _ ->
         if (sampleSize != null) {
             decoder.setTargetSampleSize(sampleSize)

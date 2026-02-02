@@ -2,9 +2,9 @@ package com.github.panpf.sketch.core.common.test.util
 
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.DiskCache
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.supportResourcesHttpUri
-import com.github.panpf.sketch.images.toResourceHttpUri
+import com.github.panpf.sketch.images.ComposeResImageFiles
+import com.github.panpf.sketch.images.supportComposeResHttpUri
+import com.github.panpf.sketch.images.toComposeResHttpUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
@@ -23,20 +23,20 @@ class DownloadTest {
         runInNewSketchWithUse({
             val context = getTestContextAndSketch().first
             components {
-                supportResourcesHttpUri(context)
+                supportComposeResHttpUri(context)
             }
         }) { context, sketch ->
             val downloadCache = sketch.downloadCache
             downloadCache.clear()
             assertEquals(expected = 0L, actual = downloadCache.size)
 
-            val imageUri1 = ResourceImages.jpeg.toResourceHttpUri()
+            val imageUri1 = ComposeResImageFiles.jpeg.toComposeResHttpUri()
             assertFalse(downloadCache.existWithLock(imageUri1))
-            val imageUri2 = ResourceImages.png.toResourceHttpUri()
+            val imageUri2 = ComposeResImageFiles.png.toComposeResHttpUri()
             assertFalse(downloadCache.existWithLock(imageUri2))
-            val imageUri3 = ResourceImages.webp.toResourceHttpUri()
+            val imageUri3 = ComposeResImageFiles.webp.toComposeResHttpUri()
             assertFalse(downloadCache.existWithLock(imageUri3))
-            val imageUri4 = ResourceImages.bmp.toResourceHttpUri()
+            val imageUri4 = ComposeResImageFiles.bmp.toComposeResHttpUri()
             assertFalse(downloadCache.existWithLock(imageUri4))
 
             val result1 = sketch.enqueueDownload(ImageRequest(context, imageUri1)).await()

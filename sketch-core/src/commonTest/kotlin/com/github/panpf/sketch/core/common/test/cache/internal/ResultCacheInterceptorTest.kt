@@ -24,7 +24,7 @@ import com.github.panpf.sketch.cache.createImageSerializer
 import com.github.panpf.sketch.cache.internal.ResultCacheInterceptor
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.fetch.internal.FetcherInterceptor
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
@@ -38,9 +38,7 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.MyCacheKeyMapper
-import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.createBitmapImage
-import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.Dispatchers
@@ -61,10 +59,6 @@ class ResultCacheInterceptorTest {
 
     @Test
     fun testIntercept() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
         val resultCache = sketch.resultCache
 
@@ -83,7 +77,7 @@ class ResultCacheInterceptorTest {
             }
         }
 
-        val request = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(500, 500)
             precision(LESS_PIXELS)
             resultCachePolicy(ENABLED)
@@ -208,7 +202,7 @@ class ResultCacheInterceptorTest {
         }
         assertFalse(resultCache.exist(request.toRequestContext(sketch).resultCacheKey))
 
-        val request1 = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request1 = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(2000, 2000)
             precision(LESS_PIXELS)
             resultCachePolicy(ENABLED)
@@ -240,10 +234,6 @@ class ResultCacheInterceptorTest {
 
     @Test
     fun testResultCacheKey() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
         val resultCache = sketch.resultCache
 

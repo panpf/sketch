@@ -27,7 +27,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.resize.Precision
@@ -60,7 +60,7 @@ class ViewCrossfadeTransitionTest {
         val (context, sketch) = getTestContextAndSketch()
         val imageView = ImageView(context)
         val imageViewTarget = ImageViewTarget(imageView)
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         val requestContext = request.toRequestContext(sketch)
         val resultBitmap = Bitmap.createBitmap(100, 200, RGB_565)
         val result = ImageResult.Success(
@@ -140,7 +140,7 @@ class ViewCrossfadeTransitionTest {
     @Test
     fun testTransition() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
 
         val imageView = ImageView(context)
         val imageViewTarget = ImageViewTarget(imageView)
@@ -262,7 +262,7 @@ class ViewCrossfadeTransitionTest {
     @Test
     fun testFactoryCreate() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         val factory = ViewCrossfadeTransition.Factory()
 
         val imageView = ImageView(context)

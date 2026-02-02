@@ -16,7 +16,7 @@
 
 package com.github.panpf.sketch.core.common.test.request.internal
 
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.request.internal.ProgressListenerDelegate
@@ -33,7 +33,7 @@ class ProgressListenerDelegateTest {
     @Test
     fun test() = runTest {
         val context = getTestContext()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         val scope = CoroutineScope(SupervisorJob())
         val completedList = mutableListOf<Long>()
         val listener = ProgressListener { _, progress ->

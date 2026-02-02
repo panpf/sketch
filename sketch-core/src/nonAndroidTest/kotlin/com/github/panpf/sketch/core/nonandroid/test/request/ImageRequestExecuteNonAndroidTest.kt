@@ -20,7 +20,7 @@ import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.decode.HighQualityColorType
 import com.github.panpf.sketch.decode.LowQualityColorType
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.colorSpace
@@ -41,7 +41,7 @@ class ImageRequestExecuteNonAndroidTest {
     fun testColorType() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
@@ -51,7 +51,7 @@ class ImageRequestExecuteNonAndroidTest {
             )
         }
 
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             colorType(ColorType.RGBA_8888)
@@ -62,7 +62,7 @@ class ImageRequestExecuteNonAndroidTest {
             )
         }
 
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             colorType(ColorType.ARGB_4444)
@@ -73,7 +73,7 @@ class ImageRequestExecuteNonAndroidTest {
             )
         }
 
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             colorType(ColorType.ALPHA_8)
@@ -84,7 +84,7 @@ class ImageRequestExecuteNonAndroidTest {
             )
         }
 
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             colorType(ColorType.RGB_565)
@@ -95,7 +95,7 @@ class ImageRequestExecuteNonAndroidTest {
             )
         }
 
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             colorType(ColorType.RGBA_F16)
@@ -106,7 +106,7 @@ class ImageRequestExecuteNonAndroidTest {
             )
         }
 
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             this.colorType(LowQualityColorType)
@@ -116,7 +116,7 @@ class ImageRequestExecuteNonAndroidTest {
                 actual = image.asOrThrow<BitmapImage>().bitmap.colorType
             )
         }
-        ImageRequest(context, ResourceImages.png.uri) {
+        ImageRequest(context, ComposeResImageFiles.png.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             this.colorType(LowQualityColorType)
@@ -127,7 +127,7 @@ class ImageRequestExecuteNonAndroidTest {
             )
         }
 
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             this.colorType(HighQualityColorType)
@@ -137,7 +137,7 @@ class ImageRequestExecuteNonAndroidTest {
                 actual = image.asOrThrow<BitmapImage>().bitmap.colorType
             )
         }
-        ImageRequest(context, ResourceImages.png.uri) {
+        ImageRequest(context, ComposeResImageFiles.png.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             this.colorType(HighQualityColorType)
@@ -153,7 +153,7 @@ class ImageRequestExecuteNonAndroidTest {
     fun testColorSpace() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
         }.let { sketch.execute(it) }.asOrNull<ImageResult.Success>()!!.apply {
@@ -163,7 +163,7 @@ class ImageRequestExecuteNonAndroidTest {
             )
         }
 
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             colorSpace(ColorSpace.sRGBLinear)
@@ -174,7 +174,7 @@ class ImageRequestExecuteNonAndroidTest {
             )
         }
 
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             colorSpace(ColorSpace.displayP3)

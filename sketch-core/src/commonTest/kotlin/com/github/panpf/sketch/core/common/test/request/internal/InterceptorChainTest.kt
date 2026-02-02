@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.core.common.test.request.internal
 
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Interceptor
@@ -33,7 +33,7 @@ class InterceptorChainTest {
                 TestBitmapInterceptor2(historyList),
                 TestBitmapInterceptor3(historyList)
             )
-            val request = ImageRequest(context, ResourceImages.jpeg.uri)
+            val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
             val chain = InterceptorChain(
                 requestContext = request.toRequestContext(sketch),
                 interceptors = interceptors,
@@ -59,7 +59,7 @@ class InterceptorChainTest {
                 TestBitmapInterceptor1(historyList),
                 TestBitmapInterceptor3(historyList),
             )
-            val request = ImageRequest(context, ResourceImages.jpeg.uri)
+            val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
             val chain = InterceptorChain(
                 requestContext = request.toRequestContext(sketch),
                 interceptors = interceptors,

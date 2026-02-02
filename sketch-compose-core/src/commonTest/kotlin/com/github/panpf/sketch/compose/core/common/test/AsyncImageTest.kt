@@ -16,7 +16,7 @@ import androidx.compose.ui.test.runComposeUiTest
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.AsyncImageState
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.request.ImageResult
@@ -38,13 +38,13 @@ class AsyncImageTest {
             setContent {
                 LifecycleContainer {
                     AsyncImage(
-                        uri = ResourceImages.jpeg.uri,
+                        uri = ComposeResImageFiles.jpeg.uri,
                         sketch = sketch,
                         contentDescription = "test image"
                     )
 
                     AsyncImage(
-                        uri = ResourceImages.jpeg.uri,
+                        uri = ComposeResImageFiles.jpeg.uri,
                         sketch = sketch,
                         contentDescription = "test image",
                         modifier = Modifier,
@@ -58,7 +58,7 @@ class AsyncImageTest {
                     )
 
                     AsyncImage(
-                        uri = ResourceImages.jpeg.uri,
+                        uri = ComposeResImageFiles.jpeg.uri,
                         sketch = sketch,
                         contentDescription = "test image",
                         modifier = Modifier,
@@ -84,13 +84,13 @@ class AsyncImageTest {
             setContent {
                 LifecycleContainer {
                     AsyncImage(
-                        request = ComposableImageRequest(uri = ResourceImages.jpeg.uri),
+                        request = ComposableImageRequest(uri = ComposeResImageFiles.jpeg.uri),
                         sketch = sketch,
                         contentDescription = "test image"
                     )
 
                     AsyncImage(
-                        request = ComposableImageRequest(uri = ResourceImages.jpeg.uri),
+                        request = ComposableImageRequest(uri = ComposeResImageFiles.jpeg.uri),
                         sketch = sketch,
                         contentDescription = "test image",
                         modifier = Modifier,
@@ -104,7 +104,7 @@ class AsyncImageTest {
                     )
 
                     AsyncImage(
-                        request = ComposableImageRequest(ResourceImages.jpeg.uri),
+                        request = ComposableImageRequest(ComposeResImageFiles.jpeg.uri),
                         sketch = sketch,
                         contentDescription = "test image",
                         modifier = Modifier,
@@ -137,7 +137,7 @@ class AsyncImageTest {
                         stateHolder = this
                     }
                     AsyncImage(
-                        uri = ResourceImages.jpeg.uri,
+                        uri = ComposeResImageFiles.jpeg.uri,
                         sketch = sketch,
                         state = state,
                         contentDescription = "test image"
@@ -169,7 +169,7 @@ class AsyncImageTest {
                         stateHolder = this
                     }
                     AsyncImage(
-                        uri = ResourceImages.jpeg.uri,
+                        uri = ComposeResImageFiles.jpeg.uri,
                         sketch = sketch,
                         state = state,
                         contentDescription = "test image",
@@ -206,7 +206,7 @@ class AsyncImageTest {
                             stateHolder = this
                         }
                         AsyncImage(
-                            uri = ResourceImages.jpeg.uri,
+                            uri = ComposeResImageFiles.jpeg.uri,
                             sketch = sketch,
                             state = state,
                             contentDescription = "test image",
@@ -242,7 +242,7 @@ class AsyncImageTest {
                             stateHolder = this
                         }
                         AsyncImage(
-                            uri = ResourceImages.jpeg.uri,
+                            uri = ComposeResImageFiles.jpeg.uri,
                             sketch = sketch,
                             state = state,
                             contentDescription = "test image",
@@ -278,7 +278,7 @@ class AsyncImageTest {
                             stateHolder = this
                         }
                         AsyncImage(
-                            uri = ResourceImages.jpeg.uri,
+                            uri = ComposeResImageFiles.jpeg.uri,
                             sketch = sketch,
                             state = state,
                             contentDescription = "test image",
@@ -315,7 +315,7 @@ class AsyncImageTest {
                             stateHolder = this
                         }
                         AsyncImage(
-                            uri = ResourceImages.jpeg.uri,
+                            uri = ComposeResImageFiles.jpeg.uri,
                             sketch = sketch,
                             state = state,
                             contentDescription = "test image",
@@ -356,7 +356,7 @@ class AsyncImageTest {
                             stateHolder = this
                         }
                         AsyncImage(
-                            uri = ResourceImages.jpeg.uri,
+                            uri = ComposeResImageFiles.jpeg.uri,
                             sketch = sketch,
                             state = state,
                             contentDescription = "test image",
@@ -392,7 +392,7 @@ class AsyncImageTest {
                             stateHolder = this
                         }
                         AsyncImage(
-                            uri = ResourceImages.jpeg.uri,
+                            uri = ComposeResImageFiles.jpeg.uri,
                             sketch = sketch,
                             state = state,
                             contentDescription = "test image",
@@ -428,7 +428,7 @@ class AsyncImageTest {
                             stateHolder = this
                         }
                         AsyncImage(
-                            uri = ResourceImages.jpeg.uri,
+                            uri = ComposeResImageFiles.jpeg.uri,
                             sketch = sketch,
                             state = state,
                             contentDescription = "test image",
@@ -465,7 +465,7 @@ class AsyncImageTest {
                             stateHolder = this
                         }
                         AsyncImage(
-                            uri = ResourceImages.jpeg.uri,
+                            uri = ComposeResImageFiles.jpeg.uri,
                             sketch = sketch,
                             state = state,
                             contentDescription = "test image",

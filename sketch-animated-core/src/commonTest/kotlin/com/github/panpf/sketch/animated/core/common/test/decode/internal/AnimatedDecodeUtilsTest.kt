@@ -5,11 +5,9 @@ import com.github.panpf.sketch.decode.internal.isAnimatedWebP
 import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.decode.internal.isHeif
 import com.github.panpf.sketch.decode.internal.isWebP
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.Platform
-import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.fetch
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -20,14 +18,11 @@ class AnimatedDecodeUtilsTest {
 
     @Test
     fun testIsWebP() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
-        val webpFetchResult = ImageRequest(context, ResourceImages.webp.uri).fetch(sketch)
-        val animWebpFetchResult = ImageRequest(context, ResourceImages.animWebp.uri).fetch(sketch)
-        val jpegFetchResult = ImageRequest(context, ResourceImages.jpeg.uri).fetch(sketch)
+        val webpFetchResult = ImageRequest(context, ComposeResImageFiles.webp.uri).fetch(sketch)
+        val animWebpFetchResult =
+            ImageRequest(context, ComposeResImageFiles.animWebp.uri).fetch(sketch)
+        val jpegFetchResult = ImageRequest(context, ComposeResImageFiles.jpeg.uri).fetch(sketch)
 
         assertTrue(webpFetchResult.headerBytes.isWebP())
         assertTrue(animWebpFetchResult.headerBytes.isWebP())
@@ -39,14 +34,11 @@ class AnimatedDecodeUtilsTest {
 
     @Test
     fun testIsAnimatedWebP() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
-        val webpFetchResult = ImageRequest(context, ResourceImages.webp.uri).fetch(sketch)
-        val animWebpFetchResult = ImageRequest(context, ResourceImages.animWebp.uri).fetch(sketch)
-        val jpegFetchResult = ImageRequest(context, ResourceImages.jpeg.uri).fetch(sketch)
+        val webpFetchResult = ImageRequest(context, ComposeResImageFiles.webp.uri).fetch(sketch)
+        val animWebpFetchResult =
+            ImageRequest(context, ComposeResImageFiles.animWebp.uri).fetch(sketch)
+        val jpegFetchResult = ImageRequest(context, ComposeResImageFiles.jpeg.uri).fetch(sketch)
 
         // test_error_webp_anim.webp is not animated webp, must use the RiffAnimChunk function to judge
         assertFalse(webpFetchResult.headerBytes.isAnimatedWebP())
@@ -66,14 +58,11 @@ class AnimatedDecodeUtilsTest {
 
     @Test
     fun testIsHeif() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
-        val animWebpFetchResult = ImageRequest(context, ResourceImages.animWebp.uri).fetch(sketch)
-        val jpegFetchResult = ImageRequest(context, ResourceImages.jpeg.uri).fetch(sketch)
-        val heicFetchResult = ImageRequest(context, ResourceImages.heic.uri).fetch(sketch)
+        val animWebpFetchResult =
+            ImageRequest(context, ComposeResImageFiles.animWebp.uri).fetch(sketch)
+        val jpegFetchResult = ImageRequest(context, ComposeResImageFiles.jpeg.uri).fetch(sketch)
+        val heicFetchResult = ImageRequest(context, ComposeResImageFiles.heic.uri).fetch(sketch)
 
         assertTrue(heicFetchResult.headerBytes.isHeif())
         assertFalse(animWebpFetchResult.headerBytes.isHeif())
@@ -82,15 +71,13 @@ class AnimatedDecodeUtilsTest {
 
     @Test
     fun testIsAnimatedHeif() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
-        val animWebpFetchResult = ImageRequest(context, ResourceImages.animWebp.uri).fetch(sketch)
-        val jpegFetchResult = ImageRequest(context, ResourceImages.jpeg.uri).fetch(sketch)
-        val animHeifFetchResult = ImageRequest(context, ResourceImages.animHeif.uri).fetch(sketch)
-        val heicFetchResult = ImageRequest(context, ResourceImages.heic.uri).fetch(sketch)
+        val animWebpFetchResult =
+            ImageRequest(context, ComposeResImageFiles.animWebp.uri).fetch(sketch)
+        val jpegFetchResult = ImageRequest(context, ComposeResImageFiles.jpeg.uri).fetch(sketch)
+        val animHeifFetchResult =
+            ImageRequest(context, ComposeResImageFiles.animHeif.uri).fetch(sketch)
+        val heicFetchResult = ImageRequest(context, ComposeResImageFiles.heic.uri).fetch(sketch)
 
         assertTrue(animHeifFetchResult.headerBytes.isAnimatedHeif())
 
@@ -115,13 +102,11 @@ class AnimatedDecodeUtilsTest {
 
     @Test
     fun testIsGif() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
-        val animWebpFetchResult = ImageRequest(context, ResourceImages.animWebp.uri).fetch(sketch)
-        val animGifFetchResult = ImageRequest(context, ResourceImages.animGif.uri).fetch(sketch)
+        val animWebpFetchResult =
+            ImageRequest(context, ComposeResImageFiles.animWebp.uri).fetch(sketch)
+        val animGifFetchResult =
+            ImageRequest(context, ComposeResImageFiles.animGif.uri).fetch(sketch)
 
         assertTrue(animGifFetchResult.headerBytes.isGif())
         assertTrue(animGifFetchResult.headerBytes.copyOf().apply {

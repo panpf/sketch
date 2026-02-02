@@ -2,7 +2,7 @@ package com.github.panpf.sketch.blurhash.common.test.state
 
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.fetch.newBlurHashUri
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.state.BlurHashStateImage
@@ -61,7 +61,7 @@ class BlurHashStateImageTest {
     @Test
     fun testGetImage() {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         val memoryCache = sketch.memoryCache
 
         memoryCache.clear()

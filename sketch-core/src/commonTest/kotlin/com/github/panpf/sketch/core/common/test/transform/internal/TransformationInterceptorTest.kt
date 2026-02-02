@@ -18,7 +18,7 @@ package com.github.panpf.sketch.core.common.test.transform.internal
 
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.fetch.internal.FetcherInterceptor
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.internal.DecoderInterceptor
@@ -58,7 +58,7 @@ class TransformationInterceptorTest {
         )
 
         runBlock {
-            val request = ImageRequest(context, ResourceImages.jpeg.uri) {
+            val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                 size(3000, 3000)
                 precision(LESS_PIXELS)
             }
@@ -85,7 +85,7 @@ class TransformationInterceptorTest {
         }
 
         runBlock {
-            val request = ImageRequest(context, ResourceImages.jpeg.uri) {
+            val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                 size(3000, 3000)
                 precision(LESS_PIXELS)
                 transformations(CircleCropTransformation())
@@ -113,7 +113,7 @@ class TransformationInterceptorTest {
         }
 
         runBlock {
-            val request = ImageRequest(context, ResourceImages.jpeg.uri) {
+            val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                 size(3000, 3000)
                 precision(LESS_PIXELS)
                 transformations(object : Transformation {
@@ -161,7 +161,7 @@ class TransformationInterceptorTest {
         }
 
         runBlock {
-            val request = ImageRequest(context, ResourceImages.jpeg.uri) {
+            val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                 size(3000, 3000)
                 precision(LESS_PIXELS)
                 transformations(object : Transformation {

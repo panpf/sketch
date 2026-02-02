@@ -20,7 +20,7 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.cache.internal.ResultCacheInterceptor
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Interceptor
@@ -98,7 +98,7 @@ class PauseLoadWhenScrollingInterceptorTest {
         val interceptor = PauseLoadWhenScrollingInterceptor()
 
         try {
-            ImageRequest(context, ResourceImages.jpeg.uri).let { request ->
+            ImageRequest(context, ComposeResImageFiles.jpeg.uri).let { request ->
                 assertTrue(interceptor.enabled)
                 assertFalse(PauseLoadWhenScrollingInterceptor.scrolling)
                 assertFalse(request.isPauseLoadWhenScrolling)
@@ -110,7 +110,7 @@ class PauseLoadWhenScrollingInterceptorTest {
                 assertTrue(job.isCompleted)
             }
 
-            ImageRequest(context, ResourceImages.jpeg.uri).let { request ->
+            ImageRequest(context, ComposeResImageFiles.jpeg.uri).let { request ->
                 PauseLoadWhenScrollingInterceptor.scrolling = true
                 assertTrue(interceptor.enabled)
                 assertTrue(PauseLoadWhenScrollingInterceptor.scrolling)
@@ -123,7 +123,7 @@ class PauseLoadWhenScrollingInterceptorTest {
                 assertTrue(job.isCompleted)
             }
 
-            ImageRequest(context, ResourceImages.jpeg.uri) {
+            ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                 pauseLoadWhenScrolling()
             }.let { request ->
                 PauseLoadWhenScrollingInterceptor.scrolling = true
@@ -141,7 +141,7 @@ class PauseLoadWhenScrollingInterceptorTest {
                 assertTrue(job.isCompleted)
             }
 
-            ImageRequest(context, ResourceImages.jpeg.uri) {
+            ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                 pauseLoadWhenScrolling()
                 ignorePauseLoadWhenScrolling()
             }.let { request ->

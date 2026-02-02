@@ -1,16 +1,16 @@
 plugins {
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlinx.kover")
 }
 
-addAllMultiplatformTargets()
-
-androidLibrary(nameSpace = "com.github.panpf.sketch.extensions.compose.resources")
+addMultiplatformTargets(MultiplatformTargets.entries.toTypedArray())
 
 kotlin {
+    androidKmpLibrary(nameSpace = "com.github.panpf.sketch.extensions.compose.resources")
+
     sourceSets {
         commonMain.dependencies {
             api(projects.sketchComposeResources)

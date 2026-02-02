@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.core.common.test.util
 
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
@@ -466,7 +466,7 @@ class CoreUtilsTest {
     @Test
     fun testImageRequestDifference() {
         val context = getTestContext()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             addListener(object : Listener {})
             addProgressListener { _, _ -> }
             target(TestTarget())
@@ -517,13 +517,13 @@ class CoreUtilsTest {
         )
 
 //        val context2 = getTestContext()
-//        ImageRequest(context2, ResourceImages.jpeg.uri).apply {
+//        ImageRequest(context2, ComposeResImageFiles.jpeg.uri).apply {
 //            assertEquals(
 //                expected = "context different: '${request.context}' vs '${this@apply.context}'",
 //                actual = request.difference(this@apply)
 //            )
 //        }
-        ImageRequest(context, ResourceImages.png.uri).apply {
+        ImageRequest(context, ComposeResImageFiles.png.uri).apply {
             assertEquals(
                 expected = "uri different: '${request.uri}' vs '${this@apply.uri}'",
                 actual = request.difference(this@apply)

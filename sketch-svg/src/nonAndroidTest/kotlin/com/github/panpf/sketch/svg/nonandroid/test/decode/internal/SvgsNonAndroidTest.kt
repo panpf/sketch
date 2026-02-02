@@ -4,8 +4,7 @@ import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.decode.internal.decodeSvg
 import com.github.panpf.sketch.decode.internal.readSvgImageInfo
 import com.github.panpf.sketch.decode.name
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.colorType
@@ -30,9 +29,9 @@ import kotlin.test.assertTrue
 class SvgsNonAndroidTest {
 
     @Test
-    fun testReadSvgImageInfo() {
+    fun testReadSvgImageInfo() = runTest {
         val context = getTestContext()
-        val dataSource = ResourceImages.svg.toDataSource(context)
+        val dataSource = ComposeResImageFiles.svg.toDataSource(context)
         assertEquals(
             expected = "ImageInfo(256x225,'image/svg+xml')",
             actual = dataSource.readSvgImageInfo(useViewBoundsAsIntrinsicSize = false)
@@ -46,7 +45,7 @@ class SvgsNonAndroidTest {
 
         // RuntimeException: Can't wrap nullptr
         assertFailsWith(RuntimeException::class) {
-            ResourceImages.png.toDataSource(context)
+            ComposeResImageFiles.png.toDataSource(context)
                 .readSvgImageInfo()
         }
     }
@@ -54,7 +53,7 @@ class SvgsNonAndroidTest {
     @Test
     fun testDecodeSvg() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val imageFile = ResourceImages.svg
+        val imageFile = ComposeResImageFiles.svg
 
         val defaultConfigBitmap =
             imageFile.toDataSource(context)
@@ -224,9 +223,9 @@ class SvgsNonAndroidTest {
 
         // RuntimeException: Can't wrap nullptr
         assertFailsWith(RuntimeException::class) {
-            ResourceImages.png.toDataSource(context)
+            ComposeResImageFiles.png.toDataSource(context)
                 .decodeSvg(
-                    requestContext = ImageRequest(context, ResourceImages.png.uri) {
+                    requestContext = ImageRequest(context, ComposeResImageFiles.png.uri) {
                         size(Size.Origin)
                     }.toRequestContext(sketch)
                 )

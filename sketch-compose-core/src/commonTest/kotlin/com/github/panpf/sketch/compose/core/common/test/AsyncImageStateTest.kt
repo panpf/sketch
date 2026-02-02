@@ -25,7 +25,7 @@ import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PainterImage
 import com.github.panpf.sketch.PainterState
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.painter.ImageBitmapPainter
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.GlobalLifecycle
@@ -45,14 +45,12 @@ import com.github.panpf.sketch.test.singleton.SingletonSketch
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.ComposeSize
 import com.github.panpf.sketch.test.utils.DelayInterceptor
-import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestErrorEqualsSizeResolver
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestHttpUriFetcher
 import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.block
-import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.test.utils.similarity
@@ -371,7 +369,7 @@ class AsyncImageStateTest {
             setContent {
                 remember { asyncImageState }
                 asyncImageState.sketch = sketch
-                asyncImageState.request = ImageRequest(context, ResourceImages.jpeg.uri)
+                asyncImageState.request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
                 asyncImageState.contentScale = ContentScale.Fit
                 asyncImageState.alignment = Alignment.Center
                 asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
@@ -387,7 +385,7 @@ class AsyncImageStateTest {
             setContent {
                 remember { asyncImageState }
                 asyncImageState.sketch = sketch
-                asyncImageState.request = ImageRequest(context, ResourceImages.jpeg.uri) {
+                asyncImageState.request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                     addListener(
                         onStart = {
 
@@ -409,7 +407,7 @@ class AsyncImageStateTest {
             setContent {
                 remember { asyncImageState }
                 asyncImageState.sketch = sketch
-                asyncImageState.request = ImageRequest(context, ResourceImages.jpeg.uri) {
+                asyncImageState.request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                     addProgressListener { _, _ -> }
                 }
                 asyncImageState.contentScale = ContentScale.Fit
@@ -427,7 +425,7 @@ class AsyncImageStateTest {
             setContent {
                 remember { asyncImageState }
                 asyncImageState.sketch = sketch
-                asyncImageState.request = ImageRequest(context, ResourceImages.jpeg.uri) {
+                asyncImageState.request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                     target(TestTarget())
                 }
                 asyncImageState.contentScale = ContentScale.Fit
@@ -445,7 +443,7 @@ class AsyncImageStateTest {
             setContent {
                 remember { asyncImageState }
                 asyncImageState.sketch = sketch
-                asyncImageState.request = ImageRequest(context, ResourceImages.jpeg.uri) {
+                asyncImageState.request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                     size(FixedSizeResolver(Size(100, 100)))
                 }
                 asyncImageState.contentScale = ContentScale.Fit
@@ -455,7 +453,7 @@ class AsyncImageStateTest {
             waitForIdle()
             block(100)
 
-            asyncImageState.request = ImageRequest(context, ResourceImages.jpeg.uri) {
+            asyncImageState.request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                 size(FixedSizeResolver(Size(100, 100)))
             }
             block(100)
@@ -468,7 +466,7 @@ class AsyncImageStateTest {
             setContent {
                 remember { asyncImageState }
                 asyncImageState.sketch = sketch
-                asyncImageState.request = ImageRequest(context, ResourceImages.jpeg.uri) {
+                asyncImageState.request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                     size(TestErrorEqualsSizeResolver(Size(100, 100)))
                 }
                 asyncImageState.contentScale = ContentScale.Fit
@@ -478,7 +476,7 @@ class AsyncImageStateTest {
             waitForIdle()
             block(100)
 
-            asyncImageState.request = ImageRequest(context, ResourceImages.jpeg.uri) {
+            asyncImageState.request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                 size(TestErrorEqualsSizeResolver(Size(100, 100)))
             }
             block(100)
@@ -488,10 +486,6 @@ class AsyncImageStateTest {
 
     @Test
     fun testPreview() {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return
-        }
         val (context, sketch) = getTestContextAndSketch()
         val asyncImageState = AsyncImageState(
             context = context,
@@ -500,10 +494,10 @@ class AsyncImageStateTest {
             imageOptions = ImageOptions()
         )
 
-        val request = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(Size.Origin)
         }
-        val request2 = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request2 = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(Size.Origin)
             placeholder(Color.Red)
         }
@@ -541,13 +535,9 @@ class AsyncImageStateTest {
 
     @Test
     fun testLoad() {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return
-        }
         val (context, sketch) = getTestContextAndSketch()
 
-        val resourceImage = ResourceImages.jpeg
+        val resourceImage = ComposeResImageFiles.jpeg
         val asyncImageState = AsyncImageState(
             context = context,
             inspectionMode = false,
@@ -693,13 +683,9 @@ class AsyncImageStateTest {
 
     @Test
     fun testRestart() {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return
-        }
         val (context, sketch) = getTestContextAndSketch()
 
-        val resourceImage = ResourceImages.jpeg
+        val resourceImage = ComposeResImageFiles.jpeg
         val asyncImageState = AsyncImageState(
             context = context,
             inspectionMode = false,
@@ -753,10 +739,6 @@ class AsyncImageStateTest {
 
     @Test
     fun testPainterResultPainterStateLoadStateProgress() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         runInNewSketchWithUse({
             components {
                 add(TestHttpUriFetcher.Factory(it, readDelayMillis = 20))
@@ -1104,7 +1086,7 @@ class AsyncImageStateTest {
                         imageState.alignment = Alignment.Center
                         imageState.filterQuality = DrawScope.DefaultFilterQuality
                         imageState.sketch = SingletonSketch.get(context)
-                        imageState.request = ImageRequest(context, ResourceImages.jpeg.uri) {
+                        imageState.request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                             components {
                                 add(DelayInterceptor(1000))
                             }

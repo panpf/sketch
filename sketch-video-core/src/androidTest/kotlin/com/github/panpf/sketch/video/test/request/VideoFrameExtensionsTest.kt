@@ -18,7 +18,7 @@ package com.github.panpf.sketch.video.test.request
 
 import android.media.MediaMetadataRetriever
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.videoFrameMicros
@@ -42,59 +42,59 @@ class VideoFrameExtensionsTest {
     fun testVideoFrameMicros() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        ImageRequest(context, ResourceImages.mp4.uri).apply {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri).apply {
             assertNull(videoFrameMicros)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             this.videoFrameMicros(1000000)
         }.apply {
             assertEquals(1000000L, videoFrameMicros)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             this.videoFrameMillis(1000)
         }.apply {
             assertEquals(1000000L, videoFrameMicros)
         }
         assertFailsWith(IllegalArgumentException::class) {
-            ImageRequest(context, ResourceImages.mp4.uri) {
+            ImageRequest(context, ComposeResImageFiles.mp4.uri) {
                 this.videoFrameMillis(-1)
             }
         }
 
-        ImageRequest(context, ResourceImages.mp4.uri).apply {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri).apply {
             assertNull(videoFrameMicros)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFrameMicros(1000000)
         }.apply {
             assertEquals(1000000L, videoFrameMicros)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFrameMillis(1000)
         }.apply {
             assertEquals(1000000L, videoFrameMicros)
         }
         assertFailsWith(IllegalArgumentException::class) {
-            ImageRequest(context, ResourceImages.mp4.uri) {
+            ImageRequest(context, ComposeResImageFiles.mp4.uri) {
                 videoFrameMillis(-1)
             }
         }
 
-        ImageRequest(context, ResourceImages.mp4.uri).apply {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri).apply {
             assertNull(videoFrameMicros)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFrameMicros(1000000)
         }.apply {
             assertEquals(1000000L, videoFrameMicros)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFrameMillis(1000)
         }.apply {
             assertEquals(1000000L, videoFrameMicros)
         }
         assertFailsWith(IllegalArgumentException::class) {
-            ImageRequest(context, ResourceImages.mp4.uri) {
+            ImageRequest(context, ComposeResImageFiles.mp4.uri) {
                 videoFrameMillis(-1)
             }
         }
@@ -118,15 +118,15 @@ class VideoFrameExtensionsTest {
             }
         }
 
-        val key1 = ImageRequest(context, ResourceImages.mp4.uri).key
-        val key2 = ImageRequest(context, ResourceImages.mp4.uri) {
+        val key1 = ImageRequest(context, ComposeResImageFiles.mp4.uri).key
+        val key2 = ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFrameMillis(500)
         }.key
         assertNotEquals(key1, key2)
 
-        val cacheKey1 = ImageRequest(context, ResourceImages.mp4.uri)
+        val cacheKey1 = ImageRequest(context, ComposeResImageFiles.mp4.uri)
             .toRequestContext(sketch).memoryCacheKey
-        val cacheKey2 = ImageRequest(context, ResourceImages.mp4.uri) {
+        val cacheKey2 = ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFrameMillis(500)
         }.toRequestContext(sketch).memoryCacheKey
         assertNotEquals(cacheKey1, cacheKey2)
@@ -136,59 +136,59 @@ class VideoFrameExtensionsTest {
     fun testVideoPercent() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        ImageRequest(context, ResourceImages.mp4.uri).apply {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri).apply {
             assertNull(videoFramePercent)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             this.videoFramePercent(0.45f)
         }.apply {
             assertEquals(0.45f, videoFramePercent)
         }
         assertFailsWith(IllegalArgumentException::class) {
-            ImageRequest(context, ResourceImages.mp4.uri) {
+            ImageRequest(context, ComposeResImageFiles.mp4.uri) {
                 this.videoFramePercent(-0.1f)
             }
         }
         assertFailsWith(IllegalArgumentException::class) {
-            ImageRequest(context, ResourceImages.mp4.uri) {
+            ImageRequest(context, ComposeResImageFiles.mp4.uri) {
                 this.videoFramePercent(-1.1f)
             }
         }
 
-        ImageRequest(context, ResourceImages.mp4.uri).apply {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri).apply {
             assertNull(videoFramePercent)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFramePercent(0.45f)
         }.apply {
             assertEquals(0.45f, videoFramePercent)
         }
         assertFailsWith(IllegalArgumentException::class) {
-            ImageRequest(context, ResourceImages.mp4.uri) {
+            ImageRequest(context, ComposeResImageFiles.mp4.uri) {
                 videoFramePercent(-0.1f)
             }
         }
         assertFailsWith(IllegalArgumentException::class) {
-            ImageRequest(context, ResourceImages.mp4.uri) {
+            ImageRequest(context, ComposeResImageFiles.mp4.uri) {
                 videoFramePercent(-1.1f)
             }
         }
 
-        ImageRequest(context, ResourceImages.mp4.uri).apply {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri).apply {
             assertNull(videoFramePercent)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFramePercent(0.45f)
         }.apply {
             assertEquals(0.45f, videoFramePercent)
         }
         assertFailsWith(IllegalArgumentException::class) {
-            ImageRequest(context, ResourceImages.mp4.uri) {
+            ImageRequest(context, ComposeResImageFiles.mp4.uri) {
                 videoFramePercent(-0.1f)
             }
         }
         assertFailsWith(IllegalArgumentException::class) {
-            ImageRequest(context, ResourceImages.mp4.uri) {
+            ImageRequest(context, ComposeResImageFiles.mp4.uri) {
                 videoFramePercent(-1.1f)
             }
         }
@@ -212,15 +212,18 @@ class VideoFrameExtensionsTest {
             }
         }
 
-        val key1 = ImageRequest(context, ResourceImages.mp4.uri).key
-        val key2 = ImageRequest(context, ResourceImages.mp4.uri) {
+        val key1 = ImageRequest(context, ComposeResImageFiles.mp4.uri).key
+        val key2 = ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFramePercent(0.45f)
         }.key
         assertNotEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, ResourceImages.mp4.uri).toRequestContext(sketch).memoryCacheKey
-        val cacheKey2 = ImageRequest(context, ResourceImages.mp4.uri) {
+            ImageRequest(
+                context,
+                ComposeResImageFiles.mp4.uri
+            ).toRequestContext(sketch).memoryCacheKey
+        val cacheKey2 = ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFramePercent(0.45f)
         }.toRequestContext(sketch).memoryCacheKey
         assertNotEquals(cacheKey1, cacheKey2)
@@ -230,89 +233,89 @@ class VideoFrameExtensionsTest {
     fun testVideoOption() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        ImageRequest(context, ResourceImages.mp4.uri).apply {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri).apply {
             assertNull(videoFrameOption)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             this.videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.apply {
             assertEquals(MediaMetadataRetriever.OPTION_CLOSEST, videoFrameOption)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             this.videoFrameOption(MediaMetadataRetriever.OPTION_NEXT_SYNC)
         }.apply {
             assertEquals(MediaMetadataRetriever.OPTION_NEXT_SYNC, videoFrameOption)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             this.videoFrameOption(MediaMetadataRetriever.OPTION_PREVIOUS_SYNC)
         }.apply {
             assertEquals(MediaMetadataRetriever.OPTION_PREVIOUS_SYNC, videoFrameOption)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             this.videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
         }.apply {
             assertEquals(MediaMetadataRetriever.OPTION_CLOSEST_SYNC, videoFrameOption)
         }
         assertFailsWith(IllegalArgumentException::class) {
-            ImageRequest(context, ResourceImages.mp4.uri) {
+            ImageRequest(context, ComposeResImageFiles.mp4.uri) {
                 this.videoFrameOption(-1)
             }
         }
 
-        ImageRequest(context, ResourceImages.mp4.uri).apply {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri).apply {
             assertNull(videoFrameOption)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.apply {
             assertEquals(MediaMetadataRetriever.OPTION_CLOSEST, videoFrameOption)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_NEXT_SYNC)
         }.apply {
             assertEquals(MediaMetadataRetriever.OPTION_NEXT_SYNC, videoFrameOption)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_PREVIOUS_SYNC)
         }.apply {
             assertEquals(MediaMetadataRetriever.OPTION_PREVIOUS_SYNC, videoFrameOption)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
         }.apply {
             assertEquals(MediaMetadataRetriever.OPTION_CLOSEST_SYNC, videoFrameOption)
         }
         assertFailsWith(IllegalArgumentException::class) {
-            ImageRequest(context, ResourceImages.mp4.uri) {
+            ImageRequest(context, ComposeResImageFiles.mp4.uri) {
                 videoFrameOption(-1)
             }
         }
 
-        ImageRequest(context, ResourceImages.mp4.uri).apply {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri).apply {
             assertNull(videoFrameOption)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.apply {
             assertEquals(MediaMetadataRetriever.OPTION_CLOSEST, videoFrameOption)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_NEXT_SYNC)
         }.apply {
             assertEquals(MediaMetadataRetriever.OPTION_NEXT_SYNC, videoFrameOption)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_PREVIOUS_SYNC)
         }.apply {
             assertEquals(MediaMetadataRetriever.OPTION_PREVIOUS_SYNC, videoFrameOption)
         }
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
         }.apply {
             assertEquals(MediaMetadataRetriever.OPTION_CLOSEST_SYNC, videoFrameOption)
         }
         assertFailsWith(IllegalArgumentException::class) {
-            ImageRequest(context, ResourceImages.mp4.uri) {
+            ImageRequest(context, ComposeResImageFiles.mp4.uri) {
                 videoFrameOption(-1)
             }
         }
@@ -346,15 +349,18 @@ class VideoFrameExtensionsTest {
             }
         }
 
-        val key1 = ImageRequest(context, ResourceImages.mp4.uri).key
-        val key2 = ImageRequest(context, ResourceImages.mp4.uri) {
+        val key1 = ImageRequest(context, ComposeResImageFiles.mp4.uri).key
+        val key2 = ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_NEXT_SYNC)
         }.key
         assertNotEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, ResourceImages.mp4.uri).toRequestContext(sketch).memoryCacheKey
-        val cacheKey2 = ImageRequest(context, ResourceImages.mp4.uri) {
+            ImageRequest(
+                context,
+                ComposeResImageFiles.mp4.uri
+            ).toRequestContext(sketch).memoryCacheKey
+        val cacheKey2 = ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             videoFrameOption(MediaMetadataRetriever.OPTION_NEXT_SYNC)
         }.toRequestContext(sketch).memoryCacheKey
         assertNotEquals(cacheKey1, cacheKey2)

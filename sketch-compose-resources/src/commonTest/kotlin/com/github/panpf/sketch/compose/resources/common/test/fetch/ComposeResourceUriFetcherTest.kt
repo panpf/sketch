@@ -5,12 +5,10 @@ import com.github.panpf.sketch.fetch.ComposeResourceUriFetcher
 import com.github.panpf.sketch.fetch.isComposeResourceUri
 import com.github.panpf.sketch.fetch.newComposeResourceUri
 import com.github.panpf.sketch.fetch.supportComposeResources
+import com.github.panpf.sketch.images.Res
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.ByteArrayDataSource
-import com.github.panpf.sketch.test.compose.resources.Res
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.Platform
-import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toUri
@@ -140,10 +138,6 @@ class ComposeResourceUriFetcherTest {
 
     @Test
     fun testFetch() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
 
         val fetcherFactory = ComposeResourceUriFetcher.Factory()

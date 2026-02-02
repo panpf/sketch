@@ -5,14 +5,11 @@ import com.github.panpf.sketch.decode.AnimatedWebpDecoder
 import com.github.panpf.sketch.decode.defaultAnimatedWebpDecoderFactory
 import com.github.panpf.sketch.decode.supportAnimatedWebp
 import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.createDecoderOrNull
-import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -68,9 +65,9 @@ class AnimatedWebpDecoderTest {
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, ResourceImages.animWebp.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.animWebp.uri)
         val requestContext = request.toRequestContext(sketch)
-        val fetchResult = ResourceImages.animWebp.let {
+        val fetchResult = ComposeResImageFiles.animWebp.let {
             FetchResult(it.toDataSource(context), it.mimeType)
         }
         val defaultAnimatedWebpDecoder =
@@ -82,9 +79,9 @@ class AnimatedWebpDecoderTest {
     @Test
     fun testEqualsAndHashCode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.animWebp.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.animWebp.uri)
         val requestContext = request.toRequestContext(sketch)
-        val fetchResult = ResourceImages.animWebp.let {
+        val fetchResult = ComposeResImageFiles.animWebp.let {
             FetchResult(it.toDataSource(context), it.mimeType)
         }
         val defaultAnimatedWebpDecoder1 =
@@ -102,9 +99,9 @@ class AnimatedWebpDecoderTest {
     @Test
     fun testToString() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.animWebp.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.animWebp.uri)
         val requestContext = request.toRequestContext(sketch)
-        val fetchResult = ResourceImages.animWebp.let {
+        val fetchResult = ComposeResImageFiles.animWebp.let {
             FetchResult(it.toDataSource(context), it.mimeType)
         }
         val defaultAnimatedWebpDecoder =
@@ -134,15 +131,11 @@ class AnimatedWebpDecoderTest {
 
     @Test
     fun testFactoryCreate() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
         val factory = AnimatedWebpDecoder.Factory()
 
         // normal
-        ImageRequest(context, ResourceImages.animWebp.uri)
+        ImageRequest(context, ComposeResImageFiles.animWebp.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/gif")
             }.apply {
@@ -150,7 +143,7 @@ class AnimatedWebpDecoderTest {
             }
 
         // no mimeType
-        ImageRequest(context, ResourceImages.animWebp.uri)
+        ImageRequest(context, ComposeResImageFiles.animWebp.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = null)
             }.apply {
@@ -158,7 +151,7 @@ class AnimatedWebpDecoderTest {
             }
 
         // Disguised mimeType
-        ImageRequest(context, ResourceImages.animWebp.uri)
+        ImageRequest(context, ComposeResImageFiles.animWebp.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/jpeg")
             }.apply {
@@ -166,7 +159,7 @@ class AnimatedWebpDecoderTest {
             }
 
         // disallowAnimatedImage true
-        ImageRequest(context, ResourceImages.animWebp.uri) {
+        ImageRequest(context, ComposeResImageFiles.animWebp.uri) {
             disallowAnimatedImage()
         }.createDecoderOrNull(sketch, factory) {
             it.copy(mimeType = null)
@@ -175,7 +168,7 @@ class AnimatedWebpDecoderTest {
         }
 
         // data error
-        ImageRequest(context, ResourceImages.png.uri)
+        ImageRequest(context, ComposeResImageFiles.png.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = null)
             }.apply {
@@ -183,7 +176,7 @@ class AnimatedWebpDecoderTest {
             }
 
         // Disguised, mimeType; data error
-        ImageRequest(context, ResourceImages.png.uri)
+        ImageRequest(context, ComposeResImageFiles.png.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/gif")
             }.apply {

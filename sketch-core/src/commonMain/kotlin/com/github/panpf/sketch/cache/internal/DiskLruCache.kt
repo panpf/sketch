@@ -16,7 +16,6 @@
 
 package com.github.panpf.sketch.cache.internal
 
-import com.github.panpf.sketch.cache.internal.DiskLruCache.Editor
 import com.github.panpf.sketch.util.LruMutableMap
 import com.github.panpf.sketch.util.createFile
 import com.github.panpf.sketch.util.deleteContents
@@ -164,7 +163,7 @@ internal class DiskLruCache(
     }
 
     fun initialize() = synchronized(lock) {
-        if (initialized) return
+        if (initialized) return@synchronized
 
         // If a temporary file exists, delete it.
         fileSystem.delete(journalFileTmp)
@@ -185,7 +184,7 @@ internal class DiskLruCache(
                 readJournal()
                 processJournal()
                 initialized = true
-                return
+                return@synchronized
             } catch (_: IOException) {
                 // The journal is corrupt.
             }
@@ -455,7 +454,7 @@ internal class DiskLruCache(
             for (i in 0 until valueCount) {
                 if (editor.written[i] && !fileSystem.exists(entry.dirtyFiles[i])) {
                     editor.abort()
-                    return
+                    return@synchronized
                 }
             }
 
@@ -484,7 +483,7 @@ internal class DiskLruCache(
         entry.currentEditor = null
         if (entry.zombie) {
             removeEntry(entry)
-            return
+            return@synchronized
         }
 
         operationsSinceRewrite++
@@ -584,7 +583,7 @@ internal class DiskLruCache(
     override fun close() = synchronized(lock) {
         if (!initialized || closed) {
             closed = true
-            return
+            return@synchronized
         }
 
         // Copying for concurrent iteration.
@@ -601,7 +600,7 @@ internal class DiskLruCache(
     }
 
     fun flush() = synchronized(lock) {
-        if (!initialized) return
+        if (!initialized) return@synchronized
 
         checkNotClosed()
         trimToSize()

@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.core.ios.test.source
 
 import com.github.panpf.sketch.fetch.newKotlinResourceUri
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.KotlinResourceDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -50,13 +50,13 @@ class KotlinResourceDataSourceTest {
         // TODO test: Files in kotlin resources cannot be accessed in ios test environment.
         //      There are other places where this problem also occurs, search for it
         assertFailsWith(FileNotFoundException::class) {
-            KotlinResourceDataSource(ResourceImages.jpeg.resourceName)
+            KotlinResourceDataSource(ComposeResImageFiles.jpeg.name)
                 .openSource().buffer()
                 .use { it.readByteArray() }
         }
 
         assertFailsWith(FileNotFoundException::class) {
-            KotlinResourceDataSource(ResourceImages.png.resourceName)
+            KotlinResourceDataSource(ComposeResImageFiles.png.name)
                 .openSource().buffer()
                 .use { it.readByteArray().decodeToString() }
         }
@@ -66,14 +66,14 @@ class KotlinResourceDataSourceTest {
     fun testGetFile() {
         val (_, sketch) = getTestContextAndSketch()
         val path1: Path
-        KotlinResourceDataSource(ResourceImages.jpeg.resourceName)
+        KotlinResourceDataSource(ComposeResImageFiles.jpeg.name)
             .getFile(sketch).apply {
                 path1 = this
                 assertTrue(actual = toString().contains("/compose-resources/"))
             }
 
         val path2: Path
-        KotlinResourceDataSource(ResourceImages.jpeg.resourceName)
+        KotlinResourceDataSource(ComposeResImageFiles.jpeg.name)
             .getFile(sketch).apply {
                 path2 = this
                 assertTrue(actual = toString().contains("/compose-resources/"))

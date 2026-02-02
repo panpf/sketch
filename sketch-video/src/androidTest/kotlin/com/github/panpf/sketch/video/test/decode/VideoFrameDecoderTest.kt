@@ -27,8 +27,7 @@ import com.github.panpf.sketch.decode.VideoFrameDecoder
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
 import com.github.panpf.sketch.decode.supportVideoFrame
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.request.videoFrameMillis
@@ -105,9 +104,9 @@ class VideoFrameDecoderTest {
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, ResourceImages.mp4.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.mp4.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.mp4.toDataSource(context)
+        val dataSource = ComposeResImageFiles.mp4.toDataSource(context)
 
         VideoFrameDecoder(requestContext, dataSource, "video/mp4")
         VideoFrameDecoder(
@@ -122,7 +121,7 @@ class VideoFrameDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = VideoFrameDecoder.Factory()
 
-        ImageRequest(context, ResourceImages.mp4.uri)
+        ImageRequest(context, ComposeResImageFiles.mp4.uri)
             .createDecoderOrDefault(sketch, factory)
             .apply {
                 assertEquals(
@@ -139,7 +138,7 @@ class VideoFrameDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = VideoFrameDecoder.Factory()
 
-        ImageRequest(context, ResourceImages.mp4.uri)
+        ImageRequest(context, ComposeResImageFiles.mp4.uri)
             .decode(sketch, factory).apply {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     assertEquals(
@@ -161,7 +160,7 @@ class VideoFrameDecoderTest {
             }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            ImageRequest(context, ResourceImages.mp4.uri) {
+            ImageRequest(context, ComposeResImageFiles.mp4.uri) {
                 colorType(RGB_565)
             }.decode(sketch, factory).apply {
                 assertEquals(
@@ -177,7 +176,7 @@ class VideoFrameDecoderTest {
             }
         }
 
-        ImageRequest(context, ResourceImages.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             resize(300, 300, LESS_PIXELS)
         }.decode(sketch, factory).apply {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -210,7 +209,7 @@ class VideoFrameDecoderTest {
         }
 
         assertFailsWith(NullPointerException::class) {
-            val request = ImageRequest(context, ResourceImages.png.uri)
+            val request = ImageRequest(context, ComposeResImageFiles.png.uri)
             val requestContext = request.toRequestContext(sketch)
             val fetcher = sketch.components.newFetcherOrThrow(requestContext)
             val fetchResult = fetcher.fetch().getOrThrow()
@@ -225,19 +224,19 @@ class VideoFrameDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = VideoFrameDecoder.Factory()
 
-        val bitmap1 = ImageRequest(context, ResourceImages.mp4.uri) {
+        val bitmap1 = ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.decode(sketch, factory).image.getBitmapOrThrow()
 
-        val bitmap11 = ImageRequest(context, ResourceImages.mp4.uri) {
+        val bitmap11 = ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.decode(sketch, factory).image.getBitmapOrThrow()
 
-        val bitmap2 = ImageRequest(context, ResourceImages.mp4.uri) {
+        val bitmap2 = ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
@@ -255,19 +254,19 @@ class VideoFrameDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = VideoFrameDecoder.Factory()
 
-        val bitmap1 = ImageRequest(context, ResourceImages.mp4.uri) {
+        val bitmap1 = ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.decode(sketch, factory).image.getBitmapOrThrow()
 
-        val bitmap11 = ImageRequest(context, ResourceImages.mp4.uri) {
+        val bitmap11 = ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.decode(sketch, factory).image.getBitmapOrThrow()
 
-        val bitmap2 = ImageRequest(context, ResourceImages.mp4.uri) {
+        val bitmap2 = ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
@@ -285,13 +284,13 @@ class VideoFrameDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = VideoFrameDecoder.Factory()
 
-        val bitmap1 = ImageRequest(context, ResourceImages.mp4.uri) {
+        val bitmap1 = ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFramePercent(0.5f)
         }.decode(sketch, factory).image.getBitmapOrThrow()
 
-        val bitmap2 = ImageRequest(context, ResourceImages.mp4.uri) {
+        val bitmap2 = ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             videoFramePercent(0.5f)
@@ -304,9 +303,9 @@ class VideoFrameDecoderTest {
     @Test
     fun testEqualsAndHashCode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.mp4.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.mp4.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.mp4.toDataSource(context)
+        val dataSource = ComposeResImageFiles.mp4.toDataSource(context)
         val element1 = VideoFrameDecoder(requestContext, dataSource, "video/mp4")
         val element11 = VideoFrameDecoder(requestContext, dataSource, "video/mp4")
 
@@ -319,9 +318,9 @@ class VideoFrameDecoderTest {
     @Test
     fun testToString() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.mp4.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.mp4.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.mp4.toDataSource(context)
+        val dataSource = ComposeResImageFiles.mp4.toDataSource(context)
         val decoder = VideoFrameDecoder(requestContext, dataSource, "video/mp4")
         assertTrue(
             actual = decoder.toString().contains("VideoFrameDecoder"),
@@ -350,28 +349,28 @@ class VideoFrameDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = VideoFrameDecoder.Factory()
 
-        ImageRequest(context, ResourceImages.mp4.uri)
+        ImageRequest(context, ComposeResImageFiles.mp4.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "video/mp4")
             }.apply {
                 assertTrue(this is VideoFrameDecoder)
             }
 
-        ImageRequest(context, ResourceImages.mp4.uri)
+        ImageRequest(context, ComposeResImageFiles.mp4.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = null)
             }.apply {
                 assertNull(this)
             }
 
-        ImageRequest(context, ResourceImages.mp4.uri)
+        ImageRequest(context, ComposeResImageFiles.mp4.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/png")
             }.apply {
                 assertNull(this)
             }
 
-        ImageRequest(context, ResourceImages.png.uri)
+        ImageRequest(context, ComposeResImageFiles.png.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "video/mp4")
             }.apply {

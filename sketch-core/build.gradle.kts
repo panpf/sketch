@@ -1,24 +1,16 @@
 plugins {
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("com.codingfeline.buildkonfig")
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.kotlinx.atomicfu")
     id("org.jetbrains.kotlinx.kover")
 }
 
-addAllMultiplatformTargets()
-
-androidLibrary(nameSpace = "com.github.panpf.sketch.core") {
-    buildFeatures {
-        buildConfig = true
-    }
-    defaultConfig {
-        buildConfigField("String", "VERSION_NAME", "\"${project.versionName}\"")
-        buildConfigField("int", "VERSION_CODE", project.versionCode.toString())
-    }
-}
+addMultiplatformTargets(MultiplatformTargets.entries.toTypedArray())
 
 kotlin {
+    androidKmpLibrary(nameSpace = "com.github.panpf.sketch.core")
+
     sourceSets {
         commonMain.dependencies {
             api(libs.kotlin.stdlib)
@@ -45,7 +37,7 @@ kotlin {
             implementation(projects.internal.testHttp)
             implementation(projects.internal.testSingleton)
         }
-        androidInstrumentedTest.dependencies {
+        androidDeviceTest.dependencies {
             implementation(projects.internal.test)
             implementation(projects.internal.testHttp)
             implementation(projects.internal.testSingleton)

@@ -1,14 +1,14 @@
 plugins {
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.kotlinx.kover")
 }
 
-addAllMultiplatformTargets()
-
-androidLibrary(nameSpace = "com.github.panpf.sketch.http.ktor3")
+addMultiplatformTargets(MultiplatformTargets.entries.toTypedArray())
 
 kotlin {
+    androidKmpLibrary(nameSpace = "com.github.panpf.sketch.http.ktor3")
+
     sourceSets {
         commonMain.dependencies {
             api(projects.sketchHttpKtor3Core)
@@ -33,7 +33,7 @@ kotlin {
             implementation(projects.internal.test)
             implementation(projects.internal.testSingleton)
         }
-        androidInstrumentedTest.dependencies {
+        androidDeviceTest.dependencies {
             implementation(projects.internal.test)
             implementation(projects.internal.testSingleton)
         }

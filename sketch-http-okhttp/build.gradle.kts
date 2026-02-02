@@ -1,14 +1,14 @@
 plugins {
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.kotlinx.kover")
 }
 
-addAllMultiplatformTargets(MultiplatformTargets.Android, MultiplatformTargets.Desktop)
-
-androidLibrary(nameSpace = "com.github.panpf.sketch.http.okhttp")
+addMultiplatformTargets(arrayOf(MultiplatformTargets.Android, MultiplatformTargets.Desktop))
 
 kotlin {
+    androidKmpLibrary(nameSpace = "com.github.panpf.sketch.http.okhttp")
+
     sourceSets {
         commonMain.dependencies {
             api(projects.sketchCore)

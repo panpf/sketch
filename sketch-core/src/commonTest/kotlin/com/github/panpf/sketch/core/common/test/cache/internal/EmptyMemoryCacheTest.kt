@@ -3,9 +3,7 @@ package com.github.panpf.sketch.core.common.test.cache.internal
 import com.github.panpf.sketch.cache.ImageCacheValue
 import com.github.panpf.sketch.cache.internal.EmptyMemoryCache
 import com.github.panpf.sketch.test.utils.FakeImage
-import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.block
-import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -41,34 +39,6 @@ class EmptyMemoryCacheTest {
     @OptIn(InternalCoroutinesApi::class)
     @Test
     fun testWithLock() {
-        if (Platform.current == Platform.iOS) {
-            // TODO test: Will get stuck forever in iOS test environment.
-            //  There are other places where this problem also occurs, search for it
-            return
-        }
-//        runTest {
-//            var value: String? = null
-//            var initialCount = 0
-//            val initialCountLock = SynchronizedObject()
-//            val jobs = mutableListOf<Deferred<*>>()
-//            repeat(10) { index ->
-//                val job = async(ioCoroutineDispatcher()) {
-//                    if (value == null) {
-//                        println("init start: $index")
-//                        value = "value"
-//                        block(100 - (index * 10L))
-//                        synchronized(initialCountLock) {
-//                            initialCount++
-//                        }
-//                        println("init end: $index. initialCount=$initialCount")
-//                    }
-//                }
-//                jobs.add(job)
-//            }
-//            jobs.awaitAll()
-//            assertTrue(actual = initialCount > 1, message = "initialCount=$initialCount")
-//        }
-
         val cache = EmptyMemoryCache
         runTest {
             launch(ioCoroutineDispatcher()) {

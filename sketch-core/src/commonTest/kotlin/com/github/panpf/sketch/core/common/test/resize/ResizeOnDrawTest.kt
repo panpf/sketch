@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.core.common.test.resize
 
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.resizeOnDraw
 import com.github.panpf.sketch.test.utils.FakeImage
@@ -25,7 +25,7 @@ class ResizeOnDrawTest {
         assertSame(
             expected = image,
             actual = image.resizeOnDraw(
-                request = ImageRequest(context, ResourceImages.jpeg.uri),
+                request = ImageRequest(context, ComposeResImageFiles.jpeg.uri),
                 size = null
             )
         )
@@ -34,7 +34,7 @@ class ResizeOnDrawTest {
         assertSame(
             expected = image,
             actual = image.resizeOnDraw(
-                request = ImageRequest(context, ResourceImages.jpeg.uri),
+                request = ImageRequest(context, ComposeResImageFiles.jpeg.uri),
                 size = Size.Empty
             )
         )
@@ -43,7 +43,7 @@ class ResizeOnDrawTest {
         assertSame(
             expected = image,
             actual = image.resizeOnDraw(
-                request = ImageRequest(context, ResourceImages.jpeg.uri).newRequest {
+                request = ImageRequest(context, ComposeResImageFiles.jpeg.uri).newRequest {
                     resizeOnDraw(false)
                 },
                 size = Size(100, 100)
@@ -54,7 +54,7 @@ class ResizeOnDrawTest {
         assertSame(
             expected = image,
             actual = image.resizeOnDraw(
-                request = ImageRequest(context, ResourceImages.jpeg.uri).newRequest {
+                request = ImageRequest(context, ComposeResImageFiles.jpeg.uri).newRequest {
                     resizeOnDraw(true)
                     target(null)
                 },
@@ -66,7 +66,7 @@ class ResizeOnDrawTest {
         assertSame(
             expected = image,
             actual = image.resizeOnDraw(
-                request = ImageRequest(context, ResourceImages.jpeg.uri).newRequest {
+                request = ImageRequest(context, ComposeResImageFiles.jpeg.uri).newRequest {
                     resizeOnDraw(true)
                     target(TestTarget())
                 },
@@ -76,7 +76,7 @@ class ResizeOnDrawTest {
 
         // success
         image.resizeOnDraw(
-            request = ImageRequest(context, ResourceImages.jpeg.uri).newRequest {
+            request = ImageRequest(context, ComposeResImageFiles.jpeg.uri).newRequest {
                 resizeOnDraw(true)
                 target(TestResizeOnDrawTarget())
             },

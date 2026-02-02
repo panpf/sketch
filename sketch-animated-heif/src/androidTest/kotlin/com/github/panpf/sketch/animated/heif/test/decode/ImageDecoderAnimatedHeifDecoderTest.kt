@@ -12,8 +12,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.supportAnimatedHeif
 import com.github.panpf.sketch.drawable.ScaledAnimatableDrawable
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.disallowAnimatedImage
@@ -90,9 +89,9 @@ class ImageDecoderAnimatedHeifDecoderTest {
 
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, ResourceImages.heic.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.heic.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.heic.toDataSource(context)
+        val dataSource = ComposeResImageFiles.heic.toDataSource(context)
 
         ImageDecoderAnimatedHeifDecoder(requestContext, dataSource)
         ImageDecoderAnimatedHeifDecoder(requestContext = requestContext, dataSource = dataSource)
@@ -105,7 +104,7 @@ class ImageDecoderAnimatedHeifDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = Factory()
 
-        ImageRequest(context, ResourceImages.animHeif.uri)
+        ImageRequest(context, ComposeResImageFiles.animHeif.uri)
             .createDecoderOrDefault(sketch, factory)
             .apply {
                 assertEquals(
@@ -122,7 +121,7 @@ class ImageDecoderAnimatedHeifDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = Factory()
 
-        ImageRequest(context, ResourceImages.animHeif.uri) {
+        ImageRequest(context, ComposeResImageFiles.animHeif.uri) {
             colorSpace(SRGB)
             onAnimationEnd { }
             onAnimationStart { }
@@ -137,7 +136,7 @@ class ImageDecoderAnimatedHeifDecoderTest {
             assertEquals(expected = -1, actual = animatedImageDrawable.repeatCount)
         }
 
-        ImageRequest(context, ResourceImages.animHeif.uri) {
+        ImageRequest(context, ComposeResImageFiles.animHeif.uri) {
             repeatCount(3)
             size(100, 100)
         }.decode(sketch, factory).apply {
@@ -158,9 +157,9 @@ class ImageDecoderAnimatedHeifDecoderTest {
     @Test
     fun testEqualsAndHashCode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.animHeif.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.animHeif.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.animHeif.toDataSource(context)
+        val dataSource = ComposeResImageFiles.animHeif.toDataSource(context)
         val element1 = ImageDecoderAnimatedHeifDecoder(requestContext, dataSource)
         val element11 = ImageDecoderAnimatedHeifDecoder(requestContext, dataSource)
 
@@ -173,9 +172,9 @@ class ImageDecoderAnimatedHeifDecoderTest {
     @Test
     fun testToString() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.animHeif.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.animHeif.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.animHeif.toDataSource(context)
+        val dataSource = ComposeResImageFiles.animHeif.toDataSource(context)
         val decoder = ImageDecoderAnimatedHeifDecoder(requestContext, dataSource)
         assertTrue(
             actual = decoder.toString().contains("ImageDecoderAnimatedHeifDecoder"),
@@ -205,14 +204,14 @@ class ImageDecoderAnimatedHeifDecoderTest {
         val factory = Factory()
 
         // normal
-        ImageRequest(context, ResourceImages.animHeif.uri)
+        ImageRequest(context, ComposeResImageFiles.animHeif.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/heif")
             }.apply {
                 assertTrue(this is ImageDecoderAnimatedHeifDecoder)
             }
 
-        ImageRequest(context, ResourceImages.animHeif.uri)
+        ImageRequest(context, ComposeResImageFiles.animHeif.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = null)
             }.apply {
@@ -220,7 +219,7 @@ class ImageDecoderAnimatedHeifDecoderTest {
             }
 
         // disallowAnimatedImage true
-        ImageRequest(context, ResourceImages.animHeif.uri) {
+        ImageRequest(context, ComposeResImageFiles.animHeif.uri) {
             disallowAnimatedImage()
         }.createDecoderOrNull(sketch, factory) {
             it.copy(mimeType = null)
@@ -229,14 +228,14 @@ class ImageDecoderAnimatedHeifDecoderTest {
         }
 
         // data error
-        ImageRequest(context, ResourceImages.png.uri)
+        ImageRequest(context, ComposeResImageFiles.png.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = null)
             }.apply {
                 assertNull(this)
             }
 
-        ImageRequest(context, ResourceImages.animGif.uri)
+        ImageRequest(context, ComposeResImageFiles.animGif.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/heif")
             }.apply {
@@ -244,7 +243,7 @@ class ImageDecoderAnimatedHeifDecoderTest {
             }
 
         // mimeType error
-        ImageRequest(context, ResourceImages.animHeif.uri)
+        ImageRequest(context, ComposeResImageFiles.animHeif.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/jpeg")
             }.apply {
@@ -252,7 +251,7 @@ class ImageDecoderAnimatedHeifDecoderTest {
             }
 
         // Disguised, mimeType; data error
-        ImageRequest(context, ResourceImages.png.uri)
+        ImageRequest(context, ComposeResImageFiles.png.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/heif")
             }.apply {

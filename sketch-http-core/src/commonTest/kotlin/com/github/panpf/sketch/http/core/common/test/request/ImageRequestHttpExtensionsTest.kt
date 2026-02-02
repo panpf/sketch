@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.http.core.common.test.request
 
 import com.github.panpf.sketch.http.HttpHeaders
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.httpHeaders
 import com.github.panpf.sketch.test.utils.getTestContext
@@ -14,7 +14,7 @@ class ImageRequestHttpExtensionsTest {
     @Test
     fun testHttpHeaders() {
         val context1 = getTestContext()
-        val uri = ResourceImages.jpeg.uri
+        val uri = ComposeResImageFiles.jpeg.uri
         ImageRequest.Builder(context1, uri).apply {
             build().apply {
                 assertNull(httpHeaders)

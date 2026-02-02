@@ -17,7 +17,7 @@
 package com.github.panpf.sketch.core.common.test.request
 
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
@@ -46,7 +46,7 @@ class RequestContextTest {
     @Test
     fun testRequestContext() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(201, 303)
         }
         RequestContext(sketch, request).apply {
@@ -61,14 +61,14 @@ class RequestContextTest {
         val context = getTestContext()
         assertEquals(
             expected = Size(201, 303).times(1f),
-            actual = resolveSize(ImageRequest(context, ResourceImages.jpeg.uri) {
+            actual = resolveSize(ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                 size(201, 303)
             })
         )
 
         assertEquals(
             expected = Size(201, 303).times(1.5f),
-            actual = resolveSize(ImageRequest(context, ResourceImages.jpeg.uri) {
+            actual = resolveSize(ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                 size(201, 303)
                 sizeMultiplier(1.5f)
             })
@@ -78,7 +78,7 @@ class RequestContextTest {
     @Test
     fun testRequest() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request0 = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request0 = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         request0.toRequestContext(sketch).apply {
             assertSame(request0, request)
             assertEquals(listOf(request0), requestList)
@@ -109,12 +109,12 @@ class RequestContextTest {
         val (context, sketch) = getTestContextAndSketch()
         RequestContext(
             sketch = sketch,
-            request = ImageRequest(context, ResourceImages.jpeg.uri) {
+            request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                 size(201, 303)
             }
         ).apply {
             assertEquals(expected = Size(201, 303), actual = size)
-            setNewRequest(ImageRequest(context, ResourceImages.jpeg.uri) {
+            setNewRequest(ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                 size(400, 500)
             })
             assertEquals(expected = Size(400, 500), actual = size)
@@ -124,10 +124,10 @@ class RequestContextTest {
     @Test
     fun testLogKey() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request1 = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request1 = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(201, 303)
         }
-        val request2 = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request2 = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(400, 500)
         }
         RequestContext(sketch = sketch, request = request1).apply {
@@ -141,7 +141,7 @@ class RequestContextTest {
     @Test
     fun testCacheKeys() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val uri = ResourceImages.jpeg.uri
+        val uri = ComposeResImageFiles.jpeg.uri
         val requestContext = ImageRequest(context, uri).toRequestContext(sketch)
         val screenSize = context.screenSize()
         assertEquals(
@@ -217,7 +217,7 @@ class RequestContextTest {
         val (context, sketch) = getTestContextAndSketch()
         val requestContext = RequestContext(
             sketch = sketch,
-            request = ImageRequest(context, ResourceImages.jpeg.uri) {
+            request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                 size(201, 303)
                 precision(LongImagePrecisionDecider())
                 scale(LongImageScaleDecider())

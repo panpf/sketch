@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.singleton.common.test.request
 
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult.Success
 import com.github.panpf.sketch.request.enqueue
@@ -16,7 +16,7 @@ class ImageRequestSingletonTest {
     fun testEnqueue() = runTest {
         val context = getTestContext()
 
-        ImageRequest(context, ResourceImages.jpeg.uri)
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri)
             .enqueue().job.await()
             .apply {
                 assertTrue(this is Success)
@@ -27,7 +27,7 @@ class ImageRequestSingletonTest {
     fun testExecute() = runTest {
         val context = getTestContext()
 
-        ImageRequest(context, ResourceImages.jpeg.uri)
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri)
             .execute()
             .apply {
                 assertTrue(this is Success)

@@ -13,8 +13,9 @@ cd ../../
 "$(pwd)/internal/scripts/package_js.sh" --skipFindRootDir --skipClean
 "$(pwd)/internal/scripts/package_wasmJs.sh" --skipFindRootDir --skipClean
 
-echo "Android distribution is written to $(pwd)/sample/build/outputs/apk/release/"
-echo "Desktop distribution is written to $(pwd)sample/build/compose/binaries/main/"
-echo "JS distribution is written to $(pwd)sample/build/dist/js/productionExecutable/"
-echo "WasmJs distribution is written to $(pwd)sample/build/dist/wasmJs/productionExecutable/"
+echo "Android distribution is written to $(pwd)/samples/androidApp/build/outputs/apk/release/"
+echo "Android distribution is written to $(pwd)/samples/shared/build/ios/outputs/Build/Products/Debug-iphonesimulator/"
+echo "Desktop distribution is written to $(pwd)/samples/shared/build/compose/binaries/main/"
+echo "JS distribution is written to $(pwd)/samples/shared/build/dist/js/productionExecutable/"
+echo "WasmJs distribution is written to $(pwd)/samples/shared/build/dist/wasmJs/productionExecutable/"
 echo "✅  All packages are created successfully."

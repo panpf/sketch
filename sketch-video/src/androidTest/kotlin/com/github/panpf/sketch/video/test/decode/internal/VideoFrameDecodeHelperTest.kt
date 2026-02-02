@@ -10,9 +10,8 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.colorType
 import com.github.panpf.sketch.decode.internal.VideoFrameDecodeHelper
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
-import com.github.panpf.sketch.images.ResourceImageFile
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFile
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.colorType
@@ -23,6 +22,7 @@ import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.assertSizeEquals
 import com.github.panpf.sketch.test.utils.toRect
 import com.github.panpf.sketch.util.Size
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -30,14 +30,14 @@ import kotlin.test.assertFailsWith
 class VideoFrameDecodeHelperTest {
 
     @Test
-    fun testDecode() {
-        if (VERSION.SDK_INT < VERSION_CODES.O_MR1) return
+    fun testDecode() = runTest {
+        if (VERSION.SDK_INT < VERSION_CODES.O_MR1) return@runTest
         val (context, sketch) = getTestContextAndSketch()
 
         /*
          * config: sampleSize
          */
-        val imageFile = ResourceImages.mp4
+        val imageFile = ComposeResImageFiles.mp4
         imageFile.toDecodeHelper(context, sketch)
             .decode(sampleSize = 1)
             .asOrThrow<BitmapImage>().bitmap
@@ -116,16 +116,16 @@ class VideoFrameDecodeHelperTest {
          */
         // RuntimeException: setDataSource failed
         assertFailsWith(RuntimeException::class) {
-            ResourceImages.svg.toDecodeHelper(context, sketch).decode(sampleSize = 1)
+            ComposeResImageFiles.svg.toDecodeHelper(context, sketch).decode(sampleSize = 1)
         }
     }
 
     @Test
-    fun testDecodeRegion() {
-        if (VERSION.SDK_INT < VERSION_CODES.O_MR1) return
+    fun testDecodeRegion() = runTest {
+        if (VERSION.SDK_INT < VERSION_CODES.O_MR1) return@runTest
         val (context, sketch) = getTestContextAndSketch()
 
-        val imageFile = ResourceImages.mp4
+        val imageFile = ComposeResImageFiles.mp4
         assertFailsWith(UnsupportedOperationException::class) {
             imageFile.toDecodeHelper(context, sketch)
                 .decodeRegion(
@@ -136,9 +136,9 @@ class VideoFrameDecodeHelperTest {
     }
 
     @Test
-    fun testToString() {
+    fun testToString() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val imageFile = ResourceImages.mp4
+        val imageFile = ComposeResImageFiles.mp4
         val request = ImageRequest(context, imageFile.uri)
         val dataSource = imageFile.toDataSource(context)
         val decodeHelper = VideoFrameDecodeHelper(sketch, request, dataSource, imageFile.mimeType)
@@ -148,7 +148,7 @@ class VideoFrameDecodeHelperTest {
         )
     }
 
-    private fun ResourceImageFile.toDecodeHelper(
+    private suspend fun ComposeResImageFile.toDecodeHelper(
         context: PlatformContext,
         sketch: Sketch,
         dataSource: DataSource? = null,

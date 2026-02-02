@@ -1,27 +1,34 @@
 plugins {
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
+    id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.multiplatform")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
-addAllMultiplatformTargets()
-
-androidLibrary(nameSpace = "com.github.panpf.sketch.images") {
-    // Android does not support resources folders, so you can only use assets folders
-    sourceSets["main"].assets.srcDirs("files")
-}
+addMultiplatformTargets(MultiplatformTargets.entries.toTypedArray())
 
 kotlin {
+    androidKmpLibrary(nameSpace = "com.github.panpf.sketch.images")
+
     sourceSets {
         commonMain.dependencies {
             api(projects.sketchCore)
             api(projects.sketchHttpCore)
+            api(projects.sketchComposeResources)
+            api(libs.jetbrains.compose.runtime)
+            api(libs.jetbrains.compose.components.resources)
         }
-        desktopMain {
-            resources.srcDirs("files")
+
+        commonTest.dependencies {
+            implementation(projects.internal.test)
         }
-        iosMain {
-            resources.srcDirs("files")
+        androidDeviceTest.dependencies {
+            implementation(projects.internal.test)
         }
-        // js and wasmJs are configured in sample's build.gradle.kts
     }
+}
+
+compose.resources {
+    packageOfResClass = "com.github.panpf.sketch.images"
+    publicResClass = true
 }

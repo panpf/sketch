@@ -4,7 +4,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.widget.ImageView
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ViewLifecycleResolver
@@ -29,11 +29,14 @@ class ImageRequestViewTest {
     @Test
     fun testImageRequest() {
         val context1 = getTestContext()
-        val uri = ResourceImages.jpeg.uri
+        val uri = ComposeResImageFiles.jpeg.uri
         val imageView1 = ImageView(context1)
         ImageRequest(imageView1, uri).apply {
             assertNotEquals(context1, this.context)
-            assertEquals("file:///android_asset/sample.jpeg", uri)
+            assertEquals(
+                "file:///compose_resource/composeResources/com.github.panpf.sketch.images/files/sample.jpeg",
+                uri
+            )
             assertNull(this.listener)
             assertNull(this.progressListener)
             assertEquals(ImageViewTarget(imageView1), this.target)
@@ -66,7 +69,7 @@ class ImageRequestViewTest {
     fun testTarget() {
         val context = getTestContext()
         val imageView = ImageView(context)
-        ImageRequest(context, ResourceImages.webp.uri) {
+        ImageRequest(context, ComposeResImageFiles.webp.uri) {
             target(imageView)
         }.apply {
             assertEquals(
@@ -81,7 +84,7 @@ class ImageRequestViewTest {
         val context = getTestContext()
         val imageView = ImageView(context)
 
-        ImageRequest(context, ResourceImages.webp.uri) {
+        ImageRequest(context, ComposeResImageFiles.webp.uri) {
             sizeWithView(imageView)
         }.apply {
             assertEquals(
@@ -90,7 +93,7 @@ class ImageRequestViewTest {
             )
         }
 
-        ImageRequest(context, ResourceImages.webp.uri) {
+        ImageRequest(context, ComposeResImageFiles.webp.uri) {
             sizeWithView(imageView, subtractPadding = false)
         }.apply {
             assertEquals(

@@ -8,7 +8,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.lifecycle.Lifecycle
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.asPainter
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.painter.AnimatablePainter
 import com.github.panpf.sketch.painter.PainterWrapper
 import com.github.panpf.sketch.request.GlobalLifecycle
@@ -67,7 +67,7 @@ class GenericComposeTargetTest {
         /*
          * disallow null image
          */
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         val painter1 = createBitmap(100, 100).asImage().asPainter()
         withContext(Dispatchers.Main) {
             composeTarget.onStart(sketch, request, painter1.asImage())
@@ -109,7 +109,7 @@ class GenericComposeTargetTest {
         /*
          * allow null image
          */
-        val allowNullImageRequest = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val allowNullImageRequest = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             allowNullImage()
         }
         val painter4 = createBitmap(100, 100).asImage().asPainter()

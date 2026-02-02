@@ -1,10 +1,10 @@
 package com.github.panpf.sketch.animated.core.nonandroid.test.util
 
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.test.utils.defaultColorType
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.toLogString
+import kotlinx.coroutines.test.runTest
 import okio.buffer
 import okio.use
 import org.jetbrains.skia.Codec
@@ -15,9 +15,9 @@ import kotlin.test.assertEquals
 class AnimatedImagesTest {
 
     @Test
-    fun testCodecToLogString() {
+    fun testCodecToLogString() = runTest {
         val context = getTestContext()
-        val bytes = ResourceImages.jpeg.toDataSource(context)
+        val bytes = ComposeResImageFiles.jpeg.toDataSource(context)
             .openSource().buffer()
             .use { it.readByteArray() }
         val data = Data.Companion.makeFromBytes(bytes)

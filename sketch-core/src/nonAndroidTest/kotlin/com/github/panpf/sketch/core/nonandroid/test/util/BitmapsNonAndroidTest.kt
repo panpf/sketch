@@ -4,7 +4,7 @@ package com.github.panpf.sketch.core.nonandroid.test.util
 
 import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.decode.BitmapColorType
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.isMutable
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
@@ -66,13 +66,13 @@ import com.github.panpf.sketch.util.readPixels as readPixelsCommon
 class BitmapsNonAndroidTest {
 
     @Test
-    fun testToLogString() {
-        val jpegBitmap = ResourceImages.jpeg.decode().bitmap
+    fun testToLogString() = runTest {
+        val jpegBitmap = ComposeResImageFiles.jpeg.decode().bitmap
         assertEquals(
             expected = "Bitmap@${jpegBitmap.toHexString()}(1291x1936,${defaultColorType.name},sRGB)",
             actual = jpegBitmap.toLogString()
         )
-        val pngBitmap = ResourceImages.png.decode().bitmap
+        val pngBitmap = ComposeResImageFiles.png.decode().bitmap
         assertEquals(
             expected = "Bitmap@${pngBitmap.toHexString()}(750x719,${defaultColorType.name},sRGB)",
             actual = pngBitmap.toLogString()
@@ -80,32 +80,32 @@ class BitmapsNonAndroidTest {
     }
 
     @Test
-    fun testToInfoString() {
+    fun testToInfoString() = runTest {
         assertEquals(
             expected = "Bitmap(width=1291, height=1936, colorType=${defaultColorType.name}, colorSpace=sRGB)",
-            actual = ResourceImages.jpeg.decode().bitmap.toInfoString()
+            actual = ComposeResImageFiles.jpeg.decode().bitmap.toInfoString()
         )
         assertEquals(
             expected = "Bitmap(width=750, height=719, colorType=${defaultColorType.name}, colorSpace=sRGB)",
-            actual = ResourceImages.png.decode().bitmap.toInfoString()
+            actual = ComposeResImageFiles.png.decode().bitmap.toInfoString()
         )
     }
 
     @Test
-    fun testToShortInfoString() {
+    fun testToShortInfoString() = runTest {
         assertEquals(
             expected = "Bitmap(1291x1936,${defaultColorType.name},sRGB)",
-            actual = ResourceImages.jpeg.decode().bitmap.toShortInfoString()
+            actual = ComposeResImageFiles.jpeg.decode().bitmap.toShortInfoString()
         )
         assertEquals(
             expected = "Bitmap(750x719,${defaultColorType.name},sRGB)",
-            actual = ResourceImages.png.decode().bitmap.toShortInfoString()
+            actual = ComposeResImageFiles.png.decode().bitmap.toShortInfoString()
         )
     }
 
     @Test
-    fun testMutableCopy() {
-        val mutableBitmap = ResourceImages.jpeg.decode().bitmap.apply {
+    fun testMutableCopy() = runTest {
+        val mutableBitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply {
             assertFalse(isImmutable)
             assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
             assertEquals(expected = defaultColorType, actual = colorType)
@@ -122,7 +122,7 @@ class BitmapsNonAndroidTest {
         assertEquals(expected = mutableBitmap.corners(), actual = copiedMutableBitmap.corners())
         assertEquals(expected = 0, actual = mutableBitmap.similarity(copiedMutableBitmap))
 
-        val immutableBitmap = ResourceImages.jpeg.decode().bitmap.apply {
+        val immutableBitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply {
             setImmutable()
             assertTrue(isImmutable)
             assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
@@ -142,8 +142,8 @@ class BitmapsNonAndroidTest {
     }
 
     @Test
-    fun testMutableCopyOrSelf() {
-        val mutableBitmap = ResourceImages.jpeg.decode().bitmap.apply {
+    fun testMutableCopyOrSelf() = runTest {
+        val mutableBitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply {
             assertFalse(isImmutable)
             assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
             assertEquals(expected = defaultColorType, actual = colorType)
@@ -161,7 +161,7 @@ class BitmapsNonAndroidTest {
         assertEquals(expected = 0, actual = mutableBitmap.similarity(copiedMutableBitmap))
         assertSame(expected = mutableBitmap, actual = copiedMutableBitmap)
 
-        val immutableBitmap = ResourceImages.jpeg.decode().bitmap.apply {
+        val immutableBitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply {
             setImmutable()
             assertTrue(isImmutable)
             assertNotEquals(illegal = listOf(0, 0, 0, 0), actual = corners())
@@ -182,8 +182,8 @@ class BitmapsNonAndroidTest {
     }
 
     @Test
-    fun testCopyWith() {
-        val mutableBitmap = ResourceImages.jpeg.decode().bitmap.apply {
+    fun testCopyWith() = runTest {
+        val mutableBitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply {
             assertEquals(
                 expected = "Bitmap(1291x1936,${defaultColorType.name},sRGB)",
                 actual = toShortInfoString()
@@ -224,7 +224,8 @@ class BitmapsNonAndroidTest {
         )
         assertNotSame(illegal = mutableBitmap, actual = copiedWithColorInfoMutableBitmap)
 
-        val immutableBitmap = ResourceImages.jpeg.decode().bitmap.apply { setImmutable() }.apply {
+        val immutableBitmap =
+            ComposeResImageFiles.jpeg.decode().bitmap.apply { setImmutable() }.apply {
             assertEquals(
                 expected = "Bitmap(1291x1936,${defaultColorType.name},sRGB)",
                 actual = toShortInfoString()
@@ -267,13 +268,13 @@ class BitmapsNonAndroidTest {
     }
 
     @Test
-    fun testHasAlphaPixels() {
-        assertFalse(actual = ResourceImages.jpeg.decode().bitmap.hasAlphaPixels())
-        assertTrue(actual = ResourceImages.png.decode().bitmap.hasAlphaPixels())
+    fun testHasAlphaPixels() = runTest {
+        assertFalse(actual = ComposeResImageFiles.jpeg.decode().bitmap.hasAlphaPixels())
+        assertTrue(actual = ComposeResImageFiles.png.decode().bitmap.hasAlphaPixels())
     }
 
     @Test
-    fun testReadIntPixels() {
+    fun testReadIntPixels() = runTest {
         @Suppress("EnumValuesSoftDeprecate")
         ColorType.values()
             .filter { it != ColorType.UNKNOWN }
@@ -281,7 +282,7 @@ class BitmapsNonAndroidTest {
             .filter { it != ColorType.R8G8_UNORM }
             .filter { it != ColorType.A16_UNORM }
             .forEach { colorType ->
-                val jpegBitmap = ResourceImages.jpeg.decode(BitmapColorType(colorType)).bitmap
+                val jpegBitmap = ComposeResImageFiles.jpeg.decode(BitmapColorType(colorType)).bitmap
                 val newJpegBitmap = createBitmap(jpegBitmap.imageInfo)
                 if (jpegBitmap.produceFingerPrint() == "ffffffffffffffff") {
                     assertTrue(
@@ -307,7 +308,7 @@ class BitmapsNonAndroidTest {
                     message = "colorType=$colorType"
                 )
 
-                val pngBitmap = ResourceImages.png.decode(BitmapColorType(colorType)).bitmap
+                val pngBitmap = ComposeResImageFiles.png.decode(BitmapColorType(colorType)).bitmap
                 val newPngBitmap = createBitmap(pngBitmap.imageInfo)
                 if (pngBitmap.produceFingerPrint() == "ffffffffffffffff") {
                     assertTrue(
@@ -342,7 +343,7 @@ class BitmapsNonAndroidTest {
             .filter { it != ColorType.A16_UNORM }
             .forEach { colorType ->
                 val jpegBitmap =
-                    ResourceImages.jpeg.decode(BitmapColorType(colorType)).bitmap.apply {
+                    ComposeResImageFiles.jpeg.decode(BitmapColorType(colorType)).bitmap.apply {
                         assertEquals(expected = Size(1291, 1936), actual = size)
                         assertEquals(expected = colorType, actual = colorType)
                     }
@@ -492,7 +493,7 @@ class BitmapsNonAndroidTest {
     }
 
     @Test
-    fun testInstallIntPixels() {
+    fun testInstallIntPixels() = runTest {
         @Suppress("EnumValuesSoftDeprecate")
         ColorType.values()
             .filter { it != ColorType.UNKNOWN }
@@ -500,7 +501,7 @@ class BitmapsNonAndroidTest {
             .filter { it != ColorType.R8G8_UNORM }
             .filter { it != ColorType.A16_UNORM }
             .forEach { colorType ->
-                val jpegBitmap = ResourceImages.jpeg.decode(BitmapColorType(colorType)).bitmap
+                val jpegBitmap = ComposeResImageFiles.jpeg.decode(BitmapColorType(colorType)).bitmap
                 val newJpegBitmap = createBitmap(jpegBitmap.imageInfo)
                 if (jpegBitmap.produceFingerPrint() == "ffffffffffffffff") {
                     assertTrue(
@@ -526,7 +527,7 @@ class BitmapsNonAndroidTest {
                     message = "colorType=$colorType"
                 )
 
-                val pngBitmap = ResourceImages.png.decode(BitmapColorType(colorType)).bitmap
+                val pngBitmap = ComposeResImageFiles.png.decode(BitmapColorType(colorType)).bitmap
                 val newPngBitmap = createBitmap(pngBitmap.imageInfo)
                 if (pngBitmap.produceFingerPrint() == "ffffffffffffffff") {
                     assertTrue(
@@ -555,8 +556,8 @@ class BitmapsNonAndroidTest {
     }
 
     @Test
-    fun testInstallPixels() {
-        val sourceBitmap = ResourceImages.jpeg.decode().bitmap.apply {
+    fun testInstallPixels() = runTest {
+        val sourceBitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply {
             assertEquals(
                 expected = "Bitmap(1291x1936,${defaultColorType.name},sRGB)",
                 actual = toShortInfoString()
@@ -573,8 +574,8 @@ class BitmapsNonAndroidTest {
     }
 
     @Test
-    fun testReadIntPixel() {
-        val sourceBitmap = ResourceImages.jpeg.decode().bitmap.apply {
+    fun testReadIntPixel() = runTest {
+        val sourceBitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply {
             assertEquals(
                 expected = "Bitmap(1291x1936,${defaultColorType.name},sRGB)",
                 actual = toShortInfoString()
@@ -634,7 +635,7 @@ class BitmapsNonAndroidTest {
         runBlock {
             val sourceBitmapFinger: String
             val sourceBitmapCorners: List<Int>
-            val sourceBitmap = ResourceImages.jpeg.decode().bitmap.apply {
+            val sourceBitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply {
                 assertEquals(
                     expected = "Bitmap(1291x1936,${defaultColorType.name},sRGB)",
                     actual = toShortInfoString()
@@ -682,7 +683,7 @@ class BitmapsNonAndroidTest {
         runBlock {
             val sourceBitmapFinger: String
             val sourceBitmapCorners: List<Int>
-            val sourceBitmap = ResourceImages.png.decode().bitmap.apply {
+            val sourceBitmap = ComposeResImageFiles.png.decode().bitmap.apply {
                 assertEquals(
                     expected = "Bitmap(750x719,${defaultColorType.name},sRGB)",
                     actual = toShortInfoString()
@@ -736,7 +737,7 @@ class BitmapsNonAndroidTest {
         }
 
         // colorType, colorSpace
-        ResourceImages.jpeg.decode(
+        ComposeResImageFiles.jpeg.decode(
             colorType = BitmapColorType(colorType = ColorType.RGB_565),
             colorSpace = "displayP3"
         ).bitmap.apply {
@@ -754,10 +755,10 @@ class BitmapsNonAndroidTest {
 
     @Test
     @Suppress("UNUSED_VARIABLE")
-    fun testBlur() {
+    fun testBlur() = runTest {
         val sourceBitmapFinger: String
         val sourceBitmapCorners: List<Int>
-        val sourceBitmap = ResourceImages.jpeg.decode().bitmap.apply {
+        val sourceBitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply {
             assertEquals(
                 expected = "Bitmap(1291x1936,${defaultColorType.name},sRGB)",
                 actual = toShortInfoString()
@@ -812,7 +813,7 @@ class BitmapsNonAndroidTest {
             ).toString()
         )
 
-        val mutableBitmap = ResourceImages.jpeg.decode().bitmap
+        val mutableBitmap = ComposeResImageFiles.jpeg.decode().bitmap
         val blur1MutableBitmap = mutableBitmap.blur(20, firstReuseSelf = true)
         val blur2MutableBitmap = mutableBitmap.blur(20, firstReuseSelf = false)
         assertTrue(mutableBitmap.isMutable)
@@ -821,7 +822,7 @@ class BitmapsNonAndroidTest {
         assertSame(mutableBitmap, blur1MutableBitmap)
         assertNotSame(mutableBitmap, blur2MutableBitmap)
 
-        val immutableBitmap = ResourceImages.jpeg.decode().bitmap.apply { setImmutable() }
+        val immutableBitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply { setImmutable() }
         val blur1ImmutableBitmap = immutableBitmap.blur(20, firstReuseSelf = true)
         val blur2ImmutableBitmap = immutableBitmap.blur(20, firstReuseSelf = false)
         assertFalse(immutableBitmap.isMutable)
@@ -831,7 +832,7 @@ class BitmapsNonAndroidTest {
         assertNotSame(immutableBitmap, blur2ImmutableBitmap)
 
         // colorType, colorSpace
-        ResourceImages.jpeg.decode(
+        ComposeResImageFiles.jpeg.decode(
             colorType = BitmapColorType(colorType = ColorType.RGB_565),
             colorSpace = "displayP3"
         ).bitmap.mutableCopy().apply {
@@ -859,10 +860,10 @@ class BitmapsNonAndroidTest {
 
     @Test
     @Suppress("UNUSED_VARIABLE")
-    fun testCircleCrop() {
+    fun testCircleCrop() = runTest {
         val sourceBitmapFinger: String
         val sourceBitmapCorners: List<Int>
-        val sourceBitmap = ResourceImages.jpeg.decode().bitmap.apply {
+        val sourceBitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply {
             assertEquals(
                 expected = "Bitmap(1291x1936,${defaultColorType.name},sRGB)",
                 actual = toShortInfoString()
@@ -942,7 +943,7 @@ class BitmapsNonAndroidTest {
         )
 
         // colorType, colorSpace
-        ResourceImages.jpeg.decode(
+        ComposeResImageFiles.jpeg.decode(
             colorType = BitmapColorType(colorType = ColorType.RGB_565),
             colorSpace = "displayP3"
         ).bitmap.apply {
@@ -961,10 +962,10 @@ class BitmapsNonAndroidTest {
     }
 
     @Test
-    fun testFlip() {
+    fun testFlip() = runTest {
         val sourceBitmapFinger: String
         val sourceBitmapCorners: List<Int>
-        val sourceBitmap = ResourceImages.jpeg.decode().bitmap.apply {
+        val sourceBitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply {
             assertEquals(
                 expected = "Bitmap(1291x1936,${defaultColorType.name},sRGB)",
                 actual = toShortInfoString()
@@ -1045,7 +1046,7 @@ class BitmapsNonAndroidTest {
         )
 
         // colorType, colorSpace
-        ResourceImages.jpeg.decode(
+        ComposeResImageFiles.jpeg.decode(
             colorType = BitmapColorType(colorType = ColorType.RGB_565),
             colorSpace = "displayP3"
         ).bitmap.apply {
@@ -1063,10 +1064,10 @@ class BitmapsNonAndroidTest {
 
     @Test
     @Suppress("UNUSED_VARIABLE")
-    fun testMapping() {
+    fun testMapping() = runTest {
         val sourceBitmapFinger: String
         val sourceBitmapCorners: List<Int>
-        val sourceBitmap = ResourceImages.jpeg.decode().bitmap.apply {
+        val sourceBitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply {
             assertEquals(
                 expected = "Bitmap(1291x1936,${defaultColorType.name},sRGB)",
                 actual = toShortInfoString()
@@ -1187,7 +1188,7 @@ class BitmapsNonAndroidTest {
         )
 
         // colorType, colorSpace
-        ResourceImages.jpeg.decode(
+        ComposeResImageFiles.jpeg.decode(
             colorType = BitmapColorType(colorType = ColorType.RGB_565),
             colorSpace = "displayP3"
         ).bitmap.apply {
@@ -1214,10 +1215,10 @@ class BitmapsNonAndroidTest {
 
     @Test
     @Suppress("UNUSED_VARIABLE")
-    fun testMask() {
+    fun testMask() = runTest {
         val sourceBitmapFinger: String
         val sourceBitmapCorners: List<Int>
-        val sourceBitmap = ResourceImages.jpeg.decode().bitmap.apply {
+        val sourceBitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply {
             assertEquals(
                 expected = "Bitmap(1291x1936,${defaultColorType.name},sRGB)",
                 actual = toShortInfoString()
@@ -1261,7 +1262,7 @@ class BitmapsNonAndroidTest {
         assertEquals(expected = sourceBitmapFinger, actual = greenMaskBitmapFinger)
         assertEquals(expected = redMaskBitmapFinger, actual = greenMaskBitmapFinger)
 
-        val mutableBitmap = ResourceImages.jpeg.decode().bitmap
+        val mutableBitmap = ComposeResImageFiles.jpeg.decode().bitmap
         val mask1MutableBitmap = mutableBitmap.mask(TestColor.RED, firstReuseSelf = true)
         val mask2MutableBitmap = mutableBitmap.mask(TestColor.RED, firstReuseSelf = false)
         assertTrue(mutableBitmap.isMutable)
@@ -1270,7 +1271,7 @@ class BitmapsNonAndroidTest {
         assertSame(mutableBitmap, mask1MutableBitmap)
         assertNotSame(mutableBitmap, mask2MutableBitmap)
 
-        val immutableBitmap = ResourceImages.jpeg.decode().bitmap.apply { setImmutable() }
+        val immutableBitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply { setImmutable() }
         val mask1ImmutableBitmap = immutableBitmap.mask(TestColor.RED, firstReuseSelf = true)
         val mask2ImmutableBitmap = immutableBitmap.mask(TestColor.RED, firstReuseSelf = false)
         assertFalse(immutableBitmap.isMutable)
@@ -1280,7 +1281,7 @@ class BitmapsNonAndroidTest {
         assertNotSame(immutableBitmap, mask2ImmutableBitmap)
 
         // colorType, colorSpace
-        ResourceImages.jpeg.decode(
+        ComposeResImageFiles.jpeg.decode(
             colorType = BitmapColorType(colorType = ColorType.RGB_565),
             colorSpace = "displayP3"
         ).bitmap.mutableCopy().apply {
@@ -1308,10 +1309,10 @@ class BitmapsNonAndroidTest {
 
     @Test
     @Suppress("UNUSED_VARIABLE")
-    fun testRotate() {
+    fun testRotate() = runTest {
         val sourceBitmapFinger: String
         val sourceBitmapCorners: List<Int>
-        val sourceBitmap = ResourceImages.jpeg.decode().bitmap.apply {
+        val sourceBitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply {
             assertEquals(
                 expected = "Bitmap(1291x1936,${defaultColorType.name},sRGB)",
                 actual = toShortInfoString()
@@ -1420,7 +1421,7 @@ class BitmapsNonAndroidTest {
         )
 
         // colorType, colorSpace
-        ResourceImages.jpeg.decode(
+        ComposeResImageFiles.jpeg.decode(
             colorType = BitmapColorType(colorType = ColorType.RGB_565),
             colorSpace = "displayP3"
         ).bitmap.apply {
@@ -1450,10 +1451,10 @@ class BitmapsNonAndroidTest {
 
     @Test
     @Suppress("UNUSED_VARIABLE")
-    fun testRoundedCorners() {
+    fun testRoundedCorners() = runTest {
         val sourceBitmapFinger: String
         val sourceBitmapCorners: List<Int>
-        val sourceBitmap = ResourceImages.jpeg.decode().bitmap.apply {
+        val sourceBitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply {
             assertEquals(
                 expected = "Bitmap(1291x1936,${defaultColorType.name},sRGB)",
                 actual = toShortInfoString()
@@ -1511,7 +1512,7 @@ class BitmapsNonAndroidTest {
         )
 
         // colorType, colorSpace
-        ResourceImages.jpeg.decode(
+        ComposeResImageFiles.jpeg.decode(
             colorType = BitmapColorType(colorType = ColorType.RGB_565),
             colorSpace = "displayP3"
         ).bitmap.apply {
@@ -1530,8 +1531,8 @@ class BitmapsNonAndroidTest {
     }
 
     @Test
-    fun testScale() {
-        val bitmap = ResourceImages.jpeg.decode().bitmap.apply {
+    fun testScale() = runTest {
+        val bitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply {
             assertEquals("Bitmap(1291x1936,${defaultColorType.name},sRGB)", toShortInfoString())
         }
         bitmap.scale(1.5f).apply {
@@ -1542,7 +1543,7 @@ class BitmapsNonAndroidTest {
         }
 
         // colorType, colorSpace
-        ResourceImages.jpeg.decode(
+        ComposeResImageFiles.jpeg.decode(
             colorType = BitmapColorType(colorType = ColorType.RGB_565),
             colorSpace = "displayP3"
         ).bitmap.apply {
@@ -1559,8 +1560,8 @@ class BitmapsNonAndroidTest {
     }
 
     @Test
-    fun testThumbnail() {
-        val bitmap = ResourceImages.jpeg.decode().bitmap.apply {
+    fun testThumbnail() = runTest {
+        val bitmap = ComposeResImageFiles.jpeg.decode().bitmap.apply {
             assertEquals(
                 expected = "Bitmap(1291x1936,${defaultColorType.name},sRGB)",
                 actual = toShortInfoString()
@@ -1575,7 +1576,7 @@ class BitmapsNonAndroidTest {
         assertEquals(expected = 1, actual = bitmap.similarity(thumbnailBitmap))
 
         // colorType, colorSpace
-        ResourceImages.jpeg.decode(
+        ComposeResImageFiles.jpeg.decode(
             colorType = BitmapColorType(colorType = ColorType.RGB_565),
             colorSpace = "displayP3"
         ).bitmap.apply {

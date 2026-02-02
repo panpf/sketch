@@ -1,10 +1,10 @@
 package com.github.panpf.sketch.animated.core.nonandroid.test
 
 import com.github.panpf.sketch.SkiaAnimatedImage
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.toLogString
+import kotlinx.coroutines.test.runTest
 import okio.buffer
 import okio.use
 import org.jetbrains.skia.Codec
@@ -20,9 +20,9 @@ import kotlin.test.assertTrue
 class SkiaAnimatedImageTest {
 
     @Test
-    fun testConstructor() {
+    fun testConstructor() = runTest {
         val context = getTestContext()
-        val codec = ResourceImages.animGif.toDataSource(context)
+        val codec = ComposeResImageFiles.animGif.toDataSource(context)
             .openSource().buffer().use { it.readByteArray() }
             .let { Data.Companion.makeFromBytes(it) }
             .let { Codec.Companion.makeFromData(it) }
@@ -32,9 +32,9 @@ class SkiaAnimatedImageTest {
     }
 
     @Test
-    fun testWidthHeight() {
+    fun testWidthHeight() = runTest {
         val context = getTestContext()
-        val codec = ResourceImages.animGif.toDataSource(context)
+        val codec = ComposeResImageFiles.animGif.toDataSource(context)
             .openSource().buffer().use { it.readByteArray() }
             .let { Data.Companion.makeFromBytes(it) }
             .let { Codec.Companion.makeFromData(it) }
@@ -45,9 +45,9 @@ class SkiaAnimatedImageTest {
     }
 
     @Test
-    fun testByteCount() {
+    fun testByteCount() = runTest {
         val context = getTestContext()
-        val codec = ResourceImages.animGif.toDataSource(context)
+        val codec = ComposeResImageFiles.animGif.toDataSource(context)
             .openSource().buffer().use { it.readByteArray() }
             .let { Data.Companion.makeFromBytes(it) }
             .let { Codec.Companion.makeFromData(it) }
@@ -60,9 +60,9 @@ class SkiaAnimatedImageTest {
     }
 
     @Test
-    fun testShareable() {
+    fun testShareable() = runTest {
         val context = getTestContext()
-        val codec = ResourceImages.animGif.toDataSource(context)
+        val codec = ComposeResImageFiles.animGif.toDataSource(context)
             .openSource().buffer().use { it.readByteArray() }
             .let { Data.Companion.makeFromBytes(it) }
             .let { Codec.Companion.makeFromData(it) }
@@ -72,9 +72,9 @@ class SkiaAnimatedImageTest {
     }
 
     @Test
-    fun testCheckValid() {
+    fun testCheckValid() = runTest {
         val context = getTestContext()
-        val codec = ResourceImages.animGif.toDataSource(context)
+        val codec = ComposeResImageFiles.animGif.toDataSource(context)
             .openSource().buffer().use { it.readByteArray() }
             .let { Data.Companion.makeFromBytes(it) }
             .let { Codec.Companion.makeFromData(it) }
@@ -86,13 +86,13 @@ class SkiaAnimatedImageTest {
     }
 
     @Test
-    fun testEqualsAndHashCode() {
+    fun testEqualsAndHashCode() = runTest {
         val context = getTestContext()
-        val codec1 = ResourceImages.animGif.toDataSource(context)
+        val codec1 = ComposeResImageFiles.animGif.toDataSource(context)
             .openSource().buffer().use { it.readByteArray() }
             .let { Data.Companion.makeFromBytes(it) }
             .let { Codec.Companion.makeFromData(it) }
-        val codec2 = ResourceImages.animGif.toDataSource(context)
+        val codec2 = ComposeResImageFiles.animGif.toDataSource(context)
             .openSource().buffer().use { it.readByteArray() }
             .let { Data.Companion.makeFromBytes(it) }
             .let { Codec.Companion.makeFromData(it) }
@@ -134,9 +134,9 @@ class SkiaAnimatedImageTest {
     }
 
     @Test
-    fun testToString() {
+    fun testToString() = runTest {
         val context = getTestContext()
-        val codec = ResourceImages.animGif.toDataSource(context)
+        val codec = ComposeResImageFiles.animGif.toDataSource(context)
             .openSource().buffer().use { it.readByteArray() }
             .let { Data.Companion.makeFromBytes(it) }
             .let { Codec.Companion.makeFromData(it) }

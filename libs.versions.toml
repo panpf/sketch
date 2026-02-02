@@ -1,5 +1,5 @@
 [versions]
-android-plugin = "8.13.2"
+android-plugin = "9.0.0"
 androidx-activity = "1.12.2"
 androidx-appcompat = "1.7.1"
 androidx-compose = "1.10.0" # sync with jetbrains-compose
@@ -24,6 +24,7 @@ buildkonfig = "0.17.1"
 
 dokka = "2.1.0"
 
+# https://github.com/wseemann/FFmpegMediaMetadataRetriever/issues/294
 ffmpegMediaMetadataRetriever = "1.0.21"
 
 google-flexbox = "3.0.0"

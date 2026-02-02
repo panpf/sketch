@@ -4,20 +4,18 @@ import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.newFileUri
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.images.R
-import com.github.panpf.sketch.images.ResourceImageFile
-import com.github.panpf.sketch.images.ResourceImages
 import com.github.panpf.sketch.source.AssetDataSource
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DataFrom.LOCAL
-import com.github.panpf.sketch.source.DataFrom.NETWORK
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.asOrThrow
+import kotlinx.coroutines.test.runTest
 import okio.Path
 import okio.Source
 import org.junit.runner.RunWith
@@ -32,22 +30,15 @@ import kotlin.test.assertNotNull
 class GifInfoHandlerHelperTest {
 
     @Test
-    fun test() {
+    fun test() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        AssetDataSource(
-            context = context,
-            fileName = ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
-        ).getFile(sketch)
-        val snapshot =
-            sketch.downloadCache.openSnapshot(ResourceImages.animGif.uri + "_data_source")!!
-
+        val dataSource = ComposeResImageFiles.animGif.toDataSource(context)
+        dataSource.getFile(sketch)  // Make sure the gif file is cached
+        val snapshot = sketch.downloadCache.openSnapshot("${dataSource.key}_data_source")!!
         GifInfoHandleHelper(
             sketch,
-            ByteArrayDataSource(
-                data = snapshot.data.toFile().readBytes(),
-                dataFrom = NETWORK,
-            )
+            dataSource as ByteArrayDataSource
         ).apply {
             assertEquals(480, width)
             assertEquals(480, height)
@@ -139,7 +130,7 @@ class GifInfoHandlerHelperTest {
             sketch,
             AssetDataSource(
                 context = context,
-                fileName = ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
+                fileName = "sample_anim.gif"
             )
         ).apply {
             assertEquals(480, width)

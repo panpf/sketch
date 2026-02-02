@@ -6,7 +6,7 @@ import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.disposeLoad
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.test.singleton.loadImage
 import com.github.panpf.sketch.test.utils.DelayInterceptor
@@ -39,7 +39,7 @@ class SketchUtilsTest {
             }
             assertNull(SketchUtils.requestManagerOrNull(imageView))
 
-            imageView.loadImage(ResourceImages.jpeg.uri)
+            imageView.loadImage(ComposeResImageFiles.jpeg.uri)
             block(100)
             assertNotNull(SketchUtils.requestManagerOrNull(imageView))
         }
@@ -52,14 +52,14 @@ class SketchUtilsTest {
             val imageView = activity.imageView
 
             assertNull(imageView.drawable)
-            imageView.loadImage(ResourceImages.jpeg.uri).job.join()
+            imageView.loadImage(ComposeResImageFiles.jpeg.uri).job.join()
             assertNotNull(imageView.drawable)
 
             withContext(Dispatchers.Main) {
                 imageView.setImageDrawable(null)
             }
             assertNull(imageView.drawable)
-            imageView.loadImage(ResourceImages.png.uri) {
+            imageView.loadImage(ComposeResImageFiles.png.uri) {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
                 components {
@@ -80,13 +80,13 @@ class SketchUtilsTest {
 
             assertNull(SketchUtils.getResult(imageView))
 
-            imageView.loadImage(ResourceImages.jpeg.uri).job.join()
+            imageView.loadImage(ComposeResImageFiles.jpeg.uri).job.join()
             assertTrue(SketchUtils.getResult(imageView) is ImageResult.Success)
 
             imageView.loadImage("file:///android_asset/fake.jpeg").job.join()
             assertTrue(SketchUtils.getResult(imageView) is ImageResult.Error)
 
-            imageView.loadImage(ResourceImages.png.uri) {
+            imageView.loadImage(ComposeResImageFiles.png.uri) {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
                 components {
@@ -109,7 +109,7 @@ class SketchUtilsTest {
             }
             assertNull(SketchUtils.requestManagerOrNull(imageView))
 
-            imageView.loadImage(ResourceImages.jpeg.uri) {
+            imageView.loadImage(ComposeResImageFiles.jpeg.uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 downloadCachePolicy(DISABLED)
@@ -144,7 +144,7 @@ class SketchUtilsTest {
             Thread.sleep(100)
 
             assertNull(SketchUtils.getRequest(imageView))
-            imageView.loadImage(ResourceImages.jpeg.uri)
+            imageView.loadImage(ComposeResImageFiles.jpeg.uri)
             Thread.sleep(100)
             assertNotNull(SketchUtils.getRequest(imageView))
         }
@@ -161,7 +161,7 @@ class SketchUtilsTest {
             Thread.sleep(100)
 
             assertNull(SketchUtils.getSketch(imageView))
-            imageView.loadImage(ResourceImages.jpeg.uri)
+            imageView.loadImage(ComposeResImageFiles.jpeg.uri)
             Thread.sleep(100)
             assertNotNull(SketchUtils.getSketch(imageView))
         }

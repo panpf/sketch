@@ -18,7 +18,7 @@ package com.github.panpf.sketch.core.common.test.state
 
 import com.github.panpf.sketch.cache.newCacheValueExtras
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
@@ -44,7 +44,7 @@ class MemoryCacheStateImageTest {
     @Test
     fun testKey() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         val memoryCacheKey = request.toRequestContext(sketch).memoryCacheKey
         val stateImage = FakeStateImage()
 
@@ -65,7 +65,7 @@ class MemoryCacheStateImageTest {
     @Test
     fun testGetImage() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         val memoryCache = sketch.memoryCache
         val memoryCacheKey = request.toRequestContext(sketch).memoryCacheKey
         val stateImage = FakeStateImage()
@@ -149,7 +149,7 @@ class MemoryCacheStateImageTest {
     @Test
     fun testToString() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         val memoryCacheKey = request.toRequestContext(sketch).memoryCacheKey
         val stateImage = FakeStateImage()
 

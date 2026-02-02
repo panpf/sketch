@@ -11,9 +11,8 @@ import com.github.panpf.sketch.colorType
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.internal.FFmpegVideoFrameDecodeHelper
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
-import com.github.panpf.sketch.images.ResourceImageFile
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFile
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.colorType
@@ -25,6 +24,7 @@ import com.github.panpf.sketch.test.utils.assertSizeEquals
 import com.github.panpf.sketch.test.utils.toRect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.device.Devicex
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -32,10 +32,10 @@ import kotlin.test.assertFailsWith
 class FFmpegVideoFrameDecodeHelperTest {
 
     @Test
-    fun testDecode() {
+    fun testDecode() = runTest {
         if (VERSION.SDK_INT < 24 && Devicex.isEmulator()) {
             // UnsatisfiedLinkError /data/app/com.github.panpf.sketch.video.ffmpeg.test-1/lib/arm64/libssl.so
-            return
+            return@runTest
         }
 
         val (context, sketch) = getTestContextAndSketch()
@@ -43,7 +43,7 @@ class FFmpegVideoFrameDecodeHelperTest {
         /*
          * config: sampleSize
          */
-        val imageFile = ResourceImages.mp4
+        val imageFile = ComposeResImageFiles.mp4
         imageFile.toDecodeHelper(context, sketch)
             .decode(sampleSize = 1)
             .asOrThrow<BitmapImage>().bitmap
@@ -122,20 +122,20 @@ class FFmpegVideoFrameDecodeHelperTest {
          */
         // ImageInvalidException: Invalid video file
         assertFailsWith(ImageInvalidException::class) {
-            ResourceImages.svg.toDecodeHelper(context, sketch).decode(sampleSize = 1)
+            ComposeResImageFiles.svg.toDecodeHelper(context, sketch).decode(sampleSize = 1)
         }
     }
 
     @Test
-    fun testDecodeRegion() {
+    fun testDecodeRegion() = runTest {
         if (VERSION.SDK_INT < 24 && Devicex.isEmulator()) {
             // UnsatisfiedLinkError /data/app/com.github.panpf.sketch.video.ffmpeg.test-1/lib/arm64/libssl.so
-            return
+            return@runTest
         }
 
         val (context, sketch) = getTestContextAndSketch()
 
-        val imageFile = ResourceImages.mp4
+        val imageFile = ComposeResImageFiles.mp4
         assertFailsWith(UnsupportedOperationException::class) {
             imageFile.toDecodeHelper(context, sketch)
                 .decodeRegion(
@@ -146,9 +146,9 @@ class FFmpegVideoFrameDecodeHelperTest {
     }
 
     @Test
-    fun testToString() {
+    fun testToString() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val imageFile = ResourceImages.mp4
+        val imageFile = ComposeResImageFiles.mp4
         val request = ImageRequest(context, imageFile.uri)
         val dataSource = imageFile.toDataSource(context)
         val decodeHelper =
@@ -159,7 +159,7 @@ class FFmpegVideoFrameDecodeHelperTest {
         )
     }
 
-    private fun ResourceImageFile.toDecodeHelper(
+    private suspend fun ComposeResImageFile.toDecodeHelper(
         context: PlatformContext,
         sketch: Sketch,
         dataSource: DataSource? = null,

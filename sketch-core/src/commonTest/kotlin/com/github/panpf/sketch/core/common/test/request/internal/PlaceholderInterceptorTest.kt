@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.core.common.test.request.internal
 
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.InterceptorChain
@@ -10,9 +10,7 @@ import com.github.panpf.sketch.test.utils.ErrorStateImage
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeInterceptor
 import com.github.panpf.sketch.test.utils.FakeStateImage
-import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestTarget
-import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
@@ -29,10 +27,6 @@ class PlaceholderInterceptorTest {
 
     @Test
     fun testIntercept() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Will get stuck forever in iOS test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
 
         val interceptors = listOf(
@@ -51,7 +45,7 @@ class PlaceholderInterceptorTest {
 
         val target1 = TestTarget()
         assertNull(target1.startImage)
-        val request1 = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request1 = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             target(target1)
         }
         assertNotNull(executeRequest(request1))
@@ -59,7 +53,7 @@ class PlaceholderInterceptorTest {
 
         val target2 = TestTarget()
         assertNull(target2.startImage)
-        val request2 = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request2 = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             target(target2)
             placeholder(ErrorStateImage())
         }
@@ -68,7 +62,7 @@ class PlaceholderInterceptorTest {
 
         val target3 = TestTarget()
         assertNull(target3.startImage)
-        val request3 = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request3 = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             target(target3)
             placeholder(FakeStateImage())
         }

@@ -11,6 +11,6 @@ if [ "$1" != "--skipClean" ]; then
   ./gradlew clean
 fi
 
-./gradlew sample:assembleRelease
+./gradlew samples:androidApp:assembleRelease
 
-echo "✅  Android package is created successfully. The distribution is written to $(pwd)/sample/build/outputs/apk/release/"
+echo "✅  Android package is created successfully. The distribution is written to $(pwd)/samples/androidApp/build/outputs/apk/release/"

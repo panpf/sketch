@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.view.core.test
 
 import android.widget.ImageView
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult.Error
@@ -21,7 +21,7 @@ class ExecuteTest {
         /* ViewTarget */
         val imageView = ImageView(context)
         val listenerSupervisor4 = ListenerSupervisor()
-        val request4 = ImageRequest(imageView, ResourceImages.jpeg.uri) {
+        val request4 = ImageRequest(imageView, ComposeResImageFiles.jpeg.uri) {
             addListener(listenerSupervisor4)
             lifecycle(GlobalLifecycle)
         }

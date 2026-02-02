@@ -16,10 +16,11 @@
 
 package com.github.panpf.sketch.test.utils
 
+import com.github.panpf.sketch.images.ImageFile
 import com.github.panpf.sketch.util.Size
 
 data class ImageDecodeCompatibility(
-    val assetName: String,
+    val imageFile: ImageFile,
     val size: Size,
     val minAPI: Int,
     val inSampleSizeMinAPI: Int,

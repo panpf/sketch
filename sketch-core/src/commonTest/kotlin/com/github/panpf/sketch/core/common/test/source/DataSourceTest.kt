@@ -1,14 +1,14 @@
 package com.github.panpf.sketch.core.common.test.source
 
 import com.github.panpf.sketch.cache.DiskCache
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.source.cacheFile
 import com.github.panpf.sketch.source.cacheFileOrNull
 import com.github.panpf.sketch.source.getFileOrNull
 import com.github.panpf.sketch.source.openSourceOrNull
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.FakeDataSource
+import kotlinx.coroutines.test.runTest
 import okio.IOException
 import okio.Path
 import kotlin.test.Test
@@ -38,9 +38,9 @@ class DataSourceTest {
     }
 
     @Test
-    fun testCacheFile() {
+    fun testCacheFile() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val dataSource = ResourceImages.jpeg.toDataSource(context)
+        val dataSource = ComposeResImageFiles.jpeg.toDataSource(context)
         dataSource.cacheFile(sketch).apply {
             assertTrue(actual = toString().contains("${Path.DIRECTORY_SEPARATOR}${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}${Path.DIRECTORY_SEPARATOR}"))
         }

@@ -2,7 +2,7 @@ package com.github.panpf.sketch.core.common.test.request.internal
 
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.images.block
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageOptions
@@ -17,11 +17,9 @@ import com.github.panpf.sketch.request.internal.ThumbnailTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.BlockInterceptor
 import com.github.panpf.sketch.test.utils.FakeStateImage
-import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestListener
 import com.github.panpf.sketch.test.utils.TestProgressListener
 import com.github.panpf.sketch.test.utils.TestTarget2
-import com.github.panpf.sketch.test.utils.current
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -35,10 +33,6 @@ class ThumbnailInterceptorTest {
 
     @Test
     fun testIntercept() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Will get stuck forever in iOS test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
 
         val executeRequest: suspend (ImageRequest) -> Image = { request ->
@@ -62,7 +56,7 @@ class ThumbnailInterceptorTest {
         assertEquals(0, target.successImages.size)
 
         // No thumbnails.
-        val request = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             memoryCachePolicy(CachePolicy.DISABLED)
             resultCachePolicy(CachePolicy.DISABLED)
             downloadCachePolicy(CachePolicy.DISABLED)
@@ -80,7 +74,7 @@ class ThumbnailInterceptorTest {
         // No target.
         target.clearImages()
         executeRequest(request.newRequest {
-            thumbnail(request.newRequest(ResourceImages.png.uri))
+            thumbnail(request.newRequest(ComposeResImageFiles.png.uri))
             target(null)
         })
         block(1000)
@@ -91,7 +85,7 @@ class ThumbnailInterceptorTest {
         // Thumbnails loaded quickly.
         target.clearImages()
         executeRequest(request.newRequest {
-            thumbnail(request.newRequest(ResourceImages.png.uri))
+            thumbnail(request.newRequest(ComposeResImageFiles.png.uri))
             components {
                 add(
                     BlockInterceptor(
@@ -109,7 +103,7 @@ class ThumbnailInterceptorTest {
         // Thumbnails loaded slowly and were cancelled.
         target.clearImages()
         executeRequest(request.newRequest {
-            thumbnail(request.newRequest(ResourceImages.png.uri) {
+            thumbnail(request.newRequest(ComposeResImageFiles.png.uri) {
                 components {
                     add(
                         BlockInterceptor(
@@ -129,7 +123,7 @@ class ThumbnailInterceptorTest {
         target.clearImages()
         val thumbnailTestInterceptor = ThumbnailTestInterceptor()
         executeRequest(request.newRequest {
-            thumbnail(ResourceImages.png.uri)
+            thumbnail(ComposeResImageFiles.png.uri)
             components {
                 add(
                     BlockInterceptor(
@@ -171,7 +165,7 @@ class ThumbnailInterceptorTest {
         target.clearImages()
         val thumbnailTestInterceptor2 = ThumbnailTestInterceptor()
         executeRequest(request.newRequest {
-            thumbnail(ImageRequest(context, ResourceImages.png.uri) {
+            thumbnail(ImageRequest(context, ComposeResImageFiles.png.uri) {
                 components {
                     add(thumbnailTestInterceptor2)
                 }
@@ -217,7 +211,7 @@ class ThumbnailInterceptorTest {
         target.clearImages()
         val thumbnailTestInterceptor3 = ThumbnailTestInterceptor()
         executeRequest(request.newRequest {
-            thumbnail(request.newRequest(ResourceImages.png.uri) {
+            thumbnail(request.newRequest(ComposeResImageFiles.png.uri) {
                 components {
                     add(thumbnailTestInterceptor3)
                 }
@@ -264,12 +258,12 @@ class ThumbnailInterceptorTest {
 //    fun testThumbnailRequest() = runTest {
 //        val (context, sketch) = getTestContextAndSketch()
 //
-//        val request = ImageRequest(context, ResourceImages.jpeg.uri).apply {
+//        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri).apply {
 //            assertFalse(isThumbnailRequest())
 //        }
 //        val requestContext = request.toRequestContext(sketch)
 //
-//        val request1 = ImageRequest(context, ResourceImages.jpeg.uri) {
+//        val request1 = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
 //            markThumbnailRequest()
 //        }.apply {
 //            assertTrue(isThumbnailRequest())

@@ -1,16 +1,11 @@
 package com.github.panpf.sketch.core.nonandroid.test
 
 import com.github.panpf.sketch.Bitmap
-import com.github.panpf.sketch.byteCount as expectByteCount
 import com.github.panpf.sketch.createBitmap
-import com.github.panpf.sketch.height as expectHeight
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.isImmutable as expectIsImmutable
-import com.github.panpf.sketch.isMutable as expectIsMutable
-import com.github.panpf.sketch.size as expectSize
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.width as expectWidth
+import kotlinx.coroutines.test.runTest
 import org.jetbrains.skia.ColorAlphaType
 import org.jetbrains.skia.ColorType
 import org.jetbrains.skia.ImageInfo
@@ -18,6 +13,12 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import com.github.panpf.sketch.byteCount as expectByteCount
+import com.github.panpf.sketch.height as expectHeight
+import com.github.panpf.sketch.isImmutable as expectIsImmutable
+import com.github.panpf.sketch.isMutable as expectIsMutable
+import com.github.panpf.sketch.size as expectSize
+import com.github.panpf.sketch.width as expectWidth
 
 class BitmapNonAndroidTest {
 
@@ -75,15 +76,15 @@ class BitmapNonAndroidTest {
     }
 
     @Test
-    fun testIsMutable() {
-        assertTrue(ResourceImages.jpeg.decode().bitmap.expectIsMutable)
-        assertFalse(ResourceImages.jpeg.decode().bitmap.apply { setImmutable() }.expectIsMutable)
+    fun testIsMutable() = runTest {
+        assertTrue(ComposeResImageFiles.jpeg.decode().bitmap.expectIsMutable)
+        assertFalse(ComposeResImageFiles.jpeg.decode().bitmap.apply { setImmutable() }.expectIsMutable)
     }
 
     @Test
-    fun testIsImmutable() {
-        assertFalse(ResourceImages.jpeg.decode().bitmap.expectIsImmutable)
-        assertTrue(ResourceImages.jpeg.decode().bitmap.apply { setImmutable() }.expectIsImmutable)
+    fun testIsImmutable() = runTest {
+        assertFalse(ComposeResImageFiles.jpeg.decode().bitmap.expectIsImmutable)
+        assertTrue(ComposeResImageFiles.jpeg.decode().bitmap.apply { setImmutable() }.expectIsImmutable)
     }
 
     @Test

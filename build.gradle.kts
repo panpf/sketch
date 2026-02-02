@@ -1,5 +1,8 @@
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 buildscript {
@@ -72,20 +75,54 @@ allprojects {
         }
     }
 
+    // 'expect'/'actual' classes (including interfaces, objects, annotations, enums, and 'actual' typealiases) are in Beta. Consider using the '-Xexpect-actual-classes' flag to suppress this warning.
+    // Also see: https://youtrack.jetbrains.com/issue/KT-61573
+    plugins.withId("org.jetbrains.kotlin.multiplatform") {
+        extensions.configure<KotlinMultiplatformExtension> {
+            targets.configureEach {
+                compilations.configureEach {
+                    compilerOptions.configure {
+                        freeCompilerArgs.addAll(listOf<String>("-Xexpect-actual-classes"))
+                    }
+                }
+            }
+        }
+    }
+
+    // Can't dispatch to the main thread in native tests. https://youtrack.jetbrains.com/issue/KT-53129
+    plugins.withId("org.jetbrains.kotlin.multiplatform") {
+        extensions.configure<KotlinMultiplatformExtension> {
+            targets.withType<KotlinNativeTarget> {
+                if (konanTarget.family.isAppleFamily) {
+                    binaries.withType<TestExecutable> {
+                        freeCompilerArgs += listOf(
+                            "-e",
+                            "com.github.panpf.sketch.test.utils.mainBackground"
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     // Add compilation configuration for Compose module
     plugins.withId("org.jetbrains.kotlin.plugin.compose") {
         extensions.configure<ComposeCompilerGradlePluginExtension> {
             stabilityConfigurationFiles.add {
                 rootDir.resolve("sketch-core/compose_compiler_config.conf")
             }
+        }
+    }
 
-            /**
-             * Run the `./gradlew clean :sketch-compose:assembleRelease -PcomposeCompilerReports=true` command to generate a report,
-             * which is located in the `project/module/build/compose_compiler` directory.
-             *
-             * Interpretation of the report: https://developer.android.com/jetpack/compose/performance/stability/diagnose#kotlin
-             */
-            if (project.findProperty("composeCompilerReports") == "true") {
+    /*
+     * Run the `./gradlew clean :sketch-compose:assembleRelease -PcomposeCompilerReports=true` command to generate a report,
+     * which is located in the `project/module/build/compose_compiler` directory.
+     *
+     * Interpretation of the report: https://developer.android.com/jetpack/compose/performance/stability/diagnose#kotlin
+     */
+    if (project.findProperty("composeCompilerReports") == "true") {
+        plugins.withId("org.jetbrains.kotlin.plugin.compose") {
+            extensions.configure<ComposeCompilerGradlePluginExtension> {
                 val outputDir = layout.buildDirectory.dir("compose_compiler").get().asFile
                 metricsDestination = outputDir
                 reportsDestination = outputDir
@@ -93,7 +130,7 @@ allprojects {
         }
     }
 
-    // TODO jetbrains-compose bug https://youtrack.jetbrains.com/issue/CMP-5831
+    // jetbrains-compose bug https://youtrack.jetbrains.com/issue/CMP-5831
     configurations.all {
         resolutionStrategy.eachDependency {
             if (requested.group == "org.jetbrains.kotlinx" && requested.name == "atomicfu") {

@@ -23,7 +23,7 @@ import com.github.panpf.sketch.decode.ApkIconDecoder
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
 import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.decode.supportApkIcon
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
@@ -229,7 +229,7 @@ class ApkIconDecoderTest {
             }
 
         assertFailsWith(NullPointerException::class) {
-            val request = ImageRequest(context, ResourceImages.png.uri)
+            val request = ImageRequest(context, ComposeResImageFiles.png.uri)
             val requestContext = request.toRequestContext(sketch)
             val fetcher = sketch.components.newFetcherOrThrow(requestContext)
             val fetchResult = fetcher.fetch().getOrThrow()
@@ -283,7 +283,7 @@ class ApkIconDecoderTest {
         val factory = ApkIconDecoder.Factory()
 
         // mimeType normal
-        ImageRequest(context, ResourceImages.svg.uri)
+        ImageRequest(context, ComposeResImageFiles.svg.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "application/vnd.android.package-archive")
             }.apply {
@@ -291,7 +291,7 @@ class ApkIconDecoderTest {
             }
 
         // mimeType null
-        ImageRequest(context, ResourceImages.png.uri)
+        ImageRequest(context, ComposeResImageFiles.png.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = null)
             }.apply {
@@ -299,7 +299,7 @@ class ApkIconDecoderTest {
             }
 
         // mimeType error
-        ImageRequest(context, ResourceImages.png.uri)
+        ImageRequest(context, ComposeResImageFiles.png.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/svg+xml")
             }.apply {

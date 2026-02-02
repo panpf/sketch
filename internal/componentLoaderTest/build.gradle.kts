@@ -1,14 +1,14 @@
 plugins {
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.kotlinx.atomicfu")
 }
 
-addAllMultiplatformTargets()
-
-androidLibrary(nameSpace = "com.github.panpf.sketch.componentloadertest")
+addMultiplatformTargets(MultiplatformTargets.entries.toTypedArray())
 
 kotlin {
+    androidKmpLibrary(nameSpace = "com.github.panpf.sketch.componentloadertest")
+
     sourceSets {
         commonMain.dependencies {
             api(projects.internal.test)

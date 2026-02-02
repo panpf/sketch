@@ -6,8 +6,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.SkiaGifDecoder
 import com.github.panpf.sketch.decode.SkiaGifDecoder.Factory
 import com.github.panpf.sketch.decode.supportSkiaGif
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.colorSpace
@@ -18,11 +17,9 @@ import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.createDecoderOrDefault
 import com.github.panpf.sketch.test.utils.createDecoderOrNull
-import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.AnimatedTransformation
@@ -85,9 +82,9 @@ class GifSkiaAnimatedDecoderTest {
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, ResourceImages.animGif.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.animGif.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.animGif.toDataSource(context)
+        val dataSource = ComposeResImageFiles.animGif.toDataSource(context)
 
         SkiaGifDecoder(requestContext, dataSource)
         SkiaGifDecoder(requestContext = requestContext, dataSource = dataSource)
@@ -95,14 +92,10 @@ class GifSkiaAnimatedDecoderTest {
 
     @Test
     fun testImageInfo() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
         val factory = Factory()
 
-        ImageRequest(context, ResourceImages.animGif.uri)
+        ImageRequest(context, ComposeResImageFiles.animGif.uri)
             .createDecoderOrDefault(sketch, factory)
             .apply {
                 assertEquals(
@@ -114,14 +107,10 @@ class GifSkiaAnimatedDecoderTest {
 
     @Test
     fun testDecode() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
         val factory = Factory()
 
-        ImageRequest(context, ResourceImages.animGif.uri) {
+        ImageRequest(context, ComposeResImageFiles.animGif.uri) {
             colorSpace(ColorSpace.sRGB)
             onAnimationEnd { }
             onAnimationStart { }
@@ -146,7 +135,7 @@ class GifSkiaAnimatedDecoderTest {
             )
         }
 
-        ImageRequest(context, ResourceImages.animGif.uri) {
+        ImageRequest(context, ComposeResImageFiles.animGif.uri) {
             repeatCount(3)
             size(300, 300)
         }.decode(sketch, factory).apply {
@@ -173,9 +162,9 @@ class GifSkiaAnimatedDecoderTest {
     @Test
     fun testEqualsAndHashCode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.animGif.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.animGif.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.animGif.toDataSource(context)
+        val dataSource = ComposeResImageFiles.animGif.toDataSource(context)
         val element1 = SkiaGifDecoder(requestContext, dataSource)
         val element11 = SkiaGifDecoder(requestContext, dataSource)
 
@@ -188,9 +177,9 @@ class GifSkiaAnimatedDecoderTest {
     @Test
     fun testToString() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.animGif.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.animGif.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.animGif.toDataSource(context)
+        val dataSource = ComposeResImageFiles.animGif.toDataSource(context)
         val decoder = SkiaGifDecoder(requestContext, dataSource)
         assertTrue(
             actual = decoder.toString().contains("SkiaGifDecoder"),
@@ -214,15 +203,11 @@ class GifSkiaAnimatedDecoderTest {
 
     @Test
     fun testFactoryCreate() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
         val factory = Factory()
 
         // normal
-        ImageRequest(context, ResourceImages.animGif.uri)
+        ImageRequest(context, ComposeResImageFiles.animGif.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/gif")
             }.apply {
@@ -230,7 +215,7 @@ class GifSkiaAnimatedDecoderTest {
             }
 
         // no mimeType
-        ImageRequest(context, ResourceImages.animGif.uri)
+        ImageRequest(context, ComposeResImageFiles.animGif.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = null)
             }.apply {
@@ -238,7 +223,7 @@ class GifSkiaAnimatedDecoderTest {
             }
 
         // Disguised mimeType
-        ImageRequest(context, ResourceImages.animGif.uri)
+        ImageRequest(context, ComposeResImageFiles.animGif.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/jpeg")
             }.apply {
@@ -246,7 +231,7 @@ class GifSkiaAnimatedDecoderTest {
             }
 
         // disallowAnimatedImage true
-        ImageRequest(context, ResourceImages.animGif.uri) {
+        ImageRequest(context, ComposeResImageFiles.animGif.uri) {
             disallowAnimatedImage()
         }.createDecoderOrNull(sketch, factory) {
             it.copy(mimeType = null)
@@ -255,7 +240,7 @@ class GifSkiaAnimatedDecoderTest {
         }
 
         // data error
-        ImageRequest(context, ResourceImages.png.uri)
+        ImageRequest(context, ComposeResImageFiles.png.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = null)
             }.apply {
@@ -263,7 +248,7 @@ class GifSkiaAnimatedDecoderTest {
             }
 
         // Correct mimeType; data error
-        ImageRequest(context, ResourceImages.png.uri)
+        ImageRequest(context, ComposeResImageFiles.png.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/gif")
             }.apply {
