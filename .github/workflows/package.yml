@@ -73,13 +73,13 @@ jobs:
           java-version: 17
 
       - name: Run package
-        run: ./gradlew samples:shared:packageReleaseDeb
+        run: ./gradlew samples:desktopApp:packageReleaseDeb
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
           name: deb-files
-          path: samples/shared/build/compose/binaries/main-release/deb/*.deb
+          path: samples/desktopApp/build/compose/binaries/main-release/deb/*.deb
 
   package-macos:
     name: Package macos desktop
@@ -95,13 +95,13 @@ jobs:
           java-version: 17
 
       - name: Run package
-        run: ./gradlew samples:shared:packageReleaseDmg
+        run: ./gradlew samples:desktopApp:packageReleaseDmg
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dmg-files
-          path: samples/shared/build/compose/binaries/main-release/dmg/*.dmg
+          path: samples/desktopApp/build/compose/binaries/main-release/dmg/*.dmg
 
   package-windows:
     name: Package windows desktop
@@ -117,13 +117,13 @@ jobs:
           java-version: 17
 
       - name: Run package
-        run: ./gradlew samples:shared:packageReleaseMsi
+        run: ./gradlew samples:desktopApp:packageReleaseMsi
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
           name: msi-files
-          path: samples/shared/build/compose/binaries/main-release/msi/*.msi
+          path: samples/desktopApp/build/compose/binaries/main-release/msi/*.msi
 
   package-js:
     name: Package js browser

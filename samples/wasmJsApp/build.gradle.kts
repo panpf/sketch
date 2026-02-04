@@ -21,11 +21,11 @@ kotlin {
     }
 
     sourceSets {
-        commonMain.dependencies {
-            api(projects.samples.shared)
+        wasmJsMain.dependencies {
+            implementation(projects.samples.shared)
         }
 
-        commonTest.dependencies {
+        wasmJsTest.dependencies {
             implementation(projects.internal.test)
             implementation(projects.internal.testSingleton)
         }

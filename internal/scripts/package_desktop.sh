@@ -11,6 +11,6 @@ if [ "$1" != "--skipClean" ]; then
   ./gradlew clean
 fi
 
-./gradlew samples:shared:packageReleaseDistributionForCurrentOS
+./gradlew samples:desktopApp:packageReleaseDistributionForCurrentOS
 
-echo "✅  Desktop package is created successfully. The distribution is written to $(pwd)/samples/shared/build/compose/binaries/main-release/"
+echo "✅  Desktop package is created successfully. The distribution is written to $(pwd)/samples/desktopApp/build/compose/binaries/main-release/"

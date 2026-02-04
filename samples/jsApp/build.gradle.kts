@@ -18,11 +18,11 @@ kotlin {
     }
 
     sourceSets {
-        commonMain.dependencies {
-            api(projects.samples.shared)
+        jsMain.dependencies {
+            implementation(projects.samples.shared)
         }
 
-        commonTest.dependencies {
+        jsTest.dependencies {
             implementation(projects.internal.test)
             implementation(projects.internal.testSingleton)
         }
