@@ -7,6 +7,10 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
+# 4.4.0-beta01
+
+对比 4.4.0-alpha02 版本没有任何改变
+
 # 4.4.0-alpha02
 
 * broken: 合并 RequestInterceptor 和
