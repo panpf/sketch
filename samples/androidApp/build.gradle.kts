@@ -49,18 +49,21 @@ androidApplication(
         buildConfig = true
         viewBinding = true
     }
-
-//    applicationVariants.all {
-//        val variant = this
-//        variant.outputs.all {
-//            val output = this
-//            if (output is com.android.build.gradle.internal.api.BaseVariantOutputImpl) {
-//                output.outputFileName =
-//                    "sketch-sample-${variant.name}-${variant.versionName}.apk"
-//            }
-//        }
-//    }
 }
+
+androidComponents {
+    onVariants { variant ->
+        variant.outputs.forEach { output ->
+            val name = "sketch-sample-${variant.name}-${output.versionName.get()}.apk"
+            output as com.android.build.api.variant.impl.VariantOutputImpl
+            output.outputFileName = name
+        }
+    }
+}
+//// Another solution, you can only modify the prefix, AGP will automatically add the variant name
+//base {
+//    archivesName = "sketch-sample-${android.defaultConfig.versionName}"
+//}
 
 dependencies {
     implementation(projects.samples.shared)
