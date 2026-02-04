@@ -11,6 +11,6 @@ if [ "$1" != "--skipClean" ]; then
   ./gradlew clean
 fi
 
-./gradlew samples:shared:jsBrowserDistribution
+./gradlew samples:jsApp:jsBrowserDistribution
 
-echo "✅  JS package is created successfully. The distribution is written to $(pwd)/samples/shared/build/dist/js/productionExecutable/"
+echo "✅  JS package is created successfully. The distribution is written to $(pwd)/samples/jsApp/build/dist/js/productionExecutable/"

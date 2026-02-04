@@ -30,24 +30,16 @@ kotlin {
     jvm("desktop")
 
     js {
-        outputModuleName = "composeApp"
-        browser {
-            commonWebpackConfig {
-                outputFileName = "composeApp.js"
-            }
-        }
+        browser()
         binaries.executable()
+        binaries.library()
     }
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        outputModuleName = "composeApp"
-        browser {
-            commonWebpackConfig {
-                outputFileName = "composeApp.js"
-            }
-        }
+        browser()
         binaries.executable()
+        binaries.library()
     }
 
     sourceSets {
@@ -171,28 +163,5 @@ compose.desktop {
             optimize.set(true) // proguard optimization, enabled by default
             configurationFiles.from(project.file("compose-desktop.pro"))
         }
-    }
-}
-
-// https://youtrack.jetbrains.com/issue/KT-56025
-afterEvaluate {
-    tasks {
-        val configureJs: Task.() -> Unit = {
-            dependsOn(named("jsDevelopmentExecutableCompileSync"))
-            dependsOn(named("jsProductionExecutableCompileSync"))
-            dependsOn(named("jsTestTestDevelopmentExecutableCompileSync"))
-        }
-        named("jsBrowserProductionWebpack").configure(configureJs)
-    }
-}
-// https://youtrack.jetbrains.com/issue/KT-56025
-afterEvaluate {
-    tasks {
-        val configureWasmJs: Task.() -> Unit = {
-            dependsOn(named("wasmJsDevelopmentExecutableCompileSync"))
-            dependsOn(named("wasmJsProductionExecutableCompileSync"))
-            dependsOn(named("wasmJsTestTestDevelopmentExecutableCompileSync"))
-        }
-        named("wasmJsBrowserProductionWebpack").configure(configureWasmJs)
     }
 }

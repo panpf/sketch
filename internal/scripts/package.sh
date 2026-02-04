@@ -16,6 +16,6 @@ cd ../../
 echo "Android distribution is written to $(pwd)/samples/androidApp/build/outputs/apk/release/"
 echo "Android distribution is written to $(pwd)/samples/shared/build/ios/outputs/Build/Products/Debug-iphonesimulator/"
 echo "Desktop distribution is written to $(pwd)/samples/shared/build/compose/binaries/main/"
-echo "JS distribution is written to $(pwd)/samples/shared/build/dist/js/productionExecutable/"
-echo "WasmJs distribution is written to $(pwd)/samples/shared/build/dist/wasmJs/productionExecutable/"
+echo "JS distribution is written to $(pwd)/samples/jsApp/build/dist/js/productionExecutable/"
+echo "WasmJs distribution is written to $(pwd)/samples/shared/wasmJsApp/dist/wasmJs/productionExecutable/"
 echo "✅  All packages are created successfully."

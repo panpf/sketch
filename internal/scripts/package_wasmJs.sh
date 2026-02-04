@@ -11,6 +11,6 @@ if [ "$1" != "--skipClean" ]; then
   ./gradlew clean
 fi
 
-./gradlew samples:shared:wasmJsBrowserDistribution
+./gradlew samples:wasmJsApp:wasmJsBrowserDistribution
 
-echo "✅  WasmJs package is created successfully. The distribution is written to $(pwd)/samples/shared/build/dist/wasmJs/productionExecutable/"
+echo "✅  WasmJs package is created successfully. The distribution is written to $(pwd)/samples/wasmJsApp/build/dist/wasmJs/productionExecutable/"
