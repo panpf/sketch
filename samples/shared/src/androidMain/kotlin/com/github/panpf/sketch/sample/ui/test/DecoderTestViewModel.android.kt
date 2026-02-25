@@ -8,6 +8,7 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.ApkIconDecoder
+import com.github.panpf.sketch.decode.FFmpegVideoFrameDecoder
 import com.github.panpf.sketch.decode.ImageDecoderAnimatedHeifDecoder
 import com.github.panpf.sketch.decode.ImageDecoderAnimatedWebpDecoder
 import com.github.panpf.sketch.decode.ImageDecoderGifDecoder
@@ -95,13 +96,13 @@ actual suspend fun buildDecoderTestItems(
             imageDecoder = ImageDecoderAnimatedHeifDecoder.Factory()
         )
     )
-//    add(
-//        DecoderTestItem(
-//            name = "MP4_FFMPEG",
-//            imageUri = ComposeResImageFiles.mp4.uri,
-//            imageDecoder = FFmpegVideoFrameDecoder.Factory()
-//        )
-//    )
+    add(
+        DecoderTestItem(
+            name = "MP4_FFMPEG",
+            imageUri = ComposeResImageFiles.mp4.uri,
+            imageDecoder = FFmpegVideoFrameDecoder.Factory()
+        )
+    )
     add(
         DecoderTestItem(
             name = "MP4_BUILTIN",

@@ -499,8 +499,7 @@ class AppSettingsViewModel(
             MultiSelectMenu(
                 title = "Video Frame Decoder",
                 desc = null,
-//                values = listOf("FFmpeg", "AndroidBuiltIn"),
-                values = listOf("AndroidBuiltIn"),
+                values = listOf("FFmpeg", "AndroidBuiltIn"),
                 getValue = { appSettings.videoFrameDecoder.value },
                 onSelect = { _, value ->
                     appSettings.videoFrameDecoder.value = value

@@ -21,8 +21,7 @@ actual class AppSettings actual constructor(context: PlatformContext) : BaseAppS
     // -------------------------------------- other --------------------------------------
 
     val videoFrameDecoder: SettingsStateFlow<String> by lazy {
-//        stringSettingsStateFlow(context, key = "videoFrameDecoder", initialize = "FFmpeg")
-        stringSettingsStateFlow(context, key = "videoFrameDecoder", initialize = "AndroidBuiltIn")
+        stringSettingsStateFlow(context, key = "videoFrameDecoder", initialize = "FFmpeg")
     }
 
     val gifDecoder: SettingsStateFlow<String> by lazy {

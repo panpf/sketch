@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.os.Build
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.internal.FFmpegVideoFrameDecoderProvider
 import com.github.panpf.sketch.decode.internal.GifDecoderProvider
 import com.github.panpf.sketch.decode.internal.KoralGifDecoderProvider
 import com.github.panpf.sketch.decode.internal.VideoFrameDecoderProvider
+import com.github.panpf.sketch.decode.supportFFmpegVideoFrame
 import com.github.panpf.sketch.decode.supportImageDecoderGif
 import com.github.panpf.sketch.decode.supportKoralGif
 import com.github.panpf.sketch.decode.supportMovieGif
@@ -57,7 +59,7 @@ actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
 
     addIgnoreDecoderProvider(
         VideoFrameDecoderProvider::class,
-//        FFmpegVideoFrameDecoderProvider::class
+        FFmpegVideoFrameDecoderProvider::class
     )
 
     addIgnoreDecoderProvider(
@@ -75,8 +77,7 @@ actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
         }
 
         when (appSettings.videoFrameDecoder.value) {
-//            "FFmpeg" -> supportFFmpegVideoFrame()
-            "FFmpeg" -> supportVideoFrame()
+            "FFmpeg" -> supportFFmpegVideoFrame()
             "AndroidBuiltIn" -> supportVideoFrame()
             else -> throw IllegalArgumentException("Unknown videoFrameDecoder: ${appSettings.videoFrameDecoder.value}")
         }

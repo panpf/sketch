@@ -65,8 +65,7 @@ actual fun platformOtherMenuList(
         DropdownSettingItem(
             title = "Video Frame Decoder",
             desc = null,
-//            values = listOf("FFmpeg", "AndroidBuiltIn"),
-            values = listOf("AndroidBuiltIn"),
+            values = listOf("FFmpeg", "AndroidBuiltIn"),
             state = appSettings.videoFrameDecoder,
             onItemClick = {
                 appEvents.toastFlow.emit("Restart the app to take effect")

@@ -75,7 +75,7 @@ kotlin {
             api(projects.sketchExtensionsAppicon)
             api(projects.sketchExtensionsApkicon)
             api(projects.sketchVideo)
-//            api(projects.sketchVideoFfmpeg)   // https://github.com/wseemann/FFmpegMediaMetadataRetriever/issues/294
+            api(projects.sketchVideoFfmpeg)   // https://github.com/wseemann/FFmpegMediaMetadataRetriever/issues/294
             api(libs.androidx.activity.compose)
             api(libs.androidx.appcompat)
             api(libs.androidx.constraintlayout.compose)
