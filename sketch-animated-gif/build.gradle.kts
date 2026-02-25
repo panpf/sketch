@@ -1,7 +1,6 @@
 plugins {
     id("com.android.kotlin.multiplatform.library")
     id("org.jetbrains.kotlin.multiplatform")
-    id("org.jetbrains.kotlinx.atomicfu")
     id("org.jetbrains.kotlinx.kover")
 }
 

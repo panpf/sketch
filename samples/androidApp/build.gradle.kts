@@ -4,7 +4,6 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.parcelize")
     id("org.jetbrains.kotlin.plugin.serialization")
-    id("org.jetbrains.kotlinx.atomicfu")
     id("androidx.navigation.safeargs.kotlin")
 }
 
