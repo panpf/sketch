@@ -59,7 +59,6 @@ import com.github.panpf.sketch.util.animatable2CompatCallbackOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.internal.SynchronizedObject
 import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
 
@@ -94,11 +93,10 @@ open class ImageDecoderAnimatedDecoder(
 ) : Decoder {
 
     private var _imageInfo: ImageInfo? = null
-    private val imageInfoLock = SynchronizedObject()
 
     override val imageInfo: ImageInfo
         get() {
-            synchronized(imageInfoLock) {
+            synchronized(this@ImageDecoderAnimatedDecoder) {
                 return _imageInfo ?: dataSource.readImageInfoWithIgnoreExifOrientation()
                     .apply { _imageInfo = this }
             }
