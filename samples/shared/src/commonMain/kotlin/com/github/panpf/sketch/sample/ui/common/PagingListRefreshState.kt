@@ -6,8 +6,8 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import app.cash.paging.LoadStateError
-import app.cash.paging.compose.LazyPagingItems
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 
 @Composable
 fun PagingListRefreshState(
@@ -17,7 +17,7 @@ fun PagingListRefreshState(
     val pageState by remember {
         derivedStateOf {
             val refreshState = pagingItems.loadState.refresh
-            if (refreshState is LoadStateError) {
+            if (refreshState is LoadState.Error) {
                 PageState.Error(refreshState.error.message) {
                     pagingItems.refresh()
                 }

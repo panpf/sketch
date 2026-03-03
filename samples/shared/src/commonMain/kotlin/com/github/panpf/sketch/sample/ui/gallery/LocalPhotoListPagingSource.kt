@@ -16,11 +16,8 @@
 
 package com.github.panpf.sketch.sample.ui.gallery
 
-import app.cash.paging.PagingSource
-import app.cash.paging.PagingSourceLoadParams
-import app.cash.paging.PagingSourceLoadResult
-import app.cash.paging.PagingState
-import app.cash.paging.createPagingSourceLoadResultPage
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.sample.data.builtinImages
 import com.github.panpf.sketch.sample.data.localImages
@@ -34,7 +31,7 @@ class LocalPhotoListPagingSource(val sketch: Sketch) : PagingSource<Int, Photo>(
 
     override fun getRefreshKey(state: PagingState<Int, Photo>): Int = 0
 
-    override suspend fun load(params: PagingSourceLoadParams<Int>): PagingSourceLoadResult<Int, Photo> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Photo> {
         val startPosition = params.key ?: 0
         val pageSize = params.loadSize
 
@@ -63,7 +60,7 @@ class LocalPhotoListPagingSource(val sketch: Sketch) : PagingSource<Int, Photo>(
         val nextKey = if (pagePhotos.isNotEmpty() && toIndex < photos.size)
             startPosition + pageSize else null
         val filteredPhotos = pagePhotos.filter { keySet.add(it.originalUrl) }
-        return createPagingSourceLoadResultPage(
+        return LoadResult.Page(
             data = filteredPhotos,
             prevKey = null,
             nextKey = nextKey

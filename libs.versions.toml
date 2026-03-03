@@ -10,6 +10,7 @@ androidx-exifinterface = "1.4.2"
 androidx-fragment = "1.8.9"
 androidx-lifecycle = "2.10.0" # sync with jetbrains-lifecycle
 androidx-navigation = "2.9.6"
+androidx-paging = "3.4.1"
 androidx-recyclerview = "1.4.0"
 androidx-swiperefreshlayout = "1.2.0"
 androidx-test-ext-junit = "1.3.0"
@@ -50,7 +51,7 @@ ktor3 = "3.4.0"
 leakcanary = "2.14"
 
 moko-permissions = "0.20.1"
-multiplatform-paging = "3.3.0-alpha02-0.5.1"
+#multiplatform-paging = "3.3.0-alpha02-0.5.1"
 multiplatform-settings = "1.3.0"
 
 okhttp3 = "4.12.0"
@@ -96,6 +97,7 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
 androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
 androidx-navigation-ui = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidx-navigation" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "androidx-paging" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "androidx-recyclerview" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidx-test-runner" }
@@ -105,8 +107,6 @@ androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "a
 androidgifdrawable = { module = "pl.droidsonroids.gif:android-gif-drawable", version.ref = "androidgifdrawable" }
 androidsvg = { module = "com.caverock:androidsvg-aar", version.ref = "androidsvg" }
 appdirs = { module = "net.harawata:appdirs", version.ref = "appdirs" }
-
-multiplatform-paging = { module = "app.cash.paging:paging-compose-common", version.ref = "multiplatform-paging" }
 
 ffmpegMediaMetadataRetriever-core = { module = "com.github.wseemann:FFmpegMediaMetadataRetriever-core", version.ref = "ffmpegMediaMetadataRetriever" }
 ffmpegMediaMetadataRetriever-native = { module = "com.github.wseemann:FFmpegMediaMetadataRetriever-native", version.ref = "ffmpegMediaMetadataRetriever" }
@@ -168,6 +168,8 @@ moko-permissions-storage = { module = "dev.icerock.moko:permissions-storage", ve
 multiplatformsettings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 #multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatform-settings" }
 #multiplatform-settings-observable = { module = "com.russhwolf:multiplatform-settings-make-observable", version.ref = "multiplatform-settings" }
+
+#multiplatform-paging = { module = "app.cash.paging:paging-compose-common", version.ref = "multiplatform-paging" }
 
 okhttp3 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp3" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }

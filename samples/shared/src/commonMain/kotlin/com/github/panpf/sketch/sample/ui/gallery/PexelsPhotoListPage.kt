@@ -6,12 +6,12 @@ import com.github.panpf.sketch.sample.ui.gridCellsMinSize
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-actual fun GiphyPhotoListPage() {
+fun PexelsPhotoListPage() {
     val navigator = LocalNavigator.current!!
-    val giphyPhotoListViewModel: GiphyPhotoListViewModel = koinViewModel()
+    val pexelsPhotoListViewModel: PexelsPhotoListViewModel = koinViewModel()
     PagingPhotoList(
-        photoPagingFlow = giphyPhotoListViewModel.pagingFlow,
-        animatedPlaceholder = true,
+        photoPagingFlow = pexelsPhotoListViewModel.pagingFlow,
+        animatedPlaceholder = false,
         gridCellsMinSize = gridCellsMinSize,
         onClick = { photos, _, index ->
             val params = buildPhotoPagerParams(photos, index)

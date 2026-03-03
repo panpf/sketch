@@ -16,24 +16,20 @@
 
 package com.github.panpf.sketch.sample.ui.gallery
 
-import app.cash.paging.PagingSource
-import app.cash.paging.PagingSourceLoadParams
-import app.cash.paging.PagingSourceLoadResult
-import app.cash.paging.PagingSourceLoadResultError
-import app.cash.paging.PagingState
-import app.cash.paging.createPagingSourceLoadResultPage
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.github.panpf.sketch.sample.data.api.Response
 import com.github.panpf.sketch.sample.data.api.giphy.GiphyApi
 import com.github.panpf.sketch.sample.data.api.giphy.GiphyGif
 import com.github.panpf.sketch.sample.ui.model.Photo
 
-class GiphyPhotoListPagingSource constructor(val giphyApi: GiphyApi) : PagingSource<Int, Photo>() {
+class GiphyPhotoListPagingSource(val giphyApi: GiphyApi) : PagingSource<Int, Photo>() {
 
     private val keySet = HashSet<String>()  // Compose LazyVerticalGrid does not allow a key repeat
 
     override fun getRefreshKey(state: PagingState<Int, Photo>): Int = 0
 
-    override suspend fun load(params: PagingSourceLoadParams<Int>): PagingSourceLoadResult<Int, Photo> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Photo> {
         val pageStart = params.key ?: 0
         val pageSize = params.loadSize
         val response = try {
@@ -41,7 +37,7 @@ class GiphyPhotoListPagingSource constructor(val giphyApi: GiphyApi) : PagingSou
 //            giphyApi.search("pet", pageStart, pageSize)
         } catch (e: Exception) {
             e.printStackTrace()
-            return PagingSourceLoadResultError(e)
+            return LoadResult.Error(e)
         }
 
         return if (response is Response.Success) {
@@ -49,10 +45,10 @@ class GiphyPhotoListPagingSource constructor(val giphyApi: GiphyApi) : PagingSou
             val photos = giphyPhotos.map { it.toPhoto() }
             val filteredPhotos = photos.filter { keySet.add(it.originalUrl) }
             val nextKey = if (giphyPhotos.isNotEmpty()) pageStart + pageSize else null
-            createPagingSourceLoadResultPage(filteredPhotos, null, nextKey)
+            LoadResult.Page(filteredPhotos, null, nextKey)
         } else {
             response as Response.Error
-            PagingSourceLoadResultError(Exception("Http error: ${response.throwable?.message}"))
+            LoadResult.Error(Exception("Http error: ${response.throwable?.message}"))
         }
     }
 

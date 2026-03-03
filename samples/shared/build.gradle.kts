@@ -16,7 +16,7 @@ kotlin {
     androidKmpLibrary(nameSpace = "com.github.panpf.sketch.sample.compose")
 
     listOf(
-        iosX64(),
+//        iosX64(), // androidx.paging doesn't support iosX64 since 3.4.0
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
@@ -53,6 +53,7 @@ kotlin {
             api(projects.sketchExtensionsComposeResources)
             api(projects.sketchHttpKtor3)
             api(projects.sketchSvg)
+            api(libs.androidx.paging.compose)
             api(libs.jetbrains.compose.components.resources)
             api(libs.jetbrains.compose.material)    // pull refresh
             api(libs.jetbrains.compose.material3)
@@ -116,9 +117,9 @@ kotlin {
                 api(libs.moko.permissions.storage)
             }
         }
-        nonJsCommonMain.dependencies {
-            api(libs.multiplatform.paging)
-        }
+//        nonJsCommonMain.dependencies {
+//            api(libs.multiplatform.paging)
+//        }
 
         commonTest.dependencies {
             implementation(projects.internal.test)
