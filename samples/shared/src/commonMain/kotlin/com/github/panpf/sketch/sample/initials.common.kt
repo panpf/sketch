@@ -10,8 +10,11 @@ import com.github.panpf.sketch.sample.ui.gallery.GiphyPhotoListViewModel
 import com.github.panpf.sketch.sample.ui.gallery.LocalPhotoListViewModel
 import com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoListViewModel
 import com.github.panpf.sketch.sample.ui.test.DecoderTestViewModel
+import com.github.panpf.sketch.sample.ui.test.DisplayInsanityTestViewModel
+import com.github.panpf.sketch.sample.ui.test.ExifOrientationTestViewModel
 import com.github.panpf.sketch.sample.ui.test.FetcherTestViewModel
 import com.github.panpf.sketch.sample.ui.test.ProgressIndicatorTestViewModel
+import com.github.panpf.sketch.sample.ui.test.ProgressTestViewModel
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.util.Logger
 import io.ktor.client.HttpClient
@@ -41,7 +44,10 @@ fun commonModule(context: PlatformContext): Module = module {
     viewModelOf(::LocalPhotoListViewModel)
     viewModel { DecoderTestViewModel(context) }
     viewModel { FetcherTestViewModel(context) }
+    viewModel { ProgressTestViewModel(context) }
+    viewModel { ExifOrientationTestViewModel() }
     viewModel { ProgressIndicatorTestViewModel() }
+    viewModel { DisplayInsanityTestViewModel() }
 }
 
 expect fun platformModule(context: PlatformContext): Module

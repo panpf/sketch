@@ -1,8 +1,9 @@
 package com.github.panpf.sketch.sample.ui.test
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.lazy.grid.GridCells.Adaptive
+import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
@@ -11,19 +12,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
-import com.github.panpf.sketch.sample.ui.gallery.PhotoGridItem
 import org.koin.compose.viewmodel.koinViewModel
 
-class DisplayInsanityTestScreen : BaseScreen() {
+class FetcherTestScreen : BaseScreen() {
 
     @Composable
+    @OptIn(ExperimentalFoundationApi::class)
     override fun DrawContent() {
-        ToolbarScaffold(title = "DisplayInsanityTest") {
+        ToolbarScaffold(title = "FetcherTest") {
             val gridState = rememberLazyGridState()
-            val viewModel: DisplayInsanityTestViewModel = koinViewModel()
-            val photos by viewModel.data.collectAsState()
+            val viewModel: FetcherTestViewModel = koinViewModel()
+            val photoTestItems by viewModel.data.collectAsState()
             LazyVerticalGrid(
-                columns = Adaptive(100.dp),
+                columns = GridCells.Fixed(3),
                 state = gridState,
                 contentPadding = PaddingValues(
                     start = 4.dp,
@@ -35,18 +36,10 @@ class DisplayInsanityTestScreen : BaseScreen() {
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 items(
-                    count = photos.size,
-                    key = { "${photos[it].originalUrl}:${it}" },
+                    count = photoTestItems.size,
                     contentType = { 1 }
                 ) { index ->
-                    val item = photos[index]
-                    PhotoGridItem(
-                        index = index,
-                        photo = item,
-                        animatedPlaceholder = false,
-                        staggeredGridMode = false,
-                        onClick = { _, _ -> },
-                    )
+                    GridPhotoTestItem(photoTestItems[index])
                 }
             }
         }

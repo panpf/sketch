@@ -47,7 +47,7 @@ class RemoteViewsTestFragment : BaseToolbarBindingFragment<FragmentTestRemoteVie
         binding: FragmentTestRemoteViewsBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "RemoteViews"
+        toolbar.title = "RemoteViewsTest"
 
         notificationHelper = NotificationHelper(requireContext())
         binding.showButton.setOnClickListener {

@@ -38,7 +38,7 @@ class IconDrawableTestFragment : BaseToolbarBindingFragment<FragmentTestIconDraw
         binding: FragmentTestIconDrawableBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "IconDrawable"
+        toolbar.title = "IconDrawableTest"
 
         val resources = binding.root.resources
         binding.image1.setImageDrawable(

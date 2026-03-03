@@ -56,7 +56,7 @@ class BlurHashTestScreen : BaseScreen() {
 
     @Composable
     override fun DrawContent() {
-        ToolbarScaffold(title = "BlurHash") {
+        ToolbarScaffold(title = "BlurHashTest") {
             Column(
                 modifier = Modifier.fillMaxWidth()
                     .windowInsetsPadding(NavigationBarDefaults.windowInsets)

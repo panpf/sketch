@@ -37,7 +37,7 @@ class ProgressIndicatorTestFragment :
         binding: FragmentTestProgressIndicatorBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "ProgressIndicator"
+        toolbar.title = "ProgressIndicatorTest"
 
         binding.image1.setImageDrawable(
             IconDrawable(

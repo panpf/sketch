@@ -22,7 +22,7 @@ class MainThreadTestScreen : BaseScreen() {
 
     @Composable
     override fun DrawContent() {
-        ToolbarScaffold(title = "Main Thread Test") {
+        ToolbarScaffold(title = "MainThreadTest") {
             var result by remember { mutableStateOf<Pair<Boolean, Boolean>?>(null) }
             LaunchedEffect(Unit) {
                 val isMainThreadInIO = withContext(Dispatchers.IO) {

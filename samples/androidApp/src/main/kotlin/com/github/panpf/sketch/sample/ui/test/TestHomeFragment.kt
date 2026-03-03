@@ -90,6 +90,10 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
             title = "Transformation",
             navDirections = NavMainDirections.actionTransformationTestPagerFragment()
         ),
+        Link(
+            title = "Progress",
+            navDirections = NavMainDirections.actionProgressTestFragment()
+        ),
 
         ListSeparator("UI"),
         Link(

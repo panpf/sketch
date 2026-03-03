@@ -44,7 +44,7 @@ class AnimatedImageTestFragment :
         binding: FragmentTestAnimatedImageBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "AnimatedImage"
+        toolbar.title = "AnimatedImageTest"
 
         binding.formatGifImage.loadImage(ComposeResImageFiles.animGif.uri) {
             placeholder(

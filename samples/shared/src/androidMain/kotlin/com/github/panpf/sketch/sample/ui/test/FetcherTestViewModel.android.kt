@@ -14,6 +14,7 @@ import com.github.panpf.sketch.images.ComposeResImageFile
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.images.HttpImages
 import com.github.panpf.sketch.images.R
+import com.github.panpf.sketch.sample.ui.model.PhotoTestItem
 import com.github.panpf.sketch.sample.util.versionCodeCompat
 import com.github.panpf.tools4a.fileprovider.ktx.getShareFileUri
 import kotlinx.coroutines.Dispatchers
@@ -29,37 +30,43 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 actual suspend fun buildFetcherTestItems(
     context: PlatformContext,
     fromCompose: Boolean
-): List<FetcherTestItem> {
+): List<PhotoTestItem> {
     val testFile = getPhotoFromFiles(context, ComposeResImageFiles.jpeg)
     val testFile2 = getPhotoFromFiles(context, ComposeResImageFiles.bmp)
     val testFile3 = getPhotoFromFiles(context, ComposeResImageFiles.png).toFile()
     val headerUserPackageInfo = loadUserAppPackageInfo(context, true)
     return buildList {
-        add(FetcherTestItem(title = "HTTP", HttpImages.HTTP))
-        add(FetcherTestItem(title = "HTTPS", HttpImages.HTTPS))
-        add(FetcherTestItem(title = "CONTENT", context.getShareFileUri(testFile3).toString()))
-        add(FetcherTestItem(title = "FILE_URI", newFileUri(testFile)))
-        add(FetcherTestItem(title = "FILE_PATH", testFile2.toString()))
-        add(FetcherTestItem(title = "ASSET", AssetImageFiles.bird.uri))
-        add(FetcherTestItem(title = "RES_ID", newResourceUri(R.drawable.play)))
-        add(FetcherTestItem(title = "RES_NAME", newResourceUri("drawable", "bg_circle_accent")))
-        if (fromCompose) {
-            add(
-                FetcherTestItem(
-                    title = "RES_COMPOSE",
-                    ComposeResImageFiles.longQMSHT.uri
-                )
+        add(PhotoTestItem(title = "HTTP", photoUri = HttpImages.HTTP))
+        add(PhotoTestItem(title = "HTTPS", photoUri = HttpImages.HTTPS))
+        add(
+            PhotoTestItem(
+                title = "CONTENT",
+                photoUri = context.getShareFileUri(testFile3).toString()
             )
+        )
+        add(PhotoTestItem(title = "FILE_URI", photoUri = newFileUri(testFile)))
+        add(PhotoTestItem(title = "FILE_PATH", photoUri = testFile2.toString()))
+        add(PhotoTestItem(title = "ASSET", photoUri = AssetImageFiles.bird.uri))
+        add(PhotoTestItem(title = "RES_ID", photoUri = newResourceUri(R.drawable.play)))
+        add(
+            PhotoTestItem(
+                title = "RES_NAME",
+                photoUri = newResourceUri("drawable", "bg_circle_accent")
+            )
+        )
+        if (fromCompose) {
+            add(PhotoTestItem(title = "RES_COMPOSE", photoUri = ComposeResImageFiles.longQMSHT.uri))
         }
         add(
-            FetcherTestItem(
-                title = "APP_ICON", newAppIconUri(
+            PhotoTestItem(
+                title = "APP_ICON",
+                photoUri = newAppIconUri(
                     headerUserPackageInfo.packageName,
                     headerUserPackageInfo.versionCodeCompat
                 )
             )
         )
-        add(FetcherTestItem(title = "BASE64", Base64Images.KOTLIN_ICON))
+        add(PhotoTestItem(title = "BASE64", photoUri = Base64Images.KOTLIN_ICON))
     }
 }
 

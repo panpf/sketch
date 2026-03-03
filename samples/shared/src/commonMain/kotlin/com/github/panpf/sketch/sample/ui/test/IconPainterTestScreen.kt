@@ -27,7 +27,7 @@ class IconPainterTestScreen : BaseScreen() {
 
     @Composable
     override fun DrawContent() {
-        ToolbarScaffold(title = "IconPainter") {
+        ToolbarScaffold(title = "IconPainterTest") {
             Column(
                 modifier = Modifier.fillMaxWidth()
                     .windowInsetsPadding(NavigationBarDefaults.windowInsets),

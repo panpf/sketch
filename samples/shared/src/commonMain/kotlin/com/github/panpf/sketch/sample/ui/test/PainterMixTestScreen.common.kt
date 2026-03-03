@@ -6,16 +6,10 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import com.github.panpf.sketch.PlatformContext
 
-expect suspend fun buildPainterContentScaleTestPainters(
-    context: PlatformContext,
-    contentScale: ContentScale,
-    alignment: Alignment,
-): List<Pair<String, Painter>>
-
-class MixPainterTestScreen : BasePainterTestScreen() {
+class PainterMixTestScreen : BasePainterTestScreen() {
 
     @Composable
-    override fun getTitle(): String = "Mix Painter"
+    override fun getTitle(): String = "PainterMixTest"
 
     override suspend fun buildPainters(
         context: PlatformContext,
@@ -25,3 +19,9 @@ class MixPainterTestScreen : BasePainterTestScreen() {
     ): List<Pair<String, Painter>> =
         buildPainterContentScaleTestPainters(context, contentScale, alignment)
 }
+
+expect suspend fun buildPainterContentScaleTestPainters(
+    context: PlatformContext,
+    contentScale: ContentScale,
+    alignment: Alignment,
+): List<Pair<String, Painter>>

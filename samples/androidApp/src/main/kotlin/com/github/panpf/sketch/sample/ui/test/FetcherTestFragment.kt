@@ -19,46 +19,67 @@ package com.github.panpf.sketch.sample.ui.test
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Lifecycle.State
-import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
-import com.github.panpf.sketch.sample.databinding.FragmentTabPagerBinding
+import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.GridLayoutManager
+import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
+import com.github.panpf.assemblyadapter.recycler.ItemSpan
+import com.github.panpf.assemblyadapter.recycler.divider.Divider
+import com.github.panpf.assemblyadapter.recycler.divider.addAssemblyGridDividerItemDecoration
+import com.github.panpf.assemblyadapter.recycler.newAssemblyGridLayoutManager
+import com.github.panpf.sketch.sample.R
+import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
+import com.github.panpf.sketch.sample.ui.gallery.PhotoTestItemFactory
+import com.github.panpf.sketch.sample.ui.model.PhotoTestItem
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
-import com.google.android.material.tabs.TabLayoutMediator
+import com.github.panpf.tools4k.lang.asOrThrow
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FetcherTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBinding>() {
+class FetcherTestFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
 
-    private val fetcherTestViewModel by viewModel<FetcherTestViewModel>()
+    private val viewModel by viewModel<FetcherTestViewModel>()
 
-    override fun getNavigationBarInsetsView(binding: FragmentTabPagerBinding): View {
+    override fun getNavigationBarInsetsView(binding: FragmentRecyclerBinding): View {
         return binding.root
     }
 
     override fun onViewCreated(
         toolbar: Toolbar,
-        binding: FragmentTabPagerBinding,
+        binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "Fetcher"
+        toolbar.title = "FetcherTest"
 
-        fetcherTestViewModel.data.repeatCollectWithLifecycle(
-            viewLifecycleOwner,
-            State.CREATED
-        ) { data ->
-            val imageFromData = data ?: return@repeatCollectWithLifecycle
-            val images = imageFromData.map { it.imageUri }
+        binding.recycler.apply {
+            layoutManager =
+                newAssemblyGridLayoutManager(3, GridLayoutManager.VERTICAL) {
+                    itemSpanByItemFactory(
+                        LoadStateItemFactory::class,
+                        ItemSpan.fullSpan()
+                    )
+                }
+            addAssemblyGridDividerItemDecoration {
+                val gridDivider =
+                    requireContext().resources.getDimensionPixelSize(R.dimen.grid_divider)
+                divider(Divider.space(gridDivider))
+                sideDivider(Divider.space(gridDivider))
+                useDividerAsHeaderAndFooterDivider()
+                useSideDividerAsSideHeaderAndFooterDivider()
+            }
 
-            binding.pager.adapter = AssemblyFragmentStateAdapter(
-                fragment = this,
-                itemFactoryList = listOf(FetcherTestImageFragment.ItemFactory()),
-                initDataList = images
+            adapter = AssemblyRecyclerAdapter<PhotoTestItem>(
+                itemFactoryList = listOf(PhotoTestItemFactory()),
             )
+        }
 
-            TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
-                tab.text = imageFromData[position].title
-            }.attach()
+        viewModel.data.repeatCollectWithLifecycle(
+            owner = viewLifecycleOwner,
+            state = Lifecycle.State.CREATED
+        ) { list ->
+            binding.recycler.adapter!!
+                .asOrThrow<AssemblyRecyclerAdapter<PhotoTestItem>>()
+                .submitList(list)
         }
     }
-
 }

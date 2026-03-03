@@ -21,25 +21,24 @@ import android.graphics.Point
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.github.panpf.sketch.ability.showDataFromLogo
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
-import com.github.panpf.sketch.images.ImageFile
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.R
-import com.github.panpf.sketch.sample.databinding.GridItemExifOrientationBinding
+import com.github.panpf.sketch.sample.databinding.GridItemTestPhotoBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
+import com.github.panpf.sketch.sample.ui.model.PhotoTestItem
 import com.github.panpf.sketch.state.IconDrawableStateImage
-import com.github.panpf.sketch.util.isNotEmpty
 import com.github.panpf.tools4a.display.ktx.getScreenWidth
-import kotlin.math.roundToInt
 
-class ExifOrientationGridItemFactory :
-    BaseBindingItemFactory<ImageFile, GridItemExifOrientationBinding>(ImageFile::class) {
+class PhotoTestItemFactory :
+    BaseBindingItemFactory<PhotoTestItem, GridItemTestPhotoBinding>(PhotoTestItem::class) {
 
     private var itemSize: Point? = null
 
@@ -47,7 +46,7 @@ class ExifOrientationGridItemFactory :
         context: Context,
         inflater: LayoutInflater,
         parent: ViewGroup
-    ): GridItemExifOrientationBinding {
+    ): GridItemTestPhotoBinding {
         if (itemSize == null && parent is RecyclerView) {
             val screenWidth = context.getScreenWidth()
             val gridDivider = context.resources.getDimensionPixelSize(R.dimen.grid_divider)
@@ -74,14 +73,20 @@ class ExifOrientationGridItemFactory :
 
     override fun initItem(
         context: Context,
-        binding: GridItemExifOrientationBinding,
-        item: BindingItem<ImageFile, GridItemExifOrientationBinding>
+        binding: GridItemTestPhotoBinding,
+        item: BindingItem<PhotoTestItem, GridItemTestPhotoBinding>
     ) {
         binding.myListImage.apply {
             updateImageOptions {
                 placeholder(
                     IconDrawableStateImage(
                         icon = R.drawable.ic_image_outline,
+                        background = R.color.placeholder_bg,
+                    )
+                )
+                error(
+                    IconDrawableStateImage(
+                        icon = R.drawable.ic_image_broken_outline,
                         background = R.color.placeholder_bg,
                     )
                 )
@@ -97,29 +102,40 @@ class ExifOrientationGridItemFactory :
 
     override fun bindItemData(
         context: Context,
-        binding: GridItemExifOrientationBinding,
-        item: BindingItem<ImageFile, GridItemExifOrientationBinding>,
+        binding: GridItemTestPhotoBinding,
+        item: BindingItem<PhotoTestItem, GridItemTestPhotoBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
-        data: ImageFile
+        data: PhotoTestItem
     ) {
         binding.root.updateLayoutParams<LayoutParams> {
             val itemSize = itemSize!!
-            if (data.size.isNotEmpty) {
-                width = itemSize.x
-                height = if (itemSize.y == -1) {
-                    val previewAspectRatio = data.size.width.toFloat() / data.size.height.toFloat()
-                    (itemSize.x / previewAspectRatio).roundToInt()
-                } else {
-                    itemSize.y
-                }
-            } else {
-                width = itemSize.x
-                height = itemSize.x
-            }
+            width = itemSize.x
+            height = itemSize.x
         }
 
-        binding.myListImage.loadImage(data.uri)
-        binding.text.text = data.name
+        binding.myListImage.loadImage(data.photoUri) {
+            val imageDecoder = data.imageDecoder
+            if (imageDecoder != null) {
+                components {
+                    add(imageDecoder)
+                }
+            }
+            val fetchFactory = data.imageFetcher
+            if (fetchFactory != null) {
+                components {
+                    add(fetchFactory)
+                }
+            }
+        }
+        val title = if (data.apiSupport) {
+            data.title
+        } else if (data.title?.isNotEmpty() == true) {
+            "${data.title} (API Level Not Supported)"
+        } else {
+            "API Level Not Supported"
+        }
+        binding.text.text = title
+        binding.text.isVisible = title != null
     }
 }

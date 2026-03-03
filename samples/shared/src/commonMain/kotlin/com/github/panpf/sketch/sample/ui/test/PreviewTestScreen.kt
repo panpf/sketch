@@ -34,7 +34,7 @@ class PreviewTestScreen : BaseScreen() {
 
     @Composable
     override fun DrawContent() {
-        ToolbarScaffold(title = "Preview") {
+        ToolbarScaffold(title = "PreviewTest") {
             Row(
                 modifier = Modifier.fillMaxSize()
                     .windowInsetsPadding(NavigationBarDefaults.windowInsets),

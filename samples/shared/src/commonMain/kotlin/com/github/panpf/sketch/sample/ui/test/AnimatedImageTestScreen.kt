@@ -51,7 +51,7 @@ class AnimatedImageTestScreen : BaseScreen() {
 
     @Composable
     override fun DrawContent() {
-        ToolbarScaffold(title = "AnimatedImage") {
+        ToolbarScaffold(title = "AnimatedImageTest") {
             Column(
                 modifier = Modifier.fillMaxSize()
                     .windowInsetsPadding(NavigationBarDefaults.windowInsets)

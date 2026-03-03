@@ -46,7 +46,7 @@ class AnimatablePlaceholderTestFragment :
         binding: FragmentTestAnimatablePlaceholderBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "AnimatablePlaceholder"
+        toolbar.title = "AnimatablePlaceholderTest"
 
         loadImage(binding)
 

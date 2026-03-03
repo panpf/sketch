@@ -49,7 +49,7 @@ class BlurHashTestFragment : BaseToolbarBindingFragment<FragmentTestBlurhashAndr
         binding: FragmentTestBlurhashAndroidBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "BlurHash"
+        toolbar.title = "BlurHashTest"
 
         val imageFile = ComposeResImageFiles.jpeg
         val imageBlurHash = "d7D+0q5W00^h01~A~B0gInR%?G9vR%R+NH=_I;NG\$\$-o"

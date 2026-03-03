@@ -19,20 +19,26 @@ package com.github.panpf.sketch.sample.ui.test
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.assemblyadapter.recycler.ItemSpan
 import com.github.panpf.assemblyadapter.recycler.divider.Divider
 import com.github.panpf.assemblyadapter.recycler.divider.addAssemblyGridDividerItemDecoration
 import com.github.panpf.assemblyadapter.recycler.newAssemblyGridLayoutManager
-import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
-import com.github.panpf.sketch.sample.ui.gallery.ExifOrientationGridItemFactory
+import com.github.panpf.sketch.sample.ui.gallery.PhotoTestItemFactory
+import com.github.panpf.sketch.sample.ui.model.PhotoTestItem
+import com.github.panpf.sketch.sample.ui.util.parentViewModel
+import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
+import com.github.panpf.tools4k.lang.asOrThrow
 
 class ExifOrientationTestFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
+
+    private val viewModel by parentViewModel<ExifOrientationTestViewModel>()
 
     override fun getNavigationBarInsetsView(binding: FragmentRecyclerBinding): View {
         return binding.root
@@ -43,7 +49,7 @@ class ExifOrientationTestFragment : BaseToolbarBindingFragment<FragmentRecyclerB
         binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "ExifOrientation"
+        toolbar.title = "ExifOrientationTest"
 
         binding.recycler.apply {
             layoutManager =
@@ -62,10 +68,18 @@ class ExifOrientationTestFragment : BaseToolbarBindingFragment<FragmentRecyclerB
                 useSideDividerAsSideHeaderAndFooterDivider()
             }
 
-            adapter = AssemblyRecyclerAdapter(
-                itemFactoryList = listOf(ExifOrientationGridItemFactory()),
-                initDataList = ComposeResImageFiles.clockExifs.toList(),
+            adapter = AssemblyRecyclerAdapter<PhotoTestItem>(
+                itemFactoryList = listOf(PhotoTestItemFactory()),
             )
+        }
+
+        viewModel.data.repeatCollectWithLifecycle(
+            owner = viewLifecycleOwner,
+            state = Lifecycle.State.CREATED
+        ) { list ->
+            binding.recycler.adapter!!
+                .asOrThrow<AssemblyRecyclerAdapter<PhotoTestItem>>()
+                .submitList(list)
         }
     }
 }

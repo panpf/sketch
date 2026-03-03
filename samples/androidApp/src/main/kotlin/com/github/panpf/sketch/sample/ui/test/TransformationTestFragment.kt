@@ -41,7 +41,7 @@ class TransformationTestFragment : BaseToolbarBindingFragment<FragmentTabPagerBi
         binding: FragmentTabPagerBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "Transformation"
+        toolbar.title = "TransformationTest"
 
         binding.pager.adapter = ArrayFragmentStateAdapter(
             fragment = this,

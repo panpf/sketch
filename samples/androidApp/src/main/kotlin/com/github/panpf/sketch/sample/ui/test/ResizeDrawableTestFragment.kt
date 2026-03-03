@@ -19,7 +19,7 @@ import com.github.panpf.sketch.util.Size
 class ResizeDrawableTestFragment : BaseDrawableTestFragment() {
 
     override val title: String
-        get() = "ResizeDrawable"
+        get() = "ResizeDrawableTest"
 
     override suspend fun buildDrawables(
         context: Context,

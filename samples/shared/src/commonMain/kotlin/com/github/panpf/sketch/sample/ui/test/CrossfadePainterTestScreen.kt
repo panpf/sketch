@@ -21,7 +21,7 @@ import com.github.panpf.sketch.transition.CrossfadeTransition
 class CrossfadePainterTestScreen : BasePainterTestScreen() {
 
     @Composable
-    override fun getTitle(): String = "CrossfadePainter"
+    override fun getTitle(): String = "CrossfadePainterTest"
 
     override suspend fun buildPainters(
         context: PlatformContext,

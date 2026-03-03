@@ -4,22 +4,18 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.images.Base64Images
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.images.HttpImages
+import com.github.panpf.sketch.sample.ui.model.PhotoTestItem
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 @OptIn(ExperimentalResourceApi::class)
 actual suspend fun buildFetcherTestItems(
     context: PlatformContext,
     fromCompose: Boolean
-): List<FetcherTestItem> {
+): List<PhotoTestItem> {
     return buildList {
-        add(FetcherTestItem(title = "HTTP", HttpImages.HTTP))
-        add(FetcherTestItem(title = "HTTPS", HttpImages.HTTPS))
-        add(
-            FetcherTestItem(
-                title = "RES_COMPOSE",
-                ComposeResImageFiles.jpeg.uri
-            )
-        )
-        add(FetcherTestItem(title = "BASE64", Base64Images.KOTLIN_ICON))
+        add(PhotoTestItem(title = "HTTP", photoUri = HttpImages.HTTP))
+        add(PhotoTestItem(title = "HTTPS", photoUri = HttpImages.HTTPS))
+        add(PhotoTestItem(title = "RES_COMPOSE", photoUri = ComposeResImageFiles.jpeg.uri))
+        add(PhotoTestItem(title = "BASE64", photoUri = Base64Images.KOTLIN_ICON))
     }
 }

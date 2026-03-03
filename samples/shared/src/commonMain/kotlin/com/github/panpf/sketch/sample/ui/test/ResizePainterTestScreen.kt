@@ -19,7 +19,7 @@ import com.github.panpf.sketch.sample.ui.util.scale
 class ResizePainterTestScreen : BasePainterTestScreen() {
 
     @Composable
-    override fun getTitle(): String = "ResizePainter"
+    override fun getTitle(): String = "ResizePainterTest"
 
     override suspend fun buildPainters(
         context: PlatformContext,

@@ -14,121 +14,115 @@ import com.github.panpf.sketch.decode.ImageDecoderAnimatedWebpDecoder
 import com.github.panpf.sketch.decode.ImageDecoderGifDecoder
 import com.github.panpf.sketch.decode.KoralGifDecoder
 import com.github.panpf.sketch.decode.MovieGifDecoder
-import com.github.panpf.sketch.decode.SvgDecoder.Factory
+import com.github.panpf.sketch.decode.SvgDecoder
 import com.github.panpf.sketch.decode.VideoFrameDecoder
 import com.github.panpf.sketch.fetch.newResourceUri
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.sample.compose.R
+import com.github.panpf.sketch.sample.ui.model.PhotoTestItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @SuppressLint("NewApi")
 actual suspend fun buildDecoderTestItems(
     context: PlatformContext
-): List<DecoderTestItem> = buildList {
-    add(DecoderTestItem(name = "JPEG", imageUri = ComposeResImageFiles.jpeg.uri))
-    add(DecoderTestItem(name = "PNG", imageUri = ComposeResImageFiles.png.uri))
-    add(DecoderTestItem(name = "WEBP", imageUri = ComposeResImageFiles.webp.uri))
-    add(DecoderTestItem(name = "BMP", imageUri = ComposeResImageFiles.bmp.uri))
+): List<PhotoTestItem> = buildList {
+    add(PhotoTestItem(title = "JPEG", photoUri = ComposeResImageFiles.jpeg.uri))
+    add(PhotoTestItem(title = "PNG", photoUri = ComposeResImageFiles.png.uri))
+    add(PhotoTestItem(title = "WEBP", photoUri = ComposeResImageFiles.webp.uri))
+    add(PhotoTestItem(title = "BMP", photoUri = ComposeResImageFiles.bmp.uri))
     add(
-        DecoderTestItem(
-            name = "SVG",
-            imageUri = ComposeResImageFiles.svg.uri,
-            imageDecoder = Factory()
+        PhotoTestItem(
+            title = "SVG",
+            photoUri = ComposeResImageFiles.svg.uri,
+            imageDecoder = SvgDecoder.Factory()
         )
     )
     add(
-        DecoderTestItem(
-            name = "HEIC",
-            imageUri = ComposeResImageFiles.heic.uri,
-            minAPI = VERSION_CODES.P,
-            currentApi = VERSION.SDK_INT,
+        PhotoTestItem(
+            title = "HEIC",
+            photoUri = ComposeResImageFiles.heic.uri,
+            apiSupport = VERSION.SDK_INT >= VERSION_CODES.P,
         )
     )
     add(
-        DecoderTestItem(
-            name = "AVIF",
-            imageUri = ComposeResImageFiles.avif.uri,
-            minAPI = VERSION_CODES.S,
-            currentApi = VERSION.SDK_INT,
+        PhotoTestItem(
+            title = "AVIF",
+            photoUri = ComposeResImageFiles.avif.uri,
+            apiSupport = VERSION.SDK_INT >= VERSION_CODES.S,
         )
     )
     add(
-        DecoderTestItem(
-            name = "GIF_KORAL",
-            imageUri = ComposeResImageFiles.animGif.uri,
+        PhotoTestItem(
+            title = "GIF_KORAL",
+            photoUri = ComposeResImageFiles.animGif.uri,
             imageDecoder = KoralGifDecoder.Factory()
         )
     )
     add(
-        DecoderTestItem(
-            name = "GIF_MOVIE",
-            imageUri = ComposeResImageFiles.animGif.uri,
-            minAPI = VERSION_CODES.KITKAT,
-            currentApi = VERSION.SDK_INT,
+        PhotoTestItem(
+            title = "GIF_MOVIE",
+            photoUri = ComposeResImageFiles.animGif.uri,
+            apiSupport = VERSION.SDK_INT >= VERSION_CODES.KITKAT,
             imageDecoder = MovieGifDecoder.Factory()
         )
     )
     add(
-        DecoderTestItem(
-            name = "GIF_ANIMATED",
-            imageUri = ComposeResImageFiles.animGif.uri,
-            minAPI = VERSION_CODES.P,
-            currentApi = VERSION.SDK_INT,
+        PhotoTestItem(
+            title = "GIF_ANIMATED",
+            photoUri = ComposeResImageFiles.animGif.uri,
+            apiSupport = VERSION.SDK_INT >= VERSION_CODES.P,
             imageDecoder = ImageDecoderGifDecoder.Factory()
         )
     )
     add(
-        DecoderTestItem(
-            name = "WEBP_ANIMATED",
-            imageUri = ComposeResImageFiles.animWebp.uri,
-            minAPI = VERSION_CODES.P,
-            currentApi = VERSION.SDK_INT,
+        PhotoTestItem(
+            title = "WEBP_ANIMATED",
+            photoUri = ComposeResImageFiles.animWebp.uri,
+            apiSupport = VERSION.SDK_INT >= VERSION_CODES.P,
             imageDecoder = ImageDecoderAnimatedWebpDecoder.Factory()
         )
     )
     add(
-        DecoderTestItem(
-            name = "HEIF_ANIMATED",
-            imageUri = ComposeResImageFiles.animHeif.uri,
-            minAPI = VERSION_CODES.P,
-            currentApi = VERSION.SDK_INT,
+        PhotoTestItem(
+            title = "HEIF_ANIMATED",
+            photoUri = ComposeResImageFiles.animHeif.uri,
+            apiSupport = VERSION.SDK_INT >= VERSION_CODES.P,
             imageDecoder = ImageDecoderAnimatedHeifDecoder.Factory()
         )
     )
     add(
-        DecoderTestItem(
-            name = "MP4_FFMPEG",
-            imageUri = ComposeResImageFiles.mp4.uri,
+        PhotoTestItem(
+            title = "MP4_FFMPEG",
+            photoUri = ComposeResImageFiles.mp4.uri,
             imageDecoder = FFmpegVideoFrameDecoder.Factory()
         )
     )
     add(
-        DecoderTestItem(
-            name = "MP4_BUILTIN",
-            imageUri = ComposeResImageFiles.mp4.uri,
-            minAPI = VERSION_CODES.O_MR1,
-            currentApi = VERSION.SDK_INT,
+        PhotoTestItem(
+            title = "MP4_BUILTIN",
+            photoUri = ComposeResImageFiles.mp4.uri,
+            apiSupport = VERSION.SDK_INT >= VERSION_CODES.O_MR1,
             imageDecoder = VideoFrameDecoder.Factory()
         )
     )
     add(
-        DecoderTestItem(
-            name = "XML",
-            imageUri = newResourceUri(R.drawable.bg_circle_accent),
+        PhotoTestItem(
+            title = "XML",
+            photoUri = newResourceUri(R.drawable.bg_circle_accent),
         )
     )
     add(
-        DecoderTestItem(
-            name = "VECTOR",
-            imageUri = newResourceUri(R.drawable.ic_play),
+        PhotoTestItem(
+            title = "VECTOR",
+            photoUri = newResourceUri(R.drawable.ic_play),
         )
     )
     val headerUserPackageInfo = loadUserAppPackageInfo(context, true)
     add(
-        DecoderTestItem(
-            name = "APK_ICON",
-            imageUri = headerUserPackageInfo.applicationInfo!!.publicSourceDir,
+        PhotoTestItem(
+            title = "APK_ICON",
+            photoUri = headerUserPackageInfo.applicationInfo!!.publicSourceDir,
             imageDecoder = ApkIconDecoder.Factory()
         )
     )

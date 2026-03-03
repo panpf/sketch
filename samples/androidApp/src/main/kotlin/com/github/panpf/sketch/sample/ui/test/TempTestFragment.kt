@@ -43,7 +43,7 @@ class TempTestFragment : BaseToolbarBindingFragment<FragmentTestTempBinding>() {
         binding: FragmentTestTempBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "Temp"
+        toolbar.title = "TempTest"
 
         val drawable = GifDrawable(requireContext().assets, AssetImageFiles.animGif.name)
         binding.myImage.setImageDrawable(drawable)

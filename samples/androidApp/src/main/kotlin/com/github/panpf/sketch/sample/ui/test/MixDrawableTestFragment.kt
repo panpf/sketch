@@ -19,7 +19,7 @@ import com.github.panpf.sketch.util.Size
 class MixDrawableTestFragment : BaseDrawableTestFragment() {
 
     override val title: String
-        get() = "Mix Drawable"
+        get() = "DrawableMixTest"
 
     override suspend fun buildDrawables(
         context: Context,

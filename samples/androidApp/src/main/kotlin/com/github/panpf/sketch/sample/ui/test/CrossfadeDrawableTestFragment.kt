@@ -21,7 +21,7 @@ import com.github.panpf.sketch.util.Size
 class CrossfadeDrawableTestFragment : BaseDrawableTestFragment() {
 
     override val title: String
-        get() = "CrossfadeDrawable"
+        get() = "CrossfadeDrawableTest"
 
     override suspend fun buildDrawables(
         context: Context,

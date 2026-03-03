@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2024 panpf <panpfpanpf@outlook.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,6 @@
 
 package com.github.panpf.sketch.sample.ui.test
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
@@ -31,27 +30,26 @@ import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
-import com.github.panpf.sketch.sample.ui.gallery.PhotoGridItemFactory
-import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.sample.ui.util.parentViewModel
+import com.github.panpf.sketch.sample.ui.gallery.PhotoTestItemFactory
+import com.github.panpf.sketch.sample.ui.model.PhotoTestItem
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.tools4k.lang.asOrThrow
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class DisplayInsanityTestFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
+class ProgressTestFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
 
-    private val viewModel by parentViewModel<DisplayInsanityTestViewModel>()
+    private val viewModel by viewModel<ProgressTestViewModel>()
 
     override fun getNavigationBarInsetsView(binding: FragmentRecyclerBinding): View {
         return binding.root
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(
         toolbar: Toolbar,
         binding: FragmentRecyclerBinding,
         savedInstanceState: Bundle?
     ) {
-        toolbar.title = "DisplayInsanityTest"
+        toolbar.title = "ProgressTest"
 
         binding.recycler.apply {
             layoutManager =
@@ -70,8 +68,8 @@ class DisplayInsanityTestFragment : BaseToolbarBindingFragment<FragmentRecyclerB
                 useSideDividerAsSideHeaderAndFooterDivider()
             }
 
-            adapter = AssemblyRecyclerAdapter<Photo>(
-                itemFactoryList = listOf(PhotoGridItemFactory()),
+            adapter = AssemblyRecyclerAdapter<PhotoTestItem>(
+                itemFactoryList = listOf(PhotoTestItemFactory()),
             )
         }
 
@@ -80,7 +78,7 @@ class DisplayInsanityTestFragment : BaseToolbarBindingFragment<FragmentRecyclerB
             state = Lifecycle.State.CREATED
         ) { list ->
             binding.recycler.adapter!!
-                .asOrThrow<AssemblyRecyclerAdapter<Photo>>()
+                .asOrThrow<AssemblyRecyclerAdapter<PhotoTestItem>>()
                 .submitList(list)
         }
     }
