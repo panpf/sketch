@@ -157,7 +157,6 @@ class AnimatedImageTestScreen : BaseScreen() {
                                     components {
                                         add(gifDecoder)
                                     }
-                                    repeatCount(0)
                                     onAnimationStart(startCallback)
                                     onAnimationEnd(endCallback)
                                 },
