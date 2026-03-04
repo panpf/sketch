@@ -113,6 +113,11 @@ class PhotoTestItemFactory :
             width = itemSize.x
             height = itemSize.x
         }
+        binding.myListImage.updateLayoutParams<LayoutParams> {
+            val itemSize = itemSize!!
+            width = itemSize.x
+            height = itemSize.x
+        }
 
         binding.myListImage.loadImage(data.photoUri) {
             val imageDecoder = data.imageDecoder
