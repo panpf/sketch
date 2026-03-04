@@ -9,7 +9,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
-# new
+# 4.4.0-beta02
 
 * fix: Fixed the bug that Koral GifDrawable would not actively call back onAnimationStart and
   onAnimationEnd during automatic playback. [#278](https://github.com/panpf/sketch/issues/278)
