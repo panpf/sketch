@@ -16,9 +16,11 @@
 
 package com.github.panpf.sketch.drawable
 
+import android.graphics.Canvas
 import android.graphics.drawable.Animatable
 import android.widget.MediaController.MediaPlayerControl
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import pl.droidsonroids.gif.GifDrawable
 
 /**
@@ -26,12 +28,46 @@ import pl.droidsonroids.gif.GifDrawable
  *
  * @see com.github.panpf.sketch.animated.gif.koral.test.drawable.GifDrawableWrapperDrawableTest
  */
+/**
+ * GifDrawable wrapper, which implements the [Animatable] and [MediaPlayerControl] interfaces
+ *
+ * @see com.github.panpf.sketch.animated.gif.koral.test.drawable.GifDrawableWrapperDrawableTest
+ */
 class GifDrawableWrapperDrawable(
     val gifDrawable: GifDrawable
-) : DrawableWrapperCompat(gifDrawable), Animatable, MediaPlayerControl, SketchDrawable {
+) : DrawableWrapperCompat(gifDrawable), Animatable2Compat, MediaPlayerControl, SketchDrawable {
+
+    private var callbacks: MutableList<Animatable2Compat.AnimationCallback>? = null
+    private var callbackStartOnDraw: Boolean = true
+    private var callbackEndOnAnimationCompleted: Boolean = false
+
+    init {
+        gifDrawable.addAnimationListener { loopNumber ->
+            if (callbackEndOnAnimationCompleted) {
+                val loopCount = gifDrawable.loopCount
+                if (loopCount > 0 && loopCount == loopNumber + 1) {
+                    callbackEndOnAnimationCompleted = false
+                    callbacks?.forEach { it.onAnimationEnd(this) }
+                }
+            }
+        }
+    }
+
+    override fun draw(canvas: Canvas) {
+        super.draw(canvas)
+        if (callbackStartOnDraw && gifDrawable.isRunning) {
+            callbackStartOnDraw = false
+            callbackEndOnAnimationCompleted = true
+            callbacks?.forEach { it.onAnimationStart(this) }
+        }
+    }
 
     override fun start() {
+        if (isRunning) return
+        callbackStartOnDraw = false
+        callbackEndOnAnimationCompleted = true
         gifDrawable.start()
+        callbacks?.forEach { it.onAnimationStart(this) }
     }
 
     override fun pause() {
@@ -39,7 +75,10 @@ class GifDrawableWrapperDrawable(
     }
 
     override fun stop() {
+        if (!isRunning) return
+        callbackEndOnAnimationCompleted = false
         gifDrawable.stop()
+        callbacks?.forEach { it.onAnimationEnd(this) }
     }
 
     override fun isRunning(): Boolean {
@@ -89,6 +128,22 @@ class GifDrawableWrapperDrawable(
         } else {
             this
         }
+    }
+
+    override fun registerAnimationCallback(callback: Animatable2Compat.AnimationCallback) {
+        val callbacks = callbacks
+            ?: mutableListOf<Animatable2Compat.AnimationCallback>().apply {
+                this@GifDrawableWrapperDrawable.callbacks = this
+            }
+        callbacks.add(callback)
+    }
+
+    override fun unregisterAnimationCallback(callback: Animatable2Compat.AnimationCallback): Boolean {
+        return callbacks?.remove(callback) == true
+    }
+
+    override fun clearAnimationCallbacks() {
+        callbacks?.clear()
     }
 
     override fun equals(other: Any?): Boolean {
