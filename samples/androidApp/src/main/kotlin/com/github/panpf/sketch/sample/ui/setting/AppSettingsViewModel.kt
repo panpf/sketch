@@ -1,36 +1,15 @@
-/*
- * Copyright (C) 2024 panpf <panpfpanpf@outlook.com>
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-@file:Suppress("EnumValuesSoftDeprecate")
-
 package com.github.panpf.sketch.sample.ui.setting
 
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
+import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.AppSettings
-import com.github.panpf.sketch.sample.model.ListGroup
+import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.model.MultiSelectMenu
 import com.github.panpf.sketch.sample.model.SwitchMenuFlow
-import com.github.panpf.sketch.sample.ui.setting.Page.LIST
-import com.github.panpf.sketch.sample.ui.setting.Page.VIEWER
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.tools4a.toast.Toastx
@@ -65,7 +44,7 @@ class AppSettingsViewModel(
             appSettings.otherImageScale.ignoreFirst(),
             appSettings.preferQualityOverSpeed.ignoreFirst(),
             appSettings.colorTypeName.ignoreFirst(),
-            if (VERSION.SDK_INT >= VERSION_CODES.O) appSettings.colorSpaceName.ignoreFirst() else null,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) appSettings.colorSpaceName.ignoreFirst() else null,
             appSettings.memoryCacheName.ignoreFirst(),
             appSettings.resultCacheName.ignoreFirst(),
             appSettings.downloadCacheName.ignoreFirst(),
@@ -86,26 +65,26 @@ class AppSettingsViewModel(
 
     private fun updateList() {
         _menuListData.value = buildList {
-            if (page == LIST) {
-                add(ListGroup("List"))
+            if (page == Page.LIST) {
+                add(ListSeparator("List"))
                 addAll(makeListMenuList())
-            } else if (page == VIEWER) {
-                add(ListGroup("Viewer"))
+            } else if (page == Page.VIEWER) {
+                add(ListSeparator("Viewer"))
                 addAll(viewerZoomMenuList())
-                add(ListGroup("Zoom"))
+                add(ListSeparator("Zoom"))
                 addAll(makeZoomMenuList())
             }
 
-            add(ListGroup("Decode"))
+            add(ListSeparator("Decode"))
             addAll(makeDecodeMenuList())
 
-            add(ListGroup("Animated"))
+            add(ListSeparator("Animated"))
             addAll(makeAnimatedMenuList())
 
-            add(ListGroup("Cache"))
+            add(ListSeparator("Cache"))
             addAll(makeCacheMenuList())
 
-            add(ListGroup("Other"))
+            add(ListSeparator("Other"))
             addAll(makeOtherMenuList())
         }
     }
@@ -327,7 +306,7 @@ class AppSettingsViewModel(
                 onSelect = { _, value -> appSettings.colorTypeName.value = value }
             )
         )
-        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Cannot use Named.entries, crashes on versions lower than O
             val items = listOf("Default").plus(platformColorSpaces())
             add(
@@ -340,7 +319,7 @@ class AppSettingsViewModel(
                 )
             )
         }
-        if (VERSION.SDK_INT <= VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
             add(
                 SwitchMenuFlow(
                     title = "preferQualityOverSpeed",
