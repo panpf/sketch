@@ -1,5 +1,5 @@
 [versions]
-android-plugin = "9.0.0"
+android-plugin = "9.1.0"
 androidx-activity = "1.12.2"
 androidx-appcompat = "1.7.1"
 androidx-compose = "1.10.0" # sync with jetbrains-compose

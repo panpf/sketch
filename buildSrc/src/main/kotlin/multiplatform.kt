@@ -33,8 +33,6 @@ enum class MultiplatformTargets {
     IosX64,
     IosArm64,
     IosSimulatorArm64,
-//    MacosX64,
-//    MacosArm64
 }
 
 fun Project.addMultiplatformTargets(targets: Array<MultiplatformTargets>) {
@@ -54,16 +52,9 @@ fun Project.addMultiplatformTargets(targets: Array<MultiplatformTargets>) {
                 js {
                     browser {
                         testTask {
-                            enabled = false
                             useKarma {
-                                useChrome()
-                            }
-                        }
-                    }
-                    nodejs {
-                        testTask {
-                            useMocha {
-                                timeout = "60s"
+//                                useChrome()
+                                useChromeHeadless()
                             }
                         }
                     }
@@ -75,15 +66,12 @@ fun Project.addMultiplatformTargets(targets: Array<MultiplatformTargets>) {
             if (targets.contains(MultiplatformTargets.WasmJs)) {
                 @OptIn(ExperimentalWasmDsl::class)
                 wasmJs {
-                    // TODO: Fix wasm tests.
                     browser {
                         testTask {
-                            enabled = false
-                        }
-                    }
-                    nodejs {
-                        testTask {
-                            enabled = false
+                            useKarma {
+//                                useChrome()
+                                useChromeHeadless()
+                            }
                         }
                     }
                     binaries.executable()
@@ -100,13 +88,6 @@ fun Project.addMultiplatformTargets(targets: Array<MultiplatformTargets>) {
             if (targets.contains(MultiplatformTargets.IosSimulatorArm64)) {
                 iosSimulatorArm64()
             }
-
-//            if (targets.contains(MultiplatformTargets.MacosX64)) {
-//                macosX64()
-//            }
-//            if (targets.contains(MultiplatformTargets.MacosArm64)) {
-//                macosArm64()
-//            }
         }
 
         if (targets.contains(MultiplatformTargets.Js)) {
@@ -141,7 +122,7 @@ fun Project.applyKotlinJsImplicitDependencyWorkaround() {
         }
         named("jsBrowserProductionWebpack").configure(configureJs)
         named("jsBrowserProductionLibraryDistribution").configure(configureJs)
-        named("jsNodeProductionLibraryDistribution").configure(configureJs)
+//        named("jsNodeProductionLibraryDistribution").configure(configureJs)
     }
 }
 
@@ -163,7 +144,7 @@ fun Project.applyKotlinWasmJsImplicitDependencyWorkaround() {
         }
         named("wasmJsBrowserProductionWebpack").configure(configureWasmJs)
         named("wasmJsBrowserProductionLibraryDistribution").configure(configureWasmJs)
-        named("wasmJsNodeProductionLibraryDistribution").configure(configureWasmJs)
+//        named("wasmJsNodeProductionLibraryDistribution").configure(configureWasmJs)
     }
 }
 
