@@ -58,6 +58,7 @@ kotlin {
             api(libs.jetbrains.compose.material)    // pull refresh
             api(libs.jetbrains.compose.material3)
             api(libs.jetbrains.compose.material.icons.core)
+            api(libs.jetbrains.compose.ui.tooling)
             api(libs.jetbrains.compose.ui.tooling.preview)
             api(libs.koin.core)
             api(libs.koin.compose)
