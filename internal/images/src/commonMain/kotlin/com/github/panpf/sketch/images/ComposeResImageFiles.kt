@@ -313,7 +313,6 @@ class ComposeResImageFile(
             "The uri of the resource is invalid: $uri"
         }
         val path = uri.substring(index)
-        println("ComposeResImageFile.toDataSource: path=$path")
         val bytes = readResourceBytes(path)
         return ByteArrayDataSource(data = bytes, dataFrom = LOCAL)
     }

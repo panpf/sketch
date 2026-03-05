@@ -61,7 +61,6 @@ class MixDrawableTestFragment : BaseDrawableTestFragment() {
 
         ImageRequest(context, ComposeResImageFiles.animGif.uri)
             .decode(MovieGifDecoder.Factory())?.image?.asDrawable()?.apply {
-                println("$this")
                 list.add(
                     DrawableScaleType(
                         title = "AnimatableDrawable\nMovieDrawable",
@@ -72,7 +71,6 @@ class MixDrawableTestFragment : BaseDrawableTestFragment() {
 
         ImageRequest(context, ComposeResImageFiles.animGif.uri)
             .decode(KoralGifDecoder.Factory())?.image?.asDrawable()?.apply {
-                println("$this")
                 list.add(
                     DrawableScaleType(
                         title = "AnimatableDrawable\nGifDrawableWrapperDrawable",
@@ -84,7 +82,6 @@ class MixDrawableTestFragment : BaseDrawableTestFragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             ImageRequest(context, ComposeResImageFiles.animGif.uri)
                 .decode(ImageDecoderGifDecoder.Factory())?.image?.asDrawable()?.apply {
-                    println("$this")
                     list.add(
                         DrawableScaleType(
                             title = "ScaledAnimatableDrawable\nAnimatedImageDrawable",
