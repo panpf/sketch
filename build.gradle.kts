@@ -81,8 +81,10 @@ allprojects {
         extensions.configure<KotlinMultiplatformExtension> {
             targets.configureEach {
                 compilations.configureEach {
-                    compilerOptions.configure {
-                        freeCompilerArgs.addAll(listOf<String>("-Xexpect-actual-classes"))
+                    compileTaskProvider.configure {
+                        compilerOptions {
+                            freeCompilerArgs.addAll(listOf("-Xexpect-actual-classes"))
+                        }
                     }
                 }
             }

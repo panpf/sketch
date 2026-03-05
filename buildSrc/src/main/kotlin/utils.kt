@@ -19,7 +19,7 @@ import org.gradle.api.Project
 /**
  * A list of all public modules in the project.
  *
- * Synced with settings.gradle.kts include list.
+ * Synced with settings.gradle.kts public modules list.
  */
 val publicModules = setOf(
     "sketch-animated-core",
@@ -68,8 +68,8 @@ val Project.targetSdk: Int
 val Project.compileSdk: Int
     get() = intProperty("compileSdk")
 
-//val Project.groupId: String
-//    get() = stringProperty("POM_GROUP_ID")
+val Project.groupId: String
+    get() = stringProperty("POM_ARTIFACT_ID")
 
 val Project.versionName: String
     get() = stringProperty("versionName")

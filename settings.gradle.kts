@@ -52,7 +52,7 @@ include(":sketch-view-core")
 include(":sketch-view-koin")
 
 /*
- * Private
+ * Private Modules
  */
 include(":samples:androidApp")
 include(":samples:desktopApp")
