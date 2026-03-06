@@ -83,6 +83,7 @@ dependencies {
     implementation(libs.penfeizhou.animation.awebp)
 
     debugImplementation(libs.leakcanary)
+    debugImplementation(libs.jetbrains.compose.ui.tooling)  // For compose preview
 
     androidTestImplementation(projects.internal.test)
     androidTestImplementation(projects.internal.testSingleton)

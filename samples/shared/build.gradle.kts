@@ -58,8 +58,7 @@ kotlin {
             api(libs.jetbrains.compose.material)    // pull refresh
             api(libs.jetbrains.compose.material3)
             api(libs.jetbrains.compose.material.icons.core)
-            api(libs.jetbrains.compose.ui.tooling)
-            api(libs.jetbrains.compose.ui.tooling.preview)
+            api(libs.jetbrains.compose.ui.tooling.preview)  // 'libs.jetbrains.compose.ui.tooling' must also be configured, otherwise the preview will report an error: java.lang.ClassNotFoundException: androidx.compose.ui.tooling.PreviewParameterProvider
             api(libs.koin.core)
             api(libs.koin.compose)
             api(libs.koin.compose.viewmodel)
@@ -131,4 +130,8 @@ kotlin {
 
 compose.resources {
     packageOfResClass = "com.github.panpf.sketch.sample"
+}
+
+dependencies {
+    androidRuntimeClasspath(libs.jetbrains.compose.ui.tooling)  // For compose preview
 }
