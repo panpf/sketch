@@ -11,8 +11,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.util.fastRoundToInt
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.images.Res
 import com.github.panpf.sketch.painter.CrossfadePainter
-import com.github.panpf.sketch.sample.Res
 import com.github.panpf.sketch.sample.ui.util.BackgroundPainter
 import com.github.panpf.sketch.sample.ui.util.SizeColorPainter
 import com.github.panpf.sketch.sample.ui.util.scale
