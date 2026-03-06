@@ -18,6 +18,7 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalKotlinGradlePluginApi::class)
 
 import com.android.build.api.dsl.KotlinMultiplatformAndroidCompilation
+import com.android.build.api.withAndroid
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinHierarchyBuilder
@@ -41,17 +42,6 @@ private val hierarchyTemplate = KotlinHierarchyTemplate {
         groupNative()
         groupNonNative()
     }
-}
-
-// Define a helper function to be compatible with old and new Android targets
-private fun KotlinHierarchyBuilder.withAndroid() {
-    // Compatible with old androidTarget()
-    withAndroidTarget()
-    // Compatible with the new com.android.kotlin.multiplatform.library plugin, which creates targets usually named "android"
-    // https://issuetracker.google.com/issues/442950553?pli=1
-    // https://youtrack.jetbrains.com/issue/KT-80409
-    // withAndroid()    // Will be introduced in version 9.1.0 of the Android Gradle plugin
-    withCompilations { it is KotlinMultiplatformAndroidCompilation }
 }
 
 private fun KotlinHierarchyBuilder.groupNonAndroid() {
