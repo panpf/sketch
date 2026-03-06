@@ -19,7 +19,7 @@ class ExifOrientationTestScreen : BaseScreen() {
     override fun DrawContent() {
         ToolbarScaffold(title = "ExifOrientationTest") {
             val gridState = rememberLazyGridState()
-            val viewModel: FetcherTestViewModel = koinViewModel()
+            val viewModel: ExifOrientationTestViewModel = koinViewModel()
             val photoTestItems by viewModel.data.collectAsState()
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
