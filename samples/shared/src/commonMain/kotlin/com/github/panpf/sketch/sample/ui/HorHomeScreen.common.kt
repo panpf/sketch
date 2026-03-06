@@ -105,7 +105,7 @@ object HorHomeScreen : BaseScreen() {
                     modifier = Modifier.fillMaxSize(),
                     userScrollEnabled = false,
                 ) { pageIndex ->
-                    homeTabs[pageIndex].content.invoke(this@HorHomeScreen)
+                    homeTabs[pageIndex].content.invoke()
                 }
 
                 MainMenu(modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp))

@@ -58,7 +58,10 @@ kotlin {
             api(libs.jetbrains.compose.material)    // pull refresh
             api(libs.jetbrains.compose.material3)
             api(libs.jetbrains.compose.material.icons.core)
+            api(libs.jetbrains.compose.material3.adaptiveNavigation3)
             api(libs.jetbrains.compose.ui.tooling.preview)  // 'libs.jetbrains.compose.ui.tooling' must also be configured, otherwise the preview will report an error: java.lang.ClassNotFoundException: androidx.compose.ui.tooling.PreviewParameterProvider
+            api(libs.jetbrains.lifecycle.viewmodelNavigation3)
+            api(libs.jetbrains.navigation3.ui)
             api(libs.koin.core)
             api(libs.koin.compose)
             api(libs.koin.compose.viewmodel)
@@ -67,8 +70,6 @@ kotlin {
             api(libs.ktor3.serialization.kotlinxJson)
             api(libs.multiplatformsettings)
             api(libs.panpf.zoomimage.compose)
-            api(libs.voyager.navigator)
-            api(libs.voyager.transitions)
         }
         androidMain.dependencies {
             api(projects.sketchAnimatedGifKoral)

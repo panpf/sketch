@@ -7,7 +7,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import com.github.panpf.sketch.sample.ui.base.BaseActivity
-import com.github.panpf.sketch.sample.ui.gallery.PhotoPagerScreen
 import com.github.panpf.sketch.sample.ui.util.isDarkTheme
 import com.github.panpf.sketch.sample.util.collectWithLifecycle
 import com.github.panpf.sketch.sample.util.ignoreFirst
@@ -38,8 +37,8 @@ class ComposeMainActivity : BaseActivity() {
         }
 
         setContent {
-            App(onContentChanged = { navigator ->
-                lightStatusAndNavigationBar = navigator.lastItem !is PhotoPagerScreen
+            App(onContentChanged = {
+                lightStatusAndNavigationBar = it.lastOrNull() !is PhotoPagerRoute
             })
         }
 

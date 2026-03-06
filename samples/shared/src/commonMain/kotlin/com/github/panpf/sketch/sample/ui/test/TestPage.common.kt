@@ -29,10 +29,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
+import androidx.navigation3.runtime.NavKey
 import com.github.panpf.sketch.sample.Res
 import com.github.panpf.sketch.sample.ic_github
+import com.github.panpf.sketch.sample.ui.AnimatablePlaceholderTestRoute
+import com.github.panpf.sketch.sample.ui.AnimatedImageTestRoute
+import com.github.panpf.sketch.sample.ui.BlurHashTestRoute
+import com.github.panpf.sketch.sample.ui.CrossfadePainterTestRoute
+import com.github.panpf.sketch.sample.ui.DecoderTestRoute
+import com.github.panpf.sketch.sample.ui.DisplayInsanityTestRoute
+import com.github.panpf.sketch.sample.ui.ExifOrientationTestRoute
+import com.github.panpf.sketch.sample.ui.FetcherTestRoute
+import com.github.panpf.sketch.sample.ui.IconPainterTestRoute
+import com.github.panpf.sketch.sample.ui.LocalNavBackStack
+import com.github.panpf.sketch.sample.ui.PainterMixTestRoute
+import com.github.panpf.sketch.sample.ui.PreviewTestRoute
+import com.github.panpf.sketch.sample.ui.ProgressIndicatorTestRoute
+import com.github.panpf.sketch.sample.ui.ProgressTestRoute
+import com.github.panpf.sketch.sample.ui.ResizePainterTestRoute
+import com.github.panpf.sketch.sample.ui.TempTestRoute
+import com.github.panpf.sketch.sample.ui.TransformationTestRoute
+import com.github.panpf.sketch.sample.ui.UserZoomTestRoute
 import com.github.panpf.sketch.sample.ui.components.AutoLinkText
 import com.github.panpf.sketch.sample.util.Platform
 import com.github.panpf.sketch.sample.util.current
@@ -46,24 +63,24 @@ fun TestPage() {
     val testItems = remember {
         buildList {
             add(TestGroup("Components"))
-            add(TestItem("Decoder", DecoderTestScreen()))
-            add(TestItem("Fetcher", FetcherTestScreen()))
+            add(TestItem("Decoder", DecoderTestRoute))
+            add(TestItem("Fetcher", FetcherTestRoute))
 
             add(TestGroup("Functions"))
-            add(TestItem("AnimatedImage", AnimatedImageTestScreen()))
-            add(TestItem("ExifOrientation", ExifOrientationTestScreen()))
-            add(TestItem("Transformation", TransformationTestScreen()))
-            add(TestItem("Progress", ProgressTestScreen()))
+            add(TestItem("AnimatedImage", AnimatedImageTestRoute))
+            add(TestItem("ExifOrientation", ExifOrientationTestRoute))
+            add(TestItem("Transformation", TransformationTestRoute))
+            add(TestItem("Progress", ProgressTestRoute))
 
             add(TestGroup("UI"))
-            add(TestItem("CrossfadePainter", CrossfadePainterTestScreen()))
-            add(TestItem("ResizePainter", ResizePainterTestScreen()))
-            add(TestItem("Painter Mix", PainterMixTestScreen()))
-            add(TestItem("IconPainter", IconPainterTestScreen()))
-            add(TestItem("AnimatablePlaceholder", AnimatablePlaceholderTestScreen()))
-            add(TestItem("Preview", PreviewTestScreen()))
-            add(TestItem("ProgressIndicator", ProgressIndicatorTestScreen()))
-            add(TestItem("BlurHash", BlurHashTestScreen()))
+            add(TestItem("CrossfadePainter", CrossfadePainterTestRoute))
+            add(TestItem("ResizePainter", ResizePainterTestRoute))
+            add(TestItem("Painter Mix", PainterMixTestRoute))
+            add(TestItem("IconPainter", IconPainterTestRoute))
+            add(TestItem("AnimatablePlaceholder", AnimatablePlaceholderTestRoute))
+            add(TestItem("Preview", PreviewTestRoute))
+            add(TestItem("ProgressIndicator", ProgressIndicatorTestRoute))
+            add(TestItem("BlurHash", BlurHashTestRoute))
 
             val platformTestScreens = platformTestScreens()
             if (platformTestScreens.isNotEmpty()) {
@@ -72,9 +89,9 @@ fun TestPage() {
             }
 
             add(TestGroup("Other"))
-            add(TestItem("DisplayInsanity", DisplayInsanityTestScreen()))
-            add(TestItem("UserZoom", UserZoomTestScreen()))
-            add(TestItem("Temp", TempTestScreen()))
+            add(TestItem("DisplayInsanity", DisplayInsanityTestRoute))
+            add(TestItem("UserZoom", UserZoomTestRoute))
+            add(TestItem("Temp", TempTestRoute))
 
             add(ProjectInfo)
         }
@@ -125,13 +142,13 @@ fun TestPage() {
     }
 }
 
-data class TestItem(val title: String, val screen: Screen)
+data class TestItem(val title: String, val route: NavKey)
 
 data class TestGroup(val title: String)
 
 @Composable
 fun TestGridItem(item: TestItem) {
-    val navigator = LocalNavigator.current!!
+    val navBackStack = LocalNavBackStack.current
     val colorScheme = MaterialTheme.colorScheme
     Box(
         modifier = Modifier
@@ -139,7 +156,7 @@ fun TestGridItem(item: TestItem) {
             .heightIn(60.dp, 1000.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(colorScheme.primaryContainer)
-            .clickable { navigator.push(item.screen) }
+            .clickable { navBackStack.add(item.route) }
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {

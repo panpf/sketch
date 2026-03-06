@@ -43,7 +43,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cafe.adriel.voyager.navigator.LocalNavigator
 import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PlatformContext
@@ -62,6 +61,7 @@ import com.github.panpf.sketch.sample.ic_settings
 import com.github.panpf.sketch.sample.image.PaletteInterceptor
 import com.github.panpf.sketch.sample.image.palette.PhotoPalette
 import com.github.panpf.sketch.sample.image.simplePalette
+import com.github.panpf.sketch.sample.ui.LocalNavBackStack
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.components.MyDialog
 import com.github.panpf.sketch.sample.ui.components.TurnPageIndicator
@@ -196,9 +196,9 @@ fun PhotoPagerHeaders(
             modifier = Modifier.padding(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val navigator = LocalNavigator.current!!
+            val navBackStack = LocalNavBackStack.current
             IconButton(
-                onClick = { navigator.pop() },
+                onClick = { navBackStack.removeLastOrNull() },
                 colors = IconButtonDefaults.iconButtonColors(
                     containerColor = photoPalette.containerColor,
                     contentColor = photoPalette.contentColor

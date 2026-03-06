@@ -24,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.Res
 import com.github.panpf.sketch.sample.ic_debug
@@ -56,7 +55,7 @@ enum class HomeTab(
     val title: String,
     val icon: DrawableResource,
     val padding: Dp,
-    val content: @Composable Screen.() -> Unit
+    val content: @Composable () -> Unit
 ) {
     PEXELS(
         title = "Pexels",
@@ -119,7 +118,7 @@ object VerHomeScreen : BaseScreen() {
                         state = pagerState,
                         modifier = Modifier.fillMaxSize(),
                     ) { pageIndex ->
-                        homeTabs[pageIndex].content.invoke(this@VerHomeScreen)
+                        homeTabs[pageIndex].content.invoke()
                     }
 
                     MainMenu(modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp))

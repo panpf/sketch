@@ -1,13 +1,14 @@
 package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.compose.runtime.Composable
-import cafe.adriel.voyager.navigator.LocalNavigator
+import com.github.panpf.sketch.sample.ui.LocalNavBackStack
+import com.github.panpf.sketch.sample.ui.PhotoPagerRoute
 import com.github.panpf.sketch.sample.ui.gridCellsMinSize
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun GiphyPhotoListPage() {
-    val navigator = LocalNavigator.current!!
+    val navBackStack = LocalNavBackStack.current
     val giphyPhotoListViewModel: GiphyPhotoListViewModel = koinViewModel()
     PagingPhotoList(
         photoPagingFlow = giphyPhotoListViewModel.pagingFlow,
@@ -15,7 +16,7 @@ fun GiphyPhotoListPage() {
         gridCellsMinSize = gridCellsMinSize,
         onClick = { photos, _, index ->
             val params = buildPhotoPagerParams(photos, index)
-            navigator.push(PhotoPagerScreen(params))
+            navBackStack.add(PhotoPagerRoute(params))
         },
     )
 }
