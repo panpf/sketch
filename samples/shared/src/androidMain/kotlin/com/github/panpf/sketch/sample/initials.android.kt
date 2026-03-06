@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.sample
 
-import android.annotation.SuppressLint
 import android.os.Build
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
@@ -28,12 +27,6 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatform
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
-import javax.net.ssl.HttpsURLConnection
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
 
 actual fun initialApp(context: PlatformContext, koinAppDeclaration: KoinAppDeclaration?) {
     startKoin {
@@ -42,8 +35,6 @@ actual fun initialApp(context: PlatformContext, koinAppDeclaration: KoinAppDecla
         modules(platformModule(context))
         koinAppDeclaration?.invoke(this)
     }
-
-    handleSSLHandshake()
 }
 
 actual fun platformModule(context: PlatformContext): Module = module {
@@ -92,42 +83,5 @@ actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
             add(PenfeizhouAnimatedWebpDecoder.Factory())
         }
-    }
-}
-
-
-/**
- * for api.pexels.com on Android 5.0
- */
-private fun handleSSLHandshake() {
-    try {
-        val trustAllCerts = arrayOf<TrustManager>(
-            @SuppressLint("CustomX509TrustManager")
-            object : X509TrustManager {
-                override fun getAcceptedIssuers(): Array<X509Certificate?> {
-                    return arrayOfNulls(0)
-                }
-
-                @SuppressLint("TrustAllX509TrustManager")
-                override fun checkClientTrusted(
-                    certs: Array<X509Certificate?>?,
-                    authType: String?
-                ) {
-                }
-
-                @SuppressLint("TrustAllX509TrustManager")
-                override fun checkServerTrusted(
-                    certs: Array<X509Certificate?>?,
-                    authType: String?
-                ) {
-                }
-            })
-        val sc = SSLContext.getInstance("TLS")
-        // trustAllCerts trust all certificates
-        sc.init(null, trustAllCerts, SecureRandom())
-        HttpsURLConnection.setDefaultSSLSocketFactory(sc.socketFactory)
-        HttpsURLConnection.setDefaultHostnameVerifier { _, _ -> true }
-    } catch (e: Exception) {
-        e.printStackTrace()
     }
 }

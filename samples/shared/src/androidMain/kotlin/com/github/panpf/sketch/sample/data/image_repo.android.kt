@@ -6,6 +6,7 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.tools4k.coroutines.withToIO
 
 actual suspend fun localImages(context: PlatformContext): List<String> {
+    // TODO Photo album cannot be read on android 16 version
     val checkSelfPermission = PermissionChecker
         .checkSelfPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE)
     if (checkSelfPermission != PermissionChecker.PERMISSION_GRANTED) {

@@ -28,6 +28,9 @@ class ComposeMainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // TODO The navigation bar color is wrong on API 35
+        // TODO In dark mode, the status bar and navigation bar on the homepage are wrong in color, but other pages are normal.
+
         EdgeToEdgeUtils.applyEdgeToEdge(/* window = */ window,/* edgeToEdgeEnabled = */ true)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             window.statusBarColor = Color.parseColor("#60000000")
