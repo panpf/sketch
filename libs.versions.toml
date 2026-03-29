@@ -23,7 +23,7 @@ appdirs = "1.5.0"
 
 buildkonfig = "0.17.1"
 
-dokka = "2.1.0"
+dokka = "2.2.0"
 
 # https://github.com/wseemann/FFmpegMediaMetadataRetriever/issues/294
 ffmpegMediaMetadataRetriever = "1.0.21"
@@ -32,7 +32,7 @@ google-flexbox = "3.0.0"
 google-material = "1.13.0"
 gradle-maven-publish-plugin = "0.36.0"
 
-jetbrains-compose = "1.10.0"
+jetbrains-compose = "1.10.3"
 jetbrains-lifecycle = "2.10.0-beta01"
 jetbrains-compose-material-icons-core = "1.7.3"
 jetbrains-compose-material3 = "1.9.0"
@@ -41,7 +41,7 @@ jetbrains-navigation3 = "1.0.0-alpha06"
 
 koin = "4.1.1"
 
-kotlin = "2.3.0"
+kotlin = "2.3.10"
 kotlinx-atomicfu = "0.30.0"
 kotlinx-coroutines = "1.10.2"
 kotlinx-cover = "0.9.4"
