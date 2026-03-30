@@ -1,5 +1,8 @@
 package com.github.panpf.sketch.sample.ui
 
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -43,10 +46,11 @@ private fun NavigationContent(onContentChanged: ((List<NavKey>) -> Unit)? = null
         onContentChanged?.invoke(navBackStack.toList())
     }
     CompositionLocalProvider(LocalNavBackStack provides navBackStack) {
-        // TODO Add transition animation
         NavDisplay(
             backStack = navBackStack,
-            entryProvider = navEntryProvider
+            entryProvider = navEntryProvider,
+            transitionSpec = { fadeIn() togetherWith fadeOut() },
+            popTransitionSpec = { fadeIn() togetherWith fadeOut() }
         )
     }
 }
