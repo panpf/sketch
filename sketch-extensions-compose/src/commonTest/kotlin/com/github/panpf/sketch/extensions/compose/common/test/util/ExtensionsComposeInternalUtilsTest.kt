@@ -1,10 +1,10 @@
 package com.github.panpf.sketch.extensions.compose.common.test.util
 
-import com.github.panpf.sketch.util.format
+import com.github.panpf.sketch.extensions.compose.internal.util.format
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class ExtensionsComposeUtilsTest {
+class ExtensionsComposeInternalUtilsTest {
 
     @Test
     fun testFormat() {

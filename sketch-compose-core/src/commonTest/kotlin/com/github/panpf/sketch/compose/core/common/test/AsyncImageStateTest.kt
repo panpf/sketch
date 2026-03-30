@@ -25,6 +25,7 @@ import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PainterImage
 import com.github.panpf.sketch.PainterState
 import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.compose.internal.util.toHexString
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.painter.ImageBitmapPainter
 import com.github.panpf.sketch.rememberAsyncImageState
@@ -58,7 +59,6 @@ import com.github.panpf.sketch.test.utils.toPreviewBitmap
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.div
 import com.github.panpf.sketch.util.screenSize
-import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.toIntSize
 import com.github.panpf.sketch.util.toSize
 import com.github.panpf.sketch.util.windowContainerSize

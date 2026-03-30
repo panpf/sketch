@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.util
+package com.github.panpf.sketch.extensions.compose.internal.util
 
 import kotlin.math.pow
 import kotlin.math.round
+
+/*
+ * There are the same functions in other modules, so the package name must remain unique, otherwise duplicate definition errors will occur in the js environment.
+ */
 
 /**
  * Format the number to the specified number of decimal places

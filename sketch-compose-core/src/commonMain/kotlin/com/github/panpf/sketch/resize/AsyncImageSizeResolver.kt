@@ -17,8 +17,8 @@
 package com.github.panpf.sketch.resize
 
 import androidx.compose.ui.unit.IntSize
+import com.github.panpf.sketch.compose.internal.util.toHexString
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.toSketchSize
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull

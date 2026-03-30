@@ -9,6 +9,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ScaleFactor
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntSize
+import com.github.panpf.sketch.compose.internal.util.toHexString
 import com.github.panpf.sketch.painter.CrossfadePainter
 import com.github.panpf.sketch.painter.PainterWrapper
 import com.github.panpf.sketch.resize.Scale
@@ -16,7 +17,6 @@ import com.github.panpf.sketch.test.utils.SizeColorPainter
 import com.github.panpf.sketch.test.utils.TestContentScale
 import com.github.panpf.sketch.test.utils.createBitmap
 import com.github.panpf.sketch.test.utils.toComposeBitmap
-import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.findDeepestPainter
 import com.github.panpf.sketch.util.findLeafPainter
 import com.github.panpf.sketch.util.fitScale
@@ -24,7 +24,6 @@ import com.github.panpf.sketch.util.fromScale
 import com.github.panpf.sketch.util.isEmpty
 import com.github.panpf.sketch.util.name
 import com.github.panpf.sketch.util.simpleName
-import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.toIntSize
 import com.github.panpf.sketch.util.toIntSizeOrNull
 import com.github.panpf.sketch.util.toLogString
@@ -32,12 +31,8 @@ import com.github.panpf.sketch.util.toRequestSize
 import com.github.panpf.sketch.util.toScale
 import com.github.panpf.sketch.util.toSize
 import com.github.panpf.sketch.util.toSketchSize
-import okio.IOException
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 import kotlin.test.assertSame
 
 class ComposeCoreUtilsCommonTest {
@@ -375,25 +370,6 @@ class ComposeCoreUtilsCommonTest {
         PainterWrapper(painter2).apply {
             assertSame(expected = painter2, actual = this.findDeepestPainter())
         }
-    }
-
-    @Test
-    fun testAnyAsOrNull() {
-        assertNotNull(IOException().asOrNull<Exception>())
-        assertNull((null as Exception?).asOrNull<Exception>())
-        assertFailsWith(ClassCastException::class) {
-            Throwable() as Exception
-        }
-        assertNull(Throwable().asOrNull<Exception>())
-    }
-
-    @Test
-    fun testToHexString() {
-        val any = Any()
-        assertEquals(
-            expected = any.hashCode().toString(16),
-            actual = any.toHexString()
-        )
     }
 
     @Test

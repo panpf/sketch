@@ -23,8 +23,8 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
+import com.github.panpf.sketch.extensions.compose.internal.util.format
 import com.github.panpf.sketch.painter.ProgressPainter
-import com.github.panpf.sketch.util.format
 import kotlin.time.TimeSource
 import kotlin.time.TimeSource.Monotonic.ValueTimeMark
 

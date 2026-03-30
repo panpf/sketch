@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.IntSize
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.github.panpf.sketch.compose.internal.util.toHexString
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
@@ -45,7 +46,6 @@ import com.github.panpf.sketch.target.AsyncImageTarget
 import com.github.panpf.sketch.util.RememberedCounter
 import com.github.panpf.sketch.util.difference
 import com.github.panpf.sketch.util.isEmpty
-import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.windowContainerSize
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope

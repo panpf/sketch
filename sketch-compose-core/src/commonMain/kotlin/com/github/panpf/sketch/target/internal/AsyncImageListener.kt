@@ -17,6 +17,7 @@
 package com.github.panpf.sketch.target.internal
 
 import com.github.panpf.sketch.AsyncImage
+import com.github.panpf.sketch.compose.internal.util.toHexString
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ImageResult.Success
@@ -26,7 +27,6 @@ import com.github.panpf.sketch.request.LoadState.Canceled
 import com.github.panpf.sketch.request.Progress
 import com.github.panpf.sketch.request.ProgressListener
 import com.github.panpf.sketch.target.AsyncImageTarget
-import com.github.panpf.sketch.util.toHexString
 
 /**
  * [AsyncImage] listener

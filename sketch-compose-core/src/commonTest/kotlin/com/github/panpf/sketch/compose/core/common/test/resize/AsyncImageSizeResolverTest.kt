@@ -1,11 +1,11 @@
 package com.github.panpf.sketch.compose.core.common.test.resize
 
 import androidx.compose.ui.unit.IntSize
+import com.github.panpf.sketch.compose.internal.util.toHexString
 import com.github.panpf.sketch.resize.AsyncImageSizeResolver
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
-import com.github.panpf.sketch.util.toHexString
 import kotlinx.coroutines.async
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test

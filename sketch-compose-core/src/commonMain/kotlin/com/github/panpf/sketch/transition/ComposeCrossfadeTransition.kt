@@ -24,13 +24,13 @@ import androidx.compose.ui.layout.ContentScale
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.asPainter
+import com.github.panpf.sketch.compose.internal.util.asOrNull
 import com.github.panpf.sketch.painter.CrossfadePainter
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.source.DataFrom.MEMORY_CACHE
 import com.github.panpf.sketch.target.ComposeTarget
 import com.github.panpf.sketch.target.Target
-import com.github.panpf.sketch.util.asOrNull
 import kotlin.jvm.JvmOverloads
 
 /**
