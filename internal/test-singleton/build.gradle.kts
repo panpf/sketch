@@ -4,7 +4,7 @@ plugins {
     id("org.jetbrains.kotlinx.atomicfu")
 }
 
-addMultiplatformTargets(MultiplatformTargets.entries.toTypedArray())
+addMultiplatformTargets(KmpTarget.entries.toTypedArray())
 
 kotlin {
     androidKmpLibrary(nameSpace = "com.github.panpf.sketch.test.singleton")

@@ -5,7 +5,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
-addMultiplatformTargets(MultiplatformTargets.entries.toTypedArray())
+addMultiplatformTargets(KmpTarget.entries.toTypedArray())
 
 kotlin {
     androidKmpLibrary(nameSpace = "com.github.panpf.sketch.test.compose")

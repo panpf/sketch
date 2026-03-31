@@ -6,7 +6,7 @@ plugins {
     id("org.jetbrains.kotlinx.kover")
 }
 
-addMultiplatformTargets(MultiplatformTargets.entries.toTypedArray())
+addMultiplatformTargets(KmpTarget.entries.toTypedArray())
 
 kotlin {
     androidKmpLibrary(nameSpace = "com.github.panpf.sketch.core")

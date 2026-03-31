@@ -25,7 +25,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 
-enum class MultiplatformTargets {
+enum class KmpTarget {
     Android,
     Desktop,
     Js,
@@ -35,20 +35,20 @@ enum class MultiplatformTargets {
     IosSimulatorArm64,
 }
 
-fun Project.addMultiplatformTargets(targets: Array<MultiplatformTargets>) {
+fun Project.addMultiplatformTargets(kmpTargets: Array<KmpTarget>) {
     plugins.withId("org.jetbrains.kotlin.multiplatform") {
         extensions.configure<KotlinMultiplatformExtension> {
             applyMyHierarchyTemplate()
 
-            if (targets.contains(MultiplatformTargets.Android)) {
+            if (kmpTargets.contains(KmpTarget.Android)) {
                 androidLibrary {}
             }
 
-            if (targets.contains(MultiplatformTargets.Desktop)) {
+            if (kmpTargets.contains(KmpTarget.Desktop)) {
                 jvm("desktop")
             }
 
-            if (targets.contains(MultiplatformTargets.Js)) {
+            if (kmpTargets.contains(KmpTarget.Js)) {
                 js {
                     browser {
                         testTask {
@@ -63,7 +63,7 @@ fun Project.addMultiplatformTargets(targets: Array<MultiplatformTargets>) {
                 }
             }
 
-            if (targets.contains(MultiplatformTargets.WasmJs)) {
+            if (kmpTargets.contains(KmpTarget.WasmJs)) {
                 @OptIn(ExperimentalWasmDsl::class)
                 wasmJs {
                     browser {
@@ -79,21 +79,21 @@ fun Project.addMultiplatformTargets(targets: Array<MultiplatformTargets>) {
                 }
             }
 
-            if (targets.contains(MultiplatformTargets.IosX64)) {
+            if (kmpTargets.contains(KmpTarget.IosX64)) {
                 iosX64()
             }
-            if (targets.contains(MultiplatformTargets.IosArm64)) {
+            if (kmpTargets.contains(KmpTarget.IosArm64)) {
                 iosArm64()
             }
-            if (targets.contains(MultiplatformTargets.IosSimulatorArm64)) {
+            if (kmpTargets.contains(KmpTarget.IosSimulatorArm64)) {
                 iosSimulatorArm64()
             }
         }
 
-        if (targets.contains(MultiplatformTargets.Js)) {
+        if (kmpTargets.contains(KmpTarget.Js)) {
             applyKotlinJsImplicitDependencyWorkaround()
         }
-        if (targets.contains(MultiplatformTargets.WasmJs)) {
+        if (kmpTargets.contains(KmpTarget.WasmJs)) {
             applyKotlinWasmJsImplicitDependencyWorkaround()
 
             // An error occurs when compiling js or wasmJs:

@@ -5,8 +5,8 @@ plugins {
 }
 
 addMultiplatformTargets(
-    MultiplatformTargets.entries.toTypedArray()
-        .filter { it != MultiplatformTargets.WasmJs }
+    KmpTarget.entries.toTypedArray()
+        .filter { it != KmpTarget.WasmJs }
         .toTypedArray()
 )
 

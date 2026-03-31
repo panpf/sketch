@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.multiplatform")
 }
 
-addMultiplatformTargets(MultiplatformTargets.entries.toTypedArray())
+addMultiplatformTargets(KmpTarget.entries.toTypedArray())
 
 kotlin {
     androidKmpLibrary(nameSpace = "com.github.panpf.sketch.test.http")

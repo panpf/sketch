@@ -4,7 +4,7 @@ plugins {
     id("org.jetbrains.kotlinx.kover")
 }
 
-addMultiplatformTargets(arrayOf(MultiplatformTargets.Android, MultiplatformTargets.Desktop))
+addMultiplatformTargets(arrayOf(KmpTarget.Android, KmpTarget.Desktop))
 
 kotlin {
     androidKmpLibrary(nameSpace = "com.github.panpf.sketch.http.hurl")
