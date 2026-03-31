@@ -145,7 +145,7 @@ internal actual fun DataSource.decodeSvg(
         val paint = Paint().apply { color = backgroundColor }
         canvas.drawRect(rect, paint)
     }
-    // TODO SVGDOM not support css. https://github.com/JetBrains/compose-multiplatform/issues/1217
+    // SVGDOM not support css. https://youtrack.jetbrains.com/issue/CMP-5235
     svg.render(canvas)
 
     val transformeds: List<String>? = if (targetScale != 1f)

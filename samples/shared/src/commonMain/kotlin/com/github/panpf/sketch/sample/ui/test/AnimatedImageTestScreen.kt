@@ -142,7 +142,6 @@ class AnimatedImageTestScreen : BaseScreen() {
                     horizontalArrangement = Arrangement.spacedBy(20.dp),
                     verticalArrangement = Arrangement.spacedBy(20.dp),
                 ) {
-                    // TODO KoralGifDecoder doesn't support start/end callback
                     gifDecoders.forEach { gifDecoder ->
                         Column(Modifier.width(100.dp)) {
                             var playing by remember { mutableStateOf(false) }

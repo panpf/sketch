@@ -24,14 +24,15 @@ import kotlinx.atomicfu.atomic
  *
  * @see com.github.panpf.sketch.core.desktop.test.util.SystemCallbacksDesktopTest.testSystemCallbacks
  */
-internal actual fun SystemCallbacks(sketch: Sketch): SystemCallbacks = DesktopSystemCallbacks()
+internal actual fun SystemCallbacks(sketch: Sketch): SystemCallbacks =
+    DesktopSystemCallbacks(sketch)
 
 /**
  * Noop implementation of [SystemCallbacks]
  *
  * @see com.github.panpf.sketch.core.desktop.test.util.SystemCallbacksDesktopTest.testDesktopSystemCallbacks
  */
-internal class DesktopSystemCallbacks : SystemCallbacks {
+internal class DesktopSystemCallbacks(val sketch: Sketch) : SystemCallbacks {
 
     private val _isShutdown = atomic(false)
 
@@ -39,9 +40,8 @@ internal class DesktopSystemCallbacks : SystemCallbacks {
     override var isShutdown: Boolean by _isShutdown
 
     override fun register() {
-        // TODO Listen for memory-pressure events to trim the memory cache on desktop platforms.
-        // TODO Implement network type detection for desktop platforms.
-        //  https://github.com/jordond/connectivity/blob/main/connectivity-http/src/commonMain/kotlin/dev/jordond/connectivity/internal/HttpConnectivity.kt
+        // Desktop platform cannot determine whether it is a metered network.
+        // Desktop platforms also cannot monitor memory pressure cheaply.
     }
 
     override fun shutdown() {
