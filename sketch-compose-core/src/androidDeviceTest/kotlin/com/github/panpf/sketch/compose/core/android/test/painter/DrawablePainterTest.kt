@@ -6,7 +6,6 @@ import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.os.Looper
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.BitmapPainter
@@ -18,7 +17,6 @@ import com.github.panpf.sketch.drawable.asEquitable
 import com.github.panpf.sketch.painter.DrawableAnimatablePainter
 import com.github.panpf.sketch.painter.DrawablePainter
 import com.github.panpf.sketch.painter.EmptyPainter
-import com.github.panpf.sketch.painter.MAIN_HANDLER
 import com.github.panpf.sketch.painter.asPainter
 import com.github.panpf.sketch.painter.intrinsicSize
 import com.github.panpf.sketch.painter.rememberDrawablePainter
@@ -255,14 +253,6 @@ class DrawablePainterTest {
         assertEquals(
             expected = "DrawablePainter(drawable=ColorDrawable(color=-7829368))",
             actual = DrawablePainter(ColorDrawable(TestColor.GRAY)).toString()
-        )
-    }
-
-    @Test
-    fun testMainHandler() {
-        assertEquals(
-            expected = Looper.getMainLooper(),
-            actual = MAIN_HANDLER.looper
         )
     }
 
