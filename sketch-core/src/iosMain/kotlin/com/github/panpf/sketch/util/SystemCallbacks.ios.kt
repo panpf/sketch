@@ -17,34 +17,70 @@
 package com.github.panpf.sketch.util
 
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.util.IosMemoryPressureObserver.MemoryPressure
 import kotlinx.atomicfu.atomic
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 /**
  * Create an instance of [SystemCallbacks] for ios platforms
  *
  * @see com.github.panpf.sketch.core.ios.test.util.SystemCallbacksIosTest.testSystemCallbacks
  */
-internal actual fun SystemCallbacks(sketch: Sketch): SystemCallbacks = IosSystemCallbacks()
+internal actual fun SystemCallbacks(sketch: Sketch): SystemCallbacks = IosSystemCallbacks(sketch)
 
 /**
  * Noop implementation of [SystemCallbacks]
  *
  * @see com.github.panpf.sketch.core.ios.test.util.SystemCallbacksIosTest.testIosSystemCallbacks
  */
-internal class IosSystemCallbacks : SystemCallbacks {
+internal class IosSystemCallbacks(val sketch: Sketch) : SystemCallbacks {
 
-    override val isCellularNetworkConnected get() = false
-
+    private val memoryPressureObserver = IosMemoryPressureObserver()
+    private val cellularConnectivityObserver = IosCellularConnectivityObserver()
+    private var scope: CoroutineScope? = null
+    private var _isCellularNetworkConnected = false
     private val _isShutdown = atomic(false)
+
+    override val isCellularNetworkConnected
+        get() = _isCellularNetworkConnected
+
     override var isShutdown: Boolean by _isShutdown
 
     override fun register() {
-        // TODO Listen for memory-pressure events to trim the memory cache on ios platforms.
-        // TODO Implement network type detection for ios platforms.
-        //  https://github.com/jordond/connectivity/blob/main/connectivity-apple/src/appleMain/kotlin/dev/jordond/connectivity/internal/AppleConnectivityProvider.kt
+        val scope = CoroutineScope(Dispatchers.Main)
+        this.scope = scope
+
+        scope.launch {
+            cellularConnectivityObserver.flow.collect {
+                _isCellularNetworkConnected = it
+                sketch.logger.d { "IosSystemCallbacks. isCellularNetworkConnected: $it" }
+            }
+        }
+        scope.launch {
+            memoryPressureObserver.flow.collect {
+                val memoryCache = sketch.memoryCache
+                val oldSize = memoryCache.size
+                when (it) {
+                    MemoryPressure.CRITICAL -> memoryCache.trim(memoryCache.size / 2)
+                    MemoryPressure.WARN -> memoryCache.clear()
+                    else -> {}
+                }
+                sketch.logger.d {
+                    val currentSize = memoryCache.size
+                    val clearedSize = oldSize - currentSize
+                    "IosSystemCallbacks. MemoryPressure $it. " +
+                            "cleared ${clearedSize.formatFileSize()}, " +
+                            "current ${currentSize.formatFileSize()}"
+                }
+            }
+        }
     }
 
     override fun shutdown() {
         if (_isShutdown.getAndSet(true)) return
+        scope?.cancel()
     }
 }
