@@ -17,5 +17,5 @@ actual fun PolymorphicModuleBuilder<NavKey>.platformSerializersModule() {
 }
 
 actual fun EntryProviderScope<NavKey>.platformEntryProvider() {
-    entry<SkiaColorTypeTestRoute> { SkiaColorTypeTestScreen().Content() }
+    entry<SkiaColorTypeTestRoute> { SkiaColorTypeTestScreen() }
 }

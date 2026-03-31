@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.sample.ui.test
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,11 +25,9 @@ import com.github.panpf.sketch.sample.ui.test.transform.RotateTransformationTest
 import com.github.panpf.sketch.sample.ui.test.transform.RoundCornersTransformationTestPage
 import kotlinx.coroutines.launch
 
-class TransformationTestScreen : BaseScreen() {
-
-    @OptIn(ExperimentalFoundationApi::class)
-    @Composable
-    override fun DrawContent() {
+@Composable
+fun TransformationTestScreen() {
+    BaseScreen {
         ToolbarScaffold(title = "TransformationTest") {
             val tabs = remember {
                 listOf("ROUNDED_CORNERS", "CIRCLE", "ROTATE", "BLUR", "MASK", "MULTI")

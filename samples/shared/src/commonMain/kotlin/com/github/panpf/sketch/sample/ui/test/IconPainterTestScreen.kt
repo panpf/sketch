@@ -23,10 +23,9 @@ import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.images.Res as ImagesRes
 
-class IconPainterTestScreen : BaseScreen() {
-
-    @Composable
-    override fun DrawContent() {
+@Composable
+fun IconPainterTestScreen() {
+    BaseScreen {
         ToolbarScaffold(title = "IconPainterTest") {
             Column(
                 modifier = Modifier.fillMaxWidth()

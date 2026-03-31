@@ -47,10 +47,9 @@ import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.util.platformGifDecoders
 import com.github.panpf.sketch.state.rememberIconPainterStateImage
 
-class AnimatedImageTestScreen : BaseScreen() {
-
-    @Composable
-    override fun DrawContent() {
+@Composable
+fun AnimatedImageTestScreen() {
+    BaseScreen {
         ToolbarScaffold(title = "AnimatedImageTest") {
             Column(
                 modifier = Modifier.fillMaxSize()
@@ -219,46 +218,46 @@ class AnimatedImageTestScreen : BaseScreen() {
             }
         }
     }
+}
 
-    @Composable
-    private fun buildImageRequest(
-        uri: String,
-    ): ImageRequest = ComposableImageRequest(uri) {
-        placeholder(
-            rememberIconPainterStateImage(
-                icon = Res.drawable.ic_image_outline,
-                background = colorScheme.primaryContainer,
-                iconTint = colorScheme.onPrimaryContainer
-            )
+@Composable
+private fun buildImageRequest(
+    uri: String,
+): ImageRequest = ComposableImageRequest(uri) {
+    placeholder(
+        rememberIconPainterStateImage(
+            icon = Res.drawable.ic_image_outline,
+            background = colorScheme.primaryContainer,
+            iconTint = colorScheme.onPrimaryContainer
         )
-        error(
-            rememberIconPainterStateImage(
-                icon = Res.drawable.ic_image_broken_outline,
-                background = colorScheme.primaryContainer,
-                iconTint = colorScheme.onPrimaryContainer
-            )
+    )
+    error(
+        rememberIconPainterStateImage(
+            icon = Res.drawable.ic_image_broken_outline,
+            background = colorScheme.primaryContainer,
+            iconTint = colorScheme.onPrimaryContainer
         )
-    }
+    )
+}
 
-    @Composable
-    private inline fun buildImageRequest(
-        uri: String,
-        crossinline block: @Composable (ImageRequest.Builder.() -> Unit)
-    ): ImageRequest = ComposableImageRequest(uri) {
-        placeholder(
-            rememberIconPainterStateImage(
-                icon = Res.drawable.ic_image_outline,
-                background = colorScheme.primaryContainer,
-                iconTint = colorScheme.onPrimaryContainer
-            )
+@Composable
+private inline fun buildImageRequest(
+    uri: String,
+    crossinline block: @Composable (ImageRequest.Builder.() -> Unit)
+): ImageRequest = ComposableImageRequest(uri) {
+    placeholder(
+        rememberIconPainterStateImage(
+            icon = Res.drawable.ic_image_outline,
+            background = colorScheme.primaryContainer,
+            iconTint = colorScheme.onPrimaryContainer
         )
-        error(
-            rememberIconPainterStateImage(
-                icon = Res.drawable.ic_image_broken_outline,
-                background = colorScheme.primaryContainer,
-                iconTint = colorScheme.onPrimaryContainer
-            )
+    )
+    error(
+        rememberIconPainterStateImage(
+            icon = Res.drawable.ic_image_broken_outline,
+            background = colorScheme.primaryContainer,
+            iconTint = colorScheme.onPrimaryContainer
         )
-        block()
-    }
+    )
+    block()
 }

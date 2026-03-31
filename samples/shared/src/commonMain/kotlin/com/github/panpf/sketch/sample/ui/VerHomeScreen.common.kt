@@ -2,7 +2,6 @@
 
 package com.github.panpf.sketch.sample.ui
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,54 +45,9 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 
-val gridCellsMinSize: Dp = if (Platform.current.isMobile()) 100.dp else 150.dp
-
 @Composable
-expect fun VerHomeHeader()
-
-enum class HomeTab(
-    val title: String,
-    val icon: DrawableResource,
-    val padding: Dp,
-    val content: @Composable () -> Unit
-) {
-    PEXELS(
-        title = "Pexels",
-        icon = Res.drawable.ic_pexels,
-        padding = 1.5.dp,
-        content = { PexelsPhotoListPage() }
-    ),
-    GIPHY(
-        title = "Giphy",
-        icon = Res.drawable.ic_giphy,
-        padding = 1.5.dp,
-        content = { GiphyPhotoListPage() }
-    ),
-    LOCAL(
-        title = "Local",
-        icon = Res.drawable.ic_phone,
-        padding = 0.dp,
-        content = {
-            PermissionContainer(
-                permission = localPhotoListPermission(),
-                permissionRequired = false,
-                content = { LocalPhotoListPage() }
-            )
-        }
-    ),
-    TEST(
-        title = "Test",
-        icon = Res.drawable.ic_debug,
-        padding = 1.dp,
-        content = { TestPage() }
-    ),
-}
-
-object VerHomeScreen : BaseScreen() {
-
-    @OptIn(ExperimentalFoundationApi::class)
-    @Composable
-    override fun DrawContent() {
+fun VerHomeScreen() {
+    BaseScreen {
         Column {
             VerHomeHeader()
 
@@ -143,4 +97,47 @@ object VerHomeScreen : BaseScreen() {
             }
         }
     }
+}
+
+@Composable
+expect fun VerHomeHeader()
+
+val gridCellsMinSize: Dp = if (Platform.current.isMobile()) 100.dp else 150.dp
+
+enum class HomeTab(
+    val title: String,
+    val icon: DrawableResource,
+    val padding: Dp,
+    val content: @Composable () -> Unit
+) {
+    PEXELS(
+        title = "Pexels",
+        icon = Res.drawable.ic_pexels,
+        padding = 1.5.dp,
+        content = { PexelsPhotoListPage() }
+    ),
+    GIPHY(
+        title = "Giphy",
+        icon = Res.drawable.ic_giphy,
+        padding = 1.5.dp,
+        content = { GiphyPhotoListPage() }
+    ),
+    LOCAL(
+        title = "Local",
+        icon = Res.drawable.ic_phone,
+        padding = 0.dp,
+        content = {
+            PermissionContainer(
+                permission = localPhotoListPermission(),
+                permissionRequired = false,
+                content = { LocalPhotoListPage() }
+            )
+        }
+    ),
+    TEST(
+        title = "Test",
+        icon = Res.drawable.ic_debug,
+        padding = 1.dp,
+        content = { TestPage() }
+    ),
 }

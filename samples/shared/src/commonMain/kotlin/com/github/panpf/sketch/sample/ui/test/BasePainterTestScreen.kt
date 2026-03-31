@@ -43,21 +43,13 @@ import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.util.name
 
-abstract class BasePainterTestScreen : BaseScreen() {
-
-    @Composable
-    abstract fun getTitle(): String
-
-    abstract suspend fun buildPainters(
-        context: PlatformContext,
-        contentScale: ContentScale,
-        alignment: Alignment,
-        itemWidth: Float,
-    ): List<Pair<String, Painter>>
-
-    @Composable
-    override fun DrawContent() {
-        ToolbarScaffold(title = getTitle()) {
+@Composable
+fun BasePainterTestScreen(
+    title: String,
+    buildPainters: suspend (context: PlatformContext, contentScale: ContentScale, alignment: Alignment, itemWidth: Float) -> List<Pair<String, Painter>>
+) {
+    BaseScreen {
+        ToolbarScaffold(title = title) {
             Column(
                 modifier = Modifier.fillMaxSize()
                     .windowInsetsPadding(NavigationBarDefaults.windowInsets),
@@ -77,10 +69,10 @@ abstract class BasePainterTestScreen : BaseScreen() {
                 }
                 LaunchedEffect(contentScale, alignment) {
                     painterList = buildPainters(
-                        context = context,
-                        contentScale = contentScale,
-                        alignment = alignment,
-                        itemWidth = gridWidth,
+                        context,
+                        contentScale,
+                        alignment,
+                        gridWidth,
                     )
                 }
 

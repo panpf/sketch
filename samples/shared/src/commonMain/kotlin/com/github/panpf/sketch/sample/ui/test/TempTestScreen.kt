@@ -13,10 +13,9 @@ import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 
-class TempTestScreen : BaseScreen() {
-
-    @Composable
-    override fun DrawContent() {
+@Composable
+fun TempTestScreen() {
+    BaseScreen {
         ToolbarScaffold(title = "TempTest") {
             Column {
                 AsyncImage(

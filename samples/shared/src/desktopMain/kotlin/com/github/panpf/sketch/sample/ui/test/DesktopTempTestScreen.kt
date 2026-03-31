@@ -12,10 +12,9 @@ import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 
-class DesktopTempTestScreen : BaseScreen() {
-
-    @Composable
-    override fun DrawContent() {
+@Composable
+fun DesktopTempTestScreen() {
+    BaseScreen {
         ToolbarScaffold(title = "TempTest") {
             Column {
                 AsyncImage(ComposableImageRequest(ComposeResImageFiles.numbersGif.uri) {

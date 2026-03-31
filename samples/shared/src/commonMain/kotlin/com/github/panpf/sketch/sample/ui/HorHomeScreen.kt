@@ -2,7 +2,6 @@
 
 package com.github.panpf.sketch.sample.ui
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -37,11 +36,9 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 
-object HorHomeScreen : BaseScreen() {
-
-    @OptIn(ExperimentalFoundationApi::class)
-    @Composable
-    override fun DrawContent() {
+@Composable
+fun HorHomeScreen() {
+    BaseScreen {
         Row(Modifier.fillMaxSize()) {
             val coroutineScope = rememberCoroutineScope()
             val appSettings: AppSettings = koinInject()

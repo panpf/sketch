@@ -13,10 +13,9 @@ import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import org.koin.compose.viewmodel.koinViewModel
 
-class ExifOrientationTestScreen : BaseScreen() {
-
-    @Composable
-    override fun DrawContent() {
+@Composable
+fun ExifOrientationTestScreen() {
+    BaseScreen {
         ToolbarScaffold(title = "ExifOrientationTest") {
             val gridState = rememberLazyGridState()
             val viewModel: ExifOrientationTestViewModel = koinViewModel()

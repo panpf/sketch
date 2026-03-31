@@ -80,10 +80,9 @@ import org.koin.compose.koinInject
 
 expect fun getTopMargin(context: PlatformContext): Int
 
-class PhotoPagerScreen(private val params: PhotoPagerParams) : BaseScreen() {
-
-    @Composable
-    override fun DrawContent() {
+@Composable
+fun PhotoPagerScreen(params: PhotoPagerParams) {
+    BaseScreen {
         val appEvents: AppEvents = koinInject()
         val coroutineScope = rememberCoroutineScope()
         val focusRequest = remember { androidx.compose.ui.focus.FocusRequester() }

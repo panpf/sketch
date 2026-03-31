@@ -18,10 +18,9 @@ import kotlinx.coroutines.withContext
 import platform.Foundation.NSThread
 import kotlin.time.measureTime
 
-class MainThreadTestScreen : BaseScreen() {
-
-    @Composable
-    override fun DrawContent() {
+@Composable
+fun MainThreadTestScreen() {
+    BaseScreen {
         ToolbarScaffold(title = "MainThreadTest") {
             var result by remember { mutableStateOf<Pair<Boolean, Boolean>?>(null) }
             LaunchedEffect(Unit) {

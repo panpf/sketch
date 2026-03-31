@@ -35,10 +35,9 @@ import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.sample.ui.components.NewMoonLoadingPainter
 import com.github.panpf.sketch.state.rememberIconAnimatablePainterStateImage
 
-class AnimatablePlaceholderTestScreen : BaseScreen() {
-
-    @Composable
-    override fun DrawContent() {
+@Composable
+fun AnimatablePlaceholderTestScreen() {
+    BaseScreen {
         ToolbarScaffold(title = "AnimatablePlaceholderTest") {
             val context = LocalPlatformContext.current
             val density = LocalDensity.current

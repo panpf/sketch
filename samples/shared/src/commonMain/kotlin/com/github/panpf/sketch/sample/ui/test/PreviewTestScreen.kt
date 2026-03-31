@@ -30,10 +30,9 @@ import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.state.rememberIconPainterStateImage
 
-class PreviewTestScreen : BaseScreen() {
-
-    @Composable
-    override fun DrawContent() {
+@Composable
+fun PreviewTestScreen() {
+    BaseScreen {
         ToolbarScaffold(title = "PreviewTest") {
             Row(
                 modifier = Modifier.fillMaxSize()

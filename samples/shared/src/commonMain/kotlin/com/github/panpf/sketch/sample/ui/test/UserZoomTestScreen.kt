@@ -39,10 +39,9 @@ import com.github.panpf.zoomimage.compose.zoom.ZoomableState
 import com.github.panpf.zoomimage.compose.zoom.zoomable
 import kotlinx.coroutines.launch
 
-class UserZoomTestScreen : BaseScreen() {
-
-    @Composable
-    override fun DrawContent() {
+@Composable
+fun UserZoomTestScreen() {
+    BaseScreen {
         ToolbarScaffold(title = "UserZoomTest") {
             val tabs = remember {
                 listOf("HOR", "VER")
@@ -80,63 +79,63 @@ class UserZoomTestScreen : BaseScreen() {
             }
         }
     }
-
-    @Composable
-    private fun UserZoomContent(uri: String) {
-        Box(Modifier.fillMaxSize()) {
-            val imageState = rememberAsyncImageState()
-            val zoomState: ZoomState = rememberZoomState()
-            imageState.onPainterState = remember {
-                {
-                    val painterSize = it.painter
-                        ?.intrinsicSize
-                        ?.takeIf { it.isSpecified }
-                        ?.roundToIntSize()
-                        ?.takeIf { it.isNotEmpty() }
-                        ?: IntSize.Zero
-                    zoomState.zoomable.setContentSize(painterSize)
-                }
-            }
-            AsyncImage(
-                request = ComposableImageRequest(uri) {
-                    memoryCachePolicy(CachePolicy.DISABLED)
-                    resultCachePolicy(CachePolicy.DISABLED)
-                    placeholder(ThumbnailMemoryCacheStateImage(uri))
-                    crossfade(fadeStart = false)
-                },
-                state = imageState,
-                contentDescription = "",
-                modifier = Modifier.matchParentSize()
-                    .background(Color.Cyan)
-                    .zoomable(
-                        zoomable = zoomState.zoomable,
-                        userSetupContentSize = true,
-                    )
-                    .zoomingWithUser(zoomState.zoomable)
-            )
-        }
-    }
-
-    /**
-     * A Modifier that applies changes in [ZoomableState].transform to the component. It can be used on any composable component.
-     */
-    private fun Modifier.zoomingWithUser(
-        zoomable: ZoomableState
-    ): Modifier = this
-        .clipToBounds()
-        .graphicsLayer {
-            val transform = zoomable.userTransform
-            zoomable.logger.v { "ZoomableState. graphicsLayer. transform=$transform" }
-            scaleX = transform.scaleX
-            scaleY = transform.scaleY
-            translationX = transform.offsetX
-            translationY = transform.offsetY
-            transformOrigin = transform.scaleOrigin
-        }
-        // Because rotationOrigin and rotationOrigin are different, they must be set separately.
-        .graphicsLayer {
-            val transform = zoomable.transform
-            rotationZ = transform.rotation
-            transformOrigin = transform.rotationOrigin
-        }
 }
+
+@Composable
+private fun UserZoomContent(uri: String) {
+    Box(Modifier.fillMaxSize()) {
+        val imageState = rememberAsyncImageState()
+        val zoomState: ZoomState = rememberZoomState()
+        imageState.onPainterState = remember {
+            {
+                val painterSize = it.painter
+                    ?.intrinsicSize
+                    ?.takeIf { it.isSpecified }
+                    ?.roundToIntSize()
+                    ?.takeIf { it.isNotEmpty() }
+                    ?: IntSize.Zero
+                zoomState.zoomable.setContentSize(painterSize)
+            }
+        }
+        AsyncImage(
+            request = ComposableImageRequest(uri) {
+                memoryCachePolicy(CachePolicy.DISABLED)
+                resultCachePolicy(CachePolicy.DISABLED)
+                placeholder(ThumbnailMemoryCacheStateImage(uri))
+                crossfade(fadeStart = false)
+            },
+            state = imageState,
+            contentDescription = "",
+            modifier = Modifier.matchParentSize()
+                .background(Color.Cyan)
+                .zoomable(
+                    zoomable = zoomState.zoomable,
+                    userSetupContentSize = true,
+                )
+                .zoomingWithUser(zoomState.zoomable)
+        )
+    }
+}
+
+/**
+ * A Modifier that applies changes in [ZoomableState].transform to the component. It can be used on any composable component.
+ */
+private fun Modifier.zoomingWithUser(
+    zoomable: ZoomableState
+): Modifier = this
+    .clipToBounds()
+    .graphicsLayer {
+        val transform = zoomable.userTransform
+        zoomable.logger.v { "ZoomableState. graphicsLayer. transform=$transform" }
+        scaleX = transform.scaleX
+        scaleY = transform.scaleY
+        translationX = transform.offsetX
+        translationY = transform.offsetY
+        transformOrigin = transform.scaleOrigin
+    }
+    // Because rotationOrigin and rotationOrigin are different, they must be set separately.
+    .graphicsLayer {
+        val transform = zoomable.transform
+        rotationZ = transform.rotation
+        transformOrigin = transform.rotationOrigin
+    }

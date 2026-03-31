@@ -52,10 +52,9 @@ import kotlin.math.min
 
 expect val alpha8ColorType: String
 
-class BlurHashTestScreen : BaseScreen() {
-
-    @Composable
-    override fun DrawContent() {
+@Composable
+fun BlurHashTestScreen() {
+    BaseScreen {
         ToolbarScaffold(title = "BlurHashTest") {
             Column(
                 modifier = Modifier.fillMaxWidth()

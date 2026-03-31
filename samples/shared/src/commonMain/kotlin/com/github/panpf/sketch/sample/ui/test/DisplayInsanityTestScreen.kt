@@ -14,10 +14,9 @@ import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.gallery.PhotoGridItem
 import org.koin.compose.viewmodel.koinViewModel
 
-class DisplayInsanityTestScreen : BaseScreen() {
-
-    @Composable
-    override fun DrawContent() {
+@Composable
+fun DisplayInsanityTestScreen() {
+    BaseScreen {
         ToolbarScaffold(title = "DisplayInsanityTest") {
             val gridState = rememberLazyGridState()
             val viewModel: DisplayInsanityTestViewModel = koinViewModel()

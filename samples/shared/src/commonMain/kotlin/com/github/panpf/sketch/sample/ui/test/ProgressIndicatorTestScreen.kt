@@ -39,10 +39,9 @@ import com.github.panpf.sketch.sample.ui.util.rememberThemeRingProgressPainter
 import com.github.panpf.sketch.sample.ui.util.rememberThemeSectorProgressPainter
 import org.koin.compose.viewmodel.koinViewModel
 
-class ProgressIndicatorTestScreen : BaseScreen() {
-
-    @Composable
-    override fun DrawContent() {
+@Composable
+fun ProgressIndicatorTestScreen() {
+    BaseScreen {
         ToolbarScaffold(title = "ProgressIndicatorTest") {
             Column(
                 modifier = Modifier

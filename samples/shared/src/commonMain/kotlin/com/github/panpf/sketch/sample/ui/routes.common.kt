@@ -131,26 +131,26 @@ expect fun PolymorphicModuleBuilder<NavKey>.platformSerializersModule()
 
 @Suppress("RemoveExplicitTypeArguments")
 val navEntryProvider = entryProvider<NavKey> {
-    entry<VerHomeRoute> { VerHomeScreen.Content() }
-    entry<HorHomeRoute> { HorHomeScreen.Content() }
-    entry<PhotoPagerRoute> { PhotoPagerScreen(it.params).Content() }
-    entry<DecoderTestRoute> { DecoderTestScreen().Content() }
-    entry<FetcherTestRoute> { FetcherTestScreen().Content() }
-    entry<AnimatedImageTestRoute> { AnimatedImageTestScreen().Content() }
-    entry<ExifOrientationTestRoute> { ExifOrientationTestScreen().Content() }
-    entry<TransformationTestRoute> { TransformationTestScreen().Content() }
-    entry<ProgressTestRoute> { ProgressTestScreen().Content() }
-    entry<CrossfadePainterTestRoute> { CrossfadePainterTestScreen().Content() }
-    entry<ResizePainterTestRoute> { ResizePainterTestScreen().Content() }
-    entry<PainterMixTestRoute> { PainterMixTestScreen().Content() }
-    entry<IconPainterTestRoute> { IconPainterTestScreen().Content() }
-    entry<AnimatablePlaceholderTestRoute> { AnimatablePlaceholderTestScreen().Content() }
-    entry<PreviewTestRoute> { PreviewTestScreen().Content() }
-    entry<ProgressIndicatorTestRoute> { ProgressIndicatorTestScreen().Content() }
-    entry<BlurHashTestRoute> { BlurHashTestScreen().Content() }
-    entry<DisplayInsanityTestRoute> { DisplayInsanityTestScreen().Content() }
-    entry<UserZoomTestRoute> { UserZoomTestScreen().Content() }
-    entry<TempTestRoute> { TempTestScreen().Content() }
+    entry<VerHomeRoute> { VerHomeScreen() }
+    entry<HorHomeRoute> { HorHomeScreen() }
+    entry<PhotoPagerRoute> { PhotoPagerScreen(it.params) }
+    entry<DecoderTestRoute> { DecoderTestScreen() }
+    entry<FetcherTestRoute> { FetcherTestScreen() }
+    entry<AnimatedImageTestRoute> { AnimatedImageTestScreen() }
+    entry<ExifOrientationTestRoute> { ExifOrientationTestScreen() }
+    entry<TransformationTestRoute> { TransformationTestScreen() }
+    entry<ProgressTestRoute> { ProgressTestScreen() }
+    entry<CrossfadePainterTestRoute> { CrossfadePainterTestScreen() }
+    entry<ResizePainterTestRoute> { ResizePainterTestScreen() }
+    entry<PainterMixTestRoute> { PainterMixTestScreen() }
+    entry<IconPainterTestRoute> { IconPainterTestScreen() }
+    entry<AnimatablePlaceholderTestRoute> { AnimatablePlaceholderTestScreen() }
+    entry<PreviewTestRoute> { PreviewTestScreen() }
+    entry<ProgressIndicatorTestRoute> { ProgressIndicatorTestScreen() }
+    entry<BlurHashTestRoute> { BlurHashTestScreen() }
+    entry<DisplayInsanityTestRoute> { DisplayInsanityTestScreen() }
+    entry<UserZoomTestRoute> { UserZoomTestScreen() }
+    entry<TempTestRoute> { TempTestScreen() }
 
     platformEntryProvider()
 }

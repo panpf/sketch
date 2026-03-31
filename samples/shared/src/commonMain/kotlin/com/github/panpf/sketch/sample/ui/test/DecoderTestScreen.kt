@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.sample.ui.test
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -14,11 +13,9 @@ import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import org.koin.compose.viewmodel.koinViewModel
 
-class DecoderTestScreen : BaseScreen() {
-
-    @OptIn(ExperimentalFoundationApi::class)
-    @Composable
-    override fun DrawContent() {
+@Composable
+fun DecoderTestScreen() {
+    BaseScreen {
         ToolbarScaffold(title = "DecoderTest") {
             val gridState = rememberLazyGridState()
             val viewModel: DecoderTestViewModel = koinViewModel()
