@@ -5,9 +5,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.sample.data.api.giphy.GiphyApi
 
-class GiphyPhotoListViewModel(val giphyApi: GiphyApi) : ViewModel() {
+class GiphyPhotoListViewModel(val context: PlatformContext, val giphyApi: GiphyApi) : ViewModel() {
     val pagingFlow = Pager(
         config = PagingConfig(
             pageSize = 40,
@@ -15,7 +16,7 @@ class GiphyPhotoListViewModel(val giphyApi: GiphyApi) : ViewModel() {
         ),
         initialKey = 0,
         pagingSourceFactory = {
-            GiphyPhotoListPagingSource(this@GiphyPhotoListViewModel.giphyApi)
+            GiphyPhotoListPagingSource(context, this@GiphyPhotoListViewModel.giphyApi)
         }
     ).flow.cachedIn(viewModelScope)
 }

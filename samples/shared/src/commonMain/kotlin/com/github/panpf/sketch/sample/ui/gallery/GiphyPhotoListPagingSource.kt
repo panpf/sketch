@@ -18,12 +18,15 @@ package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.sample.data.GiphyPhotoListLocalRepo
 import com.github.panpf.sketch.sample.data.api.Response
 import com.github.panpf.sketch.sample.data.api.giphy.GiphyApi
 import com.github.panpf.sketch.sample.data.api.giphy.GiphyGif
 import com.github.panpf.sketch.sample.ui.model.Photo
 
-class GiphyPhotoListPagingSource(val giphyApi: GiphyApi) : PagingSource<Int, Photo>() {
+class GiphyPhotoListPagingSource(val context: PlatformContext, val giphyApi: GiphyApi) :
+    PagingSource<Int, Photo>() {
 
     private val keySet = HashSet<String>()  // Compose LazyVerticalGrid does not allow a key repeat
 
@@ -37,7 +40,7 @@ class GiphyPhotoListPagingSource(val giphyApi: GiphyApi) : PagingSource<Int, Pho
 //            giphyApi.search("pet", pageStart, pageSize)
         } catch (e: Exception) {
             e.printStackTrace()
-            return LoadResult.Error(e)
+            Response.Error(null, e)
         }
 
         return if (response is Response.Success) {
@@ -47,8 +50,17 @@ class GiphyPhotoListPagingSource(val giphyApi: GiphyApi) : PagingSource<Int, Pho
             val nextKey = if (giphyPhotos.isNotEmpty()) pageStart + pageSize else null
             LoadResult.Page(filteredPhotos, null, nextKey)
         } else {
-            response as Response.Error
-            LoadResult.Error(Exception("Http error: ${response.throwable?.message}"))
+            // On the Android platform api.giphy.com is always inaccessible, so the data is loaded directly from local
+            val giphyPhotos = GiphyPhotoListLocalRepo(context)
+                .loadFromLocalGiphyPhotoList(pageStart = pageStart, pageSize = pageSize)
+                .dataList ?: emptyList()
+            val photos = giphyPhotos.map { it.toPhoto() }
+            val filteredPhotos = photos.filter { keySet.add(it.originalUrl) }
+            val nextKey = if (giphyPhotos.isNotEmpty()) pageStart + pageSize else null
+            LoadResult.Page(filteredPhotos, null, nextKey)
+
+//            response as Response.Error
+//            LoadResult.Error(Exception("Http error: ${response.throwable?.message}"))
         }
     }
 

@@ -62,11 +62,8 @@ class MyApplication : Application() {
         viewModelOf(::PhotoPaletteViewModel)
     }
 
-    // TODO apigiphy.com is not accessible on Android
-    //  The simulator reports SSLHandshakeException: connection closed
-    //  A real machine must be bypassed to gain access.
     /**
-     * for api.pexels.com on Android 5.0
+     * for api.pexels.com <= Android 7.0(API 24)
      */
     private fun handleSSLHandshake() {
         try {

@@ -40,8 +40,8 @@ fun commonModule(context: PlatformContext): Module = module {
     single { GiphyApi(get()) }
 
     viewModelOf(::PexelsPhotoListViewModel)
-    viewModelOf(::GiphyPhotoListViewModel)
     viewModelOf(::LocalPhotoListViewModel)
+    viewModel { GiphyPhotoListViewModel(context, get()) }
     viewModel { DecoderTestViewModel(context) }
     viewModel { FetcherTestViewModel(context) }
     viewModel { ProgressTestViewModel(context) }
@@ -82,11 +82,13 @@ expect fun Sketch.Builder.platformSketchInitial(context: PlatformContext)
 private fun newHttpClient(): HttpClient {
     return HttpClient {
         install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-                prettyPrint = true
-                isLenient = true
-            })
+            json(json)
         }
     }
+}
+
+val json = Json {
+    ignoreUnknownKeys = true
+    prettyPrint = true
+    isLenient = true
 }
