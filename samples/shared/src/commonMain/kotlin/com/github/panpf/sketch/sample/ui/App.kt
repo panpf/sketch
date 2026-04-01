@@ -28,10 +28,10 @@ import com.github.panpf.sketch.sample.util.isMobile
 import org.koin.compose.koinInject
 
 @Composable
-fun App(onContentChanged: ((List<NavKey>) -> Unit)? = null) {
+fun App(onNavBackStackChanged: ((List<NavKey>) -> Unit)? = null) {
     AppTheme {
         Box(Modifier.fillMaxSize()) {
-            NavigationContent(onContentChanged)
+            NavigationContent(onNavBackStackChanged)
             SnackbarContent()
         }
     }

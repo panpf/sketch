@@ -96,19 +96,13 @@ abstract class BaseFragment : Fragment() {
     @SuppressLint("RestrictedApi")
     private fun setupLightStatusAndNavigationBar() {
         if (screenMode) {
+            val isLight = lightStatusAndNavigationBar != false && !requireContext().isDarkTheme()
+            val window = requireActivity().window
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                EdgeToEdgeUtils.setLightStatusBar(
-                    /* window = */ requireActivity().window,
-                    /* isLight = */
-                    lightStatusAndNavigationBar != false && !requireContext().isDarkTheme()
-                )
+                EdgeToEdgeUtils.setLightStatusBar(/* window = */ window,/* isLight = */ isLight)
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                EdgeToEdgeUtils.setLightNavigationBar(
-                    /* window = */ requireActivity().window,
-                    /* isLight = */
-                    lightStatusAndNavigationBar != false && !requireContext().isDarkTheme()
-                )
+                EdgeToEdgeUtils.setLightNavigationBar(/* window = */ window,/* isLight = */ isLight)
             }
         }
     }

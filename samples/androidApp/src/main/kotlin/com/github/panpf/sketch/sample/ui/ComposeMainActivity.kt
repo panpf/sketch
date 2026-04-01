@@ -14,22 +14,9 @@ import com.google.android.material.internal.EdgeToEdgeUtils
 
 class ComposeMainActivity : BaseActivity() {
 
-    private var lightStatusAndNavigationBar: Boolean? = null
-        set(value) {
-            if (value != field) {
-                field = value
-                if (resumed) {
-                    setupLightStatusAndNavigationBar()
-                }
-            }
-        }
-
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // TODO The navigation bar color is wrong on API 35
-        // TODO In dark mode, the status bar and navigation bar on the homepage are wrong in color, but other pages are normal.
 
         EdgeToEdgeUtils.applyEdgeToEdge(/* window = */ window,/* edgeToEdgeEnabled = */ true)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -40,8 +27,11 @@ class ComposeMainActivity : BaseActivity() {
         }
 
         setContent {
-            App(onContentChanged = {
-                lightStatusAndNavigationBar = it.lastOrNull() !is PhotoPagerRoute
+            App(onNavBackStackChanged = {
+                val route = it.lastOrNull()
+                if (route != null && route is Route) {
+                    setupLightStatusAndNavigationBar(route.lightStatusAndNavigationBar)
+                }
             })
         }
 
@@ -51,26 +41,14 @@ class ComposeMainActivity : BaseActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        setupLightStatusAndNavigationBar()
-    }
-
     @SuppressLint("RestrictedApi")
-    private fun setupLightStatusAndNavigationBar() {
+    private fun setupLightStatusAndNavigationBar(lightStatusAndNavigationBar: Boolean) {
+        val isLight = lightStatusAndNavigationBar && !isDarkTheme()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            EdgeToEdgeUtils.setLightStatusBar(
-                /* window = */ window,
-                /* isLight = */
-                lightStatusAndNavigationBar != false && !isDarkTheme()
-            )
+            EdgeToEdgeUtils.setLightStatusBar(/* window = */ window,/* isLight = */ isLight)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            EdgeToEdgeUtils.setLightNavigationBar(
-                /* window = */ window,
-                /* isLight = */
-                lightStatusAndNavigationBar != false && !isDarkTheme()
-            )
+            EdgeToEdgeUtils.setLightNavigationBar(/* window = */ window,/* isLight = */ isLight)
         }
     }
 }

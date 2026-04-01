@@ -32,7 +32,10 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 
 @Serializable
-sealed interface Route : NavKey
+sealed interface Route : NavKey {
+    val lightStatusAndNavigationBar: Boolean
+        get() = true
+}
 
 @Serializable
 data object VerHomeRoute : Route
@@ -41,7 +44,10 @@ data object VerHomeRoute : Route
 data object HorHomeRoute : Route
 
 @Serializable
-data class PhotoPagerRoute(val params: PhotoPagerParams) : Route
+data class PhotoPagerRoute(val params: PhotoPagerParams) : Route {
+    override val lightStatusAndNavigationBar: Boolean
+        get() = false
+}
 
 @Serializable
 data object DecoderTestRoute : Route
