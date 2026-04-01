@@ -79,7 +79,7 @@ class PenfeizhouAnimatedWebpDecoder(
         )
         val resize = requestContext.computeResize(imageInfo.size)
 
-        // TODO https://github.com/penfeizhou/APNG4Android/issues/228
+        // https://github.com/penfeizhou/APNG4Android/issues/228
         if (!disallowAnimatedImage) {
             val inSampleSize = calculateSampleSize(
                 imageSize = imageInfo.size,

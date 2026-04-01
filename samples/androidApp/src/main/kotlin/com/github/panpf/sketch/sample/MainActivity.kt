@@ -41,7 +41,6 @@ class MainActivity : BaseActivity() {
 
     override fun onFirstResume() {
         super.onFirstResume()
-        // TODO Unable to execute because finish is in onCreate
         // It can only be executed here, not in onCreate.
         // Because when the app is started when the phone is locked, the app is in the background state in the onCreate method, so the app will crash when the service is started.
         startService(Intent(this@MainActivity, NotificationService::class.java))
