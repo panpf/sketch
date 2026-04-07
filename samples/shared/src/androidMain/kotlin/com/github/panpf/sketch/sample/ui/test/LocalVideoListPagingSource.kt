@@ -81,70 +81,72 @@ class LocalVideoListPagingSource(private val context: Context) :
         }
     }
 
-    private suspend fun loadFromGallery(pageStart: Int, pageSize: Int): List<VideoInfo> =
-        withContext(Dispatchers.IO) {
-            val contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-            val projection = arrayOf(
-                MediaStore.Video.Media._ID,
-                MediaStore.Video.Media.TITLE,
-                MediaStore.Video.Media.DATE_ADDED,
-                MediaStore.Video.Media.SIZE,
-                MediaStore.Video.Media.DURATION,
-                MediaStore.Video.Media.MIME_TYPE
-            )
-            val cursor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val queryArgs = Bundle().apply {
-                    putInt(ContentResolver.QUERY_ARG_OFFSET, pageStart)
-                    putInt(ContentResolver.QUERY_ARG_LIMIT, pageSize)
-                    putStringArray(
-                        ContentResolver.QUERY_ARG_SORT_COLUMNS,
-                        arrayOf(MediaStore.Files.FileColumns.DATE_ADDED)
-                    )
-                    putInt(
-                        ContentResolver.QUERY_ARG_SORT_DIRECTION,
-                        ContentResolver.QUERY_SORT_DIRECTION_DESCENDING
-                    )
-                }
-
-                context.contentResolver.query(
-                    /* uri = */ contentUri,
-                    /* projection = */ projection,
-                    /* queryArgs = */ queryArgs,
-                    /* cancellationSignal = */ null
+    private suspend fun loadFromGallery(
+        pageStart: Int,
+        pageSize: Int
+    ): List<VideoInfo> = withContext(Dispatchers.IO) {
+        val contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+        val projection = arrayOf(
+            MediaStore.Video.Media._ID,
+            MediaStore.Video.Media.TITLE,
+            MediaStore.Video.Media.DATE_ADDED,
+            MediaStore.Video.Media.SIZE,
+            MediaStore.Video.Media.DURATION,
+            MediaStore.Video.Media.MIME_TYPE
+        )
+        val cursor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val queryArgs = Bundle().apply {
+                putInt(ContentResolver.QUERY_ARG_OFFSET, pageStart)
+                putInt(ContentResolver.QUERY_ARG_LIMIT, pageSize)
+                putStringArray(
+                    ContentResolver.QUERY_ARG_SORT_COLUMNS,
+                    arrayOf(MediaStore.Files.FileColumns.DATE_ADDED)
                 )
-            } else {
-                context.contentResolver.query(
-                    /* uri = */ contentUri,
-                    /* projection = */ projection,
-                    /* selection = */ null,
-                    /* selectionArgs = */ null,
-                    /* sortOrder = */
-                    MediaStore.Video.Media.DATE_ADDED + " DESC" + " limit " + pageStart + "," + pageSize
+                putInt(
+                    ContentResolver.QUERY_ARG_SORT_DIRECTION,
+                    ContentResolver.QUERY_SORT_DIRECTION_DESCENDING
                 )
-            } ?: return@withContext emptyList<VideoInfo>()
-            if (cursor.count == 0) {
-                return@withContext emptyList()
             }
 
-            cursor.use {
-                mutableListOf<VideoInfo>().apply {
-                    val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-                    while (cursor.moveToNext()) {
-                        val id = cursor.getLong(idColumn)
-                        val videoUri = ContentUris.withAppendedId(contentUri, id)
-                        add(
-                            VideoInfo(
-                                title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE)),
-                                uri = videoUri.toString(),
-                                mimeType = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE)),
-                                size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)),
-                                duration = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION))
-                                    .toLong(),
-                                date = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED))
-                            )
+            context.contentResolver.query(
+                /* uri = */ contentUri,
+                /* projection = */ projection,
+                /* queryArgs = */ queryArgs,
+                /* cancellationSignal = */ null
+            )
+        } else {
+            val sortOrder = "${MediaStore.Video.Media.DATE_ADDED} DESC limit $pageStart,$pageSize"
+            context.contentResolver.query(
+                /* uri = */ contentUri,
+                /* projection = */ projection,
+                /* selection = */ null,
+                /* selectionArgs = */ null,
+                /* sortOrder = */ sortOrder
+            )
+        } ?: return@withContext emptyList<VideoInfo>()
+        if (cursor.count == 0) {
+            return@withContext emptyList()
+        }
+
+        cursor.use {
+            mutableListOf<VideoInfo>().apply {
+                val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
+                while (cursor.moveToNext()) {
+                    val id = cursor.getLong(idColumn)
+                    val videoUri = ContentUris.withAppendedId(contentUri, id)
+                    add(
+                        VideoInfo(
+                            title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE)),
+                            uri = videoUri.toString(),
+                            mimeType = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MIME_TYPE)),
+                            size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)),
+                            duration = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION))
+                                .toLong(),
+                            date = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_ADDED))
                         )
-                    }
+                    )
                 }
             }
         }
+    }
 }
