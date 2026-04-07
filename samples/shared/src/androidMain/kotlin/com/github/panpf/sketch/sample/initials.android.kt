@@ -19,6 +19,7 @@ import com.github.panpf.sketch.fetch.supportHurlHttpUri
 import com.github.panpf.sketch.fetch.supportKtorHttpUri
 import com.github.panpf.sketch.fetch.supportOkHttpHttpUri
 import com.github.panpf.sketch.sample.ui.gallery.PhotoActionViewModel
+import com.github.panpf.sketch.sample.ui.test.LocalVideoListViewModel
 import com.github.panpf.sketch.sample.util.PenfeizhouAnimatedWebpDecoder
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -39,6 +40,7 @@ actual fun initialApp(context: PlatformContext, koinAppDeclaration: KoinAppDecla
 
 actual fun platformModule(context: PlatformContext): Module = module {
     viewModelOf(::PhotoActionViewModel)
+    viewModelOf(::LocalVideoListViewModel)
 }
 
 actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {

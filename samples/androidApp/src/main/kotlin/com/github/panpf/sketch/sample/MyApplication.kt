@@ -21,7 +21,6 @@ import android.app.Application
 import com.github.panpf.sketch.sample.ui.gallery.PhotoPaletteViewModel
 import com.github.panpf.sketch.sample.ui.setting.AppSettingsViewModel
 import com.github.panpf.sketch.sample.ui.test.DrawableScaleTypeViewModel
-import com.github.panpf.sketch.sample.ui.test.LocalVideoListViewModel
 import com.github.panpf.sketch.sample.ui.test.transform.BlurTransformationTestViewModel
 import com.github.panpf.sketch.sample.ui.test.transform.CircleCropTransformationTestViewModel
 import com.github.panpf.sketch.sample.ui.test.transform.MaskTransformationTestViewModel
@@ -51,7 +50,6 @@ class MyApplication : Application() {
 
     private fun viewModule(): Module = module {
         viewModel { AppSettingsViewModel(sketch = get(), appSettings = get(), page = it.get()) }
-        viewModelOf(::LocalVideoListViewModel)
         viewModelOf(::DrawableScaleTypeViewModel)
         viewModelOf(::BlurTransformationTestViewModel)
         viewModelOf(::MaskTransformationTestViewModel)

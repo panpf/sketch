@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingDialogFragment
-import com.github.panpf.sketch.sample.ui.common.list.ListSeparatorItemFactory
+import com.github.panpf.sketch.sample.ui.common.list.MenuGroupItemFactory
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -50,7 +50,7 @@ class AppSettingsDialogFragment : BaseBindingDialogFragment<FragmentRecyclerBind
                 listOf(
                     SwitchMenuItemFactory(compactModel = true),
                     DropdownMenuItemFactory(requireActivity(), compactModel = true),
-                    ListSeparatorItemFactory(),
+                    MenuGroupItemFactory(),
                 )
             ).apply {
                 settingsViewModel.menuListData

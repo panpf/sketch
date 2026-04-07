@@ -32,27 +32,27 @@
 package com.github.panpf.sketch.sample.ui.common.list
 
 import android.content.Context
-import com.github.panpf.sketch.sample.databinding.ListItemSeparatorBinding
-import com.github.panpf.sketch.sample.model.ListSeparator
+import com.github.panpf.sketch.sample.databinding.ListItemMenuGroupBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
+import com.github.panpf.sketch.sample.ui.model.MenuGroup
 
-class ListSeparatorItemFactory :
-    BaseBindingItemFactory<ListSeparator, ListItemSeparatorBinding>(ListSeparator::class) {
+class MenuGroupItemFactory :
+    BaseBindingItemFactory<MenuGroup, ListItemMenuGroupBinding>(MenuGroup::class) {
 
     override fun initItem(
         context: Context,
-        binding: ListItemSeparatorBinding,
-        item: BindingItem<ListSeparator, ListItemSeparatorBinding>
+        binding: ListItemMenuGroupBinding,
+        item: BindingItem<MenuGroup, ListItemMenuGroupBinding>
     ) {
     }
 
     override fun bindItemData(
         context: Context,
-        binding: ListItemSeparatorBinding,
-        item: BindingItem<ListSeparator, ListItemSeparatorBinding>,
+        binding: ListItemMenuGroupBinding,
+        item: BindingItem<MenuGroup, ListItemMenuGroupBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
-        data: ListSeparator
+        data: MenuGroup
     ) {
         binding.titleText.text = data.title
     }

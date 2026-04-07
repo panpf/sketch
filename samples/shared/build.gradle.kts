@@ -89,6 +89,7 @@ kotlin {
             api(libs.kotlinx.serialization.json)
             api(libs.moko.permissions)
             api(libs.moko.permissions.storage)
+            api(libs.moko.permissions.gallery)
             api(libs.panpf.tools4a.activity)
             api(libs.panpf.tools4a.device)
             api(libs.panpf.tools4a.dimen)
@@ -116,6 +117,7 @@ kotlin {
             dependencies {
                 api(libs.moko.permissions)
                 api(libs.moko.permissions.storage)
+                api(libs.moko.permissions.gallery)
             }
         }
 //        nonJsCommonMain.dependencies {

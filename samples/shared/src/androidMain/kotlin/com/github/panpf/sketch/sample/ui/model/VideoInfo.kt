@@ -1,23 +1,20 @@
-package com.github.panpf.sketch.sample.model
+package com.github.panpf.sketch.sample.ui.model
 
 import android.content.Context
 import android.text.format.Formatter
-import com.github.panpf.assemblyadapter.recycler.DiffKey
 import com.github.panpf.tools4j.date.Datex
 import com.github.panpf.tools4j.date.ktx.format
 import com.github.panpf.tools4j.date.ktx.formatDuration
 import com.github.panpf.tools4j.date.ktx.toDate
 
-class VideoInfo(
+data class VideoInfo(
     val title: String?,
-    val path: String?,
+    val uri: String,
     val mimeType: String?,
     val duration: Long,
     val date: Long,
     val size: Long,
-) : DiffKey {
-
-    override val diffKey = "VideoInfo-$path"
+) {
 
     private var tempFormattedSize: String? = null
 
@@ -37,6 +34,6 @@ class VideoInfo(
     }
 
     override fun toString(): String {
-        return "VideoInfo(title=$title, path=$path, mimeType=$mimeType, duration=$duration, date=$date, size=$size, tempFormattedSize=$tempFormattedSize)"
+        return "VideoInfo(title=$title, uri=$uri, mimeType=$mimeType, duration=$duration, date=$date, size=$size, tempFormattedSize=$tempFormattedSize)"
     }
 }

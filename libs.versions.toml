@@ -170,6 +170,7 @@ leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.re
 
 moko-permissions = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko-permissions" }
 moko-permissions-storage = { module = "dev.icerock.moko:permissions-storage", version.ref = "moko-permissions" }
+moko-permissions-gallery = { module = "dev.icerock.moko:permissions-gallery", version.ref = "moko-permissions" }
 multiplatformsettings = { module = "com.russhwolf:multiplatform-settings", version.ref = "multiplatform-settings" }
 #multiplatform-settings-coroutines = { module = "com.russhwolf:multiplatform-settings-coroutines", version.ref = "multiplatform-settings" }
 #multiplatform-settings-observable = { module = "com.russhwolf:multiplatform-settings-make-observable", version.ref = "multiplatform-settings" }

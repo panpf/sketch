@@ -8,8 +8,6 @@ import com.github.panpf.sketch.sample.ui.gridCellsMinSize
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
-actual fun localPhotoListPermission(): Any? = null
-
 @Composable
 actual fun LocalPhotoListPage() {
     val navBackStack = LocalNavBackStack.current

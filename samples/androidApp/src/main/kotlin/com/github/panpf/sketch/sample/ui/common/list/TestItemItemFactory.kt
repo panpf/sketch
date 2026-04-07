@@ -18,25 +18,27 @@ package com.github.panpf.sketch.sample.ui.common.list
 
 import android.content.Context
 import com.github.panpf.sketch.sample.databinding.ListItemTestItemBinding
-import com.github.panpf.sketch.sample.model.Link
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
+import com.github.panpf.sketch.sample.ui.model.ViewTestItem
 
-class TestItemItemFactory : BaseBindingItemFactory<Link, ListItemTestItemBinding>(Link::class) {
+class TestItemItemFactory : BaseBindingItemFactory<ViewTestItem, ListItemTestItemBinding>(
+    ViewTestItem::class
+) {
 
     override fun initItem(
         context: Context,
         binding: ListItemTestItemBinding,
-        item: BindingItem<Link, ListItemTestItemBinding>
+        item: BindingItem<ViewTestItem, ListItemTestItemBinding>
     ) {
     }
 
     override fun bindItemData(
         context: Context,
         binding: ListItemTestItemBinding,
-        item: BindingItem<Link, ListItemTestItemBinding>,
+        item: BindingItem<ViewTestItem, ListItemTestItemBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
-        data: Link
+        data: ViewTestItem
     ) {
         binding.titleText.text = data.title
     }

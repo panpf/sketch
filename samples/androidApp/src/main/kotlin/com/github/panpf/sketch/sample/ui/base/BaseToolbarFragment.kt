@@ -24,7 +24,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.navigation.fragment.findNavController
 import com.github.panpf.sketch.sample.databinding.FragmentToolbarPageBinding
 
-abstract class BaseToolbarFragment : BaseFragment() {
+abstract class BaseToolbarFragment : BasePermissionFragment() {
 
     protected var toolbarPageBinding: FragmentToolbarPageBinding? = null
 
@@ -44,8 +44,7 @@ abstract class BaseToolbarFragment : BaseFragment() {
         container: ViewGroup
     ): View
 
-    final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    final override fun onPermissionsPassed(view: View, savedInstanceState: Bundle?) {
         this.toolbarPageBinding!!.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }

@@ -10,11 +10,15 @@ import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalInspectionMode
 import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.AsyncImageState
+import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.sample.ui.gallery.PhotoInfo
+import com.github.panpf.sketch.sample.ui.util.getPreviewSketch
+import org.koin.compose.koinInject
 
 @Composable
 fun MyAsyncImage(
@@ -68,8 +72,15 @@ fun MyAsyncImage(
     onClick: (() -> Unit)? = null
 ) {
     val infoDialogState = rememberMyDialogState()
+    val previewMode = LocalInspectionMode.current
+    val sketch = if (previewMode) {
+        getPreviewSketch()
+    } else {
+        koinInject<Sketch>()
+    }
     AsyncImage(
         request = request,
+        sketch = sketch,
         contentDescription = contentDescription,
         modifier = modifier.pointerInput(Unit) {
             detectTapGestures(

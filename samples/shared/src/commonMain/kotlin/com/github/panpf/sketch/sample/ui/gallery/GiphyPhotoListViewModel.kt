@@ -12,6 +12,8 @@ class GiphyPhotoListViewModel(val context: PlatformContext, val giphyApi: GiphyA
     val pagingFlow = Pager(
         config = PagingConfig(
             pageSize = 40,
+            initialLoadSize = 80,
+            prefetchDistance = 20,
             enablePlaceholders = false,
         ),
         initialKey = 0,

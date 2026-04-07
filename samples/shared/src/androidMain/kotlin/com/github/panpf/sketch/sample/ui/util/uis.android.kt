@@ -16,9 +16,11 @@
 
 package com.github.panpf.sketch.sample.ui.util
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntSize
+import androidx.core.content.PermissionChecker
 
 @Composable
 actual fun windowSize(): IntSize {
@@ -26,4 +28,9 @@ actual fun windowSize(): IntSize {
     return context.resources.displayMetrics.let { displayMetrics ->
         IntSize(displayMetrics.widthPixels, displayMetrics.heightPixels)
     }
+}
+
+fun checkPermissionGranted(context: Context, permission: String): Boolean {
+    val result = PermissionChecker.checkSelfPermission(context, permission)
+    return result == PermissionChecker.PERMISSION_GRANTED
 }

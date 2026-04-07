@@ -19,6 +19,7 @@ package com.github.panpf.sketch.sample.ui.gallery
 import android.Manifest
 import android.annotation.SuppressLint
 import android.graphics.drawable.GradientDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -237,14 +238,20 @@ class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
 
     private fun save() {
         val imageUri = getImageUrl()
-        val input = WithDataActivityResultContracts.RequestPermission.Input(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             lifecycleScope.launch {
                 handleActionResult(photoActionViewModel.save(imageUri))
             }
+        } else {
+            val input = WithDataActivityResultContracts.RequestPermission.Input(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            ) {
+                lifecycleScope.launch {
+                    handleActionResult(photoActionViewModel.save(imageUri))
+                }
+            }
+            requestPermissionResult.launch(input)
         }
-        requestPermissionResult.launch(input)
     }
 
     private fun startImageInfoDialog(imageView: ImageView) {

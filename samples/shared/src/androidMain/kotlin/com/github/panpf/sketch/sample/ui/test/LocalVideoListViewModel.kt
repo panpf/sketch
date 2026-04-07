@@ -1,23 +1,23 @@
 package com.github.panpf.sketch.sample.ui.test
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import com.github.panpf.sketch.PlatformContext
 
-class LocalVideoListViewModel(application: Application) : AndroidViewModel(application) {
+class LocalVideoListViewModel(context: PlatformContext) : ViewModel() {
     val pagingFlow = Pager(
         config = PagingConfig(
-            pageSize = 80,
+            pageSize = 20,
+            initialLoadSize = 40,
             prefetchDistance = 10,
             enablePlaceholders = false,
-            initialLoadSize = 40
         ),
         initialKey = 0,
         pagingSourceFactory = {
-            LocalVideoListPagingSource(application)
+            LocalVideoListPagingSource(context)
         }
     ).flow.cachedIn(viewModelScope)
 }

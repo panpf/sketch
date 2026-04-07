@@ -33,26 +33,25 @@ package com.github.panpf.sketch.sample.ui.common.list
 
 import android.content.Context
 import com.github.panpf.sketch.sample.databinding.ListItemTestGroupBinding
-import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 
 class TestGroupItemFactory :
-    BaseBindingItemFactory<ListSeparator, ListItemTestGroupBinding>(ListSeparator::class) {
+    BaseBindingItemFactory<ViewTestGroup, ListItemTestGroupBinding>(ViewTestGroup::class) {
 
     override fun initItem(
         context: Context,
         binding: ListItemTestGroupBinding,
-        item: BindingItem<ListSeparator, ListItemTestGroupBinding>
+        item: BindingItem<ViewTestGroup, ListItemTestGroupBinding>
     ) {
     }
 
     override fun bindItemData(
         context: Context,
         binding: ListItemTestGroupBinding,
-        item: BindingItem<ListSeparator, ListItemTestGroupBinding>,
+        item: BindingItem<ViewTestGroup, ListItemTestGroupBinding>,
         bindingAdapterPosition: Int,
         absoluteAdapterPosition: Int,
-        data: ListSeparator
+        data: ViewTestGroup
     ) {
         binding.titleText.text = data.title
     }

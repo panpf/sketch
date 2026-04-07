@@ -22,7 +22,7 @@ import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapte
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
-import com.github.panpf.sketch.sample.ui.base.BaseBindingPermissionFragment
+import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.model.Photo
@@ -35,8 +35,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
-abstract class BasePhotoListFragment :
-    BaseBindingPermissionFragment<FragmentRecyclerRefreshBinding>() {
+abstract class BasePhotoListFragment : BaseBindingFragment<FragmentRecyclerRefreshBinding>() {
 
     abstract val animatedPlaceholder: Boolean
     abstract val photoPagingFlow: Flow<PagingData<Photo>>

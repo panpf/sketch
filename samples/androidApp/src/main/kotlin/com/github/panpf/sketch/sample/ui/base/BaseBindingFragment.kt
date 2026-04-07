@@ -22,7 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 
-abstract class BaseBindingFragment<VIEW_BINDING : ViewBinding> : BaseFragment() {
+abstract class BaseBindingFragment<VIEW_BINDING : ViewBinding> : BasePermissionFragment() {
 
     protected var binding: VIEW_BINDING? = null
 
@@ -35,8 +35,7 @@ abstract class BaseBindingFragment<VIEW_BINDING : ViewBinding> : BaseFragment() 
         this@BaseBindingFragment.binding = this
     }.root
 
-    final override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    final override fun onPermissionsPassed(view: View, savedInstanceState: Bundle?) {
         onViewCreated(this.binding!!, savedInstanceState)
     }
 

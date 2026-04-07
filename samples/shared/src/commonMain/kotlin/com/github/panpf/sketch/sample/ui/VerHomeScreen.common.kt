@@ -30,12 +30,10 @@ import com.github.panpf.sketch.sample.ic_giphy
 import com.github.panpf.sketch.sample.ic_pexels
 import com.github.panpf.sketch.sample.ic_phone
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
-import com.github.panpf.sketch.sample.ui.components.PermissionContainer
 import com.github.panpf.sketch.sample.ui.gallery.GiphyPhotoListPage
 import com.github.panpf.sketch.sample.ui.gallery.LocalPhotoListPage
 import com.github.panpf.sketch.sample.ui.gallery.MainMenu
 import com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoListPage
-import com.github.panpf.sketch.sample.ui.gallery.localPhotoListPermission
 import com.github.panpf.sketch.sample.ui.test.TestPage
 import com.github.panpf.sketch.sample.util.Platform
 import com.github.panpf.sketch.sample.util.current
@@ -126,13 +124,7 @@ enum class HomeTab(
         title = "Local",
         icon = Res.drawable.ic_phone,
         padding = 0.dp,
-        content = {
-            PermissionContainer(
-                permission = localPhotoListPermission(),
-                permissionRequired = false,
-                content = { LocalPhotoListPage() }
-            )
-        }
+        content = { LocalPhotoListPage() }
     ),
     TEST(
         title = "Test",

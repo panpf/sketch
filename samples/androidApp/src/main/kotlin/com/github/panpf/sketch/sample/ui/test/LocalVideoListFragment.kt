@@ -16,10 +16,11 @@
 
 package com.github.panpf.sketch.sample.ui.test
 
+import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -29,17 +30,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.panpf.assemblyadapter.recycler.paging.AssemblyPagingDataAdapter
-import com.github.panpf.sketch.loadImage
-import com.github.panpf.sketch.request.updateImageOptions
-import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerRefreshBinding
-import com.github.panpf.sketch.sample.databinding.ListItemVideoBinding
-import com.github.panpf.sketch.sample.model.VideoInfo
-import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
 import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
+import com.github.panpf.sketch.sample.ui.common.list.LocalVideoItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
+import com.github.panpf.sketch.sample.ui.model.VideoInfoDiffCallback
 import com.github.panpf.sketch.sample.ui.setting.Page
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.tools4a.toast.ktx.showLongToast
@@ -47,6 +44,13 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
 class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefreshBinding>() {
+
+    override val permissions: Array<String> =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(Manifest.permission.READ_MEDIA_IMAGES, Manifest.permission.READ_MEDIA_VIDEO)
+        } else {
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
 
     private val videoListViewModel by viewModel<LocalVideoListViewModel>()
 
@@ -76,19 +80,21 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
             }
         }
 
-        val pagingAdapter = AssemblyPagingDataAdapter<VideoInfo>(
-            listOf(
-            LocalVideoItemFactory().setOnItemClickListener { _, _, _, _, data ->
-                try {
-                    startActivity(Intent(Intent.ACTION_VIEW).apply {
-                        setDataAndType(Uri.fromFile(File(data.path.orEmpty())), data.mimeType)
-                    })
-                } catch (e: Throwable) {
-                    e.printStackTrace()
-                    showLongToast("Not found can play video app")
+        val pagingAdapter = AssemblyPagingDataAdapter(
+            itemFactoryList = listOf(
+                LocalVideoItemFactory().setOnItemClickListener { _, _, _, _, data ->
+                    try {
+                        startActivity(Intent(Intent.ACTION_VIEW).apply {
+                            setDataAndType(Uri.fromFile(File(data.uri.orEmpty())), data.mimeType)
+                        })
+                    } catch (e: Throwable) {
+                        e.printStackTrace()
+                        showLongToast("Not found can play video app")
+                    }
                 }
-            }
-        )).apply {
+            ),
+            diffCallback = VideoInfoDiffCallback()
+        ).apply {
             videoListViewModel.pagingFlow
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     submitData(it)
@@ -138,32 +144,4 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
             }
     }
 
-    class LocalVideoItemFactory :
-        BaseBindingItemFactory<VideoInfo, ListItemVideoBinding>(VideoInfo::class) {
-
-        override fun initItem(
-            context: Context,
-            binding: ListItemVideoBinding,
-            item: BindingItem<VideoInfo, ListItemVideoBinding>
-        ) {
-            binding.thumbnailImage.updateImageOptions {
-                videoFramePercent(0.5f)
-            }
-        }
-
-        override fun bindItemData(
-            context: Context,
-            binding: ListItemVideoBinding,
-            item: BindingItem<VideoInfo, ListItemVideoBinding>,
-            bindingAdapterPosition: Int,
-            absoluteAdapterPosition: Int,
-            data: VideoInfo
-        ) {
-            binding.thumbnailImage.loadImage(data.path)
-            binding.nameText.text = data.title
-            binding.sizeText.text = data.getTempFormattedSize(context)
-            binding.dateText.text = data.tempFormattedDate
-            binding.durationText.text = data.tempFormattedDuration
-        }
-    }
 }

@@ -16,7 +16,6 @@
 
 package com.github.panpf.sketch.sample.ui.base
 
-import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
@@ -26,14 +25,14 @@ import androidx.core.content.ContextCompat
 
 abstract class BasePermissionFragment : BaseFragment() {
 
-    open val permission: String? = null
+    open val permissions: Array<String>? = null
     open val permissionRequired: Boolean = false
     private var savedInstanceState: Bundle? = null
 
-    private val permissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
-            if (result || !permissionRequired) {
-                onPermissionPassed(requireView(), savedInstanceState)
+    private val permissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+            if (result.all { it.value } || !permissionRequired) {
+                onPermissionsPassed(requireView(), savedInstanceState)
             } else {
                 showPermissionDeniedDialog()
             }
@@ -43,23 +42,26 @@ abstract class BasePermissionFragment : BaseFragment() {
         view: View,
         savedInstanceState: Bundle?
     ) {
-        val permission = permission
-        if (permission == null || checkPermission(permission)) {
+        val permissions = this@BasePermissionFragment.permissions
+        if (permissions == null || checkPermissions(permissions)) {
             this@BasePermissionFragment.savedInstanceState = null
-            onPermissionPassed(view, savedInstanceState)
+            super.onViewCreated(view, savedInstanceState)
+            onPermissionsPassed(view, savedInstanceState)
         } else {
             this@BasePermissionFragment.savedInstanceState = savedInstanceState
-            permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+            permissionsLauncher.launch(permissions)
         }
     }
 
-    private fun checkPermission(permission: String?): Boolean {
-        if (permission == null) return true
-        val checkGranted = ContextCompat.checkSelfPermission(requireContext(), permission)
-        return checkGranted == PackageManager.PERMISSION_GRANTED
+    private fun checkPermissions(permissions: Array<String>?): Boolean {
+        if (permissions.isNullOrEmpty()) return true
+        return permissions.map {
+            val result = ContextCompat.checkSelfPermission(requireContext(), it)
+            result == PackageManager.PERMISSION_GRANTED
+        }.all { it }
     }
 
-    abstract fun onPermissionPassed(
+    abstract fun onPermissionsPassed(
         view: View,
         savedInstanceState: Bundle?
     )
@@ -67,8 +69,8 @@ abstract class BasePermissionFragment : BaseFragment() {
     private fun showPermissionDeniedDialog() {
         AlertDialog.Builder(requireActivity()).apply {
             setTitle("Error")
-            setMessage("The current page must be granted '$permission' permission before it can be used normally. Please grant permission again.")
-            setPositiveButton("OK") { _, _ -> permissionLauncher.launch(permission) }
+            setMessage("The current page must be granted permission before it can be used normally. Please grant permission again.")
+            setPositiveButton("OK") { _, _ -> permissionsLauncher.launch(permissions) }
         }.show()
     }
 }

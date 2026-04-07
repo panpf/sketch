@@ -31,11 +31,13 @@ import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 
-@Serializable
-sealed interface Route : NavKey {
+interface MyNavKey : NavKey {
     val lightStatusAndNavigationBar: Boolean
         get() = true
 }
+
+@Serializable
+sealed interface Route : MyNavKey
 
 @Serializable
 data object VerHomeRoute : Route

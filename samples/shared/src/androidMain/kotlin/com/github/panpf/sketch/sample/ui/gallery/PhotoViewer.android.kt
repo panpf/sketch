@@ -1,13 +1,13 @@
 package com.github.panpf.sketch.sample.ui.gallery
 
+import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.sample.AppEvents
-import com.github.panpf.sketch.sample.ui.base.ActionResult
+import com.github.panpf.sketch.sample.ui.base.handleActionResult
 import com.github.panpf.zoomimage.SketchZoomState
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
@@ -17,6 +17,7 @@ import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import dev.icerock.moko.permissions.storage.WRITE_STORAGE
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 actual fun PhotoViewerBottomBarWrapper(
@@ -28,9 +29,9 @@ actual fun PhotoViewerBottomBarWrapper(
     onInfoClick: (() -> Unit)?,
 ) {
     val appEvents: AppEvents = koinInject()
-    val sketch: Sketch = koinInject()
     val coroutineScope = rememberCoroutineScope()
     val factory: PermissionsControllerFactory = rememberPermissionsControllerFactory()
+    val photoActionViewModel: PhotoActionViewModel = koinViewModel()
     val controller: PermissionsController =
         remember(factory) { factory.createPermissionsController() }
     BindEffect(controller)
@@ -42,44 +43,18 @@ actual fun PhotoViewerBottomBarWrapper(
         onInfoClick = onInfoClick,
         onShareClick = {
             coroutineScope.launch {
-                sharePhoto(sketch, appEvents, imageUri)
+                val actionResult = photoActionViewModel.share(imageUri)
+                handleActionResult(appEvents, actionResult)
             }
         },
         onSaveClick = {
             coroutineScope.launch {
-                try {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     controller.providePermission(Permission.WRITE_STORAGE)
-                    savePhoto(sketch, appEvents, imageUri)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    appEvents.toastFlow.emit("You have denied storage permission and cannot save pictures for you.")
                 }
+                val actionResult = photoActionViewModel.save(imageUri)
+                handleActionResult(appEvents, actionResult)
             }
         },
     )
 }
-
-private suspend fun savePhoto(sketch: Sketch, appEvents: AppEvents, imageUri: String) {
-    val result = PhotoActionViewModel(sketch).save(imageUri)
-    handleActionResult(appEvents, result)
-}
-
-private suspend fun sharePhoto(sketch: Sketch, appEvents: AppEvents, imageUri: String) {
-    val result = PhotoActionViewModel(sketch).share(imageUri)
-    handleActionResult(appEvents, result)
-}
-
-private suspend fun handleActionResult(appEvents: AppEvents, result: ActionResult): Boolean =
-    when (result) {
-        is ActionResult.Success -> {
-            result.message?.let {
-                appEvents.toastFlow.emit(it)
-            }
-            true
-        }
-
-        is ActionResult.Error -> {
-            appEvents.toastFlow.emit(result.message)
-            false
-        }
-    }

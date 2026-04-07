@@ -1,10 +1,6 @@
 package com.github.panpf.sketch.sample.ui.test
 
-import android.Manifest.permission
-import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import com.github.panpf.assemblyadapter.recycler.AssemblyGridLayoutManager
 import com.github.panpf.assemblyadapter.recycler.AssemblyRecyclerAdapter
@@ -13,23 +9,15 @@ import com.github.panpf.assemblyadapter.recycler.divider.AssemblyGridDividerItem
 import com.github.panpf.assemblyadapter.recycler.divider.Divider
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.databinding.FragmentRecyclerBinding
-import com.github.panpf.sketch.sample.model.Link
-import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.ProjectInfoItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.TestGroupItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.TestItemItemFactory
+import com.github.panpf.sketch.sample.ui.common.list.ViewTestGroup
+import com.github.panpf.sketch.sample.ui.model.ViewTestItem
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 
 class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
-
-    private var pendingStartLink: Link? = null
-    private val permissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { grantedMap ->
-            val pendingStartLink = pendingStartLink ?: return@registerForActivityResult
-            this@TestHomeFragment.pendingStartLink = null
-            requestLinkPermissionsResult(grantedMap, pendingStartLink)
-        }
 
     override fun onViewCreated(
         binding: FragmentRecyclerBinding,
@@ -49,10 +37,10 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
                 itemFactoryList = listOf(
                     TestItemItemFactory()
                         .setOnItemClickListener { _, _, _, _, data ->
-                            startLink(data)
+                            this@TestHomeFragment.findNavController().navigate(data.navDirections)
                         },
-                    ProjectInfoItemFactory(),
                     TestGroupItemFactory(),
+                    ProjectInfoItemFactory(),
                 ),
                 initDataList = pageList()
             )
@@ -66,113 +54,85 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
     }
 
     private fun pageList(): List<Any> = listOf(
-        ListSeparator("Components"),
-        Link(
+        ViewTestGroup("Components"),
+        ViewTestItem(
             title = "Decoder",
             navDirections = NavMainDirections.actionDecoderTestPagerFragment()
         ),
-        Link(
+        ViewTestItem(
             title = "Fetcher",
             navDirections = NavMainDirections.actionFetcherTestFragment(),
-            permissions = listOf(permission.READ_EXTERNAL_STORAGE)
         ),
 
-        ListSeparator("Functions"),
-        Link(
+        ViewTestGroup("Functions"),
+        ViewTestItem(
             title = "AnimatedImage",
             navDirections = NavMainDirections.actionAnimatedImageTestFragment()
         ),
-        Link(
+        ViewTestItem(
             title = "ExifOrientation",
             navDirections = NavMainDirections.actionExifOrientationTestPagerFragment()
         ),
-        Link(
+        ViewTestItem(
             title = "Transformation",
             navDirections = NavMainDirections.actionTransformationTestPagerFragment()
         ),
-        Link(
+        ViewTestItem(
             title = "Progress",
             navDirections = NavMainDirections.actionProgressTestFragment()
         ),
 
-        ListSeparator("UI"),
-        Link(
+        ViewTestGroup("UI"),
+        ViewTestItem(
             title = "CrossfadeDrawable",
             navDirections = NavMainDirections.actionCrossfadeDrawableTestFragment()
         ),
-        Link(
+        ViewTestItem(
             title = "ResizeDrawable",
             navDirections = NavMainDirections.actionResizeDrawableTestFragment()
         ),
-        Link(
+        ViewTestItem(
             title = "Drawable Mix",
             navDirections = NavMainDirections.actionMixDrawableTestFragment()
         ),
-        Link(
+        ViewTestItem(
             title = "IconDrawable",
             navDirections = NavMainDirections.actionIconDrawableTestFragment()
         ),
-        Link(
+        ViewTestItem(
             title = "AnimatablePlaceholder",
             navDirections = NavMainDirections.actionAnimatablePlaceholderTestViewFragment(),
         ),
-        Link(
+        ViewTestItem(
             title = "ProgressIndicator",
             navDirections = NavMainDirections.actionProgressIndicatorTestViewFragment()
         ),
-        Link(
+        ViewTestItem(
             title = "RemoteViews",
             navDirections = NavMainDirections.actionRemoteViewsFragment()
         ),
-        Link(
+        ViewTestItem(
             title = "BlurHash",
             navDirections = NavMainDirections.actionBlurHashFragment()
         ),
 
-        ListSeparator("Other"),
-        Link(
+        ViewTestGroup("Other"),
+        ViewTestItem(
             title = "DisplayInsanity",
             navDirections = NavMainDirections.actionInsanityTestViewFragment()
         ),
-        Link(
+        ViewTestItem(
             title = "Local Videos",
             navDirections = NavMainDirections.actionLocalVideoListFragment(),
-            permissions = listOf(permission.READ_EXTERNAL_STORAGE)
         ),
 //        Link(
 //            title = "ShareElement",
 //            navDirections = NavMainDirections.actionShareElementTestFragment(),
 //        ),
-        Link(
+        ViewTestItem(
             title = "Android Temp",
             navDirections = NavMainDirections.actionTempTestFragment()
         ),
         "ProjectInfo"
     )
-
-    private fun startLink(data: Link) {
-        if (data.minSdk == null || Build.VERSION.SDK_INT >= data.minSdk) {
-            val permissions = data.permissions
-            if (permissions != null) {
-                pendingStartLink = data
-                permissionLauncher.launch(permissions.toTypedArray())
-            } else {
-                findNavController().navigate(data.navDirections)
-            }
-        } else {
-            Toast.makeText(
-                context,
-                "Must be API ${data.minSdk} or above",
-                Toast.LENGTH_LONG
-            ).show()
-        }
-    }
-
-    private fun requestLinkPermissionsResult(grantedMap: Map<String, Boolean>, data: Link) {
-        if (grantedMap.values.all { it }) {
-            findNavController().navigate(data.navDirections)
-        } else {
-            Toast.makeText(context, "Please grant permission", Toast.LENGTH_LONG).show()
-        }
-    }
 }

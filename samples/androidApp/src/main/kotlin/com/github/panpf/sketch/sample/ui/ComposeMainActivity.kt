@@ -29,7 +29,7 @@ class ComposeMainActivity : BaseActivity() {
         setContent {
             App(onNavBackStackChanged = {
                 val route = it.lastOrNull()
-                if (route != null && route is Route) {
+                if (route != null && route is MyNavKey) {
                     setupLightStatusAndNavigationBar(route.lightStatusAndNavigationBar)
                 }
             })

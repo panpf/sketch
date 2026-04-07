@@ -7,9 +7,9 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.sample.AppSettings
-import com.github.panpf.sketch.sample.model.ListSeparator
 import com.github.panpf.sketch.sample.model.MultiSelectMenu
 import com.github.panpf.sketch.sample.model.SwitchMenuFlow
+import com.github.panpf.sketch.sample.ui.model.MenuGroup
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.tools4a.toast.Toastx
@@ -66,25 +66,25 @@ class AppSettingsViewModel(
     private fun updateList() {
         _menuListData.value = buildList {
             if (page == Page.LIST) {
-                add(ListSeparator("List"))
+                add(MenuGroup("List"))
                 addAll(makeListMenuList())
             } else if (page == Page.VIEWER) {
-                add(ListSeparator("Viewer"))
+                add(MenuGroup("Viewer"))
                 addAll(viewerZoomMenuList())
-                add(ListSeparator("Zoom"))
+                add(MenuGroup("Zoom"))
                 addAll(makeZoomMenuList())
             }
 
-            add(ListSeparator("Decode"))
+            add(MenuGroup("Decode"))
             addAll(makeDecodeMenuList())
 
-            add(ListSeparator("Animated"))
+            add(MenuGroup("Animated"))
             addAll(makeAnimatedMenuList())
 
-            add(ListSeparator("Cache"))
+            add(MenuGroup("Cache"))
             addAll(makeCacheMenuList())
 
-            add(ListSeparator("Other"))
+            add(MenuGroup("Other"))
             addAll(makeOtherMenuList())
         }
     }

@@ -11,7 +11,9 @@ class LocalPhotoListViewModel(val sketch: Sketch) : ViewModel() {
 
     val pagingFlow = Pager(
         config = PagingConfig(
-            pageSize = 60,
+            pageSize = 40,
+            initialLoadSize = 80,
+            prefetchDistance = 20,
             enablePlaceholders = false,
         ),
         initialKey = 0,

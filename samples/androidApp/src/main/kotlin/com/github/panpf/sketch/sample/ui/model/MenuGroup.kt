@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.sample.model
+package com.github.panpf.sketch.sample.ui.model
 
 import android.os.Parcelable
 import com.github.panpf.assemblyadapter.recycler.DiffKey
@@ -22,8 +22,8 @@ import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class ListSeparator(val title: String, var clickCount: Int = 0) : DiffKey, Parcelable {
+data class MenuGroup(val title: String, var clickCount: Int = 0) : DiffKey, Parcelable {
 
     @IgnoredOnParcel
-    override val diffKey: String = "ListSeparator-$title"
+    override val diffKey: String = "MenuGroup-$title"
 }

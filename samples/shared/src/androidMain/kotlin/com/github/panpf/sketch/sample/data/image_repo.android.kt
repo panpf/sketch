@@ -1,42 +1,38 @@
 package com.github.panpf.sketch.sample.data
 
-import android.provider.MediaStore.Images.Media
-import androidx.core.content.PermissionChecker
+import android.content.ContentUris
+import android.provider.MediaStore
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.tools4k.coroutines.withToIO
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-actual suspend fun localImages(context: PlatformContext): List<String> {
-    // TODO Photo album cannot be read on android 16 version
-    val checkSelfPermission = PermissionChecker
-        .checkSelfPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE)
-    if (checkSelfPermission != PermissionChecker.PERMISSION_GRANTED) {
-        return emptyList()
-    }
-    return withToIO {
-        val cursor = context.contentResolver.query(
-            /* uri = */ Media.EXTERNAL_CONTENT_URI,
-            /* projection = */
-            arrayOf(
-                Media.TITLE,
-                Media.DATA,
-                Media.SIZE,
-                Media.DATE_TAKEN,
-            ),
-            /* selection = */
-            null,
-            /* selectionArgs = */
-            null,
-            /* sortOrder = */
-            Media.DATE_TAKEN + " DESC"
+actual suspend fun localImages(context: PlatformContext): List<String> =
+    withContext(Dispatchers.IO) {
+        val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val projection = arrayOf(
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.DATE_ADDED
         )
-        ArrayList<String>(cursor?.count ?: 0).apply {
-            cursor?.use {
+        val cursor = context.contentResolver.query(
+            /* uri = */ contentUri,
+            /* projection = */ projection,
+            /* selection = */ null,
+            /* selectionArgs = */ null,
+            /* sortOrder = */ MediaStore.Images.Media.DATE_ADDED + " DESC"
+        ) ?: return@withContext emptyList<String>()
+        if (cursor.count == 0) {
+            return@withContext emptyList()
+        }
+
+        cursor.use {
+            mutableListOf<String>().apply {
+                val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
                 while (cursor.moveToNext()) {
-                    val uri =
-                        cursor.getString(cursor.getColumnIndexOrThrow(Media.DATA))
-                    add(uri)
+                    val id = cursor.getLong(idColumn)
+                    val imageUri = ContentUris.withAppendedId(contentUri, id)
+                    add(imageUri.toString())
                 }
             }
         }
     }
-}

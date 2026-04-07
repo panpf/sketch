@@ -37,7 +37,6 @@ abstract class BaseToolbarBindingFragment<VIEW_BINDING : ViewBinding> : BaseTool
     }.root
 
     final override fun onViewCreated(toolbar: Toolbar, savedInstanceState: Bundle?) {
-        super.onViewCreated(toolbar, savedInstanceState)
         onViewCreated(toolbar, binding!!, savedInstanceState)
     }
 

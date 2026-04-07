@@ -26,13 +26,12 @@ import com.github.panpf.sketch.sample.ui.model.Photo
 
 class LocalPhotoListPagingSource(val sketch: Sketch) : PagingSource<Int, Photo>() {
 
-    private val keySet = HashSet<String>()  // Compose LazyVerticalGrid does not allow a key repeat
     private var photos: List<String>? = null
 
     override fun getRefreshKey(state: PagingState<Int, Photo>): Int = 0
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Photo> {
-        val startPosition = params.key ?: 0
+        val pageStart = params.key ?: 0
         val pageSize = params.loadSize
 
         var photos = this@LocalPhotoListPagingSource.photos
@@ -43,9 +42,9 @@ class LocalPhotoListPagingSource(val sketch: Sketch) : PagingSource<Int, Photo>(
             this.photos = photos
         }
 
-        val toIndex = (startPosition + pageSize).coerceAtMost(photos.size)
+        val toIndex = (pageStart + pageSize).coerceAtMost(photos.size)
         val pagePhotos = photos.subList(
-            fromIndex = startPosition,
+            fromIndex = pageStart,
             toIndex = toIndex
         ).map { uri ->
             val imageInfo = readImageInfoOrNull(sketch = sketch, uri = uri)
@@ -57,11 +56,9 @@ class LocalPhotoListPagingSource(val sketch: Sketch) : PagingSource<Int, Photo>(
                 height = imageInfo?.height,
             )
         }
-        val nextKey = if (pagePhotos.isNotEmpty() && toIndex < photos.size)
-            startPosition + pageSize else null
-        val filteredPhotos = pagePhotos.filter { keySet.add(it.originalUrl) }
+        val nextKey = if (pagePhotos.size >= pageSize) pageStart + pageSize else null
         return LoadResult.Page(
-            data = filteredPhotos,
+            data = pagePhotos,
             prevKey = null,
             nextKey = nextKey
         )
