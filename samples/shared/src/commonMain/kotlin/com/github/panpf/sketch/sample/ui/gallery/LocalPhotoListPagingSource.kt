@@ -19,14 +19,14 @@ package com.github.panpf.sketch.sample.ui.gallery
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.sample.data.builtinImages
-import com.github.panpf.sketch.sample.data.localImages
-import com.github.panpf.sketch.sample.data.readImageInfoOrNull
+import com.github.panpf.sketch.sample.data.BuiltinLocalPhotoListRepo
+import com.github.panpf.sketch.sample.data.GalleryLocalPhotoListRepo
 import com.github.panpf.sketch.sample.ui.model.Photo
 
 class LocalPhotoListPagingSource(val sketch: Sketch) : PagingSource<Int, Photo>() {
 
-    private var photos: List<String>? = null
+    private val builtinPhotoListRepo = BuiltinLocalPhotoListRepo(sketch)
+    private val localPhotoListRepo = GalleryLocalPhotoListRepo(sketch)
 
     override fun getRefreshKey(state: PagingState<Int, Photo>): Int = 0
 
@@ -34,33 +34,21 @@ class LocalPhotoListPagingSource(val sketch: Sketch) : PagingSource<Int, Photo>(
         val pageStart = params.key ?: 0
         val pageSize = params.loadSize
 
-        var photos = this@LocalPhotoListPagingSource.photos
-        if (photos == null) {
-            val builtinPhotos = builtinImages().map { it.uri }
-            val localPhotos = localImages(sketch.context)
-            photos = builtinPhotos + localPhotos
-            this.photos = photos
-        }
-
-        val toIndex = (pageStart + pageSize).coerceAtMost(photos.size)
-        val pagePhotos = photos.subList(
-            fromIndex = pageStart,
-            toIndex = toIndex
-        ).map { uri ->
-            val imageInfo = readImageInfoOrNull(sketch = sketch, uri = uri)
-            Photo(
-                originalUrl = uri,
-                mediumUrl = null,
-                thumbnailUrl = null,
-                width = imageInfo?.width,
-                height = imageInfo?.height,
+        val builtinPhotos = builtinPhotoListRepo.loadLocalPhotoList(pageStart, pageSize)
+        val galleryPhotos = if (builtinPhotos.size < pageSize) {
+            val builtinPhotoListSize = builtinPhotoListRepo.size
+            val galleryPageStart = if (pageStart < builtinPhotoListSize)
+                0 else pageStart - builtinPhotoListSize
+            val galleryPageSize = pageSize - builtinPhotos.size
+            localPhotoListRepo.loadLocalPhotoList(
+                pageStart = galleryPageStart,
+                pageSize = galleryPageSize
             )
+        } else {
+            emptyList()
         }
-        val nextKey = if (pagePhotos.size >= pageSize) pageStart + pageSize else null
-        return LoadResult.Page(
-            data = pagePhotos,
-            prevKey = null,
-            nextKey = nextKey
-        )
+        val dataList = builtinPhotos + galleryPhotos
+        val nextKey = if (dataList.size >= pageSize) pageStart + pageSize else null
+        return LoadResult.Page(data = dataList, prevKey = null, nextKey = nextKey)
     }
 }
