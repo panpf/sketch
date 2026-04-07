@@ -5,10 +5,9 @@ plugins {
 }
 
 addMultiplatformTargets(KmpTarget.entries.toTypedArray())
+kmpAndroidLibrary(nameSpace = "com.github.panpf.sketch.blurhash")
 
 kotlin {
-    androidKmpLibrary(nameSpace = "com.github.panpf.sketch.blurhash")
-
     sourceSets {
         commonMain.dependencies {
             api(projects.sketchCore)

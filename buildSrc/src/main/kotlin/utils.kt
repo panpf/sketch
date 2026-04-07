@@ -59,6 +59,9 @@ val publicModules = setOf(
     "sketch-view-koin",
 )
 
+val Project.lowMinSdk: Int
+    get() = intProperty("lowMinSdk")
+
 val Project.minSdk: Int
     get() = intProperty("minSdk")
 

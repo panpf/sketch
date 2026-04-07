@@ -33,7 +33,7 @@ fun Project.androidLibrary(
     namespace = nameSpace
     compileSdk = project.compileSdk
     defaultConfig {
-        minSdk = project.minSdk
+        minSdk = project.lowMinSdk
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -86,6 +86,8 @@ fun Project.androidApplication(
     applicationId: String = nameSpace,
     action: ApplicationExtension.() -> Unit = {},
 ) = android<ApplicationExtension> {
+    val includeCompose = plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null
+
     namespace = nameSpace
     compileSdk = project.compileSdk
     defaultConfig {
@@ -93,13 +95,13 @@ fun Project.androidApplication(
         versionCode = project.versionCode
         versionName = project.versionName
         vectorDrawables.useSupportLibrary = true
-        minSdk = project.minSdk
+        minSdk = if (includeCompose) project.minSdk else project.lowMinSdk
         targetSdk = project.targetSdk
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     // Compose Multiplatform 1.8.0 must use JVM target 11+, and Android View also requires 1.8+
-    val (version, target) = if (plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null) {
+    val (version, target) = if (includeCompose) {
         JavaVersion.VERSION_11 to JvmTarget.JVM_11
     } else {
         JavaVersion.VERSION_1_8 to JvmTarget.JVM_1_8
@@ -127,39 +129,78 @@ fun Project.androidApplication(
     action()
 }
 
-fun KotlinMultiplatformExtension.androidKmpLibrary(
+//fun KotlinMultiplatformExtension.androidKmpLibrary(
+//    nameSpace: String,
+//    action: KotlinMultiplatformAndroidLibraryExtension.() -> Unit = {},
+//) = androidLibrary {
+//    namespace = nameSpace
+//    compileSdk = project.compileSdk
+//    minSdk = project.minSdk
+//
+//    // Enable Android resource processing. Multiplatform library modules do not enable this by default.
+//    androidResources {
+//        enable = true
+//    }
+//
+//    // Opt-in to enable and configure host-side (unit) tests. Multiplatform library modules do not enable this by default.
+//    withHostTest {
+//        isIncludeAndroidResources = true
+//        enableCoverage = true
+//    }
+//    // Opt-in to enable and configure device-side (instrumented) tests. Multiplatform library modules do not enable this by default.
+//    withDeviceTest {
+//        instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+//        execution = "HOST"
+//        enableCoverage = true
+//    }
+//
+//    packaging {
+//        resources.pickFirsts += listOf(
+//            "META-INF/AL2.0",
+//            "META-INF/LGPL2.1",
+//            "META-INF/*kotlin_module",
+//        )
+//    }
+//    action()
+//}
+
+fun Project.kmpAndroidLibrary(
     nameSpace: String,
     action: KotlinMultiplatformAndroidLibraryExtension.() -> Unit = {},
-) = androidLibrary {
-    namespace = nameSpace
-    compileSdk = project.compileSdk
-    minSdk = project.minSdk
+) = kmp {
+    androidLibrary {
+        val includeCompose = plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null
 
-    // Enable Android resource processing. Multiplatform library modules do not enable this by default.
-    androidResources {
-        enable = true
-    }
+        namespace = nameSpace
+        compileSdk = project.compileSdk
+        minSdk = if (includeCompose) project.minSdk else project.lowMinSdk
 
-    // Opt-in to enable and configure host-side (unit) tests. Multiplatform library modules do not enable this by default.
-    withHostTest {
-        isIncludeAndroidResources = true
-        enableCoverage = true
-    }
-    // Opt-in to enable and configure device-side (instrumented) tests. Multiplatform library modules do not enable this by default.
-    withDeviceTest {
-        instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        execution = "HOST"
-        enableCoverage = true
-    }
+        // Enable Android resource processing. Multiplatform library modules do not enable this by default.
+        androidResources {
+            enable = true
+        }
 
-    packaging {
-        resources.pickFirsts += listOf(
-            "META-INF/AL2.0",
-            "META-INF/LGPL2.1",
-            "META-INF/*kotlin_module",
-        )
+        // Opt-in to enable and configure host-side (unit) tests. Multiplatform library modules do not enable this by default.
+        withHostTest {
+            isIncludeAndroidResources = true
+            enableCoverage = true
+        }
+        // Opt-in to enable and configure device-side (instrumented) tests. Multiplatform library modules do not enable this by default.
+        withDeviceTest {
+            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+            execution = "HOST"
+            enableCoverage = true
+        }
+
+        packaging {
+            resources.pickFirsts += listOf(
+                "META-INF/AL2.0",
+                "META-INF/LGPL2.1",
+                "META-INF/*kotlin_module",
+            )
+        }
+        action()
     }
-    action()
 }
 
 private fun <T : CommonExtension> Project.android(
@@ -172,4 +213,10 @@ internal fun KotlinMultiplatformExtension.androidLibrary(
     action: KotlinMultiplatformAndroidLibraryExtension.() -> Unit
 ) {
     extensions.configure("androidLibrary", action)
+}
+
+internal fun Project.kmp(
+    action: KotlinMultiplatformExtension.() -> Unit
+) {
+    extensions.configure("kotlin", action)
 }

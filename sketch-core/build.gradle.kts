@@ -7,10 +7,9 @@ plugins {
 }
 
 addMultiplatformTargets(KmpTarget.entries.toTypedArray())
+kmpAndroidLibrary(nameSpace = "com.github.panpf.sketch.core")
 
 kotlin {
-    androidKmpLibrary(nameSpace = "com.github.panpf.sketch.core")
-
     sourceSets {
         commonMain.dependencies {
             api(libs.kotlin.stdlib)

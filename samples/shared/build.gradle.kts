@@ -10,10 +10,10 @@ plugins {
     id("org.jetbrains.kotlinx.atomicfu")
 }
 
+kmpAndroidLibrary(nameSpace = "com.github.panpf.sketch.sample.compose")
+
 kotlin {
     applyMyHierarchyTemplate()
-
-    androidKmpLibrary(nameSpace = "com.github.panpf.sketch.sample.compose")
 
     listOf(
 //        iosX64(), // androidx.paging doesn't support iosX64 since 3.4.0

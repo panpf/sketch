@@ -9,10 +9,9 @@ addMultiplatformTargets(
         .filter { it != KmpTarget.WasmJs }
         .toTypedArray()
 )
+kmpAndroidLibrary(nameSpace = "com.github.panpf.sketch.http.ktor2")
 
 kotlin {
-    androidKmpLibrary(nameSpace = "com.github.panpf.sketch.http.ktor2")
-
     sourceSets {
         commonMain.dependencies {
             api(projects.sketchHttpKtor2Core)

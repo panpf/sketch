@@ -5,10 +5,9 @@ plugins {
 }
 
 addMultiplatformTargets(KmpTarget.entries.toTypedArray())
+kmpAndroidLibrary(nameSpace = "com.github.panpf.sketch.animated.webp")
 
 kotlin {
-    androidKmpLibrary(nameSpace = "com.github.panpf.sketch.animated.webp")
-
     sourceSets {
         commonMain.dependencies {
             api(projects.sketchAnimatedCore)
