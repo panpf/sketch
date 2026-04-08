@@ -45,6 +45,7 @@ import com.github.panpf.sketch.sample.util.registerForActivityResult
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.state.ThumbnailMemoryCacheStateImage
 import com.github.panpf.sketch.util.SketchUtils
+import com.github.panpf.tools4a.toast.ktx.showLongToast
 import com.github.panpf.tools4k.lang.asOrThrow
 import com.github.panpf.zoomimage.view.zoom.ScrollBarSpec
 import com.github.panpf.zoomimage.zoom.AlignmentCompat
@@ -60,7 +61,7 @@ class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
 
     private val args by navArgs<PhotoViewerFragmentArgs>()
     private val photoPaletteViewModel by parentViewModel<PhotoPaletteViewModel>()
-    private val photoActionViewModel by viewModel<PhotoActionViewModel>()
+    private val photoViewerViewModel by viewModel<PhotoViewerViewModel>()
     private val requestPermissionResult =
         registerForActivityResult(WithDataActivityResultContracts.RequestPermission())
 
@@ -232,7 +233,10 @@ class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
     private fun share() {
         val imageUri = getImageUrl()
         lifecycleScope.launch {
-            handleActionResult(photoActionViewModel.share(imageUri))
+            val result = photoViewerViewModel.share(imageUri)
+            if (result.isFailure) {
+                showLongToast("Share photo failed: ${result.exceptionOrNull()?.message}")
+            }
         }
     }
 
@@ -240,14 +244,24 @@ class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
         val imageUri = getImageUrl()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             lifecycleScope.launch {
-                handleActionResult(photoActionViewModel.save(imageUri))
+                val result = photoViewerViewModel.share(imageUri)
+                if (result.isSuccess) {
+                    showLongToast("Save photo to gallery successfully")
+                } else {
+                    showLongToast("Save photo to gallery failed: ${result.exceptionOrNull()?.message}")
+                }
             }
         } else {
             val input = WithDataActivityResultContracts.RequestPermission.Input(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
             ) {
                 lifecycleScope.launch {
-                    handleActionResult(photoActionViewModel.save(imageUri))
+                    val result = photoViewerViewModel.share(imageUri)
+                    if (result.isSuccess) {
+                        showLongToast("Save photo to gallery successfully")
+                    } else {
+                        showLongToast("Save photo to gallery failed: ${result.exceptionOrNull()?.message}")
+                    }
                 }
             }
             requestPermissionResult.launch(input)

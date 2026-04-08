@@ -1,40 +1,25 @@
-/*
- * Copyright (C) 2024 panpf <panpfpanpf@outlook.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package com.github.panpf.sketch.sample.ui.gallery
+package com.github.panpf.sketch.sample.data
 
 import android.Manifest
-import android.annotation.SuppressLint
+import android.content.ContentResolver
+import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.media.MediaScannerConnection
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
-import androidx.lifecycle.ViewModel
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.sample.ui.base.ActionResult
+import com.github.panpf.sketch.sample.image.photoUri2PhotoInfo
+import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.checkPermissionGranted
-import com.github.panpf.sketch.sample.util.sha256String
+import com.github.panpf.sketch.sample.util.md5
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.fileprovider.ktx.getShareFileUri
@@ -44,9 +29,81 @@ import okio.buffer
 import okio.sink
 import java.io.File
 
-class PhotoActionViewModel(val sketch: Sketch) : ViewModel() {
+actual class PhotoService actual constructor(val sketch: Sketch) {
 
-    suspend fun share(imageUri: String): ActionResult {
+    actual suspend fun loadFromGallery(
+        pageStart: Int,
+        pageSize: Int
+    ): List<Photo> = withContext(Dispatchers.IO) {
+        val context = sketch.context
+        val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val projection = arrayOf(
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DATE_ADDED
+        )
+        val cursor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val queryArgs = Bundle().apply {
+                putInt(ContentResolver.QUERY_ARG_OFFSET, pageStart)
+                putInt(ContentResolver.QUERY_ARG_LIMIT, pageSize)
+                putStringArray(
+                    ContentResolver.QUERY_ARG_SORT_COLUMNS,
+                    arrayOf(MediaStore.Files.FileColumns.DATE_ADDED)
+                )
+                putInt(
+                    ContentResolver.QUERY_ARG_SORT_DIRECTION,
+                    ContentResolver.QUERY_SORT_DIRECTION_DESCENDING
+                )
+            }
+            context.contentResolver.query(
+                /* uri = */ contentUri,
+                /* projection = */ projection,
+                /* queryArgs = */ queryArgs,
+                /* cancellationSignal = */ null,
+            )
+        } else {
+            val sortOrder =
+                "${MediaStore.Images.Media.DATE_ADDED} DESC limit $pageStart,$pageSize"
+            context.contentResolver.query(
+                /* uri = */ contentUri,
+                /* projection = */ projection,
+                /* selection = */ null,
+                /* selectionArgs = */ null,
+                /* sortOrder = */ sortOrder
+            )
+        } ?: return@withContext emptyList()
+        if (cursor.count == 0) {
+            return@withContext emptyList()
+        }
+
+        cursor.use {
+            mutableListOf<Photo>().apply {
+                val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
+                while (cursor.moveToNext()) {
+                    val id = cursor.getLong(idColumn)
+                    val imageUri = ContentUris.withAppendedId(contentUri, id)
+                    val photo = photoUri2PhotoInfo(sketch, imageUri.toString())
+                    add(photo)
+                }
+            }
+        }
+    }
+
+    @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    actual suspend fun saveToGallery(imageUri: String): Result<String?> {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            savePhotoToGalleryWithMediaStore(sketch.context, imageUri)
+        } else if (checkPermissionGranted(
+                context = sketch.context,
+                permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+        ) {
+            savePhotoToGalleryWithDirectory(imageUri)
+        } else {
+            Result.failure(Exception("Storage permission was not granted"))
+        }
+    }
+
+    actual suspend fun share(imageUri: String): Result<String?> {
         val fetchResultResult = withContext(Dispatchers.IO) {
             val request = ImageRequest(sketch.context, imageUri)
             val requestContext = RequestContext(sketch, request, Size.Empty)
@@ -54,7 +111,7 @@ class PhotoActionViewModel(val sketch: Sketch) : ViewModel() {
             fetcher.fetch()
         }
         if (fetchResultResult.isFailure) {
-            return ActionResult.error("Failed to share picture: ${fetchResultResult.exceptionOrNull()!!.message}")
+            return Result.failure(fetchResultResult.exceptionOrNull()!!)
         }
         val fetchResult = fetchResultResult.getOrThrow()
 
@@ -64,18 +121,17 @@ class PhotoActionViewModel(val sketch: Sketch) : ViewModel() {
         val shareTempDir = sketch.context.getExternalFilesDir("share")
         val imageFile = File(shareTempDir, "share_temp.$fileExtension")
         imageFile.delete()
-
-        try {
-            withContext(Dispatchers.IO) {
+        val result = withContext(Dispatchers.IO) {
+            runCatching {
                 fetchResult.dataSource.openSource().buffer().use { input ->
                     imageFile.outputStream().sink().buffer().use { output ->
                         output.writeAll(input)
                     }
                 }
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return ActionResult.error("Failed to save picture: ${e.message}")
+        }
+        if (result.isFailure) {
+            return Result.failure(result.exceptionOrNull()!!)
         }
 
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
@@ -85,38 +141,22 @@ class PhotoActionViewModel(val sketch: Sketch) : ViewModel() {
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
         sketch.context.startActivity(shareIntent)
-        return ActionResult.success()
-    }
-
-    @SuppressLint("MissingPermission")
-    @Suppress("DEPRECATION")
-    suspend fun save(imageUri: String): ActionResult {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            saveImageToGalleryWithMediaStore(sketch.context, imageUri)
-        } else if (checkPermissionGranted(
-                context = sketch.context,
-                permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
-            )
-        ) {
-            saveImageToGalleryWithDirectory(imageUri)
-        } else {
-            ActionResult.error("Unable to save image because storage permission was not granted")
-        }
+        return Result.success(null)
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    suspend fun saveImageToGalleryWithMediaStore(context: Context, imageUri: String): ActionResult {
-        val request = ImageRequest(sketch.context, imageUri)
-        val requestContext = RequestContext(sketch, request, Size.Empty)
-        val fetcher = sketch.components.newFetcherOrThrow(requestContext)
-        if (fetcher is FileUriFetcher) {
-            return ActionResult.error("Local files do not need to be saved")
-        }
+    suspend fun savePhotoToGalleryWithMediaStore(
+        context: Context,
+        imageUri: String
+    ): Result<String?> {
         val fetchResultResult = withContext(Dispatchers.IO) {
+            val request = ImageRequest(sketch.context, imageUri)
+            val requestContext = RequestContext(sketch, request, Size.Empty)
+            val fetcher = sketch.components.newFetcherOrThrow(requestContext)
             fetcher.fetch()
         }
         if (fetchResultResult.isFailure) {
-            return ActionResult.error("Failed to save picture: ${fetchResultResult.exceptionOrNull()!!.message}")
+            return Result.failure(fetchResultResult.exceptionOrNull()!!)
         }
         val fetchResult = fetchResultResult.getOrThrow()
 
@@ -126,7 +166,7 @@ class PhotoActionViewModel(val sketch: Sketch) : ViewModel() {
                 ?: MimeTypeMap.getExtensionFromUrl(imageUri)
                 ?: "jpeg"
             val mimeType = "image/$extension"
-            val fileName = "${imageUri.sha256String()}.$extension"
+            val fileName = "${imageUri.md5()}.$extension"
             val relativePath = Environment.DIRECTORY_PICTURES + "/sketch"
             put(MediaStore.Images.Media.MIME_TYPE, mimeType)
             put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
@@ -143,27 +183,23 @@ class PhotoActionViewModel(val sketch: Sketch) : ViewModel() {
             }
         }
         return if (saveResult.isSuccess) {
-            ActionResult.success("Saved to gallery")
+            Result.success(null)
         } else {
-            val exception = saveResult.exceptionOrNull()
-            ActionResult.error("Failed to save picture: ${exception?.message}")
+            Result.failure(saveResult.exceptionOrNull()!!)
         }
     }
 
     @Suppress("DEPRECATION")
     @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    suspend fun saveImageToGalleryWithDirectory(imageUri: String): ActionResult {
-        val request = ImageRequest(sketch.context, imageUri)
-        val requestContext = RequestContext(sketch, request, Size.Empty)
-        val fetcher = sketch.components.newFetcherOrThrow(requestContext)
-        if (fetcher is FileUriFetcher) {
-            return ActionResult.error("Local files do not need to be saved")
-        }
+    suspend fun savePhotoToGalleryWithDirectory(imageUri: String): Result<String?> {
         val fetchResultResult = withContext(Dispatchers.IO) {
+            val request = ImageRequest(sketch.context, imageUri)
+            val requestContext = RequestContext(sketch, request, Size.Empty)
+            val fetcher = sketch.components.newFetcherOrThrow(requestContext)
             fetcher.fetch()
         }
         if (fetchResultResult.isFailure) {
-            return ActionResult.error("Failed to save picture: ${fetchResultResult.exceptionOrNull()!!.message}")
+            return Result.failure(fetchResultResult.exceptionOrNull()!!)
         }
         val fetchResult = fetchResultResult.getOrThrow()
 
@@ -174,7 +210,7 @@ class PhotoActionViewModel(val sketch: Sketch) : ViewModel() {
         val extension = MimeTypeMap.getExtensionFromMimeType(fetchResult.mimeType ?: "")
             ?: MimeTypeMap.getExtensionFromUrl(imageUri)
             ?: "jpeg"
-        val fileName = "${imageUri.sha256String()}.$extension"
+        val fileName = "${imageUri.md5()}.$extension"
         val saveFile = File(saveDir, fileName)
         val saveResult = withContext(Dispatchers.IO) {
             runCatching {
@@ -192,10 +228,9 @@ class PhotoActionViewModel(val sketch: Sketch) : ViewModel() {
                 /* mimeTypes = */ arrayOf("image/$extension"),
                 /* callback = */ null
             )
-            ActionResult.success("Saved to gallery")
+            Result.success(null)
         } else {
-            val exception = saveResult.exceptionOrNull()
-            ActionResult.error("Failed to save picture: ${exception?.message}")
+            Result.failure(saveResult.exceptionOrNull()!!)
         }
     }
 }

@@ -19,14 +19,14 @@ package com.github.panpf.sketch.sample.ui.gallery
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.sample.data.BuiltinLocalPhotoListRepo
-import com.github.panpf.sketch.sample.data.GalleryLocalPhotoListRepo
+import com.github.panpf.sketch.sample.data.BuiltinPhotoListRepo
+import com.github.panpf.sketch.sample.data.PhotoService
 import com.github.panpf.sketch.sample.ui.model.Photo
 
 class LocalPhotoListPagingSource(val sketch: Sketch) : PagingSource<Int, Photo>() {
 
-    private val builtinPhotoListRepo = BuiltinLocalPhotoListRepo(sketch)
-    private val localPhotoListRepo = GalleryLocalPhotoListRepo(sketch)
+    private val photoService = PhotoService(sketch)
+    private val builtinPhotoListRepo = BuiltinPhotoListRepo(sketch)
 
     override fun getRefreshKey(state: PagingState<Int, Photo>): Int = 0
 
@@ -34,13 +34,13 @@ class LocalPhotoListPagingSource(val sketch: Sketch) : PagingSource<Int, Photo>(
         val pageStart = params.key ?: 0
         val pageSize = params.loadSize
 
-        val builtinPhotos = builtinPhotoListRepo.loadLocalPhotoList(pageStart, pageSize)
+        val builtinPhotos = builtinPhotoListRepo.loadPhotoList(pageStart, pageSize)
         val galleryPhotos = if (builtinPhotos.size < pageSize) {
             val builtinPhotoListSize = builtinPhotoListRepo.size
             val galleryPageStart = if (pageStart < builtinPhotoListSize)
                 0 else pageStart - builtinPhotoListSize
             val galleryPageSize = pageSize - builtinPhotos.size
-            localPhotoListRepo.loadLocalPhotoList(
+            photoService.loadFromGallery(
                 pageStart = galleryPageStart,
                 pageSize = galleryPageSize
             )

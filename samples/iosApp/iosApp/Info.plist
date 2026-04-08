@@ -51,5 +51,11 @@
         <key>NSAllowsArbitraryLoads</key>
         <true/>
     </dict>
+
+    <key>NSPhotoLibraryAddUsageDescription</key>
+    <string>Your permission is required to save photos to the album</string>
+
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Your permission is required to read photos from album</string>
 </dict>
 </plist>

@@ -4,11 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.sample.AppEvents
 import com.github.panpf.zoomimage.SketchZoomState
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 actual fun PhotoViewerBottomBarWrapper(
@@ -20,7 +20,7 @@ actual fun PhotoViewerBottomBarWrapper(
     onInfoClick: (() -> Unit)?,
 ) {
     val appEvents: AppEvents = koinInject()
-    val sketch: Sketch = koinInject()
+    val photoViewerViewModel: PhotoViewerViewModel = koinViewModel()
     val coroutineScope = rememberCoroutineScope()
     PhotoViewerBottomBar(
         modifier = modifier,
@@ -30,23 +30,13 @@ actual fun PhotoViewerBottomBarWrapper(
         onInfoClick = onInfoClick,
         onShareClick = {
             coroutineScope.launch {
-                sharePhoto(appEvents, sketch, imageUri)
+                handleShareActionResult(appEvents, photoViewerViewModel.share(imageUri))
             }
         },
         onSaveClick = {
             coroutineScope.launch {
-                savePhoto(appEvents, sketch, imageUri)
+                handleSaveActionResult(appEvents, photoViewerViewModel.save(imageUri))
             }
         },
     )
-}
-
-@Suppress("UNUSED_PARAMETER")
-private suspend fun savePhoto(appEvents: AppEvents, sketch: Sketch, imageUri: String) {
-    appEvents.toastFlow.emit("Saving is under development")
-}
-
-@Suppress("UNUSED_PARAMETER")
-private suspend fun sharePhoto(appEvents: AppEvents, sketch: Sketch, imageUri: String) {
-    appEvents.toastFlow.emit("Js platform does not support sharing photo")
 }

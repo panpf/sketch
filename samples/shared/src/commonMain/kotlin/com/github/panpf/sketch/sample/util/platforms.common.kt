@@ -34,7 +34,12 @@ fun String.formatLength(targetLength: Int, padChar: Char = ' '): String {
     }
 }
 
-fun String.sha256String() = encodeUtf8().sha256().hex()
+/**
+ * Calculate MD5
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testMd5
+ */
+internal fun String.md5() = encodeUtf8().md5().hex()
 
 /**
  * Returns the this size in human-readable format.

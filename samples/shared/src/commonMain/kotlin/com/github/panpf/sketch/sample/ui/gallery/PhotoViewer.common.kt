@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.rememberAsyncImageState
+import com.github.panpf.sketch.sample.AppEvents
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.Res
 import com.github.panpf.sketch.sample.ic_info_baseline
@@ -101,6 +102,20 @@ expect fun PhotoViewerBottomBarWrapper(
     buttonContentColor: Color?,
     onInfoClick: (() -> Unit)?,
 )
+
+suspend fun handleShareActionResult(appEvents: AppEvents, result: Result<String?>) {
+    if (result.isFailure) {
+        appEvents.toastFlow.emit("Share photo failed: ${result.exceptionOrNull()?.message}")
+    }
+}
+
+suspend fun handleSaveActionResult(appEvents: AppEvents, result: Result<String?>) {
+    if (result.isSuccess) {
+        appEvents.toastFlow.emit("Save photo to gallery successfully")
+    } else {
+        appEvents.toastFlow.emit("Save photo to gallery failed: ${result.exceptionOrNull()?.message}")
+    }
+}
 
 @Composable
 fun PhotoViewerBottomBar(

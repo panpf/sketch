@@ -9,6 +9,7 @@ import com.github.panpf.sketch.sample.data.api.pexels.PexelsApi
 import com.github.panpf.sketch.sample.ui.gallery.GiphyPhotoListViewModel
 import com.github.panpf.sketch.sample.ui.gallery.LocalPhotoListViewModel
 import com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoListViewModel
+import com.github.panpf.sketch.sample.ui.gallery.PhotoViewerViewModel
 import com.github.panpf.sketch.sample.ui.test.DecoderTestViewModel
 import com.github.panpf.sketch.sample.ui.test.DisplayInsanityTestViewModel
 import com.github.panpf.sketch.sample.ui.test.ExifOrientationTestViewModel
@@ -41,6 +42,7 @@ fun commonModule(context: PlatformContext): Module = module {
 
     viewModelOf(::PexelsPhotoListViewModel)
     viewModelOf(::LocalPhotoListViewModel)
+    viewModelOf(::PhotoViewerViewModel)
     viewModel { GiphyPhotoListViewModel(context, get()) }
     viewModel { DecoderTestViewModel(context) }
     viewModel { FetcherTestViewModel(context) }

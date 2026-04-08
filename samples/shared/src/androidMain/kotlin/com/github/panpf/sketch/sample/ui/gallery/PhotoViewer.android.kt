@@ -7,7 +7,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.github.panpf.sketch.sample.AppEvents
-import com.github.panpf.sketch.sample.ui.base.handleActionResult
 import com.github.panpf.zoomimage.SketchZoomState
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
@@ -30,8 +29,8 @@ actual fun PhotoViewerBottomBarWrapper(
 ) {
     val appEvents: AppEvents = koinInject()
     val coroutineScope = rememberCoroutineScope()
+    val photoViewerViewModel: PhotoViewerViewModel = koinViewModel()
     val factory: PermissionsControllerFactory = rememberPermissionsControllerFactory()
-    val photoActionViewModel: PhotoActionViewModel = koinViewModel()
     val controller: PermissionsController =
         remember(factory) { factory.createPermissionsController() }
     BindEffect(controller)
@@ -43,8 +42,7 @@ actual fun PhotoViewerBottomBarWrapper(
         onInfoClick = onInfoClick,
         onShareClick = {
             coroutineScope.launch {
-                val actionResult = photoActionViewModel.share(imageUri)
-                handleActionResult(appEvents, actionResult)
+                handleShareActionResult(appEvents, photoViewerViewModel.share(imageUri))
             }
         },
         onSaveClick = {
@@ -52,8 +50,7 @@ actual fun PhotoViewerBottomBarWrapper(
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     controller.providePermission(Permission.WRITE_STORAGE)
                 }
-                val actionResult = photoActionViewModel.save(imageUri)
-                handleActionResult(appEvents, actionResult)
+                handleSaveActionResult(appEvents, photoViewerViewModel.save(imageUri))
             }
         },
     )
