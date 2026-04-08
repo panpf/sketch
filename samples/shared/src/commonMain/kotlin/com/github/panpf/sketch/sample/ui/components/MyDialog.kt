@@ -47,10 +47,11 @@ fun MyDialog(
     if (state.showing) {
         if (state.contentReady) {
             Dialog(onDismissRequest = { state.showing = false }) {
+                val maxHeight = getDialogMaxHeight()
                 Surface(
                     Modifier
                         .fillMaxWidth()
-                        .heightIn(max = getDialogMaxHeight())
+                        .heightIn(max = maxHeight, min = (maxHeight.value * 0.4).dp)
                         .clip(RoundedCornerShape(20.dp))
                 ) {
                     content()

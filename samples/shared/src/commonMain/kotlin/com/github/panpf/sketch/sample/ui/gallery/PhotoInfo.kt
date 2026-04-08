@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.sample.ui.gallery
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -19,7 +19,7 @@ import com.github.panpf.sketch.sample.ui.util.toFormattedString
 fun PhotoInfo(imageResult: ImageResult?) {
     Column(
         Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(20.dp)
             .verticalScroll(rememberScrollState())
     ) {
