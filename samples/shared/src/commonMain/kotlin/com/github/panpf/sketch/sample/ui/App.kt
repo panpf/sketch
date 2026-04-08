@@ -51,7 +51,6 @@ private fun NavigationContent(onContentChanged: ((List<NavKey>) -> Unit)? = null
             entryProvider = navEntryProvider,
             transitionSpec = { fadeIn() togetherWith fadeOut() },
             popTransitionSpec = { fadeIn() togetherWith fadeOut() },
-            predictivePopTransitionSpec = { fadeIn() togetherWith fadeOut() }
         )
     }
 }
