@@ -5,10 +5,13 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -38,14 +41,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.panpf.sketch.AsyncImage
-import com.github.panpf.sketch.LocalPlatformContext
-import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
@@ -77,8 +77,6 @@ import com.github.panpf.sketch.util.windowContainerSize
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
-
-expect fun getTopMargin(context: PlatformContext): Int
 
 @Composable
 fun PhotoPagerScreen(params: PhotoPagerParams) {
@@ -124,12 +122,14 @@ fun PhotoPagerScreen(params: PhotoPagerParams) {
                 )
             }
 
-            PhotoPagerHeaders(params, pagerState, photoPaletteState)
+            Box(Modifier.fillMaxSize().windowInsetsPadding(WindowInsets.safeDrawing)) {
+                PhotoPagerHeaders(params, pagerState, photoPaletteState)
 
-            TurnPageIndicator(pagerState, photoPaletteState)
+                TurnPageIndicator(pagerState, photoPaletteState)
 
-            if (!Platform.current.isMobile()) {
-                GestureDialog()
+                if (!Platform.current.isMobile()) {
+                    GestureDialog()
+                }
             }
         }
         LaunchedEffect(Unit) {
@@ -183,14 +183,8 @@ fun PhotoPagerHeaders(
     pagerState: PagerState,
     photoPaletteState: MutableState<PhotoPalette>,
 ) {
-    val context = LocalPlatformContext.current
-    val density = LocalDensity.current
-    val toolbarTopMarginDp = remember {
-        val toolbarTopMargin = getTopMargin(context)
-        with(density) { toolbarTopMargin.toDp() }
-    }
     val photoPalette by photoPaletteState
-    Box(modifier = Modifier.fillMaxSize().padding(top = toolbarTopMarginDp)) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier.padding(20.dp),
             verticalAlignment = Alignment.CenterVertically

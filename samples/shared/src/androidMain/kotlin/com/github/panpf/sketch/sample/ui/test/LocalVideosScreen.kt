@@ -36,6 +36,7 @@ import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.common.PagingListAppendState
 import com.github.panpf.sketch.sample.ui.common.PagingListRefreshState
+import com.github.panpf.sketch.sample.ui.common.listContentPaddingWithNavigationBarsWindowInset
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.sample.ui.components.PermissionContainer
 import com.github.panpf.sketch.sample.ui.model.VideoInfo
@@ -64,7 +65,13 @@ fun LocalVideosTestScreen() {
                         .pullRefresh(pullRefreshState)
                 ) {
                     val listState = rememberLazyListState()
-                    LazyColumn(state = listState) {
+                    val windowInsetContentPadding =
+                        listContentPaddingWithNavigationBarsWindowInset()
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = windowInsetContentPadding
+                    ) {
                         items(
                             count = pagingItems.itemCount,
                             contentType = { 1 }

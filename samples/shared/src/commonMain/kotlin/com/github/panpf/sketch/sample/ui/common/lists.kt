@@ -1,5 +1,11 @@
 package com.github.panpf.sketch.sample.ui.common
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalDensity
 import androidx.paging.PagingConfig
 import com.github.panpf.sketch.sample.util.Platform
 import com.github.panpf.sketch.sample.util.current
@@ -29,3 +35,12 @@ val listPagingConfig = if (Platform.current.isMobile()) PagingConfig(
     enablePlaceholders = false,
 )
 
+@Composable
+fun listContentPaddingWithNavigationBarsWindowInset(): PaddingValues {
+    val density = LocalDensity.current
+    val navigationBarsBottomInsetPixels = WindowInsets.navigationBars.getBottom(density)
+    val navigationBarsBottomInsetDp = with(density) {
+        navigationBarsBottomInsetPixels.toDp()
+    }
+    return remember { PaddingValues(bottom = navigationBarsBottomInsetDp) }
+}

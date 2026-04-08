@@ -3,7 +3,9 @@ package com.github.panpf.sketch.sample.ui.gallery
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -11,7 +13,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -81,7 +82,7 @@ fun PhotoViewer(
             onInfoClick = { infoDialogState.show() },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .windowInsetsPadding(NavigationBarDefaults.windowInsets)
+                .windowInsetsPadding(WindowInsets.navigationBars)
                 .padding(vertical = 30.dp)
         )
 

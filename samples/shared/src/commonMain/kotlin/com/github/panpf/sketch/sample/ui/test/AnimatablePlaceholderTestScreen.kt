@@ -3,14 +3,15 @@ package com.github.panpf.sketch.sample.ui.test
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,8 +54,9 @@ fun AnimatablePlaceholderTestScreen() {
                 iconTint = colorScheme.onPrimaryContainer
             )
             Column(
-                modifier = Modifier.fillMaxSize()
-                    .windowInsetsPadding(NavigationBarDefaults.windowInsets)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .windowInsetsPadding(WindowInsets.navigationBars)
             ) {
                 var urlIndexState by remember { mutableStateOf(0) }
                 val images = remember {

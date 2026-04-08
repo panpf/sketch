@@ -1,5 +1,8 @@
 package com.github.panpf.sketch.sample.ui.util
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Canvas
@@ -40,3 +43,12 @@ fun ImageBitmap.scale(size: IntSize): ImageBitmap {
     )
     return outBitmap
 }
+
+operator fun PaddingValues.plus(other: PaddingValues): PaddingValues = PaddingValues(
+    start = this.calculateStartPadding(LayoutDirection.Ltr)
+            + other.calculateStartPadding(LayoutDirection.Ltr),
+    top = this.calculateTopPadding() + other.calculateTopPadding(),
+    end = this.calculateEndPadding(LayoutDirection.Ltr)
+            + other.calculateEndPadding(LayoutDirection.Ltr),
+    bottom = this.calculateBottomPadding() + other.calculateBottomPadding()
+)

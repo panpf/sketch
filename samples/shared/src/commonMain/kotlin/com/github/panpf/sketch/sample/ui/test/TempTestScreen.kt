@@ -1,7 +1,11 @@
 package com.github.panpf.sketch.sample.ui.test
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,7 +21,11 @@ import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 fun TempTestScreen() {
     BaseScreen {
         ToolbarScaffold(title = "TempTest") {
-            Column {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .windowInsetsPadding(WindowInsets.navigationBars)
+            ) {
                 AsyncImage(
                     request = ComposableImageRequest(ComposeResImageFiles.svg.uri) {
                         crossfade(alwaysUse = true)
