@@ -55,7 +55,7 @@ import kotlin.test.assertTrue
 class FFmpegVideoFrameDecoderTest {
 
     @Test
-    fun testSupportApkIcon() {
+    fun testSupportFFmpegVideoFrame() {
         ComponentRegistry().apply {
             assertEquals(
                 expected = "ComponentRegistry(" +

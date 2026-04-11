@@ -52,7 +52,7 @@ fun rememberTextPainter(
 }
 
 @Stable
-data class Background internal constructor(
+data class Background(
     val color: Color,
     val brush: Brush?,
     val alpha: Float,
