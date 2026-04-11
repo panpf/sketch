@@ -7,6 +7,31 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
+# 4.4.0
+
+从 4.3.1 以来的改变.
+
+* broken: 合并 RequestInterceptor 和
+  DecodeInterceptor，二进制兼容性被破坏，依赖于此的库需要修改代码并重新编译。[#274](https://github.com/panpf/sketch/issues/274)
+* fix: 修复 Koral GifDrawable 在自动播放情况下不会主动回调 onAnimationStart 和 onAnimationEnd 的
+  bug。[#278](https://github.com/panpf/sketch/issues/278)
+* fix: 修复了 AsyncImage 在使用 colorFilter 属性并且开启 crossfade 时 colorFilter 无效的
+  bug。[#266](https://github.com/panpf/sketch/issues/266)
+* fix: 修复了 Android 平台 ImageDecoder 无法解码只有一帧的 gif 的
+  bug。[#179](https://github.com/panpf/sketch/issues/179)
+* fix: 现在 newFileUri(String) 函数会跳过以 'file:' 开头
+  uri。[#270](https://github.com/panpf/sketch/issues/270)
+* fix: 修复无法加载 windows network uri 的 bug。[#267](https://github.com/panpf/sketch/issues/267)
+* fix: 修复 HttpUriFetcher 和 SkiaAnimatedDecoder 没有关闭输入流的
+  bug。[#272](https://github.com/panpf/sketch/issues/272)
+* fix: 修复非 Android 平台使用 Skia 解码动图时帧持续时间为 0 时没有修改为默认值 100 的
+  bug。[#273](https://github.com/panpf/sketch/issues/273)
+* improve: DecodeConfig 现在可以从 common 模块访问
+* new:
+  新增优先加载缩略图功能，详情请参考文档 [Thumbnail.md](docs/thumbnail.zh.md)。[#241](https://github.com/panpf/sketch/issues/241)
+* new: 新增 'sketch-blurhash' 模块以支持
+  BlurHash，详情请参考文档 [BlurHash](docs/blurhash.zh.md)。[#261](https://github.com/panpf/sketch/issues/261)
+
 # 4.4.0-beta02
 
 * fix: 修复 Koral GifDrawable 在自动播放情况下不会主动回调 onAnimationStart 和 onAnimationEnd 的
