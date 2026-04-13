@@ -13,6 +13,7 @@ import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.size
+import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.test.utils.ByteCountProviderDrawableWrapper
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.createCustomDensityResources
@@ -25,7 +26,6 @@ import com.github.panpf.sketch.util.div
 import com.github.panpf.sketch.util.getDrawableCompat
 import com.github.panpf.sketch.util.toLogString
 import kotlinx.coroutines.test.runTest
-import okio.buffer
 import java.nio.ByteBuffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -46,9 +46,7 @@ class DrawableImageTest {
         assertTrue(bitmapDrawable.asImage().shareable)
 
         if (VERSION.SDK_INT >= VERSION_CODES.P) {
-            val bytes = ComposeResImageFiles.animGif.toDataSource(context).openSource()
-                .buffer()
-                .use { it.readByteArray() }
+            val bytes = ComposeResImageFiles.animGif.toDataSource(context).toByteArray()
             val animatedDrawable =
                 ImageDecoder.decodeDrawable(ImageDecoder.createSource(ByteBuffer.wrap(bytes)))
                     .asOrThrow<AnimatedImageDrawable>()
@@ -141,9 +139,7 @@ class DrawableImageTest {
         }
 
         if (VERSION.SDK_INT >= VERSION_CODES.P) {
-            val bytes = ComposeResImageFiles.animGif.toDataSource(context).openSource()
-                .buffer()
-                .use { it.readByteArray() }
+            val bytes = ComposeResImageFiles.animGif.toDataSource(context).toByteArray()
             val animatedDrawable =
                 ImageDecoder.decodeDrawable(ImageDecoder.createSource(ByteBuffer.wrap(bytes)))
                     .asOrThrow<AnimatedImageDrawable>()

@@ -9,12 +9,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.size
+import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.test.utils.assertSizeEquals
 import com.github.panpf.sketch.test.utils.decodeImageUseImageDecoder
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.test.runTest
-import okio.buffer
 import org.junit.runner.RunWith
 import java.nio.ByteBuffer
 import kotlin.test.Test
@@ -213,8 +213,7 @@ class ImageDecoderTest {
             }
         } else {
             assertFailsWith(NoClassDefFoundError::class) {
-                val byteArray = image.imageFile.toDataSource(context).openSource().buffer()
-                    .use { it.readByteArray() }
+                val byteArray = image.imageFile.toDataSource(context).toByteArray()
                 ImageDecoder.decodeBitmap(
                     ImageDecoder.createSource(ByteBuffer.wrap(byteArray))
                 )

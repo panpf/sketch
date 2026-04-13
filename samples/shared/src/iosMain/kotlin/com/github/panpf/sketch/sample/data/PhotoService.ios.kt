@@ -4,6 +4,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.sample.ui.model.Photo
+import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.util.Size
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -39,7 +40,7 @@ actual class PhotoService actual constructor(val sketch: Sketch) {
                 val requestContext = RequestContext(sketch, request, Size.Empty)
                 val fetcher = sketch.components.newFetcherOrThrow(requestContext)
                 val fetchResult = fetcher.fetch().getOrThrow()
-                fetchResult.dataSource.openSource().buffer().use { it.readByteArray() }
+                fetchResult.dataSource.toByteArray()
             }
         }
         if (imageBytesResult.isFailure) {
@@ -69,7 +70,7 @@ actual class PhotoService actual constructor(val sketch: Sketch) {
                 val requestContext = RequestContext(sketch, request, Size.Empty)
                 val fetcher = sketch.components.newFetcherOrThrow(requestContext)
                 val fetchResult = fetcher.fetch().getOrThrow()
-                fetchResult.dataSource.openSource().buffer().use { it.readByteArray() }
+                fetchResult.dataSource.toByteArray()
             }
         }
         if (imageBytesResult.isFailure) {

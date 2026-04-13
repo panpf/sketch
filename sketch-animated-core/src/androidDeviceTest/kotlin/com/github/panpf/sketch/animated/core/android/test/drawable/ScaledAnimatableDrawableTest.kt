@@ -36,6 +36,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.drawable.ScaledAnimatableDrawable
 import com.github.panpf.sketch.images.ComposeResImageFiles
+import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.test.utils.TestAnimatable2CompatDrawable
 import com.github.panpf.sketch.test.utils.TestAnimatable2Drawable
 import com.github.panpf.sketch.test.utils.TestAnimatableDrawable
@@ -44,7 +45,6 @@ import com.github.panpf.sketch.util.toLogString
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
-import okio.buffer
 import org.junit.runner.RunWith
 import java.nio.ByteBuffer
 import kotlin.test.Test
@@ -86,8 +86,7 @@ class ScaledAnimatableDrawableTest {
             }
 
             ComposeResImageFiles.animGif
-                .toDataSource(context).openSource()
-                .buffer().use { it.readByteArray() }
+                .toDataSource(context).toByteArray()
                 .let { ByteBuffer.wrap(it) }
                 .let { ImageDecoder.createSource(it) }
                 .let { ImageDecoder.decodeDrawable(it) }
@@ -151,8 +150,7 @@ class ScaledAnimatableDrawableTest {
             }
 
             ComposeResImageFiles.animGif
-                .toDataSource(context).openSource()
-                .buffer().use { it.readByteArray() }
+                .toDataSource(context).toByteArray()
                 .let { ByteBuffer.wrap(it) }
                 .let { ImageDecoder.createSource(it) }
                 .let { ImageDecoder.decodeDrawable(it) }
@@ -240,8 +238,7 @@ class ScaledAnimatableDrawableTest {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val context = InstrumentationRegistry.getInstrumentation().context
             ComposeResImageFiles.animGif
-                .toDataSource(context).openSource()
-                .buffer().use { it.readByteArray() }
+                .toDataSource(context).toByteArray()
                 .let { ByteBuffer.wrap(it) }
                 .let { ImageDecoder.createSource(it) }
                 .let { ImageDecoder.decodeDrawable(it) }
@@ -278,8 +275,7 @@ class ScaledAnimatableDrawableTest {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val context = InstrumentationRegistry.getInstrumentation().context
             ComposeResImageFiles.animGif
-                .toDataSource(context).openSource()
-                .buffer().use { it.readByteArray() }
+                .toDataSource(context).toByteArray()
                 .let { ByteBuffer.wrap(it) }
                 .let { ImageDecoder.createSource(it) }
                 .let { ImageDecoder.decodeDrawable(it) }
@@ -330,8 +326,7 @@ class ScaledAnimatableDrawableTest {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val context = InstrumentationRegistry.getInstrumentation().context
             ComposeResImageFiles.animGif
-                .toDataSource(context).openSource()
-                .buffer().use { it.readByteArray() }
+                .toDataSource(context).toByteArray()
                 .let { ByteBuffer.wrap(it) }
                 .let { ImageDecoder.createSource(it) }
                 .let { ImageDecoder.decodeDrawable(it) }

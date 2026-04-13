@@ -8,13 +8,12 @@ import com.github.panpf.sketch.fetch.supportComposeResources
 import com.github.panpf.sketch.images.Res
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.ByteArrayDataSource
+import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.test.runTest
-import okio.buffer
-import okio.use
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -148,7 +147,7 @@ class ComposeResourceUriFetcherTest {
         val source = fetcher.fetch().getOrThrow().dataSource
         assertTrue(source is ByteArrayDataSource)
 
-        source.openSource().buffer().use { it.readByteArray() }
+        source.toByteArray()
     }
 
     @Test

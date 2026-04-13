@@ -107,3 +107,13 @@ fun DataSource.cacheFile(sketch: Sketch): Path = synchronized(cacheFileLock) {
  */
 fun DataSource.cacheFileOrNull(sketch: Sketch): Path? =
     runCatching { cacheFile(sketch) }.getOrNull()
+
+/**
+ * Get the bytes of the data source, if the data source is ByteArrayDataSource, return the byte array directly, otherwise read the byte array from the source
+ * 
+ * @see com.github.panpf.sketch.core.common.test.source.DataSourceTest.testToByteArray
+ */
+fun DataSource.toByteArray(): ByteArray {
+    if (this is ByteArrayDataSource) return data
+    return openSource().buffer().use { it.readByteArray() }
+}

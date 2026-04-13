@@ -58,7 +58,8 @@ class KotlinResourceDataSourceTest {
         assertFailsWith(FileNotFoundException::class) {
             KotlinResourceDataSource(ComposeResImageFiles.png.name)
                 .openSource().buffer()
-                .use { it.readByteArray().decodeToString() }
+                .use { it.readByteArray() }
+                .decodeToString()
         }
     }
 

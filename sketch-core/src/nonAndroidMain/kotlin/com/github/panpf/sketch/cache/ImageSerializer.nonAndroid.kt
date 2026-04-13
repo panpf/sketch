@@ -24,9 +24,8 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.decode
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.source.toByteArray
 import okio.BufferedSink
-import okio.buffer
-import okio.use
 import org.jetbrains.skia.EncodedImageFormat
 import org.jetbrains.skia.Image
 import org.jetbrains.skia.impl.use
@@ -64,7 +63,7 @@ object SkiaBitmapImageSerializer : ImageSerializer {
         imageInfo: ImageInfo,
         dataSource: DataSource
     ): SketchImage {
-        val bytes = dataSource.openSource().buffer().use { it.readByteArray() }
+        val bytes = dataSource.toByteArray()
         val skiaBitmap = Image.makeFromEncoded(bytes).use {
             val decodeConfig = DecodeConfig(
                 request = requestContext.request,

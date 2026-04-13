@@ -22,12 +22,11 @@ import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.SketchRect
 import com.github.panpf.sketch.util.compareVersions
 import com.github.panpf.sketch.util.toSkiaRect
-import okio.buffer
-import okio.use
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
@@ -95,8 +94,8 @@ fun readImageInfoWithIgnoreExifOrientation(codec: Codec): ImageInfo {
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testReadImageInfoWithIgnoreExifOrientation
  */
 actual fun DataSource.readImageInfoWithIgnoreExifOrientation(): ImageInfo {
-    val bytes = openSource().buffer().use { it.readByteArray() }
-    return Codec.makeFromData(Data.makeFromBytes(bytes)).use {
+    val data = Data.makeFromBytes(toByteArray())
+    return Codec.makeFromData(data).use {
         readImageInfoWithIgnoreExifOrientation(it)
     }
 }
@@ -119,7 +118,7 @@ fun readImageInfo(codec: Codec, skiaImage: Image): ImageInfo {
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.internal.DecodesNonAndroidTest.testReadImageInfo
  */
 actual fun DataSource.readImageInfo(): ImageInfo {
-    val bytes = openSource().buffer().use { it.readByteArray() }
+    val bytes = toByteArray()
     return Codec.makeFromData(Data.makeFromBytes(bytes)).use { codec ->
         Image.makeFromEncoded(bytes).use { skiaImage ->
             readImageInfo(codec, skiaImage)

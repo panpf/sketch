@@ -9,17 +9,16 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.images.ComposeResImageFiles
+import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.newBitmapRegionDecoderInstanceCompat
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.test.runTest
-import okio.buffer
 import org.junit.runner.RunWith
 import java.io.ByteArrayInputStream
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class BitmapRegionDecoderTest {
@@ -32,18 +31,13 @@ class BitmapRegionDecoderTest {
 
         val options = Options()
         assertFalse(options.inMutable)
-        val bitmap = dataSource.openSource().buffer()
-            .use { it.readByteArray() }
-            .let { ByteArrayInputStream(it) }
+        val bitmap = ByteArrayInputStream(dataSource.toByteArray())
             .run { newBitmapRegionDecoderInstanceCompat() }!!
             .use { decodeRegion(Rect(0, 0, imageSize.width, imageSize.height), options) }!!
         assertFalse(bitmap.isMutable)
 
         options.inMutable = true
-        assertTrue(options.inMutable)
-        val bitmap1 = dataSource.openSource().buffer()
-            .use { it.readByteArray() }
-            .let { ByteArrayInputStream(it) }
+        val bitmap1 = ByteArrayInputStream(dataSource.toByteArray())
             .run { newBitmapRegionDecoderInstanceCompat() }!!
             .use { decodeRegion(Rect(0, 0, imageSize.width, imageSize.height), options) }!!
         assertFalse(bitmap1.isMutable)
@@ -57,9 +51,7 @@ class BitmapRegionDecoderTest {
 
         val options = Options()
         assertEquals(ARGB_8888, options.inPreferredConfig)
-        val bitmap = dataSource.openSource().buffer()
-            .use { it.readByteArray() }
-            .let { ByteArrayInputStream(it) }
+        val bitmap = ByteArrayInputStream(dataSource.toByteArray())
             .run { newBitmapRegionDecoderInstanceCompat() }!!
             .use { decodeRegion(Rect(0, 0, imageSize.width, imageSize.height), options) }!!
         assertEquals(ARGB_8888, bitmap.config)
@@ -68,9 +60,7 @@ class BitmapRegionDecoderTest {
         options.inPreferredConfig = ARGB_4444
         @Suppress("DEPRECATION")
         assertEquals(ARGB_4444, options.inPreferredConfig)
-        val bitmap1 = dataSource.openSource().buffer()
-            .use { it.readByteArray() }
-            .let { ByteArrayInputStream(it) }
+        val bitmap1 = ByteArrayInputStream(dataSource.toByteArray())
             .run { newBitmapRegionDecoderInstanceCompat() }!!
             .use { decodeRegion(Rect(0, 0, imageSize.width, imageSize.height), options) }!!
         if (VERSION.SDK_INT > VERSION_CODES.M) {

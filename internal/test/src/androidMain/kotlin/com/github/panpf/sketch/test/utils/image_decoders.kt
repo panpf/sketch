@@ -21,7 +21,7 @@ import android.graphics.ImageDecoder
 import android.os.Build.VERSION_CODES
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.source.DataSource
-import okio.buffer
+import com.github.panpf.sketch.source.toByteArray
 import java.nio.ByteBuffer
 
 @RequiresApi(VERSION_CODES.P)
@@ -29,7 +29,7 @@ fun DataSource.decodeImageUseImageDecoder(
     sampleSize: Int? = null,
     mutable: Boolean? = null
 ): Bitmap {
-    val byteArray = openSource().buffer().use { it.readByteArray() }
+    val byteArray = toByteArray()
     return ImageDecoder.decodeBitmap(
         ImageDecoder.createSource(ByteBuffer.wrap(byteArray))
     ) { decoder, _, _ ->

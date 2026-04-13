@@ -26,12 +26,11 @@ import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.svgBackgroundColor
 import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.calculateScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.isNotEmpty
 import com.github.panpf.sketch.util.times
-import okio.buffer
-import okio.use
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.ColorAlphaType
 import org.jetbrains.skia.ColorSpace
@@ -52,8 +51,7 @@ import kotlin.math.roundToInt
 internal actual fun DataSource.readSvgImageInfo(
     useViewBoundsAsIntrinsicSize: Boolean,
 ): ImageInfo {
-    val bytes = openSource().buffer().use { it.readByteArray() }
-    val svg = SVGDOM(Data.makeFromBytes(bytes))
+    val svg = SVGDOM(Data.makeFromBytes(toByteArray()))
 
     val viewBox: Rect? = svg.root?.viewBox
     val imageSize: Size = if (useViewBoundsAsIntrinsicSize && viewBox != null) {
@@ -86,8 +84,7 @@ internal actual fun DataSource.decodeSvg(
     requestContext: RequestContext,
     useViewBoundsAsIntrinsicSize: Boolean,
 ): ImageData {
-    val bytes = openSource().buffer().use { it.readByteArray() }
-    val svg = SVGDOM(Data.makeFromBytes(bytes))
+    val svg = SVGDOM(Data.makeFromBytes(toByteArray()))
 
     val viewBox: Rect? = svg.root?.viewBox
     val imageSize: Size = if (useViewBoundsAsIntrinsicSize && viewBox != null) {

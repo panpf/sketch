@@ -14,8 +14,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
 import com.github.panpf.sketch.images.ComposeResImageFiles
+import com.github.panpf.sketch.source.toByteArray
 import kotlinx.coroutines.test.runTest
-import okio.buffer
 import org.junit.runner.RunWith
 import pl.droidsonroids.gif.GifDrawable
 import kotlin.test.Test
@@ -32,8 +32,7 @@ class GifDrawableWrapperDrawableTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val gifDrawable = GifDrawable(
             ComposeResImageFiles.animGif
-                .toDataSource(context).openSource()
-                .buffer().use { it.readByteArray() }
+                .toDataSource(context).toByteArray()
         )
         val drawable = GifDrawableWrapperDrawable(gifDrawable)
 
@@ -65,18 +64,15 @@ class GifDrawableWrapperDrawableTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val gifDrawable = GifDrawable(
             ComposeResImageFiles.animGif
-                .toDataSource(context).openSource()
-                .buffer().use { it.readByteArray() }
+                .toDataSource(context).toByteArray()
         )
         val gifDrawable2 = GifDrawable(
             ComposeResImageFiles.animGif
-                .toDataSource(context).openSource()
-                .buffer().use { it.readByteArray() }
+                .toDataSource(context).toByteArray()
         )
         val gifDrawable3 = GifDrawable(
             ComposeResImageFiles.animGif
-                .toDataSource(context).openSource()
-                .buffer().use { it.readByteArray() }
+                .toDataSource(context).toByteArray()
         )
         val element1 = GifDrawableWrapperDrawable(gifDrawable)
         val element11 = GifDrawableWrapperDrawable(gifDrawable)
@@ -103,8 +99,7 @@ class GifDrawableWrapperDrawableTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val gifDrawable = GifDrawable(
             ComposeResImageFiles.animGif
-                .toDataSource(context).openSource()
-                .buffer().use { it.readByteArray() }
+                .toDataSource(context).toByteArray()
         )
         assertEquals(
             "GifDrawableWrapperDrawable(480x480)",

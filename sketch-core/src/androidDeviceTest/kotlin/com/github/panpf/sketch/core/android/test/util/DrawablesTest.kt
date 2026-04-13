@@ -44,6 +44,7 @@ import com.github.panpf.sketch.createBitmap
 import com.github.panpf.sketch.drawable.asEquitable
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.size
+import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.test.utils.TestColor
 import com.github.panpf.sketch.test.utils.TestKeyDrawable
 import com.github.panpf.sketch.test.utils.TestNullableKeyDrawable
@@ -60,7 +61,6 @@ import com.github.panpf.sketch.util.toLogString
 import com.github.panpf.sketch.util.toSizeString
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 import kotlinx.coroutines.test.runTest
-import okio.buffer
 import org.junit.runner.RunWith
 import java.nio.ByteBuffer
 import kotlin.test.Test
@@ -255,9 +255,7 @@ class DrawablesTest {
         }
 
         if (VERSION.SDK_INT >= VERSION_CODES.P) {
-            val bytes = ComposeResImageFiles.animGif.toDataSource(context).openSource()
-                .buffer()
-                .use { it.readByteArray() }
+            val bytes = ComposeResImageFiles.animGif.toDataSource(context).toByteArray()
             ImageDecoder.decodeDrawable(ImageDecoder.createSource(ByteBuffer.wrap(bytes)))
                 .asOrThrow<AnimatedImageDrawable>().apply {
                     assertEquals(
@@ -449,9 +447,7 @@ class DrawablesTest {
         }
 
         if (VERSION.SDK_INT >= VERSION_CODES.P) {
-            val bytes = ComposeResImageFiles.animGif.toDataSource(context).openSource()
-                .buffer()
-                .use { it.readByteArray() }
+            val bytes = ComposeResImageFiles.animGif.toDataSource(context).toByteArray()
             ImageDecoder.decodeDrawable(ImageDecoder.createSource(ByteBuffer.wrap(bytes)))
                 .asOrThrow<AnimatedImageDrawable>().apply {
                     assertEquals(

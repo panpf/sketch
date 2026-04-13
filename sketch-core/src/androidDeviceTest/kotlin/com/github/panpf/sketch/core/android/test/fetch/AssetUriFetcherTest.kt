@@ -23,13 +23,13 @@ import com.github.panpf.sketch.fetch.newAssetUri
 import com.github.panpf.sketch.images.AssetImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.AssetDataSource
+import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toUri
 import kotlinx.coroutines.test.runTest
-import okio.buffer
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -80,7 +80,7 @@ class AssetUriFetcherTest {
         val source = fetcher.fetch().getOrThrow().dataSource
         assertTrue(source is AssetDataSource)
 
-        source.openSource().buffer().use { it.readByteArray() }
+        source.toByteArray()
     }
 
     @Test
