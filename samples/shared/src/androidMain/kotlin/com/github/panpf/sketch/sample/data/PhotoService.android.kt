@@ -39,13 +39,24 @@ actual class PhotoService actual constructor(val sketch: Sketch) {
         pageSize: Int
     ): List<Photo> = withContext(Dispatchers.IO) {
         val context = sketch.context
-        val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val contentUri = MediaStore.Files.getContentUri("external")
         val projection = arrayOf(
-            MediaStore.Images.Media._ID,
-            MediaStore.Images.Media.DATE_ADDED
+            MediaStore.Files.FileColumns._ID,
+            MediaStore.Files.FileColumns.DATE_ADDED
         )
         val cursor = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val queryArgs = Bundle().apply {
+                putString(
+                    ContentResolver.QUERY_ARG_SQL_SELECTION,
+                    "${MediaStore.Files.FileColumns.MEDIA_TYPE} = ? OR ${MediaStore.Files.FileColumns.MEDIA_TYPE} = ?"
+                )
+                putStringArray(
+                    ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS,
+                    arrayOf(
+                        MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE.toString(),
+                        MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO.toString()
+                    )
+                )
                 putInt(ContentResolver.QUERY_ARG_OFFSET, pageStart)
                 putInt(ContentResolver.QUERY_ARG_LIMIT, pageSize)
                 putStringArray(
@@ -64,13 +75,19 @@ actual class PhotoService actual constructor(val sketch: Sketch) {
                 /* cancellationSignal = */ null,
             )
         } else {
+            val selection =
+                "${MediaStore.Files.FileColumns.MEDIA_TYPE} = ? OR ${MediaStore.Files.FileColumns.MEDIA_TYPE} = ?"
+            val selectionArgs = arrayOf(
+                MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE.toString(),
+                MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO.toString()
+            )
             val sortOrder =
-                "${MediaStore.Images.Media.DATE_ADDED} DESC limit $pageStart,$pageSize"
+                "${MediaStore.Files.FileColumns.DATE_ADDED} DESC limit $pageStart,$pageSize"
             context.contentResolver.query(
                 /* uri = */ contentUri,
                 /* projection = */ projection,
-                /* selection = */ null,
-                /* selectionArgs = */ null,
+                /* selection = */ selection,
+                /* selectionArgs = */ selectionArgs,
                 /* sortOrder = */ sortOrder
             )
         } ?: return@withContext emptyList()
@@ -80,7 +97,7 @@ actual class PhotoService actual constructor(val sketch: Sketch) {
 
         cursor.use {
             mutableListOf<Photo>().apply {
-                val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
+                val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns._ID)
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(idColumn)
                     val imageUri = ContentUris.withAppendedId(contentUri, id)
