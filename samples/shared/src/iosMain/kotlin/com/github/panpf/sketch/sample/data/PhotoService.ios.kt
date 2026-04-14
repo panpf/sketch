@@ -3,7 +3,6 @@ package com.github.panpf.sketch.sample.data
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.isFileUri
 import com.github.panpf.sketch.fetch.isPhotosAssetUri
-import com.github.panpf.sketch.fetch.newPhotosAssetUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.sample.ui.model.Photo
@@ -18,11 +17,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import okio.buffer
-import okio.use
 import platform.Foundation.NSData
 import platform.Foundation.create
-import platform.Photos.PHAssetChangeRequest
+import platform.Photos.PHAssetCreationRequest
+import platform.Photos.PHAssetResourceTypePhoto
 import platform.Photos.PHPhotoLibrary
 import platform.UIKit.UIActivityViewController
 import platform.UIKit.UIApplication
@@ -59,10 +57,7 @@ actual class PhotoService actual constructor(val sketch: Sketch) {
         val data = imageBytes.usePinned { pinned ->
             NSData.create(bytes = pinned.addressOf(0), length = imageBytes.size.toULong())
         }
-        val uiImage = UIImage.imageWithData(data)
-            ?: return Result.failure(Exception("Unable to create UIImage"))
-
-        val result = saveUiImageToGallery(uiImage)
+        val result = saveImageDataToGallery(data)
         return if (result.isSuccess && result.getOrThrow()) {
             Result.success(null)
         } else {
@@ -109,13 +104,19 @@ actual class PhotoService actual constructor(val sketch: Sketch) {
         return Result.success(null)
     }
 
-    private suspend fun saveUiImageToGallery(uiImage: UIImage): Result<Boolean> =
+    private suspend fun saveImageDataToGallery(data: NSData): Result<Boolean> =
         withContext(Dispatchers.IO) {
             try {
                 val success = suspendCancellableCoroutine { continuation ->
+                    // Only in this way can GIF be supported. Directly using UIImage to write to the album will lose the animation effect of GIF.
                     PHPhotoLibrary.sharedPhotoLibrary().performChanges(
                         changeBlock = {
-                            PHAssetChangeRequest.creationRequestForAssetFromImage(uiImage)
+                            val request = PHAssetCreationRequest.creationRequestForAsset()
+                            request.addResourceWithType(
+                                type = PHAssetResourceTypePhoto,
+                                data = data,
+                                options = null
+                            )
                         },
                         completionHandler = { success, error ->
                             val result = if (error != null) {
