@@ -246,9 +246,9 @@ class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
             lifecycleScope.launch {
                 val result = photoViewerViewModel.share(imageUri)
                 if (result.isSuccess) {
-                    showLongToast("Save photo to gallery successfully")
+                    showLongToast("Save photo successfully")
                 } else {
-                    showLongToast("Save photo to gallery failed: ${result.exceptionOrNull()?.message}")
+                    showLongToast("Save photo failed: ${result.exceptionOrNull()?.message}")
                 }
             }
         } else {
@@ -258,9 +258,9 @@ class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
                 lifecycleScope.launch {
                     val result = photoViewerViewModel.share(imageUri)
                     if (result.isSuccess) {
-                        showLongToast("Save photo to gallery successfully")
+                        showLongToast("Save photo successfully")
                     } else {
-                        showLongToast("Save photo to gallery failed: ${result.exceptionOrNull()?.message}")
+                        showLongToast("Save photo failed: ${result.exceptionOrNull()?.message}")
                     }
                 }
             }

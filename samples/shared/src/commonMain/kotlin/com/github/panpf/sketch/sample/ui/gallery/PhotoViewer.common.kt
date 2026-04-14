@@ -112,9 +112,9 @@ suspend fun handleShareActionResult(appEvents: AppEvents, result: Result<String?
 
 suspend fun handleSaveActionResult(appEvents: AppEvents, result: Result<String?>) {
     if (result.isSuccess) {
-        appEvents.toastFlow.emit("Save photo to gallery successfully")
+        appEvents.toastFlow.emit("Save photo successfully")
     } else {
-        appEvents.toastFlow.emit("Save photo to gallery failed: ${result.exceptionOrNull()?.message}")
+        appEvents.toastFlow.emit("Save photo failed: ${result.exceptionOrNull()?.message}")
     }
 }
 

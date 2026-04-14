@@ -14,6 +14,8 @@ import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.fetch.isContentUri
+import com.github.panpf.sketch.fetch.isFileUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.sample.image.photoUri2PhotoInfo
@@ -22,6 +24,7 @@ import com.github.panpf.sketch.sample.ui.util.checkPermissionGranted
 import com.github.panpf.sketch.sample.util.md5
 import com.github.panpf.sketch.util.MimeTypeMap
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toUri
 import com.github.panpf.tools4a.fileprovider.ktx.getShareFileUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -90,6 +93,10 @@ actual class PhotoService actual constructor(val sketch: Sketch) {
 
     @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     actual suspend fun saveToGallery(imageUri: String): Result<String?> {
+        val uri = imageUri.toUri()
+        if (isContentUri(uri) || isFileUri(uri)) {
+            return Result.failure(Exception("Local photos do not need to be saved to the gallery"))
+        }
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             savePhotoToGalleryWithMediaStore(sketch.context, imageUri)
         } else if (checkPermissionGranted(
