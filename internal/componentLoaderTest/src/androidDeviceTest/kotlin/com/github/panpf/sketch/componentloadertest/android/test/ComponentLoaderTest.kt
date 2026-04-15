@@ -2,13 +2,14 @@ package com.github.panpf.sketch.componentloadertest.android.test
 
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import com.github.panpf.sketch.decode.AnimatedWebpDecoder
 import com.github.panpf.sketch.decode.ApkIconDecoder
 import com.github.panpf.sketch.decode.BlurHashDecoder
 import com.github.panpf.sketch.decode.FFmpegVideoFrameDecoder
-import com.github.panpf.sketch.decode.GifDecoder
 import com.github.panpf.sketch.decode.ImageDecoderAnimatedHeifDecoder
+import com.github.panpf.sketch.decode.ImageDecoderAnimatedWebpDecoder
+import com.github.panpf.sketch.decode.ImageDecoderGifDecoder
 import com.github.panpf.sketch.decode.KoralGifDecoder
+import com.github.panpf.sketch.decode.MovieGifDecoder
 import com.github.panpf.sketch.decode.SvgDecoder
 import com.github.panpf.sketch.decode.VideoFrameDecoder
 import com.github.panpf.sketch.decode.internal.AnimatedWebpDecoderProvider
@@ -83,19 +84,33 @@ class ComponentLoaderTest {
         assertNotNull(componentRegistry.fetchers.find { it is OkHttpHttpUriFetcher.Factory })
         assertNotNull(componentRegistry.fetchers.find { it is BlurHashUriFetcher.Factory })
 
-        if (VERSION.SDK_INT >= VERSION_CODES.R) {
-            assertEquals(9, componentRegistry.decoders.size)
-            assertNotNull(componentRegistry.decoders.find { it is ImageDecoderAnimatedHeifDecoder.Factory })
-        } else {
-            assertEquals(8, componentRegistry.decoders.size)
-            assertNull(componentRegistry.decoders.find { it is ImageDecoderAnimatedHeifDecoder.Factory })
+        var expectedDecoderSize = 9
+        if (VERSION.SDK_INT < VERSION_CODES.P) {
+            expectedDecoderSize--   // ImageDecoderAnimatedWebpDecoder
         }
+        if (VERSION.SDK_INT < VERSION_CODES.R) {
+            expectedDecoderSize--   // ImageDecoderAnimatedHeifDecoder
+        }
+        assertEquals(expectedDecoderSize, componentRegistry.decoders.size)
         assertNotNull(componentRegistry.decoders.find { it is KoralGifDecoder.Factory })
         assertNotNull(componentRegistry.decoders.find { it is ApkIconDecoder.Factory })
         assertNotNull(componentRegistry.decoders.find { it is VideoFrameDecoder.Factory })
         assertNotNull(componentRegistry.decoders.find { it is FFmpegVideoFrameDecoder.Factory })
-        assertNotNull(componentRegistry.decoders.find { it is GifDecoder.Factory })
-        assertNotNull(componentRegistry.decoders.find { it is AnimatedWebpDecoder.Factory })
+        if (VERSION.SDK_INT >= VERSION_CODES.P) {
+            assertNotNull(componentRegistry.decoders.find { it is ImageDecoderGifDecoder.Factory })
+        } else {
+            assertNotNull(componentRegistry.decoders.find { it is MovieGifDecoder.Factory })
+        }
+        if (VERSION.SDK_INT >= VERSION_CODES.P) {
+            assertNotNull(componentRegistry.decoders.find { it is ImageDecoderAnimatedWebpDecoder.Factory })
+        } else {
+            assertNull(componentRegistry.decoders.find { it is ImageDecoderAnimatedWebpDecoder.Factory })
+        }
+        if (VERSION.SDK_INT >= VERSION_CODES.R) {
+            assertNotNull(componentRegistry.decoders.find { it is ImageDecoderAnimatedHeifDecoder.Factory })
+        } else {
+            assertNull(componentRegistry.decoders.find { it is ImageDecoderAnimatedHeifDecoder.Factory })
+        }
         assertNotNull(componentRegistry.decoders.find { it is SvgDecoder.Factory })
         assertNotNull(componentRegistry.decoders.find { it is BlurHashDecoder.Factory })
 
@@ -114,19 +129,33 @@ class ComponentLoaderTest {
         assertNotNull(componentRegistry2.fetchers.find { it is OkHttpHttpUriFetcher.Factory })
         assertNotNull(componentRegistry2.fetchers.find { it is BlurHashUriFetcher.Factory })
 
-        if (VERSION.SDK_INT >= VERSION_CODES.R) {
-            assertEquals(8, componentRegistry2.decoders.size)
-            assertNotNull(componentRegistry2.decoders.find { it is ImageDecoderAnimatedHeifDecoder.Factory })
-        } else {
-            assertEquals(7, componentRegistry2.decoders.size)
-            assertNull(componentRegistry2.decoders.find { it is ImageDecoderAnimatedHeifDecoder.Factory })
+        var expectedDecoderSize2 = 8
+        if (VERSION.SDK_INT < VERSION_CODES.P) {
+            expectedDecoderSize2--   // ImageDecoderAnimatedWebpDecoder
         }
+        if (VERSION.SDK_INT < VERSION_CODES.R) {
+            expectedDecoderSize2--   // ImageDecoderAnimatedHeifDecoder
+        }
+        assertEquals(expectedDecoderSize2, componentRegistry2.decoders.size)
         assertNotNull(componentRegistry2.decoders.find { it is KoralGifDecoder.Factory })
         assertNotNull(componentRegistry2.decoders.find { it is ApkIconDecoder.Factory })
         assertNotNull(componentRegistry2.decoders.find { it is VideoFrameDecoder.Factory })
         assertNotNull(componentRegistry2.decoders.find { it is FFmpegVideoFrameDecoder.Factory })
-        assertNotNull(componentRegistry2.decoders.find { it is GifDecoder.Factory })
-        assertNotNull(componentRegistry2.decoders.find { it is AnimatedWebpDecoder.Factory })
+        if (VERSION.SDK_INT >= VERSION_CODES.P) {
+            assertNotNull(componentRegistry2.decoders.find { it is ImageDecoderGifDecoder.Factory })
+        } else {
+            assertNotNull(componentRegistry2.decoders.find { it is MovieGifDecoder.Factory })
+        }
+        if (VERSION.SDK_INT >= VERSION_CODES.P) {
+            assertNotNull(componentRegistry2.decoders.find { it is ImageDecoderAnimatedWebpDecoder.Factory })
+        } else {
+            assertNull(componentRegistry2.decoders.find { it is ImageDecoderAnimatedWebpDecoder.Factory })
+        }
+        if (VERSION.SDK_INT >= VERSION_CODES.R) {
+            assertNotNull(componentRegistry2.decoders.find { it is ImageDecoderAnimatedHeifDecoder.Factory })
+        } else {
+            assertNull(componentRegistry2.decoders.find { it is ImageDecoderAnimatedHeifDecoder.Factory })
+        }
         assertNull(componentRegistry2.decoders.find { it is SvgDecoder.Factory })
         assertNotNull(componentRegistry2.decoders.find { it is BlurHashDecoder.Factory })
     }

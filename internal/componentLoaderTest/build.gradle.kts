@@ -29,5 +29,8 @@ kotlin {
             api(projects.sketchVideo)
             api(projects.sketchVideoFfmpeg)
         }
+        iosMain.dependencies {
+            api(projects.sketchVideo)
+        }
     }
 }

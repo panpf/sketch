@@ -18,13 +18,23 @@ package com.github.panpf.sketch.decode
 
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import com.github.panpf.sketch.ComponentRegistry
+
+/**
+ * Adds webp animated image support
+ *
+ * @see com.github.panpf.sketch.animated.webp.android.test.decode.AnimatedWebpDecoderAndroidTest.testSupportAnimatedWebp
+ */
+actual fun ComponentRegistry.Builder.supportAnimatedWebp(): ComponentRegistry.Builder = apply {
+    defaultAnimatedWebpDecoderFactory()?.also { add(it) }
+}
 
 /**
  * Get the default GIF decoder factory for Android platforms
  *
  * @see com.github.panpf.sketch.animated.webp.android.test.decode.AnimatedWebpDecoderAndroidTest.testDefaultAnimatedWebpDecoderFactory
  */
-actual fun defaultAnimatedWebpDecoderFactory(): Decoder.Factory? {
+internal fun defaultAnimatedWebpDecoderFactory(): Decoder.Factory? {
     return if (VERSION.SDK_INT >= VERSION_CODES.P) {
         ImageDecoderAnimatedWebpDecoder.Factory()
     } else {

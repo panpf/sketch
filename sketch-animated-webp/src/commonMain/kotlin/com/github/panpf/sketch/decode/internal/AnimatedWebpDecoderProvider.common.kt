@@ -17,16 +17,18 @@
 package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.decode.AnimatedWebpDecoder
+import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.DecoderProvider
 
 /**
  * Cooperate with [ComponentLoader] to achieve automatic registration [AnimatedWebpDecoder]
  *
- * @see com.github.panpf.sketch.animated.webp.jvm.test.decode.internal.AnimatedWebpDecoderProviderJvmTest
- * @see com.github.panpf.sketch.animated.webp.nonjvm.test.decode.internal.AnimatedWebpDecoderProviderNonJvmTest
+ * @see com.github.panpf.sketch.animated.webp.android.test.decode.internal.AnimatedWebpDecoderProviderAndroidTest
+ * @see com.github.panpf.sketch.animated.webp.ios.test.decode.internal.AnimatedWebpDecoderProviderIosJvmTest
+ * @see com.github.panpf.sketch.animated.webp.desktop.test.decode.internal.AnimatedWebpDecoderProviderDesktopTest
+ * @see com.github.panpf.sketch.animated.webp.jscommon.test.decode.internal.AnimatedWebpDecoderProviderJsCommonTest
  */
 expect class AnimatedWebpDecoderProvider : DecoderProvider {
-    override fun factory(context: PlatformContext): AnimatedWebpDecoder.Factory
+    override fun factory(context: PlatformContext): Decoder.Factory?
 }

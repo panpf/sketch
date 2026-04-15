@@ -27,7 +27,7 @@ import com.github.panpf.sketch.source.DataSource
 /**
  * Adds gif support by Skia
  *
- * @see com.github.panpf.sketch.animated.gif.nonandroid.test.decode.GifSkiaAnimatedDecoderTest.testSupportGif
+ * @see com.github.panpf.sketch.animated.gif.nonandroid.test.decode.SkiaGifDecoderTest.testSupportSkiaGif
  */
 fun ComponentRegistry.Builder.supportSkiaGif(): ComponentRegistry.Builder = apply {
     add(SkiaGifDecoder.Factory())
@@ -54,7 +54,7 @@ fun ComponentRegistry.Builder.supportSkiaGif(): ComponentRegistry.Builder = appl
  * * scaleDecider
  * * animatedTransformation
  *
- * @see com.github.panpf.sketch.animated.gif.nonandroid.test.decode.GifSkiaAnimatedDecoderTest
+ * @see com.github.panpf.sketch.animated.gif.nonandroid.test.decode.SkiaGifDecoderTest
  */
 class SkiaGifDecoder(
     requestContext: RequestContext,

@@ -17,56 +17,13 @@
 package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.RequestContext
 
 /**
  * Adds gif animated image support
  *
- * @see com.github.panpf.sketch.animated.gif.common.test.decode.GifDecoderTest.testSupportGif
+ * @see com.github.panpf.sketch.animated.gif.android.test.decode.GifDecoderAndroidTest.testSupportGif
+ * @see com.github.panpf.sketch.animated.gif.desktop.test.decode.GifDecoderDesktopTest.testSupportGif
+ * @see com.github.panpf.sketch.animated.gif.ios.test.decode.GifDecoderIosTest.testSupportGif
+ * @see com.github.panpf.sketch.animated.gif.jscommon.test.decode.GifDecoderJsCommonTest.testSupportGif
  */
-fun ComponentRegistry.Builder.supportGif(): ComponentRegistry.Builder = apply {
-    add(GifDecoder.Factory())
-}
-
-/**
- * Decode gif animated image files
- *
- * @see com.github.panpf.sketch.animated.gif.common.test.decode.GifDecoderTest
- */
-class GifDecoder(val decoder: Decoder) : Decoder by decoder {
-
-    class Factory : Decoder.Factory {
-
-        private val decoderFactory = defaultGifDecoderFactory()
-
-        override val key: String = "GifDecoder(${decoderFactory.key})"
-
-        override fun create(
-            requestContext: RequestContext,
-            fetchResult: FetchResult
-        ): Decoder? {
-            val decoder = decoderFactory.create(requestContext, fetchResult) ?: return null
-            return GifDecoder(decoder)
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            return other != null && this::class == other::class
-        }
-
-        override fun hashCode(): Int {
-            return this::class.hashCode()
-        }
-
-        override fun toString(): String = "GifDecoder(decoderFactory=$decoderFactory)"
-    }
-}
-
-/**
- * Get the default GIF decoder factory
- *
- * @see com.github.panpf.sketch.animated.gif.android.test.decode.GifDecoderAndroidTest.testDefaultGifDecoderFactory
- * @see com.github.panpf.sketch.animated.gif.nonandroid.test.decode.GifDecoderNonAndroidTest.testDefaultGifDecoderFactory
- */
-expect fun defaultGifDecoderFactory(): Decoder.Factory
+expect fun ComponentRegistry.Builder.supportGif(): ComponentRegistry.Builder

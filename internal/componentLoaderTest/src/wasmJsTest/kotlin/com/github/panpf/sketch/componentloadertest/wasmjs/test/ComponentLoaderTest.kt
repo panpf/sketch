@@ -1,8 +1,8 @@
 package com.github.panpf.sketch.componentloadertest.wasmjs.test
 
-import com.github.panpf.sketch.decode.AnimatedWebpDecoder
 import com.github.panpf.sketch.decode.BlurHashDecoder
-import com.github.panpf.sketch.decode.GifDecoder
+import com.github.panpf.sketch.decode.SkiaAnimatedWebpDecoder
+import com.github.panpf.sketch.decode.SkiaGifDecoder
 import com.github.panpf.sketch.decode.SvgDecoder
 import com.github.panpf.sketch.decode.internal.AnimatedWebpDecoderProvider
 import com.github.panpf.sketch.decode.internal.BlurHashDecoderProvider
@@ -55,8 +55,8 @@ class ComponentLoaderTest {
         assertNotNull(componentRegistry.fetchers.find { it is BlurHashUriFetcher.Factory })
 
         assertEquals(4, componentRegistry.decoders.size)
-        assertNotNull(componentRegistry.decoders.find { it is GifDecoder.Factory })
-        assertNotNull(componentRegistry.decoders.find { it is AnimatedWebpDecoder.Factory })
+        assertNotNull(componentRegistry.decoders.find { it is SkiaGifDecoder.Factory })
+        assertNotNull(componentRegistry.decoders.find { it is SkiaAnimatedWebpDecoder.Factory })
         assertNotNull(componentRegistry.decoders.find { it is SvgDecoder.Factory })
         assertNotNull(componentRegistry.decoders.find { it is BlurHashDecoder.Factory })
 
@@ -73,8 +73,8 @@ class ComponentLoaderTest {
         assertNotNull(componentRegistry2.fetchers.find { it is BlurHashUriFetcher.Factory })
 
         assertEquals(3, componentRegistry2.decoders.size)
-        assertNotNull(componentRegistry2.decoders.find { it is GifDecoder.Factory })
-        assertNotNull(componentRegistry2.decoders.find { it is AnimatedWebpDecoder.Factory })
+        assertNotNull(componentRegistry2.decoders.find { it is SkiaGifDecoder.Factory })
+        assertNotNull(componentRegistry2.decoders.find { it is SkiaAnimatedWebpDecoder.Factory })
         assertNull(componentRegistry2.decoders.find { it is SvgDecoder.Factory })
         assertNotNull(componentRegistry2.decoders.find { it is BlurHashDecoder.Factory })
     }
