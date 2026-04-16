@@ -14,6 +14,8 @@ import android.provider.MediaStore
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.fetch.isAssetUri
+import com.github.panpf.sketch.fetch.isComposeResourceUri
 import com.github.panpf.sketch.fetch.isContentUri
 import com.github.panpf.sketch.fetch.isFileUri
 import com.github.panpf.sketch.request.ImageRequest
@@ -111,7 +113,7 @@ actual class PhotoService actual constructor(val sketch: Sketch) {
     @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     actual suspend fun saveToGallery(imageUri: String): Result<String?> {
         val uri = imageUri.toUri()
-        if (isContentUri(uri) || isFileUri(uri)) {
+        if (isContentUri(uri) || (isFileUri(uri) && !isComposeResourceUri(uri) && !isAssetUri(uri))) {
             return Result.failure(Exception("Local photos do not need to be saved to the gallery"))
         }
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

@@ -2,7 +2,9 @@ package com.github.panpf.sketch.sample.data
 
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.fetch.isComposeResourceUri
 import com.github.panpf.sketch.fetch.isFileUri
+import com.github.panpf.sketch.fetch.isKotlinResourceUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.sample.AppSettings
@@ -71,7 +73,7 @@ actual class PhotoService actual constructor(val sketch: Sketch) {
 
     actual suspend fun saveToGallery(imageUri: String): Result<String?> {
         val uri = imageUri.toUri()
-        if (isFileUri(uri)) {
+        if (isFileUri(uri) && !isComposeResourceUri(uri) && !isKotlinResourceUri(uri)) {
             return Result.failure(Exception("Local photos do not need to be saved to the gallery"))
         }
         val fetchResultResult = withContext(Dispatchers.IO) {
