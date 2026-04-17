@@ -25,7 +25,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 
-enum class MultiplatformTargets {
+enum class KmpTarget {
     Android,
     Desktop,
     Js,
@@ -33,38 +33,28 @@ enum class MultiplatformTargets {
     IosX64,
     IosArm64,
     IosSimulatorArm64,
-//    MacosX64,
-//    MacosArm64
 }
 
-fun Project.addAllMultiplatformTargets(vararg targets: MultiplatformTargets) {
+fun Project.addMultiplatformTargets(kmpTargets: Array<KmpTarget>) {
     plugins.withId("org.jetbrains.kotlin.multiplatform") {
         extensions.configure<KotlinMultiplatformExtension> {
             applyMyHierarchyTemplate()
 
-            if (targets.isEmpty() || targets.contains(MultiplatformTargets.Android)) {
-                val isAndroidApp = plugins.hasPlugin("com.android.application")
-                val isAndroidLibrary = plugins.hasPlugin("com.android.library")
-                if (isAndroidApp || isAndroidLibrary) {
-                    androidTarget {
-                        if (isAndroidLibrary) {
-                            publishLibraryVariants("release")
-                        }
-                    }
-                }
+            if (kmpTargets.contains(KmpTarget.Android)) {
+                androidLibrary {}
             }
 
-            if (targets.isEmpty() || targets.contains(MultiplatformTargets.Desktop)) {
+            if (kmpTargets.contains(KmpTarget.Desktop)) {
                 jvm("desktop")
             }
 
-            if (targets.isEmpty() || targets.contains(MultiplatformTargets.Js)) {
+            if (kmpTargets.contains(KmpTarget.Js)) {
                 js {
-                    browser()
-                    nodejs {
+                    browser {
                         testTask {
-                            useMocha {
-                                timeout = "60s"
+                            useKarma {
+//                                useChrome()
+                                useChromeHeadless()
                             }
                         }
                     }
@@ -73,18 +63,15 @@ fun Project.addAllMultiplatformTargets(vararg targets: MultiplatformTargets) {
                 }
             }
 
-            if (targets.isEmpty() || targets.contains(MultiplatformTargets.WasmJs)) {
+            if (kmpTargets.contains(KmpTarget.WasmJs)) {
                 @OptIn(ExperimentalWasmDsl::class)
                 wasmJs {
-                    // TODO: Fix wasm tests.
                     browser {
                         testTask {
-                            enabled = false
-                        }
-                    }
-                    nodejs {
-                        testTask {
-                            enabled = false
+                            useKarma {
+//                                useChrome()
+                                useChromeHeadless()
+                            }
                         }
                     }
                     binaries.executable()
@@ -92,36 +79,28 @@ fun Project.addAllMultiplatformTargets(vararg targets: MultiplatformTargets) {
                 }
             }
 
-            if (targets.isEmpty() || targets.contains(MultiplatformTargets.IosX64)) {
+            if (kmpTargets.contains(KmpTarget.IosX64)) {
                 iosX64()
             }
-            if (targets.isEmpty() || targets.contains(MultiplatformTargets.IosArm64)) {
+            if (kmpTargets.contains(KmpTarget.IosArm64)) {
                 iosArm64()
             }
-            if (targets.isEmpty() || targets.contains(MultiplatformTargets.IosSimulatorArm64)) {
+            if (kmpTargets.contains(KmpTarget.IosSimulatorArm64)) {
                 iosSimulatorArm64()
             }
-
-//            if (targets.isEmpty() || targets.contains(MultiplatformTargets.MacosX64)) {
-//                macosX64()
-//            }
-//            if (targets.isEmpty() || targets.contains(MultiplatformTargets.MacosArm64)) {
-//                macosArm64()
-//            }
         }
 
-        if (targets.isEmpty() || targets.contains(MultiplatformTargets.Js)) {
+        if (kmpTargets.contains(KmpTarget.Js)) {
             applyKotlinJsImplicitDependencyWorkaround()
         }
-        if (targets.isEmpty() || targets.contains(MultiplatformTargets.WasmJs)) {
+        if (kmpTargets.contains(KmpTarget.WasmJs)) {
             applyKotlinWasmJsImplicitDependencyWorkaround()
-        }
-        // An error occurs when compiling js or wasmJs:
-        // Resolving dependency configuration 'androidDebugAndroidTestCompilationApi' is not allowed as it is defined as 'canBeResolved=false'.
-        //Instead, a resolvable ('canBeResolved=true') dependency configuration that extends 'androidDebugAndroidTestCompilationApi' should be resolved.
-//        if (targets.isEmpty() || targets.contains(MultiplatformTargets.WasmJs)) {
+
+            // An error occurs when compiling js or wasmJs:
+            // Resolving dependency configuration 'androidDebugAndroidTestCompilationApi' is not allowed as it is defined as 'canBeResolved=false'.
+            // Instead, a resolvable ('canBeResolved=true') dependency configuration that extends 'androidDebugAndroidTestCompilationApi' should be resolved.
 //            createSkikoWasmJsRuntimeDependency()
-//        }
+        }
     }
 }
 
@@ -143,7 +122,7 @@ fun Project.applyKotlinJsImplicitDependencyWorkaround() {
         }
         named("jsBrowserProductionWebpack").configure(configureJs)
         named("jsBrowserProductionLibraryDistribution").configure(configureJs)
-        named("jsNodeProductionLibraryDistribution").configure(configureJs)
+//        named("jsNodeProductionLibraryDistribution").configure(configureJs)
     }
 }
 
@@ -165,7 +144,7 @@ fun Project.applyKotlinWasmJsImplicitDependencyWorkaround() {
         }
         named("wasmJsBrowserProductionWebpack").configure(configureWasmJs)
         named("wasmJsBrowserProductionLibraryDistribution").configure(configureWasmJs)
-        named("wasmJsNodeProductionLibraryDistribution").configure(configureWasmJs)
+//        named("wasmJsNodeProductionLibraryDistribution").configure(configureWasmJs)
     }
 }
 
@@ -174,6 +153,9 @@ val NamedDomainObjectContainer<KotlinSourceSet>.androidUnitTest: NamedDomainObje
 
 val NamedDomainObjectContainer<KotlinSourceSet>.androidInstrumentedTest: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("androidInstrumentedTest")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.androidDeviceTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("androidDeviceTest")
 
 val NamedDomainObjectContainer<KotlinSourceSet>.desktopMain: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("desktopMain")

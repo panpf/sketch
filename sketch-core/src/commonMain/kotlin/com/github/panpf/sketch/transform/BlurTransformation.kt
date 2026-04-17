@@ -38,7 +38,8 @@ import com.github.panpf.sketch.util.mutableCopy
  */
 data class BlurTransformation constructor(
     /** Blur radius */
-    @IntRange(from = 0, to = 100)
+    @field:IntRange(from = 0, to = 100)
+    @param:IntRange(from = 0, to = 100)
     val radius: Int = 15,
 
     /** If the Bitmap has transparent pixels, it will force the Bitmap to add an opaque background color and then blur it */

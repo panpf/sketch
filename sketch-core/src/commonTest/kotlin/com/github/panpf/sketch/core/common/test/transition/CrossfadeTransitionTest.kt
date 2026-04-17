@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.core.common.test.transition
 
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.resize.Precision
@@ -53,7 +53,7 @@ class CrossfadeTransitionTest {
     @Test
     fun testFactoryCreate() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         val factory = CrossfadeTransition.Factory()
         val target = TestTransitionTarget()
 

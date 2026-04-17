@@ -9,7 +9,7 @@ import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.drawable.ResizeAnimatableDrawable
 import com.github.panpf.sketch.drawable.ResizeDrawable
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.ViewResizeOnDrawHelper
@@ -128,7 +128,7 @@ class ViewResizeOnDrawHelperTest {
             val resources = activity.resources
             val imageView = activity.imageView
 
-            val imageUri = ResourceImages.jpeg.uri
+            val imageUri = ComposeResImageFiles.jpeg.uri
             val bitmapDrawable =
                 BitmapDrawable(resources, Bitmap.createBitmap(100, 200, Bitmap.Config.RGB_565))
 

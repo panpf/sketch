@@ -19,8 +19,7 @@ package com.github.panpf.sketch.view.koin.test
 import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.loadAssetImage
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.loadResourceImage
@@ -54,14 +53,14 @@ class ImageViewKoinExtensionsTest {
             val imageView = activity.imageView
 
             assertNull(imageView.drawable)
-            imageView.loadImage(ResourceImages.jpeg.uri).job.join()
+            imageView.loadImage(ComposeResImageFiles.jpeg.uri).job.join()
             assertNotNull(imageView.drawable)
 
             withContext(Dispatchers.Main) {
                 imageView.setImageDrawable(null)
             }
             assertNull(imageView.drawable)
-            imageView.loadImage(Uri.parse(ResourceImages.png.uri)).job.join()
+            imageView.loadImage(Uri.parse(ComposeResImageFiles.png.uri)).job.join()
             assertNotNull(imageView.drawable)
             imageView.setImageDrawable(null)
             assertNull(imageView.drawable)
@@ -108,7 +107,7 @@ class ImageViewKoinExtensionsTest {
                 imageView.setImageDrawable(null)
             }
             assertNull(imageView.drawable)
-            imageView.loadImage(ResourceImages.animGif.uri).job.join()
+            imageView.loadImage(ComposeResImageFiles.animGif.uri).job.join()
             assertNotNull(imageView.drawable)
             withContext(Dispatchers.Main) {
                 imageView.setImageDrawable(null)
@@ -123,7 +122,8 @@ class ImageViewKoinExtensionsTest {
             assertNull(imageView.drawable)
 
             val sketch = KoinPlatform.getKoin().get<Sketch>()
-            val file = ResourceImages.png.toDataSource(getTestContext()).getFile(sketch).toFile()
+            val file =
+                ComposeResImageFiles.png.toDataSource(getTestContext()).getFile(sketch).toFile()
             imageView.loadImage(file).job.join()
             assertNotNull(imageView.drawable)
             withContext(Dispatchers.Main) {

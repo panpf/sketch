@@ -16,7 +16,7 @@
 
 package com.github.panpf.sketch.core.common.test.state
 
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.state.CurrentStateImage
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -61,7 +61,7 @@ class CurrentStateImageTest {
     fun testGetImage() {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         assertNull(request.target)
         CurrentStateImage().apply {
             assertNull(getImage(sketch, request, null))
@@ -73,7 +73,7 @@ class CurrentStateImageTest {
         }
 
         val stateImage2 = FakeStateImage(FakeImage(SketchSize(200, 200)))
-        val request2 = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request2 = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             target(TestTarget(currentImage = stateImage2.image))
         }
         assertEquals(stateImage2.image, request2.target?.currentImage)

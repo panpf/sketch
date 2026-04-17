@@ -16,7 +16,7 @@
 
 package com.github.panpf.sketch.extensions.core.common.test.request
 
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ignorePauseLoadWhenScrolling
@@ -79,15 +79,18 @@ class PauseLoadWhenScrollingExtensionsTest {
             assertFalse(isPauseLoadWhenScrolling)
         }
 
-        val key1 = ImageRequest(context, ResourceImages.svg.uri).key
-        val key2 = ImageRequest(context, ResourceImages.svg.uri) {
+        val key1 = ImageRequest(context, ComposeResImageFiles.svg.uri).key
+        val key2 = ImageRequest(context, ComposeResImageFiles.svg.uri) {
             pauseLoadWhenScrolling()
         }.key
         assertNotEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).memoryCacheKey
-        val cacheKey2 = ImageRequest(context, ResourceImages.svg.uri) {
+            ImageRequest(
+                context,
+                ComposeResImageFiles.svg.uri
+            ).toRequestContext(sketch).memoryCacheKey
+        val cacheKey2 = ImageRequest(context, ComposeResImageFiles.svg.uri) {
             pauseLoadWhenScrolling(true)
         }.toRequestContext(sketch).memoryCacheKey
         assertEquals(cacheKey1, cacheKey2)
@@ -138,15 +141,18 @@ class PauseLoadWhenScrollingExtensionsTest {
             assertFalse(isIgnoredPauseLoadWhenScrolling)
         }
 
-        val key1 = ImageRequest(context, ResourceImages.svg.uri).key
-        val key2 = ImageRequest(context, ResourceImages.svg.uri) {
+        val key1 = ImageRequest(context, ComposeResImageFiles.svg.uri).key
+        val key2 = ImageRequest(context, ComposeResImageFiles.svg.uri) {
             ignorePauseLoadWhenScrolling()
         }.key
         assertNotEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).memoryCacheKey
-        val cacheKey2 = ImageRequest(context, ResourceImages.svg.uri) {
+            ImageRequest(
+                context,
+                ComposeResImageFiles.svg.uri
+            ).toRequestContext(sketch).memoryCacheKey
+        val cacheKey2 = ImageRequest(context, ComposeResImageFiles.svg.uri) {
             ignorePauseLoadWhenScrolling(true)
         }.toRequestContext(sketch).memoryCacheKey
         assertEquals(cacheKey1, cacheKey2)

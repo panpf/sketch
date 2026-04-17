@@ -281,7 +281,7 @@ fun ImageData.resize(resize: Resize): ImageData {
         null
     }
     return if (newBitmap != null) {
-        newResult(image = newBitmap.asImage()) {
+        newImageData(image = newBitmap.asImage()) {
             addTransformed(createResizeTransformed(resize))
         }
     } else {

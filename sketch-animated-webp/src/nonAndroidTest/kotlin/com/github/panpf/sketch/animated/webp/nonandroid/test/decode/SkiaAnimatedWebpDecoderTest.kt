@@ -6,8 +6,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.SkiaAnimatedWebpDecoder
 import com.github.panpf.sketch.decode.SkiaAnimatedWebpDecoder.Factory
 import com.github.panpf.sketch.decode.supportSkiaAnimatedWebp
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.colorSpace
@@ -18,11 +17,9 @@ import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.createDecoderOrDefault
 import com.github.panpf.sketch.test.utils.createDecoderOrNull
-import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.transform.AnimatedTransformation
@@ -85,9 +82,9 @@ class SkiaAnimatedWebpDecoderTest {
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, ResourceImages.animWebp.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.animWebp.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.animWebp.toDataSource(context)
+        val dataSource = ComposeResImageFiles.animWebp.toDataSource(context)
 
         SkiaAnimatedWebpDecoder(requestContext, dataSource)
         SkiaAnimatedWebpDecoder(requestContext = requestContext, dataSource = dataSource)
@@ -95,14 +92,10 @@ class SkiaAnimatedWebpDecoderTest {
 
     @Test
     fun testImageInfo() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
         val factory = Factory()
 
-        ImageRequest(context, ResourceImages.animWebp.uri)
+        ImageRequest(context, ComposeResImageFiles.animWebp.uri)
             .createDecoderOrDefault(sketch, factory)
             .apply {
                 assertEquals(
@@ -114,14 +107,10 @@ class SkiaAnimatedWebpDecoderTest {
 
     @Test
     fun testDecode() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
         val factory = Factory()
 
-        ImageRequest(context, ResourceImages.animWebp.uri) {
+        ImageRequest(context, ComposeResImageFiles.animWebp.uri) {
             colorSpace(ColorSpace.sRGB)
             onAnimationEnd { }
             onAnimationStart { }
@@ -146,7 +135,7 @@ class SkiaAnimatedWebpDecoderTest {
             )
         }
 
-        ImageRequest(context, ResourceImages.animWebp.uri) {
+        ImageRequest(context, ComposeResImageFiles.animWebp.uri) {
             repeatCount(3)
             size(300, 300)
         }.decode(sketch, factory).apply {
@@ -173,9 +162,9 @@ class SkiaAnimatedWebpDecoderTest {
     @Test
     fun testEqualsAndHashCode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.animWebp.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.animWebp.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.animWebp.toDataSource(context)
+        val dataSource = ComposeResImageFiles.animWebp.toDataSource(context)
         val element1 = SkiaAnimatedWebpDecoder(requestContext, dataSource)
         val element11 = SkiaAnimatedWebpDecoder(requestContext, dataSource)
 
@@ -188,9 +177,9 @@ class SkiaAnimatedWebpDecoderTest {
     @Test
     fun testToString() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.animWebp.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.animWebp.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.animWebp.toDataSource(context)
+        val dataSource = ComposeResImageFiles.animWebp.toDataSource(context)
         val decoder = SkiaAnimatedWebpDecoder(requestContext, dataSource)
         assertTrue(
             actual = decoder.toString().contains("SkiaAnimatedWebpDecoder"),
@@ -214,29 +203,31 @@ class SkiaAnimatedWebpDecoderTest {
 
     @Test
     fun testFactoryCreate() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
         val factory = Factory()
 
         // normal
-        ImageRequest(context, ResourceImages.animWebp.uri).createDecoderOrNull(sketch, factory) {
+        ImageRequest(context, ComposeResImageFiles.animWebp.uri).createDecoderOrNull(
+            sketch,
+            factory
+        ) {
             it.copy(mimeType = "image/webp")
         }.apply {
             assertTrue(actual = this is SkiaAnimatedWebpDecoder)
         }
 
         // no mimeType
-        ImageRequest(context, ResourceImages.animWebp.uri).createDecoderOrNull(sketch, factory) {
+        ImageRequest(context, ComposeResImageFiles.animWebp.uri).createDecoderOrNull(
+            sketch,
+            factory
+        ) {
             it.copy(mimeType = null)
         }.apply {
             assertTrue(actual = this is SkiaAnimatedWebpDecoder)
         }
 
         // Disguised mimeType
-        ImageRequest(context, ResourceImages.animWebp.uri)
+        ImageRequest(context, ComposeResImageFiles.animWebp.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/jpeg")
             }.apply {
@@ -244,7 +235,7 @@ class SkiaAnimatedWebpDecoderTest {
             }
 
         // disallowAnimatedImage true
-        ImageRequest(context, ResourceImages.animWebp.uri) {
+        ImageRequest(context, ComposeResImageFiles.animWebp.uri) {
             disallowAnimatedImage()
         }.createDecoderOrNull(sketch, factory) {
             it.copy(mimeType = null)
@@ -253,7 +244,7 @@ class SkiaAnimatedWebpDecoderTest {
         }
 
         // data error
-        ImageRequest(context, ResourceImages.png.uri)
+        ImageRequest(context, ComposeResImageFiles.png.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = null)
             }.apply {
@@ -261,7 +252,7 @@ class SkiaAnimatedWebpDecoderTest {
             }
 
         // Correct mimeType; data error
-        ImageRequest(context, ResourceImages.png.uri)
+        ImageRequest(context, ComposeResImageFiles.png.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/webp")
             }.apply {

@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.core.common.test.request.internal
 
 import com.github.panpf.sketch.cache.CachePolicy
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.BaseRequestManager
@@ -166,7 +166,7 @@ class BaseRequestManagerTest {
         val requestManager = target1.getRequestManager().asOrThrow<BaseRequestManager>()
 
         assertNull(target1.successImage)
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(Size.Origin)
             target(target1)
             memoryCachePolicy(CachePolicy.DISABLED)

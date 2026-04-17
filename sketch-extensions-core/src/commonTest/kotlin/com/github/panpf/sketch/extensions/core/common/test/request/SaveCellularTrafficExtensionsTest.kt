@@ -16,7 +16,7 @@
 
 package com.github.panpf.sketch.extensions.core.common.test.request
 
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
@@ -86,15 +86,18 @@ class SaveCellularTrafficExtensionsTest {
             assertFalse(isSaveCellularTraffic)
         }
 
-        val key1 = ImageRequest(context, ResourceImages.svg.uri).key
-        val key2 = ImageRequest(context, ResourceImages.svg.uri) {
+        val key1 = ImageRequest(context, ComposeResImageFiles.svg.uri).key
+        val key2 = ImageRequest(context, ComposeResImageFiles.svg.uri) {
             saveCellularTraffic()
         }.key
         assertNotEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).memoryCacheKey
-        val cacheKey2 = ImageRequest(context, ResourceImages.svg.uri) {
+            ImageRequest(
+                context,
+                ComposeResImageFiles.svg.uri
+            ).toRequestContext(sketch).memoryCacheKey
+        val cacheKey2 = ImageRequest(context, ComposeResImageFiles.svg.uri) {
             saveCellularTraffic(true)
         }.toRequestContext(sketch).memoryCacheKey
         assertEquals(cacheKey1, cacheKey2)
@@ -145,15 +148,18 @@ class SaveCellularTrafficExtensionsTest {
             assertFalse(isIgnoredSaveCellularTraffic)
         }
 
-        val key1 = ImageRequest(context, ResourceImages.svg.uri).key
-        val key2 = ImageRequest(context, ResourceImages.svg.uri) {
+        val key1 = ImageRequest(context, ComposeResImageFiles.svg.uri).key
+        val key2 = ImageRequest(context, ComposeResImageFiles.svg.uri) {
             ignoreSaveCellularTraffic()
         }.key
         assertNotEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).memoryCacheKey
-        val cacheKey2 = ImageRequest(context, ResourceImages.svg.uri) {
+            ImageRequest(
+                context,
+                ComposeResImageFiles.svg.uri
+            ).toRequestContext(sketch).memoryCacheKey
+        val cacheKey2 = ImageRequest(context, ComposeResImageFiles.svg.uri) {
             ignoreSaveCellularTraffic(true)
         }.toRequestContext(sketch).memoryCacheKey
         assertEquals(cacheKey1, cacheKey2)
@@ -204,28 +210,34 @@ class SaveCellularTrafficExtensionsTest {
             assertFalse(isDepthFromSaveCellularTraffic)
         }
 
-        val key1 = ImageRequest(context, ResourceImages.svg.uri).key
-        val key2 = ImageRequest(context, ResourceImages.svg.uri) {
+        val key1 = ImageRequest(context, ComposeResImageFiles.svg.uri).key
+        val key2 = ImageRequest(context, ComposeResImageFiles.svg.uri) {
             depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
         }.key
         assertEquals(key1, key2)
 
         val cacheKey1 =
-            ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).memoryCacheKey
-        val cacheKey2 = ImageRequest(context, ResourceImages.svg.uri) {
+            ImageRequest(
+                context,
+                ComposeResImageFiles.svg.uri
+            ).toRequestContext(sketch).memoryCacheKey
+        val cacheKey2 = ImageRequest(context, ComposeResImageFiles.svg.uri) {
             depth(NETWORK, SAVE_CELLULAR_TRAFFIC_KEY)
         }.toRequestContext(sketch).memoryCacheKey
         assertEquals(cacheKey1, cacheKey2)
 
-        val key11 = ImageRequest(context, ResourceImages.svg.uri).key
-        val key22 = ImageRequest(context, ResourceImages.svg.uri) {
+        val key11 = ImageRequest(context, ComposeResImageFiles.svg.uri).key
+        val key22 = ImageRequest(context, ComposeResImageFiles.svg.uri) {
             depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
         }.key
         assertNotEquals(key11, key22)
 
         val cacheKey11 =
-            ImageRequest(context, ResourceImages.svg.uri).toRequestContext(sketch).memoryCacheKey
-        val cacheKey22 = ImageRequest(context, ResourceImages.svg.uri) {
+            ImageRequest(
+                context,
+                ComposeResImageFiles.svg.uri
+            ).toRequestContext(sketch).memoryCacheKey
+        val cacheKey22 = ImageRequest(context, ComposeResImageFiles.svg.uri) {
             depth(LOCAL, SAVE_CELLULAR_TRAFFIC_KEY)
         }.toRequestContext(sketch).memoryCacheKey
         assertEquals(cacheKey11, cacheKey22)

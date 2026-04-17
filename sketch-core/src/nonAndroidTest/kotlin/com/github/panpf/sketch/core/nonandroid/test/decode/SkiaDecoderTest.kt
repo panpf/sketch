@@ -5,8 +5,7 @@ import com.github.panpf.sketch.decode.SkiaDecoder
 import com.github.panpf.sketch.decode.internal.getInSampledTransformed
 import com.github.panpf.sketch.decode.internal.getResizeTransformed
 import com.github.panpf.sketch.decode.internal.getSubsamplingTransformed
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.colorType
@@ -53,9 +52,9 @@ class SkiaDecoderTest {
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.jpeg.toDataSource(context)
+        val dataSource = ComposeResImageFiles.jpeg.toDataSource(context)
 
         SkiaDecoder(requestContext, dataSource)
         SkiaDecoder(requestContext = requestContext, dataSource = dataSource)
@@ -66,7 +65,7 @@ class SkiaDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = SkiaDecoder.Factory()
 
-        ResourceImages.statics.forEach { imageFile ->
+        ComposeResImageFiles.statics.forEach { imageFile ->
             try {
                 ImageRequest(context, imageFile.uri)
                     .createDecoderOrDefault(sketch, factory)
@@ -89,7 +88,7 @@ class SkiaDecoderTest {
     fun testDecodeDefault() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(3000, 3000)
             precision(LESS_PIXELS)
         }.decode(sketch).apply {
@@ -106,7 +105,7 @@ class SkiaDecoderTest {
             assertNull(actual = transformeds)
         }
 
-        ImageRequest(context, ResourceImages.webp.uri) {
+        ImageRequest(context, ComposeResImageFiles.webp.uri) {
             size(3000, 3000)
             precision(LESS_PIXELS)
         }.decode(sketch).apply {
@@ -124,7 +123,7 @@ class SkiaDecoderTest {
         }
 
         // exif
-        ResourceImages.clockExifs.forEach { imageFile ->
+        ComposeResImageFiles.clockExifs.forEach { imageFile ->
             ImageRequest(context, imageFile.uri) {
                 size(3000, 3000)
                 precision(LESS_PIXELS)
@@ -148,7 +147,7 @@ class SkiaDecoderTest {
     fun testDecodeColorType() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(3000, 3000)
             precision(LESS_PIXELS)
             colorType(ColorType.RGB_565)
@@ -166,7 +165,7 @@ class SkiaDecoderTest {
             assertNull(actual = transformeds)
         }
 
-        ImageRequest(context, ResourceImages.webp.uri) {
+        ImageRequest(context, ComposeResImageFiles.webp.uri) {
             size(3000, 3000)
             precision(LESS_PIXELS)
             colorType(ColorType.RGB_565)
@@ -189,7 +188,7 @@ class SkiaDecoderTest {
     fun testDecodeColorSpace() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(3000, 3000)
             precision(LESS_PIXELS)
         }.decode(sketch).apply {
@@ -207,7 +206,7 @@ class SkiaDecoderTest {
             assertEquals(expected = ColorSpace.sRGB, actual = bitmap.colorSpace)
         }
 
-        ImageRequest(context, ResourceImages.webp.uri) {
+        ImageRequest(context, ComposeResImageFiles.webp.uri) {
             size(3000, 3000)
             precision(LESS_PIXELS)
         }.decode(sketch).apply {
@@ -225,7 +224,7 @@ class SkiaDecoderTest {
             assertEquals(expected = ColorSpace.sRGB, actual = bitmap.colorSpace)
         }
 
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(3000, 3000)
             precision(LESS_PIXELS)
             colorSpace(ColorSpace.displayP3)
@@ -244,7 +243,7 @@ class SkiaDecoderTest {
             assertEquals(expected = ColorSpace.displayP3, actual = bitmap.colorSpace)
         }
 
-        ImageRequest(context, ResourceImages.webp.uri) {
+        ImageRequest(context, ComposeResImageFiles.webp.uri) {
             size(3000, 3000)
             precision(LESS_PIXELS)
             colorSpace(ColorSpace.displayP3)
@@ -269,7 +268,7 @@ class SkiaDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
 
         // precision = LESS_PIXELS
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(800, 800)
             precision(LESS_PIXELS)
         }.decode(sketch).apply {
@@ -293,10 +292,10 @@ class SkiaDecoderTest {
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertNotNull(actual = transformeds?.getInSampledTransformed())
-            assertNull(actual = transformeds?.getSubsamplingTransformed())
-            assertNull(actual = transformeds?.getResizeTransformed())
+            assertNull(actual = transformeds.getSubsamplingTransformed())
+            assertNull(actual = transformeds.getResizeTransformed())
         }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(500, 500)
             precision(LESS_PIXELS)
         }.decode(sketch).apply {
@@ -320,12 +319,12 @@ class SkiaDecoderTest {
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertNotNull(actual = transformeds?.getInSampledTransformed())
-            assertNull(actual = transformeds?.getSubsamplingTransformed())
-            assertNull(actual = transformeds?.getResizeTransformed())
+            assertNull(actual = transformeds.getSubsamplingTransformed())
+            assertNull(actual = transformeds.getResizeTransformed())
         }
 
         // precision = SAME_ASPECT_RATIO
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
         }.decode(sketch).apply {
@@ -349,10 +348,10 @@ class SkiaDecoderTest {
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertNotNull(actual = transformeds?.getInSampledTransformed())
-            assertNotNull(actual = transformeds?.getSubsamplingTransformed())
-            assertNull(actual = transformeds?.getResizeTransformed())
+            assertNotNull(actual = transformeds.getSubsamplingTransformed())
+            assertNull(actual = transformeds.getResizeTransformed())
         }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(300, 500)
             precision(SAME_ASPECT_RATIO)
         }.decode(sketch).apply {
@@ -376,12 +375,12 @@ class SkiaDecoderTest {
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertNotNull(actual = transformeds?.getInSampledTransformed())
-            assertNotNull(actual = transformeds?.getSubsamplingTransformed())
-            assertNull(actual = transformeds?.getResizeTransformed())
+            assertNotNull(actual = transformeds.getSubsamplingTransformed())
+            assertNull(actual = transformeds.getResizeTransformed())
         }
 
         // precision = EXACTLY
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(500, 300)
             precision(EXACTLY)
         }.decode(sketch).apply {
@@ -401,10 +400,10 @@ class SkiaDecoderTest {
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertNotNull(actual = transformeds?.getInSampledTransformed())
-            assertNotNull(actual = transformeds?.getSubsamplingTransformed())
-            assertNotNull(actual = transformeds?.getResizeTransformed())
+            assertNotNull(actual = transformeds.getSubsamplingTransformed())
+            assertNotNull(actual = transformeds.getResizeTransformed())
         }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(300, 500)
             precision(EXACTLY)
         }.decode(sketch).apply {
@@ -424,27 +423,27 @@ class SkiaDecoderTest {
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertNotNull(actual = transformeds?.getInSampledTransformed())
-            assertNotNull(actual = transformeds?.getSubsamplingTransformed())
-            assertNotNull(actual = transformeds?.getResizeTransformed())
+            assertNotNull(actual = transformeds.getSubsamplingTransformed())
+            assertNotNull(actual = transformeds.getResizeTransformed())
         }
 
         // scale
-        val startCropBitmap = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val startCropBitmap = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(START_CROP)
         }.decode(sketch).image.getBitmapOrThrow()
-        val centerCropBitmap = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val centerCropBitmap = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(CENTER_CROP)
         }.decode(sketch).image.getBitmapOrThrow()
-        val endCropBitmap = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val endCropBitmap = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(END_CROP)
         }.decode(sketch).image.getBitmapOrThrow()
-        val fillBitmap = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val fillBitmap = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(FILL)
@@ -484,7 +483,7 @@ class SkiaDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
 
         // precision = LESS_PIXELS
-        ImageRequest(context, ResourceImages.bmp.uri) {
+        ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(500, 500)
             precision(LESS_PIXELS)
         }.decode(sketch).apply {
@@ -508,9 +507,9 @@ class SkiaDecoderTest {
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertNotNull(actual = transformeds?.getInSampledTransformed())
-            assertNull(actual = transformeds?.getResizeTransformed())
+            assertNull(actual = transformeds.getResizeTransformed())
         }
-        ImageRequest(context, ResourceImages.bmp.uri) {
+        ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(200, 200)
             precision(LESS_PIXELS)
         }.decode(sketch).apply {
@@ -534,11 +533,11 @@ class SkiaDecoderTest {
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertNotNull(actual = transformeds?.getInSampledTransformed())
-            assertNull(actual = transformeds?.getResizeTransformed())
+            assertNull(actual = transformeds.getResizeTransformed())
         }
 
         // precision = SAME_ASPECT_RATIO
-        ImageRequest(context, ResourceImages.bmp.uri) {
+        ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
         }.decode(sketch).apply {
@@ -562,9 +561,9 @@ class SkiaDecoderTest {
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertNotNull(actual = transformeds?.getInSampledTransformed())
-            assertNotNull(actual = transformeds?.getSubsamplingTransformed())
+            assertNotNull(actual = transformeds.getSubsamplingTransformed())
         }
-        ImageRequest(context, ResourceImages.bmp.uri) {
+        ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(300, 500)
             precision(SAME_ASPECT_RATIO)
         }.decode(sketch).apply {
@@ -591,7 +590,7 @@ class SkiaDecoderTest {
         }
 
         // precision = EXACTLY
-        ImageRequest(context, ResourceImages.bmp.uri) {
+        ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(500, 300)
             precision(EXACTLY)
         }.decode(sketch).apply {
@@ -611,9 +610,9 @@ class SkiaDecoderTest {
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertNotNull(actual = transformeds?.getInSampledTransformed())
-            assertNotNull(actual = transformeds?.getResizeTransformed())
+            assertNotNull(actual = transformeds.getResizeTransformed())
         }
-        ImageRequest(context, ResourceImages.bmp.uri) {
+        ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(300, 500)
             precision(EXACTLY)
         }.decode(sketch).apply {
@@ -633,26 +632,26 @@ class SkiaDecoderTest {
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertNotNull(actual = transformeds?.getInSampledTransformed())
-            assertNotNull(actual = transformeds?.getResizeTransformed())
+            assertNotNull(actual = transformeds.getResizeTransformed())
         }
 
         // scale
-        val startCropBitmap = ImageRequest(context, ResourceImages.bmp.uri) {
+        val startCropBitmap = ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(START_CROP)
         }.decode(sketch).image.getBitmapOrThrow()
-        val centerCropBitmap = ImageRequest(context, ResourceImages.bmp.uri) {
+        val centerCropBitmap = ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(CENTER_CROP)
         }.decode(sketch).image.getBitmapOrThrow()
-        val endCropBitmap = ImageRequest(context, ResourceImages.bmp.uri) {
+        val endCropBitmap = ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(END_CROP)
         }.decode(sketch).image.getBitmapOrThrow()
-        val fillBitmap = ImageRequest(context, ResourceImages.bmp.uri) {
+        val fillBitmap = ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(FILL)
@@ -691,7 +690,7 @@ class SkiaDecoderTest {
     fun testDecodeResizeExif() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val testFile = ResourceImages.clockExifTranspose
+        val testFile = ComposeResImageFiles.clockExifTranspose
 
         // precision = LESS_PIXELS
         ImageRequest(context, testFile.uri) {
@@ -718,8 +717,8 @@ class SkiaDecoderTest {
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertNotNull(actual = transformeds?.getInSampledTransformed())
-            assertNull(actual = transformeds?.getSubsamplingTransformed())
-            assertNull(actual = transformeds?.getResizeTransformed())
+            assertNull(actual = transformeds.getSubsamplingTransformed())
+            assertNull(actual = transformeds.getResizeTransformed())
         }
         ImageRequest(context, testFile.uri) {
             size(500, 500)
@@ -745,8 +744,8 @@ class SkiaDecoderTest {
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertNotNull(actual = transformeds?.getInSampledTransformed())
-            assertNull(actual = transformeds?.getSubsamplingTransformed())
-            assertNull(actual = transformeds?.getResizeTransformed())
+            assertNull(actual = transformeds.getSubsamplingTransformed())
+            assertNull(actual = transformeds.getResizeTransformed())
         }
 
         // precision = SAME_ASPECT_RATIO
@@ -774,8 +773,8 @@ class SkiaDecoderTest {
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertNotNull(actual = transformeds?.getInSampledTransformed())
-            assertNotNull(actual = transformeds?.getSubsamplingTransformed())
-            assertNull(actual = transformeds?.getResizeTransformed())
+            assertNotNull(actual = transformeds.getSubsamplingTransformed())
+            assertNull(actual = transformeds.getResizeTransformed())
         }
         ImageRequest(context, testFile.uri) {
             size(300, 500)
@@ -801,8 +800,8 @@ class SkiaDecoderTest {
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertNotNull(actual = transformeds?.getInSampledTransformed())
-            assertNotNull(actual = transformeds?.getSubsamplingTransformed())
-            assertNull(actual = transformeds?.getResizeTransformed())
+            assertNotNull(actual = transformeds.getSubsamplingTransformed())
+            assertNull(actual = transformeds.getResizeTransformed())
         }
 
         // precision = EXACTLY
@@ -826,8 +825,8 @@ class SkiaDecoderTest {
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertNotNull(actual = transformeds?.getInSampledTransformed())
-            assertNotNull(actual = transformeds?.getSubsamplingTransformed())
-            assertNotNull(actual = transformeds?.getResizeTransformed())
+            assertNotNull(actual = transformeds.getSubsamplingTransformed())
+            assertNotNull(actual = transformeds.getResizeTransformed())
         }
         ImageRequest(context, testFile.uri) {
             size(300, 500)
@@ -849,8 +848,8 @@ class SkiaDecoderTest {
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertNotNull(actual = transformeds?.getInSampledTransformed())
-            assertNotNull(actual = transformeds?.getSubsamplingTransformed())
-            assertNotNull(actual = transformeds?.getResizeTransformed())
+            assertNotNull(actual = transformeds.getSubsamplingTransformed())
+            assertNotNull(actual = transformeds.getResizeTransformed())
         }
 
         // precision = LongImagePrecisionDecider
@@ -881,8 +880,8 @@ class SkiaDecoderTest {
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertNotNull(actual = transformeds?.getInSampledTransformed())
-            assertNull(actual = transformeds?.getSubsamplingTransformed())
-            assertNull(actual = transformeds?.getResizeTransformed())
+            assertNull(actual = transformeds.getSubsamplingTransformed())
+            assertNull(actual = transformeds.getResizeTransformed())
         }
 
         // scale
@@ -941,8 +940,11 @@ class SkiaDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
 
         /* full */
-        val request = ImageRequest(context, ResourceImages.jpeg.uri) {
-            resize(ResourceImages.jpeg.size.width * 2, ResourceImages.jpeg.size.height * 2)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
+            resize(
+                ComposeResImageFiles.jpeg.size.width * 2,
+                ComposeResImageFiles.jpeg.size.height * 2
+            )
         }
         val dataSource = sketch.components.newFetcherOrThrow(
             request.toRequestContext(sketch, Size.Empty)
@@ -954,7 +956,7 @@ class SkiaDecoderTest {
         bitmapDecoder.decode()
 
         /* region */
-        val request1 = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request1 = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(500, 500)
             precision(EXACTLY)
         }
@@ -970,9 +972,9 @@ class SkiaDecoderTest {
     @Test
     fun testEqualsAndHashCode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.jpeg.toDataSource(context)
+        val dataSource = ComposeResImageFiles.jpeg.toDataSource(context)
         val element1 = SkiaDecoder(requestContext, dataSource)
         val element11 = SkiaDecoder(requestContext, dataSource)
 
@@ -985,9 +987,9 @@ class SkiaDecoderTest {
     @Test
     fun testToString() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.jpeg.toDataSource(context)
+        val dataSource = ComposeResImageFiles.jpeg.toDataSource(context)
         val decoder = SkiaDecoder(requestContext, dataSource)
         assertTrue(
             actual = decoder.toString().contains("SkiaDecoder"),
@@ -1014,7 +1016,7 @@ class SkiaDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = SkiaDecoder.Factory()
 
-        ResourceImages.statics.plus(ResourceImages.anims)
+        ComposeResImageFiles.statics.plus(ComposeResImageFiles.anims)
             .forEach { imageFile ->
                 ImageRequest(context, imageFile.uri)
                     .createDecoderOrNull(sketch, factory) {

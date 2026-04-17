@@ -17,8 +17,7 @@ import com.github.panpf.sketch.decode.internal.readImageInfo
 import com.github.panpf.sketch.decode.internal.readImageInfoWithIgnoreExifOrientation
 import com.github.panpf.sketch.decode.internal.resize
 import com.github.panpf.sketch.decode.internal.supportDecodeRegion
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision
@@ -863,7 +862,7 @@ class DecodesNonAndroidTest {
             val expected: Size,
         )
 
-        val sourceImage = ResourceImages.jpeg.decode().apply {
+        val sourceImage = ComposeResImageFiles.jpeg.decode().apply {
             assertEquals(Size(1291, 1936), size)
         }
         val imageData = ImageData(
@@ -877,7 +876,7 @@ class DecodesNonAndroidTest {
 
         val executeResize: suspend (Size, Precision, Scale) -> ImageData =
             { size, precision, scale ->
-                val request = ImageRequest(context, ResourceImages.jpeg.uri) {
+                val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                     resize(size, precision, scale)
                 }
                 val realResize = request.toRequestContext(sketch)
@@ -973,206 +972,209 @@ class DecodesNonAndroidTest {
     }
 
     @Test
-    fun testReadImageInfoWithIgnoreExifOrientation() {
+    fun testReadImageInfoWithIgnoreExifOrientation() = runTest {
         val context = getTestContext()
         assertEquals(
             expected = "ImageInfo(1291x1936,'image/jpeg')",
-            actual = ResourceImages.jpeg.toDataSource(context)
+            actual = ComposeResImageFiles.jpeg.toDataSource(context)
                 .readImageInfoWithIgnoreExifOrientation()
                 .toShortString()
         )
         assertEquals(
             expected = "ImageInfo(750x719,'image/png')",
-            actual = ResourceImages.png.toDataSource(context)
+            actual = ComposeResImageFiles.png.toDataSource(context)
                 .readImageInfoWithIgnoreExifOrientation()
                 .toShortString()
         )
         assertEquals(
             expected = "ImageInfo(700x1012,'image/bmp')",
-            actual = ResourceImages.bmp.toDataSource(context)
+            actual = ComposeResImageFiles.bmp.toDataSource(context)
                 .readImageInfoWithIgnoreExifOrientation()
                 .toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1080x1344,'image/webp')",
-            actual = ResourceImages.webp.toDataSource(context)
+            actual = ComposeResImageFiles.webp.toDataSource(context)
                 .readImageInfoWithIgnoreExifOrientation()
                 .toShortString()
         )
         assertEquals(
             expected = "ImageInfo(480x480,'image/gif')",
-            actual = ResourceImages.animGif.toDataSource(context)
+            actual = ComposeResImageFiles.animGif.toDataSource(context)
                 .readImageInfoWithIgnoreExifOrientation()
                 .toShortString()
         )
         assertEquals(
             expected = "ImageInfo(480x270,'image/webp')",
-            actual = ResourceImages.animWebp.toDataSource(context)
+            actual = ComposeResImageFiles.animWebp.toDataSource(context)
                 .readImageInfoWithIgnoreExifOrientation()
                 .toShortString()
         )
         assertFailsWith(IllegalArgumentException::class) {
-            ResourceImages.animHeif.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
-        }
-        assertFailsWith(IllegalArgumentException::class) {
-            ResourceImages.svg.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
-        }
-        assertFailsWith(IllegalArgumentException::class) {
-            ResourceImages.heic.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
-        }
-        assertFailsWith(IllegalArgumentException::class) {
-            ResourceImages.avif.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
-        }
-        assertEquals(
-            expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifFlipHorizontal.toDataSource(context)
+            ComposeResImageFiles.animHeif.toDataSource(context)
                 .readImageInfoWithIgnoreExifOrientation()
-                .toShortString()
-        )
+        }
+        assertFailsWith(IllegalArgumentException::class) {
+            ComposeResImageFiles.svg.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
+        }
+        assertFailsWith(IllegalArgumentException::class) {
+            ComposeResImageFiles.heic.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
+        }
+        assertFailsWith(IllegalArgumentException::class) {
+            ComposeResImageFiles.avif.toDataSource(context).readImageInfoWithIgnoreExifOrientation()
+        }
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifFlipVertical.toDataSource(context)
+            actual = ComposeResImageFiles.clockExifFlipHorizontal.toDataSource(context)
                 .readImageInfoWithIgnoreExifOrientation()
                 .toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifNormal.toDataSource(context)
+            actual = ComposeResImageFiles.clockExifFlipVertical.toDataSource(context)
+                .readImageInfoWithIgnoreExifOrientation()
+                .toShortString()
+        )
+        assertEquals(
+            expected = "ImageInfo(1500x750,'image/jpeg')",
+            actual = ComposeResImageFiles.clockExifNormal.toDataSource(context)
                 .readImageInfoWithIgnoreExifOrientation()
                 .toShortString()
         )
         assertEquals(
             expected = "ImageInfo(750x1500,'image/jpeg')",
-            actual = ResourceImages.clockExifRotate90.toDataSource(context)
+            actual = ComposeResImageFiles.clockExifRotate90.toDataSource(context)
                 .readImageInfoWithIgnoreExifOrientation()
                 .toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifRotate180.toDataSource(context)
+            actual = ComposeResImageFiles.clockExifRotate180.toDataSource(context)
                 .readImageInfoWithIgnoreExifOrientation()
                 .toShortString()
         )
         assertEquals(
             expected = "ImageInfo(750x1500,'image/jpeg')",
-            actual = ResourceImages.clockExifRotate270.toDataSource(context)
+            actual = ComposeResImageFiles.clockExifRotate270.toDataSource(context)
                 .readImageInfoWithIgnoreExifOrientation()
                 .toShortString()
         )
         assertEquals(
             expected = "ImageInfo(750x1500,'image/jpeg')",
-            actual = ResourceImages.clockExifTranspose.toDataSource(context)
+            actual = ComposeResImageFiles.clockExifTranspose.toDataSource(context)
                 .readImageInfoWithIgnoreExifOrientation()
                 .toShortString()
         )
         assertEquals(
             expected = "ImageInfo(750x1500,'image/jpeg')",
-            actual = ResourceImages.clockExifTransverse.toDataSource(context)
+            actual = ComposeResImageFiles.clockExifTransverse.toDataSource(context)
                 .readImageInfoWithIgnoreExifOrientation()
                 .toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifUndefined.toDataSource(context)
+            actual = ComposeResImageFiles.clockExifUndefined.toDataSource(context)
                 .readImageInfoWithIgnoreExifOrientation()
                 .toShortString()
         )
     }
 
     @Test
-    fun testReadImageInfo() {
+    fun testReadImageInfo() = runTest {
         val context = getTestContext()
         assertEquals(
             expected = "ImageInfo(1291x1936,'image/jpeg')",
-            actual = ResourceImages.jpeg.toDataSource(context).readImageInfo().toShortString()
+            actual = ComposeResImageFiles.jpeg.toDataSource(context).readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(750x719,'image/png')",
-            actual = ResourceImages.png.toDataSource(context).readImageInfo().toShortString()
+            actual = ComposeResImageFiles.png.toDataSource(context).readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(700x1012,'image/bmp')",
-            actual = ResourceImages.bmp.toDataSource(context).readImageInfo().toShortString()
+            actual = ComposeResImageFiles.bmp.toDataSource(context).readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1080x1344,'image/webp')",
-            actual = ResourceImages.webp.toDataSource(context).readImageInfo().toShortString()
+            actual = ComposeResImageFiles.webp.toDataSource(context).readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(480x480,'image/gif')",
-            actual = ResourceImages.animGif.toDataSource(context).readImageInfo().toShortString()
+            actual = ComposeResImageFiles.animGif.toDataSource(context).readImageInfo()
+                .toShortString()
         )
         assertEquals(
             expected = "ImageInfo(480x270,'image/webp')",
-            actual = ResourceImages.animWebp.toDataSource(context).readImageInfo().toShortString()
+            actual = ComposeResImageFiles.animWebp.toDataSource(context).readImageInfo()
+                .toShortString()
         )
         assertFailsWith(IllegalArgumentException::class) {
-            ResourceImages.animHeif.toDataSource(context).readImageInfo()
+            ComposeResImageFiles.animHeif.toDataSource(context).readImageInfo()
         }
         assertFailsWith(IllegalArgumentException::class) {
-            ResourceImages.svg.toDataSource(context).readImageInfo()
+            ComposeResImageFiles.svg.toDataSource(context).readImageInfo()
         }
         assertFailsWith(IllegalArgumentException::class) {
-            ResourceImages.heic.toDataSource(context).readImageInfo()
+            ComposeResImageFiles.heic.toDataSource(context).readImageInfo()
         }
         assertFailsWith(IllegalArgumentException::class) {
-            ResourceImages.avif.toDataSource(context).readImageInfo()
+            ComposeResImageFiles.avif.toDataSource(context).readImageInfo()
         }
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifFlipHorizontal.toDataSource(context)
+            actual = ComposeResImageFiles.clockExifFlipHorizontal.toDataSource(context)
                 .readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifFlipVertical.toDataSource(context)
+            actual = ComposeResImageFiles.clockExifFlipVertical.toDataSource(context)
                 .readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifNormal.toDataSource(context)
+            actual = ComposeResImageFiles.clockExifNormal.toDataSource(context)
                 .readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifRotate90.toDataSource(context)
+            actual = ComposeResImageFiles.clockExifRotate90.toDataSource(context)
                 .readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifRotate180.toDataSource(context)
+            actual = ComposeResImageFiles.clockExifRotate180.toDataSource(context)
                 .readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifRotate270.toDataSource(context)
+            actual = ComposeResImageFiles.clockExifRotate270.toDataSource(context)
                 .readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifTranspose.toDataSource(context)
+            actual = ComposeResImageFiles.clockExifTranspose.toDataSource(context)
                 .readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifTransverse.toDataSource(context)
+            actual = ComposeResImageFiles.clockExifTransverse.toDataSource(context)
                 .readImageInfo().toShortString()
         )
         assertEquals(
             expected = "ImageInfo(1500x750,'image/jpeg')",
-            actual = ResourceImages.clockExifUndefined.toDataSource(context)
+            actual = ComposeResImageFiles.clockExifUndefined.toDataSource(context)
                 .readImageInfo().toShortString()
         )
     }
 
     @Test
-    fun testDecode() {
+    fun testDecode() = runTest {
         val context = getTestContext()
 
         /*
          * config: sampleSize
          */
-        val imageFile = ResourceImages.jpeg
+        val imageFile = ComposeResImageFiles.jpeg
         val skiaImage = imageFile.toDataSource(context).toSkiaImage()
         skiaImage
             .decode()
@@ -1237,7 +1239,7 @@ class DecodesNonAndroidTest {
          * exif
          */
         var firstBitmap: Bitmap? = null
-        ResourceImages.clockExifs.forEach { exifImageFile ->
+        ComposeResImageFiles.clockExifs.forEach { exifImageFile ->
             val bitmap = exifImageFile.toDataSource(context).toSkiaImage().decode()
             assertEquals(
                 expected = exifImageFile.size,
@@ -1262,18 +1264,18 @@ class DecodesNonAndroidTest {
          */
         // IllegalArgumentException: Failed to Image::makeFromEncoded
         assertFailsWith(IllegalArgumentException::class) {
-            ResourceImages.svg.toDataSource(context).toSkiaImage().decode()
+            ComposeResImageFiles.svg.toDataSource(context).toSkiaImage().decode()
         }
     }
 
     @Test
-    fun testDecodeRegion() {
+    fun testDecodeRegion() = runTest {
         val context = getTestContext()
 
         /*
          * srcRect
          */
-        val imageFile = ResourceImages.jpeg
+        val imageFile = ComposeResImageFiles.jpeg
         val dataSource = imageFile.toDataSource(context)
         val skiaImage = dataSource.toSkiaImage()
         val imageInfo = dataSource.readImageInfo()
@@ -1443,7 +1445,7 @@ class DecodesNonAndroidTest {
          * exif
          */
         var firstBitmap: Bitmap? = null
-        ResourceImages.clockExifs.forEach { exifImageFile ->
+        ComposeResImageFiles.clockExifs.forEach { exifImageFile ->
             val exifSkiaImage = exifImageFile.toDataSource(context).toSkiaImage()
             val bitmap = exifSkiaImage.decodeRegion(exifImageFile.size.toRect())
             assertEquals(
@@ -1469,31 +1471,31 @@ class DecodesNonAndroidTest {
          */
         // IllegalArgumentException: Failed to Image::makeFromEncoded
         assertFailsWith(IllegalArgumentException::class) {
-            val svgImageFile = ResourceImages.svg
+            val svgImageFile = ComposeResImageFiles.svg
             svgImageFile.toDataSource(context).toSkiaImage()
                 .decodeRegion(svgImageFile.size.toRect())
         }
         // IllegalArgumentException: srcRect is empty
         assertFailsWith(IllegalArgumentException::class) {
-            ResourceImages.jpeg.toDataSource(context).toSkiaImage()
+            ComposeResImageFiles.jpeg.toDataSource(context).toSkiaImage()
                 .decodeRegion(Size.Empty.toRect())
         }
     }
 
     @Test
-    fun testSupportDecodeRegion() {
+    fun testSupportDecodeRegion() = runTest {
         val context = getTestContext()
         listOf(
-            ResourceImages.jpeg,
-            ResourceImages.png,
-            ResourceImages.bmp,
-            ResourceImages.webp,
-            ResourceImages.heic,
-            ResourceImages.avif,
-            ResourceImages.svg,
-            ResourceImages.animGif,
-            ResourceImages.animWebp,
-            ResourceImages.animHeif,
+            ComposeResImageFiles.jpeg,
+            ComposeResImageFiles.png,
+            ComposeResImageFiles.bmp,
+            ComposeResImageFiles.webp,
+            ComposeResImageFiles.heic,
+            ComposeResImageFiles.avif,
+            ComposeResImageFiles.svg,
+            ComposeResImageFiles.animGif,
+            ComposeResImageFiles.animWebp,
+            ComposeResImageFiles.animHeif,
         ).forEach { imageFile ->
             val dataSource = imageFile.toDataSource(context)
             val result = runCatching {

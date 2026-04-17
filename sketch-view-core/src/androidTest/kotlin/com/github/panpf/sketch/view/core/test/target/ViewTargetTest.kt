@@ -24,7 +24,7 @@ import android.widget.ImageView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.drawable.asEquitable
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageOptionsProvider
 import com.github.panpf.sketch.request.ImageRequest
@@ -73,7 +73,7 @@ class ViewTargetTest {
     @Test
     fun testNewRequestDelegate() {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
 
         val imageView = ImageView(context)
         val viewTarget = TestViewTarget(imageView)

@@ -22,6 +22,7 @@ import kotlinx.cinterop.useContents
 import okio.Path
 import okio.Path.Companion.toPath
 import platform.Foundation.NSCachesDirectory
+import platform.Foundation.NSProcessInfo
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
 import platform.Foundation.NSUserDomainMask
 import platform.UIKit.UIScreen
@@ -33,7 +34,19 @@ import kotlin.math.roundToInt
  * @see com.github.panpf.sketch.core.ios.test.util.PlatformContextsIosTest.testMaxMemory
  */
 actual fun PlatformContext.maxMemory(): Long {
-    // TODO Get the accurate max memory on the ios platform
+    // iOS does not have a public standard per-app memory limit, so use one-eighth of physical memory to estimate
+    try {
+        val physical = NSProcessInfo.processInfo.physicalMemory
+        val physicalLong = physical.toLong()
+        if (physicalLong > 0L) {
+            return physicalLong / 8
+        }
+    } catch (e: Throwable) {
+        e.printStackTrace()
+        // Fall through to default below
+    }
+
+    // Fallback: keep the previous conservative default
     return 512L * 1024L * 1024L // 512 MB
 }
 

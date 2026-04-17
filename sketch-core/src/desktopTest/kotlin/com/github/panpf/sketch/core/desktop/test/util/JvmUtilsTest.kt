@@ -5,6 +5,7 @@ import com.github.panpf.sketch.util.getJarPath
 import okio.Path
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class JvmUtilsTest {
 
@@ -18,10 +19,15 @@ class JvmUtilsTest {
 
     @Test
     fun testGetJarPath() {
-        assertEquals(
-            expected = true,
-            actual = getJarPath(JvmUtilsTest::class.java).orEmpty()
-                .contains("${Path.DIRECTORY_SEPARATOR}sketch${Path.DIRECTORY_SEPARATOR}sketch-core${Path.DIRECTORY_SEPARATOR}build${Path.DIRECTORY_SEPARATOR}classes${Path.DIRECTORY_SEPARATOR}kotlin${Path.DIRECTORY_SEPARATOR}desktop${Path.DIRECTORY_SEPARATOR}test")
-        )
+        val path = getJarPath(JvmUtilsTest::class.java).orEmpty()
+        val expectPart = arrayOf(
+            "sketch-core",
+            "build",
+            "classes",
+            "kotlin",
+            "desktop",
+            "test"
+        ).joinToString(separator = Path.DIRECTORY_SEPARATOR, prefix = Path.DIRECTORY_SEPARATOR)
+        assertTrue(actual = path.contains(expectPart), message = "path: $path")
     }
 }

@@ -31,7 +31,6 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.calculateScaleMultiplierWithOneSide
 import com.github.panpf.sketch.util.safeToSoftware
 import com.github.panpf.sketch.util.toBitmap
-import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlin.math.roundToInt
 
 /**
@@ -55,11 +54,10 @@ open class DrawableDecoder(
 ) : Decoder {
 
     private var _imageInfo: ImageInfo? = null
-    private val imageInfoLock = SynchronizedObject()
 
     override val imageInfo: ImageInfo
         get() {
-            kotlinx.atomicfu.locks.synchronized(imageInfoLock) {
+            synchronized(this@DrawableDecoder) {
                 return _imageInfo ?: dataSource.drawable.readImageInfo(mimeType)
                     .apply { _imageInfo = this }
             }

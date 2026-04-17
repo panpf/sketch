@@ -16,7 +16,7 @@
 
 package com.github.panpf.sketch.core.common.test.state
 
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.UriInvalidException
 import com.github.panpf.sketch.state.ConditionStateImage
@@ -162,7 +162,7 @@ class ConditionStateImageTest {
     @Test
     fun testDefaultCondition() {
         val context = getTestContext()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
 
         ConditionStateImage.DefaultCondition.apply {
             assertTrue(accept(request, null))

@@ -45,7 +45,6 @@ import com.github.panpf.sketch.util.safeToSoftware
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.internal.SynchronizedObject
 import kotlinx.coroutines.launch
 import okio.buffer
 
@@ -86,11 +85,10 @@ class MovieGifDecoder(
 ) : Decoder {
 
     private var _imageInfo: ImageInfo? = null
-    private val imageInfoLock = SynchronizedObject()
 
     override val imageInfo: ImageInfo
         get() {
-            synchronized(imageInfoLock) {
+            synchronized(this@MovieGifDecoder) {
                 val imageInfo = _imageInfo
                 if (imageInfo != null) return imageInfo
                 val movie: Movie? = dataSource.openSource()

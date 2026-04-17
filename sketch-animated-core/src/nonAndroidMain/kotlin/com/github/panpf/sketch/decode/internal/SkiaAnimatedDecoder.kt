@@ -28,12 +28,11 @@ import com.github.panpf.sketch.request.animationStartCallback
 import com.github.panpf.sketch.request.cacheDecodeTimeoutFrame
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.util.Rect
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
-import okio.buffer
-import okio.use
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
 import org.jetbrains.skia.impl.use
@@ -69,10 +68,7 @@ open class SkiaAnimatedDecoder(
 
     private var _imageInfo: ImageInfo? = null
     private val imageInfoLock = SynchronizedObject()
-    private val data by lazy {
-        val bytes = dataSource.openSource().buffer().use { it.readByteArray() }
-        Data.makeFromBytes(bytes)
-    }
+    private val data by lazy { Data.makeFromBytes(dataSource.toByteArray()) }
 
     override val imageInfo: ImageInfo
         get() {

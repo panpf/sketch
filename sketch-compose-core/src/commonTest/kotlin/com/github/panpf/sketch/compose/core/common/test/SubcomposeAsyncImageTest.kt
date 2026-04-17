@@ -16,7 +16,7 @@ import androidx.compose.ui.test.runComposeUiTest
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.AsyncImageState
 import com.github.panpf.sketch.SubcomposeAsyncImage
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.request.ImageResult
@@ -37,10 +37,10 @@ class SubcomposeAsyncImageTest {
         runComposeUiTest {
             setContent {
                 LifecycleContainer {
-                    SubcomposeAsyncImage(ResourceImages.jpeg.uri, sketch, "test image")
+                    SubcomposeAsyncImage(ComposeResImageFiles.jpeg.uri, sketch, "test image")
 
                     SubcomposeAsyncImage(
-                        ResourceImages.jpeg.uri,
+                        ComposeResImageFiles.jpeg.uri,
                         sketch,
                         "test image",
                         Modifier,
@@ -57,7 +57,7 @@ class SubcomposeAsyncImageTest {
                     )
 
                     SubcomposeAsyncImage(
-                        uri = ResourceImages.jpeg.uri,
+                        uri = ComposeResImageFiles.jpeg.uri,
                         sketch = sketch,
                         contentDescription = "test image",
                         modifier = Modifier,
@@ -86,7 +86,7 @@ class SubcomposeAsyncImageTest {
             setContent {
                 LifecycleContainer {
                     SubcomposeAsyncImage(
-                        ResourceImages.jpeg.uri,
+                        ComposeResImageFiles.jpeg.uri,
                         sketch,
                         "test image",
                         Modifier,
@@ -101,7 +101,7 @@ class SubcomposeAsyncImageTest {
                     }
 
                     SubcomposeAsyncImage(
-                        uri = ResourceImages.jpeg.uri,
+                        uri = ComposeResImageFiles.jpeg.uri,
                         sketch = sketch,
                         contentDescription = "test image",
                         modifier = Modifier,
@@ -128,13 +128,13 @@ class SubcomposeAsyncImageTest {
             setContent {
                 LifecycleContainer {
                     SubcomposeAsyncImage(
-                        ComposableImageRequest(ResourceImages.jpeg.uri),
+                        ComposableImageRequest(ComposeResImageFiles.jpeg.uri),
                         sketch,
                         "test image",
                     )
 
                     SubcomposeAsyncImage(
-                        ComposableImageRequest(ResourceImages.jpeg.uri),
+                        ComposableImageRequest(ComposeResImageFiles.jpeg.uri),
                         sketch,
                         "test image",
                         Modifier,
@@ -151,7 +151,7 @@ class SubcomposeAsyncImageTest {
                     )
 
                     SubcomposeAsyncImage(
-                        request = ComposableImageRequest(ResourceImages.jpeg.uri),
+                        request = ComposableImageRequest(ComposeResImageFiles.jpeg.uri),
                         sketch = sketch,
                         contentDescription = "test image",
                         modifier = Modifier,
@@ -180,7 +180,7 @@ class SubcomposeAsyncImageTest {
             setContent {
                 LifecycleContainer {
                     SubcomposeAsyncImage(
-                        ComposableImageRequest(ResourceImages.jpeg.uri),
+                        ComposableImageRequest(ComposeResImageFiles.jpeg.uri),
                         sketch,
                         "test image",
                         Modifier,
@@ -195,7 +195,7 @@ class SubcomposeAsyncImageTest {
                     }
 
                     SubcomposeAsyncImage(
-                        request = ComposableImageRequest(ResourceImages.jpeg.uri),
+                        request = ComposableImageRequest(ComposeResImageFiles.jpeg.uri),
                         sketch = sketch,
                         contentDescription = "test image",
                         modifier = Modifier,
@@ -233,7 +233,7 @@ class SubcomposeAsyncImageTest {
                             stateHolder = this
                         }
                         SubcomposeAsyncImage(
-                            uri = ResourceImages.jpeg.uri,
+                            uri = ComposeResImageFiles.jpeg.uri,
                             sketch = sketch,
                             state = state,
                             contentDescription = "test image",
@@ -269,7 +269,7 @@ class SubcomposeAsyncImageTest {
                             stateHolder = this
                         }
                         SubcomposeAsyncImage(
-                            uri = ResourceImages.jpeg.uri,
+                            uri = ComposeResImageFiles.jpeg.uri,
                             sketch = sketch,
                             state = state,
                             contentDescription = "test image",
@@ -305,7 +305,7 @@ class SubcomposeAsyncImageTest {
                             stateHolder = this
                         }
                         SubcomposeAsyncImage(
-                            uri = ResourceImages.jpeg.uri,
+                            uri = ComposeResImageFiles.jpeg.uri,
                             sketch = sketch,
                             state = state,
                             contentDescription = "test image",
@@ -344,7 +344,7 @@ class SubcomposeAsyncImageTest {
                             stateHolder = this
                         }
                         SubcomposeAsyncImage(
-                            uri = ResourceImages.jpeg.uri,
+                            uri = ComposeResImageFiles.jpeg.uri,
                             sketch = sketch,
                             state = state,
                             contentDescription = "test image",
@@ -385,7 +385,7 @@ class SubcomposeAsyncImageTest {
                             stateHolder = this
                         }
                         SubcomposeAsyncImage(
-                            uri = ResourceImages.jpeg.uri,
+                            uri = ComposeResImageFiles.jpeg.uri,
                             sketch = sketch,
                             state = state,
                             contentDescription = "test image",
@@ -421,7 +421,7 @@ class SubcomposeAsyncImageTest {
                             stateHolder = this
                         }
                         SubcomposeAsyncImage(
-                            uri = ResourceImages.jpeg.uri,
+                            uri = ComposeResImageFiles.jpeg.uri,
                             sketch = sketch,
                             state = state,
                             contentDescription = "test image",
@@ -457,7 +457,7 @@ class SubcomposeAsyncImageTest {
                             stateHolder = this
                         }
                         SubcomposeAsyncImage(
-                            uri = ResourceImages.jpeg.uri,
+                            uri = ComposeResImageFiles.jpeg.uri,
                             sketch = sketch,
                             state = state,
                             contentDescription = "test image",
@@ -494,7 +494,7 @@ class SubcomposeAsyncImageTest {
                             stateHolder = this
                         }
                         SubcomposeAsyncImage(
-                            uri = ResourceImages.jpeg.uri,
+                            uri = ComposeResImageFiles.jpeg.uri,
                             sketch = sketch,
                             state = state,
                             contentDescription = "test image",

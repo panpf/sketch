@@ -40,13 +40,13 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Run package
-        run: ./gradlew sample:assembleRelease
+        run: ./gradlew samples:androidApp:assembleRelease
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
           name: apk-files
-          path: sample/build/outputs/apk/release/*.apk
+          path: samples/androidApp/build/outputs/apk/release/*.apk
 
   package-ios:
     name: Package ios
@@ -63,7 +63,7 @@ jobs:
           java-version: 17
 
       - name: Run package
-        run: xcodebuild -project sample/iosApp/iosApp.xcodeproj -scheme iosApp -destination 'generic/platform=iOS Simulator' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO -derivedDataPath sample/build/ios/outputs/
+        run: xcodebuild -project samples/iosApp/iosApp.xcodeproj -scheme iosApp -destination 'generic/platform=iOS Simulator,name=iPhone 16,OS=latest' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO -derivedDataPath samples/shared/build/ios/outputs/
 
       - name: Read version name
         id: version_name_step
@@ -72,13 +72,13 @@ jobs:
           echo "version_name=$versionName" >> $GITHUB_OUTPUT
 
       - name: File name add version
-        run: mv "sample/build/ios/outputs/Build/Products/Debug-iphonesimulator/Sketch4 Sample.app" "sample/build/ios/outputs/Build/Products/Debug-iphonesimulator/Sketch4 Sample-${{ steps.version_name_step.outputs.version_name }}.app"
+        run: mv "samples/shared/build/ios/outputs/Build/Products/Debug-iphonesimulator/Sketch4 Sample.app" "samples/shared/build/ios/outputs/Build/Products/Debug-iphonesimulator/Sketch4 Sample-${{ steps.version_name_step.outputs.version_name }}.app"
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ios-files
-          path: sample/build/ios/outputs/Build/Products/Debug-iphonesimulator/*.app
+          path: samples/shared/build/ios/outputs/Build/Products/Debug-iphonesimulator/*.app
 
   package-linux:
     name: Package linux desktop
@@ -95,13 +95,13 @@ jobs:
           java-version: 17
 
       - name: Run package
-        run: ./gradlew sample:packageReleaseDeb
+        run: ./gradlew samples:desktopApp:packageReleaseDeb
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
           name: deb-files
-          path: sample/build/compose/binaries/main-release/deb/*.deb
+          path: samples/desktopApp/build/compose/binaries/main-release/deb/*.deb
 
   package-macos:
     name: Package macos desktop
@@ -118,13 +118,13 @@ jobs:
           java-version: 17
 
       - name: Run package
-        run: ./gradlew sample:packageReleaseDmg
+        run: ./gradlew samples:desktopApp:packageReleaseDmg
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dmg-files
-          path: sample/build/compose/binaries/main-release/dmg/*.dmg
+          path: samples/desktopApp/build/compose/binaries/main-release/dmg/*.dmg
 
   package-windows:
     name: Package windows desktop
@@ -141,13 +141,13 @@ jobs:
           java-version: 17
 
       - name: Run package
-        run: ./gradlew sample:packageReleaseMsi
+        run: ./gradlew samples:desktopApp:packageReleaseMsi
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
           name: msi-files
-          path: sample/build/compose/binaries/main-release/msi/*.msi
+          path: samples/desktopApp/build/compose/binaries/main-release/msi/*.msi
 
   package-js:
     name: Package js browser
@@ -164,7 +164,7 @@ jobs:
           java-version: 17
 
       - name: Run package
-        run: ./gradlew sample:jsBrowserDistribution
+        run: ./gradlew samples:jsApp:jsBrowserDistribution
 
       - name: Read version name
         id: version_name_step
@@ -173,13 +173,13 @@ jobs:
           echo "version_name=$versionName" >> $GITHUB_OUTPUT
 
       - name: Compress
-        run: cd sample/build/dist/js/productionExecutable; zip -r "sketch-sample-js-${{ steps.version_name_step.outputs.version_name }}.zip" *; cd -
+        run: cd samples/jsApp/build/dist/js/productionExecutable; zip -r "sketch-sample-js-${{ steps.version_name_step.outputs.version_name }}.zip" *; cd -
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
           name: js-browser-files
-          path: sample/build/dist/js/productionExecutable/*.zip
+          path: samples/jsApp/build/dist/js/productionExecutable/*.zip
 
   package-wasm-js:
     name: Package wasm js browser
@@ -196,7 +196,7 @@ jobs:
           java-version: 17
 
       - name: Run package
-        run: ./gradlew sample:wasmJsBrowserDistribution
+        run: ./gradlew samples:wasmJsApp:wasmJsBrowserDistribution
 
       - name: Read version name
         id: version_name_step
@@ -205,13 +205,13 @@ jobs:
           echo "version_name=$versionName" >> $GITHUB_OUTPUT
 
       - name: Compress
-        run: cd sample/build/dist/wasmJs/productionExecutable; zip -r "sketch-sample-wasmJs-${{ steps.version_name_step.outputs.version_name }}.zip" *; cd -
+        run: cd samples/wasmJsApp/build/dist/wasmJs/productionExecutable; zip -r "sketch-sample-wasmJs-${{ steps.version_name_step.outputs.version_name }}.zip" *; cd -
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
           name: wasm-js-browser-files
-          path: sample/build/dist/wasmJs/productionExecutable/*.zip
+          path: samples/wasmJsApp/build/dist/wasmJs/productionExecutable/*.zip
 
   deploy-api-docs:
     name: Deploy API docs
@@ -230,7 +230,7 @@ jobs:
           java-version: 17
 
       - name: Build the api docs
-        run: ./gradlew dokkaHtmlMultiModule
+        run: ./gradlew dokkaGenerate
 
       - name: Check out the gh-pages branch
         run: |
@@ -246,7 +246,7 @@ jobs:
 
       - name: Move build artifacts to api directory
         run: |
-          mv build/dokka/htmlMultiModule/* api/
+          mv build/dokka/html/* api/
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v4

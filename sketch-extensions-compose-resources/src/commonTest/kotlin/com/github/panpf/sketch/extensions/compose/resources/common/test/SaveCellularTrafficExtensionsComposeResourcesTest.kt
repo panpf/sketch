@@ -2,15 +2,15 @@ package com.github.panpf.sketch.extensions.compose.resources.common.test
 
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
+import com.github.panpf.sketch.images.Res
+import com.github.panpf.sketch.images.desert
+import com.github.panpf.sketch.images.moon
 import com.github.panpf.sketch.painter.rememberEquitablePainterResource
 import com.github.panpf.sketch.state.ComposableConditionStateImage
 import com.github.panpf.sketch.state.ConditionStateImage.DefaultCondition
 import com.github.panpf.sketch.state.PainterStateImage
 import com.github.panpf.sketch.state.SaveCellularTrafficCondition
 import com.github.panpf.sketch.state.saveCellularTrafficError
-import com.github.panpf.sketch.test.compose.resources.Res
-import com.github.panpf.sketch.test.compose.resources.desert
-import com.github.panpf.sketch.test.compose.resources.moon
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

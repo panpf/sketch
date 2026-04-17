@@ -123,13 +123,14 @@ resources, as follows:
 | URI                       | Describe                 | Create Function         | Dependent Modules                                                                |
 |:--------------------------|:-------------------------|:------------------------|:---------------------------------------------------------------------------------|
 | http://, https://         | File in network          | _                       | sketch-http-hurl<br>sketch-http-okhttp<br>sketch-http-ktor2<br>sketch-http-ktor3 |
-| file://, /, D:/           | File in SDCard           | newFileUri()            | _                                                                                |
+| file://, /, D:\\, \\\\    | File in SDCard           | newFileUri()            | _                                                                                |
 | content://                | Android Content Resolver | _                       | _                                                                                |
-| file:///android_asset/    | Android Asset            | newAssetUri()           | _                                                                                |
 | android.resource://       | Android Resource         | newResourceUri()        | _                                                                                |
-| data:image/, data:img/    | Base64                   | newBase64Uri()          | _                                                                                |
+| file:///android_asset/    | Android Asset            | newAssetUri()           | _                                                                                |
 | file:///compose_resource/ | Compose Resource         | newComposeResourceUri() | sketch-compose-resources                                                         |
 | file:///kotlin_resource/  | Kotlin Resource          | newKotlinResourceUri()  | _                                                                                |
+| file:///photos_asset/     | ios Photos Library       | newPhotosAssetUri()     | _                                                                                |
+| data:image/, data:img/    | Base64                   | newBase64Uri()          | _                                                                                |
 | blurhash://               | BlurHash                 | newBlurHashUri()        | sketch-blurhash                                                                  |
 | app.icon://               | Android App Icon         | newAppIconUri()         | sketch-extensions-appicon                                                        |
 
@@ -154,6 +155,7 @@ different, as follows:
 | http://<br/>https://<br/>file://, /<br/>file:///compose_resource/<br/>data:image/jpeg;base64 | ✅             | ✅                       | ✅                       | ✅                       |
 | file:///android_asset/<br/>content://<br/>android.resource://                                | ✅             | ❌                       | ❌                       | ❌                       |
 | file:///kotlin_resource/                                                                     | ❌             | ✅                       | ✅                       | ❌                       |
+| file:///photos_asset/                                                                        | ❌             | ✅                       | ❌                       | ❌                       |
 | Exif Orientation                                                                             | ✅             | ✅                       | ✅                       | ✅                       |
 | Memory Cache                                                                                 | ✅             | ✅                       | ✅                       | ✅                       |
 | Result Cache                                                                                 | ✅             | ✅                       | ✅                       | ❌                       |

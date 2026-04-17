@@ -25,8 +25,7 @@ import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.supportKoralGif
 import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.disallowAnimatedImage
@@ -102,9 +101,9 @@ class KoralGifDecoderTest {
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, ResourceImages.animGif.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.animGif.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.animGif.toDataSource(context)
+        val dataSource = ComposeResImageFiles.animGif.toDataSource(context)
 
         KoralGifDecoder(requestContext, dataSource)
         KoralGifDecoder(requestContext = requestContext, dataSource = dataSource)
@@ -115,7 +114,7 @@ class KoralGifDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = KoralGifDecoder.Factory()
 
-        ImageRequest(context, ResourceImages.animGif.uri)
+        ImageRequest(context, ComposeResImageFiles.animGif.uri)
             .createDecoderOrDefault(sketch, factory)
             .apply {
                 assertEquals(
@@ -130,7 +129,7 @@ class KoralGifDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = KoralGifDecoder.Factory()
 
-        ImageRequest(context, ResourceImages.animGif.uri) {
+        ImageRequest(context, ComposeResImageFiles.animGif.uri) {
             onAnimationStart { }
         }.decode(sketch, factory).apply {
             assertEquals(expected = ImageInfo(480, 480, "image/gif"), actual = this.imageInfo)
@@ -143,7 +142,7 @@ class KoralGifDecoderTest {
             assertNull(actual = gifDrawable.transform)
         }
 
-        ImageRequest(context, ResourceImages.animGif.uri) {
+        ImageRequest(context, ComposeResImageFiles.animGif.uri) {
             repeatCount(3)
             animatedTransformation(TranslucentAnimatedTransformation)
             onAnimationEnd {}
@@ -167,9 +166,9 @@ class KoralGifDecoderTest {
     @Test
     fun testEqualsAndHashCode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.animGif.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.animGif.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.animGif.toDataSource(context)
+        val dataSource = ComposeResImageFiles.animGif.toDataSource(context)
         val element1 = KoralGifDecoder(requestContext, dataSource)
         val element11 = KoralGifDecoder(requestContext, dataSource)
 
@@ -182,9 +181,9 @@ class KoralGifDecoderTest {
     @Test
     fun testToString() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.animGif.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.animGif.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.animGif.toDataSource(context)
+        val dataSource = ComposeResImageFiles.animGif.toDataSource(context)
         val decoder = KoralGifDecoder(requestContext, dataSource)
         assertTrue(actual = decoder.toString().contains("KoralGifDecoder"))
         assertTrue(actual = decoder.toString().contains("@"))
@@ -209,7 +208,7 @@ class KoralGifDecoderTest {
         val factory = KoralGifDecoder.Factory()
 
         // normal
-        ImageRequest(context, ResourceImages.animGif.uri)
+        ImageRequest(context, ComposeResImageFiles.animGif.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/gif")
             }.apply {
@@ -217,7 +216,7 @@ class KoralGifDecoderTest {
             }
 
         // no mimeType
-        ImageRequest(context, ResourceImages.animGif.uri)
+        ImageRequest(context, ComposeResImageFiles.animGif.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = null)
             }.apply {
@@ -225,7 +224,7 @@ class KoralGifDecoderTest {
             }
 
         // Disguised mimeType
-        ImageRequest(context, ResourceImages.animGif.uri)
+        ImageRequest(context, ComposeResImageFiles.animGif.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/jpeg")
             }.apply {
@@ -233,7 +232,7 @@ class KoralGifDecoderTest {
             }
 
         // disallowAnimatedImage true
-        ImageRequest(context, ResourceImages.animGif.uri) {
+        ImageRequest(context, ComposeResImageFiles.animGif.uri) {
             disallowAnimatedImage()
         }.createDecoderOrNull(sketch, factory) {
             it.copy(mimeType = null)
@@ -242,7 +241,7 @@ class KoralGifDecoderTest {
         }
 
         // data error
-        ImageRequest(context, ResourceImages.png.uri)
+        ImageRequest(context, ComposeResImageFiles.png.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = null)
             }.apply {
@@ -250,7 +249,7 @@ class KoralGifDecoderTest {
             }
 
         // Disguised, mimeType; data error
-        ImageRequest(context, ResourceImages.png.uri)
+        ImageRequest(context, ComposeResImageFiles.png.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/gif")
             }.apply {

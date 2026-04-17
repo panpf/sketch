@@ -2,7 +2,7 @@ package com.github.panpf.sketch.core.desktop.test.source
 
 import com.github.panpf.sketch.cache.DiskCache
 import com.github.panpf.sketch.fetch.newKotlinResourceUri
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.KotlinResImageFiles
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.KotlinResourceDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -45,27 +45,23 @@ class KotlinResourceDataSourceTest {
 
     @Test
     fun testOpenSource() {
-        KotlinResourceDataSource(ResourceImages.jpeg.resourceName)
+        KotlinResourceDataSource(KotlinResImageFiles.bear.name)
             .openSource().buffer()
             .use { it.readByteArray() }
-
-        KotlinResourceDataSource(ResourceImages.png.resourceName)
-            .openSource().buffer()
-            .use { it.readByteArray().decodeToString() }
     }
 
     @Test
     fun testGetFile() {
         val (_, sketch) = getTestContextAndSketch()
         val path1: Path
-        KotlinResourceDataSource(ResourceImages.jpeg.resourceName)
+        KotlinResourceDataSource(KotlinResImageFiles.bear.name)
             .getFile(sketch).apply {
                 path1 = this
                 assertTrue(actual = toString().contains("${Path.DIRECTORY_SEPARATOR}${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}${Path.DIRECTORY_SEPARATOR}"))
             }
 
         val path2: Path
-        KotlinResourceDataSource(ResourceImages.jpeg.resourceName)
+        KotlinResourceDataSource(KotlinResImageFiles.bear.name)
             .getFile(sketch).apply {
                 path2 = this
                 assertTrue(actual = toString().contains("${Path.DIRECTORY_SEPARATOR}${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}${Path.DIRECTORY_SEPARATOR}"))

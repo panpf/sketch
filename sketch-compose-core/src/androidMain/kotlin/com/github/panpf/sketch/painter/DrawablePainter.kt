@@ -17,11 +17,12 @@
 package com.github.panpf.sketch.painter
 
 import android.graphics.drawable.Animatable
+import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Drawable.Callback
-import android.os.Build.VERSION
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.View
@@ -46,8 +47,6 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.withSave
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.LayoutDirection.Ltr
-import androidx.compose.ui.unit.LayoutDirection.Rtl
 import com.github.panpf.sketch.drawable.EquitableDrawable
 import com.github.panpf.sketch.util.RememberedCounter
 import com.github.panpf.sketch.util.toLogString
@@ -92,15 +91,18 @@ fun Drawable?.asPainter(): Painter {
  *
  * Instances are usually retrieved from [rememberDrawablePainter].
  *
+ * 2026-03-31 Copy from https://github.com/google/accompanist/blob/main/drawablepainter/src/main/java/com/google/accompanist/drawablepainter/DrawablePainter.kt
+ *
  * @see com.github.panpf.sketch.compose.core.android.test.painter.DrawablePainterTest
  */
 @Stable
-// TODO Synchronize from accompanyist-drawablepainter
 open class DrawablePainter(
     val drawable: Drawable
 ) : Painter(), RememberObserver, SketchPainter {
     private var drawInvalidateTick by mutableIntStateOf(0)
     private var drawableIntrinsicSize by mutableStateOf(drawable.intrinsicSize)
+
+    internal val rememberedCounter: RememberedCounter = RememberedCounter()
 
     private val callback: Callback by lazy {
         object : Callback {
@@ -120,10 +122,6 @@ open class DrawablePainter(
             }
         }
     }
-
-    internal val rememberedCounter: RememberedCounter = RememberedCounter()
-
-    override val intrinsicSize: Size get() = drawableIntrinsicSize
 
     init {
         if (drawable.intrinsicWidth >= 0 && drawable.intrinsicHeight >= 0) {
@@ -164,26 +162,40 @@ open class DrawablePainter(
     }
 
     override fun applyLayoutDirection(layoutDirection: LayoutDirection): Boolean {
-        if (VERSION.SDK_INT >= 23) {
+        if (Build.VERSION.SDK_INT >= 23) {
             return drawable.setLayoutDirection(
                 when (layoutDirection) {
-                    Ltr -> View.LAYOUT_DIRECTION_LTR
-                    Rtl -> View.LAYOUT_DIRECTION_RTL
+                    LayoutDirection.Ltr -> View.LAYOUT_DIRECTION_LTR
+                    LayoutDirection.Rtl -> View.LAYOUT_DIRECTION_RTL
                 }
             )
         }
         return false
     }
 
+    override val intrinsicSize: Size get() = drawableIntrinsicSize
+
     override fun DrawScope.onDraw() {
         drawIntoCanvas { canvas ->
             // Reading this ensures that we invalidate when invalidateDrawable() is called
             drawInvalidateTick
 
-            // Update the Drawable's bounds
-            drawable.setBounds(0, 0, ceil(size.width).toInt(), ceil(size.height).toInt())
-
             canvas.withSave {
+                // AnimatedImageDrawable is not respecting the bounds below Android 12, so this is
+                // a workaround to make the render size correct in this specific case
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P &&
+                    Build.VERSION.SDK_INT < Build.VERSION_CODES.S &&
+                    drawable is AnimatedImageDrawable
+                ) {
+                    canvas.scale(
+                        size.width / intrinsicSize.width,
+                        size.height / intrinsicSize.height
+                    )
+                } else {
+                    // Update the Drawable's bounds
+                    drawable.setBounds(0, 0, ceil(size.width).toInt(), ceil(size.height).toInt())
+                }
+
                 drawable.draw(canvas.nativeCanvas)
             }
         }
@@ -205,10 +217,7 @@ open class DrawablePainter(
     }
 }
 
-/**
- * @see com.github.panpf.sketch.compose.core.android.test.painter.DrawablePainterTest.testMainHandler
- */
-internal val MAIN_HANDLER by lazy(LazyThreadSafetyMode.NONE) {
+private val MAIN_HANDLER by lazy(LazyThreadSafetyMode.NONE) {
     Handler(Looper.getMainLooper())
 }
 

@@ -4,7 +4,7 @@ import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.cache.SkiaBitmapImageSerializer
 import com.github.panpf.sketch.cache.createImageSerializer
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.ByteArrayDataSource
@@ -16,6 +16,7 @@ import com.github.panpf.sketch.test.utils.produceFingerPrint
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
+import kotlinx.coroutines.test.runTest
 import okio.Buffer
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -30,11 +31,11 @@ class ImageSerializerNonAndroidTest {
     }
 
     @Test
-    fun testSkiaBitmapImageSerializer() {
+    fun testSkiaBitmapImageSerializer() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val imageSerializer = SkiaBitmapImageSerializer
 
-        val imageFile = ResourceImages.jpeg
+        val imageFile = ComposeResImageFiles.jpeg
         val request = ImageRequest(context, imageFile.uri)
 
         val imageFinger: String

@@ -1,12 +1,10 @@
 plugins {
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("org.jetbrains.kotlin.multiplatform")
-    id("org.jetbrains.kotlinx.atomicfu")
 }
 
-addAllMultiplatformTargets()
-
-androidLibrary(nameSpace = "com.github.panpf.sketch.componentloadertest")
+addMultiplatformTargets(KmpTarget.entries.toTypedArray())
+kmpAndroidLibrary(nameSpace = "com.github.panpf.sketch.componentloadertest")
 
 kotlin {
     sourceSets {
@@ -30,6 +28,9 @@ kotlin {
             api(projects.sketchExtensionsAppicon)
             api(projects.sketchVideo)
             api(projects.sketchVideoFfmpeg)
+        }
+        iosMain.dependencies {
+            api(projects.sketchVideo)
         }
     }
 }

@@ -17,16 +17,18 @@
 package com.github.panpf.sketch.decode.internal
 
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.decode.GifDecoder
+import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.DecoderProvider
 
 /**
  * Cooperate with [ComponentLoader] to achieve automatic registration [GifDecoder]
  *
- * @see com.github.panpf.sketch.animated.gif.jvm.test.decode.internal.GifDecoderProviderJvmTest
- * @see com.github.panpf.sketch.animated.gif.nonjvm.test.decode.internal.GifDecoderProviderNonJvmTest
+ * @see com.github.panpf.sketch.animated.gif.android.test.decode.internal.GifDecoderProviderAndroidTest
+ * @see com.github.panpf.sketch.animated.gif.desktop.test.decode.internal.GifDecoderProviderDesktopTest
+ * @see com.github.panpf.sketch.animated.gif.ios.test.decode.internal.GifDecoderProviderIosTest
+ * @see com.github.panpf.sketch.animated.gif.jscommon.test.decode.internal.GifDecoderProviderJsCommonTest
  */
 expect class GifDecoderProvider : DecoderProvider {
-    override fun factory(context: PlatformContext): GifDecoder.Factory
+    override fun factory(context: PlatformContext): Decoder.Factory
 }

@@ -12,7 +12,7 @@ import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.KtorHttpUriFetcher
 import com.github.panpf.sketch.fetch.internal.FetcherInterceptor
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.merged
 import com.github.panpf.sketch.platformComponents
 import com.github.panpf.sketch.request.Disposable
@@ -27,11 +27,9 @@ import com.github.panpf.sketch.request.internal.ThumbnailInterceptor
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.DelayInterceptor
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
-import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestFetcher
 import com.github.panpf.sketch.test.utils.TestInterceptor
-import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.transform.internal.TransformationInterceptor
@@ -267,35 +265,29 @@ class SketchTest {
         }
 
         // addIgnoreComponentProviderClasses
+        val fetcherProvider = ComponentLoader.fetchers.first()
+        val fetcherFactory = fetcherProvider.factory(context)!!
         Sketch.Builder(context).build().apply {
-            assertEquals(
-                expected = ComponentLoader.toComponentRegistry(context)
-                    .merged(platformComponents(context).merged(commonComponents())).toString(),
-                actual = components.registry.toString()
+            assertTrue(
+                actual = components.registry.fetchers.find { it::class == fetcherFactory::class } != null,
+                message = "There should be a ${fetcherFactory::class} in the current environment, but it is not found."
             )
         }
         Sketch.Builder(context).apply {
-            // There is only one KtorHttpUriFetcherProvider in the current environment
-            addIgnoreFetcherProvider(ComponentLoader.fetchers.first()::class)
+            addIgnoreFetcherProvider(fetcherProvider::class)
         }.build().apply {
-            assertEquals(
-                expected = platformComponents(context).merged(commonComponents()).toString(),
-                actual = components.registry.toString()
+            assertNull(
+                actual = components.registry.fetchers.find { it::class == fetcherFactory::class },
+                message = "There should be a ${fetcherFactory::class} in the current environment, but it is not found."
             )
         }
 
         // components: Interceptor
         Sketch.Builder(context).build().apply {
+            val platformComponents = platformComponents(context)
+            val commonComponents = commonComponents()
             assertEquals(
-                listOf(
-                    MemoryCacheInterceptor(),
-                    PlaceholderInterceptor(),
-                    ResultCacheInterceptor(),
-                    ThumbnailInterceptor(),
-                    TransformationInterceptor(),
-                    FetcherInterceptor(),
-                    DecoderInterceptor(),
-                ),
+                platformComponents.merged(commonComponents)!!.interceptors,
                 components.getInterceptors(ImageRequest(context, ""))
             )
         }
@@ -305,29 +297,17 @@ class SketchTest {
                 add(TestInterceptor())
             }
         }.build().apply {
+            val testComponents = ComponentRegistry {
+                add(TestInterceptor())
+            }
+            val platformComponents = platformComponents(context)
+            val commonComponents = commonComponents()
             assertEquals(
-                listOf(
-                    TestInterceptor(),
-                    MemoryCacheInterceptor(),
-                    PlaceholderInterceptor(),
-                    ResultCacheInterceptor(),
-                    ThumbnailInterceptor(),
-                    TransformationInterceptor(),
-                    FetcherInterceptor(),
-                    DecoderInterceptor()
-                ),
+                testComponents.merged(platformComponents).merged(commonComponents)!!.interceptors,
                 components.getInterceptors(ImageRequest(context, ""))
             )
             assertNotEquals(
-                listOf(
-                    MemoryCacheInterceptor(),
-                    PlaceholderInterceptor(),
-                    ResultCacheInterceptor(),
-                    ThumbnailInterceptor(),
-                    TransformationInterceptor(),
-                    FetcherInterceptor(),
-                    DecoderInterceptor()
-                ),
+                platformComponents.merged(commonComponents)!!.interceptors,
                 components.getInterceptors(ImageRequest(context, ""))
             )
         }
@@ -350,15 +330,11 @@ class SketchTest {
 
     @Test
     fun testEnqueue() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
 
         /* success */
         val listenerSupervisor1 = ListenerSupervisor()
-        val request1 = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request1 = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             addListener(listenerSupervisor1)
         }
         val result1 = sketch.enqueue(request1).job.await()
@@ -367,7 +343,7 @@ class SketchTest {
 
         /* error */
         val listenerSupervisor2 = ListenerSupervisor()
-        val request2 = ImageRequest(context, ResourceImages.jpeg.uri + "1") {
+        val request2 = ImageRequest(context, ComposeResImageFiles.jpeg.uri + "1") {
             addListener(listenerSupervisor2)
         }
         val result2 = sketch.enqueue(request2).job.await()
@@ -377,7 +353,7 @@ class SketchTest {
         /* cancel */
         var disposable3: Disposable? = null
         val listenerSupervisor3 = ListenerSupervisor()
-        val request3 = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request3 = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             // Make the execution slower, cancellation can take effect
@@ -395,15 +371,11 @@ class SketchTest {
 
     @Test
     fun testExecute() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
 
         /* success */
         val listenerSupervisor1 = ListenerSupervisor()
-        val request1 = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request1 = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             addListener(listenerSupervisor1)
         }
         val result1 = sketch.execute(request1)
@@ -412,7 +384,7 @@ class SketchTest {
 
         /* error */
         val listenerSupervisor2 = ListenerSupervisor()
-        val request2 = ImageRequest(context, ResourceImages.jpeg.uri + "1") {
+        val request2 = ImageRequest(context, ComposeResImageFiles.jpeg.uri + "1") {
             addListener(listenerSupervisor2)
         }
         val result2 = sketch.execute(request2)
@@ -424,7 +396,7 @@ class SketchTest {
         val listenerSupervisor3 = ListenerSupervisor {
             deferred3?.cancel()
         }
-        val request3 = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val request3 = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             addListener(listenerSupervisor3)

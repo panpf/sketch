@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginExtension
-import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 buildscript {
@@ -37,6 +37,13 @@ tasks.register("cleanRootBuild", Delete::class) {
     delete(rootProject.project.layout.buildDirectory.get().asFile.absolutePath)
 }
 
+// Aggregate dokka documentation for all submodules
+dependencies {
+    for (module in publicModules) {
+        dokka(project(":$module"))
+    }
+}
+
 allprojects {
     repositories {
 //        maven { setUrl("https://maven.aliyun.com/repository/public") }  // central、jcenter
@@ -68,23 +75,56 @@ allprojects {
         }
     }
 
+    // 'expect'/'actual' classes (including interfaces, objects, annotations, enums, and 'actual' typealiases) are in Beta. Consider using the '-Xexpect-actual-classes' flag to suppress this warning.
+    // Also see: https://youtrack.jetbrains.com/issue/KT-61573
+    plugins.withId("org.jetbrains.kotlin.multiplatform") {
+        extensions.configure<KotlinMultiplatformExtension> {
+            targets.configureEach {
+                compilations.configureEach {
+                    compileTaskProvider.configure {
+                        compilerOptions {
+                            freeCompilerArgs.addAll(listOf("-Xexpect-actual-classes"))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Can't dispatch to the main thread in native tests. https://youtrack.jetbrains.com/issue/KT-53129
+    plugins.withId("org.jetbrains.kotlin.multiplatform") {
+        extensions.configure<KotlinMultiplatformExtension> {
+            targets.withType<KotlinNativeTarget> {
+                if (konanTarget.family.isAppleFamily) {
+                    binaries.withType<TestExecutable> {
+                        freeCompilerArgs += listOf(
+                            "-e",
+                            "com.github.panpf.sketch.test.utils.mainBackground"
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     // Add compilation configuration for Compose module
     plugins.withId("org.jetbrains.kotlin.plugin.compose") {
         extensions.configure<ComposeCompilerGradlePluginExtension> {
-            featureFlags.addAll(
-                ComposeFeatureFlag.OptimizeNonSkippingGroups
-            )
             stabilityConfigurationFiles.add {
                 rootDir.resolve("sketch-core/compose_compiler_config.conf")
             }
+        }
+    }
 
-            /**
-             * Run the `./gradlew clean :sketch-compose:assembleRelease -PcomposeCompilerReports=true` command to generate a report,
-             * which is located in the `project/module/build/compose_compiler` directory.
-             *
-             * Interpretation of the report: https://developer.android.com/jetpack/compose/performance/stability/diagnose#kotlin
-             */
-            if (project.findProperty("composeCompilerReports") == "true") {
+    /*
+     * Run the `./gradlew clean :sketch-compose:assembleRelease -PcomposeCompilerReports=true` command to generate a report,
+     * which is located in the `project/module/build/compose_compiler` directory.
+     *
+     * Interpretation of the report: https://developer.android.com/jetpack/compose/performance/stability/diagnose#kotlin
+     */
+    if (project.findProperty("composeCompilerReports") == "true") {
+        plugins.withId("org.jetbrains.kotlin.plugin.compose") {
+            extensions.configure<ComposeCompilerGradlePluginExtension> {
                 val outputDir = layout.buildDirectory.dir("compose_compiler").get().asFile
                 metricsDestination = outputDir
                 reportsDestination = outputDir
@@ -92,7 +132,7 @@ allprojects {
         }
     }
 
-    // TODO jetbrains-compose bug https://youtrack.jetbrains.com/issue/CMP-5831
+    // jetbrains-compose bug https://youtrack.jetbrains.com/issue/CMP-5831
     configurations.all {
         resolutionStrategy.eachDependency {
             if (requested.group == "org.jetbrains.kotlinx" && requested.name == "atomicfu") {
@@ -139,53 +179,5 @@ allprojects {
     // Configure Dokka plugin for all publishable library modules
     if (hasProperty("POM_ARTIFACT_ID")) {   // configured in the module/gradle.properties file
         apply { plugin("org.jetbrains.dokka") }
-    }
-
-    applyOkioJsTestWorkaround()
-}
-
-// https://github.com/square/okio/issues/1163
-fun Project.applyOkioJsTestWorkaround() {
-    if (":sample" in displayName) {
-        // The polyfills cause issues with the sample.
-        return
-    }
-
-    plugins.withId("org.jetbrains.kotlin.multiplatform") {
-        val applyNodePolyfillPlugin by lazy {
-            tasks.register("applyNodePolyfillPlugin") {
-                val applyPluginFile = projectDir
-                    .resolve("webpack.config.d/applyNodePolyfillPlugin.js")
-                onlyIf {
-                    !applyPluginFile.exists()
-                }
-                doLast {
-                    applyPluginFile.parentFile.mkdirs()
-                    applyPluginFile.writeText(
-                        """
-                        const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
-                        config.plugins.push(new NodePolyfillPlugin());
-                        """.trimIndent(),
-                    )
-                }
-            }
-        }
-
-        extensions.configure<KotlinMultiplatformExtension> {
-            sourceSets {
-                targets.configureEach {
-                    compilations.configureEach {
-                        if (platformType == KotlinPlatformType.js && name == "test") {
-                            tasks
-                                .getByName(compileKotlinTaskName)
-                                .dependsOn(applyNodePolyfillPlugin)
-                            dependencies {
-                                implementation(devNpm("node-polyfill-webpack-plugin", "^2.0.1"))
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 }

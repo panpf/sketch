@@ -10,7 +10,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
 import com.github.panpf.sketch.SubcomposeAsyncImage
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.test.utils.LifecycleContainer
@@ -23,10 +23,10 @@ class SingletonSubcomposeAsyncImageTest {
         runComposeUiTest {
             setContent {
                 LifecycleContainer {
-                    SubcomposeAsyncImage(ResourceImages.jpeg.uri, "test image")
+                    SubcomposeAsyncImage(ComposeResImageFiles.jpeg.uri, "test image")
 
                     SubcomposeAsyncImage(
-                        ResourceImages.jpeg.uri,
+                        ComposeResImageFiles.jpeg.uri,
                         "test image",
                         Modifier,
                         rememberAsyncImageState(),
@@ -42,7 +42,7 @@ class SingletonSubcomposeAsyncImageTest {
                     )
 
                     SubcomposeAsyncImage(
-                        uri = ResourceImages.jpeg.uri,
+                        uri = ComposeResImageFiles.jpeg.uri,
                         contentDescription = "test image",
                         modifier = Modifier,
                         state = rememberAsyncImageState(),
@@ -69,7 +69,7 @@ class SingletonSubcomposeAsyncImageTest {
             setContent {
                 LifecycleContainer {
                     SubcomposeAsyncImage(
-                        ResourceImages.jpeg.uri,
+                        ComposeResImageFiles.jpeg.uri,
                         "test image",
                         Modifier,
                         rememberAsyncImageState(),
@@ -83,7 +83,7 @@ class SingletonSubcomposeAsyncImageTest {
                     }
 
                     SubcomposeAsyncImage(
-                        uri = ResourceImages.jpeg.uri,
+                        uri = ComposeResImageFiles.jpeg.uri,
                         contentDescription = "test image",
                         modifier = Modifier,
                         state = rememberAsyncImageState(),
@@ -108,12 +108,12 @@ class SingletonSubcomposeAsyncImageTest {
             setContent {
                 LifecycleContainer {
                     SubcomposeAsyncImage(
-                        ComposableImageRequest(ResourceImages.jpeg.uri),
+                        ComposableImageRequest(ComposeResImageFiles.jpeg.uri),
                         "test image"
                     )
 
                     SubcomposeAsyncImage(
-                        ComposableImageRequest(ResourceImages.jpeg.uri),
+                        ComposableImageRequest(ComposeResImageFiles.jpeg.uri),
                         "test image",
                         Modifier,
                         rememberAsyncImageState(),
@@ -129,7 +129,7 @@ class SingletonSubcomposeAsyncImageTest {
                     )
 
                     SubcomposeAsyncImage(
-                        request = ComposableImageRequest(ResourceImages.jpeg.uri),
+                        request = ComposableImageRequest(ComposeResImageFiles.jpeg.uri),
                         contentDescription = "test image",
                         modifier = Modifier,
                         state = rememberAsyncImageState(),
@@ -156,7 +156,7 @@ class SingletonSubcomposeAsyncImageTest {
             setContent {
                 LifecycleContainer {
                     SubcomposeAsyncImage(
-                        ComposableImageRequest(ResourceImages.jpeg.uri),
+                        ComposableImageRequest(ComposeResImageFiles.jpeg.uri),
                         "test image",
                         Modifier,
                         rememberAsyncImageState(),
@@ -170,7 +170,7 @@ class SingletonSubcomposeAsyncImageTest {
                     }
 
                     SubcomposeAsyncImage(
-                        request = ComposableImageRequest(ResourceImages.jpeg.uri),
+                        request = ComposableImageRequest(ComposeResImageFiles.jpeg.uri),
                         contentDescription = "test image",
                         modifier = Modifier,
                         state = rememberAsyncImageState(),

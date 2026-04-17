@@ -23,7 +23,6 @@ import com.github.panpf.sketch.fetch.newKotlinResourceUri
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.util.defaultFileSystem
 import okio.FileSystem
-import okio.IOException
 import okio.Path
 import okio.Path.Companion.toPath
 import okio.Source
@@ -43,14 +42,14 @@ class KotlinResourceDataSource constructor(
 
     override val dataFrom: DataFrom = LOCAL
 
-    @Throws(IOException::class)
+    //    @Throws(IOException::class)
     override fun openSource(): Source {
         val appResourcePath = NSBundle.mainBundle.resourcePath!!.toPath()
         val filePath = appResourcePath.resolve("compose-resources").resolve(resourcePath)
         return fileSystem.source(filePath)
     }
 
-    @Throws(IOException::class)
+    //    @Throws(IOException::class)
     override fun getFile(sketch: Sketch): Path {
         val resourcePath = NSBundle.mainBundle.resourcePath!!.toPath()
         return resourcePath.resolve("compose-resources").resolve(this.resourcePath)

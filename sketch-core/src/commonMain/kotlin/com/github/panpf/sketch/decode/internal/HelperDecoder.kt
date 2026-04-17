@@ -70,6 +70,9 @@ open class HelperDecoder(
         val decodeHelper = decodeHelperFactory()
         try {
             val imageInfo = decodeHelper.imageInfo
+            if (imageInfo.size.isEmpty) {
+                throw ImageInvalidException("Unsupported image type")
+            }
             val resize = requestContext.computeResize(imageInfo.size)
             val (image, transformeds) = if (resize.shouldClip(imageInfo.size) && decodeHelper.supportRegion) {
                 try {
@@ -84,7 +87,7 @@ open class HelperDecoder(
                 decodeFull(decodeHelper, resize)
             }
             if (image.size.isEmpty) {
-                throw ImageInvalidException("Invalid image size. size=${image.size}")
+                throw ImageInvalidException("Unsupported image type")
             }
             val imageData = ImageData(
                 image = image,

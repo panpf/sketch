@@ -47,7 +47,6 @@ import com.github.panpf.sketch.util.animatable2CompatCallbackOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.internal.SynchronizedObject
 import kotlinx.coroutines.launch
 import pl.droidsonroids.gif.GifInfoHandleHelper
 import pl.droidsonroids.gif.GifOptions
@@ -94,11 +93,10 @@ class KoralGifDecoder(
     }
 
     private var _imageInfo: ImageInfo? = null
-    private val imageInfoLock = SynchronizedObject()
 
     override val imageInfo: ImageInfo
         get() {
-            synchronized(imageInfoLock) {
+            synchronized(this@KoralGifDecoder) {
                 val imageInfo = _imageInfo
                 if (imageInfo != null) return imageInfo
                 return ImageInfo(

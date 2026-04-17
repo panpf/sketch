@@ -3,7 +3,7 @@ package com.github.panpf.sketch.compose.core.common.test.target
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import com.github.panpf.sketch.asImage
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.ComposeRequestDelegate
 import com.github.panpf.sketch.resize.ComposeResizeOnDrawHelper
@@ -40,7 +40,7 @@ class ComposeTargetTest {
     @Test
     fun testNewRequestDelegate() {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
 
         val composeTarget = TestComposeTarget()
         val requestDelegate1 = composeTarget.newRequestDelegate(sketch, request, Job())

@@ -32,7 +32,6 @@ import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom.RESULT_CACHE
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.closeQuietly
 import kotlinx.coroutines.withContext
 import okio.buffer
 import okio.use
@@ -98,35 +97,35 @@ class ResultCacheInterceptor : Interceptor {
         val fileSystem = resultCache.fileSystem
         val resultCacheKey = requestContext.resultCacheKey
         val imageSerializer = createImageSerializer()
-        val snapshot = runCatching { resultCache.openSnapshot(resultCacheKey) }.getOrNull()
-        if (snapshot == null) return null
-        val result = runCatching {
-            val dataSource = FileDataSource(
-                path = snapshot.data,
-                fileSystem = requestContext.sketch.fileSystem,
-                dataFrom = RESULT_CACHE,
-            )
-            val metadataString = fileSystem.source(snapshot.metadata).buffer().use { it.readUtf8() }
-            val metadata = Metadata.fromMetadataString(metadataString)
-            val image = imageSerializer.decode(requestContext, metadata.imageInfo, dataSource)
-            ImageData(
-                image = image,
-                imageInfo = metadata.imageInfo,
-                dataFrom = RESULT_CACHE,
-                resize = metadata.resize,
-                transformeds = metadata.transformeds,
-                extras = metadata.extras
-            )
-        }
-        snapshot.closeQuietly()
-
-        result.onFailure {
-            requestContext.sketch.logger.w(tr = it) {
-                "ResultCacheInterceptor. read result cache error. $it. '${requestContext.logKey}'"
+        return runCatching {
+            resultCache.openSnapshot(resultCacheKey)?.use { snapshot ->
+                val metadataString =
+                    fileSystem.source(snapshot.metadata).buffer().use { it.readUtf8() }
+                val metadata = Metadata.fromMetadataString(metadataString)
+                val dataSource = FileDataSource(
+                    path = snapshot.data,
+                    fileSystem = requestContext.sketch.fileSystem,
+                    dataFrom = RESULT_CACHE,
+                )
+                val image = imageSerializer.decode(requestContext, metadata.imageInfo, dataSource)
+                ImageData(
+                    image = image,
+                    imageInfo = metadata.imageInfo,
+                    dataFrom = RESULT_CACHE,
+                    resize = metadata.resize,
+                    transformeds = metadata.transformeds,
+                    extras = metadata.extras
+                )
             }
+        }.onFailure {
+            it.printStackTrace()
             resultCache.remove(resultCacheKey)
-        }
-        return result.getOrNull()
+            requestContext.sketch.logger.w(tr = it) {
+                "ResultCacheInterceptor. Read result cache failed. Removed cache file. " +
+                        "message='${it.message}'. " +
+                        "'${requestContext.logKey}'"
+            }
+        }.getOrNull()
     }
 
     @WorkerThread

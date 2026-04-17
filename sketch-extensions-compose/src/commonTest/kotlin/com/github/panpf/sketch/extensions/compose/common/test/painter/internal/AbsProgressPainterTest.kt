@@ -13,9 +13,9 @@ import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_STEP_ANIMATION_DURATION
+import com.github.panpf.sketch.extensions.compose.internal.util.format
 import com.github.panpf.sketch.painter.internal.AbsProgressPainter
 import com.github.panpf.sketch.util.Size
-import com.github.panpf.sketch.util.format
 import com.github.panpf.sketch.util.toSize
 import kotlin.test.Test
 import kotlin.test.assertEquals

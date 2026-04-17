@@ -7,7 +7,7 @@ import androidx.compose.ui.layout.ContentScale
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.compose.core.common.test.target.TestGenericComposeTarget
 import com.github.panpf.sketch.decode.ImageInfo
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.painter.CrossfadePainter
 import com.github.panpf.sketch.painter.ImageBitmapPainter
 import com.github.panpf.sketch.request.ImageRequest
@@ -39,7 +39,7 @@ class ComposeCrossfadeTransitionTest {
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val imageViewTarget = TestGenericComposeTarget()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         val requestContext = request.toRequestContext(sketch)
         val resultBitmap = createBitmap(100, 200)
         val result = ImageResult.Success(
@@ -124,7 +124,7 @@ class ComposeCrossfadeTransitionTest {
     @Test
     fun testTransition() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
 
         val composeTarget = TestGenericComposeTarget()
 
@@ -243,7 +243,7 @@ class ComposeCrossfadeTransitionTest {
     @Test
     fun testFactoryCreate() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         val factory = ComposeCrossfadeTransition.Factory()
 
         val imageViewTarget = TestGenericComposeTarget()

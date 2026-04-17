@@ -1,22 +1,21 @@
 plugins {
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlinx.kover")
 }
 
-addAllMultiplatformTargets()
-
-androidLibrary(nameSpace = "com.github.panpf.sketch.compose.core")
+addMultiplatformTargets(KmpTarget.entries.toTypedArray())
+kmpAndroidLibrary(nameSpace = "com.github.panpf.sketch.compose.core")
 
 kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.sketchCore)
-            api(compose.foundation)
-            api(compose.runtime)
-            api(compose.ui)
+            api(libs.jetbrains.compose.foundation)
+            api(libs.jetbrains.compose.runtime)
+            api(libs.jetbrains.compose.ui)
             api(libs.jetbrains.lifecycle.runtime.compose)
         }
 
@@ -25,7 +24,7 @@ kotlin {
             implementation(projects.internal.testHttp)
             implementation(projects.internal.testSingleton)
         }
-        androidInstrumentedTest.dependencies {
+        androidDeviceTest.dependencies {
             implementation(projects.internal.testCompose)
             implementation(projects.internal.testHttp)
             implementation(projects.internal.testSingleton)

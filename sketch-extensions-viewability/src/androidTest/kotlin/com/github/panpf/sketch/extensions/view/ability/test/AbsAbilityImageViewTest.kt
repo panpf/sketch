@@ -11,7 +11,7 @@ import android.widget.ImageView.ScaleType.MATRIX
 import androidx.core.view.isVisible
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.drawable.asEquitable
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.target
 import com.github.panpf.sketch.test.singleton.request.execute
@@ -335,7 +335,7 @@ class AbsAbilityImageViewTest {
                 actual = activity.viewAbility.requestListenerActions
             )
 
-            ImageRequest(activity, ResourceImages.jpeg.uri) {
+            ImageRequest(activity, ComposeResImageFiles.jpeg.uri) {
                 target(activity.abilityView)
                 resultCachePolicy(DISABLED)
             }.execute()
@@ -344,7 +344,7 @@ class AbsAbilityImageViewTest {
                 actual = activity.viewAbility.requestListenerActions
             )
 
-            ImageRequest(activity, ResourceImages.jpeg.uri + "1") {
+            ImageRequest(activity, ComposeResImageFiles.jpeg.uri + "1") {
                 target(activity.abilityView)
                 resultCachePolicy(DISABLED)
             }.execute()

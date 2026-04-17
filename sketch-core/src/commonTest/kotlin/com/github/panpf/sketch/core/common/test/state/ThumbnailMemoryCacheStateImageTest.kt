@@ -22,7 +22,7 @@ import com.github.panpf.sketch.cache.newCacheValueExtras
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Resize
@@ -74,7 +74,7 @@ class ThumbnailMemoryCacheStateImageTest {
     @Test
     fun testKey() {
         val context = getTestContext()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         val uri = request.uri.toString()
 
         val defaultImage = FakeStateImage()
@@ -103,7 +103,7 @@ class ThumbnailMemoryCacheStateImageTest {
     fun testGetImage() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val imageFile = ResourceImages.jpeg
+        val imageFile = ComposeResImageFiles.jpeg
         val request = ImageRequest(context, imageFile.uri)
         val requestContext = request.toRequestContext(sketch, Size(1080, 1920))
         val thumbnailSize = imageFile.size / 8f
@@ -496,7 +496,7 @@ class ThumbnailMemoryCacheStateImageTest {
     @Test
     fun testToString() {
         val context = getTestContext()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         val uri = request.uri.toString()
 
         val defaultImage = FakeStateImage()

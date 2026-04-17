@@ -18,13 +18,23 @@ package com.github.panpf.sketch.decode
 
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import com.github.panpf.sketch.ComponentRegistry
+
+/**
+ * Adds gif animated image support
+ *
+ * @see com.github.panpf.sketch.animated.gif.android.test.decode.GifDecoderAndroidTest.testSupportGif
+ */
+actual fun ComponentRegistry.Builder.supportGif(): ComponentRegistry.Builder = apply {
+    add(defaultGifDecoderFactory())
+}
 
 /**
  * Get the default GIF decoder factory for Android platforms
  *
  * @see com.github.panpf.sketch.animated.gif.android.test.decode.GifDecoderAndroidTest.testDefaultGifDecoderFactory
  */
-actual fun defaultGifDecoderFactory(): Decoder.Factory {
+internal fun defaultGifDecoderFactory(): Decoder.Factory {
     return if (VERSION.SDK_INT >= VERSION_CODES.P) {
         ImageDecoderGifDecoder.Factory()
     } else {

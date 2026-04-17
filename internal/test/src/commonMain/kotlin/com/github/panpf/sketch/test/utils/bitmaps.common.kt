@@ -13,9 +13,9 @@ expect fun createARGBBitmap(width: Int, height: Int): Bitmap
 
 expect fun create565Bitmap(width: Int, height: Int): Bitmap
 
-expect fun getMutableBitmap(): Bitmap
+expect suspend fun getMutableBitmap(): Bitmap
 
-expect fun getImmutableBitmap(): Bitmap
+expect suspend fun getImmutableBitmap(): Bitmap
 
 val Bitmap.cornerA: Int
     get() = readIntPixel(0, 0)

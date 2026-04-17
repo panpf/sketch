@@ -23,9 +23,8 @@ import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.util.Rect
-import okio.buffer
-import okio.use
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
 import org.jetbrains.skia.Image
@@ -50,13 +49,10 @@ class SkiaDecodeHelper constructor(
     val dataSource: DataSource
 ) : DecodeHelper {
 
-    private val bytes by lazy {
-        dataSource.openSource().buffer().use { it.readByteArray() }
-    }
-    private val skiaImage by lazy {
-        // Image.makeFromEncoded(bytes) will parse exif orientation and does not support closing
-        Image.makeFromEncoded(bytes)
-    }
+    private val bytes by lazy { dataSource.toByteArray() }
+
+    // Image.makeFromEncoded(bytes) will parse exif orientation and does not support closing
+    private val skiaImage by lazy { Image.makeFromEncoded(bytes) }
 
     override val imageInfo: ImageInfo by lazy {
         Codec.makeFromData(Data.makeFromBytes(bytes)).use { codec ->

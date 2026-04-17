@@ -11,4 +11,4 @@ sketch4，你可以直接拷贝他们到你的项目中。
 
 其它迁移细节正在陆续完善中
 
-[sketch3compat]: ../sample/src/androidMain/kotlin/com/github/panpf/sketch/sample/util/sketch3compat
+[sketch3compat]: ../samples/androidApp/src/main/kotlin/com/github/panpf/sketch/sample/util/sketch3compat

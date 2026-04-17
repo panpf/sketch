@@ -39,9 +39,8 @@ internal class JsSystemCallbacks : SystemCallbacks {
     override var isShutdown: Boolean by _isShutdown
 
     override fun register() {
-        // TODO Listen for memory-pressure events to trim the memory cache on js platforms.
-        // TODO Implement network type detection for js platforms.
-        //  https://github.com/jordond/connectivity/blob/main/connectivity-http/src/commonMain/kotlin/dev/jordond/connectivity/internal/HttpConnectivity.kt
+        // Js platform cannot determine whether it is a metered network.
+        // Js platforms are also unable to accurately determine memory pressure.
     }
 
     override fun shutdown() {

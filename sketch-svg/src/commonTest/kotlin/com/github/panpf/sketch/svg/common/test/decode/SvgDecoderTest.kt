@@ -21,8 +21,7 @@ import com.github.panpf.sketch.decode.SvgDecoder
 import com.github.panpf.sketch.decode.internal.createResizeTransformed
 import com.github.panpf.sketch.decode.internal.createScaledTransformed
 import com.github.panpf.sketch.decode.supportSvg
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Resize
@@ -94,9 +93,9 @@ class SvgDecoderTest {
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, ResourceImages.svg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.svg.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.svg.toDataSource(context)
+        val dataSource = ComposeResImageFiles.svg.toDataSource(context)
 
         SvgDecoder(requestContext, dataSource)
         SvgDecoder(requestContext = requestContext, dataSource = dataSource)
@@ -107,7 +106,7 @@ class SvgDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
 
         val factory = SvgDecoder.Factory()
-        ImageRequest(context, ResourceImages.svg.uri)
+        ImageRequest(context, ComposeResImageFiles.svg.uri)
             .createDecoderOrDefault(sketch, factory)
             .apply {
                 assertEquals(
@@ -117,7 +116,7 @@ class SvgDecoderTest {
             }
 
         val factory1 = SvgDecoder.Factory(useViewBoundsAsIntrinsicSize = false)
-        ImageRequest(context, ResourceImages.svg.uri)
+        ImageRequest(context, ComposeResImageFiles.svg.uri)
             .createDecoderOrDefault(sketch, factory1)
             .apply {
                 assertEquals(
@@ -134,7 +133,7 @@ class SvgDecoderTest {
         val factory = SvgDecoder.Factory()
 
         // normal
-        ImageRequest(context, ResourceImages.svg.uri)
+        ImageRequest(context, ComposeResImageFiles.svg.uri)
             .decode(sketch, factory).apply {
                 assertEquals(
                     expected = "ImageInfo(257x226,'image/svg+xml')",
@@ -156,7 +155,7 @@ class SvgDecoderTest {
             }
 
         // error: png
-        ImageRequest(context, ResourceImages.png.uri).let {
+        ImageRequest(context, ComposeResImageFiles.png.uri).let {
             val fetchResult = it.fetch(sketch)
             factory.create(it.toRequestContext(sketch), fetchResult)
         }.apply {
@@ -176,7 +175,7 @@ class SvgDecoderTest {
             SketchSize(0, 0) to (1f to Size(257, 226)),
         ).forEach { (targetSize, expected) ->
             val (expectedScaleFactor, expectedSize) = expected
-            ImageRequest(context, ResourceImages.svg.uri) {
+            ImageRequest(context, ComposeResImageFiles.svg.uri) {
                 size(targetSize)
             }.decode(sketch, factory).apply {
                 assertEquals(
@@ -212,7 +211,7 @@ class SvgDecoderTest {
             Precision.SMALLER_SIZE to (2.33f to Size(600, 528)),
         ).forEach { (precision, expected) ->
             val (expectedScaleFactor, expectedSize) = expected
-            ImageRequest(context, ResourceImages.svg.uri) {
+            ImageRequest(context, ComposeResImageFiles.svg.uri) {
                 size(SketchSize(600, 600))
                 precision(precision)
             }.decode(sketch, factory).apply {
@@ -253,9 +252,9 @@ class SvgDecoderTest {
     @Test
     fun testEqualsAndHashCode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.svg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.svg.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.svg.toDataSource(context)
+        val dataSource = ComposeResImageFiles.svg.toDataSource(context)
         val element1 = SvgDecoder(requestContext, dataSource)
         val element11 = SvgDecoder(requestContext, dataSource)
 
@@ -268,9 +267,9 @@ class SvgDecoderTest {
     @Test
     fun testToString() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.svg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.svg.uri)
         val requestContext = request.toRequestContext(sketch)
-        val dataSource = ResourceImages.svg.toDataSource(context)
+        val dataSource = ComposeResImageFiles.svg.toDataSource(context)
         val decoder = SvgDecoder(requestContext, dataSource)
         assertTrue(actual = decoder.toString().contains("SvgDecoder"), message = decoder.toString())
         assertTrue(actual = decoder.toString().contains("@"), message = decoder.toString())
@@ -295,19 +294,19 @@ class SvgDecoderTest {
 
         // normal
         val factory = SvgDecoder.Factory(false)
-        ImageRequest(context, ResourceImages.svg.uri)
+        ImageRequest(context, ComposeResImageFiles.svg.uri)
             .createDecoderOrNull(sketch, factory).apply {
                 assertTrue(this is SvgDecoder)
             }
 
         // data error
-        ImageRequest(context, ResourceImages.png.uri)
+        ImageRequest(context, ComposeResImageFiles.png.uri)
             .createDecoderOrNull(sketch, factory).apply {
                 assertNull(this)
             }
 
         // mimeType error
-        ImageRequest(context, ResourceImages.svg.uri)
+        ImageRequest(context, ComposeResImageFiles.svg.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/svg")
             }.apply {
@@ -315,7 +314,7 @@ class SvgDecoderTest {
             }
 
         // Correct mimeType; data error
-        ImageRequest(context, ResourceImages.png.uri)
+        ImageRequest(context, ComposeResImageFiles.png.uri)
             .createDecoderOrNull(sketch, factory) {
                 it.copy(mimeType = "image/svg+xml")
             }.apply {

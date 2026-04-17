@@ -34,11 +34,12 @@ import androidx.compose.ui.layout.ContentScale.Companion
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.Bitmap
+import com.github.panpf.sketch.compose.internal.util.toHexString
 import com.github.panpf.sketch.painter.CrossfadePainter
 import com.github.panpf.sketch.painter.PainterWrapper
 import com.github.panpf.sketch.resize.Scale
-import com.github.panpf.sketch.util.Size as SketchSize
 import kotlin.math.roundToInt
+import com.github.panpf.sketch.util.Size as SketchSize
 
 /**
  * Get window container size
@@ -315,22 +316,6 @@ internal val ColorSpace.simpleName: String
         ColorSpaces.Oklab -> "Oklab"
         else -> name
     }
-
-/**
- * Convert to the type specified by the generic, if this is null or cannot be converted return null
- *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testAnyAsOrNull
- */
-internal inline fun <reified R> Any?.asOrNull(): R? {
-    return if (this != null && this is R) this else null
-}
-
-/**
- * Returns a string representation of this Int value in the specified radix.
- *
- * @see com.github.panpf.sketch.compose.core.common.test.util.ComposeCoreUtilsCommonTest.testToHexString
- */
-internal fun Any.toHexString(): String = this.hashCode().toString(16)
 
 /**
  * Convert [ImageBitmap] to log string

@@ -25,12 +25,12 @@ import androidx.lifecycle.LifecycleOwner
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asPainter
+import com.github.panpf.sketch.compose.internal.util.asOrNull
 import com.github.panpf.sketch.painter.AnimatablePainter
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.internal.AttachObserver
 import com.github.panpf.sketch.transition.TransitionComposeTarget
-import com.github.panpf.sketch.util.asOrNull
 import com.github.panpf.sketch.util.fitScale
 
 /**

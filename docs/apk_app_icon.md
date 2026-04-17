@@ -24,7 +24,7 @@ sketch.enqueue(ImageRequest(context, uri = "/sdcard/sample.apk"))
      registration, please see the documentation: [《Register component》](register_component.md)
 > 2. Only supports Android platform
 
-## Load the icon of the installed app
+## Load installed app icon
 
 First install the component
 

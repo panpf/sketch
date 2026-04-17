@@ -17,7 +17,7 @@
 package com.github.panpf.sketch.core.common.test.request.internal
 
 import com.github.panpf.sketch.fetch.internal.FetcherInterceptor
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.DecoderInterceptor
@@ -55,7 +55,12 @@ class DecoderInterceptorTest {
                 }.getOrThrow()
             }
 
-            executeRequest(ImageRequest(context, ResourceImages.jpeg.uri)).asOrThrow<ImageData>()
+            executeRequest(
+                ImageRequest(
+                    context,
+                    ComposeResImageFiles.jpeg.uri
+                )
+            ).asOrThrow<ImageData>()
 
             executeRequest(ImageRequest(context, TestHttpStack.testImages.first().uri))
                 .asOrThrow<ImageData>()
@@ -81,7 +86,7 @@ class DecoderInterceptorTest {
             }
 
             assertFailsWith(Exception::class) {
-                executeRequest(ImageRequest(context, ResourceImages.jpeg.uri))
+                executeRequest(ImageRequest(context, ComposeResImageFiles.jpeg.uri))
             }
         }
     }

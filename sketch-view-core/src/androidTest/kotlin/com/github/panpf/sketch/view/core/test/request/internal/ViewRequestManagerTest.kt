@@ -10,7 +10,7 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle.State.RESUMED
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ReusableDisposable
@@ -60,7 +60,7 @@ class ViewRequestManagerTest {
         val context = getTestContext()
 
         val imageView = ImageView(context)
-        val request = ImageRequest(imageView, ResourceImages.jpeg.uri)
+        val request = ImageRequest(imageView, ComposeResImageFiles.jpeg.uri)
 
         withContext(Dispatchers.Main) {
             val deferred = async {
@@ -98,7 +98,7 @@ class ViewRequestManagerTest {
         assertNull(imageView.requestManager.getFieldValue("currentRequestDelegate"))
 
         // If there is no attached to the window, the display will inevitably fail
-        imageView.loadImage(ResourceImages.jpeg.uri)
+        imageView.loadImage(ComposeResImageFiles.jpeg.uri)
         block(1500)
         assertFalse(imageView.isAttachedToWindow)
         assertNull(imageView.drawable)

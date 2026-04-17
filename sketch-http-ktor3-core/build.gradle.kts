@@ -1,12 +1,11 @@
 plugins {
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.kotlinx.kover")
 }
 
-addAllMultiplatformTargets()
-
-androidLibrary(nameSpace = "com.github.panpf.sketch.http.ktor3.core")
+addMultiplatformTargets(KmpTarget.entries.toTypedArray())
+kmpAndroidLibrary(nameSpace = "com.github.panpf.sketch.http.ktor3.core")
 
 kotlin {
     sourceSets {
@@ -20,7 +19,7 @@ kotlin {
             implementation(projects.internal.test)
             implementation(projects.internal.testSingleton)
         }
-        androidInstrumentedTest.dependencies {
+        androidDeviceTest.dependencies {
             implementation(projects.internal.test)
             implementation(projects.internal.testSingleton)
             implementation(libs.ktor3.client.android)

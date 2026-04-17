@@ -7,7 +7,7 @@ import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.cache.CachePolicy.ENABLED
 import com.github.panpf.sketch.cache.CachePolicy.READ_ONLY
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
@@ -31,7 +31,6 @@ import com.github.panpf.sketch.test.singleton.request.execute
 import com.github.panpf.sketch.test.utils.FakeImage
 import com.github.panpf.sketch.test.utils.FakeStateImage
 import com.github.panpf.sketch.test.utils.ListenerSupervisor
-import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.ProgressListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestCountTarget
 import com.github.panpf.sketch.test.utils.TestErrorDecoder
@@ -46,7 +45,6 @@ import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.TestTransitionTarget
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.corners
-import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.exist
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.ratio
@@ -84,10 +82,6 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testDepth() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Will get stuck forever in iOS test environment.
-            return@runTest
-        }
         runInNewSketchWithUse({
             components {
                 add(TestHttpUriFetcher.Factory(it))
@@ -182,10 +176,6 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testDownloadCachePolicy() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Unexpected uninformative error in iOS test environment.
-            return@runTest
-        }
         runInNewSketchWithUse({
             components {
                 add(TestHttpUriFetcher.Factory(it))
@@ -313,22 +303,18 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testResize() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
 
         // default
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
         }
             .let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(
-                    samplingByTarget(ResourceImages.jpeg.size, context.screenSize()),
+                    samplingByTarget(ComposeResImageFiles.jpeg.size, context.screenSize()),
                     image.size
                 )
                 assertEquals(imageInfo.size.ratio, image.size.ratio)
@@ -336,111 +322,112 @@ class ImageRequestExecuteTest {
 
         // size: small, precision=LESS_PIXELS/SAME_ASPECT_RATIO/EXACTLY
         val smallSize1 = Size(600, 500)
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(smallSize1)
             precision(LESS_PIXELS)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(Size(323, 484), image.size)
                 assertEquals(imageInfo.size.ratio, image.size.ratio)
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(smallSize1)
             precision(SAME_ASPECT_RATIO)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertTrue(
                     actual = image.size == Size(322, 268) || image.size == Size(323, 269),
                     message = image.toString()
                 )
                 assertEquals(smallSize1.ratio, image.size.ratio)
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(smallSize1)
             precision(EXACTLY)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(smallSize1, image.size)
             }
 
         val smallSize2 = Size(500, 600)
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(smallSize2)
             precision(LESS_PIXELS)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(Size(323, 484), image.size)
                 assertEquals(imageInfo.size.ratio, image.size.ratio)
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(smallSize2)
             precision(SAME_ASPECT_RATIO)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertTrue(
                     actual = image.size == Size(322, 387) || image.size == Size(323, 388),
                     message = image.toString()
                 )
                 assertEquals(smallSize2.ratio, image.size.ratio)
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(smallSize2)
             precision(EXACTLY)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(smallSize2, image.size)
             }
 
         // size: same, precision=LESS_PIXELS/SAME_ASPECT_RATIO/EXACTLY
-        val sameSize = Size(ResourceImages.jpeg.size.width, ResourceImages.jpeg.size.height)
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        val sameSize =
+            Size(ComposeResImageFiles.jpeg.size.width, ComposeResImageFiles.jpeg.size.height)
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(sameSize)
             precision(LESS_PIXELS)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(sameSize, image.size)
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(sameSize)
             precision(SAME_ASPECT_RATIO)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(sameSize, image.size)
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(sameSize)
             precision(EXACTLY)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(sameSize, image.size)
             }
 
         // size: big, precision=LESS_PIXELS/SAME_ASPECT_RATIO/EXACTLY
         val bigSize1 = Size(2500, 2100)
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(bigSize1)
             precision(LESS_PIXELS)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
-                assertEquals(ResourceImages.jpeg.size, image.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, image.size)
                 assertEquals(imageInfo.size.ratio, image.size.ratio)
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(bigSize1)
             precision(SAME_ASPECT_RATIO)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(
                     Size(1291, 1084),
                     image.size
@@ -450,12 +437,12 @@ class ImageRequestExecuteTest {
                     image.size.ratio
                 )
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(bigSize1)
             precision(EXACTLY)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(
                     bigSize1,
                     image.size
@@ -463,24 +450,24 @@ class ImageRequestExecuteTest {
             }
 
         val bigSize2 = Size(2100, 2500)
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(bigSize2)
             precision(LESS_PIXELS)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(
-                    ResourceImages.jpeg.size,
+                    ComposeResImageFiles.jpeg.size,
                     image.size
                 )
                 assertEquals(imageInfo.size.ratio, image.size.ratio)
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(bigSize2)
             precision(SAME_ASPECT_RATIO)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(
                     Size(1291, 1537),
                     image.size
@@ -490,12 +477,12 @@ class ImageRequestExecuteTest {
                     image.size.ratio
                 )
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(bigSize2)
             precision(EXACTLY)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(
                     bigSize2,
                     image.size
@@ -503,24 +490,24 @@ class ImageRequestExecuteTest {
             }
 
         val bigSize3 = Size(800, 2500)
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(bigSize3)
             precision(LESS_PIXELS)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(
                     Size(646, 968),
                     image.size
                 )
                 assertEquals(imageInfo.size.ratio, image.size.ratio)
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(bigSize3)
             precision(SAME_ASPECT_RATIO)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(
                     Size(620, 1936),
                     image.size
@@ -530,12 +517,12 @@ class ImageRequestExecuteTest {
                     image.size.ratio
                 )
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(bigSize3)
             precision(EXACTLY)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(
                     bigSize3,
                     image.size
@@ -543,24 +530,24 @@ class ImageRequestExecuteTest {
             }
 
         val bigSize4 = Size(2500, 800)
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(bigSize4)
             precision(LESS_PIXELS)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(
                     Size(646, 968),
                     image.size
                 )
                 assertEquals(imageInfo.size.ratio, image.size.ratio)
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(bigSize4)
             precision(SAME_ASPECT_RATIO)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(
                     Size(1291, 413),
                     image.size
@@ -570,12 +557,12 @@ class ImageRequestExecuteTest {
                     image.size.ratio
                 )
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(bigSize4)
             precision(EXACTLY)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(
                     bigSize4,
                     image.size
@@ -588,14 +575,14 @@ class ImageRequestExecuteTest {
         var sarCenterCropBitmap: Image?
         var sarEndCropBitmap: Image?
         var sarFillCropBitmap: Image?
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(size)
             precision(SAME_ASPECT_RATIO)
             scale(START_CROP)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
                 sarStartCropBitmap = image
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertTrue(
                     actual = image.size == Size(322, 268) || image.size == Size(323, 269),
                     message = image.toString()
@@ -605,14 +592,14 @@ class ImageRequestExecuteTest {
                     image.size.ratio
                 )
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(size)
             precision(SAME_ASPECT_RATIO)
             scale(CENTER_CROP)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
                 sarCenterCropBitmap = image
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertTrue(
                     actual = image.size == Size(322, 268) || image.size == Size(323, 269),
                     message = image.toString()
@@ -622,14 +609,14 @@ class ImageRequestExecuteTest {
                     image.size.ratio
                 )
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(size)
             precision(SAME_ASPECT_RATIO)
             scale(END_CROP)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
                 sarEndCropBitmap = image
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertTrue(
                     actual = image.size == Size(322, 268) || image.size == Size(323, 269),
                     message = image.toString()
@@ -639,14 +626,14 @@ class ImageRequestExecuteTest {
                     image.size.ratio
                 )
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(size)
             precision(SAME_ASPECT_RATIO)
             scale(FILL)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
                 sarFillCropBitmap = image
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 // In Android 11, the size of the image may be 323x269
                 assertTrue(image.size == Size(323, 269) || image.size == Size(322, 268))
                 assertEquals(size.ratio, image.size.ratio)
@@ -662,44 +649,44 @@ class ImageRequestExecuteTest {
         var exactlyCenterCropBitmap: Image?
         var exactlyEndCropBitmap: Image?
         var exactlyFillCropBitmap: Image?
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(size)
             precision(EXACTLY)
             scale(START_CROP)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
                 exactlyStartCropBitmap = image
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(size, image.size)
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(size)
             precision(EXACTLY)
             scale(CENTER_CROP)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
                 exactlyCenterCropBitmap = image
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(size, image.size)
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(size)
             precision(EXACTLY)
             scale(END_CROP)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
                 exactlyEndCropBitmap = image
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(size, image.size)
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(size)
             precision(EXACTLY)
             scale(FILL)
         }.let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
                 exactlyFillCropBitmap = image
-                assertEquals(ResourceImages.jpeg.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.jpeg.size, imageInfo.size)
                 assertEquals(size, image.size)
             }
         assertNotEquals(
@@ -723,30 +710,30 @@ class ImageRequestExecuteTest {
 
         // origin
         var size1: Size?
-        ImageRequest(context, ResourceImages.longQMSHT.uri) {
+        ImageRequest(context, ComposeResImageFiles.longQMSHT.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
         }
             .let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.longQMSHT.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.longQMSHT.size, imageInfo.size)
                 assertEquals(
-                    samplingByTarget(ResourceImages.longQMSHT.size, context.screenSize()),
+                    samplingByTarget(ComposeResImageFiles.longQMSHT.size, context.screenSize()),
                     image.size
                 )
                 assertEquals(imageInfo.size.ratio, image.size.ratio, 0.2f)
                 size1 = image.size
             }
-        ImageRequest(context, ResourceImages.longQMSHT.uri) {
+        ImageRequest(context, ComposeResImageFiles.longQMSHT.uri) {
             resultCachePolicy(DISABLED)
             memoryCachePolicy(DISABLED)
             size(Size.Origin)
         }
             .let { sketch.execute(it) }
             .asOrNull<ImageResult.Success>()!!.apply {
-                assertEquals(ResourceImages.longQMSHT.size, imageInfo.size)
+                assertEquals(ComposeResImageFiles.longQMSHT.size, imageInfo.size)
                 assertEquals(
-                    samplingByTarget(ResourceImages.longQMSHT.size, Size.Origin),
+                    samplingByTarget(ComposeResImageFiles.longQMSHT.size, Size.Origin),
                     image.size
                 )
                 assertEquals(imageInfo.size.ratio, image.size.ratio)
@@ -757,12 +744,8 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testTransformations() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
-        val imageUri = ResourceImages.jpeg.uri
+        val imageUri = ComposeResImageFiles.jpeg.uri
         val request = ImageRequest(context, imageUri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
@@ -853,13 +836,9 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testResultCachePolicy() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
         val diskCache = sketch.resultCache
-        val imageUri = ResourceImages.jpeg.uri
+        val imageUri = ComposeResImageFiles.jpeg.uri
         val request = ImageRequest(context, imageUri) {
             memoryCachePolicy(DISABLED)
             size(500, 500)
@@ -964,12 +943,8 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testPlaceholder() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
-        val imageUri = ResourceImages.jpeg.uri
+        val imageUri = ComposeResImageFiles.jpeg.uri
         var onStartImage: Image?
         val request = ImageRequest(context, imageUri) {
             size(500, 500)
@@ -1009,16 +984,12 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testFallback() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
         val fallbackStateImage = FakeStateImage()
 
         runBlock {
             val target = TestTarget()
-            val request = ImageRequest(context, ResourceImages.jpeg.uri) {
+            val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                 size(500, 500)
                 target(target)
             }
@@ -1054,12 +1025,8 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testError() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
-        val imageUri = ResourceImages.jpeg.uri
+        val imageUri = ComposeResImageFiles.jpeg.uri
         var onErrorImage: Image?
         val request = ImageRequest(context, imageUri) {
             size(500, 500)
@@ -1069,7 +1036,7 @@ class ImageRequestExecuteTest {
                 }
             )
         }
-        val errorRequest = ImageRequest(context, ResourceImages.jpeg.uri + "1") {
+        val errorRequest = ImageRequest(context, ComposeResImageFiles.jpeg.uri + "1") {
             size(500, 500)
             target(
                 onError = { _, _, _, image ->
@@ -1110,12 +1077,8 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testTransition() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
-        val imageUri = ResourceImages.jpeg.uri
+        val imageUri = ComposeResImageFiles.jpeg.uri
         val testTarget = TestTransitionTarget()
         val request = ImageRequest(context, imageUri) {
             size(500, 500)
@@ -1157,12 +1120,8 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testResizeOnDraw() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
-        val imageUri = ResourceImages.jpeg.uri
+        val imageUri = ComposeResImageFiles.jpeg.uri
         val request = ImageRequest(context, imageUri) {
             size(500, 500)
             target(TestResizeOnDrawTarget())
@@ -1203,13 +1162,9 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testMemoryCachePolicy() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
         val memoryCache = sketch.memoryCache
-        val imageUri = ResourceImages.jpeg.uri
+        val imageUri = ComposeResImageFiles.jpeg.uri
         val request = ImageRequest(context, imageUri) {
             resultCachePolicy(DISABLED)
             size(500, 500)
@@ -1315,13 +1270,9 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testListener() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
-        val imageUri = ResourceImages.jpeg.uri
-        val errorImageUri = ResourceImages.jpeg.uri + ".fake"
+        val imageUri = ComposeResImageFiles.jpeg.uri
+        val errorImageUri = ComposeResImageFiles.jpeg.uri + ".fake"
 
         ListenerSupervisor().let { listenerSupervisor ->
             assertEquals(listOf(), listenerSupervisor.callbackActionList)
@@ -1352,7 +1303,7 @@ class ImageRequestExecuteTest {
         val listenerSupervisor = ListenerSupervisor {
             deferred?.cancel()
         }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             addListener(listenerSupervisor)
@@ -1367,10 +1318,6 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testProgressListener() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         runInNewSketchWithUse({
             components {
                 add(TestHttpUriFetcher.Factory(it, readDelayMillis = 20))
@@ -1406,17 +1353,13 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testComponents() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val context = getTestContext()
 
-        ImageRequest(context, ResourceImages.jpeg.uri)
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri)
             .execute().asOrThrow<ImageResult.Success>().apply {
                 assertNull(request.extras?.get("TestInterceptor"))
             }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             components {
                 add(TestInterceptor())
             }
@@ -1424,13 +1367,13 @@ class ImageRequestExecuteTest {
             assertEquals("true", request.extras?.get("TestInterceptor"))
         }
 
-        ImageRequest(context, TestFetcherFactory.createUri(ResourceImages.jpeg.uri)) {
+        ImageRequest(context, TestFetcherFactory.createUri(ComposeResImageFiles.jpeg.uri)) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
         }.execute().apply {
             assertTrue(this is ImageResult.Error)
         }
-        ImageRequest(context, TestFetcherFactory.createUri(ResourceImages.jpeg.uri)) {
+        ImageRequest(context, TestFetcherFactory.createUri(ComposeResImageFiles.jpeg.uri)) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             components {
@@ -1440,13 +1383,13 @@ class ImageRequestExecuteTest {
             assertTrue(this is ImageResult.Success)
         }
 
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
         }.execute().apply {
             assertTrue(this is ImageResult.Success)
         }
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             memoryCachePolicy(DISABLED)
             resultCachePolicy(DISABLED)
             components {
@@ -1459,10 +1402,6 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testTarget() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
 
         TestTarget().let { testTarget ->
@@ -1472,7 +1411,7 @@ class ImageRequestExecuteTest {
         }
 
         TestTarget().let { testTarget ->
-            ImageRequest(context, ResourceImages.jpeg.uri) {
+            ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                 target(testTarget)
             }.let { request ->
                 sketch.execute(request)
@@ -1485,7 +1424,7 @@ class ImageRequestExecuteTest {
         TestTarget().let { testTarget ->
             val placeholderStateImage = FakeStateImage()
             val errorStateImage = FakeStateImage(FakeImage(SketchSize(200, 200)))
-            ImageRequest(context, ResourceImages.jpeg.uri + ".fake") {
+            ImageRequest(context, ComposeResImageFiles.jpeg.uri + ".fake") {
                 placeholder(placeholderStateImage)
                 error(errorStateImage)
                 target(testTarget)
@@ -1502,7 +1441,7 @@ class ImageRequestExecuteTest {
             val listenerSupervisor = ListenerSupervisor {
                 deferred?.cancel()
             }
-            ImageRequest(context, ResourceImages.jpeg.uri) {
+            ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addListener(listenerSupervisor)
@@ -1523,7 +1462,7 @@ class ImageRequestExecuteTest {
             val listenerSupervisor = ListenerSupervisor {
                 deferred?.cancel()
             }
-            ImageRequest(context, ResourceImages.jpeg.uri + ".fake") {
+            ImageRequest(context, ComposeResImageFiles.jpeg.uri + ".fake") {
                 memoryCachePolicy(DISABLED)
                 resultCachePolicy(DISABLED)
                 addListener(listenerSupervisor)
@@ -1543,17 +1482,13 @@ class ImageRequestExecuteTest {
 
     @Test
     fun testLifecycle() = runTest {
-        if (Platform.current == Platform.iOS) {
-            // Files in kotlin resources cannot be accessed in ios test environment.
-            return@runTest
-        }
         val (context, sketch) = getTestContextAndSketch()
         val lifecycle = TestLifecycle()
         withContext(Dispatchers.Main) {
             lifecycle.currentState = CREATED
         }
 
-        ImageRequest(context, ResourceImages.jpeg.uri).let { request ->
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri).let { request ->
             assertEquals(
                 LifecycleResolver(GlobalLifecycle),
                 request.lifecycleResolver
@@ -1563,7 +1498,7 @@ class ImageRequestExecuteTest {
             assertTrue(this is ImageResult.Success)
         }
 
-        ImageRequest(context, ResourceImages.jpeg.uri) {
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             lifecycle(lifecycle)
         }.let { request ->
             assertEquals(

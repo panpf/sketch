@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.IntSize
 import com.github.panpf.sketch.AsyncImagePainter
 import com.github.panpf.sketch.AsyncImageState
 import com.github.panpf.sketch.asImage
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.rememberAsyncImagePainter
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ComposableImageRequest
@@ -254,7 +254,7 @@ class AsyncImagePainterTest {
                         }
                         Image(
                             painter = rememberAsyncImagePainter(
-                                uri = ResourceImages.jpeg.uri,
+                                uri = ComposeResImageFiles.jpeg.uri,
                                 sketch = sketch,
                                 state = state
                             ),
@@ -296,7 +296,7 @@ class AsyncImagePainterTest {
 //                        }
 //                        Image(
 //                            painter = rememberAsyncImagePainter(
-//                                uri = ResourceImages.jpeg.uri,
+//                                uri = ComposeResImageFiles.jpeg.uri,
 //                                sketch = sketch,
 //                                state = state
 //                            ),
@@ -331,7 +331,7 @@ class AsyncImagePainterTest {
 //                        }
 //                        Image(
 //                            painter = rememberAsyncImagePainter(
-//                                uri = ResourceImages.jpeg.uri,
+//                                uri = ComposeResImageFiles.jpeg.uri,
 //                                sketch = sketch,
 //                                state = state
 //                            ),
@@ -368,7 +368,7 @@ class AsyncImagePainterTest {
 //                        }
 //                        Image(
 //                            painter = rememberAsyncImagePainter(
-//                                uri = ResourceImages.jpeg.uri,
+//                                uri = ComposeResImageFiles.jpeg.uri,
 //                                sketch = sketch,
 //                                state = state
 //                            ),
@@ -408,7 +408,7 @@ class AsyncImagePainterTest {
                         }
                         Image(
                             painter = rememberAsyncImagePainter(
-                                uri = ResourceImages.jpeg.uri,
+                                uri = ComposeResImageFiles.jpeg.uri,
                                 sketch = sketch,
                                 state = state
                             ),
@@ -450,7 +450,7 @@ class AsyncImagePainterTest {
 //                        }
 //                        Image(
 //                            painter = rememberAsyncImagePainter(
-//                                uri = ResourceImages.jpeg.uri,
+//                                uri = ComposeResImageFiles.jpeg.uri,
 //                                sketch = sketch,
 //                                state = state
 //                            ),
@@ -485,7 +485,7 @@ class AsyncImagePainterTest {
 //                        }
 //                        Image(
 //                            painter = rememberAsyncImagePainter(
-//                                uri = ResourceImages.jpeg.uri,
+//                                uri = ComposeResImageFiles.jpeg.uri,
 //                                sketch = sketch,
 //                                state = state
 //                            ),
@@ -522,7 +522,7 @@ class AsyncImagePainterTest {
 //                        }
 //                        Image(
 //                            painter = rememberAsyncImagePainter(
-//                                uri = ResourceImages.jpeg.uri,
+//                                uri = ComposeResImageFiles.jpeg.uri,
 //                                sketch = sketch,
 //                                state = state
 //                            ),

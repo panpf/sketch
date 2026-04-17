@@ -9,6 +9,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
 import okio.Path.Companion.toPath
 import platform.Foundation.NSCachesDirectory
+import platform.Foundation.NSProcessInfo
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
 import platform.Foundation.NSUserDomainMask
 import platform.UIKit.UIScreen
@@ -20,8 +21,20 @@ class PlatformContextsIosTest {
 
     @Test
     fun testMaxMemory() {
+        val excepted = try {
+            val physical = NSProcessInfo.processInfo.physicalMemory
+            val physicalLong = physical.toLong()
+            if (physicalLong > 0L) {
+                physicalLong / 8
+            } else {
+                512L * 1024L * 1024L // 512 MB
+            }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            512L * 1024L * 1024L // 512 MB
+        }
         assertEquals(
-            expected = 512L * 1024L * 1024L,
+            expected = excepted,
             actual = PlatformContext.INSTANCE.maxMemory(),
         )
     }

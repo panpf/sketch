@@ -1,12 +1,11 @@
 plugins {
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.kotlinx.kover")
 }
 
-addAllMultiplatformTargets(MultiplatformTargets.Android, MultiplatformTargets.Desktop)
-
-androidLibrary(nameSpace = "com.github.panpf.sketch.http.hurl")
+addMultiplatformTargets(arrayOf(KmpTarget.Android, KmpTarget.Desktop))
+kmpAndroidLibrary(nameSpace = "com.github.panpf.sketch.http.hurl")
 
 kotlin {
     sourceSets {

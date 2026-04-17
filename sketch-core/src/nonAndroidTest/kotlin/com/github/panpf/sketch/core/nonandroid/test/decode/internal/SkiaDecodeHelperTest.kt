@@ -8,9 +8,8 @@ import com.github.panpf.sketch.decode.internal.SkiaDecodeHelper
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSizeForRegion
 import com.github.panpf.sketch.decode.internal.readImageInfo
-import com.github.panpf.sketch.images.ResourceImageFile
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFile
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.colorType
@@ -26,6 +25,7 @@ import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.asOrThrow
 import com.github.panpf.sketch.util.size
 import com.github.panpf.sketch.util.toSkiaRect
+import kotlinx.coroutines.test.runTest
 import org.jetbrains.skia.Canvas
 import org.jetbrains.skia.ColorSpace
 import org.jetbrains.skia.ColorType
@@ -38,13 +38,13 @@ import kotlin.test.assertTrue
 class SkiaDecodeHelperTest {
 
     @Test
-    fun testDecode() {
+    fun testDecode() = runTest {
         val context = getTestContext()
 
         /*
          * config: sampleSize
          */
-        val imageFile = ResourceImages.jpeg
+        val imageFile = ComposeResImageFiles.jpeg
         imageFile.toDecodeHelper(context)
             .decode(sampleSize = 1)
             .asOrThrow<BitmapImage>().bitmap
@@ -115,7 +115,7 @@ class SkiaDecodeHelperTest {
          * exif
          */
         var firstBitmap: Bitmap? = null
-        ResourceImages.clockExifs.forEach { exifImageFile ->
+        ComposeResImageFiles.clockExifs.forEach { exifImageFile ->
             val bitmap = exifImageFile.toDecodeHelper(context).decode(sampleSize = 1)
                 .asOrThrow<BitmapImage>().bitmap
             assertEquals(
@@ -141,18 +141,18 @@ class SkiaDecodeHelperTest {
          */
         // IllegalArgumentException: Failed to Image::makeFromEncoded
         assertFailsWith(IllegalArgumentException::class) {
-            ResourceImages.svg.toDecodeHelper(context).decode(sampleSize = 1)
+            ComposeResImageFiles.svg.toDecodeHelper(context).decode(sampleSize = 1)
         }
     }
 
     @Test
-    fun testDecodeRegion() {
+    fun testDecodeRegion() = runTest {
         val context = getTestContext()
 
         /*
          * srcRect
          */
-        val imageFile = ResourceImages.jpeg
+        val imageFile = ComposeResImageFiles.jpeg
         val dataSource = imageFile.toDataSource(context)
         val imageInfo = dataSource.readImageInfo()
 
@@ -339,7 +339,7 @@ class SkiaDecodeHelperTest {
          * exif
          */
         var firstBitmap: Bitmap? = null
-        ResourceImages.clockExifs.forEach { exifImageFile ->
+        ComposeResImageFiles.clockExifs.forEach { exifImageFile ->
             val bitmap = exifImageFile.toDecodeHelper(context)
                 .decodeRegion(exifImageFile.size.toRect(), 1)
                 .asOrThrow<BitmapImage>().bitmap
@@ -366,22 +366,22 @@ class SkiaDecodeHelperTest {
          */
         // IllegalArgumentException: Failed to Image::makeFromEncoded
         assertFailsWith(IllegalArgumentException::class) {
-            val svgImageFile = ResourceImages.svg
+            val svgImageFile = ComposeResImageFiles.svg
             svgImageFile.toDecodeHelper(context)
                 .decodeRegion(svgImageFile.size.toRect(), 1)
         }
         // IllegalArgumentException: srcRect is empty
         assertFailsWith(IllegalArgumentException::class) {
-            ResourceImages.jpeg.toDecodeHelper(context)
+            ComposeResImageFiles.jpeg.toDecodeHelper(context)
                 .decodeRegion(Size.Empty.toRect(), 1)
         }
     }
 
     @Test
-    fun testToString() {
+    fun testToString() = runTest {
         val context = getTestContext()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
-        val dataSource = ResourceImages.jpeg.toDataSource(context)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
+        val dataSource = ComposeResImageFiles.jpeg.toDataSource(context)
         val decodeHelper = SkiaDecodeHelper(request, dataSource)
         assertEquals(
             expected = "SkiaDecodeHelper(request=$request, dataSource=$dataSource)",
@@ -389,7 +389,7 @@ class SkiaDecodeHelperTest {
         )
     }
 
-    private fun ResourceImageFile.toDecodeHelper(
+    private suspend fun ComposeResImageFile.toDecodeHelper(
         context: PlatformContext,
         block: (ImageRequest.Builder.() -> Unit)? = null
     ): SkiaDecodeHelper {

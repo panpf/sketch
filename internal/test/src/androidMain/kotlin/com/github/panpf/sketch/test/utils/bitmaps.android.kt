@@ -20,7 +20,7 @@ import android.graphics.Bitmap
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.ColorType
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.util.copyWith
 import com.github.panpf.sketch.util.simpleName
 
@@ -67,12 +67,12 @@ actual fun create565Bitmap(width: Int, height: Int): Bitmap {
     return Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
 }
 
-actual fun getMutableBitmap(): Bitmap {
-    return ResourceImages.jpeg.decode().bitmap.copyWith(isMutable = true)
+actual suspend fun getMutableBitmap(): Bitmap {
+    return ComposeResImageFiles.jpeg.decode().bitmap.copyWith(isMutable = true)
 }
 
-actual fun getImmutableBitmap(): Bitmap {
-    return ResourceImages.jpeg.decode().bitmap
+actual suspend fun getImmutableBitmap(): Bitmap {
+    return ComposeResImageFiles.jpeg.decode().bitmap
 }
 
 actual fun Bitmap.toPreviewBitmap(): Any = this

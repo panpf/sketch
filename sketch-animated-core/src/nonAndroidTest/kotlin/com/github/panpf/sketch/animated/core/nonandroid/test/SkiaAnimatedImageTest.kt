@@ -1,12 +1,11 @@
 package com.github.panpf.sketch.animated.core.nonandroid.test
 
 import com.github.panpf.sketch.SkiaAnimatedImage
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.images.toDataSource
+import com.github.panpf.sketch.images.ComposeResImageFiles
+import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.toLogString
-import okio.buffer
-import okio.use
+import kotlinx.coroutines.test.runTest
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.ColorType
 import org.jetbrains.skia.Data
@@ -20,24 +19,24 @@ import kotlin.test.assertTrue
 class SkiaAnimatedImageTest {
 
     @Test
-    fun testConstructor() {
+    fun testConstructor() = runTest {
         val context = getTestContext()
-        val codec = ResourceImages.animGif.toDataSource(context)
-            .openSource().buffer().use { it.readByteArray() }
-            .let { Data.Companion.makeFromBytes(it) }
-            .let { Codec.Companion.makeFromData(it) }
+        val codec = ComposeResImageFiles.animGif.toDataSource(context)
+            .toByteArray()
+            .let { Data.makeFromBytes(it) }
+            .let { Codec.makeFromData(it) }
         SkiaAnimatedImage(codec).apply {
             assertSame(expected = codec, actual = codec)
         }
     }
 
     @Test
-    fun testWidthHeight() {
+    fun testWidthHeight() = runTest {
         val context = getTestContext()
-        val codec = ResourceImages.animGif.toDataSource(context)
-            .openSource().buffer().use { it.readByteArray() }
-            .let { Data.Companion.makeFromBytes(it) }
-            .let { Codec.Companion.makeFromData(it) }
+        val codec = ComposeResImageFiles.animGif.toDataSource(context)
+            .toByteArray()
+            .let { Data.makeFromBytes(it) }
+            .let { Codec.makeFromData(it) }
         SkiaAnimatedImage(codec).apply {
             assertEquals(expected = 480, actual = width)
             assertEquals(expected = 480, actual = height)
@@ -45,12 +44,12 @@ class SkiaAnimatedImageTest {
     }
 
     @Test
-    fun testByteCount() {
+    fun testByteCount() = runTest {
         val context = getTestContext()
-        val codec = ResourceImages.animGif.toDataSource(context)
-            .openSource().buffer().use { it.readByteArray() }
-            .let { Data.Companion.makeFromBytes(it) }
-            .let { Codec.Companion.makeFromData(it) }
+        val codec = ComposeResImageFiles.animGif.toDataSource(context)
+            .toByteArray()
+            .let { Data.makeFromBytes(it) }
+            .let { Codec.makeFromData(it) }
         SkiaAnimatedImage(codec).apply {
             assertEquals(
                 expected = 480 * 480 * codec.imageInfo.bytesPerPixel.toLong(),
@@ -60,24 +59,24 @@ class SkiaAnimatedImageTest {
     }
 
     @Test
-    fun testShareable() {
+    fun testShareable() = runTest {
         val context = getTestContext()
-        val codec = ResourceImages.animGif.toDataSource(context)
-            .openSource().buffer().use { it.readByteArray() }
-            .let { Data.Companion.makeFromBytes(it) }
-            .let { Codec.Companion.makeFromData(it) }
+        val codec = ComposeResImageFiles.animGif.toDataSource(context)
+            .toByteArray()
+            .let { Data.makeFromBytes(it) }
+            .let { Codec.makeFromData(it) }
         SkiaAnimatedImage(codec).apply {
             assertFalse(actual = shareable)
         }
     }
 
     @Test
-    fun testCheckValid() {
+    fun testCheckValid() = runTest {
         val context = getTestContext()
-        val codec = ResourceImages.animGif.toDataSource(context)
-            .openSource().buffer().use { it.readByteArray() }
-            .let { Data.Companion.makeFromBytes(it) }
-            .let { Codec.Companion.makeFromData(it) }
+        val codec = ComposeResImageFiles.animGif.toDataSource(context)
+            .toByteArray()
+            .let { Data.makeFromBytes(it) }
+            .let { Codec.makeFromData(it) }
         SkiaAnimatedImage(codec).apply {
             assertTrue(actual = checkValid())
             assertTrue(actual = checkValid())
@@ -86,16 +85,16 @@ class SkiaAnimatedImageTest {
     }
 
     @Test
-    fun testEqualsAndHashCode() {
+    fun testEqualsAndHashCode() = runTest {
         val context = getTestContext()
-        val codec1 = ResourceImages.animGif.toDataSource(context)
-            .openSource().buffer().use { it.readByteArray() }
-            .let { Data.Companion.makeFromBytes(it) }
-            .let { Codec.Companion.makeFromData(it) }
-        val codec2 = ResourceImages.animGif.toDataSource(context)
-            .openSource().buffer().use { it.readByteArray() }
-            .let { Data.Companion.makeFromBytes(it) }
-            .let { Codec.Companion.makeFromData(it) }
+        val codec1 = ComposeResImageFiles.animGif.toDataSource(context)
+            .toByteArray()
+            .let { Data.makeFromBytes(it) }
+            .let { Codec.makeFromData(it) }
+        val codec2 = ComposeResImageFiles.animGif.toDataSource(context)
+            .toByteArray()
+            .let { Data.makeFromBytes(it) }
+            .let { Codec.makeFromData(it) }
         val element1 = SkiaAnimatedImage(codec1)
         val element11 = SkiaAnimatedImage(codec1)
         val element2 = SkiaAnimatedImage(codec2)
@@ -134,12 +133,12 @@ class SkiaAnimatedImageTest {
     }
 
     @Test
-    fun testToString() {
+    fun testToString() = runTest {
         val context = getTestContext()
-        val codec = ResourceImages.animGif.toDataSource(context)
-            .openSource().buffer().use { it.readByteArray() }
-            .let { Data.Companion.makeFromBytes(it) }
-            .let { Codec.Companion.makeFromData(it) }
+        val codec = ComposeResImageFiles.animGif.toDataSource(context)
+            .toByteArray()
+            .let { Data.makeFromBytes(it) }
+            .let { Codec.makeFromData(it) }
         val animatedImage = SkiaAnimatedImage(codec)
         assertEquals(
             expected = "SkiaAnimatedImage(image=${codec.toLogString()}, colorInfo=${codec.colorInfo.toLogString()}, repeatCount=-1, cacheDecodeTimeoutFrame=false)",

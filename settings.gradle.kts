@@ -11,7 +11,9 @@ dependencyResolutionManagement {
 }
 
 /*
- * Release
+ * Public Modules
+ *
+ * Synced with buildSrc/src/main/kotlin/utils.kt publicModules list.
  */
 include(":sketch-animated-core")
 include(":sketch-animated-gif")
@@ -50,9 +52,13 @@ include(":sketch-view-core")
 include(":sketch-view-koin")
 
 /*
- * Private
+ * Private Modules
  */
-include(":sample")
+include(":samples:androidApp")
+include(":samples:desktopApp")
+include(":samples:jsApp")
+include(":samples:shared")
+include(":samples:wasmJsApp")
 include(":internal:componentLoaderTest")
 include(":internal:images")
 include(":internal:test")

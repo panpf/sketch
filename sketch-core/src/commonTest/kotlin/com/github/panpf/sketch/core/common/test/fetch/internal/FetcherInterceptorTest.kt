@@ -1,7 +1,7 @@
 package com.github.panpf.sketch.core.common.test.fetch.internal
 
 import com.github.panpf.sketch.fetch.internal.FetcherInterceptor
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.InterceptorChain
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -24,7 +24,7 @@ class FetcherInterceptorTest {
     @Test
     fun testIntercept() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         val requestContext = request.toRequestContext(sketch)
         val chain = InterceptorChain(
             requestContext = requestContext,

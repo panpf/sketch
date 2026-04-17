@@ -13,9 +13,9 @@ import androidx.fragment.app.Fragment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.panpf.sketch.drawable.GifDrawableWrapperDrawable
-import com.github.panpf.sketch.images.ResourceImageFile
-import com.github.panpf.sketch.images.ResourceImages
-import com.github.panpf.sketch.test.utils.asOrThrow
+import com.github.panpf.sketch.images.ComposeResImageFiles
+import com.github.panpf.sketch.source.toByteArray
+import kotlinx.coroutines.test.runTest
 import org.junit.runner.RunWith
 import pl.droidsonroids.gif.GifDrawable
 import kotlin.test.Test
@@ -28,11 +28,11 @@ import kotlin.test.assertTrue
 class GifDrawableWrapperDrawableTest {
 
     @Test
-    fun test() {
+    fun test() = runTest {
         val context = InstrumentationRegistry.getInstrumentation().context
         val gifDrawable = GifDrawable(
-            context.assets,
-            ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
+            ComposeResImageFiles.animGif
+                .toDataSource(context).toByteArray()
         )
         val drawable = GifDrawableWrapperDrawable(gifDrawable)
 
@@ -58,21 +58,21 @@ class GifDrawableWrapperDrawableTest {
     }
 
     @Test
-    fun testEqualsAndHashCode() {
-        if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
+    fun testEqualsAndHashCode() = runTest {
+        if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return@runTest
 
         val context = InstrumentationRegistry.getInstrumentation().context
         val gifDrawable = GifDrawable(
-            context.assets,
-            ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
+            ComposeResImageFiles.animGif
+                .toDataSource(context).toByteArray()
         )
         val gifDrawable2 = GifDrawable(
-            context.assets,
-            ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
+            ComposeResImageFiles.animGif
+                .toDataSource(context).toByteArray()
         )
         val gifDrawable3 = GifDrawable(
-            context.assets,
-            ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
+            ComposeResImageFiles.animGif
+                .toDataSource(context).toByteArray()
         )
         val element1 = GifDrawableWrapperDrawable(gifDrawable)
         val element11 = GifDrawableWrapperDrawable(gifDrawable)
@@ -93,13 +93,13 @@ class GifDrawableWrapperDrawableTest {
     }
 
     @Test
-    fun testToString() {
-        if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return
+    fun testToString() = runTest {
+        if (VERSION.SDK_INT < VERSION_CODES.KITKAT) return@runTest
 
         val context = InstrumentationRegistry.getInstrumentation().context
         val gifDrawable = GifDrawable(
-            context.assets,
-            ResourceImages.animGif.asOrThrow<ResourceImageFile>().resourceName
+            ComposeResImageFiles.animGif
+                .toDataSource(context).toByteArray()
         )
         assertEquals(
             "GifDrawableWrapperDrawable(480x480)",

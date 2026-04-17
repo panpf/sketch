@@ -18,7 +18,7 @@ package com.github.panpf.sketch.core.common.test.request.internal
 
 import com.github.panpf.sketch.cache.CachePolicy
 import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.ImageOptions
@@ -45,7 +45,7 @@ class RequestExecutorTest {
 
         withContext(Dispatchers.Main) {
             RequestExecutor(sketch).execute(
-                ImageRequest(context, ResourceImages.jpeg.uri),
+                ImageRequest(context, ComposeResImageFiles.jpeg.uri),
                 false
             ).apply {
                 assertTrue(this is ImageResult.Success)
@@ -71,7 +71,7 @@ class RequestExecutorTest {
     fun testGlobalImageOptions() = runTest {
         runInNewSketchWithUse({
         }) { context, sketch ->
-            val request = ImageRequest(context, ResourceImages.jpeg.uri).apply {
+            val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri).apply {
                 assertEquals(Depth.NETWORK, depthHolder.depth)
                 assertEquals(CachePolicy.ENABLED, downloadCachePolicy)
                 assertEquals(SizeResolver(context.screenSize()), sizeResolver)
@@ -92,7 +92,7 @@ class RequestExecutorTest {
                 resize(44, 67)
             })
         }) { context2, sketch2 ->
-            val request2 = ImageRequest(context2, ResourceImages.jpeg.uri).apply {
+            val request2 = ImageRequest(context2, ComposeResImageFiles.jpeg.uri).apply {
                 assertEquals(Depth.NETWORK, depthHolder.depth)
                 assertEquals(CachePolicy.ENABLED, downloadCachePolicy)
                 assertEquals(SizeResolver(context2.screenSize()), sizeResolver)

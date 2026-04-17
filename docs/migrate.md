@@ -12,4 +12,4 @@ copy them directly into your project.
 
 Other migration details are being gradually improved.
 
-[sketch3compat]: ../sample/src/androidMain/kotlin/com/github/panpf/sketch/sample/util/sketch3compat
+[sketch3compat]: ../samples/androidApp/src/main/kotlin/com/github/panpf/sketch/sample/util/sketch3compat

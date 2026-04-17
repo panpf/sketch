@@ -8,12 +8,12 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
+import com.github.panpf.sketch.images.Res
+import com.github.panpf.sketch.images.ic_image_outline
 import com.github.panpf.sketch.painter.ImageBitmapPainter
 import com.github.panpf.sketch.painter.PainterWrapper
 import com.github.panpf.sketch.painter.key
 import com.github.panpf.sketch.painter.toLogString
-import com.github.panpf.sketch.test.compose.resources.Res
-import com.github.panpf.sketch.test.compose.resources.ic_image_outline
 import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestKeyPainter
 import com.github.panpf.sketch.test.utils.TestNullableKeyPainter

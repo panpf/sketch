@@ -20,7 +20,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.cache.CachePolicy.DISABLED
 import com.github.panpf.sketch.disposeLoad
 import com.github.panpf.sketch.imageResult
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.test.singleton.loadImage
 import com.github.panpf.sketch.test.utils.DelayInterceptor
@@ -46,14 +46,14 @@ class ImageViewExtensionsTest {
             val imageView = activity.imageView
 
             assertNull(imageView.drawable)
-            imageView.loadImage(ResourceImages.jpeg.uri).job.join()
+            imageView.loadImage(ComposeResImageFiles.jpeg.uri).job.join()
             assertNotNull(imageView.drawable)
 
             withContext(Dispatchers.Main) {
                 imageView.setImageDrawable(null)
             }
             assertNull(imageView.drawable)
-            imageView.loadImage(ResourceImages.png.uri) {
+            imageView.loadImage(ComposeResImageFiles.png.uri) {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
                 components {
@@ -74,13 +74,13 @@ class ImageViewExtensionsTest {
 
             assertNull(imageView.imageResult)
 
-            imageView.loadImage(ResourceImages.jpeg.uri).job.join()
+            imageView.loadImage(ComposeResImageFiles.jpeg.uri).job.join()
             assertTrue(imageView.imageResult is ImageResult.Success)
 
             imageView.loadImage("file:///android_asset/fake.jpeg").job.join()
             assertTrue(imageView.imageResult is ImageResult.Error)
 
-            imageView.loadImage(ResourceImages.png.uri) {
+            imageView.loadImage(ComposeResImageFiles.png.uri) {
                 resultCachePolicy(DISABLED)
                 memoryCachePolicy(DISABLED)
                 components {

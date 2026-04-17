@@ -34,6 +34,7 @@ import com.github.panpf.sketch.source.getFileOrNull
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.div
+import com.github.panpf.sketch.util.resolveRequestVideoFrameMicros
 import wseemann.media.FFmpegMediaMetadataRetriever
 
 /**
@@ -80,25 +81,27 @@ class FFmpegVideoFrameDecodeHelper(
     private val exifOrientationHelper by lazy { ExifOrientationHelper(exifOrientation) }
 
     override fun decode(sampleSize: Int): Image {
-        val frameMicros = request.videoFrameMicros
-            ?: request.videoFramePercent?.let { percentDuration ->
-                val duration = mediaMetadataRetriever
-                    .extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_DURATION)
-                    ?.toLongOrNull() ?: 0L
-                (duration * percentDuration * 1000).toLong()
-            }
-            ?: 0L
+        val durationMicros = mediaMetadataRetriever
+            .extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_DURATION)
+            ?.toLongOrNull()?.let { it * 1000 } ?: 0L
+        val videoFrameMicros = request.videoFrameMicros
+        val videoFramePercent = request.videoFramePercent
+        val requestFrameMicros = resolveRequestVideoFrameMicros(
+            durationMicros = durationMicros,
+            videoFrameMicros = videoFrameMicros,
+            videoFramePercent = videoFramePercent,
+        )
         val option = request.videoFrameOption ?: FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC
         val imageSize = imageInfo.size
         val dstSize = imageSize / sampleSize.toFloat()
         val bitmap = mediaMetadataRetriever.getScaledFrameAtTime(
-            /* timeUs = */ frameMicros,
+            /* timeUs = */ requestFrameMicros,
             /* option = */ option,
             /* width = */ dstSize.width,
             /* height = */ dstSize.height
         ) ?: throw DecodeException(
             "Failed to getScaledFrameAtTime. " +
-                    "frameMicros=${frameMicros}, " +
+                    "frameMicros=${requestFrameMicros}, " +
                     "option=${optionToName(option)}, " +
                     "dstSize=${dstSize}, " +
                     "imageSize=$imageSize"

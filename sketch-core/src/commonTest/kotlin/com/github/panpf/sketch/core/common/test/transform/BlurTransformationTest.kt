@@ -17,7 +17,7 @@
 package com.github.panpf.sketch.core.common.test.transform
 
 import com.github.panpf.sketch.BitmapImage
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -96,12 +96,12 @@ class BlurTransformationTest {
     @Test
     fun testTransform() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val jpegRequest = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val jpegRequest = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(Size.Origin)
         }
         val jpegRequestContext = jpegRequest.toRequestContext(sketch)
 
-        val inBitmap = ResourceImages.jpeg.decode().apply {
+        val inBitmap = ComposeResImageFiles.jpeg.decode().apply {
             assertFalse(bitmap.hasAlphaPixels())
         }
         inBitmap.apply {
@@ -129,7 +129,7 @@ class BlurTransformationTest {
         }
 
         // hasAlphaBitmapBgColor
-        val pngRequest = ImageRequest(context, ResourceImages.png.uri) {
+        val pngRequest = ImageRequest(context, ComposeResImageFiles.png.uri) {
             size(Size.Origin)
         }
         val pngRequestContext = pngRequest.toRequestContext(sketch)

@@ -17,56 +17,13 @@
 package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.fetch.FetchResult
-import com.github.panpf.sketch.request.RequestContext
 
 /**
  * Adds webp animated image support
  *
- * @see com.github.panpf.sketch.animated.webp.common.test.decode.AnimatedWebpDecoderTest.testSupportAnimatedWebp
+ * @see com.github.panpf.sketch.animated.webp.android.test.decode.AnimatedWebpDecoderAndroidTest.testSupportAnimatedWebp
+ * @see com.github.panpf.sketch.animated.webp.ios.test.decode.AnimatedWebpDecoderIosTest.testSupportAnimatedWebp
+ * @see com.github.panpf.sketch.animated.webp.desktop.test.decode.AnimatedWebpDecoderDesktopTest.testSupportAnimatedWebp
+ * @see com.github.panpf.sketch.animated.webp.jscommon.test.decode.AnimatedWebpDecoderJsCommonTest.testSupportAnimatedWebp
  */
-fun ComponentRegistry.Builder.supportAnimatedWebp(): ComponentRegistry.Builder = apply {
-    add(AnimatedWebpDecoder.Factory())
-}
-
-/**
- * Decode webp animated image files
- *
- * @see com.github.panpf.sketch.animated.webp.common.test.decode.AnimatedWebpDecoderTest
- */
-class AnimatedWebpDecoder(val decoder: Decoder) : Decoder by decoder {
-
-    class Factory : Decoder.Factory {
-
-        private val decoderFactory = defaultAnimatedWebpDecoderFactory()
-
-        override val key: String = "AnimatedWebpDecoder(${decoderFactory?.key})"
-
-        override fun create(
-            requestContext: RequestContext,
-            fetchResult: FetchResult
-        ): Decoder? {
-            val decoder = decoderFactory?.create(requestContext, fetchResult) ?: return null
-            return AnimatedWebpDecoder(decoder)
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            return other != null && this::class == other::class
-        }
-
-        override fun hashCode(): Int {
-            return this::class.hashCode()
-        }
-
-        override fun toString(): String = "AnimatedWebpDecoder(decoderFactory=$decoderFactory)"
-    }
-}
-
-/**
- * Get the default GIF decoder factory
- *
- * @see com.github.panpf.sketch.animated.webp.android.test.decode.AnimatedWebpDecoderAndroidTest.testDefaultAnimatedWebpDecoderFactory
- * @see com.github.panpf.sketch.animated.webp.nonandroid.test.decode.AnimatedWebpDecoderNonAndroidTest.testDefaultAnimatedWebpDecoderFactory
- */
-expect fun defaultAnimatedWebpDecoderFactory(): Decoder.Factory?
+expect fun ComponentRegistry.Builder.supportAnimatedWebp(): ComponentRegistry.Builder

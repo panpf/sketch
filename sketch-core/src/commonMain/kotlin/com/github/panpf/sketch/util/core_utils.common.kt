@@ -70,7 +70,7 @@ internal inline fun <reified R> Any?.asOrNull(): R? {
  *
  * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testAsOrThrow
  */
-internal inline fun <R> Any.asOrThrow(): R {
+internal fun <R> Any.asOrThrow(): R {
     @Suppress("UNCHECKED_CAST")
     return this as R
 }

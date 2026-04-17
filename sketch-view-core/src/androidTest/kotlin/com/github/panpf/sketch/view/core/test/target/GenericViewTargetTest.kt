@@ -10,7 +10,7 @@ import android.widget.ImageView
 import androidx.lifecycle.Lifecycle
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.asImage
-import com.github.panpf.sketch.images.ResourceImages
+import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.requestManager
@@ -86,7 +86,7 @@ class GenericViewTargetTest {
         /*
          * disallow null image
          */
-        val request = ImageRequest(context, ResourceImages.jpeg.uri)
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
         val drawable1 = BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, RGB_565))
         withContext(Dispatchers.Main) {
             imageViewTarget.onStart(sketch, request, drawable1.asImage())
@@ -133,7 +133,7 @@ class GenericViewTargetTest {
         /*
          * allow null image
          */
-        val allowNullImageRequest = ImageRequest(context, ResourceImages.jpeg.uri) {
+        val allowNullImageRequest = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             allowNullImage()
         }
         val drawable4 = BitmapDrawable(context.resources, Bitmap.createBitmap(100, 100, RGB_565))

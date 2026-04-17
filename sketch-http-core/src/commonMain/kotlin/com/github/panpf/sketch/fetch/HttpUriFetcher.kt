@@ -147,26 +147,15 @@ open class HttpUriFetcher constructor(
         if (!request.downloadCachePolicy.readEnabled) return null
         val url = request.uri.toString()
         val downloadCache = sketch.downloadCache
-        try {
-            return downloadCache.openSnapshot(downloadCacheKey)?.use { snapshot ->
-                val contentType: String? = runCatching {
-                    if (downloadCache.fileSystem.exists(snapshot.metadata)) {
-                        downloadCache.fileSystem.source(snapshot.metadata).buffer()
-                            .use { it.readUtf8() }
-                            .takeIf { it.isNotEmpty() && it.isNotBlank() }
-                    } else {
-                        null
-                    }
-                }.onFailure {
-                    it.printStackTrace()
-                    downloadCache.remove(downloadCacheKey)
-                    sketch.logger.w {
-                        "HttpUriFetcher. Read contentType disk cache failed, removed cache file. " +
-                                "message='${it.message}', " +
-                                "cacheKey=$downloadCacheKey. " +
-                                "'${request.uri}'"
-                    }
-                }.getOrNull()
+        return runCatching {
+            downloadCache.openSnapshot(downloadCacheKey)?.use { snapshot ->
+                val contentType: String? = if (downloadCache.fileSystem.exists(snapshot.metadata)) {
+                    downloadCache.fileSystem.source(snapshot.metadata).buffer()
+                        .use { it.readUtf8() }
+                        .takeIf { it.isNotEmpty() && it.isNotBlank() }
+                } else {
+                    null
+                }
                 val mimeType = getMimeType(url, contentType)
                 val dataSource = FileDataSource(
                     path = snapshot.data,
@@ -175,9 +164,16 @@ open class HttpUriFetcher constructor(
                 )
                 Result.success(FetchResult(dataSource, mimeType))
             }
-        } catch (e: Throwable) {
-            return Result.failure(e)
-        }
+        }.onFailure {
+            it.printStackTrace()
+            downloadCache.remove(downloadCacheKey)
+            sketch.logger.w {
+                "HttpUriFetcher. Read contentType disk cache failed. Removed cache file. " +
+                        "message='${it.message}', " +
+                        "cacheKey=$downloadCacheKey. " +
+                        "'${request.uri}'"
+            }
+        }.getOrNull()
     }
 
     private suspend fun writeCache(

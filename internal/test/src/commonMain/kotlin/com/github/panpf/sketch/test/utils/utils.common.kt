@@ -41,7 +41,7 @@ val Size.ratio: Float
 /**
  * Convert to the type specified by the generic
  */
-inline fun <R> Any.asOrThrow(): R {
+fun <R> Any.asOrThrow(): R {
     @Suppress("UNCHECKED_CAST")
     return this as R
 }

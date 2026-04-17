@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import com.github.panpf.sketch.AsyncImageState
 import com.github.panpf.sketch.asImage
+import com.github.panpf.sketch.compose.internal.util.toHexString
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.GlobalLifecycle
 import com.github.panpf.sketch.request.ImageRequest
@@ -19,7 +20,6 @@ import com.github.panpf.sketch.target.internal.AsyncImageListener
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
-import com.github.panpf.sketch.util.toHexString
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
