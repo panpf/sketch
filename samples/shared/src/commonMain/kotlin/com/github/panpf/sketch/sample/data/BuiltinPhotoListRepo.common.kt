@@ -1,15 +1,15 @@
 package com.github.panpf.sketch.sample.data
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.images.ComposeResImageFile
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.sample.image.photoUri2PhotoInfo
 import com.github.panpf.sketch.sample.ui.model.Photo
 
+expect fun buildPlatformBuiltinPhotoList(sketch: Sketch): List<String>
 
 class BuiltinPhotoListRepo(val sketch: Sketch) {
 
-    private val list: List<ComposeResImageFile> by lazy {
+    private val list: List<String> by lazy {
         ComposeResImageFiles.statics
             .asSequence()
             .plus(ComposeResImageFiles.anims)
@@ -18,6 +18,8 @@ class BuiltinPhotoListRepo(val sketch: Sketch) {
             .plus(ComposeResImageFiles.longCOMIC)
             .plus(ComposeResImageFiles.clockExifs)
             .plus(ComposeResImageFiles.mp4)
+            .map { it.uri }
+            .plus(buildPlatformBuiltinPhotoList(sketch))
             .toList()
     }
 
@@ -33,7 +35,7 @@ class BuiltinPhotoListRepo(val sketch: Sketch) {
         } else {
             emptyList()
         }.map {
-            photoUri2PhotoInfo(sketch, it.uri)
+            photoUri2PhotoInfo(sketch, it)
         }
     }
 }

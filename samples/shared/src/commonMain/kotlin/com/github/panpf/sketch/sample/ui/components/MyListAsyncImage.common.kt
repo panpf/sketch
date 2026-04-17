@@ -262,7 +262,11 @@ private fun buildListImageRequest(
 
         sizeMultiplier(2f)  // To get a clearer thumbnail
 
+        platformListAsyncImageRequestBuilder()
+
         val platformAsyncImageSettings = composablePlatformAsyncImageSettings(appSettings)
         merge(platformAsyncImageSettings)
     }
 }
+
+expect fun ImageRequest.Builder.platformListAsyncImageRequestBuilder()

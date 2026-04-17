@@ -5,8 +5,10 @@ import com.github.panpf.sketch.fetch.isComposeResourceUri
 import com.github.panpf.sketch.fetch.isFileUri
 import com.github.panpf.sketch.fetch.isKotlinResourceUri
 import com.github.panpf.sketch.fetch.isPhotosAssetUri
+import com.github.panpf.sketch.fetch.newPhotosAssetUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.sample.image.photoUri2PhotoInfo
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.util.Size
@@ -20,9 +22,16 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import platform.Foundation.NSData
+import platform.Foundation.NSPredicate
+import platform.Foundation.NSSortDescriptor
 import platform.Foundation.create
+import platform.Photos.PHAsset
 import platform.Photos.PHAssetCreationRequest
+import platform.Photos.PHAssetMediaTypeImage
+import platform.Photos.PHAssetMediaTypeVideo
 import platform.Photos.PHAssetResourceTypePhoto
+import platform.Photos.PHFetchOptions
+import platform.Photos.PHFetchResult
 import platform.Photos.PHPhotoLibrary
 import platform.UIKit.UIActivityViewController
 import platform.UIKit.UIApplication
@@ -31,9 +40,37 @@ import platform.UIKit.popoverPresentationController
 
 actual class PhotoService actual constructor(val sketch: Sketch) {
 
-    actual suspend fun loadFromGallery(pageStart: Int, pageSize: Int): List<Photo> {
-        // TODO Read photos from the ios gallery
-        return emptyList()
+    private var fetchResult: PHFetchResult? = null
+
+    actual suspend fun loadFromGallery(
+        pageStart: Int,
+        pageSize: Int
+    ): List<Photo> = withContext(Dispatchers.IO) {
+        if (fetchResult == null || pageStart == 0) {
+            loadAllAssets()
+        }
+        val result = fetchResult ?: return@withContext emptyList()
+        val total = result.count().toInt()
+        if (pageStart >= total) return@withContext emptyList()
+        val end = minOf(pageStart + pageSize, total)
+
+        val photoUris = mutableListOf<String>()
+        for (i in pageStart until end) {
+            val asset = result.objectAtIndex(i.toULong()) as PHAsset
+            photoUris.add(newPhotosAssetUri(asset.localIdentifier))
+        }
+        return@withContext photoUris.map { photoUri2PhotoInfo(sketch, it) }
+    }
+
+    private fun loadAllAssets() {
+        val options = PHFetchOptions().apply {
+            predicate = NSPredicate.predicateWithFormat(
+                predicateFormat = "mediaType == %d || mediaType == %d",
+                PHAssetMediaTypeImage, PHAssetMediaTypeVideo
+            )
+            sortDescriptors = listOf(NSSortDescriptor(key = "creationDate", ascending = false))
+        }
+        fetchResult = PHAsset.fetchAssetsWithOptions(options)
     }
 
     @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)

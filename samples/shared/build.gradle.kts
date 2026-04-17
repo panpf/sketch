@@ -115,14 +115,12 @@ kotlin {
             // It has been configured in the internal:images module, but it is still inaccessible in the sample module. This may be a bug of kmp.
             resources.srcDirs("../../internal/images/src/iosMain/resources")
             dependencies {
+                api(projects.sketchVideo)
                 api(libs.moko.permissions)
                 api(libs.moko.permissions.storage)
                 api(libs.moko.permissions.gallery)
             }
         }
-//        nonJsCommonMain.dependencies {
-//            api(libs.multiplatform.paging)
-//        }
 
         commonTest.dependencies {
             implementation(projects.internal.test)
