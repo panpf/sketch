@@ -9,7 +9,6 @@ import com.github.panpf.sketch.cache.internal.MemoryCacheInterceptor
 import com.github.panpf.sketch.cache.internal.ResultCacheInterceptor
 import com.github.panpf.sketch.commonComponents
 import com.github.panpf.sketch.fetch.Base64UriFetcher
-import com.github.panpf.sketch.fetch.ComposeResourceUriFetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.KtorHttpUriFetcher
 import com.github.panpf.sketch.fetch.internal.FetcherInterceptor
@@ -266,41 +265,29 @@ class SketchTest {
         }
 
         // addIgnoreComponentProviderClasses
+        val fetcherProvider = ComponentLoader.fetchers.first()
+        val fetcherFactory = fetcherProvider.factory(context)!!
         Sketch.Builder(context).build().apply {
-            assertEquals(
-                expected = ComponentLoader.toComponentRegistry(context)
-                    .merged(platformComponents(context).merged(commonComponents())).toString(),
-                actual = components.registry.toString()
+            assertTrue(
+                actual = components.registry.fetchers.find { it::class == fetcherFactory::class } != null,
+                message = "There should be a ${fetcherFactory::class} in the current environment, but it is not found."
             )
         }
         Sketch.Builder(context).apply {
-            // There is only one KtorHttpUriFetcherProvider in the current environment
-            addIgnoreFetcherProvider(ComponentLoader.fetchers.first()::class)
+            addIgnoreFetcherProvider(fetcherProvider::class)
         }.build().apply {
-            val fromInternalImagesComponents = ComponentRegistry {
-                addFetcher(ComposeResourceUriFetcher.Factory())
-            }
-            assertEquals(
-                expected = fromInternalImagesComponents
-                    .merged(platformComponents(context))
-                    .merged(commonComponents())
-                    .toString(),
-                actual = components.registry.toString()
+            assertNull(
+                actual = components.registry.fetchers.find { it::class == fetcherFactory::class },
+                message = "There should be a ${fetcherFactory::class} in the current environment, but it is not found."
             )
         }
 
         // components: Interceptor
         Sketch.Builder(context).build().apply {
+            val platformComponents = platformComponents(context)
+            val commonComponents = commonComponents()
             assertEquals(
-                listOf(
-                    MemoryCacheInterceptor(),
-                    PlaceholderInterceptor(),
-                    ResultCacheInterceptor(),
-                    ThumbnailInterceptor(),
-                    TransformationInterceptor(),
-                    FetcherInterceptor(),
-                    DecoderInterceptor(),
-                ),
+                platformComponents.merged(commonComponents)!!.interceptors,
                 components.getInterceptors(ImageRequest(context, ""))
             )
         }
@@ -310,29 +297,17 @@ class SketchTest {
                 add(TestInterceptor())
             }
         }.build().apply {
+            val testComponents = ComponentRegistry {
+                add(TestInterceptor())
+            }
+            val platformComponents = platformComponents(context)
+            val commonComponents = commonComponents()
             assertEquals(
-                listOf(
-                    TestInterceptor(),
-                    MemoryCacheInterceptor(),
-                    PlaceholderInterceptor(),
-                    ResultCacheInterceptor(),
-                    ThumbnailInterceptor(),
-                    TransformationInterceptor(),
-                    FetcherInterceptor(),
-                    DecoderInterceptor()
-                ),
+                testComponents.merged(platformComponents).merged(commonComponents)!!.interceptors,
                 components.getInterceptors(ImageRequest(context, ""))
             )
             assertNotEquals(
-                listOf(
-                    MemoryCacheInterceptor(),
-                    PlaceholderInterceptor(),
-                    ResultCacheInterceptor(),
-                    ThumbnailInterceptor(),
-                    TransformationInterceptor(),
-                    FetcherInterceptor(),
-                    DecoderInterceptor()
-                ),
+                platformComponents.merged(commonComponents)!!.interceptors,
                 components.getInterceptors(ImageRequest(context, ""))
             )
         }

@@ -16,8 +16,11 @@
 
 package com.github.panpf.sketch
 
+import com.github.panpf.sketch.decode.PhotosAssetDecoder
 import com.github.panpf.sketch.decode.SkiaDecoder
+import com.github.panpf.sketch.decode.internal.UseSkiaInterceptor
 import com.github.panpf.sketch.fetch.KotlinResourceUriFetcher
+import com.github.panpf.sketch.fetch.PhotosAssetFetcher
 
 /**
  * iOS platform related components
@@ -26,7 +29,10 @@ import com.github.panpf.sketch.fetch.KotlinResourceUriFetcher
  */
 internal actual fun platformComponents(context: PlatformContext): ComponentRegistry {
     return ComponentRegistry {
+        add(UseSkiaInterceptor())
         add(KotlinResourceUriFetcher.Factory())
+        add(PhotosAssetFetcher.Factory())
+        add(PhotosAssetDecoder.Factory())
         add(SkiaDecoder.Factory())
     }
 }
