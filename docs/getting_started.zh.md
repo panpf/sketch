@@ -114,18 +114,19 @@ context.sketch.enqueue(request)
 
 [Sketch] 支持从网络、本机、资源等不同的数据源加载图片，如下：
 
-| URI                       | 描述                       | 创建函数                    | 依赖模块                                                                             |
-|:--------------------------|:-------------------------|:------------------------|:---------------------------------------------------------------------------------|
-| http://, https://         | File in network          | _                       | sketch-http-hurl<br>sketch-http-okhttp<br>sketch-http-ktor2<br>sketch-http-ktor3 |
-| file://, /, D:/           | File in SDCard           | newFileUri()            | _                                                                                |
-| content://                | Android Content Resolver | _                       | _                                                                                |
-| file:///android_asset/    | Android Asset            | newAssetUri()           | _                                                                                |
-| android.resource://       | Android Resource         | newResourceUri()        | _                                                                                |
-| data:image/, data:img/    | Base64                   | newBase64Uri()          | _                                                                                |
-| file:///compose_resource/ | Compose Resource         | newComposeResourceUri() | sketch-compose-resources                                                         |
-| file:///kotlin_resource/  | Kotlin Resource          | newKotlinResourceUri()  | _                                                                                |
-| blurhash://               | BlurHash                 | newBlurHashUri()        | sketch-blurhash                                                                  |
-| app.icon://               | Android App Icon         | newAppIconUri()         | sketch-extensions-appicon                                                        |
+| URI                       | 描述                       | 创建函数                    | 依赖模块                      |
+|:--------------------------|:-------------------------|:------------------------|:--------------------------|
+| http://, https://         | File in network          | _                       | sketch-http               |
+| file://, /, D:\\, \\\\    | File in SDCard           | newFileUri()            | _                         |
+| content://                | Android Content Resolver | _                       | _                         |
+| android.resource://       | Android Resource         | newResourceUri()        | _                         |
+| file:///android_asset/    | Android Asset            | newAssetUri()           | _                         |
+| file:///compose_resource/ | Compose Resource         | newComposeResourceUri() | sketch-compose-resources  |
+| file:///kotlin_resource/  | Kotlin Resource          | newKotlinResourceUri()  | _                         |
+| file:///photos_asset/     | ios Photos Library       | newPhotosAssetUri()     | _                         |
+| data:image/, data:img/    | Base64                   | newBase64Uri()          | _                         |
+| blurhash://               | BlurHash                 | newBlurHashUri()        | sketch-blurhash           |
+| app.icon://               | Android App Icon         | newAppIconUri()         | sketch-extensions-appicon |
 
 每一种 URI 都有对应的 Fetcher 对其提供支持，[详细了解 Fetcher][fetcher]
 
@@ -147,6 +148,7 @@ context.sketch.enqueue(request)
 | http://, https://<br/>file://, /<br/>file:///compose_resource/<br/>data:image/, data:img/ | ✅             | ✅               | ✅               | ✅               |
 | file:///android_asset/<br/>content://<br/>android.resource://                             | ✅             | ❌               | ❌               | ❌               |
 | file:///kotlin_resource/                                                                  | ❌             | ✅               | ✅               | ❌               |
+| file:///photos_asset/                                                                     | ❌             | ✅               | ❌               | ❌               |
 | Exif Orientation                                                                          | ✅             | ✅               | ✅               | ✅               |
 | 内存缓存                                                                                      | ✅             | ✅               | ✅               | ✅               |
 | 结果缓存                                                                                      | ✅             | ✅               | ✅               | ❌               |

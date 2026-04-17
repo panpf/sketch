@@ -2,69 +2,152 @@
 
 Translations: [简体中文](decoder.zh.md)
 
-[Decoder] is used to decode image files. Each supported image type has a corresponding [Decoder]
-implementation, as shown in the following table:
+[Decoder] is used to read data from [DataSource] and decode images, and each image type supported by
+Sketch is supported by a corresponding [Decoder], as shown in the following table:
 
-| Format        | Decoder                                            | Dependent modules         | Android    | iOS                     | Desktop                 | Web                     |
-|:--------------|----------------------------------------------------|---------------------------|------------|:------------------------|:------------------------|:------------------------|
-| jpeg          | [BitmapFactoryDecoder]                             | -                         | ✅          | ❌                       | ❌                       | ❌                       |
-| jpeg          | [SkiaDecoder]                                      | -                         | ❌          | ✅                       | ✅                       | ✅                       |
-| png           | [BitmapFactoryDecoder]                             | -                         | ✅          | ❌                       | ❌                       | ❌                       |
-| png           | [SkiaDecoder]                                      | -                         | ❌          | ✅                       | ✅                       | ✅                       |
-| webp          | [BitmapFactoryDecoder]                             | -                         | ✅          | ❌                       | ❌                       | ❌                       |
-| webp          | [SkiaDecoder]                                      | -                         | ❌          | ✅                       | ✅                       | ✅                       |
-| bmp           | [BitmapFactoryDecoder]                             | -                         | ✅          | ❌                       | ❌                       | ❌                       |
-| bmp           | [SkiaDecoder]                                      | -                         | ❌          | ✅                       | ✅                       | ✅                       |
-| heif          | [BitmapFactoryDecoder]                             | -                         | ✅ (API 28) | ❌                       | ❌                       | ❌                       |
-| avif          | [BitmapFactoryDecoder]                             | -                         | ✅ (API 31) | ❌                       | ❌                       | ❌                       |
-| gif           | [ImageDecoderGifDecoder]                           | sketch-animated-gif       | ✅ (API 28) | ❌                       | ❌                       | ❌                       |
-| gif           | [MovieGifDecoder]<br/>(Not Support resize)         | sketch-animated-gif       | ✅          | ❌                       | ❌                       | ❌                       |
-| gif           | [SkiaGifDecoder]<br/>(Not Support resize)          | sketch-animated-gif       | ✅          | ❌                       | ❌                       | ❌                       |
-| gif           | [KoralGifDecoder]                                  | sketch-animated-gif-koral | ❌          | ✅                       | ✅                       | ✅                       |
-| Animated webp | [ImageDecoderAnimatedWebpDecoder]                  | sketch-animated-webp      | ✅ (API 28) | ❌                       | ❌                       | ❌                       |
-| Animated webp | [SkiaAnimatedWebpDecoder]<br/>(Not Support resize) | sketch-animated-webp      | ❌          | ✅                       | ✅                       | ✅                       |
-| Animated heif | [ImageDecoderAnimatedHeifDecoder]                  | sketch-animated-heif      | ✅ (API 30) | ❌                       | ❌                       | ❌                       |
-| svg           | [SvgDecoder]                                       | sketch-svg                | ✅          | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) |
-| Video frames  | [VideoFrameDecoder]                                | sketch-video              | ✅          | ❌                       | ❌                       | ❌                       |
-| Video frames  | [FFmpegVideoFrameDecoder]                          | sketch-video-ffmpeg       | ✅          | ❌                       | ❌                       | ❌                       |
-| BlurHash      | [BlurHashDecoder]                                  | sketch-blurhash           | ✅          | ✅                       | ✅                       | ✅                       |
-| Apk Icon      | [ApkIconDecoder]                                   | sketch-extensions-core    | ✅          | ❌                       | ❌                       | ❌                       |
+| Decoder                           | Format                                             | Dependent modules         | Android | iOS | Desktop | Web |
+|-----------------------------------|:---------------------------------------------------|---------------------------|---------|:----|:--------|:----|
+| [SkiaDecoder]                     | jpeg, png, webp, bmp                               | -                         | ❌       | ✅   | ✅       | ✅   |
+| [BitmapFactoryDecoder]            | jpeg, png, webp, bmp, heif (API 28), avif (API 31) | -                         | ✅       | ❌   | ❌       | ❌   |
+| [PhotosAssetDecoder]              | jpeg, png, webp, bmp, heif                         | -                         | ❌       | ✅   | ❌       | ❌   |
+| [SkiaGifDecoder]                  | gif (Not Support resize)                           | sketch-animated-gif       | ❌       | ✅   | ✅       | ✅   |
+| [MovieGifDecoder]                 | gif (Not Support resize)                           | sketch-animated-gif       | ✅       | ❌   | ❌       | ❌   |
+| [ImageDecoderGifDecoder]          | gif (API 28)                                       | sketch-animated-gif       | ✅       | ❌   | ❌       | ❌   |
+| [KoralGifDecoder]                 | gif                                                | sketch-animated-gif-koral | ✅       | ❌   | ❌       | ❌   |
+| [ImageDecoderAnimatedWebpDecoder] | Animated webp (API 28)                             | sketch-animated-webp      | ✅       | ❌   | ❌       | ❌   |
+| [SkiaAnimatedWebpDecoder]         | Animated webp (Not Support resize)                 | sketch-animated-webp      | ❌       | ✅   | ✅       | ✅   |
+| [ImageDecoderAnimatedHeifDecoder] | Animated heif (API 30)                             | sketch-animated-heif      | ✅       | ❌   | ❌       | ❌   |
+| [SvgDecoder]                      | svg (CSS is not supported on non-Android)          | sketch-svg                | ✅       | ✅   | ✅       | ✅   |
+| [VideoFrameDecoder]               | Video frame                                        | sketch-video              | ✅       | ❌   | ❌       | ❌   |
+| [FFmpegVideoFrameDecoder]         | Video frame                                        | sketch-video-ffmpeg       | ✅       | ❌   | ❌       | ❌   |
+| [PhotosAssetVideoFrameDecoder]    | Video frame                                        | sketch-video              | ❌       | ✅   | ❌       | ❌   |
+| [FileVideoFrameDecoder]           | Video frame                                        | sketch-video              | ❌       | ✅   | ❌       | ❌   |
+| [BlurHashDecoder]                 | BlurHash                                           | sketch-blurhash           | ✅       | ✅   | ✅       | ✅   |
+| [ApkIconDecoder]                  | Apk Icon                                           | sketch-extensions-core    | ✅       | ❌   | ❌       | ❌   |
+| [DrawableDecoder]                 | Andoid res drawable                                | -                         | ✅       | ❌   | ❌       | ❌   |
 
-* [ApkIconDecoder] Decoding the icon of an Apk file on
-  Android ([Learn more](apk_app_icon.md#load-apk-icon))
-* [BitmapFactoryDecoder] Decode images on the Android platform using Android's
-  built-in [BitmapFactory], which is the last resort decoder
-* [DrawableDecoder] Decode vector, shape and other xml drawable images supported by Android on the
-  Android platform
-* [ImageDecoderGifDecoder] Use Android's built-in [ImageDecoder] to decode gif animations on the
-  Android
-  platform ([Learn more](animated_image.md))
-* [KoralGifDecoder] Use koral--'s [android-gif-drawable][android-gif-drawable] library to decode
-  animated gifs on the Android platform ([Learn more](animated_image.md))
+The uses of each [Decoder] are as follows:
+
+* [SkiaDecoder]: Use Skia's built-in Image Decoder on non-Android platforms; it's the final decoder
+  for non-Android platforms.
+* [BitmapFactoryDecoder]: On the Android platform, images are decoded using Android's built-in
+  BitmapFactory, which is the final decoder on the Android platform.
+* [PhotosAssetDecoder]: Decode images from the Photos Library on iOS platform
+* [SkiaGifDecoder] Use Skia's built-in Codec to decode gif animations on non-Android
+  platforms ([Learn more](animated_image.md))
 * [MovieGifDecoder] Use Android's built-in [Movie] to decode gif animations on the Android
   platform ([Learn more](animated_image.md))
-* [SkiaGifDecoder] Use Skia's built-in Codec to decode gif animations on non-Android
+* [ImageDecoderGifDecoder] Use Android's built-in [ImageDecoder] to decode gif animations on the
+  Android platform ([Learn more](animated_image.md))
+* [KoralGifDecoder] Use koral--'s [android-gif-drawable][android-gif-drawable] library to decode
+  animated gifs on the Android platform ([Learn more](animated_image.md))
+* [ImageDecoderAnimatedWebpDecoder] Use Android's built-in [ImageDecoder] to decode webp animations
+  on the Android platform ([Learn more](animated_image.md))
+* [SkiaAnimatedWebpDecoder] Use Skia's built-in Codec to decode webp animations on non-Android
   platforms ([Learn more](animated_image.md))
 * [ImageDecoderAnimatedHeifDecoder] Use Android's built-in [ImageDecoder] to decode heif
   animations ([Learn more](animated_image.md))
-* [SkiaDecoder] Use Skia's built-in Image to decode images on non-Android platforms, which is the
-  last decoder* [SvgDecoder] Use BigBadaboom's [androidsvg] library on Android platforms, and use
+* [SvgDecoder] Use BigBadaboom's [androidsvg] library on Android platforms, and use
   Skia's built-in SVGDOM to decode static svg files on non-Android platforms ( [Learn more](svg.md))
-* [ImageDecoderAnimatedWebpDecoder] Use Android's built-in [ImageDecoder] to decode webp animations
-  on the
-  Android platform ([Learn more](animated_image.md))
-* [SkiaAnimatedWebpDecoder] Use Skia's built-in Codec to decode webp animations on non-Android
-  platforms ([Learn more](animated_image.md))
 * [VideoFrameDecoder] Decode frames of video files using Android's built-in [MediaMetadataRetriever]
   class on the Android platform ([Learn more](video_frame.md))
 * [FFmpegVideoFrameDecoder] Decoding video frames using wseemann's [FFmpegMediaMetadataRetriever]
   library on Android ([Learn more](video_frame.md))
-* [BlurHashDecoder] Decode blurred images from BlurHash string （[了解更多](blurhash.zh.md)）
+* [PhotosAssetVideoFrameDecoder]: Decoding frames from video files in the Photos Library on iOS
+  platform
+* [FileVideoFrameDecoder]: Decoding frames from local video files on the iOS platform
+* [BlurHashDecoder] Decode blurred images from BlurHash string （[Learn more](blurhash.md)）
+* [ApkIconDecoder] Decoding the icon of an Apk file on
+  Android ([Learn more](apk_app_icon.md#load-apk-icon))
+* [DrawableDecoder] Decode vector, shape and other xml drawable images supported by Android on the
+  Android platform
 
 > [!IMPORTANT]
-> The above components all support automatic registration. You only need to import them without
-> additional configuration. If you need to register manually, please read the
-> documentation: [《Register component》](register_component.md)
+> * The built-in Fetchers that do not rely on additional modules have been registered.
+> * Fetchers that rely on additional modules also support automatic registration. You only need to
+    configure the dependencies.
+> * If you need to register manually, please read the
+    documentation: [《Register component》](register_component.md)
+
+### Decode static images
+
+#### Android platform
+
+On the Android platform, [BitmapFactoryDecoder] is mainly used to decode static images,
+and [BitmapFactoryDecoder] is used to decode images using Android's built-in BitmapFactory.
+
+#### Desktop and Web platforms
+
+On desktop and web platforms, [SkiaDecoder] is mainly used to decode static images,
+and [SkiaDecoder] uses Skia's built-in image to decode images.
+
+#### iOS platform
+
+The ios platform also mainly uses [SkiaDecoder] to decode static images, but for images from the
+Photos Library, [PhotosAssetDecoder] will be used to decode the images, and [PhotosAssetDecoder]
+will use the iOS native PHImageManager to decode the images, so that the system can use its own
+capabilities to support more image formats.
+
+If you want to use [SkiaDecoder] to decode images from the Photos Library, you can do so with the
+`useSkiaForImagePhotosAsset()` function, as follows:
+
+```kotlin
+val imageUri = newPhotosAssetUri("DB16113B-984A-4D12-B4D0-50FC46066781/L0/001")
+val request = ImageRequest(context, imageUri) {
+    useSkiaForImagePhotosAsset(true)
+}
+AsyncImage(
+    request = request,
+    contentDescription = "photo"
+)
+```
+
+[UseSkiaInterceptor] will read all the original image data into memory after fetch after detecting
+that useSkiaForImagePhotosAsset is true, and then wrap it into a ByteArrayDataSource
+for [SkiaDecoder] to decode
+
+If you also want to cache the raw data of the images from the Photos Library into the download cache
+and wrap them into a FileDataSource for [SkiaDecoder] to decode, you can do so using the
+`preferredFileCacheForImagePhotosAsset()` function, as follows:
+
+```kotlin
+val imageUri = newPhotosAssetUri("DB16113B-984A-4D12-B4D0-50FC46066781/L0/001")
+val request = ImageRequest(context, imageUri) {
+    useSkiaForImagePhotosAsset(true)
+    preferredFileCacheForImagePhotosAsset(true)
+}
+AsyncImage(
+    request = request,
+    contentDescription = "photo"
+)
+```
+
+### Decode animated images
+
+Decode animated images, please refer to the documentation: [《Animated Image》](animated_image.md)
+
+### Decode SVG
+
+Decode SVG, refer to the documentation: [《SVG》](svg.md)
+
+### Decode video frame
+
+Decode video frame, refer to the documentation: [《Video Frame》](video_frame.md)
+
+### Decode BlurHash
+
+Decode BlurHash, refer to the documentation: [《BlurHash》](blurhash.md)
+
+### Decode APK icon
+
+Decode the APK icon, please refer to the
+documentation: [《Load Apk Icon》](apk_app_icon.md#load-apk-icon)
+
+### Decode Android Drawable
+
+On the Android platform, [DrawableDecoder] is mainly used to decode xml drawable images supported by
+Android, such as vector and shape, and its principle is to draw the Drawable onto the Bitmap, so the
+Drawable must have an intrinsic dimension.
 
 ### Extend Decoder
 
@@ -156,7 +239,7 @@ ImageRequest(context, "https://example.com/image.jpg") {
 
 [ApkIconDecoder]: ../sketch-extensions-apkicon/src/main/kotlin/com/github/panpf/sketch/decode/ApkIconDecoder.kt
 
-[VideoFrameDecoder]: ../sketch-video/src/main/kotlin/com/github/panpf/sketch/decode/VideoFrameDecoder.kt
+[VideoFrameDecoder]: ../sketch-video/src/androidMain/kotlin/com/github/panpf/sketch/decode/VideoFrameDecoder.kt
 
 [SvgDecoder]: ../sketch-svg/src/commonMain/kotlin/com/github/panpf/sketch/decode/SvgDecoder.kt
 
@@ -197,3 +280,9 @@ ImageRequest(context, "https://example.com/image.jpg") {
 [SkiaAnimatedWebpDecoder]: ../sketch-animated-webp/src/nonAndroidMain/kotlin/com/github/panpf/sketch/decode/SkiaAnimatedWebpDecoder.kt
 
 [BlurHashDecoder]: ../sketch-blurhash/src/commonMain/kotlin/com/github/panpf/sketch/decode/BlurHashDecoder.kt
+
+[DataSource]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/source/DataSource.kt
+
+[PhotosAssetFetcher]: ../sketch-core/src/iosMain/kotlin/com/github/panpf/sketch/fetch/PhotosAssetFetcher.kt
+
+[UseSkiaInterceptor]: ../sketch-core/src/iosMain/kotlin/com/github/panpf/sketch/decode/internal/UseSkiaInterceptor.kt
