@@ -165,7 +165,6 @@ class AnimatedImageTestFragment :
                 components {
                     add(factory)
                 }
-                repeatCount(0)
                 onAnimationStart {
                     playings[index] = true
                     callbackButtons[index].text = if (playings[index]) "Stop" else "Play"

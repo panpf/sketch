@@ -9,6 +9,42 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
+# 4.4.0
+
+Changes since 4.3.1.
+
+* broken: By merging RequestInterceptor and DecodeInterceptor, binary compatibility is broken and
+  libraries that depend on this need to modify their code and
+  recompile. [#274](https://github.com/panpf/sketch/issues/274)
+* fix: Fixed the bug that Koral GifDrawable would not actively call back onAnimationStart and
+  onAnimationEnd during automatic playback. [#278](https://github.com/panpf/sketch/issues/278)
+* fix: Fixed a bug where AsyncImage was invalid when using the colorFilter property and enabling
+  crossfade. [#266](https://github.com/panpf/sketch/issues/266
+* fix: Fixed a bug where ImageDecoder on Android platform cannot decode gifs with only one
+  frame. [#179](https://github.com/panpf/sketch/issues/179)
+* fix: Now the newFileUri(String) function skips the uri starting with '
+  file:'. [#270](https://github.com/panpf/sketch/issues/270)
+* fix: Fixed a bug that prevented Windows Network URIs from
+  loading. [#267](https://github.com/panpf/sketch/issues/267)
+* fix: Fixed a bug where HttpUriFetcher and SkiaAnimatedDecoder did not close the input
+  stream. [#272](https://github.com/panpf/sketch/issues/272)
+* fix: Fixed a bug where non-Android platforms used Skia to decode GIFs when the frame duration was
+  0 and not modified to the default value of 100. [#273](https://github.com/panpf/sketch/issues/273)
+* improve: DecodeConfig is now accessible from the common module
+* new: Added the function of loading thumbnail first, please refer to the documentation for
+  details [Thumbnail.md](docs/thumbnail.md). [#241](https://github.com/panpf/sketch/issues/241)
+* new: Added the 'sketch-blurhash' module to support BlurHash. Please refer to the documentation for
+  details. [BlurHash](docs/blurhash.md). [#261](https://github.com/panpf/sketch/issues/261)
+
+# 4.4.0-beta02
+
+* fix: Fixed the bug that Koral GifDrawable would not actively call back onAnimationStart and
+  onAnimationEnd during automatic playback. [#278](https://github.com/panpf/sketch/issues/278)
+
+# 4.4.0-beta01
+
+There are no changes compared to version 4.4.0-alpha02
+
 # 4.4.0-alpha02
 
 * broken: By merging RequestInterceptor and DecodeInterceptor, binary compatibility is broken and
