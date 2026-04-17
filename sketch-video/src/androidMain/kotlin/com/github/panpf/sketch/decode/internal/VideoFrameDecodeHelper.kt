@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-@file:Suppress("UnnecessaryVariable", "FoldInitializerAndIfToElvis")
+@file:Suppress("UnnecessaryVariable", "RedundantConstructorKeyword")
 
 package com.github.panpf.sketch.decode.internal
 
+import android.annotation.TargetApi
+import android.media.MediaMetadataRetriever
+import android.media.MediaMetadataRetriever.BitmapParams
+import android.os.Build
 import androidx.exifinterface.media.ExifInterface
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.asImage
+import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest
@@ -35,16 +40,16 @@ import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.div
 import com.github.panpf.sketch.util.resolveRequestVideoFrameMicros
-import wseemann.media.FFmpegMediaMetadataRetriever
 
 /**
- * Use FFmpegMediaMetadataRetriever to decode video frames
+ * Use MediaMetadataRetriever to decode video frames
  *
  * The following decoding related properties are supported:
  *
  * * sizeResolver: Only sampleSize
  * * sizeMultiplier
  * * precisionDecider: Only LESS_PIXELS and SMALLER_SIZE is supported
+ * * colorSpace: Only on Android 30 or later
  * * videoFrameMicros
  * * videoFramePercent
  * * videoFrameOption
@@ -53,11 +58,11 @@ import wseemann.media.FFmpegMediaMetadataRetriever
  *
  * * scaleDecider
  * * colorType
- * * colorSpace
  *
- * @see com.github.panpf.sketch.video.ffmpeg.test.decode.internal.FFmpegVideoFrameDecodeHelperTest
+ * @see com.github.panpf.sketch.video.android.test.decode.internal.VideoFrameDecodeHelperTest
  */
-class FFmpegVideoFrameDecodeHelper(
+@TargetApi(Build.VERSION_CODES.O_MR1)
+class VideoFrameDecodeHelper constructor(
     val sketch: Sketch,
     val request: ImageRequest,
     val dataSource: DataSource,
@@ -68,7 +73,7 @@ class FFmpegVideoFrameDecodeHelper(
     override val supportRegion: Boolean = false
 
     private val mediaMetadataRetriever by lazy {
-        FFmpegMediaMetadataRetriever().apply {
+        MediaMetadataRetriever().apply {
             if (dataSource is ContentDataSource) {
                 setDataSource(request.context, dataSource.contentUri)
             } else {
@@ -82,7 +87,7 @@ class FFmpegVideoFrameDecodeHelper(
 
     override fun decode(sampleSize: Int): Image {
         val durationMicros = mediaMetadataRetriever
-            .extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_DURATION)
+            .extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
             ?.toLongOrNull()?.let { it * 1000 } ?: 0L
         val videoFrameMicros = request.videoFrameMicros
         val videoFramePercent = request.videoFramePercent
@@ -91,21 +96,58 @@ class FFmpegVideoFrameDecodeHelper(
             videoFrameMicros = videoFrameMicros,
             videoFramePercent = videoFramePercent,
         )
-        val option = request.videoFrameOption ?: FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC
+        val option = request.videoFrameOption ?: MediaMetadataRetriever.OPTION_CLOSEST_SYNC
         val imageSize = imageInfo.size
         val dstSize = imageSize / sampleSize.toFloat()
-        val bitmap = mediaMetadataRetriever.getScaledFrameAtTime(
-            /* timeUs = */ requestFrameMicros,
-            /* option = */ option,
-            /* width = */ dstSize.width,
-            /* height = */ dstSize.height
-        ) ?: throw DecodeException(
-            "Failed to getScaledFrameAtTime. " +
-                    "frameMicros=${requestFrameMicros}, " +
-                    "option=${optionToName(option)}, " +
-                    "dstSize=${dstSize}, " +
-                    "imageSize=$imageSize"
-        )
+        val bitmap = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+                val config = DecodeConfig(request, imageInfo.mimeType, isOpaque = false)
+                val bitmapParams = BitmapParams().apply {
+                    config.colorType?.also { preferredConfig = it }
+                }
+                mediaMetadataRetriever.getScaledFrameAtTime(
+                    /* timeUs = */ requestFrameMicros,
+                    /* option = */ option,
+                    /* dstWidth = */ dstSize.width,
+                    /* dstHeight = */ dstSize.height,
+                    /* params = */ bitmapParams
+                ) ?: throw DecodeException(
+                    "Failed to getScaledFrameAtTime. " +
+                            "frameMicros=$requestFrameMicros, " +
+                            "option=${optionToName(option)}, " +
+                            "dstSize=$dstSize, " +
+                            "imageSize=$imageSize, " +
+                            "preferredConfig=${config.colorType}"
+                )
+            }
+
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 -> {
+                mediaMetadataRetriever.getScaledFrameAtTime(
+                    /* timeUs = */ requestFrameMicros,
+                    /* option = */ option,
+                    /* dstWidth = */ dstSize.width,
+                    /* dstHeight = */ dstSize.height
+                ) ?: throw DecodeException(
+                    "Failed to getScaledFrameAtTime. " +
+                            "frameMicros=$requestFrameMicros, " +
+                            "option=${optionToName(option)}, " +
+                            "dstSize=$dstSize, " +
+                            "imageSize=$imageSize"
+                )
+            }
+
+            else -> {
+                mediaMetadataRetriever.getFrameAtTime(
+                    /* timeUs = */ requestFrameMicros,
+                    /* option = */ option
+                ) ?: throw DecodeException(
+                    "Failed to getFrameAtTime. " +
+                            "frameMicros=$requestFrameMicros, " +
+                            "option=${optionToName(option)}, " +
+                            "imageSize=$imageSize"
+                )
+            }
+        }
         val correctedBitmap = exifOrientationHelper.applyToBitmap(bitmap) ?: bitmap
         return correctedBitmap.asImage()
     }
@@ -116,11 +158,9 @@ class FFmpegVideoFrameDecodeHelper(
 
     private fun readImageInfo(): ImageInfo {
         val srcWidth = mediaMetadataRetriever
-            .extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toIntOrNull()
-            ?: 0
+            .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toIntOrNull() ?: 0
         val srcHeight = mediaMetadataRetriever
-            .extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toIntOrNull()
-            ?: 0
+            .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toIntOrNull() ?: 0
         val imageSize = Size(width = srcWidth, height = srcHeight)
         val correctedImageSize = exifOrientationHelper.applyToSize(imageSize)
         return ImageInfo(size = correctedImageSize, mimeType = mimeType)
@@ -129,7 +169,7 @@ class FFmpegVideoFrameDecodeHelper(
 
     private fun readExifOrientation(): Int {
         val videoRotation = mediaMetadataRetriever
-            .extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
+            .extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)
             ?.toIntOrNull() ?: 0
         val exifOrientation = when (videoRotation) {
             90 -> ExifInterface.ORIENTATION_ROTATE_90
@@ -142,19 +182,23 @@ class FFmpegVideoFrameDecodeHelper(
 
     private fun optionToName(option: Int): String {
         return when (option) {
-            FFmpegMediaMetadataRetriever.OPTION_CLOSEST -> "CLOSEST"
-            FFmpegMediaMetadataRetriever.OPTION_CLOSEST_SYNC -> "CLOSEST_SYNC"
-            FFmpegMediaMetadataRetriever.OPTION_NEXT_SYNC -> "NEXT_SYNC"
-            FFmpegMediaMetadataRetriever.OPTION_PREVIOUS_SYNC -> "PREVIOUS_SYNC"
+            MediaMetadataRetriever.OPTION_CLOSEST -> "CLOSEST"
+            MediaMetadataRetriever.OPTION_CLOSEST_SYNC -> "CLOSEST_SYNC"
+            MediaMetadataRetriever.OPTION_NEXT_SYNC -> "NEXT_SYNC"
+            MediaMetadataRetriever.OPTION_PREVIOUS_SYNC -> "PREVIOUS_SYNC"
             else -> "Unknown($option)"
         }
     }
 
     override fun toString(): String {
-        return "FFmpegVideoFrameDecodeHelper(request=$request, dataSource=$dataSource, mimeType=$mimeType)"
+        return "VideoFrameDecodeHelper(request=$request, dataSource=$dataSource, mimeType=$mimeType)"
     }
 
     override fun close() {
-        mediaMetadataRetriever.release()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            mediaMetadataRetriever.close()
+        } else {
+            mediaMetadataRetriever.release()
+        }
     }
 }
