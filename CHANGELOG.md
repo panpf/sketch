@@ -9,6 +9,49 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
+# 4.5.0-alpha01
+
+## Multiplatform
+
+* improve: Remove GifDecoder and AnimatedWebpDecoder and use the original Decoder directly
+* new: Added DataSource.toByteArray() extension function to avoid secondary creation of
+  ByteArray when DataSource is ByteArrayDataSource
+
+## Android
+
+* improve: Remove permissions in sketch-core module android platform manifest file
+* improve: Improve the Android platform's strategy for automatically cleaning memory cache
+* improve: Update DrawablePainter
+* improve: The jvm platform uses jvm synchronization lock
+
+## iOS
+
+* improve: The ios platform supports reading network types and monitoring memory pressure to clear
+  the cache
+* improve: Use one-eighth of the maximum physical memory on the iOS platform as the maximum
+  available memory for the app
+* new: Support loading images from the Photos Library for ios, please refer to the documentation for
+  details [《Load images from the iOS Photos Library》](docs/fetcher.md#Load-images-from-the-iOS-Photos-Library)
+  和 [《Decode iOS platform static photos》](docs/decoder.md#iOS-platform)
+* new: Support loading video frames from iOS Photo Library and local Path, please refer to the
+  documentation for
+  details [《Load images from the iOS Photos Library》](docs/fetcher.md#Load-images-from-the-iOS-Photos-Library)
+  和 [《Video Frame》](docs/video_frame.md)
+
+## js
+
+* fix: Fixed a bug where repeated function definitions caused crashes in the js environment
+* improve: Improve SvgDecoderProvider js and wasmJs version file names
+
+## Dependencies
+
+* Upgrade to kotlin 2.3.20
+* Upgrade to jetbrains compose 1.10.3
+* Upgrade to ktor 3.4.2
+* Upgrade to okio 3.17.0
+* Upgrade to androidx-core 1.18.0
+* Upgrade to androidgifdrawable 1.2.31
+
 # 4.4.0
 
 Changes since 4.3.1.

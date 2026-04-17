@@ -7,6 +7,45 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
+# 4.5.0-alpha01
+
+## Multiplatform
+
+* improve: 移除 GifDecoder 和 AnimatedWebpDecoder，直接使用原本的解码器
+* new: 增加了 DataSource.toByteArray（） 扩展函数，以避免当数据源为 ByteArrayDataSource 时二次创建字节数组
+
+## Android
+
+* improve: 移除 sketch-core 模块 android 平台 manifest 文件中的权限
+* improve: 改进 Android 平台自动清理内存缓存的策略
+* improve: 更新 DrawablePainter
+* improve: 优先使用 jvm 同步锁
+
+## iOS
+
+* improve: iOS 平台支持读取网络类型并监控内存压力以清除缓存
+* improve: 在 iOS 平台上使用最大物理内存的八分之一作为应用的最大可用内存
+* new: 支持从 iOS
+  照片库加载图片，详情请参考文档 [《从 iOS 的 Photos Library 加载图片》](docs/fetcher.zh.md#从-iOS-的-Photos-Library-加载图片)
+  和 [《解码 iOS 平台静态照片》](docs/decoder.zh.md#iOS-平台)
+* new: 支持从 iOS
+  照片库和本地路径加载视频帧，详情请参考文档 [《从 iOS 的 Photos Library 加载图片》](docs/fetcher.zh.md#从-iOS-的-Photos-Library-加载图片)
+  和 [《视频帧》](docs/video_frame.zh.md)
+
+## js
+
+* fix: 修复了一个重复函数定义导致 js 环境崩溃的 bug
+* improve: 改进 SvgDecoderProvider js 和 wasmJs 版本文件名
+
+## Dependencies
+
+* 升级 kotlin 2.3.20
+* 升级 jetbrains compose 1.10.3
+* 升级 ktor 3.4.2
+* 升级 okio 3.17.0
+* 升级 androidx-core 1.18.0
+* 升级 androidgifdrawable 1.2.31
+
 # 4.4.0
 
 从 4.3.1 以来的改变.
