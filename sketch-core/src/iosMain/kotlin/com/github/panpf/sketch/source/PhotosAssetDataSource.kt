@@ -19,7 +19,6 @@ package com.github.panpf.sketch.source
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.newPhotosAssetUri
-import okio.IOException
 import okio.Path
 import okio.Source
 import platform.Photos.PHAsset
@@ -48,11 +47,9 @@ class PhotosAssetDataSource constructor(
         }
     }
 
-    @Throws(IOException::class)
     override fun openSource(): Source =
         throw UnsupportedOperationException("PhotosAssetDataSource does not support openSource")
 
-    @Throws(IOException::class)
     override fun getFile(sketch: Sketch): Path =
         throw UnsupportedOperationException("PhotosAssetDataSource does not support getFile")
 
