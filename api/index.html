@@ -1,68 +1,85 @@
 <!DOCTYPE html>
-<html class="no-js">
+<html class="no-js" lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>All modules</title>
     <link href="images/logo-icon.svg" rel="icon" type="image/svg">
-    <script>var pathToRoot = "";</script>
-    <script>document.documentElement.classList.replace("no-js","js");</script>
+        <script>var pathToRoot = "";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
     <script>const storage = localStorage.getItem("dokka-dark-mode")
-    if (storage == null) {
+      if (storage == null) {
         const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
         if (osDarkSchemePreferred === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
         }
-    } else {
+      } else {
         const savedDarkMode = JSON.parse(storage)
-        if(savedDarkMode === true) {
-            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
         }
-    }
+      }
     </script>
 <script type="text/javascript" src="scripts/sourceset_dependencies.js" async="async"></script>
 <link href="styles/style.css" rel="Stylesheet">
 <link href="styles/main.css" rel="Stylesheet">
 <link href="styles/prism.css" rel="Stylesheet">
 <link href="styles/logo-styles.css" rel="Stylesheet">
-<link href="styles/font-jb-sans-auto.css" rel="Stylesheet">
-<script type="text/javascript" src="scripts/clipboard.js" async="async"></script>
+<link href="ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="scripts/safe-local-storage_blocking.js"></script>
 <script type="text/javascript" src="scripts/navigation-loader.js" async="async"></script>
 <script type="text/javascript" src="scripts/platform-content-handler.js" async="async"></script>
 <script type="text/javascript" src="scripts/main.js" defer="defer"></script>
 <script type="text/javascript" src="scripts/prism.js" async="async"></script>
-<script type="text/javascript" src="scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+<script type="text/javascript" src="ui-kit/ui-kit.min.js" defer="defer"></script>
 </head>
 <body>
-    <div class="root">
-<nav class="navigation" id="navigation-wrapper">
-    <div class="navigation--inner">
-        <div class="navigation-title">
-            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
-            <div class="library-name">
-                    <a class="library-name--link" href="index.html">
-                            sketch
-                    </a>
-            </div>
-            <div class="library-version">
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+            <a class="library-name--link" href="index.html" tabindex="1">
+                    sketch
+            </a>
+        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle"
+                type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+        </div>
+        <div class="navigation-controls">
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
+                    type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
             </div>
         </div>
-    </div>
-    <div class="navigation-controls">
-        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
-        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
-    </div>
-</nav>
-        <div id="container">
-            <div class="sidebar" id="leftColumn">
-                <div class="sidebar--inner" id="sideMenu"></div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config='{"defaultSize": 280, "minSize": 200, "maxSize": 400}'>
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list"
+                    data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    sketch
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
             </div>
-            <div id="main">
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
 <div class="main-content" id="content" pageIds="sketch::.ext/allModules///PointingToDeclaration//0">
   <div class="breadcrumbs"></div>
   <div class="cover ">
     <h2 class="">All modules:</h2>
     <div class="table"><a data-name="1225732141%2FMain%2F0" anchor-label="sketch-animated-core" id="1225732141%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-animated-core/index.html">sketch-animated-core</a></div>
@@ -73,7 +90,7 @@
         </div>
       </div>
 <a data-name="-870072622%2FMain%2F0" anchor-label="sketch-animated-gif" id="-870072622%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-animated-gif/index.html">sketch-animated-gif</a></div>
@@ -83,30 +100,8 @@
           <div><span class="brief-comment"></span></div>
         </div>
       </div>
-<a data-name="-445139098%2FMain%2F0" anchor-label="sketch-animated-gif-koral" id="-445139098%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
-        <div class="main-subrow ">
-          <div class="w-100"><span class="inline-flex">
-              <div><a href="sketch-animated-gif-koral/index.html">sketch-animated-gif-koral</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-445139098%2FMain%2F0"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div><span class="brief-comment"></span></div>
-        </div>
-      </div>
-<a data-name="-1384900270%2FMain%2F0" anchor-label="sketch-animated-heif" id="-1384900270%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
-        <div class="main-subrow ">
-          <div class="w-100"><span class="inline-flex">
-              <div><a href="sketch-animated-heif/index.html">sketch-animated-heif</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1384900270%2FMain%2F0"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div><span class="brief-comment"></span></div>
-        </div>
-      </div>
 <a data-name="-1704442160%2FMain%2F0" anchor-label="sketch-animated-webp" id="-1704442160%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-animated-webp/index.html">sketch-animated-webp</a></div>
@@ -117,7 +112,7 @@
         </div>
       </div>
 <a data-name="1982652247%2FMain%2F0" anchor-label="sketch-blurhash" id="1982652247%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-blurhash/index.html">sketch-blurhash</a></div>
@@ -128,7 +123,7 @@
         </div>
       </div>
 <a data-name="-150138876%2FMain%2F0" anchor-label="sketch-compose" id="-150138876%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-compose/index.html">sketch-compose</a></div>
@@ -139,7 +134,7 @@
         </div>
       </div>
 <a data-name="777700466%2FMain%2F0" anchor-label="sketch-compose-core" id="777700466%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-compose-core/index.html">sketch-compose-core</a></div>
@@ -150,7 +145,7 @@
         </div>
       </div>
 <a data-name="-2052833848%2FMain%2F0" anchor-label="sketch-compose-koin" id="-2052833848%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-compose-koin/index.html">sketch-compose-koin</a></div>
@@ -161,7 +156,7 @@
         </div>
       </div>
 <a data-name="-366944596%2FMain%2F0" anchor-label="sketch-compose-resources" id="-366944596%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-compose-resources/index.html">sketch-compose-resources</a></div>
@@ -172,7 +167,7 @@
         </div>
       </div>
 <a data-name="141549165%2FMain%2F0" anchor-label="sketch-core" id="141549165%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-core/index.html">sketch-core</a></div>
@@ -182,30 +177,8 @@
           <div><span class="brief-comment"></span></div>
         </div>
       </div>
-<a data-name="-1788328560%2FMain%2F0" anchor-label="sketch-extensions-apkicon" id="-1788328560%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
-        <div class="main-subrow ">
-          <div class="w-100"><span class="inline-flex">
-              <div><a href="sketch-extensions-apkicon/index.html">sketch-extensions-apkicon</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1788328560%2FMain%2F0"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div><span class="brief-comment"></span></div>
-        </div>
-      </div>
-<a data-name="-1731747925%2FMain%2F0" anchor-label="sketch-extensions-appicon" id="-1731747925%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
-        <div class="main-subrow ">
-          <div class="w-100"><span class="inline-flex">
-              <div><a href="sketch-extensions-appicon/index.html">sketch-extensions-appicon</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1731747925%2FMain%2F0"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div><span class="brief-comment"></span></div>
-        </div>
-      </div>
 <a data-name="-774552781%2FMain%2F0" anchor-label="sketch-extensions-compose" id="-774552781%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-extensions-compose/index.html">sketch-extensions-compose</a></div>
@@ -216,7 +189,7 @@
         </div>
       </div>
 <a data-name="-796777701%2FMain%2F0" anchor-label="sketch-extensions-compose-resources" id="-796777701%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-extensions-compose-resources/index.html">sketch-extensions-compose-resources</a></div>
@@ -227,7 +200,7 @@
         </div>
       </div>
 <a data-name="-1412623970%2FMain%2F0" anchor-label="sketch-extensions-core" id="-1412623970%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-extensions-core/index.html">sketch-extensions-core</a></div>
@@ -237,30 +210,8 @@
           <div><span class="brief-comment"></span></div>
         </div>
       </div>
-<a data-name="1342101848%2FMain%2F0" anchor-label="sketch-extensions-view" id="1342101848%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
-        <div class="main-subrow ">
-          <div class="w-100"><span class="inline-flex">
-              <div><a href="sketch-extensions-view/index.html">sketch-extensions-view</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1342101848%2FMain%2F0"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div><span class="brief-comment"></span></div>
-        </div>
-      </div>
-<a data-name="-793389248%2FMain%2F0" anchor-label="sketch-extensions-viewability" id="-793389248%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
-        <div class="main-subrow ">
-          <div class="w-100"><span class="inline-flex">
-              <div><a href="sketch-extensions-viewability/index.html">sketch-extensions-viewability</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-793389248%2FMain%2F0"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div><span class="brief-comment"></span></div>
-        </div>
-      </div>
 <a data-name="-2132006190%2FMain%2F0" anchor-label="sketch-http-core" id="-2132006190%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-http-core/index.html">sketch-http-core</a></div>
@@ -271,7 +222,7 @@
         </div>
       </div>
 <a data-name="22221674%2FMain%2F0" anchor-label="sketch-http-hurl" id="22221674%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-http-hurl/index.html">sketch-http-hurl</a></div>
@@ -282,7 +233,7 @@
         </div>
       </div>
 <a data-name="478766059%2FMain%2F0" anchor-label="sketch-http-ktor2-core" id="478766059%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-http-ktor2-core/index.html">sketch-http-ktor2-core</a></div>
@@ -293,7 +244,7 @@
         </div>
       </div>
 <a data-name="829565996%2FMain%2F0" anchor-label="sketch-http-ktor3-core" id="829565996%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-http-ktor3-core/index.html">sketch-http-ktor3-core</a></div>
@@ -304,7 +255,7 @@
         </div>
       </div>
 <a data-name="116437421%2FMain%2F0" anchor-label="sketch-http-okhttp" id="116437421%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-http-okhttp/index.html">sketch-http-okhttp</a></div>
@@ -315,7 +266,7 @@
         </div>
       </div>
 <a data-name="1605982147%2FMain%2F0" anchor-label="sketch-koin" id="1605982147%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-koin/index.html">sketch-koin</a></div>
@@ -326,7 +277,7 @@
         </div>
       </div>
 <a data-name="1637342827%2FMain%2F0" anchor-label="sketch-singleton" id="1637342827%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-singleton/index.html">sketch-singleton</a></div>
@@ -337,7 +288,7 @@
         </div>
       </div>
 <a data-name="395824626%2FMain%2F0" anchor-label="sketch-svg" id="395824626%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-svg/index.html">sketch-svg</a></div>
@@ -348,7 +299,7 @@
         </div>
       </div>
 <a data-name="-489432453%2FMain%2F0" anchor-label="sketch-video" id="-489432453%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-video/index.html">sketch-video</a></div>
@@ -359,7 +310,7 @@
         </div>
       </div>
 <a data-name="743631963%2FMain%2F0" anchor-label="sketch-video-core" id="743631963%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
+      <div class="table-row table-row_multimodule">
         <div class="main-subrow ">
           <div class="w-100"><span class="inline-flex">
               <div><a href="sketch-video-core/index.html">sketch-video-core</a></div>
@@ -369,60 +320,25 @@
           <div><span class="brief-comment"></span></div>
         </div>
       </div>
-<a data-name="1392919093%2FMain%2F0" anchor-label="sketch-video-ffmpeg" id="1392919093%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
-        <div class="main-subrow ">
-          <div class="w-100"><span class="inline-flex">
-              <div><a href="sketch-video-ffmpeg/index.html">sketch-video-ffmpeg</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1392919093%2FMain%2F0"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div><span class="brief-comment"></span></div>
-        </div>
-      </div>
-<a data-name="-1398692313%2FMain%2F0" anchor-label="sketch-view" id="-1398692313%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
-        <div class="main-subrow ">
-          <div class="w-100"><span class="inline-flex">
-              <div><a href="sketch-view/index.html">sketch-view</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1398692313%2FMain%2F0"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div><span class="brief-comment"></span></div>
-        </div>
-      </div>
-<a data-name="133008431%2FMain%2F0" anchor-label="sketch-view-core" id="133008431%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
-        <div class="main-subrow ">
-          <div class="w-100"><span class="inline-flex">
-              <div><a href="sketch-view-core/index.html">sketch-view-core</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="133008431%2FMain%2F0"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div><span class="brief-comment"></span></div>
-        </div>
-      </div>
-<a data-name="1597441413%2FMain%2F0" anchor-label="sketch-view-koin" id="1597441413%2FMain%2F0" data-filterable-set=""></a>
-      <div class="table-row">
-        <div class="main-subrow ">
-          <div class="w-100"><span class="inline-flex">
-              <div><a href="sketch-view-koin/index.html">sketch-view-koin</a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1597441413%2FMain%2F0"></span>
-                <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-              </span></span></div>
-          <div><span class="brief-comment"></span></div>
-        </div>
-      </div>
     </div>
   </div>
 </div>
-      <div class="footer">
-        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2026 Copyright</span><span
-                class="pull-right"><span>Generated by </span><a
-                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
-      </div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>© 2026 Copyright</div>
+                </div>
             </div>
         </div>
     </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
