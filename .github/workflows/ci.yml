@@ -341,17 +341,12 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/') # Only run on tag push
         with:
           body: |
-            #            Please check the [CHANGELOG.md](https://github.com/panpf/sketch/blob/main/CHANGELOG.md) file for updated log.
-            #
-            #            Android, iOS, desktop and web packages, see the Assets attachment.
-            #
-            #            Web example：https://panpf.github.io/sketch/app.
             Please check the [CHANGELOG.md](https://github.com/panpf/sketch/blob/main/CHANGELOG.md) file for updated log.
-                  
-                  Android, desktop and web packages, see the Assets attachment.
+            
+            Android, desktop and web packages, see the Assets attachment.
             
             Web example：https://panpf.github.io/sketch/app.
-                  
-                  ios example please download the source code and build it yourself.
+            
+            ios example please download the source code and build it yourself.
           files: ./downloaded/*
           make_latest: true
