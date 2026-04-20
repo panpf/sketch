@@ -7,6 +7,13 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
+# new
+
+## Android
+
+* fix: 修复 Android 平台没有在清单文件中注册 ACCESS_NETWORK_STATE 权限时崩溃的
+  bug。[#281](https://github.com/panpf/sketch/issues/281)
+
 # 4.5.0-alpha01
 
 ## Multiplatform

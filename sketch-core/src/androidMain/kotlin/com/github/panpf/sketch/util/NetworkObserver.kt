@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
@@ -23,20 +24,13 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
-import androidx.annotation.RequiresApi
 
 /**
  * Network observer, used to monitor network changes
  *
  * @see com.github.panpf.sketch.core.android.test.util.NetworkObserverTest
  */
-fun NetworkObserver(context: Context): NetworkObserver =
-    if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-        NetworkObserver21(context)
-    } else {
-        NetworkObserver1(context)
-    }
-
+fun NetworkObserver(context: Context): NetworkObserver = NetworkObserver21(context)
 
 interface NetworkObserver {
     val isCellularNetworkConnected: Boolean
@@ -45,7 +39,7 @@ interface NetworkObserver {
     fun shutdown()
 }
 
-@RequiresApi(VERSION_CODES.LOLLIPOP)
+@SuppressLint("MissingPermission")
 class NetworkObserver21(context: Context) : NetworkObserver {
 
     private val connectivityManager =
@@ -64,10 +58,14 @@ class NetworkObserver21(context: Context) : NetworkObserver {
         get() = _isCellularNetworkConnected
 
     init {
-        val request = NetworkRequest.Builder()
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .build()
-        connectivityManager?.registerNetworkCallback(request, networkCallback)
+        if (VERSION.SDK_INT < VERSION_CODES.M
+            || context.checkSelfPermission(android.Manifest.permission.ACCESS_NETWORK_STATE) != android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) {
+            val request = NetworkRequest.Builder()
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .build()
+            connectivityManager?.registerNetworkCallback(request, networkCallback)
+        }
 
         _isCellularNetworkConnected =
             connectivityManager?.activeNetworkCompat()?.isCellularNetworkConnected() == true
@@ -95,35 +93,5 @@ class NetworkObserver21(context: Context) : NetworkObserver {
         return networkCapabilities != null
                 && networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 && networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-    }
-}
-
-@Suppress("DEPRECATION")
-class NetworkObserver1(context: Context) : NetworkObserver {
-
-    private val connectivityManager =
-        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
-
-    override val isCellularNetworkConnected: Boolean
-        get() {
-            val networkInfo = connectivityManager?.activeNetworkInfo
-            return if (networkInfo != null && networkInfo.isConnected) {
-                val type = networkInfo.type
-                type == ConnectivityManager.TYPE_MOBILE
-                        || type == ConnectivityManager.TYPE_MOBILE_DUN
-                        || type == ConnectivityManager.TYPE_MOBILE_HIPRI
-                        || type == ConnectivityManager.TYPE_MOBILE_MMS
-                        || type == ConnectivityManager.TYPE_MOBILE_SUPL
-                        || type == 10
-                        || type == 11
-                        || type == 12
-                        || type == 14
-                        || type == 15
-            } else {
-                false
-            }
-        }
-
-    override fun shutdown() {
     }
 }

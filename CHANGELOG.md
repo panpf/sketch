@@ -9,6 +9,14 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
+# new
+
+## Android
+
+* fix: Fixed a bug that caused the Android platform to crash when the ACCESS_NETWORK_STATE
+  permission was not registered in the manifest
+  file. [#281](https://github.com/panpf/sketch/issues/281)
+
 # 4.5.0-alpha01
 
 ## Multiplatform
