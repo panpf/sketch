@@ -49,6 +49,32 @@ import kotlin.test.assertNull
 class TransformationInterceptorTest {
 
     @Test
+    fun testConstructor() {
+        TransformationInterceptor()
+    }
+
+    @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 75,
+            actual = TransformationInterceptor.SORT_WEIGHT
+        )
+    }
+
+    @Test
+    fun testSortWeight() {
+        assertEquals(
+            expected = 75,
+            actual = TransformationInterceptor().sortWeight
+        )
+    }
+
+    @Test
+    fun testKey() {
+        assertNull(actual = TransformationInterceptor().key)
+    }
+
+    @Test
     fun testIntercept() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val interceptors = listOf(
@@ -207,18 +233,6 @@ class TransformationInterceptorTest {
             )
             assertNull(actual = transformeds)
         }
-    }
-
-    @Test
-    fun testSortWeight() {
-        assertEquals(
-            expected = 75,
-            actual = TransformationInterceptor().sortWeight
-        )
-        assertEquals(
-            expected = 75,
-            actual = TransformationInterceptor.SORT_WEIGHT
-        )
     }
 
     @Test

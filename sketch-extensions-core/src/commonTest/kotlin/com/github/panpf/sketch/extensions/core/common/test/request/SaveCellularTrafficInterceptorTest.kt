@@ -46,6 +46,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class SaveCellularTrafficInterceptorTest {
@@ -89,6 +90,32 @@ class SaveCellularTrafficInterceptorTest {
                 actual = toString()
             )
         }
+    }
+
+    @Test
+    fun testConstructor() {
+        SaveCellularTrafficInterceptor()
+    }
+
+    @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 0,
+            actual = SaveCellularTrafficInterceptor.SORT_WEIGHT
+        )
+    }
+
+    @Test
+    fun testSortWeight() {
+        assertEquals(
+            expected = 0,
+            actual = SaveCellularTrafficInterceptor().sortWeight
+        )
+    }
+
+    @Test
+    fun testKey() {
+        assertNull(actual = SaveCellularTrafficInterceptor().key)
     }
 
     @Test
@@ -292,18 +319,6 @@ class SaveCellularTrafficInterceptorTest {
             assertEquals(NETWORK, chain1.finalRequest.depthHolder.depth)
             assertFalse(chain1.finalRequest.isDepthFromSaveCellularTraffic)
         }
-    }
-
-    @Test
-    fun testSortWeight() {
-        assertEquals(
-            expected = 0,
-            actual = SaveCellularTrafficInterceptor().sortWeight
-        )
-        assertEquals(
-            expected = 0,
-            actual = SaveCellularTrafficInterceptor.SORT_WEIGHT
-        )
     }
 
     @Test

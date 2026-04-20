@@ -58,6 +58,32 @@ import kotlin.test.assertTrue
 class ResultCacheInterceptorTest {
 
     @Test
+    fun testConstructor() {
+        ResultCacheInterceptor()
+    }
+
+    @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 45,
+            actual = ResultCacheInterceptor.SORT_WEIGHT
+        )
+    }
+
+    @Test
+    fun testSortWeight() {
+        assertEquals(
+            expected = 45,
+            actual = ResultCacheInterceptor().sortWeight
+        )
+    }
+
+    @Test
+    fun testKey() {
+        assertNull(actual = ResultCacheInterceptor().key)
+    }
+
+    @Test
     fun testIntercept() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val resultCache = sketch.resultCache
@@ -315,18 +341,6 @@ class ResultCacheInterceptorTest {
         assertEquals(expected = element1.hashCode(), actual = element11.hashCode())
         assertEquals(expected = element1.hashCode(), actual = element2.hashCode())
         assertEquals(expected = element2.hashCode(), actual = element11.hashCode())
-    }
-
-    @Test
-    fun testSortWeight() {
-        assertEquals(
-            expected = 45,
-            actual = ResultCacheInterceptor().sortWeight
-        )
-        assertEquals(
-            expected = 45,
-            actual = ResultCacheInterceptor.SORT_WEIGHT
-        )
     }
 
     @Test

@@ -22,6 +22,32 @@ import kotlin.test.assertTrue
 class FetcherInterceptorTest {
 
     @Test
+    fun testConstructor() {
+        FetcherInterceptor()
+    }
+
+    @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 90,
+            actual = FetcherInterceptor.SORT_WEIGHT
+        )
+    }
+
+    @Test
+    fun testSortWeight() {
+        assertEquals(
+            expected = 90,
+            actual = FetcherInterceptor().sortWeight
+        )
+    }
+
+    @Test
+    fun testKey() {
+        assertNull(actual = FetcherInterceptor().key)
+    }
+
+    @Test
     fun testIntercept() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri)
@@ -60,18 +86,6 @@ class FetcherInterceptorTest {
             assertTrue(result.isSuccess)
             assertNotNull(requestContext.fetchResult)
         }
-    }
-
-    @Test
-    fun testSortWeight() {
-        assertEquals(
-            expected = 90,
-            actual = FetcherInterceptor().sortWeight
-        )
-        assertEquals(
-            expected = 90,
-            actual = FetcherInterceptor.SORT_WEIGHT
-        )
     }
 
     @Test

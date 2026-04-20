@@ -7,7 +7,6 @@ import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.decode.ImageDecoderAnimatedWebpDecoder
-import com.github.panpf.sketch.decode.ImageDecoderAnimatedWebpDecoder.Factory
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.supportImageDecoderAnimatedWebp
@@ -102,7 +101,7 @@ class ImageDecoderAnimatedWebpDecoderTest {
         if (VERSION.SDK_INT < VERSION_CODES.P) return@runTest
 
         val (context, sketch) = getTestContextAndSketch()
-        val factory = Factory()
+        val factory = ImageDecoderAnimatedWebpDecoder.Factory()
 
         ImageRequest(context, ComposeResImageFiles.animWebp.uri)
             .createDecoderOrDefault(sketch, factory)
@@ -119,7 +118,7 @@ class ImageDecoderAnimatedWebpDecoderTest {
         if (VERSION.SDK_INT < VERSION_CODES.P) return@runTest
 
         val (context, sketch) = getTestContextAndSketch()
-        val factory = Factory()
+        val factory = ImageDecoderAnimatedWebpDecoder.Factory()
 
         ImageRequest(context, ComposeResImageFiles.animWebp.uri) {
             colorSpace(SRGB)
@@ -185,14 +184,14 @@ class ImageDecoderAnimatedWebpDecoderTest {
 
     @Test
     fun testFactoryConstructor() {
-        Factory()
+        ImageDecoderAnimatedWebpDecoder.Factory()
     }
 
     @Test
     fun testFactoryKey() {
         assertEquals(
             expected = "ImageDecoderAnimatedWebpDecoder",
-            actual = Factory().key
+            actual = ImageDecoderAnimatedWebpDecoder.Factory().key
         )
     }
 
@@ -201,7 +200,7 @@ class ImageDecoderAnimatedWebpDecoderTest {
         if (VERSION.SDK_INT < VERSION_CODES.P) return@runTest
 
         val (context, sketch) = getTestContextAndSketch()
-        val factory = Factory()
+        val factory = ImageDecoderAnimatedWebpDecoder.Factory()
 
         // normal
         ImageRequest(context, ComposeResImageFiles.animWebp.uri)
@@ -261,8 +260,8 @@ class ImageDecoderAnimatedWebpDecoderTest {
 
     @Test
     fun testFactoryEqualsAndHashCode() {
-        val element1 = Factory()
-        val element11 = Factory()
+        val element1 = ImageDecoderAnimatedWebpDecoder.Factory()
+        val element11 = ImageDecoderAnimatedWebpDecoder.Factory()
 
         assertEquals(expected = element1, actual = element11)
         assertNotEquals(illegal = element1, actual = null as Any?)
@@ -275,7 +274,7 @@ class ImageDecoderAnimatedWebpDecoderTest {
     fun testFactoryToString() = runTest {
         assertEquals(
             expected = "ImageDecoderAnimatedWebpDecoder",
-            actual = Factory().toString()
+            actual = ImageDecoderAnimatedWebpDecoder.Factory().toString()
         )
     }
 }

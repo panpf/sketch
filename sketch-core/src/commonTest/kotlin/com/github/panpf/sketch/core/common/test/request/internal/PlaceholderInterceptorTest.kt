@@ -26,6 +26,32 @@ import kotlin.test.assertTrue
 class PlaceholderInterceptorTest {
 
     @Test
+    fun testConstructor() {
+        PlaceholderInterceptor()
+    }
+
+    @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 30,
+            actual = PlaceholderInterceptor.SORT_WEIGHT
+        )
+    }
+
+    @Test
+    fun testSortWeight() {
+        assertEquals(
+            expected = 30,
+            actual = PlaceholderInterceptor().sortWeight
+        )
+    }
+
+    @Test
+    fun testKey() {
+        assertNull(actual = PlaceholderInterceptor().key)
+    }
+
+    @Test
     fun testIntercept() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
@@ -90,18 +116,6 @@ class PlaceholderInterceptorTest {
         assertEquals(expected = element1.hashCode(), actual = element11.hashCode())
         assertEquals(expected = element1.hashCode(), actual = element2.hashCode())
         assertEquals(expected = element2.hashCode(), actual = element11.hashCode())
-    }
-
-    @Test
-    fun testSortWeight() {
-        assertEquals(
-            expected = 30,
-            actual = PlaceholderInterceptor().sortWeight
-        )
-        assertEquals(
-            expected = 30,
-            actual = PlaceholderInterceptor.SORT_WEIGHT
-        )
     }
 
     @Test

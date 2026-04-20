@@ -83,7 +83,7 @@ class PaintersTest {
             )
         }
 
-        // Files in kotlin resources cannot be accessed in ios test environment.
+        // [Test not completed] Because the test environment cannot access the kotlin resource files, the test cannot be completed.
         if (Platform.current != Platform.iOS) {
             runComposeUiTest {
                 setContent {
@@ -144,7 +144,7 @@ class PaintersTest {
             actual = colorPainter.toLogString()
         )
 
-        // Files in kotlin resources cannot be accessed in ios test environment.
+        // [Test not completed] Because the test environment cannot access the kotlin resource files, the test cannot be completed.
         if (Platform.current != Platform.iOS) {
             runComposeUiTest {
                 setContent {

@@ -47,6 +47,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class PauseLoadWhenScrollingInterceptorTest {
@@ -90,6 +91,32 @@ class PauseLoadWhenScrollingInterceptorTest {
                 actual = toString()
             )
         }
+    }
+
+    @Test
+    fun testConstructor() {
+        PauseLoadWhenScrollingInterceptor()
+    }
+
+    @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = ResultCacheInterceptor.SORT_WEIGHT - 1,
+            actual = PauseLoadWhenScrollingInterceptor.SORT_WEIGHT
+        )
+    }
+
+    @Test
+    fun testSortWeight() {
+        assertEquals(
+            expected = ResultCacheInterceptor.SORT_WEIGHT - 1,
+            actual = PauseLoadWhenScrollingInterceptor().sortWeight
+        )
+    }
+
+    @Test
+    fun testKey() {
+        assertNull(actual = PauseLoadWhenScrollingInterceptor().key)
     }
 
     @Test
@@ -159,18 +186,6 @@ class PauseLoadWhenScrollingInterceptorTest {
         } finally {
             PauseLoadWhenScrollingInterceptor.scrolling = false
         }
-    }
-
-    @Test
-    fun testSortWeight() {
-        assertEquals(
-            expected = ResultCacheInterceptor.SORT_WEIGHT - 1,
-            actual = PauseLoadWhenScrollingInterceptor().sortWeight
-        )
-        assertEquals(
-            expected = ResultCacheInterceptor.SORT_WEIGHT - 1,
-            actual = PauseLoadWhenScrollingInterceptor.SORT_WEIGHT
-        )
     }
 
     @Test

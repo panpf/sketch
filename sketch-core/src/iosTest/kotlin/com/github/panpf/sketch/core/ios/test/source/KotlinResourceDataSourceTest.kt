@@ -47,8 +47,7 @@ class KotlinResourceDataSourceTest {
 
     @Test
     fun testOpenSource() {
-        // TODO test: Files in kotlin resources cannot be accessed in ios test environment.
-        //      There are other places where this problem also occurs, search for it
+        // [Test not completed] Because the test environment cannot access the kotlin resource files, the test cannot be completed.
         assertFailsWith(FileNotFoundException::class) {
             KotlinResourceDataSource(ComposeResImageFiles.jpeg.name)
                 .openSource().buffer()

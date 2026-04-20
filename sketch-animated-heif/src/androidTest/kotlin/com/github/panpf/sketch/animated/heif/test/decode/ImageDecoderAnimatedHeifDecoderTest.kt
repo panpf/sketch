@@ -7,7 +7,6 @@ import android.os.Build.VERSION_CODES
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.decode.ImageDecoderAnimatedHeifDecoder
-import com.github.panpf.sketch.decode.ImageDecoderAnimatedHeifDecoder.Factory
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.supportAnimatedHeif
@@ -102,7 +101,7 @@ class ImageDecoderAnimatedHeifDecoderTest {
         if (VERSION.SDK_INT < VERSION_CODES.R) return@runTest
 
         val (context, sketch) = getTestContextAndSketch()
-        val factory = Factory()
+        val factory = ImageDecoderAnimatedHeifDecoder.Factory()
 
         ImageRequest(context, ComposeResImageFiles.animHeif.uri)
             .createDecoderOrDefault(sketch, factory)
@@ -119,7 +118,7 @@ class ImageDecoderAnimatedHeifDecoderTest {
         if (VERSION.SDK_INT < VERSION_CODES.R || VERSION.SDK_INT == VERSION_CODES.TIRAMISU) return@runTest
 
         val (context, sketch) = getTestContextAndSketch()
-        val factory = Factory()
+        val factory = ImageDecoderAnimatedHeifDecoder.Factory()
 
         ImageRequest(context, ComposeResImageFiles.animHeif.uri) {
             colorSpace(SRGB)
@@ -185,14 +184,14 @@ class ImageDecoderAnimatedHeifDecoderTest {
 
     @Test
     fun testFactoryConstructor() {
-        Factory()
+        ImageDecoderAnimatedHeifDecoder.Factory()
     }
 
     @Test
     fun testFactoryKey() {
         assertEquals(
             expected = "ImageDecoderAnimatedHeifDecoder",
-            actual = Factory().key
+            actual = ImageDecoderAnimatedHeifDecoder.Factory().key
         )
     }
 
@@ -201,7 +200,7 @@ class ImageDecoderAnimatedHeifDecoderTest {
         if (VERSION.SDK_INT < VERSION_CODES.R) return@runTest
 
         val (context, sketch) = getTestContextAndSketch()
-        val factory = Factory()
+        val factory = ImageDecoderAnimatedHeifDecoder.Factory()
 
         // normal
         ImageRequest(context, ComposeResImageFiles.animHeif.uri)
@@ -261,8 +260,8 @@ class ImageDecoderAnimatedHeifDecoderTest {
 
     @Test
     fun testFactoryEqualsAndHashCode() {
-        val element1 = Factory()
-        val element11 = Factory()
+        val element1 = ImageDecoderAnimatedHeifDecoder.Factory()
+        val element11 = ImageDecoderAnimatedHeifDecoder.Factory()
 
         assertEquals(expected = element1, actual = element11)
         assertNotEquals(illegal = element1, actual = null as Any?)
@@ -275,7 +274,7 @@ class ImageDecoderAnimatedHeifDecoderTest {
     fun testFactoryToString() = runTest {
         assertEquals(
             expected = "ImageDecoderAnimatedHeifDecoder",
-            actual = Factory().toString()
+            actual = ImageDecoderAnimatedHeifDecoder.Factory().toString()
         )
     }
 }

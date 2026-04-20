@@ -9,7 +9,6 @@ import com.github.panpf.sketch.BitmapImage
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.DrawableImage
 import com.github.panpf.sketch.decode.ImageDecoderGifDecoder
-import com.github.panpf.sketch.decode.ImageDecoderGifDecoder.Factory
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.supportImageDecoderGif
@@ -102,7 +101,7 @@ class ImageDecoderGifDecoderTest {
         if (VERSION.SDK_INT < VERSION_CODES.P) return@runTest
 
         val (context, sketch) = getTestContextAndSketch()
-        val factory = Factory()
+        val factory = ImageDecoderGifDecoder.Factory()
 
         ImageRequest(context, ComposeResImageFiles.animGif.uri)
             .createDecoderOrDefault(sketch, factory)
@@ -119,7 +118,7 @@ class ImageDecoderGifDecoderTest {
         if (VERSION.SDK_INT < VERSION_CODES.P) return@runTest
 
         val (context, sketch) = getTestContextAndSketch()
-        val factory = Factory()
+        val factory = ImageDecoderGifDecoder.Factory()
 
         ImageRequest(context, ComposeResImageFiles.animGif.uri) {
             colorSpace(SRGB)
@@ -196,14 +195,14 @@ class ImageDecoderGifDecoderTest {
 
     @Test
     fun testFactoryConstructor() {
-        Factory()
+        ImageDecoderGifDecoder.Factory()
     }
 
     @Test
     fun testFactoryKey() {
         assertEquals(
             expected = "ImageDecoderGifDecoder",
-            actual = Factory().key
+            actual = ImageDecoderGifDecoder.Factory().key
         )
     }
 
@@ -212,7 +211,7 @@ class ImageDecoderGifDecoderTest {
         if (VERSION.SDK_INT < VERSION_CODES.P) return@runTest
 
         val (context, sketch) = getTestContextAndSketch()
-        val factory = Factory()
+        val factory = ImageDecoderGifDecoder.Factory()
 
         // normal
         ImageRequest(context, ComposeResImageFiles.animGif.uri)
@@ -266,8 +265,8 @@ class ImageDecoderGifDecoderTest {
 
     @Test
     fun testFactoryEqualsAndHashCode() {
-        val element1 = Factory()
-        val element11 = Factory()
+        val element1 = ImageDecoderGifDecoder.Factory()
+        val element11 = ImageDecoderGifDecoder.Factory()
 
         assertEquals(expected = element1, actual = element11)
         assertNotEquals(illegal = element1, actual = null as Any?)
@@ -280,7 +279,7 @@ class ImageDecoderGifDecoderTest {
     fun testFactoryToString() = runTest {
         assertEquals(
             expected = "ImageDecoderGifDecoder",
-            actual = Factory().toString()
+            actual = ImageDecoderGifDecoder.Factory().toString()
         )
     }
 }

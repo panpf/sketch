@@ -4,7 +4,6 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.SkiaAnimatedImage
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.SkiaGifDecoder
-import com.github.panpf.sketch.decode.SkiaGifDecoder.Factory
 import com.github.panpf.sketch.decode.supportSkiaGif
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
@@ -93,7 +92,7 @@ class SkiaGifDecoderTest {
     @Test
     fun testImageInfo() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val factory = Factory()
+        val factory = SkiaGifDecoder.Factory()
 
         ImageRequest(context, ComposeResImageFiles.animGif.uri)
             .createDecoderOrDefault(sketch, factory)
@@ -108,7 +107,7 @@ class SkiaGifDecoderTest {
     @Test
     fun testDecode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val factory = Factory()
+        val factory = SkiaGifDecoder.Factory()
 
         ImageRequest(context, ComposeResImageFiles.animGif.uri) {
             colorSpace(ColorSpace.sRGB)
@@ -190,21 +189,21 @@ class SkiaGifDecoderTest {
 
     @Test
     fun testFactoryConstructor() {
-        Factory()
+        SkiaGifDecoder.Factory()
     }
 
     @Test
     fun testFactoryKey() {
         assertEquals(
             expected = "SkiaGifDecoder",
-            actual = Factory().key
+            actual = SkiaGifDecoder.Factory().key
         )
     }
 
     @Test
     fun testFactoryCreate() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val factory = Factory()
+        val factory = SkiaGifDecoder.Factory()
 
         // normal
         ImageRequest(context, ComposeResImageFiles.animGif.uri)
@@ -258,8 +257,8 @@ class SkiaGifDecoderTest {
 
     @Test
     fun testFactoryEqualsAndHashCode() {
-        val element1 = Factory()
-        val element11 = Factory()
+        val element1 = SkiaGifDecoder.Factory()
+        val element11 = SkiaGifDecoder.Factory()
 
         assertEquals(expected = element1, actual = element11)
         assertNotEquals(illegal = element1, actual = null as Any?)
@@ -272,7 +271,7 @@ class SkiaGifDecoderTest {
     fun testFactoryToString() = runTest {
         assertEquals(
             expected = "SkiaGifDecoder",
-            actual = Factory().toString()
+            actual = SkiaGifDecoder.Factory().toString()
         )
     }
 

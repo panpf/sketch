@@ -32,6 +32,32 @@ import kotlin.test.assertTrue
 class ThumbnailInterceptorTest {
 
     @Test
+    fun testConstructor() {
+        ThumbnailInterceptor()
+    }
+
+    @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 60,
+            actual = ThumbnailInterceptor.SORT_WEIGHT
+        )
+    }
+
+    @Test
+    fun testSortWeight() {
+        assertEquals(
+            expected = 60,
+            actual = ThumbnailInterceptor().sortWeight
+        )
+    }
+
+    @Test
+    fun testKey() {
+        assertNull(actual = ThumbnailInterceptor().key)
+    }
+
+    @Test
     fun testIntercept() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
@@ -305,18 +331,6 @@ class ThumbnailInterceptorTest {
         assertEquals(expected = element1.hashCode(), actual = element11.hashCode())
         assertEquals(expected = element1.hashCode(), actual = element2.hashCode())
         assertEquals(expected = element2.hashCode(), actual = element11.hashCode())
-    }
-
-    @Test
-    fun testSortWeight() {
-        assertEquals(
-            expected = 60,
-            actual = ThumbnailInterceptor().sortWeight
-        )
-        assertEquals(
-            expected = 60,
-            actual = ThumbnailInterceptor.SORT_WEIGHT
-        )
     }
 
     @Test

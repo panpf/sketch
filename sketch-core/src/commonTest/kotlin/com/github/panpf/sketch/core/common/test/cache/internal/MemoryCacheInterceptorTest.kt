@@ -57,6 +57,32 @@ import kotlin.test.assertNull
 class MemoryCacheInterceptorTest {
 
     @Test
+    fun testConstructor() {
+        MemoryCacheInterceptor()
+    }
+
+    @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 15,
+            actual = MemoryCacheInterceptor.SORT_WEIGHT
+        )
+    }
+
+    @Test
+    fun testSortWeight() {
+        assertEquals(
+            expected = 15,
+            actual = MemoryCacheInterceptor().sortWeight
+        )
+    }
+
+    @Test
+    fun testKey() {
+        assertNull(actual = MemoryCacheInterceptor().key)
+    }
+
+    @Test
     fun testIntercept() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val memoryCache = sketch.memoryCache
@@ -303,18 +329,6 @@ class MemoryCacheInterceptorTest {
         assertEquals(expected = element1.hashCode(), actual = element11.hashCode())
         assertEquals(expected = element1.hashCode(), actual = element2.hashCode())
         assertEquals(expected = element2.hashCode(), actual = element11.hashCode())
-    }
-
-    @Test
-    fun testSortWeight() {
-        assertEquals(
-            expected = 15,
-            actual = MemoryCacheInterceptor().sortWeight
-        )
-        assertEquals(
-            expected = 15,
-            actual = MemoryCacheInterceptor.SORT_WEIGHT
-        )
     }
 
     @Test

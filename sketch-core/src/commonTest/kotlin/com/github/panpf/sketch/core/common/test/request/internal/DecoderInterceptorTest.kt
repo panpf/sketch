@@ -34,8 +34,35 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNull
 
 class DecoderInterceptorTest {
+
+    @Test
+    fun testConstructor() {
+        DecoderInterceptor()
+    }
+
+    @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 100,
+            actual = DecoderInterceptor.SORT_WEIGHT
+        )
+    }
+
+    @Test
+    fun testSortWeight() {
+        assertEquals(
+            expected = 100,
+            actual = DecoderInterceptor().sortWeight
+        )
+    }
+
+    @Test
+    fun testKey() {
+        assertNull(actual = DecoderInterceptor().key)
+    }
 
     @Test
     fun testIntercept() = runTest {
@@ -89,18 +116,6 @@ class DecoderInterceptorTest {
                 executeRequest(ImageRequest(context, ComposeResImageFiles.jpeg.uri))
             }
         }
-    }
-
-    @Test
-    fun testSortWeight() {
-        assertEquals(
-            expected = 100,
-            actual = DecoderInterceptor().sortWeight
-        )
-        assertEquals(
-            expected = 100,
-            actual = DecoderInterceptor.SORT_WEIGHT
-        )
     }
 
     @Test

@@ -63,19 +63,19 @@ class KotlinResourceUriFetcherTest {
     }
 
     @Test
-    fun testFactoryConstructor() {
+    fun testCompanion() {
+        assertEquals("file", KotlinResourceUriFetcher.SCHEME)
+        assertEquals("kotlin_resource", KotlinResourceUriFetcher.PATH_ROOT)
+    }
+
+    @Test
+    fun testConstructor() {
         KotlinResourceUriFetcher("sample.jpeg").apply {
             assertEquals("sample.jpeg", resourcePath)
         }
         KotlinResourceUriFetcher("sample.png").apply {
             assertEquals("sample.png", resourcePath)
         }
-    }
-
-    @Test
-    fun testCompanion() {
-        assertEquals("file", KotlinResourceUriFetcher.SCHEME)
-        assertEquals("kotlin_resource", KotlinResourceUriFetcher.PATH_ROOT)
     }
 
     @Test
@@ -126,6 +126,11 @@ class KotlinResourceUriFetcherTest {
             expected = "KotlinResourceUriFetcher('sample.png')",
             actual = KotlinResourceUriFetcher("sample.png").toString()
         )
+    }
+
+    @Test
+    fun testFactoryConstructor() {
+        KotlinResourceUriFetcher.Factory()
     }
 
     @Test

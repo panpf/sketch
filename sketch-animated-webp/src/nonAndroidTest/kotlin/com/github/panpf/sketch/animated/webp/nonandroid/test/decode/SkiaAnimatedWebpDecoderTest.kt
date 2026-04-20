@@ -4,7 +4,6 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.SkiaAnimatedImage
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.SkiaAnimatedWebpDecoder
-import com.github.panpf.sketch.decode.SkiaAnimatedWebpDecoder.Factory
 import com.github.panpf.sketch.decode.supportSkiaAnimatedWebp
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
@@ -93,7 +92,7 @@ class SkiaAnimatedWebpDecoderTest {
     @Test
     fun testImageInfo() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val factory = Factory()
+        val factory = SkiaAnimatedWebpDecoder.Factory()
 
         ImageRequest(context, ComposeResImageFiles.animWebp.uri)
             .createDecoderOrDefault(sketch, factory)
@@ -108,7 +107,7 @@ class SkiaAnimatedWebpDecoderTest {
     @Test
     fun testDecode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val factory = Factory()
+        val factory = SkiaAnimatedWebpDecoder.Factory()
 
         ImageRequest(context, ComposeResImageFiles.animWebp.uri) {
             colorSpace(ColorSpace.sRGB)
@@ -190,21 +189,21 @@ class SkiaAnimatedWebpDecoderTest {
 
     @Test
     fun testFactoryConstructor() {
-        Factory()
+        SkiaAnimatedWebpDecoder.Factory()
     }
 
     @Test
     fun testFactoryKey() {
         assertEquals(
             expected = "SkiaAnimatedWebpDecoder",
-            actual = Factory().key
+            actual = SkiaAnimatedWebpDecoder.Factory().key
         )
     }
 
     @Test
     fun testFactoryCreate() = runTest {
         val (context, sketch) = getTestContextAndSketch()
-        val factory = Factory()
+        val factory = SkiaAnimatedWebpDecoder.Factory()
 
         // normal
         ImageRequest(context, ComposeResImageFiles.animWebp.uri).createDecoderOrNull(
@@ -262,8 +261,8 @@ class SkiaAnimatedWebpDecoderTest {
 
     @Test
     fun testFactoryEqualsAndHashCode() {
-        val element1 = Factory()
-        val element11 = Factory()
+        val element1 = SkiaAnimatedWebpDecoder.Factory()
+        val element11 = SkiaAnimatedWebpDecoder.Factory()
 
         assertEquals(expected = element1, actual = element11)
         assertNotEquals(illegal = element1, actual = null as Any?)
@@ -276,7 +275,7 @@ class SkiaAnimatedWebpDecoderTest {
     fun testFactoryToString() = runTest {
         assertEquals(
             expected = "SkiaAnimatedWebpDecoder",
-            actual = Factory().toString()
+            actual = SkiaAnimatedWebpDecoder.Factory().toString()
         )
     }
 
