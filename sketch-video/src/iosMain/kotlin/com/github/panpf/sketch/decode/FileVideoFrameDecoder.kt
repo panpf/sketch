@@ -78,7 +78,7 @@ class FileVideoFrameDecoder(
         override fun create(
             requestContext: RequestContext,
             fetchResult: FetchResult,
-        ): Decoder? {
+        ): FileVideoFrameDecoder? {
             val dataSource = fetchResult.dataSource
             if (dataSource !is FileDataSource) return null
             val mimeType = fetchResult.mimeType ?: return null

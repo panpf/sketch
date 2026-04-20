@@ -71,22 +71,30 @@ class UseSkiaInterceptor : Interceptor {
             val mimeType = fetchResult.mimeType
             val useSkiaForImagePhotosAsset = request.isUseSkiaForImagePhotosAsset
             if (shouldUseSkia(mimeType, useSkiaForImagePhotosAsset)) {
-                // Currently, both SkiaDecoder and SkiaAnimatedDecoder need to load all the image data into memory before decoding.
-                // So it makes no sense to cache the original image data locally and then read it again.
-                // If SkiaDecoder and SkiaAnimatedDecoder support streaming decoding later,
-                // By default, locally cached files can be used first for decoding to avoid taking up too much memory.
-                val preferredFileCacheForImagePhotosAsset =
-                    request.isPreferredFileCacheForImagePhotosAsset
-                val newDataSource = withContext(sketch.decodeTaskDispatcher) {
-                    if (preferredFileCacheForImagePhotosAsset) {
-                        val cachePolicy = request.downloadCachePolicy
-                        val (cachePath, dataFrom) = getCacheFile(sketch, dataSource, cachePolicy)
-                        val fileSystem = sketch.downloadCache.fileSystem
-                        FileDataSource(cachePath, fileSystem, dataFrom)
-                    } else {
-                        val bytes = getBytes(dataSource)
-                        ByteArrayDataSource(data = bytes, dataFrom = DataFrom.LOCAL)
+                val result = withContext(sketch.decodeTaskDispatcher) {
+                    runCatching {
+                        // Currently, both SkiaDecoder and SkiaAnimatedDecoder need to load all the image data into memory before decoding.
+                        // So it makes no sense to cache the original image data locally and then read it again.
+                        // If SkiaDecoder and SkiaAnimatedDecoder support streaming decoding later,
+                        // By default, locally cached files can be used first for decoding to avoid taking up too much memory.
+                        val preferredFileCacheForImagePhotosAsset =
+                            request.isPreferredFileCacheForImagePhotosAsset
+                        if (preferredFileCacheForImagePhotosAsset) {
+                            val cachePolicy = request.downloadCachePolicy
+                            val (cachePath, dataFrom) =
+                                getCacheFile(sketch, dataSource, cachePolicy)
+                            val fileSystem = sketch.downloadCache.fileSystem
+                            FileDataSource(cachePath, fileSystem, dataFrom)
+                        } else {
+                            val bytes = getBytes(dataSource)
+                            ByteArrayDataSource(data = bytes, dataFrom = DataFrom.LOCAL)
+                        }
                     }
+                }
+                val newDataSource = if (result.isSuccess) {
+                    result.getOrThrow()
+                } else {
+                    return Result.failure(result.exceptionOrNull()!!)
                 }
                 val newFetchResult = FetchResult(newDataSource, mimeType)
                 requestContext.fetchResult = newFetchResult

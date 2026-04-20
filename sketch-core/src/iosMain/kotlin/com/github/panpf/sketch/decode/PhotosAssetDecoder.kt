@@ -50,7 +50,10 @@ class PhotosAssetDecoder(
 
         override val key: String = "PhotosAssetDecoder"
 
-        override fun create(requestContext: RequestContext, fetchResult: FetchResult): Decoder? {
+        override fun create(
+            requestContext: RequestContext,
+            fetchResult: FetchResult
+        ): PhotosAssetDecoder? {
             val dataSource = fetchResult.dataSource
             if (dataSource !is PhotosAssetDataSource) return null
             val mimeType = fetchResult.mimeType ?: return null

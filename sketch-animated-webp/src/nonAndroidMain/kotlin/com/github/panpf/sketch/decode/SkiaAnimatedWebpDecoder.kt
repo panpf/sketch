@@ -65,7 +65,10 @@ class SkiaAnimatedWebpDecoder(
 
         override val key: String = "SkiaAnimatedWebpDecoder"
 
-        override fun create(requestContext: RequestContext, fetchResult: FetchResult): Decoder? {
+        override fun create(
+            requestContext: RequestContext,
+            fetchResult: FetchResult
+        ): SkiaAnimatedWebpDecoder? {
             if (requestContext.request.disallowAnimatedImage == true) return null
             if (!isApplicable(fetchResult)) return null
             return SkiaAnimatedWebpDecoder(requestContext, fetchResult.dataSource)

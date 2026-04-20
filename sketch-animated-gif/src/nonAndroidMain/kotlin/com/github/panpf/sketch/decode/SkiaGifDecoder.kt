@@ -65,7 +65,10 @@ class SkiaGifDecoder(
 
         override val key: String = "SkiaGifDecoder"
 
-        override fun create(requestContext: RequestContext, fetchResult: FetchResult): Decoder? {
+        override fun create(
+            requestContext: RequestContext,
+            fetchResult: FetchResult
+        ): SkiaGifDecoder? {
             if (requestContext.request.disallowAnimatedImage == true) return null
             if (!isApplicable(fetchResult)) return null
             return SkiaGifDecoder(requestContext, fetchResult.dataSource)

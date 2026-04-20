@@ -61,7 +61,7 @@ class FFmpegVideoFrameDecodeHelper(
     val sketch: Sketch,
     val request: ImageRequest,
     val dataSource: DataSource,
-    private val mimeType: String,
+    val mimeType: String,
 ) : DecodeHelper {
 
     override val imageInfo: ImageInfo by lazy { readImageInfo() }

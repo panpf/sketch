@@ -186,7 +186,7 @@ class KoralGifDecoder(
         override fun create(
             requestContext: RequestContext,
             fetchResult: FetchResult
-        ): Decoder? {
+        ): KoralGifDecoder? {
             if (requestContext.request.disallowAnimatedImage == true) return null
             if (!isApplicable(fetchResult)) return null
             return KoralGifDecoder(requestContext, fetchResult.dataSource)

@@ -46,11 +46,6 @@ import platform.Photos.PHAssetResource
 import platform.UIKit.UIImage
 import platform.UniformTypeIdentifiers.UTType
 
-/**
- * PHAssetResourceType:
- * 1=Photo, 2=Video, 4=AlternatePhoto, 5=FullSizePhoto, 6=FullSizeVideo,
- * 8=AdjustmentBasePhoto, 9=PairedVideo, 10=FullSizePairedVideo.
- */
 private const val RESOURCE_TYPE_PHOTO = 1L
 private const val RESOURCE_TYPE_VIDEO = 2L
 private const val RESOURCE_TYPE_ALTERNATE_PHOTO = 4L
@@ -179,7 +174,7 @@ internal fun resolveMimeType(resource: PHAssetResource): String? {
  * @param originalFilename The original filename of the PHAssetResource, which can be used to infer the MIME type from its extension if necessary.
  * @return The resolved MIME type as a string, or null if it cannot be determined.
  *
- * @see com.github.panpf.sketch.core.ios.test.util.PhotosAssetsTest.testResolveMimeTypeWithPHAssetResource
+ * @see com.github.panpf.sketch.core.ios.test.util.PhotosAssetsTest.testResolveMimeTypeWithUniformTypeIdentifierAndOriginalFilename
  */
 internal fun resolveMimeType(uniformTypeIdentifier: String?, originalFilename: String?): String? {
     val preferredMimeType = uniformTypeIdentifier
@@ -244,12 +239,12 @@ internal fun resolveMimeType(uniformTypeIdentifier: String?, originalFilename: S
 /**
  * Resolve the MIME type of a PHAssetResource based on its resource type code, by checking if it matches known video or image resource types.
  *
- * @see com.github.panpf.sketch.core.ios.test.util.PhotosAssetsTest.testResolveMimeTypeWithPHAssetResource
+ * @see com.github.panpf.sketch.core.ios.test.util.PhotosAssetsTest.testResolveMimeTypeWithPHAssetResourceType
  */
 internal fun resolveMimeTypeWithPHAssetResourceType(type: Long): String? {
     when (type) {
-        in VIDEO_RESOURCE_TYPES -> return "video/*"
         in IMAGE_RESOURCE_TYPES -> return "image/*"
+        in VIDEO_RESOURCE_TYPES -> return "video/*"
     }
     return null
 }
@@ -264,11 +259,11 @@ internal fun resolveMimeType(asset: PHAsset): String? = resolveMimeType(asset.me
 /**
  * Map the media type of PHAsset (video, picture, audio) to the corresponding MIME type string
  *
- * @see com.github.panpf.sketch.core.ios.test.util.PhotosAssetsTest.testResolveMimeTypeWithPHAsset
+ * @see com.github.panpf.sketch.core.ios.test.util.PhotosAssetsTest.testResolveMimeTypeWithPHAssetMediaType
  */
 internal fun resolveMimeType(mediaType: PHAssetMediaType): String? = when (mediaType) {
-    PHAssetMediaTypeVideo -> "video/*"
     PHAssetMediaTypeImage -> "image/*"
+    PHAssetMediaTypeVideo -> "video/*"
     PHAssetMediaTypeAudio -> "audio/*"
     else -> null
 }

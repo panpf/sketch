@@ -29,8 +29,8 @@ import kotlin.coroutines.resumeWithException
  */
 @OptIn(ExperimentalForeignApi::class)
 class PhotosAssetDecodeHelper(
-    private val dataSource: PhotosAssetDataSource,
-    private val mimeType: String,
+    val dataSource: PhotosAssetDataSource,
+    val mimeType: String,
 ) : DecodeHelper {
 
     override val imageInfo: ImageInfo by lazy {

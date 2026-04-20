@@ -53,7 +53,7 @@ class SkiaDecoder(
         override fun create(
             requestContext: RequestContext,
             fetchResult: FetchResult,
-        ): Decoder = SkiaDecoder(requestContext, fetchResult.dataSource)
+        ): SkiaDecoder = SkiaDecoder(requestContext, fetchResult.dataSource)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

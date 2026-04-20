@@ -160,7 +160,7 @@ class MovieGifDecoder(
         override fun create(
             requestContext: RequestContext,
             fetchResult: FetchResult
-        ): Decoder? {
+        ): MovieGifDecoder? {
             if (requestContext.request.disallowAnimatedImage == true) return null
             if (!isApplicable(fetchResult)) return null
             return MovieGifDecoder(requestContext, fetchResult.dataSource)

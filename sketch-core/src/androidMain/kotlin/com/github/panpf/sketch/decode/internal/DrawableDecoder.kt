@@ -108,7 +108,7 @@ open class DrawableDecoder(
         override fun create(
             requestContext: RequestContext,
             fetchResult: FetchResult
-        ): Decoder? {
+        ): DrawableDecoder? {
             if (fetchResult.dataSource !is DrawableDataSource) return null
             return DrawableDecoder(requestContext, fetchResult.dataSource, fetchResult.mimeType)
         }

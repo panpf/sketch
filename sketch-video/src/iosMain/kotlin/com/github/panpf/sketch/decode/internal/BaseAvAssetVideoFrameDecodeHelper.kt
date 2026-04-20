@@ -38,7 +38,7 @@ import platform.UIKit.UIImage
 
 @OptIn(ExperimentalForeignApi::class)
 abstract class BaseAvAssetVideoFrameDecodeHelper(
-    private val request: ImageRequest,
+    val request: ImageRequest,
 ) : DecodeHelper {
 
     val avAsset: AVAsset by lazy { requestVideoAsset() }

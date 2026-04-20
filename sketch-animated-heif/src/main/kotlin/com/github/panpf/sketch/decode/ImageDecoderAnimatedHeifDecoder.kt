@@ -71,7 +71,7 @@ class ImageDecoderAnimatedHeifDecoder(
         override fun create(
             requestContext: RequestContext,
             fetchResult: FetchResult
-        ): Decoder? {
+        ): ImageDecoderAnimatedHeifDecoder? {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) return null
             if (requestContext.request.disallowAnimatedImage == true) return null
             if (!isApplicable(fetchResult)) return null

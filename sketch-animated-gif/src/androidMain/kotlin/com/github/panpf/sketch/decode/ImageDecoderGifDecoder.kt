@@ -71,7 +71,7 @@ class ImageDecoderGifDecoder(
         override fun create(
             requestContext: RequestContext,
             fetchResult: FetchResult
-        ): Decoder? {
+        ): ImageDecoderGifDecoder? {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return null
             if (requestContext.request.disallowAnimatedImage == true) return null
             if (!isApplicable(fetchResult)) return null

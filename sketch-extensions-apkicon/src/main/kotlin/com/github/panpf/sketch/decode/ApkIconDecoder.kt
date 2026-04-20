@@ -74,7 +74,7 @@ class ApkIconDecoder(
         override fun create(
             requestContext: RequestContext,
             fetchResult: FetchResult
-        ): Decoder? {
+        ): ApkIconDecoder? {
             if (!isApplicable(fetchResult)) return null
             val file = fetchResult.dataSource.getFile(requestContext.sketch).toFile()
             return ApkIconDecoder(requestContext, fetchResult.dataFrom, file)

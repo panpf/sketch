@@ -51,7 +51,7 @@ open class BitmapFactoryDecoder(
         override fun create(
             requestContext: RequestContext,
             fetchResult: FetchResult
-        ): Decoder = BitmapFactoryDecoder(requestContext, fetchResult.dataSource)
+        ): BitmapFactoryDecoder = BitmapFactoryDecoder(requestContext, fetchResult.dataSource)
 
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

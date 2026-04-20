@@ -27,10 +27,10 @@ fun resolveRequestVideoFrameMicros(
     videoFramePercent: Float?,
 ): Long {
     if (videoFrameMicros != null && videoFrameMicros >= 0L) {
-        return videoFrameMicros.coerceIn(0L, durationMicros ?: Long.MAX_VALUE)
+        return videoFrameMicros.coerceAtMost(durationMicros ?: Long.MAX_VALUE)
     }
-    if (durationMicros != null && durationMicros > 0L && videoFramePercent != null) {
-        return (durationMicros * videoFramePercent).toLong().coerceIn(0L, durationMicros)
+    if (durationMicros != null && durationMicros > 0L && videoFramePercent != null && videoFramePercent >= 0f) {
+        return (durationMicros * videoFramePercent).toLong().coerceAtMost(durationMicros)
     }
     return 0L
 }

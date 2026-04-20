@@ -117,7 +117,10 @@ class PenfeizhouAnimatedWebpDecoder(
 
         override val key: String = "PenfeizhouAnimatedWebpDecoder"
 
-        override fun create(requestContext: RequestContext, fetchResult: FetchResult): Decoder? {
+        override fun create(
+            requestContext: RequestContext,
+            fetchResult: FetchResult
+        ): PenfeizhouAnimatedWebpDecoder? {
             if (!isApplicable(fetchResult)) return null
             return PenfeizhouAnimatedWebpDecoder(
                 requestContext = requestContext,

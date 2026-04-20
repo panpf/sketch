@@ -96,7 +96,7 @@ class PhotosAssetFetcher private constructor(
 
     class Factory : Fetcher.Factory {
 
-        override fun create(requestContext: RequestContext): Fetcher? {
+        override fun create(requestContext: RequestContext): PhotosAssetFetcher? {
             val request = requestContext.request
             val uri = request.uri
             val localIdentifier = parseLocalIdentifier(uri) ?: return null

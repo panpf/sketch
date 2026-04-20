@@ -79,7 +79,7 @@ class PhotosAssetVideoFrameDecoder(
         override fun create(
             requestContext: RequestContext,
             fetchResult: FetchResult,
-        ): Decoder? {
+        ): PhotosAssetVideoFrameDecoder? {
             val dataSource = fetchResult.dataSource
             if (dataSource !is PhotosAssetDataSource) return null
             val mimeType = fetchResult.mimeType ?: return null
