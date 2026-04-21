@@ -30,7 +30,6 @@ enum class KmpTarget {
     Desktop,
     Js,
     WasmJs,
-    IosX64,
     IosArm64,
     IosSimulatorArm64,
 }
@@ -79,9 +78,6 @@ fun Project.addMultiplatformTargets(kmpTargets: Array<KmpTarget>) {
                 }
             }
 
-            if (kmpTargets.contains(KmpTarget.IosX64)) {
-                iosX64()
-            }
             if (kmpTargets.contains(KmpTarget.IosArm64)) {
                 iosArm64()
             }

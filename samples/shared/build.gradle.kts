@@ -16,7 +16,6 @@ kotlin {
     applyMyHierarchyTemplate()
 
     listOf(
-//        iosX64(), // androidx.paging doesn't support iosX64 since 3.4.0
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->

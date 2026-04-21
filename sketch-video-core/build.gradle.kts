@@ -9,7 +9,6 @@ addMultiplatformTargets(
         KmpTarget.Android,
         KmpTarget.IosSimulatorArm64,
         KmpTarget.IosArm64,
-        KmpTarget.IosX64
     )
 )
 kmpAndroidLibrary(nameSpace = "com.github.panpf.sketch.video.core")

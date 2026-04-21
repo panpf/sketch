@@ -17,6 +17,10 @@ Translations: [简体中文](CHANGELOG.zh.md)
   permission was not registered in the manifest
   file. [#281](https://github.com/panpf/sketch/issues/281)
 
+## iOS
+
+* change: The iosX64 platform is no longer supported
+
 # 4.5.0-alpha01
 
 ## Multiplatform
