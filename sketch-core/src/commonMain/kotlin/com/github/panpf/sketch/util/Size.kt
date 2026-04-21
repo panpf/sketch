@@ -196,3 +196,14 @@ fun Size.limitSide(maxSide: Int?): Size {
         height = (height * ratio).roundToInt()
     )
 }
+
+/**
+ * Return the shape type of the size, 1 for landscape, -1 for portrait, and 0 for square.
+ *
+ * @see com.github.panpf.sketch.core.common.test.util.SizeTest.testShapeType
+ */
+fun Size.shapeType(): Int = when {
+    width > height -> 1
+    width < height -> -1
+    else -> 0
+}

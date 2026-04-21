@@ -13,6 +13,8 @@
 
 * fix: 修复 Android 平台没有在清单文件中注册 ACCESS_NETWORK_STATE 权限时崩溃的
   bug。[#281](https://github.com/panpf/sketch/issues/281)
+* fix: 修复 Android 平台竖屏视频包含旋转信息时，错误的将视频帧旋转的
+  bug。[#282](https://github.com/panpf/sketch/issues/282)
 
 ## iOS
 

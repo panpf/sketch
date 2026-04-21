@@ -16,6 +16,9 @@ Translations: [简体中文](CHANGELOG.zh.md)
 * fix: Fixed a bug that caused the Android platform to crash when the ACCESS_NETWORK_STATE
   permission was not registered in the manifest
   file. [#281](https://github.com/panpf/sketch/issues/281)
+* fix: Fixed a bug that caused the video frame to be incorrectly rotated when the vertical screen
+  video on the Android platform contained rotation
+  information. [#282](https://github.com/panpf/sketch/issues/282)
 
 ## iOS
 

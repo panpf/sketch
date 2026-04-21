@@ -17,7 +17,7 @@ class BuiltinPhotoListRepo(val sketch: Sketch) {
             .plus(ComposeResImageFiles.longQMSHT)
             .plus(ComposeResImageFiles.longCOMIC)
             .plus(ComposeResImageFiles.clockExifs)
-            .plus(ComposeResImageFiles.mp4)
+            .plus(ComposeResImageFiles.videos)
             .map { it.uri }
             .plus(buildPlatformBuiltinPhotoList(sketch))
             .toList()

@@ -28,6 +28,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
+import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.source.getFileOrNull
@@ -35,6 +36,7 @@ import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.div
 import com.github.panpf.sketch.util.resolveRequestVideoFrameMicros
+import com.github.panpf.sketch.util.shapeType
 import wseemann.media.FFmpegMediaMetadataRetriever
 
 /**
@@ -106,7 +108,12 @@ class FFmpegVideoFrameDecodeHelper(
                     "dstSize=${dstSize}, " +
                     "imageSize=$imageSize"
         )
-        val correctedBitmap = exifOrientationHelper.applyToBitmap(bitmap) ?: bitmap
+        val needRotate = bitmap.size.shapeType() != imageSize.shapeType()
+        val correctedBitmap = if (needRotate) {
+            exifOrientationHelper.applyToBitmap(bitmap) ?: bitmap
+        } else {
+            bitmap
+        }
         return correctedBitmap.asImage()
     }
 

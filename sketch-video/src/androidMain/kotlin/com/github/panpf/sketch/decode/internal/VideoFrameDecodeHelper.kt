@@ -18,7 +18,6 @@
 
 package com.github.panpf.sketch.decode.internal
 
-import android.annotation.TargetApi
 import android.media.MediaMetadataRetriever
 import android.media.MediaMetadataRetriever.BitmapParams
 import android.os.Build
@@ -33,6 +32,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
+import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.ContentDataSource
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.source.getFileOrNull
@@ -40,6 +40,7 @@ import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.div
 import com.github.panpf.sketch.util.resolveRequestVideoFrameMicros
+import com.github.panpf.sketch.util.shapeType
 
 /**
  * Use MediaMetadataRetriever to decode video frames
@@ -61,7 +62,6 @@ import com.github.panpf.sketch.util.resolveRequestVideoFrameMicros
  *
  * @see com.github.panpf.sketch.video.android.test.decode.internal.VideoFrameDecodeHelperTest
  */
-@TargetApi(Build.VERSION_CODES.O_MR1)
 class VideoFrameDecodeHelper constructor(
     val sketch: Sketch,
     val request: ImageRequest,
@@ -148,7 +148,12 @@ class VideoFrameDecodeHelper constructor(
                 )
             }
         }
-        val correctedBitmap = exifOrientationHelper.applyToBitmap(bitmap) ?: bitmap
+        val needRotate = bitmap.size.shapeType() != imageSize.shapeType()
+        val correctedBitmap = if (needRotate) {
+            exifOrientationHelper.applyToBitmap(bitmap) ?: bitmap
+        } else {
+            bitmap
+        }
         return correctedBitmap.asImage()
     }
 

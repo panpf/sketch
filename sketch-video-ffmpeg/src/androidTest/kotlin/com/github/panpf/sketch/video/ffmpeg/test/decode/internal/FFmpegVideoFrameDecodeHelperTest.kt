@@ -65,6 +65,29 @@ class FFmpegVideoFrameDecodeHelperTest {
                 )
             }
 
+        // videoRotation
+        val rotationImageFile = ComposeResImageFiles.rotationMp4
+        rotationImageFile.toDecodeHelper(context, sketch)
+            .decode(sampleSize = 1)
+            .asOrThrow<BitmapImage>().bitmap
+            .apply {
+                assertSizeEquals(
+                    expected = rotationImageFile.size,
+                    actual = size,
+                    delta = Size(1, 1)
+                )
+            }
+        rotationImageFile.toDecodeHelper(context, sketch)
+            .decode(sampleSize = 2)
+            .asOrThrow<BitmapImage>().bitmap
+            .apply {
+                assertSizeEquals(
+                    expected = calculateSampledBitmapSize(rotationImageFile.size, 2),
+                    actual = size,
+                    delta = Size(1, 1)
+                )
+            }
+
         /*
          * config: colorType
          */

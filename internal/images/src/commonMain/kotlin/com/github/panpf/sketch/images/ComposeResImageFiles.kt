@@ -99,7 +99,14 @@ object ComposeResImageFiles {
         length = 157092,
         mimeType = "video/mp4"
     )
-    val videos = arrayOf(mp4)
+    val rotationMp4: ComposeResImageFile = ComposeResImageFile(
+        name = "sample_rotation.mp4",
+        size = Size(1080, 1920),
+        length = 3368331,
+        mimeType = "video/mp4",
+        exifOrientation = ExifOrientation.ROTATE_90
+    )
+    val videos = arrayOf(mp4, rotationMp4)
 
     val longQMSHT: ComposeResImageFile = ComposeResImageFile(
         name = "sample_long_qmsht.jpg",

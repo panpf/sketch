@@ -27,6 +27,7 @@ import com.github.panpf.sketch.util.limitSide
 import com.github.panpf.sketch.util.minus
 import com.github.panpf.sketch.util.plus
 import com.github.panpf.sketch.util.rotate
+import com.github.panpf.sketch.util.shapeType
 import com.github.panpf.sketch.util.times
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -283,6 +284,22 @@ class SizeTest {
         assertEquals(
             expected = Size(120, 299),
             actual = Size(200, 500).limitSide(299)
+        )
+    }
+
+    @Test
+    fun testShapeType() {
+        assertEquals(
+            expected = -1,
+            actual = Size(200, 500).shapeType()
+        )
+        assertEquals(
+            expected = 1,
+            actual = Size(500, 200).shapeType()
+        )
+        assertEquals(
+            expected = 0,
+            actual = Size(500, 500).shapeType()
         )
     }
 }

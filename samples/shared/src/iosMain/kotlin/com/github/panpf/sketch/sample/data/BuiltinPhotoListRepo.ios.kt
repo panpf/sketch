@@ -2,6 +2,7 @@ package com.github.panpf.sketch.sample.data
 
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.newFileUri
+import com.github.panpf.sketch.images.ComposeResImageFile
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import kotlinx.coroutines.runBlocking
 import okio.Path.Companion.toPath
@@ -12,12 +13,17 @@ import platform.Foundation.NSSearchPathForDirectoriesInDomains
 import platform.Foundation.NSUserDomainMask
 
 actual fun buildPlatformBuiltinPhotoList(sketch: Sketch): List<String> {
-    val resImage = ComposeResImageFiles.mp4
+    return ComposeResImageFiles.videos.mapNotNull {
+        saveResImageToCache(sketch, it)
+    }
+}
+
+private fun saveResImageToCache(sketch: Sketch, resImage: ComposeResImageFile): String? {
     val paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, true)
     val appDocumentDirectory = (paths.first() as String).toPath()
     val resImageCacheFile = appDocumentDirectory.resolve(resImage.name)
     if (sketch.fileSystem.exists(resImageCacheFile)) {
-        return listOf(newFileUri(resImageCacheFile))
+        return newFileUri(resImageCacheFile)
     }
     runBlocking {
         runCatching {
@@ -32,7 +38,7 @@ actual fun buildPlatformBuiltinPhotoList(sketch: Sketch): List<String> {
         }
     }
     if (sketch.fileSystem.exists(resImageCacheFile)) {
-        return listOf(newFileUri(resImageCacheFile))
+        return newFileUri(resImageCacheFile)
     }
-    return emptyList()
+    return null
 }
