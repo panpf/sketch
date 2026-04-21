@@ -23,6 +23,8 @@ Translations: [简体中文](CHANGELOG.zh.md)
 ## iOS
 
 * change: The iosX64 platform is no longer supported
+* fix: Fixed a bug where FileVideoFrameDecodeHelper returned the wrong image size when encountering
+  a video containing rotation information. [#283](https://github.com/panpf/sketch/issues/283)
 
 # 4.5.0-alpha01
 

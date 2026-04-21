@@ -23,6 +23,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.isNotEmpty
+import com.github.panpf.sketch.util.rotate
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
 import platform.AVFoundation.AVAsset
@@ -30,10 +31,14 @@ import platform.AVFoundation.AVAssetTrack
 import platform.AVFoundation.AVMediaTypeVideo
 import platform.AVFoundation.AVURLAsset
 import platform.AVFoundation.naturalSize
+import platform.AVFoundation.preferredTransform
 import platform.AVFoundation.tracksWithMediaType
 import platform.CoreGraphics.CGImageGetHeight
 import platform.CoreGraphics.CGImageGetWidth
 import platform.Foundation.NSURL
+import kotlin.math.PI
+import kotlin.math.atan2
+import kotlin.math.roundToInt
 
 /**
  * Help decode video frames from FileDataSource
@@ -60,9 +65,12 @@ class FileVideoFrameDecodeHelper(
         val asset = AVURLAsset.assetWithURL(url)
         val videoTrack = asset.tracksWithMediaType(AVMediaTypeVideo)
             .firstOrNull()?.let { it as AVAssetTrack }
-        val size = videoTrack?.naturalSize?.useContents {
-            Size(width.toInt(), height.toInt())
-        }
+        val size = videoTrack?.naturalSize
+            ?.useContents { Size(width.toInt(), height.toInt()) }
+            ?.let {
+                val videoRotation = readAssetRotation(avAsset)
+                it.rotate(videoRotation)
+            }
         return size
     }
 
@@ -80,6 +88,18 @@ class FileVideoFrameDecodeHelper(
             height = CGImageGetHeight(firstFrameImage).toInt(),
         )
         return size
+    }
+
+    private fun readAssetRotation(asset: AVAsset): Int {
+        val videoTracks = asset.tracksWithMediaType(AVMediaTypeVideo)
+        val track = videoTracks.firstOrNull() as? AVAssetTrack ?: return 0
+        val degrees = track.preferredTransform.useContents {
+            val radians = atan2(b, a)
+            var deg = radians * 180.0 / PI
+            if (deg < 0) deg += 360.0
+            deg
+        }
+        return degrees.roundToInt()
     }
 
     override fun requestVideoAsset(): AVAsset {

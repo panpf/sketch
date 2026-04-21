@@ -19,6 +19,8 @@
 ## iOS
 
 * change: 不再支持 iosX64 平台
+* fix: 修复 FileVideoFrameDecodeHelper 在遇到包含旋转信息的视频时，返回错误的图片尺寸的
+  bug。[#283](https://github.com/panpf/sketch/issues/283)
 
 # 4.5.0-alpha01
 
