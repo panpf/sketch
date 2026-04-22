@@ -117,6 +117,11 @@ fun createSettingItems(
         addAll(it)
     }
 
+    platformVideoMenuList(appSettings).takeIf { it.isNotEmpty() }?.let {
+        add(GroupSettingItem("Video"))
+        addAll(it)
+    }
+
     add(GroupSettingItem("Cache"))
     addAll(cacheMenuList(appSettings, sketch, recreateSettingItems))
 
@@ -124,7 +129,6 @@ fun createSettingItems(
     addAll(otherMenuList(appSettings, appEvents))
     addAll(platformOtherMenuList(appSettings, page, appEvents))
 }
-
 
 private fun listMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
     val contentScales = listOf(
@@ -341,10 +345,11 @@ expect fun platformDecodeMenuList(appSettings: AppSettings): List<SettingItem>
 
 expect fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem>
 
+expect fun platformVideoMenuList(appSettings: AppSettings): List<SettingItem>
+
 expect fun platformColorTypes(): List<String>
 
 expect fun platformColorSpaces(): List<String>
-
 
 private fun cacheMenuList(
     appSettings: AppSettings,

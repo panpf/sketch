@@ -23,8 +23,10 @@ import android.util.AttributeSet
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.preferQualityOverSpeed
+import com.github.panpf.sketch.request.preferVideoCover
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.request.updateImageOptions
+import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.ui.util.lifecycleOwner
 import com.github.panpf.sketch.sample.util.collectWithLifecycle
@@ -52,6 +54,8 @@ class MyZoomImageView @JvmOverloads constructor(
             @Suppress("DEPRECATION")
             preferQualityOverSpeed(VERSION.SDK_INT <= VERSION_CODES.M && appSettings.preferQualityOverSpeed.value)
             repeatCount(appSettings.repeatCount.value)
+            videoFramePercent(appSettings.videoFramePercent.value)
+            preferVideoCover(appSettings.preferVideoCover.value)
         }
     }
 
@@ -82,6 +86,14 @@ class MyZoomImageView @JvmOverloads constructor(
         }
         listenSettings(appSettings.repeatCount) { repeatCount ->
             repeatCount(repeatCount)
+        }
+
+        listenSettings(appSettings.videoFramePercent) { videoFramePercent ->
+            videoFramePercent(videoFramePercent)
+        }
+
+        listenSettings(appSettings.preferVideoCover) { preferVideoCover ->
+            preferVideoCover(preferVideoCover)
         }
     }
 

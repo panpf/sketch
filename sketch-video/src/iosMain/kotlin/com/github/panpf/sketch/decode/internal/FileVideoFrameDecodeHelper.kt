@@ -29,7 +29,6 @@ import kotlinx.cinterop.useContents
 import platform.AVFoundation.AVAsset
 import platform.AVFoundation.AVAssetTrack
 import platform.AVFoundation.AVMediaTypeVideo
-import platform.AVFoundation.AVURLAsset
 import platform.AVFoundation.naturalSize
 import platform.AVFoundation.preferredTransform
 import platform.AVFoundation.tracksWithMediaType
@@ -49,8 +48,8 @@ import kotlin.math.roundToInt
 class FileVideoFrameDecodeHelper(
     request: ImageRequest,
     val dataSource: FileDataSource,
-    val mimeType: String,
-) : BaseAvAssetVideoFrameDecodeHelper(request) {
+    mimeType: String,
+) : BaseAvAssetVideoFrameDecodeHelper(request, mimeType) {
 
     override fun readImageInfo(): ImageInfo {
         val size = readTrackSize()
@@ -60,22 +59,19 @@ class FileVideoFrameDecodeHelper(
     }
 
     private fun readTrackSize(): Size? {
-        val filePath = dataSource.path.toString()
-        val url = NSURL.fileURLWithPath(filePath)
-        val asset = AVURLAsset.assetWithURL(url)
         val videoTrack = asset.tracksWithMediaType(AVMediaTypeVideo)
             .firstOrNull()?.let { it as AVAssetTrack }
         val size = videoTrack?.naturalSize
             ?.useContents { Size(width.toInt(), height.toInt()) }
             ?.let {
-                val videoRotation = readAssetRotation(avAsset)
+                val videoRotation = readAssetRotation(asset)
                 it.rotate(videoRotation)
             }
         return size
     }
 
     private fun readFrameSize(): Size {
-        val durationMicros = avAsset.durationMicrosOrNull()
+        val durationMicros = asset.durationMicrosOrNull()
         val frameCandidates = frameCandidates(
             requestFrameMicros = 0L,
             durationMicros = durationMicros,

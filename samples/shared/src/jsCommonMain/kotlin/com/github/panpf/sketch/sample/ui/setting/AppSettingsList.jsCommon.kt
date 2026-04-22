@@ -13,6 +13,8 @@ actual fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem>
     )
 }
 
+actual fun platformVideoMenuList(appSettings: AppSettings): List<SettingItem> = emptyList()
+
 actual fun platformOtherMenuList(
     appSettings: AppSettings,
     page: Page,

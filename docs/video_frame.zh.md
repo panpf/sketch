@@ -55,7 +55,10 @@ ImageRequest(context, "file:///sdcard/sample.mp4") {
     videoFrameMillis(10000)
 
     // 或获取提取中间的帧
-    videoFramePercentDuration(0.5f)
+    videoFramePercent(0.5f)
+  
+    // 优先获取内嵌的封面
+    preferVideoCover(true)
 
     // 设置指定时间处无法提取帧时的处理策略。仅限 Android 平台
     videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)

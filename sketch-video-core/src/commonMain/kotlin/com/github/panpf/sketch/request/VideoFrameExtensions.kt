@@ -20,6 +20,7 @@ import androidx.annotation.FloatRange
 
 private const val VIDEO_FRAME_MICROS_KEY = "sketch#video_frame_micros"
 private const val VIDEO_FRAME_PERCENT_KEY = "sketch#video_frame_percent"
+private const val PREFER_VIDEO_COVER = "sketch#prefer_video_cover"
 
 /**
  * Set the time **in microseconds** of the frame to extract from a video.
@@ -148,3 +149,48 @@ val ImageRequest.videoFramePercent: Float?
  */
 val ImageOptions.videoFramePercent: Float?
     get() = extras?.value(VIDEO_FRAME_PERCENT_KEY)
+
+
+/**
+ * Whether to load video covers first
+ *
+ * @see com.github.panpf.sketch.video.core.common.test.request.VideoFrameExtensionsTest.testPreferVideoCover
+ */
+fun ImageRequest.Builder.preferVideoCover(preferred: Boolean? = true): ImageRequest.Builder =
+    apply {
+        if (preferred != null) {
+            setExtra(key = PREFER_VIDEO_COVER, value = preferred)
+        } else {
+            removeExtra(key = PREFER_VIDEO_COVER)
+        }
+    }
+
+/**
+ * Whether to load video covers first
+ *
+ * @see com.github.panpf.sketch.video.core.common.test.request.VideoFrameExtensionsTest.testPreferVideoCover
+ */
+fun ImageOptions.Builder.preferVideoCover(preferred: Boolean? = true): ImageOptions.Builder =
+    apply {
+        if (preferred != null) {
+            setExtra(key = PREFER_VIDEO_COVER, value = preferred)
+        } else {
+            removeExtra(key = PREFER_VIDEO_COVER)
+        }
+    }
+
+/**
+ * Whether to load video covers first
+ *
+ * @see com.github.panpf.sketch.video.core.common.test.request.VideoFrameExtensionsTest.testPreferVideoCover
+ */
+val ImageRequest.preferVideoCover: Boolean?
+    get() = extras?.value(key = PREFER_VIDEO_COVER)
+
+/**
+ * Whether to load video covers first
+ *
+ * @see com.github.panpf.sketch.video.core.common.test.request.VideoFrameExtensionsTest.testPreferVideoCover
+ */
+val ImageOptions.preferVideoCover: Boolean?
+    get() = extras?.value(key = PREFER_VIDEO_COVER)

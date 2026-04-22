@@ -38,9 +38,11 @@ import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.request.pauseLoadWhenScrolling
 import com.github.panpf.sketch.request.preferQualityOverSpeed
+import com.github.panpf.sketch.request.preferVideoCover
 import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.request.saveCellularTraffic
 import com.github.panpf.sketch.request.updateImageOptions
+import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.buildScale
@@ -144,6 +146,8 @@ class MyListImageView @JvmOverloads constructor(
             pauseLoadWhenScrolling(appSettings.pauseLoadWhenScrollInList.value)
             saveCellularTraffic(appSettings.saveCellularTrafficInList.value)
             repeatCount(appSettings.repeatCount.value)
+            videoFramePercent(appSettings.videoFramePercent.value)
+            preferVideoCover(appSettings.preferVideoCover.value)
 
             colorType(appSettings.colorType.value)
             if (VERSION.SDK_INT >= VERSION_CODES.O) {
@@ -269,6 +273,14 @@ class MyListImageView @JvmOverloads constructor(
 
         listenSettings(appSettings.repeatCount) { repeatCount ->
             repeatCount(repeatCount)
+        }
+
+        listenSettings(appSettings.videoFramePercent) { videoFramePercent ->
+            videoFramePercent(videoFramePercent)
+        }
+
+        listenSettings(appSettings.preferVideoCover) { preferVideoCover ->
+            preferVideoCover(preferVideoCover)
         }
 
         listenSettings(appSettings.colorType) { colorType ->

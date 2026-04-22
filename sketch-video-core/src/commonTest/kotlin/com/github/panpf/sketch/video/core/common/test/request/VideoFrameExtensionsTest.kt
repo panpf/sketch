@@ -19,17 +19,21 @@ package com.github.panpf.sketch.video.core.common.test.request
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.preferVideoCover
 import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameMillis
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.toRequestContext
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class VideoFrameExtensionsTest {
 
@@ -223,5 +227,51 @@ class VideoFrameExtensionsTest {
             videoFramePercent(0.45f)
         }.toRequestContext(sketch).memoryCacheKey
         assertNotEquals(cacheKey1, cacheKey2)
+    }
+
+    @Test
+    fun testPreferVideoCover() {
+        val context = getTestContext()
+
+        ImageRequest(context, "http://sample.com/sample.jpg").apply {
+            assertNull(preferVideoCover)
+        }.newRequest {
+            preferVideoCover()
+        }.apply {
+            assertTrue(preferVideoCover!!)
+            // TODO test requestKey and cacheKey
+        }.newRequest {
+            preferVideoCover(null)
+        }.apply {
+            assertNull(preferVideoCover)
+        }.newRequest {
+            preferVideoCover(true)
+        }.apply {
+            assertTrue(preferVideoCover!!)
+        }.newRequest {
+            preferVideoCover(false)
+        }.apply {
+            assertFalse(preferVideoCover!!)
+        }
+
+        ImageOptions().apply {
+            assertNull(preferVideoCover)
+        }.newOptions {
+            preferVideoCover()
+        }.apply {
+            assertTrue(preferVideoCover!!)
+        }.newOptions {
+            preferVideoCover(null)
+        }.apply {
+            assertNull(preferVideoCover)
+        }.newOptions {
+            preferVideoCover(true)
+        }.apply {
+            assertTrue(preferVideoCover!!)
+        }.newOptions {
+            preferVideoCover(false)
+        }.apply {
+            assertFalse(preferVideoCover!!)
+        }
     }
 }

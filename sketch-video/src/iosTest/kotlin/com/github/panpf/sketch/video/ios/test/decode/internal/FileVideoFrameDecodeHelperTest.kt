@@ -3,6 +3,7 @@ package com.github.panpf.sketch.video.ios.test.decode.internal
 import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.internal.FileVideoFrameDecodeHelper
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.preferVideoCover
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.Rect
@@ -20,17 +21,17 @@ class FileVideoFrameDecodeHelperTest {
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, "/sdcard/sample.jpeg")
+        val request = ImageRequest(context, "/sdcard/sample_rotation.mp4")
         val dataSource = FileDataSource(
-            path = "/sdcard/sample.jpeg".toPath(),
+            path = "/sdcard/sample_rotation.mp4".toPath(),
             fileSystem = sketch.fileSystem,
         )
 
-        FileVideoFrameDecodeHelper(request, dataSource, "image/jpeg")
+        FileVideoFrameDecodeHelper(request, dataSource, "video/mp4")
         FileVideoFrameDecodeHelper(
             request = request,
             dataSource = dataSource,
-            mimeType = "image/jpeg"
+            mimeType = "video/mp4"
         )
     }
 
@@ -38,20 +39,30 @@ class FileVideoFrameDecodeHelperTest {
     fun testImageInfo() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, "/sdcard/sample.jpeg")
+        val request = ImageRequest(context, "/sdcard/sample_rotation.mp4")
         val dataSource = FileDataSource(
-            path = "/sdcard/sample.jpeg".toPath(),
+            path = "/sdcard/sample_rotation.mp4".toPath(),
             fileSystem = sketch.fileSystem,
-        )
-        val decoder = FileVideoFrameDecodeHelper(
-            request = request,
-            dataSource = dataSource,
-            mimeType = "image/jpeg"
         )
 
         // [Test not completed] Because the test environment cannot access the kotlin resource file, the test cannot be completed.
+        val decodeHelper = FileVideoFrameDecodeHelper(
+            request = request,
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
         assertFailsWith(DecodeException::class) {
-            decoder.imageInfo
+            decodeHelper.imageInfo
+        }
+
+        // [Test not completed] Because the test environment cannot access the kotlin resource file, the test cannot be completed.
+        val decodeHelper2 = FileVideoFrameDecodeHelper(
+            request = request.newRequest { preferVideoCover() },
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
+        assertFailsWith(DecodeException::class) {
+            decodeHelper2.imageInfo
         }
     }
 
@@ -59,37 +70,57 @@ class FileVideoFrameDecodeHelperTest {
     fun testSupportRegion() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, "/sdcard/sample.jpeg")
+        val request = ImageRequest(context, "/sdcard/sample_rotation.mp4")
         val dataSource = FileDataSource(
-            path = "/sdcard/sample.jpeg".toPath(),
+            path = "/sdcard/sample_rotation.mp4".toPath(),
             fileSystem = sketch.fileSystem,
         )
-        val decoder = FileVideoFrameDecodeHelper(
+
+        // [Test not completed] Because the test environment cannot access the kotlin resource file, the test cannot be completed.
+        val decodeHelper = FileVideoFrameDecodeHelper(
             request = request,
             dataSource = dataSource,
-            mimeType = "image/jpeg"
+            mimeType = "video/mp4"
         )
-        assertFalse(decoder.supportRegion)
+        assertFalse(decodeHelper.supportRegion)
+
+        // [Test not completed] Because the test environment cannot access the kotlin resource file, the test cannot be completed.
+        val decodeHelper2 = FileVideoFrameDecodeHelper(
+            request = request.newRequest { preferVideoCover() },
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
+        assertFalse(decodeHelper2.supportRegion)
     }
 
     @Test
     fun testDecode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, "/sdcard/sample.jpeg")
+        val request = ImageRequest(context, "/sdcard/sample_rotation.mp4")
         val dataSource = FileDataSource(
-            path = "/sdcard/sample.jpeg".toPath(),
+            path = "/sdcard/sample_rotation.mp4".toPath(),
             fileSystem = sketch.fileSystem,
-        )
-        val decoder = FileVideoFrameDecodeHelper(
-            request = request,
-            dataSource = dataSource,
-            mimeType = "image/jpeg"
         )
 
         // [Test not completed] Because the test environment cannot access the kotlin resource file, the test cannot be completed.
+        val decodeHelper = FileVideoFrameDecodeHelper(
+            request = request,
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
         assertFailsWith(DecodeException::class) {
-            decoder.decode(1)
+            decodeHelper.decode(1)
+        }
+
+        // [Test not completed] Because the test environment cannot access the kotlin resource file, the test cannot be completed.
+        val decodeHelper2 = FileVideoFrameDecodeHelper(
+            request = request.newRequest { preferVideoCover() },
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
+        assertFailsWith(DecodeException::class) {
+            decodeHelper2.decode(1)
         }
     }
 
@@ -97,20 +128,30 @@ class FileVideoFrameDecodeHelperTest {
     fun testDecodeRegion() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, "/sdcard/sample.jpeg")
+        val request = ImageRequest(context, "/sdcard/sample_rotation.mp4")
         val dataSource = FileDataSource(
-            path = "/sdcard/sample.jpeg".toPath(),
+            path = "/sdcard/sample_rotation.mp4".toPath(),
             fileSystem = sketch.fileSystem,
-        )
-        val decoder = FileVideoFrameDecodeHelper(
-            request = request,
-            dataSource = dataSource,
-            mimeType = "image/jpeg"
         )
 
         // [Test not completed] Because the test environment cannot access the kotlin resource file, the test cannot be completed.
+        val decodeHelper = FileVideoFrameDecodeHelper(
+            request = request,
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
         assertFailsWith(UnsupportedOperationException::class) {
-            decoder.decodeRegion(Rect(100, 200, 200, 100), 1)
+            decodeHelper.decodeRegion(Rect(100, 200, 200, 100), 1)
+        }
+
+        // [Test not completed] Because the test environment cannot access the kotlin resource file, the test cannot be completed.
+        val decodeHelper2 = FileVideoFrameDecodeHelper(
+            request = request.newRequest { preferVideoCover() },
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
+        assertFailsWith(UnsupportedOperationException::class) {
+            decodeHelper2.decodeRegion(Rect(100, 200, 200, 100), 1)
         }
     }
 
@@ -118,20 +159,20 @@ class FileVideoFrameDecodeHelperTest {
     fun testEqualsAndHashCode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, "/sdcard/sample.jpeg")
+        val request = ImageRequest(context, "/sdcard/sample_rotation.mp4")
         val dataSource = FileDataSource(
-            path = "/sdcard/sample.jpeg".toPath(),
+            path = "/sdcard/sample_rotation.mp4".toPath(),
             fileSystem = sketch.fileSystem,
         )
         val element1 = FileVideoFrameDecodeHelper(
             request = request,
             dataSource = dataSource,
-            mimeType = "image/jpeg"
+            mimeType = "video/mp4"
         )
         val element11 = FileVideoFrameDecodeHelper(
             request = request,
             dataSource = dataSource,
-            mimeType = "image/jpeg"
+            mimeType = "video/mp4"
         )
 
         assertNotEquals(illegal = element1, actual = element11)
@@ -144,20 +185,23 @@ class FileVideoFrameDecodeHelperTest {
     fun testToString() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, "/sdcard/sample.jpeg")
+        val request = ImageRequest(context, "/sdcard/sample_rotation.mp4")
         val dataSource = FileDataSource(
-            path = "/sdcard/sample.jpeg".toPath(),
+            path = "/sdcard/sample_rotation.mp4".toPath(),
             fileSystem = sketch.fileSystem,
         )
-        val decoder = FileVideoFrameDecodeHelper(
+        val decoderHelper = FileVideoFrameDecodeHelper(
             request = request,
             dataSource = dataSource,
-            mimeType = "image/jpeg"
+            mimeType = "video/mp4"
         )
         assertTrue(
-            actual = decoder.toString().contains("FileVideoFrameDecodeHelper"),
-            message = decoder.toString()
+            actual = decoderHelper.toString().contains("FileVideoFrameDecodeHelper"),
+            message = decoderHelper.toString()
         )
-        assertTrue(actual = decoder.toString().contains("@"), message = decoder.toString())
+        assertTrue(
+            actual = decoderHelper.toString().contains("@"),
+            message = decoderHelper.toString()
+        )
     }
 }

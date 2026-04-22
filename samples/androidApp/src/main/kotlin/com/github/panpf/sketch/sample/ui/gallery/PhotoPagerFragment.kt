@@ -31,6 +31,8 @@ import com.github.panpf.assemblyadapter.pager2.AssemblyFragmentStateAdapter
 import com.github.panpf.sketch.loadImage
 import com.github.panpf.sketch.request.LoadState
 import com.github.panpf.sketch.request.disallowAnimatedImage
+import com.github.panpf.sketch.request.preferVideoCover
+import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
@@ -41,6 +43,8 @@ import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.setting.Page
+import com.github.panpf.sketch.sample.util.collectWithLifecycle
+import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.sketch.transform.BlurTransformation
 import com.github.panpf.tools4a.display.ktx.getScreenSize
@@ -81,8 +85,7 @@ class PhotoPagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    val imageUrl = photoList[position].listThumbnailUrl
-                    loadBgImage(binding, imageUrl)
+                    loadBgImage(binding)
                 }
             })
 
@@ -163,9 +166,19 @@ class PhotoPagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
                         .setColor(photoPalette.containerColorInt)
                 }
             }
+
+        appSettings.videoFramePercent.ignoreFirst()
+            .collectWithLifecycle(viewLifecycleOwner) {
+                loadBgImage(binding)
+            }
+        appSettings.preferVideoCover.ignoreFirst()
+            .collectWithLifecycle(viewLifecycleOwner) {
+                loadBgImage(binding)
+            }
     }
 
-    private fun loadBgImage(binding: FragmentImagePagerBinding, imageUrl: String) {
+    private fun loadBgImage(binding: FragmentImagePagerBinding) {
+        val imageUrl = photoList[binding.pager.currentItem].listThumbnailUrl
         binding.bgImage.loadImage(imageUrl) {
             val screenSize = requireContext().getScreenSize()
             resize(
@@ -185,6 +198,8 @@ class PhotoPagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
             components {
                 add(PaletteInterceptor())
             }
+            videoFramePercent(appSettings.videoFramePercent.value)
+            preferVideoCover(appSettings.preferVideoCover.value)
         }
     }
 }

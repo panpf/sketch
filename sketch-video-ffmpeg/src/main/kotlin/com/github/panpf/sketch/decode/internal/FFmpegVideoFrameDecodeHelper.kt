@@ -25,11 +25,14 @@ import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.preferVideoCover
 import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.size
+import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.ContentDataSource
+import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.source.getFileOrNull
 import com.github.panpf.sketch.util.Rect
@@ -66,9 +69,6 @@ class FFmpegVideoFrameDecodeHelper(
     val mimeType: String,
 ) : DecodeHelper {
 
-    override val imageInfo: ImageInfo by lazy { readImageInfo() }
-    override val supportRegion: Boolean = false
-
     private val mediaMetadataRetriever by lazy {
         FFmpegMediaMetadataRetriever().apply {
             if (dataSource is ContentDataSource) {
@@ -81,8 +81,28 @@ class FFmpegVideoFrameDecodeHelper(
     }
     private val exifOrientation: Int by lazy { readExifOrientation() }
     private val exifOrientationHelper by lazy { ExifOrientationHelper(exifOrientation) }
+    private val coverHelper by lazy {
+        val preferVideoCover = request.preferVideoCover
+        val coverBytes = if (preferVideoCover == true)
+            mediaMetadataRetriever.embeddedPicture else null
+        coverBytes?.let {
+            val dataSource = ByteArrayDataSource(it, DataFrom.LOCAL)
+            BitmapFactoryDecodeHelper(request, dataSource)
+        }
+    }
+
+    override val imageInfo: ImageInfo by lazy {
+        coverHelper?.imageInfo?.copy(mimeType = mimeType) ?: readImageInfo()
+    }
+    override val supportRegion: Boolean
+        get() = coverHelper?.supportRegion ?: false
 
     override fun decode(sampleSize: Int): Image {
+        val coverHelper = coverHelper
+        if (coverHelper != null) {
+            return coverHelper.decode(sampleSize)
+        }
+
         val durationMicros = mediaMetadataRetriever
             .extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_DURATION)
             ?.toLongOrNull()?.let { it * 1000 } ?: 0L
@@ -118,7 +138,8 @@ class FFmpegVideoFrameDecodeHelper(
     }
 
     override fun decodeRegion(region: Rect, sampleSize: Int): Image {
-        throw UnsupportedOperationException("Unsupported region decode")
+        return coverHelper?.decodeRegion(region, sampleSize)
+            ?: throw UnsupportedOperationException("Unsupported region decode")
     }
 
     private fun readImageInfo(): ImageInfo {

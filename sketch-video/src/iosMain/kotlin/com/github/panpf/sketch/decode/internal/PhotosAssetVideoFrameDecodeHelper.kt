@@ -39,8 +39,8 @@ import kotlin.coroutines.resumeWithException
 class PhotosAssetVideoFrameDecodeHelper(
     request: ImageRequest,
     val dataSource: PhotosAssetDataSource,
-    val mimeType: String,
-) : BaseAvAssetVideoFrameDecodeHelper(request) {
+    mimeType: String,
+) : BaseAvAssetVideoFrameDecodeHelper(request, mimeType) {
 
     override fun readImageInfo(): ImageInfo {
         return ImageInfo(size = dataSource.asset.pixelSize(), mimeType = mimeType)

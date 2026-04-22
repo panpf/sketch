@@ -53,6 +53,8 @@ class AppSettingsViewModel(
             appSettings.thumbnailMode.ignoreFirst(),
             appSettings.logLevel.ignoreFirst(),
             appSettings.zoomImageLogLevel.ignoreFirst(),
+            appSettings.videoFramePercent.ignoreFirst(),
+            appSettings.preferVideoCover.ignoreFirst(),
         )
         viewModelScope.launch {
             merge(*states.toTypedArray()).collect {
@@ -80,6 +82,9 @@ class AppSettingsViewModel(
 
             add(MenuGroup("Animated"))
             addAll(makeAnimatedMenuList())
+
+            add(MenuGroup("Video"))
+            addAll(makeVideoMenuList())
 
             add(MenuGroup("Cache"))
             addAll(makeCacheMenuList())
@@ -338,6 +343,25 @@ class AppSettingsViewModel(
                 values = listOf("-1", "0", "1", "2", "4"),
                 getValue = { appSettings.repeatCount.value.toString() },
                 onSelect = { _, value -> appSettings.repeatCount.value = value.toInt() }
+            )
+        )
+    }
+
+    private fun makeVideoMenuList(): List<Any> = buildList {
+        add(
+            MultiSelectMenu(
+                title = "Video Frame Percent",
+                desc = null,
+                values = listOf(0f, 0.25f, 0.5f, 0.75f, 1f).map { it.toString() },
+                getValue = { appSettings.videoFramePercent.value.toString() },
+                onSelect = { _, value -> appSettings.videoFramePercent.value = value.toFloat() }
+            )
+        )
+        add(
+            SwitchMenuFlow(
+                title = "Prefer Video Cover",
+                desc = null,
+                data = appSettings.preferVideoCover,
             )
         )
     }

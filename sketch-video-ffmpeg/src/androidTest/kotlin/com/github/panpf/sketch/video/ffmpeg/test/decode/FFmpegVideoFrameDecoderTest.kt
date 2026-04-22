@@ -27,10 +27,12 @@ import com.github.panpf.sketch.decode.internal.createInSampledTransformed
 import com.github.panpf.sketch.decode.supportFFmpegVideoFrame
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.preferVideoCover
 import com.github.panpf.sketch.request.videoFrameMillis
 import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
+import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.corners
@@ -40,6 +42,7 @@ import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.shortInfoColorSpace
 import com.github.panpf.sketch.test.utils.toRequestContext
+import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.toShortInfoString
 import com.github.panpf.tools4a.device.Devicex
 import kotlinx.coroutines.test.runTest
@@ -121,11 +124,21 @@ class FFmpegVideoFrameDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = FFmpegVideoFrameDecoder.Factory()
 
-        ImageRequest(context, ComposeResImageFiles.mp4.uri)
+        ImageRequest(context, ComposeResImageFiles.rotationMp4.uri)
             .createDecoderOrDefault(sketch, factory)
             .apply {
                 assertEquals(
-                    expected = ImageInfo(500, 250, "video/mp4"),
+                    expected = ImageInfo(1080, 1920, "video/mp4"),
+                    actual = imageInfo
+                )
+            }
+
+        ImageRequest(context, ComposeResImageFiles.rotationMp4.uri) {
+            preferVideoCover()
+        }.createDecoderOrDefault(sketch, factory)
+            .apply {
+                assertEquals(
+                    expected = ImageInfo(1600, 1200, "video/mp4"),
                     actual = imageInfo
                 )
             }
@@ -141,33 +154,60 @@ class FFmpegVideoFrameDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = FFmpegVideoFrameDecoder.Factory()
 
-        ImageRequest(context, ComposeResImageFiles.mp4.uri)
+        ImageRequest(context, ComposeResImageFiles.rotationMp4.uri)
             .decode(sketch, factory).apply {
                 assertEquals(
-                    expected = "Bitmap(500x250,ARGB_8888${shortInfoColorSpace("SRGB")})",
+                    expected = "Bitmap(1080x1920,ARGB_8888${shortInfoColorSpace("SRGB")})",
                     actual = image.getBitmapOrThrow().toShortInfoString()
                 )
                 assertEquals(
-                    expected = "ImageInfo(500x250,'video/mp4')",
+                    expected = "ImageInfo(1080x1920,'video/mp4')",
                     actual = imageInfo.toShortString()
                 )
                 assertEquals(expected = LOCAL, actual = dataFrom)
                 assertNull(actual = transformeds)
             }
 
-        ImageRequest(context, ComposeResImageFiles.mp4.uri) {
+        ImageRequest(context, ComposeResImageFiles.rotationMp4.uri) {
             resize(300, 300, LESS_PIXELS)
         }.decode(sketch, factory).apply {
             assertEquals(
-                expected = "Bitmap(250x125,ARGB_8888${shortInfoColorSpace("SRGB")})",
+                expected = "Bitmap(135x240,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 actual = image.getBitmapOrThrow().toShortInfoString()
             )
             assertEquals(
-                expected = "ImageInfo(500x250,'video/mp4')",
+                expected = "ImageInfo(1080x1920,'video/mp4')",
                 actual = imageInfo.toShortString()
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
             assertEquals(expected = listOf(createInSampledTransformed(2)), transformeds)
+        }
+
+        ImageRequest(context, ComposeResImageFiles.rotationMp4.uri) {
+            preferVideoCover()
+        }.decode(sketch, factory).apply {
+            assertEquals(
+                expected = Size(1600, 1200),
+                actual = image.getBitmapOrThrow().size
+            )
+            assertEquals(
+                expected = "ImageInfo(1600x1200,'video/mp4')",
+                actual = imageInfo.toShortString()
+            )
+        }
+
+        ImageRequest(context, ComposeResImageFiles.rotationMp4.uri) {
+            preferVideoCover()
+            resize(300, 300, LESS_PIXELS)
+        }.decode(sketch, factory).apply {
+            assertEquals(
+                expected = Size(200, 150),
+                actual = image.getBitmapOrThrow().size
+            )
+            assertEquals(
+                expected = "ImageInfo(1600x1200,'video/mp4')",
+                actual = imageInfo.toShortString()
+            )
         }
 
         assertFailsWith(NullPointerException::class) {

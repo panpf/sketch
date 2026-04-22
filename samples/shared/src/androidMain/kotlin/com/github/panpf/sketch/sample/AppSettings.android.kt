@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.sample.util.SettingsStateFlow
 import com.github.panpf.sketch.sample.util.booleanSettingsStateFlow
+import com.github.panpf.sketch.sample.util.floatSettingsStateFlow
 import com.github.panpf.sketch.sample.util.stringSettingsStateFlow
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
@@ -15,6 +16,17 @@ actual class AppSettings actual constructor(context: PlatformContext) : BaseAppS
 
     val preferQualityOverSpeed: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "preferQualityOverSpeed", false)
+    }
+
+
+    // -------------------------------------- video --------------------------------------
+
+    val videoFramePercent: SettingsStateFlow<Float> by lazy {
+        floatSettingsStateFlow(context, "videoFramePercent", 0f)
+    }
+
+    val preferVideoCover: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow(context, "preferVideoCover", false)
     }
 
 

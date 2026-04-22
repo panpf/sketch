@@ -22,32 +22,69 @@ import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.preferVideoCover
 import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFramePercent
+import com.github.panpf.sketch.source.ByteArrayDataSource
+import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.resolveRequestVideoFrameMicros
 import com.github.panpf.sketch.util.toBitmap
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.reinterpret
+import kotlinx.cinterop.usePinned
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.AVFoundation.AVAsset
 import platform.AVFoundation.AVAssetImageGenerator
+import platform.AVFoundation.AVKeyValueStatusLoaded
+import platform.AVFoundation.AVMetadataCommonKeyArtwork
+import platform.AVFoundation.AVMetadataItem
+import platform.AVFoundation.AVMetadataKeySpaceCommon
+import platform.AVFoundation.commonMetadata
+import platform.AVFoundation.metadataItemsFromArray
 import platform.CoreGraphics.CGImageRef
 import platform.CoreGraphics.CGSizeMake
 import platform.CoreMedia.CMTimeMakeWithSeconds
+import platform.Foundation.NSData
 import platform.UIKit.UIImage
+import platform.darwin.ByteVar
+import platform.posix.memcpy
+import kotlin.coroutines.resume
 
 @OptIn(ExperimentalForeignApi::class)
 abstract class BaseAvAssetVideoFrameDecodeHelper(
     val request: ImageRequest,
+    val mimeType: String,
 ) : DecodeHelper {
 
-    val avAsset: AVAsset by lazy { requestVideoAsset() }
+    val asset: AVAsset by lazy { requestVideoAsset() }
 
-    override val imageInfo: ImageInfo by lazy { readImageInfo() }
-    override val supportRegion: Boolean = false
+    private val coverHelper by lazy {
+        val preferVideoCover = request.preferVideoCover
+        val coverBytes = if (preferVideoCover == true)
+            getEmbeddedVideoCover(asset) else null
+        coverBytes?.let {
+            val dataSource = ByteArrayDataSource(it, DataFrom.LOCAL)
+            SkiaDecodeHelper(request, dataSource)
+        }
+    }
+
+    override val imageInfo: ImageInfo by lazy {
+        coverHelper?.imageInfo?.copy(mimeType = mimeType) ?: readImageInfo()
+    }
+    override val supportRegion: Boolean
+        get() = coverHelper?.supportRegion ?: false
 
     override fun decode(sampleSize: Int): Image {
-        val durationMicros = avAsset.durationMicrosOrNull()
+        val coverHelper = coverHelper
+        if (coverHelper != null) {
+            return coverHelper.decode(sampleSize)
+        }
+
+        val durationMicros = asset.durationMicrosOrNull()
         val videoFrameMicros = request.videoFrameMicros
         val videoFramePercent = request.videoFramePercent
         val requestFrameMicros = resolveRequestVideoFrameMicros(
@@ -74,7 +111,8 @@ abstract class BaseAvAssetVideoFrameDecodeHelper(
     }
 
     override fun decodeRegion(region: Rect, sampleSize: Int): Image {
-        throw UnsupportedOperationException("Unsupported region decode")
+        return coverHelper?.decodeRegion(region, sampleSize)
+            ?: throw UnsupportedOperationException("Unsupported region decode")
     }
 
     abstract fun readImageInfo(): ImageInfo
@@ -82,7 +120,7 @@ abstract class BaseAvAssetVideoFrameDecodeHelper(
     abstract fun requestVideoAsset(): AVAsset
 
     fun decodeFrame(frameMicros: Long, targetSize: Size?): CGImageRef? {
-        val generator = AVAssetImageGenerator(asset = avAsset).apply {
+        val generator = AVAssetImageGenerator(asset = asset).apply {
             appliesPreferredTrackTransform = true
             if (targetSize != null) {
                 maximumSize = CGSizeMake(
@@ -96,6 +134,35 @@ abstract class BaseAvAssetVideoFrameDecodeHelper(
             preferredTimescale = 600,
         )
         return generator.copyCGImageAtTime(requestTime, null, null)
+    }
+
+    private fun getEmbeddedVideoCover(asset: AVAsset): ByteArray? {
+        val nsData = runBlocking {
+            suspendCancellableCoroutine { continuation ->
+                asset.loadValuesAsynchronouslyForKeys(listOf("commonMetadata")) {
+                    val status = asset.statusOfValueForKey("commonMetadata", null)
+                    if (status == AVKeyValueStatusLoaded) {
+                        val artworkItems = AVMetadataItem.metadataItemsFromArray(
+                            asset.commonMetadata,
+                            withKey = AVMetadataCommonKeyArtwork,
+                            keySpace = AVMetadataKeySpaceCommon
+                        )
+                        val artworkItem = artworkItems.firstOrNull() as? AVMetadataItem
+                        val data = artworkItem?.value as? NSData
+                        continuation.resume(data)
+                    } else {
+                        continuation.resume(null)
+                    }
+                }
+            }
+        }
+        if (nsData == null || nsData.length.toLong() == 0L) return null
+        val byteArray = ByteArray(nsData.length.toInt())
+        val byteVars = nsData.bytes?.reinterpret<ByteVar>()
+        byteArray.usePinned { pinned ->
+            memcpy(pinned.addressOf(0), byteVars, nsData.length)
+        }
+        return byteArray
     }
 
     override fun close() = Unit

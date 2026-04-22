@@ -65,6 +65,7 @@ import com.github.panpf.sketch.sample.ui.LocalNavBackStack
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.components.MyDialog
 import com.github.panpf.sketch.sample.ui.components.TurnPageIndicator
+import com.github.panpf.sketch.sample.ui.components.composablePlatformAsyncImageSettings
 import com.github.panpf.sketch.sample.ui.components.rememberMyDialogState
 import com.github.panpf.sketch.sample.ui.setting.AppSettingsList
 import com.github.panpf.sketch.sample.ui.setting.Page.VIEWER
@@ -156,6 +157,7 @@ fun PhotoPagerBackground(
     // Cache the image size to prevent reloading the image when the window size changes
     val windowsSize = windowContainerSize()
     val imageSize = remember { (windowsSize / 4).toSketchSize() }
+    val appSettings: AppSettings = koinInject()
     val request = ComposableImageRequest(imageUri) {
         resize(size = imageSize, precision = SMALLER_SIZE)
         addTransformations(BlurTransformation(radius = 20, maskColor = 0x63000000))
@@ -167,6 +169,7 @@ fun PhotoPagerBackground(
         components {
             add(PaletteInterceptor())
         }
+        merge(composablePlatformAsyncImageSettings(appSettings))
     }
     AsyncImage(
         request = request,

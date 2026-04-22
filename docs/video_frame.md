@@ -57,7 +57,10 @@ ImageRequest(context, "file:///sdcard/sample.mp4") {
     videoFrameMillis(10000)
 
     // or get the frames in between
-    videoFramePercentDuration(0.5f)
+    videoFramePercent(0.5f)
+
+    // Get embedded covers first
+    preferVideoCover(true)
 
     // Set the processing strategy when frames cannot be extracted at the specified time. Android platform only
     videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)

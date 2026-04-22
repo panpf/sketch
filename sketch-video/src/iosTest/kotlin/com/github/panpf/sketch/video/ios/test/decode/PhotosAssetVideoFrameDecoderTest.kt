@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.video.ios.test.decode
 
 import com.github.panpf.sketch.ComponentRegistry
+import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.ImageInvalidException
 import com.github.panpf.sketch.decode.PhotosAssetVideoFrameDecoder
@@ -9,6 +10,7 @@ import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.fetch.newPhotosAssetUri
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.preferVideoCover
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.source.PhotosAssetDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -82,11 +84,11 @@ class PhotosAssetVideoFrameDecoderTest {
             resource = PHAssetResource()
         )
 
-        PhotosAssetVideoFrameDecoder(requestContext, dataSource, "image/jpeg")
+        PhotosAssetVideoFrameDecoder(requestContext, dataSource, "video/mp4")
         PhotosAssetVideoFrameDecoder(
             requestContext = requestContext,
             dataSource = dataSource,
-            mimeType = "image/jpeg"
+            mimeType = "video/mp4"
         )
     }
 
@@ -96,7 +98,6 @@ class PhotosAssetVideoFrameDecoderTest {
 
         val localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001"
         val request = ImageRequest(context, newPhotosAssetUri(localIdentifier))
-        val requestContext = request.toRequestContext(sketch)
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,
             preferredThumbnail = true,
@@ -104,17 +105,27 @@ class PhotosAssetVideoFrameDecoderTest {
             asset = PHAsset(),
             resource = PHAssetResource()
         )
+
+        // [Test not completed] Because the test environment cannot access the photo library, the test cannot be completed.
         val decoder = PhotosAssetVideoFrameDecoder(
-            requestContext = requestContext,
+            requestContext = request.toRequestContext(sketch),
             dataSource = dataSource,
-            mimeType = "image/jpeg"
+            mimeType = "video/mp4"
+        )
+        assertEquals(
+            expected = ImageInfo(width = 0, height = 0, mimeType = "video/mp4"),
+            actual = decoder.imageInfo
         )
 
         // [Test not completed] Because the test environment cannot access the photo library, the test cannot be completed.
-        assertEquals(
-            expected = ImageInfo(width = 0, height = 0, mimeType = "image/jpeg"),
-            actual = decoder.imageInfo
+        val decoder2 = PhotosAssetVideoFrameDecoder(
+            requestContext = request.newRequest { preferVideoCover() }.toRequestContext(sketch),
+            dataSource = dataSource,
+            mimeType = "video/mp4"
         )
+        assertFailsWith(DecodeException::class) {
+            decoder2.imageInfo
+        }
     }
 
     @Test
@@ -123,7 +134,6 @@ class PhotosAssetVideoFrameDecoderTest {
 
         val localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001"
         val request = ImageRequest(context, newPhotosAssetUri(localIdentifier))
-        val requestContext = request.toRequestContext(sketch)
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,
             preferredThumbnail = true,
@@ -131,15 +141,23 @@ class PhotosAssetVideoFrameDecoderTest {
             asset = PHAsset(),
             resource = PHAssetResource()
         )
-        val decoder = PhotosAssetVideoFrameDecoder(
-            requestContext = requestContext,
-            dataSource = dataSource,
-            mimeType = "image/jpeg"
-        )
 
         // [Test not completed] Because the test environment cannot access the photo library, the test cannot be completed.
         assertFailsWith(ImageInvalidException::class) {
-            decoder.decode()
+            PhotosAssetVideoFrameDecoder(
+                requestContext = request.toRequestContext(sketch),
+                dataSource = dataSource,
+                mimeType = "video/mp4"
+            ).decode()
+        }
+
+        // [Test not completed] Because the test environment cannot access the photo library, the test cannot be completed.
+        assertFailsWith(DecodeException::class) {
+            PhotosAssetVideoFrameDecoder(
+                requestContext = request.newRequest { preferVideoCover() }.toRequestContext(sketch),
+                dataSource = dataSource,
+                mimeType = "video/mp4"
+            ).decode()
         }
     }
 
@@ -160,12 +178,12 @@ class PhotosAssetVideoFrameDecoderTest {
         val element1 = PhotosAssetVideoFrameDecoder(
             requestContext = requestContext,
             dataSource = dataSource,
-            mimeType = "image/jpeg"
+            mimeType = "video/mp4"
         )
         val element11 = PhotosAssetVideoFrameDecoder(
             requestContext = requestContext,
             dataSource = dataSource,
-            mimeType = "image/jpeg"
+            mimeType = "video/mp4"
         )
 
         assertNotEquals(illegal = element1, actual = element11)
@@ -191,7 +209,7 @@ class PhotosAssetVideoFrameDecoderTest {
         val decoder = PhotosAssetVideoFrameDecoder(
             requestContext = requestContext,
             dataSource = dataSource,
-            mimeType = "image/jpeg"
+            mimeType = "video/mp4"
         )
         assertTrue(
             actual = decoder.toString().contains("PhotosAssetVideoFrameDecoder"),
@@ -234,7 +252,7 @@ class PhotosAssetVideoFrameDecoderTest {
                 requestContext = requestContext,
                 fetchResult = FetchResult(
                     dataSource = FileDataSource(
-                        path = "".toPath(),
+                        path = "/sdcard/sample_rotation.mp4".toPath(),
                         fileSystem = sketch.fileSystem
                     ),
                     mimeType = "video/mp4"

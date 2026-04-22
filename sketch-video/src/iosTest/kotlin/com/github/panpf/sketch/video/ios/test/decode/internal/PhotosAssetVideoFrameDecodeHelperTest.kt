@@ -5,6 +5,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.PhotosAssetVideoFrameDecodeHelper
 import com.github.panpf.sketch.fetch.newPhotosAssetUri
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.preferVideoCover
 import com.github.panpf.sketch.source.PhotosAssetDataSource
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Rect
@@ -33,11 +34,11 @@ class PhotosAssetVideoFrameDecodeHelperTest {
             resource = PHAssetResource()
         )
 
-        PhotosAssetVideoFrameDecodeHelper(request, dataSource, "image/jpeg")
+        PhotosAssetVideoFrameDecodeHelper(request, dataSource, "video/mp4")
         PhotosAssetVideoFrameDecodeHelper(
             request = request,
             dataSource = dataSource,
-            mimeType = "image/jpeg"
+            mimeType = "video/mp4"
         )
     }
 
@@ -53,17 +54,27 @@ class PhotosAssetVideoFrameDecodeHelperTest {
             asset = PHAsset(),
             resource = PHAssetResource()
         )
-        val decoder = PhotosAssetVideoFrameDecodeHelper(
+
+        // [Test not completed] Because the test environment cannot access the photo library, the test cannot be completed.
+        val decodeHelper = PhotosAssetVideoFrameDecodeHelper(
             request = request,
             dataSource = dataSource,
-            mimeType = "image/jpeg"
+            mimeType = "video/mp4"
+        )
+        assertEquals(
+            expected = ImageInfo(width = 0, height = 0, mimeType = "video/mp4"),
+            actual = decodeHelper.imageInfo
         )
 
         // [Test not completed] Because the test environment cannot access the photo library, the test cannot be completed.
-        assertEquals(
-            expected = ImageInfo(width = 0, height = 0, mimeType = "image/jpeg"),
-            actual = decoder.imageInfo
+        val decoderHelper2 = PhotosAssetVideoFrameDecodeHelper(
+            request = request.newRequest { preferVideoCover() },
+            dataSource = dataSource,
+            mimeType = "video/mp4"
         )
+        assertFailsWith(DecodeException::class) {
+            decoderHelper2.imageInfo
+        }
     }
 
     @Test
@@ -78,12 +89,22 @@ class PhotosAssetVideoFrameDecodeHelperTest {
             asset = PHAsset(),
             resource = PHAssetResource()
         )
-        val decoder = PhotosAssetVideoFrameDecodeHelper(
+
+        val decoderHelper = PhotosAssetVideoFrameDecodeHelper(
             request = request,
             dataSource = dataSource,
-            mimeType = "image/jpeg"
+            mimeType = "video/mp4"
         )
-        assertFalse(decoder.supportRegion)
+        assertFalse(decoderHelper.supportRegion)
+
+        val decoderHelper2 = PhotosAssetVideoFrameDecodeHelper(
+            request = request.newRequest { preferVideoCover() },
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
+        assertFailsWith(DecodeException::class) {
+            decoderHelper2.supportRegion
+        }
     }
 
     @Test
@@ -98,15 +119,25 @@ class PhotosAssetVideoFrameDecodeHelperTest {
             asset = PHAsset(),
             resource = PHAssetResource()
         )
-        val decoder = PhotosAssetVideoFrameDecodeHelper(
-            request = request,
-            dataSource = dataSource,
-            mimeType = "image/jpeg"
-        )
 
         // [Test not completed] Because the test environment cannot access the photo library, the test cannot be completed.
+        val decoderHelper = PhotosAssetVideoFrameDecodeHelper(
+            request = request,
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
         assertFailsWith(DecodeException::class) {
-            decoder.decode(1)
+            decoderHelper.decode(1)
+        }
+
+        // [Test not completed] Because the test environment cannot access the photo library, the test cannot be completed.
+        val decoderHelper2 = PhotosAssetVideoFrameDecodeHelper(
+            request = request.newRequest { preferVideoCover() },
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
+        assertFailsWith(DecodeException::class) {
+            decoderHelper2.decode(1)
         }
     }
 
@@ -122,15 +153,25 @@ class PhotosAssetVideoFrameDecodeHelperTest {
             asset = PHAsset(),
             resource = PHAssetResource()
         )
-        val decoder = PhotosAssetVideoFrameDecodeHelper(
-            request = request,
-            dataSource = dataSource,
-            mimeType = "image/jpeg"
-        )
 
         // [Test not completed] Because the test environment cannot access the photo library, the test cannot be completed.
+        val decoderHelper = PhotosAssetVideoFrameDecodeHelper(
+            request = request,
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
         assertFailsWith(UnsupportedOperationException::class) {
-            decoder.decodeRegion(Rect(100, 200, 200, 100), 1)
+            decoderHelper.decodeRegion(Rect(100, 200, 200, 100), 1)
+        }
+
+        // [Test not completed] Because the test environment cannot access the photo library, the test cannot be completed.
+        val decoderHelper2 = PhotosAssetVideoFrameDecodeHelper(
+            request = request.newRequest { preferVideoCover() },
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
+        assertFailsWith(DecodeException::class) {
+            decoderHelper2.decodeRegion(Rect(100, 200, 200, 100), 1)
         }
     }
 
@@ -149,12 +190,12 @@ class PhotosAssetVideoFrameDecodeHelperTest {
         val element1 = PhotosAssetVideoFrameDecodeHelper(
             request = request,
             dataSource = dataSource,
-            mimeType = "image/jpeg"
+            mimeType = "video/mp4"
         )
         val element11 = PhotosAssetVideoFrameDecodeHelper(
             request = request,
             dataSource = dataSource,
-            mimeType = "image/jpeg"
+            mimeType = "video/mp4"
         )
 
         assertNotEquals(illegal = element1, actual = element11)
@@ -175,15 +216,18 @@ class PhotosAssetVideoFrameDecodeHelperTest {
             asset = PHAsset(),
             resource = PHAssetResource()
         )
-        val decoder = PhotosAssetVideoFrameDecodeHelper(
+        val decoderHelper = PhotosAssetVideoFrameDecodeHelper(
             request = request,
             dataSource = dataSource,
-            mimeType = "image/jpeg"
+            mimeType = "video/mp4"
         )
         assertTrue(
-            actual = decoder.toString().contains("PhotosAssetVideoFrameDecodeHelper"),
-            message = decoder.toString()
+            actual = decoderHelper.toString().contains("PhotosAssetVideoFrameDecodeHelper"),
+            message = decoderHelper.toString()
         )
-        assertTrue(actual = decoder.toString().contains("@"), message = decoder.toString())
+        assertTrue(
+            actual = decoderHelper.toString().contains("@"),
+            message = decoderHelper.toString()
+        )
     }
 }
