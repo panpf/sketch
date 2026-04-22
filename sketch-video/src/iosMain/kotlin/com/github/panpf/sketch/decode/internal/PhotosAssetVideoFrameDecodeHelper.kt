@@ -48,18 +48,18 @@ class PhotosAssetVideoFrameDecodeHelper(
 
     override fun requestVideoAsset(): AVAsset = runBlocking {
         suspendCancellableCoroutine { continuation ->
-            val networkAccessAllowed = dataSource.networkAccessAllowed
+            val allowNetworkAccess = dataSource.allowNetworkAccess
             PHImageManager.defaultManager().requestAVAssetForVideo(
                 asset = dataSource.asset,
                 options = PHVideoRequestOptions().apply {
-                    this.networkAccessAllowed = networkAccessAllowed
+                    this.networkAccessAllowed = allowNetworkAccess
                 },
                 resultHandler = { result, _, info ->
                     if (result != null) {
                         continuation.resumeWith(Result.success(result))
                     } else {
                         val message =
-                            "requestAVAssetForVideo return null. networkAccessAllowed='$networkAccessAllowed', info='${info?.toString()}'"
+                            "requestAVAssetForVideo return null. allowNetworkAccess='$allowNetworkAccess', info='${info?.toString()}'"
                         continuation.resumeWithException(DecodeException(message))
                     }
                 },

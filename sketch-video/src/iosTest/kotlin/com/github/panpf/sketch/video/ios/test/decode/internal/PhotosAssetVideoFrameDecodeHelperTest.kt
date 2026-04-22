@@ -28,7 +28,7 @@ class PhotosAssetVideoFrameDecodeHelperTest {
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         )
@@ -49,7 +49,7 @@ class PhotosAssetVideoFrameDecodeHelperTest {
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         )
@@ -74,7 +74,7 @@ class PhotosAssetVideoFrameDecodeHelperTest {
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         )
@@ -94,7 +94,7 @@ class PhotosAssetVideoFrameDecodeHelperTest {
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         )
@@ -118,7 +118,7 @@ class PhotosAssetVideoFrameDecodeHelperTest {
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         )
@@ -142,7 +142,7 @@ class PhotosAssetVideoFrameDecodeHelperTest {
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         )
@@ -171,7 +171,7 @@ class PhotosAssetVideoFrameDecodeHelperTest {
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         )

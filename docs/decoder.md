@@ -108,13 +108,13 @@ for [SkiaDecoder] to decode
 
 If you also want to cache the raw data of the images from the Photos Library into the download cache
 and wrap them into a FileDataSource for [SkiaDecoder] to decode, you can do so using the
-`preferredFileCacheForImagePhotosAsset()` function, as follows:
+`preferFileCacheForImagePhotosAsset()` function, as follows:
 
 ```kotlin
 val imageUri = newPhotosAssetUri("DB16113B-984A-4D12-B4D0-50FC46066781/L0/001")
 val request = ImageRequest(context, imageUri) {
     useSkiaForImagePhotosAsset(true)
-    preferredFileCacheForImagePhotosAsset(true)
+    preferFileCacheForImagePhotosAsset(true)
 }
 AsyncImage(
     request = request,

@@ -77,7 +77,7 @@ class PhotosAssetVideoFrameDecoderTest {
         val dataSource = PhotosAssetDataSource(
             localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001",
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         )
@@ -100,7 +100,7 @@ class PhotosAssetVideoFrameDecoderTest {
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         )
@@ -127,7 +127,7 @@ class PhotosAssetVideoFrameDecoderTest {
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         )
@@ -153,7 +153,7 @@ class PhotosAssetVideoFrameDecoderTest {
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         )
@@ -184,7 +184,7 @@ class PhotosAssetVideoFrameDecoderTest {
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         )
@@ -224,7 +224,7 @@ class PhotosAssetVideoFrameDecoderTest {
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         )

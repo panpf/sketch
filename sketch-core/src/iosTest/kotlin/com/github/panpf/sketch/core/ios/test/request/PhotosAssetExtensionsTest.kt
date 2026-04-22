@@ -3,16 +3,13 @@ package com.github.panpf.sketch.core.ios.test.request
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.allowNetworkAccessPhotosAsset
-import com.github.panpf.sketch.request.isNetworkAccessPhotosAssetAllowed
-import com.github.panpf.sketch.request.isPreferredFileCacheForImagePhotosAsset
-import com.github.panpf.sketch.request.isPreferredThumbnailForPhotosAsset
-import com.github.panpf.sketch.request.isUseSkiaForImagePhotosAsset
+import com.github.panpf.sketch.request.preferFileCacheForImagePhotosAsset
 import com.github.panpf.sketch.request.preferThumbnailForPhotosAsset
-import com.github.panpf.sketch.request.preferredFileCacheForImagePhotosAsset
 import com.github.panpf.sketch.request.useSkiaForImagePhotosAsset
 import com.github.panpf.sketch.test.utils.getTestContext
 import kotlin.test.Test
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class PhotosAssetExtensionsTest {
@@ -22,43 +19,43 @@ class PhotosAssetExtensionsTest {
         val context = getTestContext()
 
         ImageRequest(context, "http://sample.com/sample.jpg").apply {
-            assertFalse(isPreferredThumbnailForPhotosAsset)
+            assertNull(preferThumbnailForPhotosAsset)
         }.newRequest {
             preferThumbnailForPhotosAsset()
         }.apply {
-            assertTrue(isPreferredThumbnailForPhotosAsset)
+            assertTrue(preferThumbnailForPhotosAsset!!)
         }.newRequest {
             preferThumbnailForPhotosAsset(null)
         }.apply {
-            assertFalse(isPreferredThumbnailForPhotosAsset)
+            assertNull(preferThumbnailForPhotosAsset)
         }.newRequest {
             preferThumbnailForPhotosAsset(true)
         }.apply {
-            assertTrue(isPreferredThumbnailForPhotosAsset)
+            assertTrue(preferThumbnailForPhotosAsset!!)
         }.newRequest {
             preferThumbnailForPhotosAsset(false)
         }.apply {
-            assertFalse(isPreferredThumbnailForPhotosAsset)
+            assertFalse(preferThumbnailForPhotosAsset!!)
         }
 
         ImageOptions().apply {
-            assertFalse(isPreferredThumbnailForPhotosAsset)
+            assertNull(preferThumbnailForPhotosAsset)
         }.newOptions {
             preferThumbnailForPhotosAsset()
         }.apply {
-            assertTrue(isPreferredThumbnailForPhotosAsset)
+            assertTrue(preferThumbnailForPhotosAsset!!)
         }.newOptions {
             preferThumbnailForPhotosAsset(null)
         }.apply {
-            assertFalse(isPreferredThumbnailForPhotosAsset)
+            assertNull(preferThumbnailForPhotosAsset)
         }.newOptions {
             preferThumbnailForPhotosAsset(true)
         }.apply {
-            assertTrue(isPreferredThumbnailForPhotosAsset)
+            assertTrue(preferThumbnailForPhotosAsset!!)
         }.newOptions {
             preferThumbnailForPhotosAsset(false)
         }.apply {
-            assertFalse(isPreferredThumbnailForPhotosAsset)
+            assertFalse(preferThumbnailForPhotosAsset!!)
         }
     }
 
@@ -67,43 +64,43 @@ class PhotosAssetExtensionsTest {
         val context = getTestContext()
 
         ImageRequest(context, "http://sample.com/sample.jpg").apply {
-            assertFalse(isNetworkAccessPhotosAssetAllowed)
+            assertNull(allowNetworkAccessPhotosAsset)
         }.newRequest {
             allowNetworkAccessPhotosAsset()
         }.apply {
-            assertTrue(isNetworkAccessPhotosAssetAllowed)
+            assertTrue(allowNetworkAccessPhotosAsset!!)
         }.newRequest {
             allowNetworkAccessPhotosAsset(null)
         }.apply {
-            assertFalse(isNetworkAccessPhotosAssetAllowed)
+            assertNull(allowNetworkAccessPhotosAsset)
         }.newRequest {
             allowNetworkAccessPhotosAsset(true)
         }.apply {
-            assertTrue(isNetworkAccessPhotosAssetAllowed)
+            assertTrue(allowNetworkAccessPhotosAsset!!)
         }.newRequest {
             allowNetworkAccessPhotosAsset(false)
         }.apply {
-            assertFalse(isNetworkAccessPhotosAssetAllowed)
+            assertFalse(allowNetworkAccessPhotosAsset!!)
         }
 
         ImageOptions().apply {
-            assertFalse(isNetworkAccessPhotosAssetAllowed)
+            assertNull(allowNetworkAccessPhotosAsset)
         }.newOptions {
             allowNetworkAccessPhotosAsset()
         }.apply {
-            assertTrue(isNetworkAccessPhotosAssetAllowed)
+            assertTrue(allowNetworkAccessPhotosAsset!!)
         }.newOptions {
             allowNetworkAccessPhotosAsset(null)
         }.apply {
-            assertFalse(isNetworkAccessPhotosAssetAllowed)
+            assertNull(allowNetworkAccessPhotosAsset)
         }.newOptions {
             allowNetworkAccessPhotosAsset(true)
         }.apply {
-            assertTrue(isNetworkAccessPhotosAssetAllowed)
+            assertTrue(allowNetworkAccessPhotosAsset!!)
         }.newOptions {
             allowNetworkAccessPhotosAsset(false)
         }.apply {
-            assertFalse(isNetworkAccessPhotosAssetAllowed)
+            assertFalse(allowNetworkAccessPhotosAsset!!)
         }
     }
 
@@ -112,88 +109,88 @@ class PhotosAssetExtensionsTest {
         val context = getTestContext()
 
         ImageRequest(context, "http://sample.com/sample.jpg").apply {
-            assertFalse(isUseSkiaForImagePhotosAsset)
+            assertNull(useSkiaForImagePhotosAsset)
         }.newRequest {
             useSkiaForImagePhotosAsset()
         }.apply {
-            assertTrue(isUseSkiaForImagePhotosAsset)
+            assertTrue(useSkiaForImagePhotosAsset!!)
         }.newRequest {
             useSkiaForImagePhotosAsset(null)
         }.apply {
-            assertFalse(isUseSkiaForImagePhotosAsset)
+            assertNull(useSkiaForImagePhotosAsset)
         }.newRequest {
             useSkiaForImagePhotosAsset(true)
         }.apply {
-            assertTrue(isUseSkiaForImagePhotosAsset)
+            assertTrue(useSkiaForImagePhotosAsset!!)
         }.newRequest {
             useSkiaForImagePhotosAsset(false)
         }.apply {
-            assertFalse(isUseSkiaForImagePhotosAsset)
+            assertFalse(useSkiaForImagePhotosAsset!!)
         }
 
         ImageOptions().apply {
-            assertFalse(isUseSkiaForImagePhotosAsset)
+            assertNull(useSkiaForImagePhotosAsset)
         }.newOptions {
             useSkiaForImagePhotosAsset()
         }.apply {
-            assertTrue(isUseSkiaForImagePhotosAsset)
+            assertTrue(useSkiaForImagePhotosAsset!!)
         }.newOptions {
             useSkiaForImagePhotosAsset(null)
         }.apply {
-            assertFalse(isUseSkiaForImagePhotosAsset)
+            assertNull(useSkiaForImagePhotosAsset)
         }.newOptions {
             useSkiaForImagePhotosAsset(true)
         }.apply {
-            assertTrue(isUseSkiaForImagePhotosAsset)
+            assertTrue(useSkiaForImagePhotosAsset!!)
         }.newOptions {
             useSkiaForImagePhotosAsset(false)
         }.apply {
-            assertFalse(isUseSkiaForImagePhotosAsset)
+            assertFalse(useSkiaForImagePhotosAsset!!)
         }
     }
 
     @Test
-    fun testPreferredFileCacheForImagePhotosAsset() {
+    fun testPreferFileCacheForImagePhotosAsset() {
         val context = getTestContext()
 
         ImageRequest(context, "http://sample.com/sample.jpg").apply {
-            assertFalse(isPreferredFileCacheForImagePhotosAsset)
+            assertNull(preferFileCacheForImagePhotosAsset)
         }.newRequest {
-            preferredFileCacheForImagePhotosAsset()
+            preferFileCacheForImagePhotosAsset()
         }.apply {
-            assertTrue(isPreferredFileCacheForImagePhotosAsset)
+            assertTrue(preferFileCacheForImagePhotosAsset!!)
         }.newRequest {
-            preferredFileCacheForImagePhotosAsset(null)
+            preferFileCacheForImagePhotosAsset(null)
         }.apply {
-            assertFalse(isPreferredFileCacheForImagePhotosAsset)
+            assertNull(preferFileCacheForImagePhotosAsset)
         }.newRequest {
-            preferredFileCacheForImagePhotosAsset(true)
+            preferFileCacheForImagePhotosAsset(true)
         }.apply {
-            assertTrue(isPreferredFileCacheForImagePhotosAsset)
+            assertTrue(preferFileCacheForImagePhotosAsset!!)
         }.newRequest {
-            preferredFileCacheForImagePhotosAsset(false)
+            preferFileCacheForImagePhotosAsset(false)
         }.apply {
-            assertFalse(isPreferredFileCacheForImagePhotosAsset)
+            assertFalse(preferFileCacheForImagePhotosAsset!!)
         }
 
         ImageOptions().apply {
-            assertFalse(isPreferredFileCacheForImagePhotosAsset)
+            assertNull(preferFileCacheForImagePhotosAsset)
         }.newOptions {
-            preferredFileCacheForImagePhotosAsset()
+            preferFileCacheForImagePhotosAsset()
         }.apply {
-            assertTrue(isPreferredFileCacheForImagePhotosAsset)
+            assertTrue(preferFileCacheForImagePhotosAsset!!)
         }.newOptions {
-            preferredFileCacheForImagePhotosAsset(null)
+            preferFileCacheForImagePhotosAsset(null)
         }.apply {
-            assertFalse(isPreferredFileCacheForImagePhotosAsset)
+            assertNull(preferFileCacheForImagePhotosAsset)
         }.newOptions {
-            preferredFileCacheForImagePhotosAsset(true)
+            preferFileCacheForImagePhotosAsset(true)
         }.apply {
-            assertTrue(isPreferredFileCacheForImagePhotosAsset)
+            assertTrue(preferFileCacheForImagePhotosAsset!!)
         }.newOptions {
-            preferredFileCacheForImagePhotosAsset(false)
+            preferFileCacheForImagePhotosAsset(false)
         }.apply {
-            assertFalse(isPreferredFileCacheForImagePhotosAsset)
+            assertFalse(preferFileCacheForImagePhotosAsset!!)
         }
     }
 }

@@ -60,16 +60,16 @@ fun ImageOptions.Builder.preferThumbnailForPhotosAsset(preferred: Boolean? = tru
  *
  * @see com.github.panpf.sketch.core.ios.test.request.PhotosAssetExtensionsTest.testPreferThumbnailForPhotosAsset
  */
-val ImageRequest.isPreferredThumbnailForPhotosAsset: Boolean
-    get() = extras?.value<Boolean>(PREFERRED_THUMBNAIL_FOR_PHOTOS_ASSET_KEY) == true
+val ImageRequest.preferThumbnailForPhotosAsset: Boolean?
+    get() = extras?.value<Boolean>(PREFERRED_THUMBNAIL_FOR_PHOTOS_ASSET_KEY)
 
 /**
  * Whether to prefer the thumbnail of the Photos asset.
  *
  * @see com.github.panpf.sketch.core.ios.test.request.PhotosAssetExtensionsTest.testPreferThumbnailForPhotosAsset
  */
-val ImageOptions.isPreferredThumbnailForPhotosAsset: Boolean
-    get() = extras?.value<Boolean>(PREFERRED_THUMBNAIL_FOR_PHOTOS_ASSET_KEY) == true
+val ImageOptions.preferThumbnailForPhotosAsset: Boolean?
+    get() = extras?.value<Boolean>(PREFERRED_THUMBNAIL_FOR_PHOTOS_ASSET_KEY)
 
 
 /**
@@ -105,16 +105,16 @@ fun ImageOptions.Builder.allowNetworkAccessPhotosAsset(allowed: Boolean? = true)
  *
  * @see com.github.panpf.sketch.core.ios.test.request.PhotosAssetExtensionsTest.testAllowNetworkAccessPhotosAsset
  */
-val ImageRequest.isNetworkAccessPhotosAssetAllowed: Boolean
-    get() = extras?.value<Boolean>(NETWORK_ACCESS_PHOTOS_ASSET_ALLOWED_KEY) == true
+val ImageRequest.allowNetworkAccessPhotosAsset: Boolean?
+    get() = extras?.value<Boolean>(NETWORK_ACCESS_PHOTOS_ASSET_ALLOWED_KEY)
 
 /**
  * Whether to allow access to images on the network when loading photo resources, such as downloading photos from iCloud.
  *
  * @see com.github.panpf.sketch.core.ios.test.request.PhotosAssetExtensionsTest.testAllowNetworkAccessPhotosAsset
  */
-val ImageOptions.isNetworkAccessPhotosAssetAllowed: Boolean
-    get() = extras?.value<Boolean>(NETWORK_ACCESS_PHOTOS_ASSET_ALLOWED_KEY) == true
+val ImageOptions.allowNetworkAccessPhotosAsset: Boolean?
+    get() = extras?.value<Boolean>(NETWORK_ACCESS_PHOTOS_ASSET_ALLOWED_KEY)
 
 
 /**
@@ -153,8 +153,8 @@ fun ImageOptions.Builder.useSkiaForImagePhotosAsset(useSkia: Boolean? = true): I
  *
  * @see com.github.panpf.sketch.core.ios.test.request.PhotosAssetExtensionsTest.testUseSkiaForImagePhotosAsset
  */
-val ImageRequest.isUseSkiaForImagePhotosAsset: Boolean
-    get() = extras?.value<Boolean>(USE_SKIA_FOR_IMAGE_PHOTOS_ASSET_KEY) == true
+val ImageRequest.useSkiaForImagePhotosAsset: Boolean?
+    get() = extras?.value<Boolean>(USE_SKIA_FOR_IMAGE_PHOTOS_ASSET_KEY)
 
 /**
  * Whether to use Skia to decode the image of the Photos asset.
@@ -162,21 +162,21 @@ val ImageRequest.isUseSkiaForImagePhotosAsset: Boolean
  *
  * @see com.github.panpf.sketch.core.ios.test.request.PhotosAssetExtensionsTest.testUseSkiaForImagePhotosAsset
  */
-val ImageOptions.isUseSkiaForImagePhotosAsset: Boolean
-    get() = extras?.value<Boolean>(USE_SKIA_FOR_IMAGE_PHOTOS_ASSET_KEY) == true
+val ImageOptions.useSkiaForImagePhotosAsset: Boolean?
+    get() = extras?.value<Boolean>(USE_SKIA_FOR_IMAGE_PHOTOS_ASSET_KEY)
 
 
 /**
  * Whether to cache the image data of Photos resources into files first
  *
- * @see com.github.panpf.sketch.core.ios.test.request.PhotosAssetExtensionsTest.testPreferredFileCacheForImagePhotosAsset
+ * @see com.github.panpf.sketch.core.ios.test.request.PhotosAssetExtensionsTest.testPreferFileCacheForImagePhotosAsset
  */
-fun ImageRequest.Builder.preferredFileCacheForImagePhotosAsset(preferredFileCache: Boolean? = true): ImageRequest.Builder =
+fun ImageRequest.Builder.preferFileCacheForImagePhotosAsset(preferred: Boolean? = true): ImageRequest.Builder =
     apply {
-        if (preferredFileCache != null) {
+        if (preferred != null) {
             setExtra(
                 key = PREFERRED_FILE_CACHE_FOR_IMAGE_PHOTOS_ASSET_KEY,
-                value = preferredFileCache
+                value = preferred
             )
         } else {
             removeExtra(PREFERRED_FILE_CACHE_FOR_IMAGE_PHOTOS_ASSET_KEY)
@@ -186,14 +186,14 @@ fun ImageRequest.Builder.preferredFileCacheForImagePhotosAsset(preferredFileCach
 /**
  * Whether to cache the image data of Photos resources into files first
  *
- * @see com.github.panpf.sketch.core.ios.test.request.PhotosAssetExtensionsTest.testPreferredFileCacheForImagePhotosAsset
+ * @see com.github.panpf.sketch.core.ios.test.request.PhotosAssetExtensionsTest.testPreferFileCacheForImagePhotosAsset
  */
-fun ImageOptions.Builder.preferredFileCacheForImagePhotosAsset(preferredFileCache: Boolean? = true): ImageOptions.Builder =
+fun ImageOptions.Builder.preferFileCacheForImagePhotosAsset(preferred: Boolean? = true): ImageOptions.Builder =
     apply {
-        if (preferredFileCache != null) {
+        if (preferred != null) {
             setExtra(
                 key = PREFERRED_FILE_CACHE_FOR_IMAGE_PHOTOS_ASSET_KEY,
-                value = preferredFileCache
+                value = preferred
             )
         } else {
             removeExtra(PREFERRED_FILE_CACHE_FOR_IMAGE_PHOTOS_ASSET_KEY)
@@ -203,15 +203,15 @@ fun ImageOptions.Builder.preferredFileCacheForImagePhotosAsset(preferredFileCach
 /**
  * Whether to cache the image data of Photos resources into files first
  *
- * @see com.github.panpf.sketch.core.ios.test.request.PhotosAssetExtensionsTest.testPreferredFileCacheForImagePhotosAsset
+ * @see com.github.panpf.sketch.core.ios.test.request.PhotosAssetExtensionsTest.testPreferFileCacheForImagePhotosAsset
  */
-val ImageRequest.isPreferredFileCacheForImagePhotosAsset: Boolean
-    get() = extras?.value<Boolean>(PREFERRED_FILE_CACHE_FOR_IMAGE_PHOTOS_ASSET_KEY) == true
+val ImageRequest.preferFileCacheForImagePhotosAsset: Boolean?
+    get() = extras?.value<Boolean>(PREFERRED_FILE_CACHE_FOR_IMAGE_PHOTOS_ASSET_KEY)
 
 /**
  * Whether to cache the image data of Photos resources into files first
  *
- * @see com.github.panpf.sketch.core.ios.test.request.PhotosAssetExtensionsTest.testPreferredFileCacheForImagePhotosAsset
+ * @see com.github.panpf.sketch.core.ios.test.request.PhotosAssetExtensionsTest.testPreferFileCacheForImagePhotosAsset
  */
-val ImageOptions.isPreferredFileCacheForImagePhotosAsset: Boolean
-    get() = extras?.value<Boolean>(PREFERRED_FILE_CACHE_FOR_IMAGE_PHOTOS_ASSET_KEY) == true
+val ImageOptions.preferFileCacheForImagePhotosAsset: Boolean?
+    get() = extras?.value<Boolean>(PREFERRED_FILE_CACHE_FOR_IMAGE_PHOTOS_ASSET_KEY)

@@ -25,7 +25,7 @@ class PhotosAssetDataSourceTest {
         ).apply {
             assertEquals("DB16113B-984A-4D12-B4D0-50FC46066781/L0/001", this.localIdentifier)
             assertEquals(true, this.preferredThumbnail)
-            assertEquals(false, this.networkAccessAllowed)
+            assertEquals(false, this.allowNetworkAccess)
             assertEquals(PHAsset(), this.asset)
             assertEquals(PHAssetResource(), this.resource)
         }
@@ -39,7 +39,7 @@ class PhotosAssetDataSourceTest {
         ).apply {
             assertEquals("DB16113B-984A-4D12-B4D0-50FC46066781/L0/001", this.localIdentifier)
             assertEquals(false, this.preferredThumbnail)
-            assertEquals(true, this.networkAccessAllowed)
+            assertEquals(true, this.allowNetworkAccess)
             assertEquals(PHAsset(), this.asset)
             assertEquals(PHAssetResource(), this.resource)
         }
@@ -48,7 +48,7 @@ class PhotosAssetDataSourceTest {
         PhotosAssetDataSource(
             localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001",
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         )
@@ -59,7 +59,7 @@ class PhotosAssetDataSourceTest {
         PhotosAssetDataSource(
             localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001",
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         ).apply {
@@ -67,7 +67,7 @@ class PhotosAssetDataSourceTest {
                 expected = buildString {
                     append(newPhotosAssetUri(localIdentifier))
                     if (preferredThumbnail) append("#thumb")
-                    if (!networkAccessAllowed) append("#onlyLocal")
+                    if (!allowNetworkAccess) append("#onlyLocal")
                 },
                 actual = this.key
             )
@@ -79,7 +79,7 @@ class PhotosAssetDataSourceTest {
         PhotosAssetDataSource(
             localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001",
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         ).apply {
@@ -92,7 +92,7 @@ class PhotosAssetDataSourceTest {
         val dataSource = PhotosAssetDataSource(
             localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001",
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         )
@@ -107,7 +107,7 @@ class PhotosAssetDataSourceTest {
         val dataSource = PhotosAssetDataSource(
             localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001",
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         )
@@ -120,7 +120,7 @@ class PhotosAssetDataSourceTest {
     fun testEqualsAndHashCode() = runTest {
         val localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001"
         val preferredThumbnail = true
-        val networkAccessAllowed = false
+        val allowNetworkAccess = false
         val asset = PHAsset()
         val asset2 = PHAsset()
         val resource = PHAssetResource()
@@ -128,49 +128,49 @@ class PhotosAssetDataSourceTest {
         val source1 = PhotosAssetDataSource(
             localIdentifier,
             preferredThumbnail,
-            networkAccessAllowed,
+            allowNetworkAccess,
             asset,
             resource
         )
         val source12 = PhotosAssetDataSource(
             localIdentifier,
             preferredThumbnail,
-            networkAccessAllowed,
+            allowNetworkAccess,
             asset,
             resource
         )
         val source2 = PhotosAssetDataSource(
             localIdentifier + "hello",
             preferredThumbnail,
-            networkAccessAllowed,
+            allowNetworkAccess,
             asset,
             resource
         )
         val source3 = PhotosAssetDataSource(
             localIdentifier,
             !preferredThumbnail,
-            networkAccessAllowed,
+            allowNetworkAccess,
             asset,
             resource
         )
         val source4 = PhotosAssetDataSource(
             localIdentifier,
             preferredThumbnail,
-            !networkAccessAllowed,
+            !allowNetworkAccess,
             asset,
             resource
         )
         val source5 = PhotosAssetDataSource(
             localIdentifier,
             preferredThumbnail,
-            networkAccessAllowed,
+            allowNetworkAccess,
             asset2,
             resource
         )
         val source6 = PhotosAssetDataSource(
             localIdentifier,
             preferredThumbnail,
-            networkAccessAllowed,
+            allowNetworkAccess,
             asset,
             resource2
         )
@@ -204,7 +204,7 @@ class PhotosAssetDataSourceTest {
         PhotosAssetDataSource(
             localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001",
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         ).apply {
@@ -212,7 +212,7 @@ class PhotosAssetDataSourceTest {
                 expected = "PhotosAssetDataSource(" +
                         "localIdentifier='$localIdentifier', " +
                         "preferredThumbnail=$preferredThumbnail, " +
-                        "networkAccessAllowed=$networkAccessAllowed" +
+                        "allowNetworkAccess=$allowNetworkAccess" +
                         ")",
                 actual = this.toString()
             )

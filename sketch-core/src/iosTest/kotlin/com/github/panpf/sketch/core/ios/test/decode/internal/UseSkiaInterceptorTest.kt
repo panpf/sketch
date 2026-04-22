@@ -7,7 +7,7 @@ import com.github.panpf.sketch.fetch.parseLocalIdentifier
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.internal.InterceptorChain
-import com.github.panpf.sketch.request.preferredFileCacheForImagePhotosAsset
+import com.github.panpf.sketch.request.preferFileCacheForImagePhotosAsset
 import com.github.panpf.sketch.request.useSkiaForImagePhotosAsset
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.source.PhotosAssetDataSource
@@ -65,7 +65,7 @@ class UseSkiaInterceptorTest {
         val photosAssetDataSource = PhotosAssetDataSource(
             localIdentifier = parseLocalIdentifier(request.uri)!!,
             preferredThumbnail = true,
-            networkAccessAllowed = false,
+            allowNetworkAccess = false,
             asset = PHAsset(),
             resource = PHAssetResource()
         )
@@ -99,7 +99,7 @@ class UseSkiaInterceptorTest {
         executeRequest(
             request.newRequest {
                 useSkiaForImagePhotosAsset()
-                preferredFileCacheForImagePhotosAsset()
+                preferFileCacheForImagePhotosAsset()
             },
             FetchResult(photosAssetDataSource, "image/jpeg")
         ).apply {

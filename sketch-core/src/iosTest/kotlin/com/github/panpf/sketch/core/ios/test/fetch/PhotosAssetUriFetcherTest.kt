@@ -79,7 +79,7 @@ class PhotosAssetUriFetcherTest {
                 assertNotNull(this)
                 assertEquals(localIdentifier, this.localIdentifier)
                 assertFalse(this.preferredThumbnail)
-                assertFalse(this.networkAccessAllowed)
+                assertFalse(this.allowNetworkAccess)
             }
 
         ImageRequest(context, imageUri) {
@@ -91,7 +91,7 @@ class PhotosAssetUriFetcherTest {
                 assertNotNull(this)
                 assertEquals(localIdentifier, this.localIdentifier)
                 assertTrue(this.preferredThumbnail)
-                assertTrue(this.networkAccessAllowed)
+                assertTrue(this.allowNetworkAccess)
             }
     }
 

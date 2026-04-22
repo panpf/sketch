@@ -32,7 +32,7 @@ import platform.Photos.PHAssetResource
 class PhotosAssetDataSource constructor(
     val localIdentifier: String,
     val preferredThumbnail: Boolean,
-    val networkAccessAllowed: Boolean,
+    val allowNetworkAccess: Boolean,
     val asset: PHAsset,
     val resource: PHAssetResource,
 ) : DataSource {
@@ -43,7 +43,7 @@ class PhotosAssetDataSource constructor(
         buildString {
             append(newPhotosAssetUri(localIdentifier))
             if (preferredThumbnail) append("#thumb")
-            if (!networkAccessAllowed) append("#onlyLocal")
+            if (!allowNetworkAccess) append("#onlyLocal")
         }
     }
 
@@ -59,14 +59,14 @@ class PhotosAssetDataSource constructor(
         other as PhotosAssetDataSource
         if (localIdentifier != other.localIdentifier) return false
         if (preferredThumbnail != other.preferredThumbnail) return false
-        if (networkAccessAllowed != other.networkAccessAllowed) return false
+        if (allowNetworkAccess != other.allowNetworkAccess) return false
         return true
     }
 
     override fun hashCode(): Int {
         var result = localIdentifier.hashCode()
         result = 31 * result + preferredThumbnail.hashCode()
-        result = 31 * result + networkAccessAllowed.hashCode()
+        result = 31 * result + allowNetworkAccess.hashCode()
         return result
     }
 
@@ -74,7 +74,7 @@ class PhotosAssetDataSource constructor(
         return "PhotosAssetDataSource(" +
                 "localIdentifier='$localIdentifier', " +
                 "preferredThumbnail=$preferredThumbnail, " +
-                "networkAccessAllowed=$networkAccessAllowed" +
+                "allowNetworkAccess=$allowNetworkAccess" +
                 ")"
     }
 }

@@ -45,11 +45,11 @@ class PhotosAssetDecodeHelper(
             sampleSize = sampleSize
         )
         val preferFastResize = dataSource.preferredThumbnail
-        val networkAccessAllowed = dataSource.networkAccessAllowed
+        val allowNetworkAccess = dataSource.allowNetworkAccess
         val uiImage = requestImageForAsset(
             targetSize = targetSize,
             preferFastResize = preferFastResize,
-            networkAccessAllowed = networkAccessAllowed,
+            allowNetworkAccess = allowNetworkAccess,
         )
         val bitmap = uiImage.toBitmap()
         return bitmap.asImage()
@@ -65,13 +65,13 @@ class PhotosAssetDecodeHelper(
     private fun requestImageForAsset(
         targetSize: Size,
         preferFastResize: Boolean,
-        networkAccessAllowed: Boolean,
+        allowNetworkAccess: Boolean,
     ): UIImage = runBlocking {
         suspendCancellableCoroutine { continuation ->
             val targetWidth = targetSize.width.coerceAtLeast(1)
             val targetHeight = targetSize.height.coerceAtLeast(1)
             val options = PHImageRequestOptions().apply {
-                this.networkAccessAllowed = networkAccessAllowed
+                this.networkAccessAllowed = allowNetworkAccess
                 this.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat
                 this.resizeMode = if (preferFastResize)
                     PHImageRequestOptionsResizeModeFast else PHImageRequestOptionsResizeModeExact
@@ -88,7 +88,7 @@ class PhotosAssetDecodeHelper(
                         val message = "requestImageForAsset return null. " +
                                 "targetSize=${targetWidth}x$targetHeight, " +
                                 "preferFastResize=$preferFastResize, " +
-                                "networkAccessAllowed=$networkAccessAllowed, " +
+                                "allowNetworkAccess=$allowNetworkAccess, " +
                                 "info='$info'"
                         continuation.resumeWithException(DecodeException(message))
                     }

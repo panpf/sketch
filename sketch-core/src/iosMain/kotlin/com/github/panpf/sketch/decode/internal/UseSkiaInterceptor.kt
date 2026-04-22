@@ -24,8 +24,8 @@ import com.github.panpf.sketch.cache.isReadAndWrite
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.Interceptor
-import com.github.panpf.sketch.request.isPreferredFileCacheForImagePhotosAsset
-import com.github.panpf.sketch.request.isUseSkiaForImagePhotosAsset
+import com.github.panpf.sketch.request.preferFileCacheForImagePhotosAsset
+import com.github.panpf.sketch.request.useSkiaForImagePhotosAsset
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.FileDataSource
@@ -69,7 +69,7 @@ class UseSkiaInterceptor : Interceptor {
         val dataSource = fetchResult?.dataSource
         if (dataSource is PhotosAssetDataSource) {
             val mimeType = fetchResult.mimeType
-            val useSkiaForImagePhotosAsset = request.isUseSkiaForImagePhotosAsset
+            val useSkiaForImagePhotosAsset = request.useSkiaForImagePhotosAsset ?: false
             if (shouldUseSkia(mimeType, useSkiaForImagePhotosAsset)) {
                 val result = withContext(sketch.decodeTaskDispatcher) {
                     runCatching {
@@ -77,9 +77,9 @@ class UseSkiaInterceptor : Interceptor {
                         // So it makes no sense to cache the original image data locally and then read it again.
                         // If SkiaDecoder and SkiaAnimatedDecoder support streaming decoding later,
                         // By default, locally cached files can be used first for decoding to avoid taking up too much memory.
-                        val preferredFileCacheForImagePhotosAsset =
-                            request.isPreferredFileCacheForImagePhotosAsset
-                        if (preferredFileCacheForImagePhotosAsset) {
+                        val preferFileCacheForImagePhotosAsset =
+                            request.preferFileCacheForImagePhotosAsset ?: false
+                        if (preferFileCacheForImagePhotosAsset) {
                             val cachePolicy = request.downloadCachePolicy
                             val (cachePath, dataFrom) =
                                 getCacheFile(sketch, dataSource, cachePolicy)
@@ -115,7 +115,7 @@ class UseSkiaInterceptor : Interceptor {
         return suspendCancellableCoroutine { continuation ->
             val buffer = Buffer()
             val options = PHAssetResourceRequestOptions().apply {
-                this.networkAccessAllowed = dataSource.networkAccessAllowed
+                this.networkAccessAllowed = dataSource.allowNetworkAccess
             }
             PHAssetResourceManager.defaultManager().requestDataForAssetResource(
                 resource = dataSource.resource,
@@ -179,7 +179,7 @@ class UseSkiaInterceptor : Interceptor {
         try {
             suspendCancellableCoroutine { continuation ->
                 val options = PHAssetResourceRequestOptions().apply {
-                    this.networkAccessAllowed = dataSource.networkAccessAllowed
+                    this.networkAccessAllowed = dataSource.allowNetworkAccess
                 }
                 PHAssetResourceManager.defaultManager().requestDataForAssetResource(
                     resource = dataSource.resource,

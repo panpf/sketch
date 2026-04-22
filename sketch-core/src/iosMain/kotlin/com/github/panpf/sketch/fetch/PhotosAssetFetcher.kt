@@ -19,8 +19,8 @@ package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.request.isNetworkAccessPhotosAssetAllowed
-import com.github.panpf.sketch.request.isPreferredThumbnailForPhotosAsset
+import com.github.panpf.sketch.request.allowNetworkAccessPhotosAsset
+import com.github.panpf.sketch.request.preferThumbnailForPhotosAsset
 import com.github.panpf.sketch.source.PhotosAssetDataSource
 import com.github.panpf.sketch.util.Uri
 import com.github.panpf.sketch.util.fetchPhotosAsset
@@ -69,7 +69,7 @@ fun parseLocalIdentifier(uri: Uri): String? =
 class PhotosAssetFetcher private constructor(
     val localIdentifier: String,
     val preferredThumbnail: Boolean,
-    val networkAccessAllowed: Boolean,
+    val allowNetworkAccess: Boolean,
 ) : Fetcher {
 
     companion object {
@@ -87,7 +87,7 @@ class PhotosAssetFetcher private constructor(
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,
             preferredThumbnail = preferredThumbnail,
-            networkAccessAllowed = networkAccessAllowed,
+            allowNetworkAccess = allowNetworkAccess,
             asset = asset,
             resource = resource,
         )
@@ -100,12 +100,12 @@ class PhotosAssetFetcher private constructor(
             val request = requestContext.request
             val uri = request.uri
             val localIdentifier = parseLocalIdentifier(uri) ?: return null
-            val preferredThumbnail = request.isPreferredThumbnailForPhotosAsset
-            val networkAccessAllowed = request.isNetworkAccessPhotosAssetAllowed
+            val preferredThumbnail = request.preferThumbnailForPhotosAsset ?: false
+            val allowNetworkAccess = request.allowNetworkAccessPhotosAsset ?: false
             return PhotosAssetFetcher(
                 localIdentifier = localIdentifier,
                 preferredThumbnail = preferredThumbnail,
-                networkAccessAllowed = networkAccessAllowed,
+                allowNetworkAccess = allowNetworkAccess,
             )
         }
 

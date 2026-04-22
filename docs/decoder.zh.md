@@ -100,13 +100,13 @@ AsyncImage(
 ByteArrayDataSource 供 [SkiaDecoder] 解码
 
 如果你还想将来自 Photos Library 的图片原始数据缓存到下载缓存中再包装成 FileDataSource
-供 [SkiaDecoder] 解码，可以通过 `preferredFileCacheForImagePhotosAsset()` 函数实现，如下：
+供 [SkiaDecoder] 解码，可以通过 `preferFileCacheForImagePhotosAsset()` 函数实现，如下：
 
 ```kotlin
 val imageUri = newPhotosAssetUri("DB16113B-984A-4D12-B4D0-50FC46066781/L0/001")
 val request = ImageRequest(context, imageUri) {
     useSkiaForImagePhotosAsset(true)
-    preferredFileCacheForImagePhotosAsset(true)
+  preferFileCacheForImagePhotosAsset(true)
 }
 AsyncImage(
     request = request,
