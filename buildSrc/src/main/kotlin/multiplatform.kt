@@ -30,8 +30,7 @@ enum class KmpTarget {
     Desktop,
     Js,
     WasmJs,
-    IosArm64,
-    IosSimulatorArm64,
+    Ios,
 }
 
 fun Project.addMultiplatformTargets(kmpTargets: Array<KmpTarget>) {
@@ -52,7 +51,6 @@ fun Project.addMultiplatformTargets(kmpTargets: Array<KmpTarget>) {
                     browser {
                         testTask {
                             useKarma {
-//                                useChrome()
                                 useChromeHeadless()
                             }
                         }
@@ -68,7 +66,6 @@ fun Project.addMultiplatformTargets(kmpTargets: Array<KmpTarget>) {
                     browser {
                         testTask {
                             useKarma {
-//                                useChrome()
                                 useChromeHeadless()
                             }
                         }
@@ -78,10 +75,8 @@ fun Project.addMultiplatformTargets(kmpTargets: Array<KmpTarget>) {
                 }
             }
 
-            if (kmpTargets.contains(KmpTarget.IosArm64)) {
+            if (kmpTargets.contains(KmpTarget.Ios)) {
                 iosArm64()
-            }
-            if (kmpTargets.contains(KmpTarget.IosSimulatorArm64)) {
                 iosSimulatorArm64()
             }
         }
