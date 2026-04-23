@@ -9,6 +9,11 @@
 
 # new
 
+## Android
+
+* fix: 再次修复 Android 平台没有在清单文件中注册 ACCESS_NETWORK_STATE 权限时崩溃的
+  bug。[#281](https://github.com/panpf/sketch/issues/281)
+
 ## sketch-video
 
 * new: 新增 preferVideoCover 属性用于优先加载视频封面

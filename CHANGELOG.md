@@ -11,6 +11,12 @@ Translations: [简体中文](CHANGELOG.zh.md)
 
 # new
 
+## Android
+
+* fix: Fixed the crash bug again when the Android platform does not register the
+  ACCESS_NETWORK_STATE permission in the manifest
+  file. [#281](https://github.com/panpf/sketch/issues/281)
+
 ## sketch-video
 
 * new: Added preferVideoCover attribute to load video cover first

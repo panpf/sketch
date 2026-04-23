@@ -16,8 +16,10 @@
 
 package com.github.panpf.sketch.util
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -30,49 +32,51 @@ import android.os.Build.VERSION_CODES
  *
  * @see com.github.panpf.sketch.core.android.test.util.NetworkObserverTest
  */
-fun NetworkObserver(context: Context): NetworkObserver = NetworkObserver21(context)
-
-interface NetworkObserver {
-    val isCellularNetworkConnected: Boolean
-
-    /** Stop observing network changes. */
-    fun shutdown()
-}
-
 @SuppressLint("MissingPermission")
-class NetworkObserver21(context: Context) : NetworkObserver {
+class NetworkObserver(context: Context) {
 
     private val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+    private var networkCallback: ConnectivityManager.NetworkCallback? = null
     private var _isCellularNetworkConnected: Boolean = false
-    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network) = onConnectivityChange()
-        override fun onUnavailable() = onConnectivityChange()
-        override fun onLost(network: Network) = onConnectivityChange()
-        override fun onCapabilitiesChanged(
-            network: Network, networkCapabilities: NetworkCapabilities
-        ) = onConnectivityChange()
-    }
 
-    override val isCellularNetworkConnected: Boolean
+    val isCellularNetworkConnected: Boolean
         get() = _isCellularNetworkConnected
 
     init {
-        if (VERSION.SDK_INT < VERSION_CODES.M
-            || context.checkSelfPermission(android.Manifest.permission.ACCESS_NETWORK_STATE) != android.content.pm.PackageManager.PERMISSION_GRANTED
-        ) {
+        if (checkPermission(context)) {
             val request = NetworkRequest.Builder()
                 .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
                 .build()
-            connectivityManager?.registerNetworkCallback(request, networkCallback)
-        }
+            val networkCallback = object : ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) = onConnectivityChange()
 
-        _isCellularNetworkConnected =
-            connectivityManager?.activeNetworkCompat()?.isCellularNetworkConnected() == true
+                override fun onUnavailable() = onConnectivityChange()
+
+                override fun onLost(network: Network) = onConnectivityChange()
+
+                override fun onCapabilitiesChanged(
+                    network: Network, networkCapabilities: NetworkCapabilities
+                ) = onConnectivityChange()
+            }
+            connectivityManager?.registerNetworkCallback(request, networkCallback)
+            this.networkCallback = networkCallback
+
+            _isCellularNetworkConnected =
+                connectivityManager?.activeNetworkCompat()?.isCellularNetworkConnected() == true
+        }
     }
 
-    override fun shutdown() {
-        connectivityManager?.unregisterNetworkCallback(networkCallback)
+    fun shutdown() {
+        val networkCallback = networkCallback
+        if (networkCallback != null) {
+            connectivityManager?.unregisterNetworkCallback(networkCallback)
+        }
+    }
+
+    private fun checkPermission(context: Context): Boolean {
+        return VERSION.SDK_INT < VERSION_CODES.M
+                || context.checkSelfPermission(Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun onConnectivityChange() {
