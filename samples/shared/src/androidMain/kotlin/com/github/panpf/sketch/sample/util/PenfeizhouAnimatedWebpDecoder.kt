@@ -56,7 +56,7 @@ class PenfeizhouAnimatedWebpDecoder(
     val disallowAnimatedImage: Boolean,
 ) : Decoder {
 
-    override val imageInfo: ImageInfo by lazy {
+    private val _imageInfo: ImageInfo by lazy {
         val streamLoader = dataSource.toStreamLoader(requestContext.request.context)
         val webpDecoder = WebPDecoder(streamLoader, null)
         val bounds = webpDecoder.bounds
@@ -67,7 +67,11 @@ class PenfeizhouAnimatedWebpDecoder(
         )
     }
 
-    override fun decode(): ImageData {
+    override suspend fun getImageInfo(): ImageInfo {
+        return _imageInfo
+    }
+
+    override suspend fun decode(): ImageData {
         val loader = dataSource.toStreamLoader(requestContext.request.context)
         val webpDecoder = WebPDecoder(loader, null)
 

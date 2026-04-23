@@ -119,7 +119,7 @@ class KoralGifDecoderTest {
             .apply {
                 assertEquals(
                     expected = ImageInfo(480, 480, "image/gif"),
-                    actual = imageInfo
+                    actual = getImageInfo()
                 )
             }
     }

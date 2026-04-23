@@ -42,6 +42,7 @@ class BlurHashDecodeHelperNonAndroidTest {
         ImageRequest(context, blurHashUri)
             .let { BlurHashDecodeHelper(it.toRequestContext(sketch), it.uri) }
             .apply {
+                val imageInfo = getImageInfo()
                 assertEquals(expected = 200, actual = imageInfo.width)
                 assertEquals(expected = 300, actual = imageInfo.height)
                 assertEquals(expected = "image/jpeg", actual = imageInfo.mimeType)
@@ -50,6 +51,7 @@ class BlurHashDecodeHelperNonAndroidTest {
         ImageRequest(context, blurHashUriNoSize)
             .let { BlurHashDecodeHelper(it.toRequestContext(sketch), it.uri) }
             .apply {
+                val imageInfo = getImageInfo()
                 assertEquals(expected = 100, actual = imageInfo.width)
                 assertEquals(expected = 100, actual = imageInfo.height)
                 assertEquals(expected = "image/jpeg", actual = imageInfo.mimeType)
@@ -63,7 +65,7 @@ class BlurHashDecodeHelperNonAndroidTest {
         ImageRequest(context, blurHashUri)
             .let { BlurHashDecodeHelper(it.toRequestContext(sketch), it.uri) }
             .apply {
-                assertFalse(supportRegion)
+                assertFalse(isSupportRegion())
             }
     }
 

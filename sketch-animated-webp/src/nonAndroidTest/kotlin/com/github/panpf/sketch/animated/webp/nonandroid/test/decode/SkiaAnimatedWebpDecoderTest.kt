@@ -99,7 +99,7 @@ class SkiaAnimatedWebpDecoderTest {
             .apply {
                 assertEquals(
                     expected = ImageInfo(480, 270, "image/webp"),
-                    actual = imageInfo
+                    actual = getImageInfo()
                 )
             }
     }

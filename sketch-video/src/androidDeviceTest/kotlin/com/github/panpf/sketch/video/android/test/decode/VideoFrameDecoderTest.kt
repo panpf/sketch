@@ -129,7 +129,7 @@ class VideoFrameDecoderTest {
             .apply {
                 assertEquals(
                     expected = ImageInfo(1080, 1920, "video/mp4"),
-                    actual = imageInfo
+                    actual = getImageInfo()
                 )
             }
 
@@ -139,7 +139,7 @@ class VideoFrameDecoderTest {
             .apply {
                 assertEquals(
                     expected = ImageInfo(1600, 1200, "video/mp4"),
-                    actual = imageInfo
+                    actual = getImageInfo()
                 )
             }
     }

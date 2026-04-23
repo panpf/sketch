@@ -63,7 +63,7 @@ class PhotosAssetVideoFrameDecodeHelperTest {
         )
         assertEquals(
             expected = ImageInfo(width = 0, height = 0, mimeType = "video/mp4"),
-            actual = decodeHelper.imageInfo
+            actual = decodeHelper.getImageInfo()
         )
 
         // [Test not completed] Because the test environment cannot access the photo library, the test cannot be completed.
@@ -73,7 +73,7 @@ class PhotosAssetVideoFrameDecodeHelperTest {
             mimeType = "video/mp4"
         )
         assertFailsWith(DecodeException::class) {
-            decoderHelper2.imageInfo
+            decoderHelper2.getImageInfo()
         }
     }
 
@@ -95,7 +95,7 @@ class PhotosAssetVideoFrameDecodeHelperTest {
             dataSource = dataSource,
             mimeType = "video/mp4"
         )
-        assertFalse(decoderHelper.supportRegion)
+        assertFalse(decoderHelper.isSupportRegion())
 
         val decoderHelper2 = PhotosAssetVideoFrameDecodeHelper(
             request = request.newRequest { preferVideoCover() },
@@ -103,7 +103,7 @@ class PhotosAssetVideoFrameDecodeHelperTest {
             mimeType = "video/mp4"
         )
         assertFailsWith(DecodeException::class) {
-            decoderHelper2.supportRegion
+            decoderHelper2.isSupportRegion()
         }
     }
 

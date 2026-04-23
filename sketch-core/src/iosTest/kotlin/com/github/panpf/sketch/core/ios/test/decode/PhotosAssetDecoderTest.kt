@@ -70,7 +70,7 @@ class PhotosAssetDecoderTest {
         // [Test not completed] Because the test environment cannot access the photo library, the test cannot be completed.
         assertEquals(
             expected = ImageInfo(width = 0, height = 0, mimeType = "image/jpeg"),
-            actual = decoder.imageInfo
+            actual = decoder.getImageInfo()
         )
     }
 

@@ -16,6 +16,7 @@ import kotlin.time.ExperimentalTime
 
 class KtorStackTest {
 
+    // TODO iosTest: DarwinHttpRequestException: Exception in http request: Error Domain=NSURLErrorDomain Code=-1202 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “inews.gtimg.com” which could put your confidential information at risk."
     @Test
     fun testGetResponse() = runTest {
         val url = "https://inews.gtimg.com/newsapp_bt/0/12171811596_909/0"

@@ -52,7 +52,7 @@ class FileVideoFrameDecodeHelperTest {
             mimeType = "video/mp4"
         )
         assertFailsWith(DecodeException::class) {
-            decodeHelper.imageInfo
+            decodeHelper.getImageInfo()
         }
 
         // [Test not completed] Because the test environment cannot access the kotlin resource file, the test cannot be completed.
@@ -62,7 +62,7 @@ class FileVideoFrameDecodeHelperTest {
             mimeType = "video/mp4"
         )
         assertFailsWith(DecodeException::class) {
-            decodeHelper2.imageInfo
+            decodeHelper2.getImageInfo()
         }
     }
 
@@ -82,7 +82,7 @@ class FileVideoFrameDecodeHelperTest {
             dataSource = dataSource,
             mimeType = "video/mp4"
         )
-        assertFalse(decodeHelper.supportRegion)
+        assertFalse(decodeHelper.isSupportRegion())
 
         // [Test not completed] Because the test environment cannot access the kotlin resource file, the test cannot be completed.
         val decodeHelper2 = FileVideoFrameDecodeHelper(
@@ -90,7 +90,7 @@ class FileVideoFrameDecodeHelperTest {
             dataSource = dataSource,
             mimeType = "video/mp4"
         )
-        assertFalse(decodeHelper2.supportRegion)
+        assertFalse(decodeHelper2.isSupportRegion())
     }
 
     @Test

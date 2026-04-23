@@ -11,6 +11,11 @@ Translations: [简体中文](CHANGELOG.zh.md)
 
 # new
 
+## Multiplatform
+
+* change: The properties of Decoder and DecodeHelper have been changed to functions, and the suspend
+  modifier has been added to the main functions.
+
 ## Android
 
 * fix: Fixed the crash bug again when the Android platform does not register the

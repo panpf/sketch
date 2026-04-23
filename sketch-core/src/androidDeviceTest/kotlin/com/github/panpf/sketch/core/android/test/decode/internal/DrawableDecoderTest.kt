@@ -99,7 +99,7 @@ class DrawableDecoderTest {
             .apply {
                 assertEquals(
                     expected = "ImageInfo($imageSize,'text/xml')",
-                    actual = imageInfo.toShortString()
+                    actual = getImageInfo().toShortString()
                 )
             }
 
@@ -108,7 +108,7 @@ class DrawableDecoderTest {
         }.apply {
             assertEquals(
                 expected = "ImageInfo($imageSize,'image/png')",
-                actual = imageInfo.toShortString()
+                actual = getImageInfo().toShortString()
             )
         }
 
@@ -124,7 +124,7 @@ class DrawableDecoderTest {
                         ),
                         mimeType = "image/png"
                     )
-                )!!.imageInfo
+                )!!.getImageInfo()
             }
         }
     }

@@ -114,7 +114,7 @@ class PhotosAssetVideoFrameDecoderTest {
         )
         assertEquals(
             expected = ImageInfo(width = 0, height = 0, mimeType = "video/mp4"),
-            actual = decoder.imageInfo
+            actual = decoder.getImageInfo()
         )
 
         // [Test not completed] Because the test environment cannot access the photo library, the test cannot be completed.
@@ -124,7 +124,7 @@ class PhotosAssetVideoFrameDecoderTest {
             mimeType = "video/mp4"
         )
         assertFailsWith(DecodeException::class) {
-            decoder2.imageInfo
+            decoder2.getImageInfo()
         }
     }
 

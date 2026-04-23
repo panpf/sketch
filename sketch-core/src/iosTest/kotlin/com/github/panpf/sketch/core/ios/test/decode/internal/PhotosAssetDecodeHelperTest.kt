@@ -5,6 +5,7 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.PhotosAssetDecodeHelper
 import com.github.panpf.sketch.source.PhotosAssetDataSource
 import com.github.panpf.sketch.util.Rect
+import kotlinx.coroutines.test.runTest
 import platform.Photos.PHAsset
 import platform.Photos.PHAssetResource
 import kotlin.test.Test
@@ -35,7 +36,7 @@ class PhotosAssetDecodeHelperTest {
     }
 
     @Test
-    fun testImageInfo() {
+    fun testImageInfo() = runTest {
         val localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001"
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,
@@ -52,12 +53,12 @@ class PhotosAssetDecodeHelperTest {
         // [Test not completed] Because the test environment cannot access the photo library, the test cannot be completed.
         assertEquals(
             expected = ImageInfo(width = 0, height = 0, mimeType = "image/jpeg"),
-            actual = decoder.imageInfo
+            actual = decoder.getImageInfo()
         )
     }
 
     @Test
-    fun testSupportRegion() {
+    fun testSupportRegion() = runTest {
         val localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001"
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,
@@ -70,11 +71,11 @@ class PhotosAssetDecodeHelperTest {
             dataSource = dataSource,
             mimeType = "image/jpeg"
         )
-        assertFalse(decoder.supportRegion)
+        assertFalse(decoder.isSupportRegion())
     }
 
     @Test
-    fun testDecode() {
+    fun testDecode() = runTest {
         val localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001"
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,
@@ -95,7 +96,7 @@ class PhotosAssetDecodeHelperTest {
     }
 
     @Test
-    fun testDecodeRegion() {
+    fun testDecodeRegion() = runTest {
         val localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001"
         val dataSource = PhotosAssetDataSource(
             localIdentifier = localIdentifier,

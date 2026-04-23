@@ -619,7 +619,8 @@ class DecodesAndroidTest {
                 imageSize = Size(30000, 750),
                 targetSize = Size(1080, 1920),
                 smallerSizeMode = false
-            )
+            ),
+            message = "maxSize=$maxSize"
         )
         assertEquals(
             expected = 32,
@@ -922,7 +923,8 @@ class DecodesAndroidTest {
                 regionSize = Size(30000, 750),
                 targetSize = Size(1080, 1920),
                 smallerSizeMode = false
-            )
+            ),
+            message = "maxSize=$maxSize"
         )
         assertEquals(
             expected = 32,

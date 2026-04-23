@@ -18,6 +18,7 @@
 
 package com.github.panpf.sketch.decode.internal
 
+import com.github.panpf.sketch.SketchImage
 import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.DecodeConfig
 import com.github.panpf.sketch.decode.ImageInfo
@@ -54,26 +55,34 @@ class SkiaDecodeHelper constructor(
     // Image.makeFromEncoded(bytes) will parse exif orientation and does not support closing
     private val skiaImage by lazy { Image.makeFromEncoded(bytes) }
 
-    override val imageInfo: ImageInfo by lazy {
+    private val _imageInfo: ImageInfo by lazy {
         Codec.makeFromData(Data.makeFromBytes(bytes)).use { codec ->
             readImageInfo(codec, skiaImage)
         }
     }
-    override val supportRegion: Boolean by lazy {
+    private val _supportRegion: Boolean by lazy {
         // The result returns null, which means unknown, but future versions may support it, so it is still worth trying.
-        supportDecodeRegion(imageInfo.mimeType) ?: true
+        supportDecodeRegion(_imageInfo.mimeType) ?: true
     }
 
-    override fun decode(sampleSize: Int): com.github.panpf.sketch.SketchImage {
-        val decodeConfig = DecodeConfig(request, imageInfo.mimeType, skiaImage.isOpaque).apply {
+    override suspend fun getImageInfo(): ImageInfo {
+        return _imageInfo
+    }
+
+    override suspend fun isSupportRegion(): Boolean {
+        return _supportRegion
+    }
+
+    override suspend fun decode(sampleSize: Int): SketchImage {
+        val decodeConfig = DecodeConfig(request, _imageInfo.mimeType, skiaImage.isOpaque).apply {
             this.sampleSize = sampleSize
         }
         val skiaBitmap = skiaImage.decode(decodeConfig)
         return skiaBitmap.asImage()
     }
 
-    override fun decodeRegion(region: Rect, sampleSize: Int): com.github.panpf.sketch.SketchImage {
-        val decodeConfig = DecodeConfig(request, imageInfo.mimeType, skiaImage.isOpaque).apply {
+    override suspend fun decodeRegion(region: Rect, sampleSize: Int): SketchImage {
+        val decodeConfig = DecodeConfig(request, _imageInfo.mimeType, skiaImage.isOpaque).apply {
             this.sampleSize = sampleSize
         }
         val skiaBitmap = skiaImage.decodeRegion(region, decodeConfig)

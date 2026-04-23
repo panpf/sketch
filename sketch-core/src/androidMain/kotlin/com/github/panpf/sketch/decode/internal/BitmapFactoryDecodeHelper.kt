@@ -47,16 +47,24 @@ class BitmapFactoryDecodeHelper(
 
     private val exifOrientation: Int by lazy { dataSource.readExifOrientation() }
     private val exifOrientationHelper by lazy { ExifOrientationHelper(exifOrientation) }
-    override val imageInfo: ImageInfo by lazy {
+    private val _imageInfo: ImageInfo by lazy {
         dataSource.readImageInfo(exifOrientationHelper)
     }
-    override val supportRegion: Boolean by lazy {
+    private val _supportRegion: Boolean by lazy {
         // The result returns null, which means unknown, but future versions may support it, so it is still worth trying.
-        supportBitmapRegionDecoder(imageInfo.mimeType) ?: true
+        supportBitmapRegionDecoder(_imageInfo.mimeType) ?: true
     }
 
-    override fun decode(sampleSize: Int): Image {
-        val decodeConfig = DecodeConfig(request, imageInfo.mimeType, isOpaque = false).apply {
+    override suspend fun getImageInfo(): ImageInfo {
+        return _imageInfo
+    }
+
+    override suspend fun isSupportRegion(): Boolean {
+        return _supportRegion
+    }
+
+    override suspend fun decode(sampleSize: Int): Image {
+        val decodeConfig = DecodeConfig(request, _imageInfo.mimeType, isOpaque = false).apply {
             this.sampleSize = sampleSize
         }
         val bitmap = dataSource.decode(
@@ -66,7 +74,8 @@ class BitmapFactoryDecodeHelper(
         return bitmap.asImage()
     }
 
-    override fun decodeRegion(region: Rect, sampleSize: Int): Image {
+    override suspend fun decodeRegion(region: Rect, sampleSize: Int): Image {
+        val imageInfo = _imageInfo
         val decodeConfig = DecodeConfig(request, imageInfo.mimeType, isOpaque = false).apply {
             this.sampleSize = sampleSize
         }

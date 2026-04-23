@@ -9,6 +9,10 @@
 
 # new
 
+## Multiplatform
+
+* change: Decoder 和 DecodeHelper 的属性都改成了函数，并且主要函数都增加了 suspend 修饰符
+
 ## Android
 
 * fix: 再次修复 Android 平台没有在清单文件中注册 ACCESS_NETWORK_STATE 权限时崩溃的

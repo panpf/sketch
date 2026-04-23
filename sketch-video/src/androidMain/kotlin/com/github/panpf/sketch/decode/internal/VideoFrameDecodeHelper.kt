@@ -94,13 +94,17 @@ class VideoFrameDecodeHelper constructor(
         }
     }
 
-    override val imageInfo: ImageInfo by lazy {
-        coverHelper?.imageInfo?.copy(mimeType = mimeType) ?: readImageInfo()
-    }
-    override val supportRegion: Boolean
-        get() = coverHelper?.supportRegion ?: false
+    private val _imageInfo: ImageInfo by lazy { readImageInfo() }
 
-    override fun decode(sampleSize: Int): Image {
+    override suspend fun getImageInfo(): ImageInfo {
+        return coverHelper?.getImageInfo()?.copy(mimeType = mimeType) ?: _imageInfo
+    }
+
+    override suspend fun isSupportRegion(): Boolean {
+        return coverHelper?.isSupportRegion() ?: false
+    }
+
+    override suspend fun decode(sampleSize: Int): Image {
         val coverHelper = coverHelper
         if (coverHelper != null) {
             return coverHelper.decode(sampleSize)
@@ -117,11 +121,11 @@ class VideoFrameDecodeHelper constructor(
             videoFramePercent = videoFramePercent,
         )
         val option = request.videoFrameOption ?: MediaMetadataRetriever.OPTION_CLOSEST_SYNC
-        val imageSize = imageInfo.size
+        val imageSize = _imageInfo.size
         val dstSize = imageSize / sampleSize.toFloat()
         val bitmap = when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
-                val config = DecodeConfig(request, imageInfo.mimeType, isOpaque = false)
+                val config = DecodeConfig(request, _imageInfo.mimeType, isOpaque = false)
                 val bitmapParams = BitmapParams().apply {
                     config.colorType?.also { preferredConfig = it }
                 }
@@ -177,7 +181,7 @@ class VideoFrameDecodeHelper constructor(
         return correctedBitmap.asImage()
     }
 
-    override fun decodeRegion(region: Rect, sampleSize: Int): Image {
+    override suspend fun decodeRegion(region: Rect, sampleSize: Int): Image {
         return coverHelper?.decodeRegion(region, sampleSize)
             ?: throw UnsupportedOperationException("Unsupported region decode")
     }

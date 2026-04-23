@@ -111,7 +111,7 @@ class SvgDecoderTest {
             .apply {
                 assertEquals(
                     expected = "ImageInfo(257x226,'image/svg+xml')",
-                    actual = imageInfo.toShortString()
+                    actual = getImageInfo().toShortString()
                 )
             }
 
@@ -121,7 +121,7 @@ class SvgDecoderTest {
             .apply {
                 assertEquals(
                     expected = "ImageInfo(256x225,'image/svg+xml')",
-                    actual = imageInfo.toShortString()
+                    actual = getImageInfo().toShortString()
                 )
             }
     }

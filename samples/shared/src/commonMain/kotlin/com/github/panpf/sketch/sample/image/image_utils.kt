@@ -28,7 +28,7 @@ suspend fun photoUri2PhotoInfo(sketch: Sketch, uri: String): Photo {
             val fetcher = sketch.components.newFetcherOrThrow(requestContext)
             val fetchResult = fetcher.fetch().getOrThrow()
             val decoder = sketch.components.newDecoderOrThrow(requestContext, fetchResult)
-            decoder.imageInfo
+            decoder.getImageInfo()
         }.apply {
             if (isFailure) {
                 Exception("uri='$uri'", exceptionOrNull()).printStackTrace()

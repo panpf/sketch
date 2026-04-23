@@ -92,29 +92,25 @@ class KoralGifDecoder(
         GifInfoHandleHelper(requestContext.sketch, dataSource)
     }
 
-    private var _imageInfo: ImageInfo? = null
-
-    override val imageInfo: ImageInfo
-        get() {
-            synchronized(this@KoralGifDecoder) {
-                val imageInfo = _imageInfo
-                if (imageInfo != null) return imageInfo
-                return ImageInfo(
-                    size = Size(
-                        width = gifInfoHandleHelper.width,
-                        height = gifInfoHandleHelper.height
-                    ),
-                    mimeType = ImageFormat.GIF.mimeType,
-                ).apply {
-                    checkImageInfo(this)
-                    _imageInfo = this
-                }
-            }
+    private val _imageInfo: ImageInfo by lazy {
+        ImageInfo(
+            size = Size(
+                width = gifInfoHandleHelper.width,
+                height = gifInfoHandleHelper.height
+            ),
+            mimeType = ImageFormat.GIF.mimeType,
+        ).apply {
+            checkImageInfo(this)
         }
+    }
+
+    override suspend fun getImageInfo(): ImageInfo {
+        return _imageInfo
+    }
 
     @WorkerThread
-    override fun decode(): ImageData {
-        val imageInfo = imageInfo
+    override suspend fun decode(): ImageData {
+        val imageInfo = getImageInfo()
         val resize = requestContext.computeResize(imageInfo.size)
         val inSampleSize = calculateSampleSize(
             imageSize = imageInfo.size,

@@ -24,10 +24,11 @@ import com.github.panpf.sketch.request.RequestContext
 
 class FakeDecoder : Decoder {
 
-    override val imageInfo: ImageInfo
-        get() = throw UnsupportedOperationException()
+    override suspend fun getImageInfo(): ImageInfo {
+        throw UnsupportedOperationException()
+    }
 
-    override fun decode(): ImageData {
+    override suspend fun decode(): ImageData {
         throw UnsupportedOperationException()
     }
 

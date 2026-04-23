@@ -72,13 +72,17 @@ abstract class BaseAvAssetVideoFrameDecodeHelper(
         }
     }
 
-    override val imageInfo: ImageInfo by lazy {
-        coverHelper?.imageInfo?.copy(mimeType = mimeType) ?: readImageInfo()
-    }
-    override val supportRegion: Boolean
-        get() = coverHelper?.supportRegion ?: false
+    private val _imageInfo: ImageInfo by lazy { readImageInfo() }
 
-    override fun decode(sampleSize: Int): Image {
+    override suspend fun getImageInfo(): ImageInfo {
+        return coverHelper?.getImageInfo()?.copy(mimeType = mimeType) ?: _imageInfo
+    }
+
+    override suspend fun isSupportRegion(): Boolean {
+        return coverHelper?.isSupportRegion() ?: false
+    }
+
+    override suspend fun decode(sampleSize: Int): Image {
         val coverHelper = coverHelper
         if (coverHelper != null) {
             return coverHelper.decode(sampleSize)
@@ -92,7 +96,7 @@ abstract class BaseAvAssetVideoFrameDecodeHelper(
             videoFrameMicros = videoFrameMicros,
             videoFramePercent = videoFramePercent,
         )
-        val targetSize = calculateSampledBitmapSize(imageInfo.size, sampleSize)
+        val targetSize = calculateSampledBitmapSize(_imageInfo.size, sampleSize)
         val frameCandidates = frameCandidates(
             requestFrameMicros = requestFrameMicros,
             durationMicros = durationMicros,
@@ -110,7 +114,7 @@ abstract class BaseAvAssetVideoFrameDecodeHelper(
         return bitmap.asImage()
     }
 
-    override fun decodeRegion(region: Rect, sampleSize: Int): Image {
+    override suspend fun decodeRegion(region: Rect, sampleSize: Int): Image {
         return coverHelper?.decodeRegion(region, sampleSize)
             ?: throw UnsupportedOperationException("Unsupported region decode")
     }

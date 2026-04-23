@@ -92,18 +92,16 @@ open class ImageDecoderAnimatedDecoder(
     private val dataSource: DataSource,
 ) : Decoder {
 
-    private var _imageInfo: ImageInfo? = null
+    private val _imageInfo: ImageInfo by lazy {
+        dataSource.readImageInfoWithIgnoreExifOrientation()
+    }
 
-    override val imageInfo: ImageInfo
-        get() {
-            synchronized(this@ImageDecoderAnimatedDecoder) {
-                return _imageInfo ?: dataSource.readImageInfoWithIgnoreExifOrientation()
-                    .apply { _imageInfo = this }
-            }
-        }
+    override suspend fun getImageInfo(): ImageInfo {
+        return _imageInfo
+    }
 
     @WorkerThread
-    override fun decode(): ImageData {
+    override suspend fun decode(): ImageData {
         val context = requestContext.request.context
         val source = when (dataSource) {
             is AssetDataSource -> {

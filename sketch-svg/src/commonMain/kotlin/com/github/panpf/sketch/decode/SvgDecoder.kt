@@ -25,8 +25,6 @@ import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
-import kotlinx.atomicfu.locks.SynchronizedObject
-import kotlinx.atomicfu.locks.synchronized
 
 /**
  * Adds SVG support
@@ -63,23 +61,17 @@ class SvgDecoder(
         const val MIME_TYPE = "image/svg+xml"
     }
 
-    private var _imageInfo: ImageInfo? = null
-    private val imageInfoLock = SynchronizedObject()
+    private val _imageInfo: ImageInfo by lazy {
+        dataSource.readSvgImageInfo(
+            useViewBoundsAsIntrinsicSize = useViewBoundsAsIntrinsicSize,
+        )
+    }
 
-    override val imageInfo: ImageInfo
-        get() {
-            synchronized(imageInfoLock) {
-                val imageInfo = _imageInfo
-                if (imageInfo != null) return imageInfo
-                return dataSource.readSvgImageInfo(
-                    useViewBoundsAsIntrinsicSize = useViewBoundsAsIntrinsicSize,
-                ).apply {
-                    _imageInfo = this
-                }
-            }
-        }
+    override suspend fun getImageInfo(): ImageInfo {
+        return _imageInfo
+    }
 
-    override fun decode(): ImageData {
+    override suspend fun decode(): ImageData {
         return dataSource.decodeSvg(
             requestContext = requestContext,
             useViewBoundsAsIntrinsicSize = useViewBoundsAsIntrinsicSize,

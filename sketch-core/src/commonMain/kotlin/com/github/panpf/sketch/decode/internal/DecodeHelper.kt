@@ -38,21 +38,20 @@ interface DecodeHelper : Closeable {
     /**
      * Image width, height, and format information
      */
-    val imageInfo: ImageInfo
+    suspend fun getImageInfo(): ImageInfo
 
     /**
      * Whether the region decoding is supported
      */
-    val supportRegion: Boolean
+    suspend fun isSupportRegion(): Boolean
 
     /**
      * Decode the entire image
      */
-    fun decode(sampleSize: Int): Image
+    suspend fun decode(sampleSize: Int): Image
 
     /**
      * Decode the specified region
      */
-    fun decodeRegion(region: Rect, sampleSize: Int): Image
-
+    suspend fun decodeRegion(region: Rect, sampleSize: Int): Image
 }

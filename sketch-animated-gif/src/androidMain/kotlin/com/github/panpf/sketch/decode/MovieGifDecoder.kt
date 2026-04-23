@@ -84,29 +84,25 @@ class MovieGifDecoder(
     private val dataSource: DataSource,
 ) : Decoder {
 
-    private var _imageInfo: ImageInfo? = null
-
-    override val imageInfo: ImageInfo
-        get() {
-            synchronized(this@MovieGifDecoder) {
-                val imageInfo = _imageInfo
-                if (imageInfo != null) return imageInfo
-                val movie: Movie? = dataSource.openSource()
-                    .buffer().inputStream().use { Movie.decodeStream(it) }
-                val width = movie?.width() ?: 0
-                val height = movie?.height() ?: 0
-                return ImageInfo(
-                    size = Size(width = width, height = height),
-                    mimeType = ImageFormat.GIF.mimeType,
-                ).apply {
-                    checkImageInfo(this)
-                    _imageInfo = this
-                }
-            }
+    private val _imageInfo: ImageInfo by lazy {
+        val movie: Movie? = dataSource.openSource()
+            .buffer().inputStream().use { Movie.decodeStream(it) }
+        val width = movie?.width() ?: 0
+        val height = movie?.height() ?: 0
+        ImageInfo(
+            size = Size(width = width, height = height),
+            mimeType = ImageFormat.GIF.mimeType,
+        ).apply {
+            checkImageInfo(this)
         }
+    }
+
+    override suspend fun getImageInfo(): ImageInfo {
+        return _imageInfo
+    }
 
     @WorkerThread
-    override fun decode(): ImageData {
+    override suspend fun decode(): ImageData {
         val request = requestContext.request
         val movie: Movie? = dataSource.openSource()
             .buffer().inputStream().use { Movie.decodeStream(it) }

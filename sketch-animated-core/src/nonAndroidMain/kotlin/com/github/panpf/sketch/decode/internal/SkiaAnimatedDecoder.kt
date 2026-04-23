@@ -31,8 +31,6 @@ import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.transform.AnimatedTransformation
 import com.github.panpf.sketch.util.Rect
-import kotlinx.atomicfu.locks.SynchronizedObject
-import kotlinx.atomicfu.locks.synchronized
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.Data
 import org.jetbrains.skia.impl.use
@@ -66,25 +64,18 @@ open class SkiaAnimatedDecoder(
     private val dataSource: DataSource,
 ) : Decoder {
 
-    private var _imageInfo: ImageInfo? = null
-    private val imageInfoLock = SynchronizedObject()
+    private val _imageInfo: ImageInfo by lazy {
+        Codec.makeFromData(data).use { readImageInfoWithIgnoreExifOrientation(it) }
+    }
     private val data by lazy { Data.makeFromBytes(dataSource.toByteArray()) }
 
-    override val imageInfo: ImageInfo
-        get() {
-            synchronized(imageInfoLock) {
-                return _imageInfo
-                    ?: Codec.makeFromData(data).use { readImageInfoWithIgnoreExifOrientation(it) }
-                        .apply { _imageInfo = this }
-            }
-        }
+    override suspend fun getImageInfo(): ImageInfo {
+        return _imageInfo
+    }
 
-    override fun decode(): ImageData {
+    override suspend fun decode(): ImageData {
         val codec = Codec.makeFromData(data)
-        val imageInfo = synchronized(imageInfoLock) {
-            _imageInfo ?: readImageInfoWithIgnoreExifOrientation(codec)
-                .apply { _imageInfo = this }
-        }
+        val imageInfo = readImageInfoWithIgnoreExifOrientation(codec)
         val request = requestContext.request
         val repeatCount = request.repeatCount
         val cacheDecodeTimeoutFrame = request.cacheDecodeTimeoutFrame == true

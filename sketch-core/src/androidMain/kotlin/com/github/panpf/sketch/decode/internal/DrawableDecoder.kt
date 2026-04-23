@@ -53,22 +53,20 @@ open class DrawableDecoder(
     private val mimeType: String?
 ) : Decoder {
 
-    private var _imageInfo: ImageInfo? = null
+    private val _imageInfo: ImageInfo by lazy {
+        dataSource.drawable.readImageInfo(mimeType)
+    }
 
-    override val imageInfo: ImageInfo
-        get() {
-            synchronized(this@DrawableDecoder) {
-                return _imageInfo ?: dataSource.drawable.readImageInfo(mimeType)
-                    .apply { _imageInfo = this }
-            }
-        }
+    override suspend fun getImageInfo(): ImageInfo {
+        return _imageInfo
+    }
 
     @WorkerThread
-    override fun decode(): ImageData {
+    override suspend fun decode(): ImageData {
         val request = requestContext.request
         val drawable = dataSource.drawable
 
-        val imageInfo = imageInfo
+        val imageInfo = getImageInfo()
         val resize = requestContext.computeResize(imageInfo.size)
         var transformeds: List<String>? = null
         val scale: Float = calculateScaleMultiplierWithOneSide(

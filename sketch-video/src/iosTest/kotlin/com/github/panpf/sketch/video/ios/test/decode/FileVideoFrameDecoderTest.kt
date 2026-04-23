@@ -101,7 +101,7 @@ class FileVideoFrameDecoderTest {
                 requestContext = request.toRequestContext(sketch),
                 dataSource = dataSource,
                 mimeType = "video/mp4"
-            ).imageInfo
+            ).getImageInfo()
         }
 
         // [Test not completed] Because the test environment cannot access the kotlin resource files, the test cannot be completed.
@@ -110,7 +110,7 @@ class FileVideoFrameDecoderTest {
                 requestContext = request.newRequest { preferVideoCover() }.toRequestContext(sketch),
                 dataSource = dataSource,
                 mimeType = "video/mp4"
-            ).imageInfo
+            ).getImageInfo()
         }
     }
 

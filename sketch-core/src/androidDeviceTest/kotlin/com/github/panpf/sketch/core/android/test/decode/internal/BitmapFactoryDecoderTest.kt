@@ -96,10 +96,13 @@ class BitmapFactoryDecoderTest {
                     .apply {
                         assertSizeEquals(
                             expected = imageFile.size,
-                            actual = imageInfo.size,
+                            actual = getImageInfo().size,
                             delta = Size(1, 1)
                         )
-                        assertEquals(expected = imageFile.mimeType, actual = imageInfo.mimeType)
+                        assertEquals(
+                            expected = imageFile.mimeType,
+                            actual = getImageInfo().mimeType
+                        )
                     }
             } catch (e: ImageInvalidException) {
                 e.printStackTrace()

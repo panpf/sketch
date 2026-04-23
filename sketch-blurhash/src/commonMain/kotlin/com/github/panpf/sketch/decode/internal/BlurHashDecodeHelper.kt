@@ -40,14 +40,19 @@ class BlurHashDecodeHelper(
     val blurHashUri: Uri,
 ) : DecodeHelper {
 
-    override val imageInfo: ImageInfo by lazy {
+    private val _imageInfo: ImageInfo by lazy {
         val size: Size = readSizeFromBlurHashUri(blurHashUri) ?: defaultBlurHashBitmapSize
         ImageInfo(size, mimeType = "image/jpeg")
     }
 
-    override val supportRegion: Boolean = false
+    override suspend fun getImageInfo(): ImageInfo {
+        return _imageInfo
+    }
 
-    override fun decode(sampleSize: Int): Image {
+    override suspend fun isSupportRegion(): Boolean = false
+
+    override suspend fun decode(sampleSize: Int): Image {
+        val imageInfo = _imageInfo
         val blurHash = requireNotNull(blurHashUri.authority) {
             "Invalid BlurHash URI: '${blurHashUri}'. The authority part of the URI must contain a valid BlurHash string."
         }
@@ -70,7 +75,7 @@ class BlurHashDecodeHelper(
         return bitmap.asImage()
     }
 
-    override fun decodeRegion(region: Rect, sampleSize: Int): Image {
+    override suspend fun decodeRegion(region: Rect, sampleSize: Int): Image {
         throw UnsupportedOperationException("Region decoding is not supported for BlurHash.")
     }
 

@@ -108,7 +108,7 @@ class ImageDecoderAnimatedHeifDecoderTest {
             .apply {
                 assertEquals(
                     expected = ImageInfo(256, 144, "image/heif"),
-                    actual = imageInfo
+                    actual = getImageInfo()
                 )
             }
     }

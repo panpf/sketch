@@ -33,15 +33,19 @@ class PhotosAssetDecodeHelper(
     val mimeType: String,
 ) : DecodeHelper {
 
-    override val imageInfo: ImageInfo by lazy {
+    private val _imageInfo: ImageInfo by lazy {
         ImageInfo(size = dataSource.asset.pixelSize(), mimeType = mimeType)
     }
 
-    override val supportRegion: Boolean = false
+    override suspend fun getImageInfo(): ImageInfo {
+        return _imageInfo
+    }
 
-    override fun decode(sampleSize: Int): Image {
+    override suspend fun isSupportRegion(): Boolean = false
+
+    override suspend fun decode(sampleSize: Int): Image {
         val targetSize = calculateSampledBitmapSize(
-            imageSize = imageInfo.size,
+            imageSize = _imageInfo.size,
             sampleSize = sampleSize
         )
         val preferFastResize = dataSource.preferredThumbnail
@@ -55,7 +59,7 @@ class PhotosAssetDecodeHelper(
         return bitmap.asImage()
     }
 
-    override fun decodeRegion(region: Rect, sampleSize: Int): Image =
+    override suspend fun decodeRegion(region: Rect, sampleSize: Int): Image =
         throw UnsupportedOperationException("Unsupported region decode")
 
     override fun close() {
