@@ -20,6 +20,7 @@ import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
+import com.github.panpf.sketch.request.Interceptor
 import kotlin.reflect.KClass
 
 /**
@@ -37,11 +38,16 @@ expect object ComponentLoader {
 
     val decoders: List<DecoderProvider>
 
+    val interceptors: List<InterceptorProvider>
+
     // Only available on non-JVM. Added these declarations to work-around a compiler bug.
     fun register(fetcher: FetcherProvider)
 
     // Only available on non-JVM. Added these declarations to work-around a compiler bug.
     fun register(decoder: DecoderProvider)
+
+    // Only available on non-JVM. Added these declarations to work-around a compiler bug.
+    fun register(interceptor: InterceptorProvider)
 }
 
 /**
@@ -59,6 +65,13 @@ expect interface DecoderProvider {
 }
 
 /**
+ * Register a [InterceptorProvider] to [ComponentLoader]
+ */
+expect interface InterceptorProvider {
+    fun create(context: PlatformContext): Interceptor?
+}
+
+/**
  * Convert [ComponentLoader] to [ComponentRegistry]
  *
  * @see com.github.panpf.sketch.componentloadertest.android.test.ComponentLoaderTest.testToComponentRegistry
@@ -71,6 +84,7 @@ fun ComponentLoader.toComponentRegistry(
     context: PlatformContext,
     ignoreFetcherProviders: List<KClass<out FetcherProvider>>? = null,
     ignoreDecoderProviders: List<KClass<out DecoderProvider>>? = null,
+    ignoreInterceptorProviders: List<KClass<out InterceptorProvider>>? = null,
 ): ComponentRegistry {
     return ComponentRegistry {
         fetchers.filter { fetcherProvider ->
@@ -86,6 +100,13 @@ fun ComponentLoader.toComponentRegistry(
             } == null
         }.forEach { decoderComponent ->
             decoderComponent.factory(context)?.let { factory -> add(factory) }
+        }
+        interceptors.filter { interceptorProvider ->
+            ignoreInterceptorProviders?.find { ignoreProviderClass ->
+                interceptorProvider::class == ignoreProviderClass
+            } == null
+        }.forEach { interceptorComponent ->
+            interceptorComponent.create(context)?.let { interceptor -> add(interceptor) }
         }
     }
 }

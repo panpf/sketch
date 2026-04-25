@@ -20,6 +20,7 @@ import androidx.annotation.Keep
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
+import com.github.panpf.sketch.request.Interceptor
 import java.util.ServiceLoader
 
 /**
@@ -46,11 +47,22 @@ actual object ComponentLoader {
         ).iterator().asSequence().toList().toImmutableList()
     }
 
+    actual val interceptors by lazy {
+        ServiceLoader.load(
+            InterceptorProvider::class.java,
+            InterceptorProvider::class.java.classLoader,
+        ).iterator().asSequence().toList().toImmutableList()
+    }
+
     actual fun register(fetcher: FetcherProvider) {
         throw UnsupportedOperationException()
     }
 
     actual fun register(decoder: DecoderProvider) {
+        throw UnsupportedOperationException()
+    }
+
+    actual fun register(interceptor: InterceptorProvider) {
         throw UnsupportedOperationException()
     }
 }
@@ -69,4 +81,12 @@ actual interface FetcherProvider {
 @Keep
 actual interface DecoderProvider {
     actual fun factory(context: PlatformContext): Decoder.Factory?
+}
+
+/**
+ * Register a [InterceptorProvider] to [ComponentLoader]
+ */
+@Keep
+actual interface InterceptorProvider {
+    actual fun create(context: PlatformContext): Interceptor?
 }

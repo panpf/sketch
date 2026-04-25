@@ -19,6 +19,7 @@ package com.github.panpf.sketch.util
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
+import com.github.panpf.sketch.request.Interceptor
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 
@@ -34,6 +35,7 @@ actual object ComponentLoader {
     private val lock = SynchronizedObject()
     private val _fetchers = mutableListOf<FetcherProvider>()
     private val _decoders = mutableListOf<DecoderProvider>()
+    private val _interceptors = mutableListOf<InterceptorProvider>()
 
     actual val fetchers: List<FetcherProvider>
         get() = synchronized(lock) { _fetchers.toImmutableList() }
@@ -41,12 +43,19 @@ actual object ComponentLoader {
     actual val decoders: List<DecoderProvider>
         get() = synchronized(lock) { _decoders.toImmutableList() }
 
+    actual val interceptors: List<InterceptorProvider>
+        get() = synchronized(lock) { _interceptors.toImmutableList() }
+
     actual fun register(fetcher: FetcherProvider) = synchronized(lock) {
         _fetchers += fetcher
     }
 
     actual fun register(decoder: DecoderProvider) = synchronized(lock) {
         _decoders += decoder
+    }
+
+    actual fun register(interceptor: InterceptorProvider) = synchronized(lock) {
+        _interceptors += interceptor
     }
 }
 
@@ -62,4 +71,11 @@ actual interface FetcherProvider {
  */
 actual interface DecoderProvider {
     actual fun factory(context: PlatformContext): Decoder.Factory?
+}
+
+/**
+ * Register a [InterceptorProvider] to [ComponentLoader]
+ */
+actual interface InterceptorProvider {
+    actual fun create(context: PlatformContext): Interceptor?
 }

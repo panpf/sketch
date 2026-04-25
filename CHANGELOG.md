@@ -17,6 +17,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
   modifier has been added to the main functions.
 * change: Fetcher and Decoder add sortWeight property for sorting.
 * change: The package name of DecoderInterceptor is changed back to 'com.github.panpf.sketch.decode'
+* new: Interceptor now also supports automatic registration
 
 ## Android
 

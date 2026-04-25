@@ -18,6 +18,8 @@ import com.github.panpf.sketch.fetch.KtorHttpUriFetcher
 import com.github.panpf.sketch.fetch.internal.BlurHashUriFetcherProvider
 import com.github.panpf.sketch.fetch.internal.ComposeResourceUriFetcherProvider
 import com.github.panpf.sketch.fetch.internal.KtorHttpUriFetcherProvider
+import com.github.panpf.sketch.test.utils.TestInterceptor
+import com.github.panpf.sketch.test.utils.TestInterceptorProvider
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.toComponentRegistry
@@ -50,42 +52,55 @@ class ComponentLoaderTest {
     }
 
     @Test
+    fun testInterceptors() {
+        val interceptorProviderList = ComponentLoader.interceptors
+        assertEquals(1, interceptorProviderList.size)
+        assertNotNull(interceptorProviderList.find { it is TestInterceptorProvider })
+    }
+
+    @Test
     fun testToComponentRegistry() {
         val context = getTestContext()
-        val componentLoader = ComponentLoader
-        val componentRegistry = componentLoader.toComponentRegistry(context)
+        ComponentLoader.toComponentRegistry(context).apply {
+            assertEquals(3, fetchers.size)
+            assertNotNull(fetchers.find { it is ComposeResourceUriFetcher.Factory })
+            assertNotNull(fetchers.find { it is KtorHttpUriFetcher.Factory })
+            assertNotNull(fetchers.find { it is BlurHashUriFetcher.Factory })
 
-        assertEquals(3, componentRegistry.fetchers.size)
-        assertNotNull(componentRegistry.fetchers.find { it is ComposeResourceUriFetcher.Factory })
-        assertNotNull(componentRegistry.fetchers.find { it is KtorHttpUriFetcher.Factory })
-        assertNotNull(componentRegistry.fetchers.find { it is BlurHashUriFetcher.Factory })
+            assertEquals(6, decoders.size)
+            assertNotNull(decoders.find { it is SkiaGifDecoder.Factory })
+            assertNotNull(decoders.find { it is SkiaAnimatedWebpDecoder.Factory })
+            assertNotNull(decoders.find { it is SvgDecoder.Factory })
+            assertNotNull(decoders.find { it is BlurHashDecoder.Factory })
+            assertNotNull(decoders.find { it is FileVideoFrameDecoder.Factory })
+            assertNotNull(decoders.find { it is PhotosAssetVideoFrameDecoder.Factory })
 
-        assertEquals(6, componentRegistry.decoders.size)
-        assertNotNull(componentRegistry.decoders.find { it is SkiaGifDecoder.Factory })
-        assertNotNull(componentRegistry.decoders.find { it is SkiaAnimatedWebpDecoder.Factory })
-        assertNotNull(componentRegistry.decoders.find { it is SvgDecoder.Factory })
-        assertNotNull(componentRegistry.decoders.find { it is BlurHashDecoder.Factory })
-        assertNotNull(componentRegistry.decoders.find { it is FileVideoFrameDecoder.Factory })
-        assertNotNull(componentRegistry.decoders.find { it is PhotosAssetVideoFrameDecoder.Factory })
+            assertEquals(1, interceptors.size)
+            assertNotNull(interceptors.find { it is TestInterceptor })
+        }
 
         // ignoreProviderClasses
-        val componentRegistry2 = componentLoader.toComponentRegistry(
+        ComponentLoader.toComponentRegistry(
             context = context,
             ignoreFetcherProviders = listOf(ComposeResourceUriFetcherProvider::class),
             ignoreDecoderProviders = listOf(SvgDecoderProvider::class),
-        )
+            ignoreInterceptorProviders = listOf(TestInterceptorProvider::class),
+        ).apply {
+            assertEquals(2, fetchers.size)
+            assertNull(fetchers.find { it is ComposeResourceUriFetcher.Factory })
+            assertNotNull(fetchers.find { it is KtorHttpUriFetcher.Factory })
+            assertNotNull(fetchers.find { it is BlurHashUriFetcher.Factory })
 
-        assertEquals(2, componentRegistry2.fetchers.size)
-        assertNull(componentRegistry2.fetchers.find { it is ComposeResourceUriFetcher.Factory })
-        assertNotNull(componentRegistry2.fetchers.find { it is KtorHttpUriFetcher.Factory })
-        assertNotNull(componentRegistry2.fetchers.find { it is BlurHashUriFetcher.Factory })
+            assertEquals(5, decoders.size)
+            assertNotNull(decoders.find { it is SkiaGifDecoder.Factory })
+            assertNotNull(decoders.find { it is SkiaAnimatedWebpDecoder.Factory })
+            assertNull(decoders.find { it is SvgDecoder.Factory })
+            assertNotNull(decoders.find { it is BlurHashDecoder.Factory })
+            assertNotNull(decoders.find { it is FileVideoFrameDecoder.Factory })
+            assertNotNull(decoders.find { it is PhotosAssetVideoFrameDecoder.Factory })
 
-        assertEquals(5, componentRegistry2.decoders.size)
-        assertNotNull(componentRegistry2.decoders.find { it is SkiaGifDecoder.Factory })
-        assertNotNull(componentRegistry2.decoders.find { it is SkiaAnimatedWebpDecoder.Factory })
-        assertNull(componentRegistry2.decoders.find { it is SvgDecoder.Factory })
-        assertNotNull(componentRegistry2.decoders.find { it is BlurHashDecoder.Factory })
-        assertNotNull(componentRegistry2.decoders.find { it is FileVideoFrameDecoder.Factory })
-        assertNotNull(componentRegistry2.decoders.find { it is PhotosAssetVideoFrameDecoder.Factory })
+            assertEquals(0, interceptors.size)
+            assertNull(interceptors.find { it is TestInterceptor })
+        }
     }
 }
