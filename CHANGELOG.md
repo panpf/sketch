@@ -16,6 +16,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
 * change: The properties of Decoder and DecodeHelper have been changed to functions, and the suspend
   modifier has been added to the main functions.
 * change: Fetcher and Decoder add sortWeight property for sorting.
+* change: The package name of DecoderInterceptor is changed back to 'com.github.panpf.sketch.decode'
 
 ## Android
 

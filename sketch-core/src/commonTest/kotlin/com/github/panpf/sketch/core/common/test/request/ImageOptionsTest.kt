@@ -25,6 +25,7 @@ import com.github.panpf.sketch.decode.BitmapColorSpace
 import com.github.panpf.sketch.decode.BitmapColorType
 import com.github.panpf.sketch.decode.HighQualityColorType
 import com.github.panpf.sketch.decode.LowQualityColorType
+import com.github.panpf.sketch.decode.internal.DecoderInterceptor
 import com.github.panpf.sketch.request.Depth.LOCAL
 import com.github.panpf.sketch.request.Depth.MEMORY
 import com.github.panpf.sketch.request.Depth.NETWORK
@@ -32,7 +33,6 @@ import com.github.panpf.sketch.request.Extras
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.get
-import com.github.panpf.sketch.request.internal.DecoderInterceptor
 import com.github.panpf.sketch.request.internal.ThumbnailInterceptor.Companion.KEY_THUMBNAIL
 import com.github.panpf.sketch.request.isNotEmpty
 import com.github.panpf.sketch.resize.FixedPrecisionDecider

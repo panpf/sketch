@@ -19,7 +19,7 @@ package com.github.panpf.sketch.request
 import androidx.annotation.MainThread
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.request.internal.DecoderInterceptor
+import com.github.panpf.sketch.decode.internal.DecoderInterceptor
 import com.github.panpf.sketch.util.NullableKey
 
 @Deprecated(

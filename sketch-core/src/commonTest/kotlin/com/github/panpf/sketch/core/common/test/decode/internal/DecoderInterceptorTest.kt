@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.github.panpf.sketch.core.common.test.request.internal
+package com.github.panpf.sketch.core.common.test.decode.internal
 
+import com.github.panpf.sketch.decode.internal.DecoderInterceptor
 import com.github.panpf.sketch.fetch.internal.FetcherInterceptor
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.DecoderInterceptor
 import com.github.panpf.sketch.request.internal.InterceptorChain
 import com.github.panpf.sketch.test.utils.TestHttpStack
 import com.github.panpf.sketch.test.utils.TestHttpUriFetcher

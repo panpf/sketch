@@ -2,6 +2,7 @@ package com.github.panpf.sketch.core.common.test.request.internal
 
 import com.github.panpf.sketch.Image
 import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.decode.internal.DecoderInterceptor
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.images.block
 import com.github.panpf.sketch.request.ImageData
@@ -10,7 +11,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.get
-import com.github.panpf.sketch.request.internal.DecoderInterceptor
 import com.github.panpf.sketch.request.internal.ThumbnailInterceptor
 import com.github.panpf.sketch.request.internal.ThumbnailInterceptor.Companion.KEY_THUMBNAIL
 import com.github.panpf.sketch.request.internal.ThumbnailTarget

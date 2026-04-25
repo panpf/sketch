@@ -3,10 +3,10 @@ package com.github.panpf.sketch.core.common.test
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.Components
 import com.github.panpf.sketch.cache.internal.MemoryCacheInterceptor
+import com.github.panpf.sketch.decode.internal.DecoderInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.DecoderInterceptor
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.AllFetcher
 import com.github.panpf.sketch.test.utils.FakeDecoder

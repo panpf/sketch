@@ -18,10 +18,10 @@ package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.annotation.WorkerThread
+import com.github.panpf.sketch.decode.internal.DecoderInterceptor
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.request.internal.DecoderInterceptor
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Key
 

@@ -23,13 +23,13 @@ import com.github.panpf.sketch.cache.CachePolicy.WRITE_ONLY
 import com.github.panpf.sketch.cache.createImageSerializer
 import com.github.panpf.sketch.cache.internal.ResultCacheInterceptor
 import com.github.panpf.sketch.decode.ImageInfo
+import com.github.panpf.sketch.decode.internal.DecoderInterceptor
 import com.github.panpf.sketch.fetch.internal.FetcherInterceptor
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Interceptor
-import com.github.panpf.sketch.request.internal.DecoderInterceptor
 import com.github.panpf.sketch.request.internal.InterceptorChain
 import com.github.panpf.sketch.resize.Precision
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS

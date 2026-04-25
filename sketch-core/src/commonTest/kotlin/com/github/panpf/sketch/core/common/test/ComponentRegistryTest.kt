@@ -2,12 +2,12 @@ package com.github.panpf.sketch.core.common.test
 
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.cache.internal.MemoryCacheInterceptor
+import com.github.panpf.sketch.decode.internal.DecoderInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.isNotEmpty
 import com.github.panpf.sketch.merged
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.internal.DecoderInterceptor
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.TestDecoder
 import com.github.panpf.sketch.test.utils.TestDecoder2

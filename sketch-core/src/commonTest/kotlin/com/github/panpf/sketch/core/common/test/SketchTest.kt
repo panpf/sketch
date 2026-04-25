@@ -8,6 +8,7 @@ import com.github.panpf.sketch.cache.MemoryCache
 import com.github.panpf.sketch.cache.internal.MemoryCacheInterceptor
 import com.github.panpf.sketch.cache.internal.ResultCacheInterceptor
 import com.github.panpf.sketch.commonComponents
+import com.github.panpf.sketch.decode.internal.DecoderInterceptor
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.FileUriFetcher
 import com.github.panpf.sketch.fetch.KtorHttpUriFetcher
@@ -21,7 +22,6 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.ImageResult.Error
 import com.github.panpf.sketch.request.ImageResult.Success
-import com.github.panpf.sketch.request.internal.DecoderInterceptor
 import com.github.panpf.sketch.request.internal.PlaceholderInterceptor
 import com.github.panpf.sketch.request.internal.ThumbnailInterceptor
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch

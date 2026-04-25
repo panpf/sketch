@@ -17,11 +17,11 @@
 package com.github.panpf.sketch.core.common.test.transform.internal
 
 import com.github.panpf.sketch.Image
+import com.github.panpf.sketch.decode.internal.DecoderInterceptor
 import com.github.panpf.sketch.fetch.internal.FetcherInterceptor
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.request.internal.DecoderInterceptor
 import com.github.panpf.sketch.request.internal.InterceptorChain
 import com.github.panpf.sketch.resize.Precision.LESS_PIXELS
 import com.github.panpf.sketch.resize.Scale.CENTER_CROP
