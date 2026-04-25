@@ -57,6 +57,8 @@ class ComposeResHttpUriFetcher(
 
     class Factory(val httpStack: ComposeResHttpStack) : Fetcher.Factory {
 
+        override val sortWeight: Int = SORT_WEIGHT
+
         override fun create(requestContext: RequestContext): HttpUriFetcher? {
             val request = requestContext.request
             val uri = request.uri

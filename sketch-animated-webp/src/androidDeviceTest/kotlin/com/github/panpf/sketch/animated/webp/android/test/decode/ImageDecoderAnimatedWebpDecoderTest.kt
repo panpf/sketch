@@ -83,6 +83,14 @@ class ImageDecoderAnimatedWebpDecoderTest {
     }
 
     @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 15,
+            actual = ImageDecoderAnimatedWebpDecoder.SORT_WEIGHT
+        )
+    }
+
+    @Test
     fun testConstructor() = runTest {
         if (VERSION.SDK_INT < VERSION_CODES.P) return@runTest
 
@@ -192,6 +200,14 @@ class ImageDecoderAnimatedWebpDecoderTest {
         assertEquals(
             expected = "ImageDecoderAnimatedWebpDecoder",
             actual = ImageDecoderAnimatedWebpDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 15,
+            actual = ImageDecoderAnimatedWebpDecoder.Factory().sortWeight
         )
     }
 

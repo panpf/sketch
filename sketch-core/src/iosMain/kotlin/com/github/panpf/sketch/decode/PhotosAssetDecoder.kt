@@ -46,9 +46,14 @@ class PhotosAssetDecoder(
     },
 ) {
 
+    companion object {
+        const val SORT_WEIGHT = 60
+    }
+
     class Factory : Decoder.Factory {
 
         override val key: String = "PhotosAssetDecoder"
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(
             requestContext: RequestContext,

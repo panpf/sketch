@@ -49,6 +49,14 @@ import kotlin.test.assertTrue
 class SkiaDecoderTest {
 
     @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 100,
+            actual = SkiaDecoder.SORT_WEIGHT
+        )
+    }
+
+    @Test
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
@@ -1011,6 +1019,14 @@ class SkiaDecoderTest {
         assertEquals(
             expected = "SkiaDecoder",
             actual = SkiaDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 100,
+            actual = SkiaDecoder.Factory().sortWeight
         )
     }
 

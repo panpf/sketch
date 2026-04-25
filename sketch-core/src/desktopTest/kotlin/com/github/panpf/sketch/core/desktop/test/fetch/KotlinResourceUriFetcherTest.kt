@@ -66,6 +66,7 @@ class KotlinResourceUriFetcherTest {
     fun testCompanion() {
         assertEquals("file", KotlinResourceUriFetcher.SCHEME)
         assertEquals("kotlin_resource", KotlinResourceUriFetcher.PATH_ROOT)
+        assertEquals(expected = 45, actual = KotlinResourceUriFetcher.SORT_WEIGHT)
     }
 
     @Test
@@ -131,6 +132,14 @@ class KotlinResourceUriFetcherTest {
     @Test
     fun testFactoryConstructor() {
         KotlinResourceUriFetcher.Factory()
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 45,
+            actual = KotlinResourceUriFetcher.Factory().sortWeight
+        )
     }
 
     @Test

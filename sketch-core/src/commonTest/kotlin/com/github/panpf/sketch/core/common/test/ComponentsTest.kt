@@ -281,7 +281,7 @@ class ComponentsTest {
         }).apply {
             assertEquals(
                 "Components(ComponentRegistry(" +
-                        "fetchers=[Base64UriFetcher,TestFetcher]," +
+                        "fetchers=[TestFetcher,Base64UriFetcher]," +
                         "decoders=[TestDecoder,TestDecoder2]," +
                         "interceptors=[DecoderInterceptor]" +
                         "))",

@@ -78,6 +78,14 @@ class SkiaGifDecoderTest {
     }
 
     @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 15,
+            actual = SkiaGifDecoder.SORT_WEIGHT
+        )
+    }
+
+    @Test
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
@@ -197,6 +205,14 @@ class SkiaGifDecoderTest {
         assertEquals(
             expected = "SkiaGifDecoder",
             actual = SkiaGifDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 15,
+            actual = SkiaGifDecoder.Factory().sortWeight
         )
     }
 

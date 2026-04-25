@@ -23,9 +23,14 @@ class BlurHashDecoder(
     }
 ) {
 
+    companion object {
+        const val SORT_WEIGHT = 45
+    }
+
     class Factory : Decoder.Factory {
 
         override val key: String = "BlurHashDecoder"
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(
             requestContext: RequestContext, fetchResult: FetchResult

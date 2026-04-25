@@ -28,6 +28,8 @@ class AllFetcher : Fetcher {
 
     class Factory : Fetcher.Factory {
 
+        override val sortWeight: Int = 0
+
         override fun create(requestContext: RequestContext): Fetcher {
             return AllFetcher()
         }

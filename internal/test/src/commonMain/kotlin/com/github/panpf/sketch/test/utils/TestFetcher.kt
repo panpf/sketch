@@ -26,7 +26,7 @@ class TestFetcher : Fetcher {
         throw UnsupportedOperationException()
     }
 
-    class Factory : Fetcher.Factory {
+    class Factory(override val sortWeight: Int = 0) : Fetcher.Factory {
 
         override fun create(requestContext: RequestContext): Fetcher {
             return TestFetcher()

@@ -74,6 +74,7 @@ class ResourceUriFetcherTest {
     @Test
     fun testCompanion() {
         assertEquals("android.resource", ResourceUriFetcher.SCHEME)
+        assertEquals(expected = 45, actual = ResourceUriFetcher.SORT_WEIGHT)
     }
 
     @Test
@@ -232,6 +233,14 @@ class ResourceUriFetcherTest {
                 context,
                 "android.resource://com.github.panpf.sketch.sample/drawable/ic_launcher".toUri()
             ).toString()
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 45,
+            actual = ResourceUriFetcher.Factory().sortWeight
         )
     }
 

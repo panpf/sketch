@@ -241,9 +241,13 @@ AsyncImage(
 imageView.loadImage(imageUri)
 ```
 
-### Extend Fetcher
+### Custom Fetcher
 
 First implement the [Fetcher] interface to define your Fetcher and its Factory
+
+Pay attention to the value of the [Fetcher].sortWeight attribute, which determines the position of
+the current [Fetcher] in the Fetcher list. The larger the value, the further back in the list. The
+value range is 0 ~ 100
 
 Then refer to the document [《Register component》](register_component.md) to register your Fetcher
 

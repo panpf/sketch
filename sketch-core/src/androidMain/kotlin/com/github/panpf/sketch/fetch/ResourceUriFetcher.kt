@@ -108,6 +108,7 @@ class ResourceUriFetcher constructor(
 
     companion object {
         const val SCHEME = "android.resource"
+        const val SORT_WEIGHT = 45
     }
 
     @WorkerThread
@@ -212,6 +213,8 @@ class ResourceUriFetcher constructor(
     }
 
     class Factory : Fetcher.Factory {
+
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(requestContext: RequestContext): ResourceUriFetcher? {
             val request = requestContext.request

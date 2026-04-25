@@ -23,7 +23,6 @@ import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.RequestContext
-import com.github.panpf.sketch.request.internal.DecoderInterceptor
 import com.github.panpf.sketch.util.requiredWorkThread
 
 /**
@@ -207,32 +206,46 @@ open class ComponentRegistry private constructor(
          * Register an [Fetcher.Factory]
          */
         fun add(fetchFactory: Fetcher.Factory): Builder = apply {
+            require(fetchFactory.sortWeight in 0..100) {
+                "sortWeight has a valid range of 0 to 100"
+            }
             fetchers.add(fetchFactory)
         }
 
         /**
          * Register an [Fetcher.Factory]
          */
+        @Deprecated(
+            message = "Use add instead. Will be removed in the future",
+            replaceWith = ReplaceWith("add(fetchFactory)")
+        )
         fun addFetcher(fetchFactory: Fetcher.Factory): Builder = add(fetchFactory)
 
         /**
          * Register an [Decoder.Factory]
          */
         fun add(decoderFactory: Decoder.Factory): Builder = apply {
+            require(decoderFactory.sortWeight in 0..100) {
+                "sortWeight has a valid range of 0 to 100"
+            }
             decoders.add(decoderFactory)
         }
 
         /**
          * Register an [Decoder.Factory]
          */
+        @Deprecated(
+            message = "Use add instead. Will be removed in the future",
+            replaceWith = ReplaceWith("add(decoderFactory)")
+        )
         fun addDecoder(decoderFactory: Decoder.Factory): Builder = add(decoderFactory)
 
         /**
          * Append an [Interceptor]
          */
         fun add(interceptor: Interceptor): Builder = apply {
-            require(if (interceptor is DecoderInterceptor) interceptor.sortWeight == 100 else interceptor.sortWeight in 0..99) {
-                "sortWeight has a valid range of 0 to 100, and only DecoderInterceptor can be 100"
+            require(interceptor.sortWeight in 0..100) {
+                "sortWeight has a valid range of 0 to 100"
             }
             this.interceptors.add(interceptor)
         }
@@ -240,6 +253,10 @@ open class ComponentRegistry private constructor(
         /**
          * Append an [Interceptor]
          */
+        @Deprecated(
+            message = "Use add instead. Will be removed in the future",
+            replaceWith = ReplaceWith("add(interceptor)")
+        )
         fun addInterceptor(interceptor: Interceptor): Builder = add(interceptor)
 
         /**
@@ -266,11 +283,16 @@ open class ComponentRegistry private constructor(
             }
         }
 
-        fun build(): ComponentRegistry = ComponentRegistry(
-            fetchers = fetchers.toList(),
-            decoders = decoders.toList(),
-            interceptors = interceptors.sortedBy { it.sortWeight },
-        )
+        fun build(): ComponentRegistry {
+            val sortedFetchers = fetchers.sortedBy { it.sortWeight }
+            val sortedDecoders = decoders.sortedBy { it.sortWeight }
+            val sortedInterceptors = interceptors.sortedBy { it.sortWeight }
+            return ComponentRegistry(
+                fetchers = sortedFetchers,
+                decoders = sortedDecoders,
+                interceptors = sortedInterceptors,
+            )
+        }
     }
 }
 
@@ -308,7 +330,7 @@ fun ComponentRegistry?.merged(other: ComponentRegistry?): ComponentRegistry? {
  *
  * @see com.github.panpf.sketch.core.common.test.ComponentsTest
  */
-class Components constructor(val registry: ComponentRegistry) {
+class Components(val registry: ComponentRegistry) {
 
     /**
      * Get the [ImageRequest] plus the global [Interceptor] list

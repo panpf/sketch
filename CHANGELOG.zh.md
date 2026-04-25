@@ -12,6 +12,7 @@
 ## Multiplatform
 
 * change: Decoder 和 DecodeHelper 的属性都改成了函数，并且主要函数都增加了 suspend 修饰符
+* change: Fetcher 和 Decoder 新增 sortWeight 属性用于排序
 
 ## Android
 

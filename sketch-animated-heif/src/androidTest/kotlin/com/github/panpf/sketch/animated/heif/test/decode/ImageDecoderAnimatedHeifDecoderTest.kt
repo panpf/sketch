@@ -83,6 +83,14 @@ class ImageDecoderAnimatedHeifDecoderTest {
     }
 
     @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 15,
+            actual = ImageDecoderAnimatedHeifDecoder.SORT_WEIGHT
+        )
+    }
+
+    @Test
     fun testConstructor() = runTest {
         if (VERSION.SDK_INT < VERSION_CODES.R) return@runTest
 
@@ -192,6 +200,14 @@ class ImageDecoderAnimatedHeifDecoderTest {
         assertEquals(
             expected = "ImageDecoderAnimatedHeifDecoder",
             actual = ImageDecoderAnimatedHeifDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 15,
+            actual = ImageDecoderAnimatedHeifDecoder.Factory().sortWeight
         )
     }
 

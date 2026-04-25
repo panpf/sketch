@@ -71,9 +71,14 @@ class FileVideoFrameDecoder(
     },
 ) {
 
+    companion object {
+        const val SORT_WEIGHT = 30
+    }
+
     class Factory : Decoder.Factory {
 
         override val key: String = "FileVideoFrameDecoder"
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(
             requestContext: RequestContext,

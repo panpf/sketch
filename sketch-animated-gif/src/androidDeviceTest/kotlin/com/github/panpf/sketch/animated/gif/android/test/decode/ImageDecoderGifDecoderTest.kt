@@ -85,6 +85,14 @@ class ImageDecoderGifDecoderTest {
     }
 
     @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 15,
+            actual = ImageDecoderGifDecoder.SORT_WEIGHT
+        )
+    }
+
+    @Test
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
@@ -203,6 +211,14 @@ class ImageDecoderGifDecoderTest {
         assertEquals(
             expected = "ImageDecoderGifDecoder",
             actual = ImageDecoderGifDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 15,
+            actual = ImageDecoderGifDecoder.Factory().sortWeight
         )
     }
 

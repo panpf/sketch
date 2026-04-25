@@ -78,10 +78,15 @@ class VideoFrameDecoder constructor(
     }
 ) {
 
+    companion object {
+        const val SORT_WEIGHT = 30
+    }
+
     @TargetApi(Build.VERSION_CODES.O_MR1)
     class Factory : Decoder.Factory {
 
         override val key: String = "VideoFrameDecoder"
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(
             requestContext: RequestContext,

@@ -48,6 +48,7 @@ class ContentUriFetcherTest {
     @Test
     fun testCompanion() {
         assertEquals("content", ContentUriFetcher.SCHEME)
+        assertEquals(expected = 30, actual = ContentUriFetcher.SORT_WEIGHT)
     }
 
     @Test
@@ -90,6 +91,11 @@ class ContentUriFetcherTest {
                 "content://sample_app/sample.jpg".toAndroidUri()
             ).toString()
         )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(expected = 30, actual = ContentUriFetcher.Factory().sortWeight)
     }
 
     @Test

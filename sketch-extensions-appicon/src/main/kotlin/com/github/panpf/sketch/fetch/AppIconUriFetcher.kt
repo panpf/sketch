@@ -70,6 +70,7 @@ class AppIconUriFetcher constructor(
     companion object {
         const val SCHEME = "app.icon"
         const val IMAGE_MIME_TYPE = "image/png"
+        const val SORT_WEIGHT = 60
     }
 
     @WorkerThread
@@ -104,6 +105,8 @@ class AppIconUriFetcher constructor(
     }
 
     class Factory : Fetcher.Factory {
+
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(requestContext: RequestContext): AppIconUriFetcher? {
             val request = requestContext.request

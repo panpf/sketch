@@ -124,6 +124,14 @@ class OkHttpHttpUriFetcherTest {
     }
 
     @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 15,
+            actual = OkHttpHttpUriFetcher.Factory().sortWeight
+        )
+    }
+
+    @Test
     fun testFactoryCreate() {
         val (context, sketch) = getTestContextAndSketch()
         val httpUri = "http://sample.com/sample.jpg"

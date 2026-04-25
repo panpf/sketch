@@ -26,7 +26,7 @@ import com.github.panpf.sketch.request.RequestContext
  * [Fetcher] get the data stream from the uri of [ImageRequest] and wrap it as a [FetchResult] return
  * for use by [Decoder]
  */
-fun interface Fetcher {
+interface Fetcher {
 
     /**
      * Get the data stream from the uri of [ImageRequest] and wrap it as a [FetchResult] return
@@ -43,6 +43,11 @@ fun interface Fetcher {
      * construction parameters return consistent results. This is important in Compose
      */
     interface Factory {
+
+        /**
+         * For sorting, larger values go lower in the list. It ranges from 0 to 100. It's usually zero.
+         */
+        val sortWeight: Int
 
         /**
          * If the current [Factory]'s [Fetcher] can extract data from the current [ImageRequest],

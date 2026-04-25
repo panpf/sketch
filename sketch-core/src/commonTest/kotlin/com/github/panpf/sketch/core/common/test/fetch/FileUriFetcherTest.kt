@@ -104,6 +104,7 @@ class FileUriFetcherTest {
     @Test
     fun testCompanion() {
         assertEquals("file", FileUriFetcher.SCHEME)
+        assertEquals(expected = 75, actual = FileUriFetcher.SORT_WEIGHT)
     }
 
     @Test
@@ -141,6 +142,14 @@ class FileUriFetcherTest {
         assertEquals(
             expected = "FileUriFetcher('/storage/sample.jpg')",
             actual = FileUriFetcher("/storage/sample.jpg".toPath()).toString()
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 75,
+            actual = FileUriFetcher.Factory().sortWeight
         )
     }
 

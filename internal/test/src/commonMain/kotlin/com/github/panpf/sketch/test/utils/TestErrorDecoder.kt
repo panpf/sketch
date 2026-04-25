@@ -35,6 +35,7 @@ class TestErrorDecoder : Decoder {
     class Factory : Decoder.Factory {
 
         override val key: String = "TestErrorDecoder"
+        override val sortWeight: Int = 0
 
         override fun create(
             requestContext: RequestContext,

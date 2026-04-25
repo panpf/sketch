@@ -46,9 +46,15 @@ class SkiaDecoder(
         SkiaDecodeHelper(requestContext.request, dataSource)
     }
 ) {
+
+    companion object {
+        const val SORT_WEIGHT = 100
+    }
+
     class Factory : Decoder.Factory {
 
         override val key: String get() = "SkiaDecoder"
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(
             requestContext: RequestContext,

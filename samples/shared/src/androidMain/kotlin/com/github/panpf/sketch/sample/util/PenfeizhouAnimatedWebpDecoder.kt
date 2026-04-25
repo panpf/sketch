@@ -56,6 +56,10 @@ class PenfeizhouAnimatedWebpDecoder(
     val disallowAnimatedImage: Boolean,
 ) : Decoder {
 
+    companion object {
+        const val SORT_WEIGHT = 15
+    }
+
     private val _imageInfo: ImageInfo by lazy {
         val streamLoader = dataSource.toStreamLoader(requestContext.request.context)
         val webpDecoder = WebPDecoder(streamLoader, null)
@@ -120,6 +124,7 @@ class PenfeizhouAnimatedWebpDecoder(
     class Factory : Decoder.Factory {
 
         override val key: String = "PenfeizhouAnimatedWebpDecoder"
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(
             requestContext: RequestContext,

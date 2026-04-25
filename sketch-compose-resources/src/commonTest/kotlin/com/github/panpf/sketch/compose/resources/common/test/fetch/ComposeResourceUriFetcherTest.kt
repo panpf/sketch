@@ -133,6 +133,7 @@ class ComposeResourceUriFetcherTest {
     fun testCompanion() {
         assertEquals("file", ComposeResourceUriFetcher.SCHEME)
         assertEquals("compose_resource", ComposeResourceUriFetcher.PATH_ROOT)
+        assertEquals(expected = 45, actual = ComposeResourceUriFetcher.SORT_WEIGHT)
     }
 
     @Test
@@ -174,6 +175,11 @@ class ComposeResourceUriFetcherTest {
             expected = "ComposeResourceUriFetcher('composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg')",
             actual = ComposeResourceUriFetcher("composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg").toString()
         )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(expected = 45, actual = ComposeResourceUriFetcher.Factory().sortWeight)
     }
 
     @Test

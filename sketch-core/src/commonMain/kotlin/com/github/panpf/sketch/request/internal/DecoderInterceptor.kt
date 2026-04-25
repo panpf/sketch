@@ -26,6 +26,7 @@ import kotlinx.coroutines.withContext
  *
  * @see com.github.panpf.sketch.core.common.test.request.internal.DecoderInterceptorTest
  */
+// TODO move to decode package
 class DecoderInterceptor : Interceptor {
 
     companion object Companion {

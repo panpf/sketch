@@ -65,6 +65,7 @@ class AssetUriFetcherTest {
     fun testCompanion() {
         assertEquals("file", AssetUriFetcher.SCHEME)
         assertEquals("android_asset", AssetUriFetcher.PATH_ROOT)
+        assertEquals(expected = 45, actual = AssetUriFetcher.SORT_WEIGHT)
     }
 
     @Test
@@ -106,6 +107,11 @@ class AssetUriFetcherTest {
             expected = "AssetUriFetcher('file.jpeg')",
             actual = AssetUriFetcher(context, "file.jpeg").toString()
         )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(expected = 45, actual = AssetUriFetcher.Factory().sortWeight)
     }
 
     @Test

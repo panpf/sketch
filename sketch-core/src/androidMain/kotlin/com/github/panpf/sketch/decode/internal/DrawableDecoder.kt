@@ -53,6 +53,10 @@ open class DrawableDecoder(
     private val mimeType: String?
 ) : Decoder {
 
+    companion object {
+        const val SORT_WEIGHT = 45
+    }
+
     private val _imageInfo: ImageInfo by lazy {
         dataSource.drawable.readImageInfo(mimeType)
     }
@@ -102,6 +106,7 @@ open class DrawableDecoder(
     class Factory : Decoder.Factory {
 
         override val key: String = "DrawableDecoder"
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(
             requestContext: RequestContext,

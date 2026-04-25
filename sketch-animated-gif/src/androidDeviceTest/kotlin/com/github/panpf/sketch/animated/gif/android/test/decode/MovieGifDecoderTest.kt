@@ -99,6 +99,14 @@ class MovieGifDecoderTest {
     }
 
     @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 15,
+            actual = MovieGifDecoder.SORT_WEIGHT
+        )
+    }
+
+    @Test
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
@@ -203,6 +211,14 @@ class MovieGifDecoderTest {
         assertEquals(
             expected = "MovieGifDecoder",
             actual = MovieGifDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 15,
+            actual = MovieGifDecoder.Factory().sortWeight
         )
     }
 

@@ -22,6 +22,8 @@ import com.github.panpf.sketch.request.RequestContext
 
 class TestAssetFetcherFactory : Fetcher.Factory {
 
+    override val sortWeight: Int = 0
+
     override fun create(requestContext: RequestContext): Fetcher? {
         val request = requestContext.request
         val uri = request.uri

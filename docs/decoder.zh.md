@@ -139,9 +139,12 @@ AsyncImage(
 在 Android 平台主要使用 [DrawableDecoder] 解码 vector、shape 等 Android 支持的 xml drawable
 图片，它的原理就是将 Drawable 绘制到 Bitmap 上，因此要求 Drawable 必须有固有尺寸。
 
-### 扩展 Decoder
+### 自定义 Decoder
 
 先实现 [Decoder] 接口定义你的 Decoder 和它的 Factory
+
+注意 [Decoder].sortWeight 属性的值，他决定当前 [Decoder] 在 Decoder 列表中的位置，值越大在列表中越靠后。取值范围是
+0 ~ 100
 
 然后参考文档 [《注册组件》](register_component.zh.md) 注册你的 Decoder 即可
 

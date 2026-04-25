@@ -22,6 +22,14 @@ class BlurHashDecoderAndroidTest {
     private val blurHashUri = newBlurHashUri("LEHV6nWB2yk8pyo0adR*.7kCMdnj", 200, 300)
 
     @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 45,
+            actual = BlurHashDecoder.SORT_WEIGHT
+        )
+    }
+
+    @Test
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
@@ -75,6 +83,14 @@ class BlurHashDecoderAndroidTest {
         assertEquals(
             expected = "BlurHashDecoder",
             actual = BlurHashDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 45,
+            actual = BlurHashDecoder.Factory().sortWeight
         )
     }
 

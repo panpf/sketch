@@ -97,6 +97,14 @@ class ApkIconDecoderTest {
     }
 
     @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 45,
+            actual = ApkIconDecoder.SORT_WEIGHT
+        )
+    }
+
+    @Test
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
@@ -274,6 +282,14 @@ class ApkIconDecoderTest {
         assertEquals(
             expected = "ApkIconDecoder",
             actual = ApkIconDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 45,
+            actual = ApkIconDecoder.Factory().sortWeight
         )
     }
 

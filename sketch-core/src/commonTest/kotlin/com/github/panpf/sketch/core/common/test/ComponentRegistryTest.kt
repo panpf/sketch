@@ -365,7 +365,7 @@ class ComponentRegistryTest {
         }.apply {
             assertEquals(
                 "ComponentRegistry(" +
-                        "fetchers=[Base64UriFetcher,TestFetcher]," +
+                        "fetchers=[TestFetcher,Base64UriFetcher]," +
                         "decoders=[TestDecoder,TestDecoder2]," +
                         "interceptors=[DecoderInterceptor]" +
                         ")",
@@ -425,7 +425,19 @@ class ComponentRegistryTest {
                 add(TestInterceptor(-1))
             }
             assertFailsWith(IllegalArgumentException::class) {
-                add(TestInterceptor(100))
+                add(TestInterceptor(101))
+            }
+            assertFailsWith(IllegalArgumentException::class) {
+                add(TestDecoder.Factory(-1))
+            }
+            assertFailsWith(IllegalArgumentException::class) {
+                add(TestDecoder.Factory(101))
+            }
+            assertFailsWith(IllegalArgumentException::class) {
+                add(TestFetcher.Factory(-1))
+            }
+            assertFailsWith(IllegalArgumentException::class) {
+                add(TestFetcher.Factory(101))
             }
         }.apply {
             assertEquals(
@@ -456,8 +468,8 @@ class ComponentRegistryTest {
         }.apply {
             assertEquals(
                 listOf(
-                    Base64UriFetcher.Factory(),
                     TestFetcher.Factory(),
+                    Base64UriFetcher.Factory(),
                 ),
                 fetchers
             )

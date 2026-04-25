@@ -21,6 +21,8 @@ import com.github.panpf.sketch.request.RequestContext
 
 class TestFetcherFactory : Fetcher.Factory {
 
+    override val sortWeight: Int = 0
+
     companion object {
         val SCHEME = "file1"
 

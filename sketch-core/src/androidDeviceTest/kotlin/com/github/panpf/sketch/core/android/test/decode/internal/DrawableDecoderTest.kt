@@ -64,6 +64,14 @@ import kotlin.test.assertTrue
 class DrawableDecoderTest {
 
     @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 45,
+            actual = DrawableDecoder.SORT_WEIGHT
+        )
+    }
+
+    @Test
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
@@ -355,6 +363,14 @@ class DrawableDecoderTest {
         assertEquals(
             expected = "DrawableDecoder",
             actual = DrawableDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 45,
+            actual = DrawableDecoder.Factory().sortWeight
         )
     }
 

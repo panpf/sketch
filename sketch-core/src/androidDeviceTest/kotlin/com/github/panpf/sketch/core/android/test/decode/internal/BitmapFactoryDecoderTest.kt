@@ -73,6 +73,14 @@ import kotlin.test.assertTrue
 class BitmapFactoryDecoderTest {
 
     @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 100,
+            actual = BitmapFactoryDecoder.SORT_WEIGHT
+        )
+    }
+
+    @Test
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
@@ -1073,6 +1081,14 @@ class BitmapFactoryDecoderTest {
         assertEquals(
             expected = "BitmapFactoryDecoder",
             actual = BitmapFactoryDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 100,
+            actual = BitmapFactoryDecoder.Factory().sortWeight
         )
     }
 

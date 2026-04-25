@@ -67,6 +67,14 @@ class FileVideoFrameDecoderTest {
     }
 
     @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 30,
+            actual = FileVideoFrameDecoder.SORT_WEIGHT
+        )
+    }
+
+    @Test
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
@@ -202,6 +210,14 @@ class FileVideoFrameDecoderTest {
         assertEquals(
             expected = "FileVideoFrameDecoder",
             actual = FileVideoFrameDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 30,
+            actual = FileVideoFrameDecoder.Factory().sortWeight
         )
     }
 

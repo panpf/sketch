@@ -78,6 +78,14 @@ class SkiaAnimatedWebpDecoderTest {
     }
 
     @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 15,
+            actual = SkiaAnimatedWebpDecoder.SORT_WEIGHT
+        )
+    }
+
+    @Test
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
@@ -197,6 +205,14 @@ class SkiaAnimatedWebpDecoderTest {
         assertEquals(
             expected = "SkiaAnimatedWebpDecoder",
             actual = SkiaAnimatedWebpDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 15,
+            actual = SkiaAnimatedWebpDecoder.Factory().sortWeight
         )
     }
 

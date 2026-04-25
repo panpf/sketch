@@ -174,6 +174,7 @@ class BlurHashUriFetcherTest {
     @Test
     fun testCompanion() {
         assertEquals("blurhash", BlurHashUriFetcher.SCHEME)
+        assertEquals(expected = 60, actual = BlurHashUriFetcher.SORT_WEIGHT)
     }
 
     @Test
@@ -214,6 +215,11 @@ class BlurHashUriFetcherTest {
             expected = "BlurHashUriFetcher(blurHashUri='$blurHashUri')",
             actual = BlurHashUriFetcher(blurHashUri).toString()
         )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(expected = 60, actual = BlurHashUriFetcher.Factory().sortWeight)
     }
 
     @Test

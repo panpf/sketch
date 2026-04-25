@@ -25,6 +25,14 @@ import kotlin.test.assertTrue
 class PhotosAssetDecoderTest {
 
     @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 60,
+            actual = PhotosAssetDecoder.SORT_WEIGHT
+        )
+    }
+
+    @Test
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
@@ -167,6 +175,14 @@ class PhotosAssetDecoderTest {
         assertEquals(
             expected = "PhotosAssetDecoder",
             actual = PhotosAssetDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 60,
+            actual = PhotosAssetDecoder.Factory().sortWeight
         )
     }
 

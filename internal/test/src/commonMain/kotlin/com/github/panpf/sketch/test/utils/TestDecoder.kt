@@ -32,7 +32,7 @@ class TestDecoder : Decoder {
         throw UnsupportedOperationException()
     }
 
-    class Factory : Decoder.Factory {
+    class Factory(override val sortWeight: Int = 0) : Decoder.Factory {
 
         override val key: String = "TestDecoder"
 

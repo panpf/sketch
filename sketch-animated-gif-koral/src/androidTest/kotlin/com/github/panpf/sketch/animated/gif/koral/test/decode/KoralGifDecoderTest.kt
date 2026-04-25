@@ -98,6 +98,14 @@ class KoralGifDecoderTest {
     }
 
     @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 15,
+            actual = KoralGifDecoder.SORT_WEIGHT
+        )
+    }
+
+    @Test
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
@@ -199,6 +207,14 @@ class KoralGifDecoderTest {
         assertEquals(
             expected = "KoralGifDecoder",
             actual = KoralGifDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 15,
+            actual = KoralGifDecoder.Factory().sortWeight
         )
     }
 

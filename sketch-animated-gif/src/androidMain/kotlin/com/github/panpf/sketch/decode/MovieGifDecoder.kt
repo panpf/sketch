@@ -84,6 +84,10 @@ class MovieGifDecoder(
     private val dataSource: DataSource,
 ) : Decoder {
 
+    companion object {
+        const val SORT_WEIGHT = 15
+    }
+
     private val _imageInfo: ImageInfo by lazy {
         val movie: Movie? = dataSource.openSource()
             .buffer().inputStream().use { Movie.decodeStream(it) }
@@ -152,6 +156,7 @@ class MovieGifDecoder(
     class Factory : Decoder.Factory {
 
         override val key: String = "MovieGifDecoder"
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(
             requestContext: RequestContext,

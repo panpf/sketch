@@ -59,6 +59,7 @@ class SvgDecoder(
 
     companion object {
         const val MIME_TYPE = "image/svg+xml"
+        const val SORT_WEIGHT = 45
     }
 
     private val _imageInfo: ImageInfo by lazy {
@@ -82,6 +83,7 @@ class SvgDecoder(
 
         override val key: String =
             "SvgDecoder(useViewBoundsAsIntrinsicSize=$useViewBoundsAsIntrinsicSize)"
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(requestContext: RequestContext, fetchResult: FetchResult): SvgDecoder? {
             if (!isApplicable(fetchResult)) return null

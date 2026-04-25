@@ -66,7 +66,7 @@ fun parseLocalIdentifier(uri: Uri): String? =
  *
  * @see com.github.panpf.sketch.core.ios.test.fetch.PhotosAssetUriFetcherTest
  */
-class PhotosAssetFetcher private constructor(
+class PhotosAssetFetcher(
     val localIdentifier: String,
     val preferredThumbnail: Boolean,
     val allowNetworkAccess: Boolean,
@@ -75,6 +75,7 @@ class PhotosAssetFetcher private constructor(
     companion object {
         const val SCHEME = "file"
         const val PATH_ROOT = "photos_asset"
+        const val SORT_WEIGHT = 30
     }
 
     @WorkerThread
@@ -94,7 +95,30 @@ class PhotosAssetFetcher private constructor(
         FetchResult(dataSource, mimeType)
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+        other as PhotosAssetFetcher
+        if (localIdentifier != other.localIdentifier) return false
+        if (preferredThumbnail != other.preferredThumbnail) return false
+        if (allowNetworkAccess != other.allowNetworkAccess) return false
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = localIdentifier.hashCode()
+        result = 31 * result + preferredThumbnail.hashCode()
+        result = 31 * result + allowNetworkAccess.hashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "PhotosAssetFetcher(localIdentifier='$localIdentifier', preferredThumbnail=$preferredThumbnail, allowNetworkAccess=$allowNetworkAccess)"
+    }
+
     class Factory : Fetcher.Factory {
+
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(requestContext: RequestContext): PhotosAssetFetcher? {
             val request = requestContext.request

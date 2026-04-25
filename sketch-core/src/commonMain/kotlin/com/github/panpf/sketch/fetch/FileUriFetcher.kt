@@ -71,6 +71,7 @@ class FileUriFetcher constructor(
 
     companion object {
         const val SCHEME = "file"
+        const val SORT_WEIGHT = 75
     }
 
     @WorkerThread
@@ -104,6 +105,8 @@ class FileUriFetcher constructor(
     }
 
     class Factory : Fetcher.Factory {
+
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(requestContext: RequestContext): FileUriFetcher? {
             val uri = requestContext.request.uri

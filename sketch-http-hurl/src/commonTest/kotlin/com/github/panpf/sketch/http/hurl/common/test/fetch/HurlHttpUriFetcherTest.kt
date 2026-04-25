@@ -122,6 +122,14 @@ class HurlHttpUriFetcherTest {
     }
 
     @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 15,
+            actual = HurlHttpUriFetcher.Factory().sortWeight
+        )
+    }
+
+    @Test
     fun testFactoryCreate() {
         val (context, sketch) = getTestContextAndSketch()
         val httpUri = "http://sample.com/sample.jpg"

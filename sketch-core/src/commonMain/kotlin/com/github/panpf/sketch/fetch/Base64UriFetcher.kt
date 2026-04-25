@@ -152,6 +152,7 @@ class Base64UriFetcher constructor(
 
     companion object {
         const val SCHEME = "data"
+        const val SORT_WEIGHT = 60
         const val BASE64_IDENTIFIER = "base64"
     }
 
@@ -196,6 +197,8 @@ class Base64UriFetcher constructor(
      * * 'data:img/jpeg;base64,/9j/4QaORX...C8bg/U7T/in//Z'
      */
     class Factory : Fetcher.Factory {
+
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(requestContext: RequestContext): Base64UriFetcher? {
             val request = requestContext.request

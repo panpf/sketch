@@ -90,6 +90,14 @@ class SvgDecoderTest {
     }
 
     @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 45,
+            actual = SvgDecoder.SORT_WEIGHT
+        )
+    }
+
+    @Test
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
@@ -285,6 +293,14 @@ class SvgDecoderTest {
         assertEquals(
             expected = "SvgDecoder(useViewBoundsAsIntrinsicSize=false)",
             actual = SvgDecoder.Factory(false).key
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 45,
+            actual = SvgDecoder.Factory().sortWeight
         )
     }
 

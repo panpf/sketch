@@ -90,6 +90,7 @@ class AppIconUriFetcherTest {
     fun testCompanion() {
         assertEquals("app.icon", AppIconUriFetcher.SCHEME)
         assertEquals("image/png", AppIconUriFetcher.IMAGE_MIME_TYPE)
+        assertEquals(expected = 60, actual = AppIconUriFetcher.SORT_WEIGHT)
     }
 
     @Test
@@ -144,6 +145,14 @@ class AppIconUriFetcherTest {
         assertEquals(
             expected = "AppIconUriFetcher(packageName='com.github.panpf.sketch.sample', versionCode=1001)",
             actual = AppIconUriFetcher(context, "com.github.panpf.sketch.sample", 1001).toString()
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 60,
+            actual = AppIconUriFetcher.Factory().sortWeight
         )
     }
 

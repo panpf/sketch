@@ -88,6 +88,10 @@ class KoralGifDecoder(
     private val dataSource: DataSource,
 ) : Decoder {
 
+    companion object {
+        const val SORT_WEIGHT = 15
+    }
+
     private val gifInfoHandleHelper by lazy {
         GifInfoHandleHelper(requestContext.sketch, dataSource)
     }
@@ -178,6 +182,7 @@ class KoralGifDecoder(
     class Factory : Decoder.Factory {
 
         override val key: String = "KoralGifDecoder"
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(
             requestContext: RequestContext,

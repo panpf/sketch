@@ -18,11 +18,13 @@ class SketchIosTest {
         val context = getTestContext()
         assertEquals(
             expected = ComponentRegistry {
-                add(UseSkiaInterceptor())
-                add(KotlinResourceUriFetcher.Factory())
                 add(PhotosAssetFetcher.Factory())
+                add(KotlinResourceUriFetcher.Factory())
+
                 add(PhotosAssetDecoder.Factory())
                 add(SkiaDecoder.Factory())
+
+                add(UseSkiaInterceptor())
             },
             actual = platformComponents(context)
         )

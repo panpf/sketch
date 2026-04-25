@@ -21,6 +21,7 @@ import com.github.panpf.sketch.annotation.WorkerThread
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.request.internal.DecoderInterceptor
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Key
 
@@ -55,6 +56,11 @@ interface Decoder {
          * The key of the current [Factory], which is used to distinguish different [Factory]
          */
         override val key: String
+
+        /**
+         * For sorting, larger values go lower in the list. It ranges from 0 to 100. It's usually zero. Only [DecoderInterceptor] can be 100
+         */
+        val sortWeight: Int
 
         /**
          * If the current [Factory]'s [Decoder] can decode Image from the current [fetchResult],

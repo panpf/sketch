@@ -104,6 +104,14 @@ class VideoFrameDecoderTest {
     }
 
     @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 30,
+            actual = VideoFrameDecoder.SORT_WEIGHT
+        )
+    }
+
+    @Test
     fun testConstructor() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
@@ -151,8 +159,9 @@ class VideoFrameDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = VideoFrameDecoder.Factory()
 
-        ImageRequest(context, ComposeResImageFiles.rotationMp4.uri)
-            .decode(sketch, factory).apply {
+        ImageRequest(context, ComposeResImageFiles.rotationMp4.uri) {
+            size(Size.Origin)
+        }.decode(sketch, factory).apply {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     assertEquals(
                         expected = "Bitmap(1080x1920,ARGB_8888${shortInfoColorSpace("SRGB")})",
@@ -174,6 +183,7 @@ class VideoFrameDecoderTest {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             ImageRequest(context, ComposeResImageFiles.rotationMp4.uri) {
+                size(Size.Origin)
                 colorType(RGB_565)
             }.decode(sketch, factory).apply {
                 assertEquals(
@@ -222,6 +232,7 @@ class VideoFrameDecoderTest {
         }
 
         ImageRequest(context, ComposeResImageFiles.rotationMp4.uri) {
+            size(Size.Origin)
             preferVideoCover()
         }.decode(sketch, factory).apply {
             assertEquals(
@@ -379,6 +390,14 @@ class VideoFrameDecoderTest {
         assertEquals(
             expected = "VideoFrameDecoder",
             actual = VideoFrameDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 30,
+            actual = VideoFrameDecoder.Factory().sortWeight
         )
     }
 

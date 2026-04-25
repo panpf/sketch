@@ -32,7 +32,6 @@ import com.github.panpf.sketch.http.HttpStack.Response
 import com.github.panpf.sketch.request.Depth
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageRequest
-import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.httpHeaders
 import com.github.panpf.sketch.source.ByteArrayDataSource
 import com.github.panpf.sketch.source.DataFrom.DOWNLOAD_CACHE
@@ -75,6 +74,7 @@ open class HttpUriFetcher constructor(
         const val SCHEME_HTTP = "http"
         const val SCHEME_HTTPS = "https"
         const val MIME_TYPE_TEXT_PLAIN = "text/plain"
+        const val SORT_WEIGHT = 15
     }
 
     @WorkerThread
@@ -287,34 +287,5 @@ open class HttpUriFetcher constructor(
 
     override fun toString(): String {
         return "HttpUriFetcher(sketch=$sketch, httpStack=$httpStack, request=$request, downloadCacheKey='$downloadCacheKey')"
-    }
-
-    open class Factory(val httpStack: HttpStack) : Fetcher.Factory {
-
-        override fun create(requestContext: RequestContext): HttpUriFetcher? {
-            val request = requestContext.request
-            val uri = request.uri
-            if (!isHttpUri(uri)) return null
-            return HttpUriFetcher(
-                sketch = requestContext.sketch,
-                httpStack = httpStack,
-                request = request,
-                downloadCacheKey = requestContext.downloadCacheKey
-            )
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other == null || this::class != other::class) return false
-            other as Factory
-            if (httpStack != other.httpStack) return false
-            return true
-        }
-
-        override fun hashCode(): Int {
-            return httpStack.hashCode()
-        }
-
-        override fun toString(): String = "HttpUriFetcher(httpStack=$httpStack)"
     }
 }

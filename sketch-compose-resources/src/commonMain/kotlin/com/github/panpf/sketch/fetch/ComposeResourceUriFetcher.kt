@@ -90,6 +90,7 @@ class ComposeResourceUriFetcher constructor(
     companion object {
         const val SCHEME = "file"
         const val PATH_ROOT = "compose_resource"
+        const val SORT_WEIGHT = 45
     }
 
     @OptIn(InternalResourceApi::class)
@@ -117,6 +118,8 @@ class ComposeResourceUriFetcher constructor(
     }
 
     class Factory : Fetcher.Factory {
+
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(requestContext: RequestContext): ComposeResourceUriFetcher? {
             val uri = requestContext.request.uri

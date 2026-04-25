@@ -64,9 +64,14 @@ class ImageDecoderAnimatedHeifDecoder(
     dataSource: DataSource,
 ) : ImageDecoderAnimatedDecoder(requestContext, dataSource) {
 
+    companion object {
+        const val SORT_WEIGHT = 15
+    }
+
     class Factory : Decoder.Factory {
 
         override val key: String = "ImageDecoderAnimatedHeifDecoder"
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(
             requestContext: RequestContext,

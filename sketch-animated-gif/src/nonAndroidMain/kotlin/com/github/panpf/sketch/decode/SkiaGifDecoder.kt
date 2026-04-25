@@ -61,9 +61,14 @@ class SkiaGifDecoder(
     dataSource: DataSource,
 ) : SkiaAnimatedDecoder(requestContext, dataSource) {
 
+    companion object {
+        const val SORT_WEIGHT = 15
+    }
+
     class Factory : Decoder.Factory {
 
         override val key: String = "SkiaGifDecoder"
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(
             requestContext: RequestContext,

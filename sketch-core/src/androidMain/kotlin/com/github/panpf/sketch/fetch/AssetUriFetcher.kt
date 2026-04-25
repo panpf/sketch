@@ -58,6 +58,7 @@ class AssetUriFetcher constructor(
     companion object {
         const val SCHEME = "file"
         const val PATH_ROOT = "android_asset"
+        const val SORT_WEIGHT = 45
     }
 
     @WorkerThread
@@ -83,6 +84,8 @@ class AssetUriFetcher constructor(
     }
 
     class Factory : Fetcher.Factory {
+
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(requestContext: RequestContext): AssetUriFetcher? {
             val request = requestContext.request

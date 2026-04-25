@@ -45,6 +45,7 @@ class ContentUriFetcher constructor(
 
     companion object {
         const val SCHEME = "content"
+        const val SORT_WEIGHT = 30
     }
 
     @WorkerThread
@@ -70,6 +71,8 @@ class ContentUriFetcher constructor(
     }
 
     class Factory : Fetcher.Factory {
+
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(requestContext: RequestContext): ContentUriFetcher? {
             val request = requestContext.request

@@ -149,9 +149,13 @@ On the Android platform, [DrawableDecoder] is mainly used to decode xml drawable
 Android, such as vector and shape, and its principle is to draw the Drawable onto the Bitmap, so the
 Drawable must have an intrinsic dimension.
 
-### Extend Decoder
+### Custom Decoder
 
 First implement the [Decoder] interface to define your Decoder and its Factory
+
+Pay attention to the value of the [Decoder].sortWeight attribute, which determines the position of
+the current [Decoder] in the Decoder list. The larger the value, the further back in the list. The
+value range is 0 ~ 100
 
 Then refer to the document [《Register component》](register_component.md) to register your Decoder.
 

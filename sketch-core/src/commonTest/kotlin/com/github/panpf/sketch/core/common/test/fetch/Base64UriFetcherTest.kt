@@ -136,6 +136,7 @@ class Base64UriFetcherTest {
     fun testCompanion() {
         assertEquals("data", Base64UriFetcher.SCHEME)
         assertEquals("base64", Base64UriFetcher.BASE64_IDENTIFIER)
+        assertEquals(expected = 60, actual = Base64UriFetcher.SORT_WEIGHT)
     }
 
     @OptIn(ExperimentalEncodingApi::class)
@@ -212,6 +213,14 @@ class Base64UriFetcherTest {
         assertEquals(
             expected = "Base64UriFetcher(data='AQIDBAUGBwgJAA==', mimeType='image/jpeg', spec=Default)",
             actual = base64UriFetcher.toString()
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 60,
+            actual = Base64UriFetcher.Factory().sortWeight
         )
     }
 

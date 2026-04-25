@@ -65,11 +65,13 @@ class ApkIconDecoder(
     companion object {
         const val MIME_TYPE = "application/vnd.android.package-archive"
         const val IMAGE_MIME_TYPE = "image/png"
+        const val SORT_WEIGHT = 45
     }
 
     class Factory : Decoder.Factory {
 
         override val key: String = "ApkIconDecoder"
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(
             requestContext: RequestContext,

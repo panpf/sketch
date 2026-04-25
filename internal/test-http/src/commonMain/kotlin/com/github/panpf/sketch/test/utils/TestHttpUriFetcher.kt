@@ -44,6 +44,8 @@ class TestHttpUriFetcher(
         val connectionDelayMillis: Long? = null,
     ) : Fetcher.Factory {
 
+        override val sortWeight: Int = 0
+
         override fun create(requestContext: RequestContext): HttpUriFetcher? {
             val request = requestContext.request
             val uri = request.uri

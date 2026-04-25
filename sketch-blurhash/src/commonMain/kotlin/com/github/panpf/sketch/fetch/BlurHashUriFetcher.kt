@@ -97,6 +97,7 @@ class BlurHashUriFetcher constructor(val blurHashUri: Uri) : Fetcher {
 
     companion object Companion {
         const val SCHEME = "blurhash"
+        const val SORT_WEIGHT = 60
     }
 
     @WorkerThread
@@ -123,6 +124,8 @@ class BlurHashUriFetcher constructor(val blurHashUri: Uri) : Fetcher {
     }
 
     class Factory : Fetcher.Factory {
+
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(requestContext: RequestContext): BlurHashUriFetcher? {
             val uri: Uri = requestContext.request.uri

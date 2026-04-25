@@ -57,6 +57,7 @@ class KotlinResourceUriFetcher constructor(
     companion object {
         const val SCHEME = "file"
         const val PATH_ROOT = "kotlin_resource"
+        const val SORT_WEIGHT = 45
     }
 
     @WorkerThread
@@ -83,6 +84,8 @@ class KotlinResourceUriFetcher constructor(
     }
 
     class Factory : Fetcher.Factory {
+
+        override val sortWeight: Int = SORT_WEIGHT
 
         override fun create(requestContext: RequestContext): KotlinResourceUriFetcher? {
             val uri = requestContext.request.uri
