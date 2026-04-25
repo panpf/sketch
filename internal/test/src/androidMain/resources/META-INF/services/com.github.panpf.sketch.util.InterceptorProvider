@@ -1,1 +1,1 @@
-com.github.panpf.sketch.test.utils.TestInterceptorProvider
+com.github.panpf.sketch.test.utils.DoNothingInterceptorProvider

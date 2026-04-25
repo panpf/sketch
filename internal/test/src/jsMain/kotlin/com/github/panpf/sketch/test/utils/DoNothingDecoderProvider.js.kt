@@ -23,4 +23,4 @@ import com.github.panpf.sketch.util.ComponentLoader
 @OptIn(ExperimentalStdlibApi::class)
 @EagerInitialization
 @Deprecated("", level = DeprecationLevel.HIDDEN)
-val testInterceptorProviderInitHook: Any = ComponentLoader.register(TestInterceptorProvider())
+val doNothingDecoderProviderInitHook: Any = ComponentLoader.register(DoNothingDecoderProvider())

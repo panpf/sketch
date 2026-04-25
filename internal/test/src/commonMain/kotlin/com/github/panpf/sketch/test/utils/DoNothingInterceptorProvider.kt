@@ -4,9 +4,9 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.util.InterceptorProvider
 
-class TestInterceptorProvider : InterceptorProvider {
+class DoNothingInterceptorProvider : InterceptorProvider {
 
     override fun create(context: PlatformContext): Interceptor {
-        return TestInterceptor()
+        return DoNothingInterceptor()
     }
 }

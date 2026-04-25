@@ -43,7 +43,6 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -226,7 +225,7 @@ class SketchTest {
             assertEquals(expected = resultCache4, actual = resultCache)
         }
 
-        // components: Fetcher, Decoder
+        // components
         Sketch.Builder(context).build().apply {
             assertEquals(
                 expected = ComponentLoader.toComponentRegistry(context)
@@ -236,7 +235,7 @@ class SketchTest {
             assertNotNull(components.registry.fetchers.find { it is KtorHttpUriFetcher.Factory })
         }
 
-        // components: Fetcher, Decoder
+        // components: componentLoaderEnabled
         Sketch.Builder(context).apply {
             componentLoaderEnabled(false)
         }.build().apply {
@@ -247,68 +246,68 @@ class SketchTest {
             assertNull(components.registry.fetchers.find { it is KtorHttpUriFetcher.Factory })
         }
 
+        // components: add
         Sketch.Builder(context).apply {
             componentLoaderEnabled(false)
         }.apply {
             components {
                 add(TestFetcher.Factory())
                 add(TestDecoder.Factory())
+                add(TestInterceptor())
             }
         }.build().apply {
+            val customComponents = ComponentRegistry {
+                add(TestFetcher.Factory())
+                add(TestDecoder.Factory())
+                add(TestInterceptor())
+            }
             assertEquals(
-                expected = ComponentRegistry {
-                    add(TestFetcher.Factory())
-                    add(TestDecoder.Factory())
-                }.merged(platformComponents(context).merged(commonComponents())),
+                expected = customComponents.merged(
+                    platformComponents(context).merged(
+                        commonComponents()
+                    )
+                ),
                 actual = components.registry
             )
         }
 
-        // addIgnoreComponentProviderClasses
+        // components: addIgnoreComponentProviderClasses
         val fetcherProvider = ComponentLoader.fetchers.first()
         val fetcherFactory = fetcherProvider.factory(context)!!
+        val decoderProvider = ComponentLoader.decoders.first()
+        val decoderFactory = decoderProvider.factory(context)!!
+        val interceptorProvider = ComponentLoader.interceptors.first()
+        val interceptor = interceptorProvider.create(context)!!
         Sketch.Builder(context).build().apply {
-            assertTrue(
-                actual = components.registry.fetchers.find { it::class == fetcherFactory::class } != null,
+            assertNotNull(
+                actual = components.registry.fetchers.find { it::class == fetcherFactory::class },
                 message = "There should be a ${fetcherFactory::class} in the current environment, but it is not found."
+            )
+            assertNotNull(
+                actual = components.registry.decoders.find { it::class == decoderFactory::class },
+                message = "There should be a ${decoderFactory::class} in the current environment, but it is not found."
+            )
+            assertNotNull(
+                actual = components.registry.interceptors.find { it::class == interceptor::class },
+                message = "There should be a ${interceptor::class} in the current environment, but it is not found."
             )
         }
         Sketch.Builder(context).apply {
             addIgnoreFetcherProvider(fetcherProvider::class)
+            addIgnoreDecoderProvider(decoderProvider::class)
+            addIgnoreInterceptorProvider(interceptorProvider::class)
         }.build().apply {
             assertNull(
                 actual = components.registry.fetchers.find { it::class == fetcherFactory::class },
                 message = "There should be a ${fetcherFactory::class} in the current environment, but it is not found."
             )
-        }
-
-        // components: Interceptor
-        Sketch.Builder(context).build().apply {
-            val platformComponents = platformComponents(context)
-            val commonComponents = commonComponents()
-            assertEquals(
-                platformComponents.merged(commonComponents)!!.interceptors,
-                components.getInterceptors(ImageRequest(context, ""))
+            assertNull(
+                actual = components.registry.decoders.find { it::class == decoderFactory::class },
+                message = "There should be a ${decoderFactory::class} in the current environment, but it is not found."
             )
-        }
-
-        Sketch.Builder(context).apply {
-            components {
-                add(TestInterceptor())
-            }
-        }.build().apply {
-            val testComponents = ComponentRegistry {
-                add(TestInterceptor())
-            }
-            val platformComponents = platformComponents(context)
-            val commonComponents = commonComponents()
-            assertEquals(
-                testComponents.merged(platformComponents).merged(commonComponents)!!.interceptors,
-                components.getInterceptors(ImageRequest(context, ""))
-            )
-            assertNotEquals(
-                platformComponents.merged(commonComponents)!!.interceptors,
-                components.getInterceptors(ImageRequest(context, ""))
+            assertNull(
+                actual = components.registry.interceptors.find { it::class == interceptor::class },
+                message = "There should be a ${interceptor::class} in the current environment, but it is not found."
             )
         }
 

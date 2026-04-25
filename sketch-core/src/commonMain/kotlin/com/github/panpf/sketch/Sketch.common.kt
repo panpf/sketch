@@ -45,6 +45,7 @@ import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.DecoderProvider
 import com.github.panpf.sketch.util.DownloadData
 import com.github.panpf.sketch.util.FetcherProvider
+import com.github.panpf.sketch.util.InterceptorProvider
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.Logger.Level
 import com.github.panpf.sketch.util.Logger.Pipeline
@@ -277,6 +278,7 @@ class Sketch private constructor(
         private var componentLoaderEnabled: Boolean = true
         private var ignoreFetcherProviders: MutableList<KClass<out FetcherProvider>>? = null
         private var ignoreDecoderProviders: MutableList<KClass<out DecoderProvider>>? = null
+        private var ignoreInterceptorProviders: MutableList<KClass<out InterceptorProvider>>? = null
         private var componentRegistry: ComponentRegistry? = null
         private var globalImageOptions: ImageOptions? = null
         private var networkParallelismLimited: Int? = null
@@ -440,6 +442,17 @@ class Sketch private constructor(
         }
 
         /**
+         * Ignore the specified InterceptorProvider
+         */
+        fun addIgnoreInterceptorProvider(vararg classes: KClass<out InterceptorProvider>): Builder =
+            apply {
+                (this.ignoreInterceptorProviders
+                    ?: mutableListOf<KClass<out InterceptorProvider>>().apply {
+                        this@Builder.ignoreInterceptorProviders = this
+                    }).addAll(classes.toList())
+            }
+
+        /**
          * Set an [ImageOptions], fill unset [ImageRequest] value
          */
         fun globalImageOptions(globalImageOptions: ImageOptions?): Builder = apply {
@@ -469,7 +482,8 @@ class Sketch private constructor(
                 componentLoader.toComponentRegistry(
                     context = context,
                     ignoreFetcherProviders = ignoreFetcherProviders?.toList(),
-                    ignoreDecoderProviders = ignoreDecoderProviders?.toList()
+                    ignoreDecoderProviders = ignoreDecoderProviders?.toList(),
+                    ignoreInterceptorProviders = ignoreInterceptorProviders?.toList(),
                 ) else null
             val componentRegistry = componentRegistry
                 .merged(loadedComponents)
