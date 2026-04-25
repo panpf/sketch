@@ -43,6 +43,7 @@ koin = "4.2.0"
 
 kotlin = "2.3.20"
 kotlinx-atomicfu = "0.32.1"
+kotlinx-browser = "0.5.0"
 kotlinx-coroutines = "1.10.2"
 kotlinx-cover = "0.9.8"
 kotlinx-datetime = "0.7.1"
@@ -150,6 +151,7 @@ kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+kotlinx-browser = { module = "org.jetbrains.kotlinx:kotlinx-browser", version.ref = "kotlinx-browser" }
 
 ktor2-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor2" }
 ktor2-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor2" }

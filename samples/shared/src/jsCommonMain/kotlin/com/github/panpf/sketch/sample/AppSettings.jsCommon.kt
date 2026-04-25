@@ -10,6 +10,10 @@ actual class AppSettings actual constructor(context: PlatformContext) : BaseAppS
     val cacheDecodeTimeoutFrame: SettingsStateFlow<Boolean> by lazy {
         booleanSettingsStateFlow(context, "cacheDecodeTimeoutFrame", true)
     }
+
+    val useJsDecoder: SettingsStateFlow<Boolean> by lazy {
+        booleanSettingsStateFlow(context, "useJsDecoder", false)
+    }
 }
 
 actual fun platformSupportedDarkModes(): List<DarkMode> = DarkMode.values().toList()

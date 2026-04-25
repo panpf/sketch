@@ -19,4 +19,15 @@ actual fun platformOtherMenuList(
     appSettings: AppSettings,
     page: Page,
     appEvents: AppEvents
-): List<SettingItem> = emptyList()
+): List<SettingItem> = buildList {
+    add(
+        SwitchSettingItem(
+            title = "Use JsDecoder",
+            desc = null,
+            state = appSettings.useJsDecoder,
+            onClick = {
+                appEvents.toastFlow.emit("Restart the app to take effect")
+            }
+        )
+    )
+}

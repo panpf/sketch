@@ -120,6 +120,9 @@ kotlin {
                 api(libs.moko.permissions.gallery)
             }
         }
+        jsCommonMain.dependencies {
+            api(libs.kotlinx.browser)
+        }
 
         commonTest.dependencies {
             implementation(projects.internal.test)

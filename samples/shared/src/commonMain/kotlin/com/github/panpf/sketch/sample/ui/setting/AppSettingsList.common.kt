@@ -466,6 +466,7 @@ data class SwitchSettingItem(
     val state: MutableStateFlow<Boolean>,
     override val desc: String? = null,
     override val enabled: Flow<Boolean> = MutableStateFlow(true),
+    val onClick: (suspend () -> Unit)? = null,
     val onLongClick: (suspend () -> Unit)? = null,
 ) : SettingItem
 
