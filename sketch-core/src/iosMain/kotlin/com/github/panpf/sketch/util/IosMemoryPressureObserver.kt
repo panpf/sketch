@@ -21,6 +21,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import platform.darwin.DISPATCH_MEMORYPRESSURE_CRITICAL
+import platform.darwin.DISPATCH_MEMORYPRESSURE_NORMAL
 import platform.darwin.DISPATCH_MEMORYPRESSURE_WARN
 import platform.darwin.DISPATCH_SOURCE_TYPE_MEMORYPRESSURE
 import platform.darwin.dispatch_get_main_queue
@@ -39,7 +40,15 @@ internal class IosMemoryPressureObserver() {
 
     val flow: Flow<MemoryPressure> = callbackFlow {
         val queue = dispatch_get_main_queue()
-        val source = dispatch_source_create(DISPATCH_SOURCE_TYPE_MEMORYPRESSURE, 0u, 0u, queue)
+        val memoryPressureMask = DISPATCH_MEMORYPRESSURE_NORMAL.toULong() or
+                DISPATCH_MEMORYPRESSURE_WARN.toULong() or
+                DISPATCH_MEMORYPRESSURE_CRITICAL.toULong()
+        val source = dispatch_source_create(
+            type = DISPATCH_SOURCE_TYPE_MEMORYPRESSURE,
+            handle = 0u,
+            mask = memoryPressureMask,
+            queue = queue
+        )
         dispatch_source_set_event_handler(source) {
             val data = dispatch_source_get_data(source).toLong()
             val memoryPressure = when {
