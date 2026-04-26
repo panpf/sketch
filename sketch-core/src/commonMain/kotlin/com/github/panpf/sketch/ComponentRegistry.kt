@@ -24,6 +24,7 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.util.requiredWorkThread
+import kotlin.reflect.KClass
 
 /**
  * Create a [ComponentRegistry] based on the [block]
@@ -37,7 +38,7 @@ fun ComponentRegistry(block: (ComponentRegistry.Builder.() -> Unit)? = null): Co
 }
 
 /**
- * Register components that are required to perform [ImageRequest] and can be extended,
+ * Register or disabled components that are required to perform [ImageRequest] and can be extended,
  * such as [Fetcher], [Decoder], [Interceptor]
  *
  * @see com.github.panpf.sketch.core.common.test.ComponentRegistryTest
@@ -52,9 +53,21 @@ open class ComponentRegistry private constructor(
      */
     val decoders: List<Decoder.Factory>,
     /**
-     * All [Interceptor]
+     * Registered [Interceptor]
      */
     val interceptors: List<Interceptor>,
+    /**
+     * Disabled [Fetcher.Factory]
+     */
+    val disabledFetchers: List<KClass<out Fetcher.Factory>>,
+    /**
+     * Disabled [Decoder.Factory]
+     */
+    val disabledDecoders: List<KClass<out Decoder.Factory>>,
+    /**
+     * Disabled [Interceptor]
+     */
+    val disabledInterceptors: List<KClass<out Interceptor>>,
 ) {
 
     /**
@@ -70,15 +83,21 @@ open class ComponentRegistry private constructor(
     val decoderFactoryList: List<Decoder.Factory> = decoders
 
     /**
-     * All [Interceptor]
+     * Registered [Interceptor]
      */
     @Deprecated("Use interceptors instead", ReplaceWith("interceptors"))
     val interceptorLists: List<Interceptor> = interceptors
 
+    /**
+     * Check if the [ComponentRegistry] is empty, that is, no components are registered and no components are disabled
+     */
     fun isEmpty(): Boolean {
         return fetchers.isEmpty()
                 && decoders.isEmpty()
                 && interceptors.isEmpty()
+                && disabledFetchers.isEmpty()
+                && disabledDecoders.isEmpty()
+                && disabledInterceptors.isEmpty()
     }
 
     /**
@@ -159,6 +178,9 @@ open class ComponentRegistry private constructor(
         if (fetchers != other.fetchers) return false
         if (decoders != other.decoders) return false
         if (interceptors != other.interceptors) return false
+        if (disabledFetchers != other.disabledFetchers) return false
+        if (disabledDecoders != other.disabledDecoders) return false
+        if (disabledInterceptors != other.disabledInterceptors) return false
         return true
     }
 
@@ -166,6 +188,9 @@ open class ComponentRegistry private constructor(
         var result = fetchers.hashCode()
         result = 31 * result + decoders.hashCode()
         result = 31 * result + interceptors.hashCode()
+        result = 31 * result + disabledFetchers.hashCode()
+        result = 31 * result + disabledDecoders.hashCode()
+        result = 31 * result + disabledInterceptors.hashCode()
         return result
     }
 
@@ -176,30 +201,44 @@ open class ComponentRegistry private constructor(
             .joinToString(prefix = "[", postfix = "]", separator = ",")
         val interceptorsString = interceptors
             .joinToString(prefix = "[", postfix = "]", separator = ",")
+        val disabledFetchersString = disabledFetchers
+            .joinToString(prefix = "[", postfix = "]", separator = ",")
+        val disabledDecodersString = disabledDecoders
+            .joinToString(prefix = "[", postfix = "]", separator = ",")
+        val disabledInterceptorsString = disabledInterceptors
+            .joinToString(prefix = "[", postfix = "]", separator = ",")
         return "ComponentRegistry(" +
                 "fetchers=${fetchersString}," +
                 "decoders=${decodersString}," +
-                "interceptors=${interceptorsString}" +
+                "interceptors=${interceptorsString}," +
+                "disabledFetchers=${disabledFetchersString}," +
+                "disabledDecoders=${disabledDecodersString}," +
+                "disabledInterceptors=${disabledInterceptorsString}" +
                 ")"
     }
 
     class Builder {
 
-        private val fetchers: MutableList<Fetcher.Factory>
-        private val decoders: MutableList<Decoder.Factory>
-        private val interceptors: MutableList<Interceptor>
+        private var fetchers: MutableSet<Fetcher.Factory>? = null
+        private var decoders: MutableSet<Decoder.Factory>? = null
+        private var interceptors: MutableSet<Interceptor>? = null
+        private var disabledFetchers: MutableSet<KClass<out Fetcher.Factory>>? = null
+        private var disabledDecoders: MutableSet<KClass<out Decoder.Factory>>? = null
+        private var disabledInterceptors: MutableSet<KClass<out Interceptor>>? = null
 
-        constructor() {
-            this.fetchers = mutableListOf()
-            this.decoders = mutableListOf()
-            this.interceptors = mutableListOf()
-        }
+        constructor()
 
         constructor(componentRegistry: ComponentRegistry) {
-            this.fetchers = componentRegistry.fetchers.toMutableList()
-            this.decoders =
-                componentRegistry.decoders.toMutableList()
-            this.interceptors = componentRegistry.interceptors.toMutableList()
+            this.fetchers = componentRegistry.fetchers.takeIf { it.isNotEmpty() }?.toMutableSet()
+            this.decoders = componentRegistry.decoders.takeIf { it.isNotEmpty() }?.toMutableSet()
+            this.interceptors =
+                componentRegistry.interceptors.takeIf { it.isNotEmpty() }?.toMutableSet()
+            this.disabledFetchers =
+                componentRegistry.disabledFetchers.takeIf { it.isNotEmpty() }?.toMutableSet()
+            this.disabledDecoders =
+                componentRegistry.disabledDecoders.takeIf { it.isNotEmpty() }?.toMutableSet()
+            this.disabledInterceptors =
+                componentRegistry.disabledInterceptors.takeIf { it.isNotEmpty() }?.toMutableSet()
         }
 
         /**
@@ -207,9 +246,22 @@ open class ComponentRegistry private constructor(
          */
         fun add(fetchFactory: Fetcher.Factory): Builder = apply {
             require(fetchFactory.sortWeight in 0..100) {
-                "sortWeight has a valid range of 0 to 100"
+                "sortWeight has a valid range of 0 to 100: $fetchFactory"
             }
-            fetchers.add(fetchFactory)
+            (this.fetchers
+                ?: mutableSetOf<Fetcher.Factory>().apply { this@Builder.fetchers = this }
+                    ).add(fetchFactory)
+        }
+
+        /**
+         * Register an [Fetcher.Factory] List
+         */
+        fun add(vararg fetchers: Fetcher.Factory): Builder = apply {
+            if (fetchers.isNotEmpty()) {
+                fetchers.forEach {
+                    add(it)
+                }
+            }
         }
 
         /**
@@ -228,7 +280,20 @@ open class ComponentRegistry private constructor(
             require(decoderFactory.sortWeight in 0..100) {
                 "sortWeight has a valid range of 0 to 100"
             }
-            decoders.add(decoderFactory)
+            (this.decoders
+                ?: mutableSetOf<Decoder.Factory>().apply { this@Builder.decoders = this }
+                    ).add(decoderFactory)
+        }
+
+        /**
+         * Register an [Decoder.Factory] List
+         */
+        fun add(vararg decoders: Decoder.Factory): Builder = apply {
+            if (decoders.isNotEmpty()) {
+                decoders.forEach {
+                    add(it)
+                }
+            }
         }
 
         /**
@@ -247,7 +312,20 @@ open class ComponentRegistry private constructor(
             require(interceptor.sortWeight in 0..100) {
                 "sortWeight has a valid range of 0 to 100"
             }
-            this.interceptors.add(interceptor)
+            (this.interceptors
+                ?: mutableSetOf<Interceptor>().apply { this@Builder.interceptors = this }
+                    ).add(interceptor)
+        }
+
+        /**
+         * Register an [Interceptor] List
+         */
+        fun add(vararg interceptors: Interceptor): Builder = apply {
+            if (interceptors.isNotEmpty()) {
+                interceptors.forEach {
+                    add(it)
+                }
+            }
         }
 
         /**
@@ -269,9 +347,43 @@ open class ComponentRegistry private constructor(
         fun addRequestInterceptor(interceptor: Interceptor): Builder = add(interceptor)
 
         /**
+         * Disabled a [Fetcher.Factory] by its class
+         */
+        fun disabledFetcher(vararg fetcherClasses: KClass<out Fetcher.Factory>): Builder = apply {
+            (this.disabledFetchers
+                ?: mutableSetOf<KClass<out Fetcher.Factory>>().apply {
+                    this@Builder.disabledFetchers = this
+                }
+                    ).addAll(fetcherClasses)
+        }
+
+        /**
+         * Disabled a [Fetcher.Factory] by its class
+         */
+        fun disabledDecoder(vararg decoderClasses: KClass<out Decoder.Factory>): Builder = apply {
+            (this.disabledDecoders
+                ?: mutableSetOf<KClass<out Decoder.Factory>>().apply {
+                    this@Builder.disabledDecoders = this
+                }
+                    ).addAll(decoderClasses)
+        }
+
+        /**
+         * Disabled a [Fetcher.Factory] by its class
+         */
+        fun disabledInterceptor(vararg interceptorClasses: KClass<out Interceptor>): Builder =
+            apply {
+                (this.disabledInterceptors
+                    ?: mutableSetOf<KClass<out Interceptor>>().apply {
+                        this@Builder.disabledInterceptors = this
+                    }
+                        ).addAll(interceptorClasses)
+            }
+
+        /**
          * Merge the [ComponentRegistry]
          */
-        fun addComponents(components: ComponentRegistry) {
+        fun addComponents(components: ComponentRegistry): Builder = apply {
             components.interceptors.forEach {
                 add(it)
             }
@@ -281,16 +393,43 @@ open class ComponentRegistry private constructor(
             components.fetchers.forEach {
                 add(it)
             }
+            components.disabledFetchers.forEach {
+                disabledFetcher(it)
+            }
+            components.disabledDecoders.forEach {
+                disabledDecoder(it)
+            }
+            components.disabledInterceptors.forEach {
+                disabledInterceptor(it)
+            }
         }
 
         fun build(): ComponentRegistry {
-            val sortedFetchers = fetchers.sortedBy { it.sortWeight }
-            val sortedDecoders = decoders.sortedBy { it.sortWeight }
-            val sortedInterceptors = interceptors.sortedBy { it.sortWeight }
+            val sortedFetchers = fetchers
+                ?.asSequence()
+                ?.filter { cur -> disabledFetchers?.all { !it.isInstance(cur) } != false }
+                ?.sortedBy { it.sortWeight }
+                ?.toList()
+            val sortedDecoders = decoders
+                ?.asSequence()
+                ?.filter { cur -> disabledDecoders?.all { !it.isInstance(cur) } != false }
+                ?.sortedBy { it.sortWeight }
+                ?.toList()
+            val sortedInterceptors = interceptors
+                ?.asSequence()
+                ?.filter { cur -> disabledInterceptors?.all { !it.isInstance(cur) } != false }
+                ?.sortedBy { it.sortWeight }
+                ?.toList()
+            val disabledFetchers = disabledFetchers?.toList()
+            val disabledDecoders = disabledDecoders?.toList()
+            val disabledInterceptors = disabledInterceptors?.toList()
             return ComponentRegistry(
-                fetchers = sortedFetchers,
-                decoders = sortedDecoders,
-                interceptors = sortedInterceptors,
+                fetchers = sortedFetchers ?: emptyList(),
+                decoders = sortedDecoders ?: emptyList(),
+                interceptors = sortedInterceptors ?: emptyList(),
+                disabledFetchers = disabledFetchers ?: emptyList(),
+                disabledDecoders = disabledDecoders ?: emptyList(),
+                disabledInterceptors = disabledInterceptors ?: emptyList(),
             )
         }
     }
@@ -309,18 +448,6 @@ fun ComponentRegistry.isNotEmpty(): Boolean = !isEmpty()
  * @see com.github.panpf.sketch.core.common.test.ComponentRegistryTest.testMerged
  */
 fun ComponentRegistry?.merged(other: ComponentRegistry?): ComponentRegistry? {
-    if (this == null || other == null) {
-        return this ?: other
-    }
-    return this.newBuilder().apply {
-        other.fetchers.forEach {
-            add(it)
-        }
-        other.decoders.forEach {
-            add(it)
-        }
-        other.interceptors.forEach {
-            add(it)
-        }
-    }.build()
+    if (this == null || other == null) return this ?: other
+    return this.newBuilder().addComponents(other).build()
 }

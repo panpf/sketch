@@ -319,23 +319,55 @@ class ComponentsTest {
                 "Components(ComponentRegistry(" +
                         "fetchers=[]," +
                         "decoders=[]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         "))",
                 toString()
             )
         }
+
         Components(ComponentRegistry {
             add(Base64UriFetcher.Factory())
             add(TestFetcher.Factory())
             add(TestDecoder.Factory())
             add(TestDecoder2.Factory())
             add(DecoderInterceptor())
+            add(TestInterceptor())
         }).apply {
             assertEquals(
                 "Components(ComponentRegistry(" +
                         "fetchers=[TestFetcher,Base64UriFetcher]," +
                         "decoders=[TestDecoder,TestDecoder2]," +
-                        "interceptors=[DecoderInterceptor]" +
+                        "interceptors=[TestInterceptor,DecoderInterceptor]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
+                        "))",
+                toString()
+            )
+        }
+
+        Components(ComponentRegistry {
+            add(Base64UriFetcher.Factory())
+            add(TestFetcher.Factory())
+            add(TestDecoder.Factory())
+            add(TestDecoder2.Factory())
+            add(DecoderInterceptor())
+            add(TestInterceptor())
+            disabledFetcher(TestFetcher.Factory::class)
+            disabledDecoder(TestDecoder.Factory::class)
+            disabledInterceptor(TestInterceptor::class)
+        }).apply {
+            assertEquals(
+                "Components(ComponentRegistry(" +
+                        "fetchers=[Base64UriFetcher]," +
+                        "decoders=[TestDecoder2]," +
+                        "interceptors=[DecoderInterceptor]," +
+                        "disabledFetchers=[${TestFetcher.Factory::class}]," +
+                        "disabledDecoders=[${TestDecoder.Factory::class}]," +
+                        "disabledInterceptors=[${TestInterceptor::class}]" +
                         "))",
                 toString()
             )

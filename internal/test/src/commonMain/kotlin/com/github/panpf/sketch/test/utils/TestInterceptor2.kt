@@ -38,6 +38,6 @@ class TestInterceptor2(override val sortWeight: Int = 0) : Interceptor {
     }
 
     override fun toString(): String {
-        return "TestInterceptor2(sortWeight=$sortWeight)"
+        return "TestInterceptor2"
     }
 }

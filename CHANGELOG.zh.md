@@ -15,6 +15,8 @@
 * change: Fetcher 和 Decoder 新增 sortWeight 属性用于排序
 * change: DecoderInterceptor 的包名改回 'com.github.panpf.sketch.decode'
 * new: Interceptor 现在也支持自动注册了
+* new: ComponentRegistry
+  现在支持禁用组件，详情请参考文档 [《注册组件》](docs/register_component.zh.md#禁用组件)
 
 ## Android
 

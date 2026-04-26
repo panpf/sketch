@@ -18,6 +18,8 @@ Translations: [简体中文](CHANGELOG.zh.md)
 * change: Fetcher and Decoder add sortWeight property for sorting.
 * change: The package name of DecoderInterceptor is changed back to 'com.github.panpf.sketch.decode'
 * new: Interceptor now also supports automatic registration
+* new: ComponentRegistry now supports disabling components, please refer to the documentation for
+  details [《Register component》](docs/register_component.md#Disabled-Component)
 
 ## Android
 
