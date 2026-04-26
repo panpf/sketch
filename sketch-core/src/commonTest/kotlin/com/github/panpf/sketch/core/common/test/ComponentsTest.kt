@@ -176,6 +176,31 @@ class ComponentsTest {
                 ) is AllFetcher
             )
         }
+
+        // sortWeight
+        Components(ComponentRegistry {
+            add(FileUriFetcher.Factory())
+        }).apply {
+            assertTrue(
+                newFetcherOrThrow(
+                    ImageRequest(context, "file:///sdcard/sample.jpeg")
+                        .toRequestContext(sketch, Size.Empty)
+                ) is FileUriFetcher
+            )
+        }
+        Components(ComponentRegistry {
+            add(FileUriFetcher.Factory())
+        }).apply {
+            assertTrue(
+                newFetcherOrThrow(
+                    ImageRequest(context, "file:///sdcard/sample.jpeg") {
+                        components {
+                            add(TestFetcher.Factory(FileUriFetcher.SORT_WEIGHT + 1))
+                        }
+                    }.toRequestContext(sketch, Size.Empty)
+                ) is FileUriFetcher
+            )
+        }
     }
 
     @Test
@@ -256,6 +281,33 @@ class ComponentsTest {
                     .getOrThrow()
             assertTrue(
                 newDecoderOrThrow(requestContext2, fetchResult2) is TestDecoder
+            )
+        }
+
+        // sortWeight
+        Components(ComponentRegistry {
+            add(FileUriFetcher.Factory())
+            add(TestDecoder.Factory())
+        }).apply {
+            val request = ImageRequest(context, "file:///sdcard/sample.jpeg")
+            val requestContext = request.toRequestContext(sketch, Size.Empty)
+            val fetchResult = newFetcherOrThrow(requestContext).fetch().getOrThrow()
+            assertTrue(newDecoderOrThrow(requestContext, fetchResult) is TestDecoder)
+        }
+
+        Components(ComponentRegistry {
+            add(FileUriFetcher.Factory())
+            add(TestDecoder.Factory())
+        }).apply {
+            val request = ImageRequest(context, "file:///sdcard/sample.jpeg") {
+                components {
+                    add(TestDecoder2.Factory(TestDecoder.Factory().sortWeight + 1))
+                }
+            }
+            val requestContext = request.toRequestContext(sketch, Size.Empty)
+            val fetchResult = newFetcherOrThrow(requestContext).fetch().getOrThrow()
+            assertTrue(
+                newDecoderOrThrow(requestContext, fetchResult) is TestDecoder
             )
         }
     }
