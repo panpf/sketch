@@ -50,7 +50,7 @@ kotlinx-datetime = "0.7.1"
 kotlinx-serialization-json = "1.10.0"
 #noinspection NewerVersionAvailable
 ktor2 = "2.3.13"
-ktor3 = "3.4.2"
+ktor3 = "3.4.3"
 
 leakcanary = "2.14"
 

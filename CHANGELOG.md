@@ -34,6 +34,10 @@ Translations: [简体中文](CHANGELOG.zh.md)
 
 * new: Added preferVideoCover attribute to load video cover first
 
+## Dependencies
+
+* Upgrade to ktor 3.4.3
+
 # 4.5.0-alpha02
 
 ## Android

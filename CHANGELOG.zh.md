@@ -29,6 +29,10 @@
 
 * new: 新增 preferVideoCover 属性用于优先加载视频封面
 
+## Dependencies
+
+* 升级 ktor 3.4.3
+
 # 4.5.0-alpha02
 
 ## Android
