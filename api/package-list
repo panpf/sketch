@@ -12,11 +12,13 @@ $dokka.location:com.github.panpf.sketch.fetch//newKotlinResourceUri/#kotlin.Stri
 $dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion///PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-companion/index.html
 $dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion/PATH_ROOT/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-companion/-p-a-t-h_-r-o-o-t.html
 $dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion/SCHEME/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-companion/-s-c-h-e-m-e.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion/SORT_WEIGHT/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-companion/-s-o-r-t_-w-e-i-g-h-t.html
 $dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory///PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-factory/index.html
 $dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory/Factory/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-factory/-factory.html
 $dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory/create/#com.github.panpf.sketch.request.RequestContext/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-factory/create.html
 $dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory/equals/#kotlin.Any?/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-factory/equals.html
 $dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory/hashCode/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-factory/hash-code.html
+$dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory/sortWeight/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-factory/sort-weight.html
 $dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory/toString/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-factory/to-string.html
 $dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher///PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/index.html
 $dokka.location:com.github.panpf.sketch.fetch/KotlinResourceUriFetcher/KotlinResourceUriFetcher/#kotlin.String#okio.FileSystem/PointingToDeclaration/sketch-core/com.github.panpf.sketch.fetch/[ios]-kotlin-resource-uri-fetcher/-kotlin-resource-uri-fetcher.html
@@ -39,6 +41,27 @@ $dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource/key/#/Po
 $dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource/openSource/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.source/[ios]-kotlin-resource-data-source/open-source.html
 $dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource/resourcePath/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.source/[ios]-kotlin-resource-data-source/resource-path.html
 $dokka.location:com.github.panpf.sketch.source/KotlinResourceDataSource/toString/#/PointingToDeclaration/sketch-core/com.github.panpf.sketch.source/[ios]-kotlin-resource-data-source/to-string.html
+$dokka.location:com.github.panpf.sketch.util/AnimatedWebpComponentProvider/toString/#/PointingToDeclaration/sketch-animated-webp/com.github.panpf.sketch.util/-animated-webp-component-provider/[js-common]to-string.html
+$dokka.location:com.github.panpf.sketch.util/BlurHashComponentProvider/toString/#/PointingToDeclaration/sketch-blurhash/com.github.panpf.sketch.util/-blur-hash-component-provider/[non-jvm-common]to-string.html
+$dokka.location:com.github.panpf.sketch.util/ComposeResourceComponentProvider/toString/#/PointingToDeclaration/sketch-compose-resources/com.github.panpf.sketch.util/-compose-resource-component-provider/[non-jvm-common]to-string.html
+$dokka.location:com.github.panpf.sketch.util/GifComponentProvider/toString/#/PointingToDeclaration/sketch-animated-gif/com.github.panpf.sketch.util/-gif-component-provider/[js-common]to-string.html
+$dokka.location:com.github.panpf.sketch.util/KtorHttpComponentProvider/toString/#/PointingToDeclaration/sketch-http-ktor3-core/com.github.panpf.sketch.util/-ktor-http-component-provider/[non-jvm-common]to-string.html
+$dokka.location:com.github.panpf.sketch.util/SvgComponentProvider/toString/#/PointingToDeclaration/sketch-svg/com.github.panpf.sketch.util/-svg-component-provider/[non-jvm-common]to-string.html
+$dokka.location:com.github.panpf.sketch.util/VideoComponentProvider///PointingToDeclaration/sketch-video/com.github.panpf.sketch.util/[ios]-video-component-provider/index.html
+$dokka.location:com.github.panpf.sketch.util/VideoComponentProvider/VideoComponentProvider/#/PointingToDeclaration/sketch-video/com.github.panpf.sketch.util/[ios]-video-component-provider/-video-component-provider.html
+$dokka.location:com.github.panpf.sketch.util/VideoComponentProvider/addDecoders/#android.content.Context/PointingToDeclaration/sketch-video/com.github.panpf.sketch.util/[android]-video-component-provider/add-decoders.html
+$dokka.location:com.github.panpf.sketch.util/VideoComponentProvider/addDecoders/#com.github.panpf.sketch.PlatformContext/PointingToDeclaration/sketch-video/com.github.panpf.sketch.util/[ios]-video-component-provider/add-decoders.html
+$dokka.location:com.github.panpf.sketch.util/VideoComponentProvider/addFetchers/#android.content.Context/PointingToDeclaration/sketch-video/com.github.panpf.sketch.util/[android]-video-component-provider/add-fetchers.html
+$dokka.location:com.github.panpf.sketch.util/VideoComponentProvider/addFetchers/#com.github.panpf.sketch.PlatformContext/PointingToDeclaration/sketch-video/com.github.panpf.sketch.util/[ios]-video-component-provider/add-fetchers.html
+$dokka.location:com.github.panpf.sketch.util/VideoComponentProvider/addInterceptors/#android.content.Context/PointingToDeclaration/sketch-video/com.github.panpf.sketch.util/[android]-video-component-provider/add-interceptors.html
+$dokka.location:com.github.panpf.sketch.util/VideoComponentProvider/addInterceptors/#com.github.panpf.sketch.PlatformContext/PointingToDeclaration/sketch-video/com.github.panpf.sketch.util/[ios]-video-component-provider/add-interceptors.html
+$dokka.location:com.github.panpf.sketch.util/VideoComponentProvider/disabledDecoders/#android.content.Context/PointingToDeclaration/sketch-video/com.github.panpf.sketch.util/[android]-video-component-provider/disabled-decoders.html
+$dokka.location:com.github.panpf.sketch.util/VideoComponentProvider/disabledDecoders/#com.github.panpf.sketch.PlatformContext/PointingToDeclaration/sketch-video/com.github.panpf.sketch.util/[ios]-video-component-provider/disabled-decoders.html
+$dokka.location:com.github.panpf.sketch.util/VideoComponentProvider/disabledFetchers/#android.content.Context/PointingToDeclaration/sketch-video/com.github.panpf.sketch.util/[android]-video-component-provider/disabled-fetchers.html
+$dokka.location:com.github.panpf.sketch.util/VideoComponentProvider/disabledFetchers/#com.github.panpf.sketch.PlatformContext/PointingToDeclaration/sketch-video/com.github.panpf.sketch.util/[ios]-video-component-provider/disabled-fetchers.html
+$dokka.location:com.github.panpf.sketch.util/VideoComponentProvider/disabledInterceptors/#android.content.Context/PointingToDeclaration/sketch-video/com.github.panpf.sketch.util/[android]-video-component-provider/disabled-interceptors.html
+$dokka.location:com.github.panpf.sketch.util/VideoComponentProvider/disabledInterceptors/#com.github.panpf.sketch.PlatformContext/PointingToDeclaration/sketch-video/com.github.panpf.sketch.util/[ios]-video-component-provider/disabled-interceptors.html
+$dokka.location:com.github.panpf.sketch.util/VideoComponentProvider/toString/#/PointingToDeclaration/sketch-video/com.github.panpf.sketch.util/[ios]-video-component-provider/to-string.html
 module:sketch-animated-core
 com.github.panpf.sketch
 com.github.panpf.sketch.decode.internal
@@ -48,16 +71,15 @@ com.github.panpf.sketch.transform
 com.github.panpf.sketch.util
 module:sketch-animated-gif
 com.github.panpf.sketch.decode
-com.github.panpf.sketch.decode.internal
 com.github.panpf.sketch.drawable
+com.github.panpf.sketch.util
 module:sketch-animated-webp
 com.github.panpf.sketch.decode
-com.github.panpf.sketch.decode.internal
+com.github.panpf.sketch.util
 module:sketch-blurhash
 com.github.panpf.sketch.decode
 com.github.panpf.sketch.decode.internal
 com.github.panpf.sketch.fetch
-com.github.panpf.sketch.fetch.internal
 com.github.panpf.sketch.request
 com.github.panpf.sketch.source
 com.github.panpf.sketch.state
@@ -80,10 +102,10 @@ module:sketch-compose-koin
 com.github.panpf.sketch
 module:sketch-compose-resources
 com.github.panpf.sketch.fetch
-com.github.panpf.sketch.fetch.internal
 com.github.panpf.sketch.painter
 com.github.panpf.sketch.request
 com.github.panpf.sketch.state
+com.github.panpf.sketch.util
 module:sketch-core
 com.github.panpf.sketch
 com.github.panpf.sketch.annotation
@@ -124,21 +146,21 @@ com.github.panpf.sketch.http
 com.github.panpf.sketch.request
 module:sketch-http-hurl
 com.github.panpf.sketch.fetch
-com.github.panpf.sketch.fetch.internal
 com.github.panpf.sketch.http
 com.github.panpf.sketch.http.internal
+com.github.panpf.sketch.util
 module:sketch-http-ktor2-core
 com.github.panpf.sketch.fetch
-com.github.panpf.sketch.fetch.internal
 com.github.panpf.sketch.http
+com.github.panpf.sketch.util
 module:sketch-http-ktor3-core
 com.github.panpf.sketch.fetch
-com.github.panpf.sketch.fetch.internal
 com.github.panpf.sketch.http
+com.github.panpf.sketch.util
 module:sketch-http-okhttp
 com.github.panpf.sketch.fetch
-com.github.panpf.sketch.fetch.internal
 com.github.panpf.sketch.http
+com.github.panpf.sketch.util
 module:sketch-koin
 com.github.panpf.sketch.request
 module:sketch-singleton
@@ -148,9 +170,11 @@ module:sketch-svg
 com.github.panpf.sketch.decode
 com.github.panpf.sketch.decode.internal
 com.github.panpf.sketch.request
+com.github.panpf.sketch.util
 module:sketch-video
 com.github.panpf.sketch.decode
 com.github.panpf.sketch.decode.internal
+com.github.panpf.sketch.util
 module:sketch-video-core
 com.github.panpf.sketch.request
 com.github.panpf.sketch.util
