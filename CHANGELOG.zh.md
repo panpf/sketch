@@ -32,6 +32,7 @@
 ## Dependencies
 
 * 升级 ktor 3.4.3
+* 升级 koib 4.2.1
 
 # 4.5.0-alpha02
 

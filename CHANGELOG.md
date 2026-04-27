@@ -37,6 +37,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
 ## Dependencies
 
 * Upgrade to ktor 3.4.3
+* Upgrade to koin 4.2.1
 
 # 4.5.0-alpha02
 
