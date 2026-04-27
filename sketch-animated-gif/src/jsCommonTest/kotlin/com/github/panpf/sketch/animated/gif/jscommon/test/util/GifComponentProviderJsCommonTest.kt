@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.animated.gif.jscommon1.test.util
+package com.github.panpf.sketch.animated.gif.jscommon.test.util
 
 import com.github.panpf.sketch.decode.SkiaGifDecoder
 import com.github.panpf.sketch.test.utils.getTestContext

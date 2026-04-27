@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.animated.gif.jscommon1.test.decode
+package com.github.panpf.sketch.animated.gif.jscommon.test.decode
 
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.decode.supportGif

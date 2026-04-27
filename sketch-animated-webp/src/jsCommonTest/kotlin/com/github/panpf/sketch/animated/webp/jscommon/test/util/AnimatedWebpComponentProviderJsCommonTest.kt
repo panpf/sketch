@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.animated.webp.jscommon1.test.util
+package com.github.panpf.sketch.animated.webp.jscommon.test.util
 
 import com.github.panpf.sketch.decode.SkiaAnimatedWebpDecoder
 import com.github.panpf.sketch.test.utils.getTestContext
