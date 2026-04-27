@@ -58,7 +58,10 @@ class SaveCellularTrafficInterceptorTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
                         "decoders=[]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -71,7 +74,10 @@ class SaveCellularTrafficInterceptorTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
                         "decoders=[]," +
-                        "interceptors=[SaveCellularTrafficInterceptor]" +
+                        "interceptors=[SaveCellularTrafficInterceptor]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -85,7 +91,10 @@ class SaveCellularTrafficInterceptorTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
                         "decoders=[]," +
-                        "interceptors=[SaveCellularTrafficInterceptor,SaveCellularTrafficInterceptor]" +
+                        "interceptors=[SaveCellularTrafficInterceptor]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )

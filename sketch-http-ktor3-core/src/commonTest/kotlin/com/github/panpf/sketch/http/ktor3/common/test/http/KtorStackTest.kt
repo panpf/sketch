@@ -14,6 +14,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+// TODO An error is reported here on the iOS platform.
 class KtorStackTest {
 
     @Test

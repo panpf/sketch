@@ -2,13 +2,13 @@ package com.github.panpf.sketch.sample
 
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.fetch.internal.HurlHttpUriFetcherProvider
-import com.github.panpf.sketch.fetch.internal.KtorHttpUriFetcherProvider
-import com.github.panpf.sketch.fetch.internal.OkHttpHttpUriFetcherProvider
 import com.github.panpf.sketch.fetch.supportHurlHttpUri
 import com.github.panpf.sketch.fetch.supportKtorHttpUri
 import com.github.panpf.sketch.fetch.supportOkHttpHttpUri
 import com.github.panpf.sketch.sample.ui.util.PexelsCompatibleInterceptor
+import com.github.panpf.sketch.util.HurlHttpComponentProvider
+import com.github.panpf.sketch.util.KtorHttpComponentProvider
+import com.github.panpf.sketch.util.OkHttpHttpComponentProvider
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
@@ -30,10 +30,10 @@ actual fun platformModule(context: PlatformContext): Module = module {
 }
 
 actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
-    addIgnoreFetcherProvider(
-        KtorHttpUriFetcherProvider::class,
-        OkHttpHttpUriFetcherProvider::class,
-        HurlHttpUriFetcherProvider::class
+    addIgnoredComponentProvider(
+        KtorHttpComponentProvider::class,
+        OkHttpHttpComponentProvider::class,
+        HurlHttpComponentProvider::class
     )
 
     val appSettings: AppSettings = KoinPlatform.getKoin().get()

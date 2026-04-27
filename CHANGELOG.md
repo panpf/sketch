@@ -17,9 +17,12 @@ Translations: [简体中文](CHANGELOG.zh.md)
   modifier has been added to the main functions.
 * change: Fetcher and Decoder add sortWeight property for sorting.
 * change: The package name of DecoderInterceptor is changed back to 'com.github.panpf.sketch.decode'
+* change: FetcherProvider and DecoderProvider are merged into ComponentProvider and support
+  automatic disabling of components, please refer to the documentation for
+  details [《Register component》](docs/register_component.md)
 * new: Interceptor now also supports automatic registration
 * new: ComponentRegistry now supports disabling components, please refer to the documentation for
-  details [《Register component》](docs/register_component.md#Disabled-Component)
+  details [《Register component》](docs/register_component.md#disable-component)
 
 ## Android
 

@@ -64,7 +64,10 @@ class MovieGifDecoderTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
                         "decoders=[]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -77,7 +80,10 @@ class MovieGifDecoderTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
                         "decoders=[MovieGifDecoder]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -90,8 +96,11 @@ class MovieGifDecoderTest {
             assertEquals(
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
-                        "decoders=[MovieGifDecoder,MovieGifDecoder]," +
-                        "interceptors=[]" +
+                        "decoders=[MovieGifDecoder]," +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )

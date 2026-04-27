@@ -47,6 +47,7 @@ class FetcherInterceptorTest {
         assertNull(actual = FetcherInterceptor().key)
     }
 
+    // TODO An error is reported here on the iOS platform.
     @Test
     fun testIntercept() = runTest {
         val (context, sketch) = getTestContextAndSketch()

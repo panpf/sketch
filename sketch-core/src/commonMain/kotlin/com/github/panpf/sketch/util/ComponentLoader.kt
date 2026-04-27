@@ -34,41 +34,22 @@ import kotlin.reflect.KClass
  */
 expect object ComponentLoader {
 
-    val fetchers: List<FetcherProvider>
-
-    val decoders: List<DecoderProvider>
-
-    val interceptors: List<InterceptorProvider>
+    val componentProviders: List<ComponentProvider>
 
     // Only available on non-JVM. Added these declarations to work-around a compiler bug.
-    fun register(fetcher: FetcherProvider)
-
-    // Only available on non-JVM. Added these declarations to work-around a compiler bug.
-    fun register(decoder: DecoderProvider)
-
-    // Only available on non-JVM. Added these declarations to work-around a compiler bug.
-    fun register(interceptor: InterceptorProvider)
+    fun register(componentProvider: ComponentProvider)
 }
 
 /**
- * Register a [FetcherProvider] to [ComponentLoader]
+ * Register or disabled [Fetcher], [Decoder] or [Interceptor] to [ComponentLoader]
  */
-expect interface FetcherProvider {
-    fun factory(context: PlatformContext): Fetcher.Factory?
-}
-
-/**
- * Register a [DecoderProvider] to [ComponentLoader]
- */
-expect interface DecoderProvider {
-    fun factory(context: PlatformContext): Decoder.Factory?
-}
-
-/**
- * Register a [InterceptorProvider] to [ComponentLoader]
- */
-expect interface InterceptorProvider {
-    fun create(context: PlatformContext): Interceptor?
+expect interface ComponentProvider {
+    fun addFetchers(context: PlatformContext): List<Fetcher.Factory>?
+    fun addDecoders(context: PlatformContext): List<Decoder.Factory>?
+    fun addInterceptors(context: PlatformContext): List<Interceptor>?
+    fun disabledFetchers(context: PlatformContext): List<KClass<out Fetcher.Factory>>?
+    fun disabledDecoders(context: PlatformContext): List<KClass<out Decoder.Factory>>?
+    fun disabledInterceptors(context: PlatformContext): List<KClass<out Interceptor>>?
 }
 
 /**
@@ -82,31 +63,32 @@ expect interface InterceptorProvider {
  */
 fun ComponentLoader.toComponentRegistry(
     context: PlatformContext,
-    ignoreFetcherProviders: List<KClass<out FetcherProvider>>? = null,
-    ignoreDecoderProviders: List<KClass<out DecoderProvider>>? = null,
-    ignoreInterceptorProviders: List<KClass<out InterceptorProvider>>? = null,
+    ignoredComponentProviders: List<KClass<out ComponentProvider>>? = null,
 ): ComponentRegistry {
     return ComponentRegistry {
-        fetchers.filter { fetcherProvider ->
-            ignoreFetcherProviders?.find { ignoreProviderClass ->
-                fetcherProvider::class == ignoreProviderClass
+        componentProviders.filter { componentProvider ->
+            ignoredComponentProviders?.find { ignoredComponentProvider ->
+                componentProvider::class == ignoredComponentProvider
             } == null
-        }.forEach { fetcherComponent ->
-            fetcherComponent.factory(context)?.let { factory -> add(factory) }
-        }
-        decoders.filter { decoderProvider ->
-            ignoreDecoderProviders?.find { ignoreProviderClass ->
-                decoderProvider::class == ignoreProviderClass
-            } == null
-        }.forEach { decoderComponent ->
-            decoderComponent.factory(context)?.let { factory -> add(factory) }
-        }
-        interceptors.filter { interceptorProvider ->
-            ignoreInterceptorProviders?.find { ignoreProviderClass ->
-                interceptorProvider::class == ignoreProviderClass
-            } == null
-        }.forEach { interceptorComponent ->
-            interceptorComponent.create(context)?.let { interceptor -> add(interceptor) }
+        }.forEach { componentProvider ->
+            componentProvider.addFetchers(context)?.forEach {
+                add(it)
+            }
+            componentProvider.addDecoders(context)?.forEach {
+                add(it)
+            }
+            componentProvider.addInterceptors(context)?.forEach {
+                add(it)
+            }
+            componentProvider.disabledFetchers(context)?.forEach {
+                disabledFetcher(it)
+            }
+            componentProvider.disabledDecoders(context)?.forEach {
+                disabledDecoder(it)
+            }
+            componentProvider.disabledInterceptors(context)?.forEach {
+                disabledInterceptor(it)
+            }
         }
     }
 }

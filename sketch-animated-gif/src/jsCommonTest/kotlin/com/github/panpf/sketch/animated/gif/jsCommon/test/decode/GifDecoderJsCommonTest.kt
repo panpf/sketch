@@ -1,4 +1,5 @@
-package com.github.panpf.sketch.animated.gif.jscommon.test.decode
+// TODO move to .jscommon.
+package com.github.panpf.sketch.animated.gif.jsCommon.test.decode
 
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.decode.supportGif
@@ -14,7 +15,10 @@ class GifDecoderJsCommonTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
                         "decoders=[]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -27,7 +31,10 @@ class GifDecoderJsCommonTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
                         "decoders=[SkiaGifDecoder]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -40,8 +47,11 @@ class GifDecoderJsCommonTest {
             assertEquals(
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
-                        "decoders=[SkiaGifDecoder,SkiaGifDecoder]," +
-                        "interceptors=[]" +
+                        "decoders=[SkiaGifDecoder]," +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )

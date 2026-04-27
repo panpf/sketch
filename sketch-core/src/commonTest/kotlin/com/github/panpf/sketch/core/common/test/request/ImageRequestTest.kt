@@ -1946,7 +1946,34 @@ class ImageRequestTest {
                         "progressListener=$testProgressListener, " +
                         "lifecycleResolver=FixedLifecycleResolver($testLifecycle), " +
                         "definedRequestOptions=RequestOptions(listener=$testListener, progressListener=$testProgressListener, lifecycleResolver=FixedLifecycleResolver($testLifecycle)), " +
-                        "definedOptions=ImageOptions(depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), downloadCachePolicy=WRITE_ONLY, downloadCacheKey=testDownloadCacheKey, downloadCacheKeyMapper=FakeCacheKeyMapper, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], resultCachePolicy=READ_ONLY, resultCacheKey=testResultCacheKey, resultCacheKeyMapper=FakeCacheKeyMapper, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, memoryCacheKey=testMemoryCacheKey, memoryCacheKeyMapper=FakeCacheKeyMapper, componentRegistry=ComponentRegistry(fetchers=[TestFetcher],decoders=[],interceptors=[])), defaultOptions=null, depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), downloadCachePolicy=WRITE_ONLY, downloadCacheKey=testDownloadCacheKey, downloadCacheKeyMapper=FakeCacheKeyMapper, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], resultCachePolicy=READ_ONLY, resultCacheKey=testResultCacheKey, resultCacheKeyMapper=FakeCacheKeyMapper, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, memoryCacheKey=testMemoryCacheKey, memoryCacheKeyMapper=FakeCacheKeyMapper, componentRegistry=ComponentRegistry(fetchers=[TestFetcher],decoders=[],interceptors=[]))",
+                        "definedOptions=ImageOptions(depthHolder=DepthHolder(depth=LOCAL, from='test'), extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), downloadCachePolicy=WRITE_ONLY, downloadCacheKey=testDownloadCacheKey, downloadCacheKeyMapper=FakeCacheKeyMapper, colorType=FixedColorType(RGB_565), colorSpace=FixedColorSpace(SRGB), sizeResolver=FixedSizeResolver(size=100x100), sizeMultiplier=1.5, precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), scaleDecider=FixedScaleDecider(scale=FILL), transformations=[RotateTransformation(40)], resultCachePolicy=READ_ONLY, resultCacheKey=testResultCacheKey, resultCacheKeyMapper=FakeCacheKeyMapper, placeholder=FakeStateImage(image=FakeImage(size=100x100)), fallback=FakeStateImage(image=FakeImage(size=100x100)), error=FakeStateImage(image=FakeImage(size=100x100)), transitionFactory=FakeTransition, resizeOnDraw=true, allowNullImage=true, memoryCachePolicy=ENABLED, memoryCacheKey=testMemoryCacheKey, memoryCacheKeyMapper=FakeCacheKeyMapper, componentRegistry=ComponentRegistry(fetchers=[TestFetcher],decoders=[],interceptors=[],disabledFetchers=[],disabledDecoders=[],disabledInterceptors=[])), " +
+                        "defaultOptions=null, " +
+                        "depthHolder=DepthHolder(depth=LOCAL, from='test'), " +
+                        "extras=Extras({key=Entry(value=value, cacheKey=value, requestKey=value)}), " +
+                        "downloadCachePolicy=WRITE_ONLY, " +
+                        "downloadCacheKey=testDownloadCacheKey, " +
+                        "downloadCacheKeyMapper=FakeCacheKeyMapper, " +
+                        "colorType=FixedColorType(RGB_565), " +
+                        "colorSpace=FixedColorSpace(SRGB), " +
+                        "sizeResolver=FixedSizeResolver(size=100x100), " +
+                        "sizeMultiplier=1.5, " +
+                        "precisionDecider=FixedPrecisionDecider(SAME_ASPECT_RATIO), " +
+                        "scaleDecider=FixedScaleDecider(scale=FILL), " +
+                        "transformations=[RotateTransformation(40)], " +
+                        "resultCachePolicy=READ_ONLY, " +
+                        "resultCacheKey=testResultCacheKey, " +
+                        "resultCacheKeyMapper=FakeCacheKeyMapper, " +
+                        "placeholder=FakeStateImage(image=FakeImage(size=100x100)), " +
+                        "fallback=FakeStateImage(image=FakeImage(size=100x100)), " +
+                        "error=FakeStateImage(image=FakeImage(size=100x100)), " +
+                        "transitionFactory=FakeTransition, " +
+                        "resizeOnDraw=true, " +
+                        "allowNullImage=true, " +
+                        "memoryCachePolicy=ENABLED, " +
+                        "memoryCacheKey=testMemoryCacheKey, " +
+                        "memoryCacheKeyMapper=FakeCacheKeyMapper, " +
+                        "componentRegistry=ComponentRegistry(fetchers=[TestFetcher],decoders=[],interceptors=[],disabledFetchers=[],disabledDecoders=[],disabledInterceptors=[])" +
+                        ")",
                 actual = this.toString()
             )
         }

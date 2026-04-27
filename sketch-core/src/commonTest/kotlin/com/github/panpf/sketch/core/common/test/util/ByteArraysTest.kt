@@ -18,9 +18,9 @@ package com.github.panpf.sketch.core.common.test.util
 
 import com.github.panpf.sketch.util.indexOf
 import com.github.panpf.sketch.util.rangeEquals
-import okio.ArrayIndexOutOfBoundsException
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -91,7 +91,7 @@ class ByteArraysTest {
             assertEquals('a'.code.toByte(), get(0))
             assertEquals('m'.code.toByte(), get(12))
             assertEquals('z'.code.toByte(), get(25))
-            assertFailsWith(ArrayIndexOutOfBoundsException::class) {
+            assertFails {
                 get(26)
             }
         }

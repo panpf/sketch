@@ -18,7 +18,10 @@ class AnimatedWebpDecoderAndroidTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
                         "decoders=[]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -32,7 +35,10 @@ class AnimatedWebpDecoderAndroidTest {
                     expected = "ComponentRegistry(" +
                             "fetchers=[]," +
                             "decoders=[ImageDecoderAnimatedWebpDecoder]," +
-                            "interceptors=[]" +
+                            "interceptors=[]," +
+                            "disabledFetchers=[]," +
+                            "disabledDecoders=[]," +
+                            "disabledInterceptors=[]" +
                             ")",
                     actual = toString()
                 )
@@ -45,8 +51,11 @@ class AnimatedWebpDecoderAndroidTest {
                 assertEquals(
                     expected = "ComponentRegistry(" +
                             "fetchers=[]," +
-                            "decoders=[ImageDecoderAnimatedWebpDecoder,ImageDecoderAnimatedWebpDecoder]," +
-                            "interceptors=[]" +
+                            "decoders=[ImageDecoderAnimatedWebpDecoder]," +
+                            "interceptors=[]," +
+                            "disabledFetchers=[]," +
+                            "disabledDecoders=[]," +
+                            "disabledInterceptors=[]" +
                             ")",
                     actual = toString()
                 )

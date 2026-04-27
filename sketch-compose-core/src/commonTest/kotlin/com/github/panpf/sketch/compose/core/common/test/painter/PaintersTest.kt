@@ -14,11 +14,9 @@ import com.github.panpf.sketch.painter.ImageBitmapPainter
 import com.github.panpf.sketch.painter.PainterWrapper
 import com.github.panpf.sketch.painter.key
 import com.github.panpf.sketch.painter.toLogString
-import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.TestKeyPainter
 import com.github.panpf.sketch.test.utils.TestNullableKeyPainter
 import com.github.panpf.sketch.test.utils.createBitmap
-import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.toComposeBitmap
 import com.github.panpf.sketch.util.toLogString
 import org.jetbrains.compose.resources.painterResource
@@ -84,19 +82,17 @@ class PaintersTest {
         }
 
         // [Test not completed] Because the test environment cannot access the kotlin resource files, the test cannot be completed.
-        if (Platform.current != Platform.iOS) {
-            runComposeUiTest {
-                setContent {
-                    painterResource(Res.drawable.ic_image_outline).apply {
-                        assertEquals(
-                            expected = "VectorPainter(${intrinsicSize.toLogString()})",
-                            actual = key(equalityKey = null)
-                        )
-                        assertEquals(
-                            expected = "VectorPainter:equalityKey1",
-                            actual = key(equalityKey = "equalityKey1")
-                        )
-                    }
+        runComposeUiTest {
+            setContent {
+                painterResource(Res.drawable.ic_image_outline).apply {
+                    assertEquals(
+                        expected = "VectorPainter(${intrinsicSize.toLogString()})",
+                        actual = key(equalityKey = null)
+                    )
+                    assertEquals(
+                        expected = "VectorPainter:equalityKey1",
+                        actual = key(equalityKey = "equalityKey1")
+                    )
                 }
             }
         }
@@ -145,15 +141,13 @@ class PaintersTest {
         )
 
         // [Test not completed] Because the test environment cannot access the kotlin resource files, the test cannot be completed.
-        if (Platform.current != Platform.iOS) {
-            runComposeUiTest {
-                setContent {
-                    val vectorPainter = painterResource(Res.drawable.ic_image_outline)
-                    assertEquals(
-                        expected = "VectorPainter(size=${vectorPainter.intrinsicSize.toLogString()})",
-                        actual = vectorPainter.toLogString()
-                    )
-                }
+        runComposeUiTest {
+            setContent {
+                val vectorPainter = painterResource(Res.drawable.ic_image_outline)
+                assertEquals(
+                    expected = "VectorPainter(size=${vectorPainter.intrinsicSize.toLogString()})",
+                    actual = vectorPainter.toLogString()
+                )
             }
         }
 

@@ -64,7 +64,10 @@ class FFmpegVideoFrameDecoderTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
                         "decoders=[]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -77,7 +80,10 @@ class FFmpegVideoFrameDecoderTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
                         "decoders=[FFmpegVideoFrameDecoder]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -90,8 +96,11 @@ class FFmpegVideoFrameDecoderTest {
             assertEquals(
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
-                        "decoders=[FFmpegVideoFrameDecoder,FFmpegVideoFrameDecoder]," +
-                        "interceptors=[]" +
+                        "decoders=[FFmpegVideoFrameDecoder]," +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )

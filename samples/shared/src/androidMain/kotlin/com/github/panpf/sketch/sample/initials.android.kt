@@ -3,23 +3,23 @@ package com.github.panpf.sketch.sample
 import android.os.Build
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.decode.internal.FFmpegVideoFrameDecoderProvider
-import com.github.panpf.sketch.decode.internal.GifDecoderProvider
-import com.github.panpf.sketch.decode.internal.KoralGifDecoderProvider
-import com.github.panpf.sketch.decode.internal.VideoFrameDecoderProvider
 import com.github.panpf.sketch.decode.supportFFmpegVideoFrame
 import com.github.panpf.sketch.decode.supportImageDecoderGif
 import com.github.panpf.sketch.decode.supportKoralGif
 import com.github.panpf.sketch.decode.supportMovieGif
 import com.github.panpf.sketch.decode.supportVideoFrame
-import com.github.panpf.sketch.fetch.internal.HurlHttpUriFetcherProvider
-import com.github.panpf.sketch.fetch.internal.KtorHttpUriFetcherProvider
-import com.github.panpf.sketch.fetch.internal.OkHttpHttpUriFetcherProvider
 import com.github.panpf.sketch.fetch.supportHurlHttpUri
 import com.github.panpf.sketch.fetch.supportKtorHttpUri
 import com.github.panpf.sketch.fetch.supportOkHttpHttpUri
 import com.github.panpf.sketch.sample.ui.test.LocalVideoListViewModel
 import com.github.panpf.sketch.sample.util.PenfeizhouAnimatedWebpDecoder
+import com.github.panpf.sketch.util.FFmpegVideoComponentProvider
+import com.github.panpf.sketch.util.GifComponentProvider
+import com.github.panpf.sketch.util.HurlHttpComponentProvider
+import com.github.panpf.sketch.util.KoralGifComponentProvider
+import com.github.panpf.sketch.util.KtorHttpComponentProvider
+import com.github.panpf.sketch.util.OkHttpHttpComponentProvider
+import com.github.panpf.sketch.util.VideoComponentProvider
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -42,20 +42,14 @@ actual fun platformModule(context: PlatformContext): Module = module {
 }
 
 actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
-    addIgnoreFetcherProvider(
-        KtorHttpUriFetcherProvider::class,
-        OkHttpHttpUriFetcherProvider::class,
-        HurlHttpUriFetcherProvider::class
-    )
-
-    addIgnoreDecoderProvider(
-        VideoFrameDecoderProvider::class,
-        FFmpegVideoFrameDecoderProvider::class
-    )
-
-    addIgnoreDecoderProvider(
-        KoralGifDecoderProvider::class,
-        GifDecoderProvider::class
+    addIgnoredComponentProvider(
+        KtorHttpComponentProvider::class,
+        OkHttpHttpComponentProvider::class,
+        HurlHttpComponentProvider::class,
+        VideoComponentProvider::class,
+        FFmpegVideoComponentProvider::class,
+        KoralGifComponentProvider::class,
+        GifComponentProvider::class
     )
 
     val appSettings: AppSettings = KoinPlatform.getKoin().get()

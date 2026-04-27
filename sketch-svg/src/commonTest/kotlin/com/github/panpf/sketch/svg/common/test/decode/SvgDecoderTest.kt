@@ -55,7 +55,10 @@ class SvgDecoderTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
                         "decoders=[]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -68,7 +71,10 @@ class SvgDecoderTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
                         "decoders=[SvgDecoder(useViewBoundsAsIntrinsicSize=true)]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -81,8 +87,11 @@ class SvgDecoderTest {
             assertEquals(
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
-                        "decoders=[SvgDecoder(useViewBoundsAsIntrinsicSize=true),SvgDecoder(useViewBoundsAsIntrinsicSize=true)]," +
-                        "interceptors=[]" +
+                        "decoders=[SvgDecoder(useViewBoundsAsIntrinsicSize=true)]," +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )

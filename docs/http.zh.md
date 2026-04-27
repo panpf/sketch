@@ -6,13 +6,13 @@
 
 Sketch 提供了 `sketch-http-*` 系列模块以支持 Http 网络图片，所支持的平台以及差异如下：
 
-| Module             | FetcherProvider                                                                                         | Fetcher                                                                         | Android | iOS | Desktop | Js | WasmJs |
-|:-------------------|:--------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------|:--------|:----|:--------|:---|--------|
-| sketch-http        | jvm: [HurlHttpUriFetcherProvider]<br/>nonJvm: [KtorHttpUriFetcherProvider][Ktor3HttpUriFetcherProvider] | jvm: [HurlHttpUriFetcher]<br/>nonJvm: [KtorHttpUriFetcher][Ktor3HttpUriFetcher] | ✅       | ✅   | ✅       | ✅  | ✅      |
-| sketch-http-hurl   | [HurlHttpUriFetcherProvider]                                                                            | [HurlHttpUriFetcher]                                                            | ✅       | ❌   | ✅       | ❌  | ❌      |
-| sketch-http-okhttp | [OkHttpHttpUriFetcherProvider]                                                                          | [OkHttpHttpUriFetcher]                                                          | ✅       | ❌   | ✅       | ❌  | ❌      |
-| sketch-http-ktor2  | [KtorHttpUriFetcherProvider][Ktor2HttpUriFetcherProvider]                                               | [KtorHttpUriFetcher][Ktor2HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅  | ❌      |
-| sketch-http-ktor3  | [KtorHttpUriFetcherProvider][Ktor3HttpUriFetcherProvider]                                               | [KtorHttpUriFetcher][Ktor3HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅  | ✅      |
+| Module             | ComponentProvider                                                                                    | Fetcher                                                                         | Android | iOS | Desktop | Js | WasmJs |
+|:-------------------|:-----------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------|:--------|:----|:--------|:---|--------|
+| sketch-http        | jvm: [HurlHttpComponentProvider]<br/>nonJvm: [KtorHttpComponentProvider][Ktor3HttpComponentProvider] | jvm: [HurlHttpUriFetcher]<br/>nonJvm: [KtorHttpUriFetcher][Ktor3HttpUriFetcher] | ✅       | ✅   | ✅       | ✅  | ✅      |
+| sketch-http-hurl   | [HurlHttpComponentProvider]                                                                          | [HurlHttpUriFetcher]                                                            | ✅       | ❌   | ✅       | ❌  | ❌      |
+| sketch-http-okhttp | [OkHttpHttpComponentProvider]                                                                        | [OkHttpHttpUriFetcher]                                                          | ✅       | ❌   | ✅       | ❌  | ❌      |
+| sketch-http-ktor2  | [KtorHttpComponentProvider][Ktor2HttpComponentProvider]                                              | [KtorHttpUriFetcher][Ktor2HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅  | ❌      |
+| sketch-http-ktor3  | [KtorHttpComponentProvider][Ktor3HttpComponentProvider]                                              | [KtorHttpUriFetcher][Ktor3HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅  | ✅      |
 
 > [!IMPORTANT]
 > * HurlHttpUriFetcher 使用 jvm 自带的 HttpURLConnection 实现，不需要额外的依赖
@@ -63,7 +63,7 @@ HurlStack:
 
 ```kotlin
 Sketch.Builder(context).apply {
-    addIgnoreFetcherProvider(HurlHttpUriFetcherProvider::class)
+    addIgnoredComponentProvider(HurlHttpComponentProvider::class)
     addComponents {
         val httpStack = HurlStack.Builder().apply {
             connectTimeout(5000)
@@ -88,7 +88,7 @@ OkHttpStack:
 
 ```kotlin
 Sketch.Builder(context).apply {
-    addIgnoreFetcherProvider(OkHttpHttpUriFetcherProvider::class)
+    addIgnoredComponentProvider(OkHttpHttpComponentProvider::class)
     addComponents {
         val httpStack = OkHttpStack.Builder().apply {
             connectTimeout(5000)
@@ -120,7 +120,7 @@ KtorStack:
 
 ```kotlin
 Sketch.Builder(context).apply {
-    addIgnoreFetcherProvider(KtorHttpUriFetcherProvider::class)
+    addIgnoredComponentProvider(KtorHttpComponentProvider::class)
     addComponents {
         val httpClient = HttpClient {
             // ...
@@ -155,10 +155,10 @@ Sketch.Builder(context).apply {
 
 [Ktor3HttpUriFetcher]: ../sketch-http-ktor3-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/KtorHttpUriFetcher.kt
 
-[HurlHttpUriFetcherProvider]: ../sketch-http-hurl/src/commonMain/kotlin/com/github/panpf/sketch/fetch/internal/HurlHttpUriFetcherProvider.kt
+[HurlHttpComponentProvider]: ../sketch-http-hurl/src/commonMain/kotlin/com/github/panpf/sketch/util/HurlHttpComponentProvider.kt
 
-[OkHttpHttpUriFetcherProvider]: ../sketch-http-okhttp/src/commonMain/kotlin/com/github/panpf/sketch/fetch/internal/OkHttpHttpUriFetcherProvider.kt
+[OkHttpHttpComponentProvider]: ../sketch-http-okhttp/src/commonMain/kotlin/com/github/panpf/sketch/util/OkHttpHttpComponentProvider.kt
 
-[Ktor2HttpUriFetcherProvider]: ../sketch-http-ktor2-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/internal/KtorHttpUriFetcherProvider.common.kt
+[Ktor2HttpComponentProvider]: ../sketch-http-ktor2-core/src/commonMain/kotlin/com/github/panpf/sketch/util/KtorHttpComponentProvider.kt
 
-[Ktor3HttpUriFetcherProvider]: ../sketch-http-ktor3-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/internal/KtorHttpUriFetcherProvider.common.kt
+[Ktor3HttpComponentProvider]: ../sketch-http-ktor3-core/src/commonMain/kotlin/com/github/panpf/sketch/util/KtorHttpComponentProvider.kt

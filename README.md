@@ -148,8 +148,7 @@ registration: [《Register component》][register_component]
 2. The following obfuscation rules are required for desktop platforms:
     ```proguard
     # -------------------------- Sketch Privider ---------------------------- #
-    -keep class * implements com.github.panpf.sketch.util.DecoderProvider { *; }
-    -keep class * implements com.github.panpf.sketch.util.FetcherProvider { *; }
+    -keep class * implements com.github.panpf.sketch.util.ComponentProvider { *; }
     ```
 3. It may also be necessary to add obfuscation configurations to the indirect dependencies of
    three-party libraries such as [Kotlin Coroutines], [OkHttp], [Okio]

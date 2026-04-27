@@ -14,6 +14,8 @@
 * change: Decoder 和 DecodeHelper 的属性都改成了函数，并且主要函数都增加了 suspend 修饰符
 * change: Fetcher 和 Decoder 新增 sortWeight 属性用于排序
 * change: DecoderInterceptor 的包名改回 'com.github.panpf.sketch.decode'
+* change: FetcherProvider 和 DecoderProvider 合并为
+  ComponentProvider，并且支持自动禁用组件，详情请参考文档 [《注册组件》](docs/register_component.zh.md)
 * new: Interceptor 现在也支持自动注册了
 * new: ComponentRegistry
   现在支持禁用组件，详情请参考文档 [《注册组件》](docs/register_component.zh.md#禁用组件)

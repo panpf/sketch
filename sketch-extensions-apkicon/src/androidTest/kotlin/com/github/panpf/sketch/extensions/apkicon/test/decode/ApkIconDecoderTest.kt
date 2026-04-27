@@ -64,7 +64,10 @@ class ApkIconDecoderTest {
                     "ComponentRegistry(" +
                             "fetchers=[]," +
                             "decoders=[]," +
-                            "interceptors=[]" +
+                            "interceptors=[]," +
+                            "disabledFetchers=[]," +
+                            "disabledDecoders=[]," +
+                            "disabledInterceptors=[]" +
                             ")",
                     toString()
                 )
@@ -76,7 +79,10 @@ class ApkIconDecoderTest {
                     "ComponentRegistry(" +
                             "fetchers=[]," +
                             "decoders=[ApkIconDecoder]," +
-                            "interceptors=[]" +
+                            "interceptors=[]," +
+                            "disabledFetchers=[]," +
+                            "disabledDecoders=[]," +
+                            "disabledInterceptors=[]" +
                             ")",
                     toString()
                 )
@@ -87,8 +93,11 @@ class ApkIconDecoderTest {
                 assertEquals(
                     "ComponentRegistry(" +
                             "fetchers=[]," +
-                            "decoders=[ApkIconDecoder,ApkIconDecoder]," +
-                            "interceptors=[]" +
+                            "decoders=[ApkIconDecoder]," +
+                            "interceptors=[]," +
+                            "disabledFetchers=[]," +
+                            "disabledDecoders=[]," +
+                            "disabledInterceptors=[]" +
                             ")",
                     toString()
                 )

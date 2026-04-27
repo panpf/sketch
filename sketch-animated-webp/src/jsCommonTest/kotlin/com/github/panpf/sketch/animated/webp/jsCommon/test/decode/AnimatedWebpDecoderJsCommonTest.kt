@@ -14,7 +14,10 @@ class AnimatedWebpDecoderJsCommonTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
                         "decoders=[]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -27,7 +30,10 @@ class AnimatedWebpDecoderJsCommonTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
                         "decoders=[SkiaAnimatedWebpDecoder]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -40,8 +46,11 @@ class AnimatedWebpDecoderJsCommonTest {
             assertEquals(
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
-                        "decoders=[SkiaAnimatedWebpDecoder,SkiaAnimatedWebpDecoder]," +
-                        "interceptors=[]" +
+                        "decoders=[SkiaAnimatedWebpDecoder]," +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )

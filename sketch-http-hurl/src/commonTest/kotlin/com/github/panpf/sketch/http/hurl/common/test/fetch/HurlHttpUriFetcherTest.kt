@@ -25,7 +25,10 @@ class HurlHttpUriFetcherTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
                         "decoders=[]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -38,7 +41,11 @@ class HurlHttpUriFetcherTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[HurlHttpUriFetcher]," +
                         "decoders=[]," +
-                        "interceptors=[])",
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
+                        ")",
                 actual = toString()
             )
         }
@@ -49,9 +56,13 @@ class HurlHttpUriFetcherTest {
         }.apply {
             assertEquals(
                 expected = "ComponentRegistry(" +
-                        "fetchers=[HurlHttpUriFetcher,HurlHttpUriFetcher]," +
+                        "fetchers=[HurlHttpUriFetcher]," +
                         "decoders=[]," +
-                        "interceptors=[])",
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
+                        ")",
                 actual = toString()
             )
         }

@@ -71,6 +71,7 @@ class HttpUriFetcherTest {
         assertEquals("text/plain", HttpUriFetcher.MIME_TYPE_TEXT_PLAIN)
     }
 
+    // TODO An error is reported here on the iOS platform.
     @Test
     fun testRepeatDownload() = runTest {
         runInNewSketchWithUse { context, sketch ->

@@ -25,7 +25,10 @@ class KtorHttpUriFetcherTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
                         "decoders=[]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -38,7 +41,10 @@ class KtorHttpUriFetcherTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[KtorHttpUriFetcher]," +
                         "decoders=[]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -52,7 +58,10 @@ class KtorHttpUriFetcherTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[KtorHttpUriFetcher,KtorHttpUriFetcher]," +
                         "decoders=[]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )

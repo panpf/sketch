@@ -25,7 +25,10 @@ class OkHttpHttpUriFetcherTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[]," +
                         "decoders=[]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -38,7 +41,10 @@ class OkHttpHttpUriFetcherTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[OkHttpHttpUriFetcher]," +
                         "decoders=[]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )
@@ -52,7 +58,10 @@ class OkHttpHttpUriFetcherTest {
                 expected = "ComponentRegistry(" +
                         "fetchers=[OkHttpHttpUriFetcher,OkHttpHttpUriFetcher]," +
                         "decoders=[]," +
-                        "interceptors=[]" +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
                         ")",
                 actual = toString()
             )

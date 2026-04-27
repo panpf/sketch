@@ -22,6 +22,7 @@ import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.Interceptor
 import java.util.ServiceLoader
+import kotlin.reflect.KClass
 
 /**
  * Component loader. Automatically load and register all components
@@ -33,60 +34,27 @@ actual object ComponentLoader {
 
     // This code is written intentionally so R8 can optimize it:
     // https://github.com/Kotlin/kotlinx.coroutines/issues/1231
-    actual val fetchers by lazy {
+    actual val componentProviders by lazy {
         ServiceLoader.load(
-            FetcherProvider::class.java,
-            FetcherProvider::class.java.classLoader,
+            ComponentProvider::class.java,
+            ComponentProvider::class.java.classLoader,
         ).iterator().asSequence().toList().toImmutableList()
     }
 
-    actual val decoders by lazy {
-        ServiceLoader.load(
-            DecoderProvider::class.java,
-            DecoderProvider::class.java.classLoader,
-        ).iterator().asSequence().toList().toImmutableList()
-    }
-
-    actual val interceptors by lazy {
-        ServiceLoader.load(
-            InterceptorProvider::class.java,
-            InterceptorProvider::class.java.classLoader,
-        ).iterator().asSequence().toList().toImmutableList()
-    }
-
-    actual fun register(fetcher: FetcherProvider) {
-        throw UnsupportedOperationException()
-    }
-
-    actual fun register(decoder: DecoderProvider) {
-        throw UnsupportedOperationException()
-    }
-
-    actual fun register(interceptor: InterceptorProvider) {
+    actual fun register(componentProvider: ComponentProvider) {
         throw UnsupportedOperationException()
     }
 }
 
 /**
- * Register a [FetcherProvider] to [ComponentLoader]
+ * Register or disabled [Fetcher], [Decoder] or [Interceptor] to [ComponentLoader]
  */
 @Keep
-actual interface FetcherProvider {
-    actual fun factory(context: PlatformContext): Fetcher.Factory?
-}
-
-/**
- * Register a [DecoderProvider] to [ComponentLoader]
- */
-@Keep
-actual interface DecoderProvider {
-    actual fun factory(context: PlatformContext): Decoder.Factory?
-}
-
-/**
- * Register a [InterceptorProvider] to [ComponentLoader]
- */
-@Keep
-actual interface InterceptorProvider {
-    actual fun create(context: PlatformContext): Interceptor?
+actual interface ComponentProvider {
+    actual fun addFetchers(context: PlatformContext): List<Fetcher.Factory>?
+    actual fun addDecoders(context: PlatformContext): List<Decoder.Factory>?
+    actual fun addInterceptors(context: PlatformContext): List<Interceptor>?
+    actual fun disabledFetchers(context: PlatformContext): List<KClass<out Fetcher.Factory>>?
+    actual fun disabledDecoders(context: PlatformContext): List<KClass<out Decoder.Factory>>?
+    actual fun disabledInterceptors(context: PlatformContext): List<KClass<out Interceptor>>?
 }

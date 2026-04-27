@@ -4,12 +4,12 @@
 
 Sketch 提供了 `sketch-animated-*` 系列模块以支持动图，所支持的平台以及差异如下：
 
-| Module                    | DecoderProvider                           | Decoder                                                                                                                          | Android   | iOS | Desktop | Web |
-|:--------------------------|:------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------|:----------|:----|:--------|:----|
-| sketch-animated-gif       | [GifDecoderProvider]                      | android api 28+: [ImageDecoderGifDecoder]</br>android api 27-: [MovieGifDecoder]</br>non android: [SkiaGifDecoder]               | ✅         | ✅   | ✅       | ✅   |
-| sketch-animated-gif-koral | [KoralGifDecoderProvider]                 | [KoralGifDecoder]                                                                                                                | ✅         | ❌   | ❌       | ❌   |
-| sketch-animated-webp      | [AnimatedWebpDecoderProvider]             | android api 28+: [ImageDecoderAnimatedWebpDecoder]</br>android api 27-: Not supported</br>non android: [SkiaAnimatedWebpDecoder] | ✅(API 28) | ✅   | ✅       | ✅   |
-| sketch-animated-heif      | [ImageDecoderAnimatedHeifDecoderProvider] | [ImageDecoderAnimatedHeifDecoder]                                                                                                | ✅(API 30) | ❌   | ❌       | ❌   |
+| Module                    | ComponentProvider                           | Decoder                                                                                                                          | Android   | iOS | Desktop | Web |
+|:--------------------------|:--------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------|:----------|:----|:--------|:----|
+| sketch-animated-gif       | [GifComponentProvider]                      | android api 28+: [ImageDecoderGifDecoder]</br>android api 27-: [MovieGifDecoder]</br>non android: [SkiaGifDecoder]               | ✅         | ✅   | ✅       | ✅   |
+| sketch-animated-gif-koral | [KoralGifComponentProvider]                 | [KoralGifDecoder]                                                                                                                | ✅         | ❌   | ❌       | ❌   |
+| sketch-animated-webp      | [AnimatedWebpComponentProvider]             | android api 28+: [ImageDecoderAnimatedWebpDecoder]</br>android api 27-: Not supported</br>non android: [SkiaAnimatedWebpDecoder] | ✅(API 28) | ✅   | ✅       | ✅   |
+| sketch-animated-heif      | [ImageDecoderAnimatedHeifComponentProvider] | [ImageDecoderAnimatedHeifDecoder]                                                                                                | ✅(API 30) | ❌   | ❌       | ❌   |
 
 > [!TIP]
 > sketch-animated-webp 模块自带的 webp 动图解码器不支持 android api 27 及以下版本，如果有需要请参考
@@ -144,16 +144,12 @@ ImageRequest(context, "https://www.example.com/image.gif") {
 
 [SkiaAnimatedWebpDecoder]: ../sketch-animated-webp/src/nonAndroidMain/kotlin/com/github/panpf/sketch/decode/SkiaAnimatedWebpDecoder.kt
 
-[GifDecoderProvider]: ../sketch-animated-gif/src/commonMain/kotlin/com/github/panpf/sketch/decode/internal/GifDecoderProvider.common.kt
+[GifComponentProvider]: ../sketch-animated-gif/src/commonMain/kotlin/com/github/panpf/sketch/util/GifComponentProvider.kt
 
-[KoralGifDecoderProvider]: ../sketch-animated-gif-koral/src/main/kotlin/com/github/panpf/sketch/decode/internal/KoralGifDecoderProvider.kt
+[KoralGifComponentProvider]: ../sketch-animated-gif-koral/src/main/kotlin/com/github/panpf/sketch/util/KoralGifComponentProvider.kt
 
-[AnimatedWebpDecoderProvider]: ../sketch-animated-webp/src/commonMain/kotlin/com/github/panpf/sketch/decode/internal/AnimatedWebpDecoderProvider.common.kt
+[AnimatedWebpComponentProvider]: ../sketch-animated-webp/src/commonMain/kotlin/com/github/panpf/sketch/util/AnimatedWebpComponentProvider.kt
 
-[ImageDecoderAnimatedHeifDecoderProvider]: ../sketch-animated-heif/src/main/kotlin/com/github/panpf/sketch/decode/internal/ImageDecoderAnimatedHeifDecoderProvider.kt
+[ImageDecoderAnimatedHeifComponentProvider]: ../sketch-animated-heif/src/main/kotlin/com/github/panpf/sketch/util/ImageDecoderAnimatedHeifComponentProvider.kt
 
 [PenfeizhouAnimatedWebpDecoder]: ../samples/shared/src/androidMain/kotlin/com/github/panpf/sketch/sample/util/PenfeizhouAnimatedWebpDecoder.kt
-
-[comment]: <> (wiki)
-
-[getting_started_platform_different]: getting_started.zh.md#平台差异

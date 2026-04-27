@@ -271,13 +271,19 @@ class SketchTest {
             )
         }
 
-        // components: addIgnoreComponentProviderClasses
-        val fetcherProvider = ComponentLoader.fetchers.first()
-        val fetcherFactory = fetcherProvider.factory(context)!!
-        val decoderProvider = ComponentLoader.decoders.first()
-        val decoderFactory = decoderProvider.factory(context)!!
-        val interceptorProvider = ComponentLoader.interceptors.first()
-        val interceptor = interceptorProvider.create(context)!!
+        // components: addIgnoredComponentProvider
+        val fetcherComponentProvider = ComponentLoader.componentProviders.find {
+            it.addFetchers(context)?.isNotEmpty() == true
+        }!!
+        val decoderComponentProvider = ComponentLoader.componentProviders.find {
+            it.addDecoders(context)?.isNotEmpty() == true
+        }!!
+        val interceptorComponentProvider = ComponentLoader.componentProviders.find {
+            it.addInterceptors(context)?.isNotEmpty() == true
+        }!!
+        val fetcherFactory = fetcherComponentProvider.addFetchers(context)!!.first()
+        val decoderFactory = decoderComponentProvider.addDecoders(context)!!.first()
+        val interceptor = interceptorComponentProvider.addInterceptors(context)!!.first()
         Sketch.Builder(context).build().apply {
             assertNotNull(
                 actual = components.registry.fetchers.find { it::class == fetcherFactory::class },
@@ -293,9 +299,9 @@ class SketchTest {
             )
         }
         Sketch.Builder(context).apply {
-            addIgnoreFetcherProvider(fetcherProvider::class)
-            addIgnoreDecoderProvider(decoderProvider::class)
-            addIgnoreInterceptorProvider(interceptorProvider::class)
+            addIgnoredComponentProvider(fetcherComponentProvider::class)
+            addIgnoredComponentProvider(decoderComponentProvider::class)
+            addIgnoredComponentProvider(interceptorComponentProvider::class)
         }.build().apply {
             assertNull(
                 actual = components.registry.fetchers.find { it::class == fetcherFactory::class },

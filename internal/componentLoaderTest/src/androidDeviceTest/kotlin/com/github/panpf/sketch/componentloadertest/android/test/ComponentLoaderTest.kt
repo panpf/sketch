@@ -12,35 +12,32 @@ import com.github.panpf.sketch.decode.KoralGifDecoder
 import com.github.panpf.sketch.decode.MovieGifDecoder
 import com.github.panpf.sketch.decode.SvgDecoder
 import com.github.panpf.sketch.decode.VideoFrameDecoder
-import com.github.panpf.sketch.decode.internal.AnimatedWebpDecoderProvider
-import com.github.panpf.sketch.decode.internal.ApkIconDecoderProvider
-import com.github.panpf.sketch.decode.internal.BlurHashDecoderProvider
-import com.github.panpf.sketch.decode.internal.FFmpegVideoFrameDecoderProvider
-import com.github.panpf.sketch.decode.internal.GifDecoderProvider
-import com.github.panpf.sketch.decode.internal.ImageDecoderAnimatedHeifDecoderProvider
-import com.github.panpf.sketch.decode.internal.KoralGifDecoderProvider
-import com.github.panpf.sketch.decode.internal.SvgDecoderProvider
-import com.github.panpf.sketch.decode.internal.VideoFrameDecoderProvider
 import com.github.panpf.sketch.fetch.AppIconUriFetcher
 import com.github.panpf.sketch.fetch.BlurHashUriFetcher
 import com.github.panpf.sketch.fetch.ComposeResourceUriFetcher
 import com.github.panpf.sketch.fetch.HurlHttpUriFetcher
 import com.github.panpf.sketch.fetch.KtorHttpUriFetcher
 import com.github.panpf.sketch.fetch.OkHttpHttpUriFetcher
-import com.github.panpf.sketch.fetch.internal.AppIconUriFetcherProvider
-import com.github.panpf.sketch.fetch.internal.BlurHashUriFetcherProvider
-import com.github.panpf.sketch.fetch.internal.ComposeResourceUriFetcherProvider
-import com.github.panpf.sketch.fetch.internal.HurlHttpUriFetcherProvider
-import com.github.panpf.sketch.fetch.internal.KtorHttpUriFetcherProvider
-import com.github.panpf.sketch.fetch.internal.OkHttpHttpUriFetcherProvider
+import com.github.panpf.sketch.test.utils.DoNothingComponentProvider
 import com.github.panpf.sketch.test.utils.DoNothingDecoder
-import com.github.panpf.sketch.test.utils.DoNothingDecoderProvider
 import com.github.panpf.sketch.test.utils.DoNothingFetcher
-import com.github.panpf.sketch.test.utils.DoNothingFetcherProvider
 import com.github.panpf.sketch.test.utils.DoNothingInterceptor
-import com.github.panpf.sketch.test.utils.DoNothingInterceptorProvider
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.util.AnimatedWebpComponentProvider
+import com.github.panpf.sketch.util.ApkIconComponentProvider
+import com.github.panpf.sketch.util.AppIconComponentProvider
+import com.github.panpf.sketch.util.BlurHashComponentProvider
 import com.github.panpf.sketch.util.ComponentLoader
+import com.github.panpf.sketch.util.ComposeResourceComponentProvider
+import com.github.panpf.sketch.util.FFmpegVideoComponentProvider
+import com.github.panpf.sketch.util.GifComponentProvider
+import com.github.panpf.sketch.util.HurlHttpComponentProvider
+import com.github.panpf.sketch.util.ImageDecoderAnimatedHeifComponentProvider
+import com.github.panpf.sketch.util.KoralGifComponentProvider
+import com.github.panpf.sketch.util.KtorHttpComponentProvider
+import com.github.panpf.sketch.util.OkHttpHttpComponentProvider
+import com.github.panpf.sketch.util.SvgComponentProvider
+import com.github.panpf.sketch.util.VideoComponentProvider
 import com.github.panpf.sketch.util.toComponentRegistry
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -50,39 +47,24 @@ import kotlin.test.assertNull
 class ComponentLoaderTest {
 
     @Test
-    fun testFetchers() {
-        val fetcherProviderList = ComponentLoader.fetchers
-        assertEquals(7, fetcherProviderList.size)
-        assertNotNull(fetcherProviderList.find { it is AppIconUriFetcherProvider })
-        assertNotNull(fetcherProviderList.find { it is ComposeResourceUriFetcherProvider })
-        assertNotNull(fetcherProviderList.find { it is KtorHttpUriFetcherProvider })
-        assertNotNull(fetcherProviderList.find { it is HurlHttpUriFetcherProvider })
-        assertNotNull(fetcherProviderList.find { it is OkHttpHttpUriFetcherProvider })
-        assertNotNull(fetcherProviderList.find { it is BlurHashUriFetcherProvider })
-        assertNotNull(fetcherProviderList.find { it is DoNothingFetcherProvider })
-    }
-
-    @Test
-    fun testDecoders() {
-        val decoderProviderList = ComponentLoader.decoders
-        assertEquals(10, decoderProviderList.size)
-        assertNotNull(decoderProviderList.find { it is KoralGifDecoderProvider })
-        assertNotNull(decoderProviderList.find { it is ImageDecoderAnimatedHeifDecoderProvider })
-        assertNotNull(decoderProviderList.find { it is ApkIconDecoderProvider })
-        assertNotNull(decoderProviderList.find { it is VideoFrameDecoderProvider })
-        assertNotNull(decoderProviderList.find { it is FFmpegVideoFrameDecoderProvider })
-        assertNotNull(decoderProviderList.find { it is GifDecoderProvider })
-        assertNotNull(decoderProviderList.find { it is AnimatedWebpDecoderProvider })
-        assertNotNull(decoderProviderList.find { it is SvgDecoderProvider })
-        assertNotNull(decoderProviderList.find { it is BlurHashDecoderProvider })
-        assertNotNull(decoderProviderList.find { it is DoNothingDecoderProvider })
-    }
-
-    @Test
-    fun testInterceptors() {
-        val interceptorProviderList = ComponentLoader.interceptors
-        assertEquals(1, interceptorProviderList.size)
-        assertNotNull(interceptorProviderList.find { it is DoNothingInterceptorProvider })
+    fun testComponentProviders() {
+        val componentProviders = ComponentLoader.componentProviders
+        assertEquals(15, componentProviders.size)
+        assertNotNull(componentProviders.find { it is AppIconComponentProvider })
+        assertNotNull(componentProviders.find { it is ComposeResourceComponentProvider })
+        assertNotNull(componentProviders.find { it is KtorHttpComponentProvider })
+        assertNotNull(componentProviders.find { it is HurlHttpComponentProvider })
+        assertNotNull(componentProviders.find { it is OkHttpHttpComponentProvider })
+        assertNotNull(componentProviders.find { it is KoralGifComponentProvider })
+        assertNotNull(componentProviders.find { it is ImageDecoderAnimatedHeifComponentProvider })
+        assertNotNull(componentProviders.find { it is ApkIconComponentProvider })
+        assertNotNull(componentProviders.find { it is VideoComponentProvider })
+        assertNotNull(componentProviders.find { it is FFmpegVideoComponentProvider })
+        assertNotNull(componentProviders.find { it is GifComponentProvider })
+        assertNotNull(componentProviders.find { it is AnimatedWebpComponentProvider })
+        assertNotNull(componentProviders.find { it is SvgComponentProvider })
+        assertNotNull(componentProviders.find { it is BlurHashComponentProvider })
+        assertNotNull(componentProviders.find { it is DoNothingComponentProvider })
     }
 
     @Test
@@ -134,13 +116,11 @@ class ComponentLoaderTest {
         }
 
         /*
-         * ignoreProviderClasses
+         * ignoredComponentProviders
          */
         ComponentLoader.toComponentRegistry(
             context = context,
-            ignoreFetcherProviders = listOf(DoNothingFetcherProvider::class),
-            ignoreDecoderProviders = listOf(DoNothingDecoderProvider::class),
-            ignoreInterceptorProviders = listOf(DoNothingInterceptorProvider::class),
+            ignoredComponentProviders = listOf(DoNothingComponentProvider::class),
         ).apply {
             assertEquals(6, fetchers.size)
             assertNotNull(fetchers.find { it is AppIconUriFetcher.Factory })
