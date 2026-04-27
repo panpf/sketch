@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.animated.webp.jscommon.test.decode
+package com.github.panpf.sketch.animated.webp.jscommon1.test.decode
 
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.decode.supportAnimatedWebp

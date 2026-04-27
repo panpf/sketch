@@ -1,5 +1,4 @@
-// TODO move to .jscommon.
-package com.github.panpf.sketch.animated.gif.jsCommon.test.decode
+package com.github.panpf.sketch.animated.gif.jscommon1.test.decode
 
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.decode.supportGif
