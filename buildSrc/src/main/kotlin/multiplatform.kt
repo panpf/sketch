@@ -86,11 +86,11 @@ fun Project.addMultiplatformTargets(kmpTargets: Array<KmpTarget>) {
         }
         if (kmpTargets.contains(KmpTarget.WasmJs)) {
             applyKotlinWasmJsImplicitDependencyWorkaround()
+        }
 
-            // An error occurs when compiling js or wasmJs:
-            // Resolving dependency configuration 'androidDebugAndroidTestCompilationApi' is not allowed as it is defined as 'canBeResolved=false'.
-            // Instead, a resolvable ('canBeResolved=true') dependency configuration that extends 'androidDebugAndroidTestCompilationApi' should be resolved.
-//            createSkikoWasmJsRuntimeDependency()
+        // Cannot find module './skiko.mjs'
+        if (kmpTargets.contains(KmpTarget.Js) || kmpTargets.contains(KmpTarget.WasmJs)) {
+            createSkikoWasmJsRuntimeDependency()
         }
     }
 }
@@ -113,7 +113,6 @@ fun Project.applyKotlinJsImplicitDependencyWorkaround() {
         }
         named("jsBrowserProductionWebpack").configure(configureJs)
         named("jsBrowserProductionLibraryDistribution").configure(configureJs)
-//        named("jsNodeProductionLibraryDistribution").configure(configureJs)
     }
 }
 
@@ -135,7 +134,6 @@ fun Project.applyKotlinWasmJsImplicitDependencyWorkaround() {
         }
         named("wasmJsBrowserProductionWebpack").configure(configureWasmJs)
         named("wasmJsBrowserProductionLibraryDistribution").configure(configureWasmJs)
-//        named("wasmJsNodeProductionLibraryDistribution").configure(configureWasmJs)
     }
 }
 
