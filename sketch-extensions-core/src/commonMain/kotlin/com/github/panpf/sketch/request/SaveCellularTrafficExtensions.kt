@@ -19,8 +19,8 @@ package com.github.panpf.sketch.request
 import com.github.panpf.sketch.request.Depth.LOCAL
 
 const val SAVE_CELLULAR_TRAFFIC_KEY = "sketch#save_cellular_traffic"
-private const val SAVE_CELLULAR_TRAFFIC_ENABLED_KEY = "sketch#save_cellular_traffic_enabled"
-private const val SAVE_CELLULAR_TRAFFIC_IGNORED_KEY = "sketch#save_cellular_traffic_ignored"
+const val SAVE_CELLULAR_TRAFFIC_ENABLED_KEY = "sketch#save_cellular_traffic_enabled"
+const val SAVE_CELLULAR_TRAFFIC_IGNORED_KEY = "sketch#save_cellular_traffic_ignored"
 
 /**
  * Set to enable or disable the function of saving cellular data, it needs to be used together with [SaveCellularTrafficInterceptor]

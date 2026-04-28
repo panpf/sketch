@@ -2,7 +2,7 @@ package com.github.panpf.sketch.request
 
 import com.github.panpf.sketch.http.HttpHeaders
 
-internal const val HTTP_HEADERS_KEY = "sketch#http_headers"
+const val HTTP_HEADERS_KEY = "sketch#http_headers"
 
 /**
  * Set headers for http requests

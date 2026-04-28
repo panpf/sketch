@@ -66,10 +66,6 @@ class HurlStack private constructor(
         throw throw IOException("Unable to get response")
     }
 
-    @Deprecated(
-        message = "The Ktor version of getResponse() will read all the contents into memory before returning the response. Please use request instead.",
-        replaceWith = ReplaceWith("request(url, httpHeaders, extras) { it }")
-    )
     @Throws(IOException::class)
     override suspend fun getResponse(
         url: String,

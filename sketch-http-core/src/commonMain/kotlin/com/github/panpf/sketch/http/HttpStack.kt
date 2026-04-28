@@ -46,10 +46,6 @@ interface HttpStack {
      * Send a request and return a response
      */
     @Throws(IOException::class, CancellationException::class)
-    @Deprecated(
-        message = "The Ktor version of getResponse() will read all the contents into memory before returning the response. Please use request instead.",
-        replaceWith = ReplaceWith("request(url, httpHeaders, extras) { it }")
-    )
     suspend fun getResponse(
         url: String,
         httpHeaders: HttpHeaders?,

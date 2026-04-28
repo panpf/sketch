@@ -18,9 +18,9 @@ package com.github.panpf.sketch.request
 
 import androidx.annotation.FloatRange
 
-private const val VIDEO_FRAME_MICROS_KEY = "sketch#video_frame_micros"
-private const val VIDEO_FRAME_PERCENT_KEY = "sketch#video_frame_percent"
-private const val PREFER_VIDEO_COVER = "sketch#prefer_video_cover"
+const val VIDEO_FRAME_MICROS_KEY = "sketch#video_frame_micros"
+const val VIDEO_FRAME_PERCENT_KEY = "sketch#video_frame_percent"
+const val PREFER_VIDEO_COVER_KEY = "sketch#prefer_video_cover"
 
 /**
  * Set the time **in microseconds** of the frame to extract from a video.
@@ -159,9 +159,9 @@ val ImageOptions.videoFramePercent: Float?
 fun ImageRequest.Builder.preferVideoCover(preferred: Boolean? = true): ImageRequest.Builder =
     apply {
         if (preferred != null) {
-            setExtra(key = PREFER_VIDEO_COVER, value = preferred)
+            setExtra(key = PREFER_VIDEO_COVER_KEY, value = preferred)
         } else {
-            removeExtra(key = PREFER_VIDEO_COVER)
+            removeExtra(key = PREFER_VIDEO_COVER_KEY)
         }
     }
 
@@ -173,9 +173,9 @@ fun ImageRequest.Builder.preferVideoCover(preferred: Boolean? = true): ImageRequ
 fun ImageOptions.Builder.preferVideoCover(preferred: Boolean? = true): ImageOptions.Builder =
     apply {
         if (preferred != null) {
-            setExtra(key = PREFER_VIDEO_COVER, value = preferred)
+            setExtra(key = PREFER_VIDEO_COVER_KEY, value = preferred)
         } else {
-            removeExtra(key = PREFER_VIDEO_COVER)
+            removeExtra(key = PREFER_VIDEO_COVER_KEY)
         }
     }
 
@@ -185,7 +185,7 @@ fun ImageOptions.Builder.preferVideoCover(preferred: Boolean? = true): ImageOpti
  * @see com.github.panpf.sketch.video.core.common.test.request.VideoFrameExtensionsTest.testPreferVideoCover
  */
 val ImageRequest.preferVideoCover: Boolean?
-    get() = extras?.value(key = PREFER_VIDEO_COVER)
+    get() = extras?.value(key = PREFER_VIDEO_COVER_KEY)
 
 /**
  * Whether to load video covers first
@@ -193,4 +193,4 @@ val ImageRequest.preferVideoCover: Boolean?
  * @see com.github.panpf.sketch.video.core.common.test.request.VideoFrameExtensionsTest.testPreferVideoCover
  */
 val ImageOptions.preferVideoCover: Boolean?
-    get() = extras?.value(key = PREFER_VIDEO_COVER)
+    get() = extras?.value(key = PREFER_VIDEO_COVER_KEY)

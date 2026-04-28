@@ -53,14 +53,13 @@ class KtorStack(val client: HttpClient = HttpClient()) : HttpStack {
                 }
             }
         }
-//        val httpResponse: HttpResponse = client.request(httpRequest)  // This way, it will directly read all content into memory, so it cannot be used
         return client.prepareRequest(httpRequest).execute {
             block(Response(it))
         }
     }
 
     @Deprecated(
-        message = "The Ktor version of getResponse() will read all the contents into memory before returning the response. Please use request instead.",
+        message = "getResponse() will read all the contents into memory before returning the response. Please use request instead.",
         replaceWith = ReplaceWith("request(url, httpHeaders, extras) { it }")
     )
     override suspend fun getResponse(
@@ -79,6 +78,7 @@ class KtorStack(val client: HttpClient = HttpClient()) : HttpStack {
                 }
             }
         }
+        // This way, it will directly read all content into memory
         val httpResponse = client.request(httpRequest)
         return Response(httpResponse)
     }

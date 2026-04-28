@@ -16,8 +16,8 @@
 
 package com.github.panpf.sketch.request
 
-private const val SVG_BACKGROUND_COLOR_KEY = "sketch#svg_background_color"
-private const val SVG_CSS_KEY = "sketch#svg_css"
+const val SVG_BACKGROUND_COLOR_KEY = "sketch#svg_background_color"
+const val SVG_CSS_KEY = "sketch#svg_css"
 
 /**
  * Set the background color of the SVG image, the default is transparent

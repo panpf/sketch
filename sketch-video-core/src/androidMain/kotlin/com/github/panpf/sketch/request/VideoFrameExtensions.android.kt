@@ -22,7 +22,7 @@ import android.media.MediaMetadataRetriever.OPTION_CLOSEST_SYNC
 import android.media.MediaMetadataRetriever.OPTION_NEXT_SYNC
 import android.media.MediaMetadataRetriever.OPTION_PREVIOUS_SYNC
 
-private const val VIDEO_FRAME_OPTION_KEY = "sketch#video_frame_option"
+const val VIDEO_FRAME_OPTION_KEY = "sketch#video_frame_option"
 
 /**
  * Set the option for how to decode the video frame.
@@ -32,7 +32,7 @@ private const val VIDEO_FRAME_OPTION_KEY = "sketch#video_frame_option"
  * Default: [OPTION_CLOSEST_SYNC]
  *
  * @see MediaMetadataRetriever
- * @see com.github.panpf.sketch.video.core.android.test.request.VideoFrameExtensionsTest.testVideoOption
+ * @see com.github.panpf.sketch.video.core.android.test.request.VideoFrameExtensionsAndroidTest.testVideoOption
  */
 fun ImageRequest.Builder.videoFrameOption(option: Int?): ImageRequest.Builder = apply {
     require(
@@ -52,7 +52,7 @@ fun ImageRequest.Builder.videoFrameOption(option: Int?): ImageRequest.Builder = 
 /**
  * Get the option for how to decode the video frame.
  *
- * @see com.github.panpf.sketch.video.core.android.test.request.VideoFrameExtensionsTest.testVideoOption
+ * @see com.github.panpf.sketch.video.core.android.test.request.VideoFrameExtensionsAndroidTest.testVideoOption
  */
 val ImageRequest.videoFrameOption: Int?
     get() = extras?.value(VIDEO_FRAME_OPTION_KEY)
@@ -65,7 +65,7 @@ val ImageRequest.videoFrameOption: Int?
  * Default: [OPTION_CLOSEST_SYNC]
  *
  * @see MediaMetadataRetriever
- * @see com.github.panpf.sketch.video.core.android.test.request.VideoFrameExtensionsTest.testVideoOption
+ * @see com.github.panpf.sketch.video.core.android.test.request.VideoFrameExtensionsAndroidTest.testVideoOption
  */
 fun ImageOptions.Builder.videoFrameOption(option: Int?): ImageOptions.Builder = apply {
     require(
@@ -85,7 +85,7 @@ fun ImageOptions.Builder.videoFrameOption(option: Int?): ImageOptions.Builder = 
 /**
  * Get the option for how to decode the video frame.
  *
- * @see com.github.panpf.sketch.video.core.android.test.request.VideoFrameExtensionsTest.testVideoOption
+ * @see com.github.panpf.sketch.video.core.android.test.request.VideoFrameExtensionsAndroidTest.testVideoOption
  */
 val ImageOptions.videoFrameOption: Int?
     get() = extras?.value(VIDEO_FRAME_OPTION_KEY)

@@ -819,13 +819,13 @@ data class ImageOptions(
         fun thumbnail(thumbnailUri: String?): Builder = apply {
             if (thumbnailUri != null) {
                 setExtra(
-                    key = ThumbnailInterceptor.KEY_THUMBNAIL,
+                    key = ThumbnailInterceptor.THUMBNAIL_KEY,
                     value = thumbnailUri,
                     cacheKey = null,
                     requestKey = null
                 )
             } else {
-                removeExtra(key = ThumbnailInterceptor.KEY_THUMBNAIL)
+                removeExtra(key = ThumbnailInterceptor.THUMBNAIL_KEY)
             }
         }
 
@@ -837,13 +837,13 @@ data class ImageOptions(
         fun thumbnail(thumbnailRequest: ImageRequest?): Builder = apply {
             if (thumbnailRequest != null) {
                 setExtra(
-                    key = ThumbnailInterceptor.KEY_THUMBNAIL,
+                    key = ThumbnailInterceptor.THUMBNAIL_KEY,
                     value = thumbnailRequest,
                     cacheKey = null,
                     requestKey = null
                 )
             } else {
-                removeExtra(key = ThumbnailInterceptor.KEY_THUMBNAIL)
+                removeExtra(key = ThumbnailInterceptor.THUMBNAIL_KEY)
             }
         }
 

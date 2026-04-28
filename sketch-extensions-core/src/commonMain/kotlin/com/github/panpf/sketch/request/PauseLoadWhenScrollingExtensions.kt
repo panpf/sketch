@@ -16,8 +16,8 @@
 
 package com.github.panpf.sketch.request
 
-private const val PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY = "sketch#pause_load_when_scrolling_enabled"
-private const val PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY = "sketch#pause_load_when_scrolling_ignored"
+const val PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY = "sketch#pause_load_when_scrolling_enabled"
+const val PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY = "sketch#pause_load_when_scrolling_ignored"
 
 /**
  * Set to enable or disable the function of pause load when scrolling, it needs to be used together with [PauseLoadWhenScrollingInterceptor]

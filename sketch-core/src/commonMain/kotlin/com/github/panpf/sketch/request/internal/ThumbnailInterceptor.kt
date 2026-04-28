@@ -39,8 +39,11 @@ class ThumbnailInterceptor : Interceptor {
 
     companion object {
         const val SORT_WEIGHT = 60
-        const val KEY_THUMBNAIL = "sketch#thumbnail"
-        const val KEY_FROM_THUMBNAIL = "sketch#fromThumbnail"
+        const val THUMBNAIL_KEY = "sketch#thumbnail"
+
+        @Deprecated("Use THUMBNAIL_KEY", ReplaceWith("THUMBNAIL_KEY"))
+        const val KEY_THUMBNAIL = THUMBNAIL_KEY
+//        const val FROM_THUMBNAIL_KEY = "sketch#fromThumbnail"
     }
 
     override val key: String? = null
@@ -51,7 +54,7 @@ class ThumbnailInterceptor : Interceptor {
         val requestContext = chain.requestContext
         val request = chain.request
         val target = request.target
-        val thumbnail: Any? = request.extras?.get(KEY_THUMBNAIL)
+        val thumbnail: Any? = request.extras?.get(THUMBNAIL_KEY)
         return if (thumbnail != null && target != null) {
             coroutineScope {
                 val thumbnailTask = async {
@@ -137,7 +140,7 @@ class ThumbnailInterceptor : Interceptor {
     ): ImageRequest? {
         val commonConfig: ImageRequest.Builder.() -> Unit = {
             // Avoid entering ThumbnailInterceptor again and causing an infinite loop
-            removeExtra(key = KEY_THUMBNAIL)
+            removeExtra(key = THUMBNAIL_KEY)
 
             // Avoid displaying placeholder images repeatedly
             placeholder(stateImage = null)
@@ -208,7 +211,7 @@ class ThumbnailInterceptor : Interceptor {
 // * @see com.github.panpf.sketch.core.common.test.request.internal.ThumbnailInterceptorTest.testThumbnailRequest
 // */
 //fun ImageRequest.isThumbnailRequest(): Boolean =
-//    this.extras?.get(ThumbnailInterceptor.KEY_FROM_THUMBNAIL) == true
+//    this.extras?.get(ThumbnailInterceptor.FROM_THUMBNAIL_KEY) == true
 //
 ///**
 // * Mark or unmark the request as a thumbnail request
@@ -219,12 +222,12 @@ class ThumbnailInterceptor : Interceptor {
 //    apply {
 //        if (mark) {
 //            this.setExtra(
-//                key = ThumbnailInterceptor.KEY_FROM_THUMBNAIL,
+//                key = ThumbnailInterceptor.FROM_THUMBNAIL_KEY,
 //                value = true,
 //                cacheKey = null,
 //                requestKey = null
 //            )
 //        } else {
-//            this.removeExtra(key = ThumbnailInterceptor.KEY_FROM_THUMBNAIL)
+//            this.removeExtra(key = ThumbnailInterceptor.FROM_THUMBNAIL_KEY)
 //        }
 //    }
