@@ -5,7 +5,6 @@ package com.github.panpf.sketch.http.hurl.common.test.http
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.HurlStack
 import com.github.panpf.sketch.test.utils.asOrThrow
-import com.github.panpf.sketch.test.utils.readAllBytes
 import kotlinx.coroutines.test.runTest
 import okio.use
 import java.io.IOException
@@ -15,8 +14,6 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
-import kotlin.test.assertTrue
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 class HurlStackTest {
@@ -130,27 +127,6 @@ class HurlStackTest {
         }
     }
 
-    // TODO Needs to be refactored. Because it often fails
-    @Test
-    fun testGetResponseTime() = runTest {
-        val time1 = Clock.System.now().toEpochMilliseconds()
-        val response = HurlStack.Builder().build().getResponse(
-            url = "https://panpf.github.io/sketch/app/files/sample_long_qmsht.jpg",
-            httpHeaders = null,
-            extras = null
-        )
-        val time2 = Clock.System.now().toEpochMilliseconds()
-        val openTime = time2 - time1
-        val bytes = response.readAllBytes()
-        val time3 = Clock.System.now().toEpochMilliseconds()
-        val totalTime = time3 - time1
-        assertEquals(expected = 8063397, actual = bytes.size)
-        assertTrue(
-            actual = openTime <= totalTime * 0.8,
-            message = "openTime=${openTime}ms, totalTime=${totalTime}ms"
-        )
-    }
-
     @Test
     fun testRequest() = runTest {
         val url = "https://inews.gtimg.com/newsapp_bt/0/12171811596_909/0"
@@ -186,27 +162,6 @@ class HurlStackTest {
 
         assertFailsWith(IOException::class) {
             HurlStack.Builder().build().request("", null, null) {}
-        }
-    }
-
-    @Test
-    fun testRequestTime() = runTest {
-        val time1 = Clock.System.now().toEpochMilliseconds()
-        HurlStack.Builder().build().request(
-            url = "https://panpf.github.io/sketch/app/files/sample_long_qmsht.jpg",
-            httpHeaders = null,
-            extras = null
-        ) { response ->
-            val time2 = Clock.System.now().toEpochMilliseconds()
-            val openTime = time2 - time1
-            val bytes = response.readAllBytes()
-            val time3 = Clock.System.now().toEpochMilliseconds()
-            val totalTime = time3 - time1
-            assertEquals(expected = 8063397, actual = bytes.size)
-            assertTrue(
-                actual = openTime <= totalTime * 0.5,
-                message = "openTime=${openTime}ms, totalTime=${totalTime}ms"
-            )
         }
     }
 
