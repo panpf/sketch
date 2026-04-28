@@ -2,6 +2,10 @@ package com.github.panpf.sketch.core.ios.test.request
 
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.NETWORK_ACCESS_PHOTOS_ASSET_ALLOWED_KEY
+import com.github.panpf.sketch.request.PREFERRED_FILE_CACHE_FOR_IMAGE_PHOTOS_ASSET_KEY
+import com.github.panpf.sketch.request.PREFERRED_THUMBNAIL_FOR_PHOTOS_ASSET_KEY
+import com.github.panpf.sketch.request.USE_SKIA_FOR_IMAGE_PHOTOS_ASSET_KEY
 import com.github.panpf.sketch.request.allowNetworkAccessPhotosAsset
 import com.github.panpf.sketch.request.preferFileCacheForImagePhotosAsset
 import com.github.panpf.sketch.request.preferThumbnailForPhotosAsset
@@ -9,6 +13,7 @@ import com.github.panpf.sketch.request.useSkiaForImagePhotosAsset
 import com.github.panpf.sketch.test.utils.getTestContext
 import kotlin.test.Test
 import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -24,6 +29,10 @@ class PhotosAssetExtensionsTest {
             preferThumbnailForPhotosAsset()
         }.apply {
             assertTrue(preferThumbnailForPhotosAsset!!)
+            extras!!.entry(PREFERRED_THUMBNAIL_FOR_PHOTOS_ASSET_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNotNull(this.cacheKey)
+            }
         }.newRequest {
             preferThumbnailForPhotosAsset(null)
         }.apply {
@@ -44,6 +53,10 @@ class PhotosAssetExtensionsTest {
             preferThumbnailForPhotosAsset()
         }.apply {
             assertTrue(preferThumbnailForPhotosAsset!!)
+            extras!!.entry(PREFERRED_THUMBNAIL_FOR_PHOTOS_ASSET_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNotNull(this.cacheKey)
+            }
         }.newOptions {
             preferThumbnailForPhotosAsset(null)
         }.apply {
@@ -69,6 +82,10 @@ class PhotosAssetExtensionsTest {
             allowNetworkAccessPhotosAsset()
         }.apply {
             assertTrue(allowNetworkAccessPhotosAsset!!)
+            extras!!.entry(NETWORK_ACCESS_PHOTOS_ASSET_ALLOWED_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNotNull(this.cacheKey)
+            }
         }.newRequest {
             allowNetworkAccessPhotosAsset(null)
         }.apply {
@@ -89,6 +106,10 @@ class PhotosAssetExtensionsTest {
             allowNetworkAccessPhotosAsset()
         }.apply {
             assertTrue(allowNetworkAccessPhotosAsset!!)
+            extras!!.entry(NETWORK_ACCESS_PHOTOS_ASSET_ALLOWED_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNotNull(this.cacheKey)
+            }
         }.newOptions {
             allowNetworkAccessPhotosAsset(null)
         }.apply {
@@ -114,6 +135,10 @@ class PhotosAssetExtensionsTest {
             useSkiaForImagePhotosAsset()
         }.apply {
             assertTrue(useSkiaForImagePhotosAsset!!)
+            extras!!.entry(USE_SKIA_FOR_IMAGE_PHOTOS_ASSET_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNotNull(this.cacheKey)
+            }
         }.newRequest {
             useSkiaForImagePhotosAsset(null)
         }.apply {
@@ -134,6 +159,10 @@ class PhotosAssetExtensionsTest {
             useSkiaForImagePhotosAsset()
         }.apply {
             assertTrue(useSkiaForImagePhotosAsset!!)
+            extras!!.entry(USE_SKIA_FOR_IMAGE_PHOTOS_ASSET_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNotNull(this.cacheKey)
+            }
         }.newOptions {
             useSkiaForImagePhotosAsset(null)
         }.apply {
@@ -159,6 +188,10 @@ class PhotosAssetExtensionsTest {
             preferFileCacheForImagePhotosAsset()
         }.apply {
             assertTrue(preferFileCacheForImagePhotosAsset!!)
+            extras!!.entry(PREFERRED_FILE_CACHE_FOR_IMAGE_PHOTOS_ASSET_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNotNull(this.cacheKey)
+            }
         }.newRequest {
             preferFileCacheForImagePhotosAsset(null)
         }.apply {
@@ -179,6 +212,10 @@ class PhotosAssetExtensionsTest {
             preferFileCacheForImagePhotosAsset()
         }.apply {
             assertTrue(preferFileCacheForImagePhotosAsset!!)
+            extras!!.entry(PREFERRED_FILE_CACHE_FOR_IMAGE_PHOTOS_ASSET_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNotNull(this.cacheKey)
+            }
         }.newOptions {
             preferFileCacheForImagePhotosAsset(null)
         }.apply {

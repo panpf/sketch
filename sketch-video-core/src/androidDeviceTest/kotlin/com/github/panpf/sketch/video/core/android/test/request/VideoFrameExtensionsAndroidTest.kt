@@ -21,6 +21,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.VIDEO_FRAME_OPTION_KEY
 import com.github.panpf.sketch.request.videoFrameOption
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -30,6 +31,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
@@ -46,6 +48,10 @@ class VideoFrameExtensionsAndroidTest {
             this.videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.apply {
             assertEquals(MediaMetadataRetriever.OPTION_CLOSEST, videoFrameOption)
+            extras!!.entry(VIDEO_FRAME_OPTION_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNotNull(this.cacheKey)
+            }
         }
         ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             this.videoFrameOption(MediaMetadataRetriever.OPTION_NEXT_SYNC)
@@ -133,6 +139,10 @@ class VideoFrameExtensionsAndroidTest {
             videoFrameOption(MediaMetadataRetriever.OPTION_CLOSEST)
         }.apply {
             assertEquals(MediaMetadataRetriever.OPTION_CLOSEST, videoFrameOption)
+            extras!!.entry(VIDEO_FRAME_OPTION_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNotNull(this.cacheKey)
+            }
         }
         ImageOptions {
             videoFrameOption(MediaMetadataRetriever.OPTION_NEXT_SYNC)

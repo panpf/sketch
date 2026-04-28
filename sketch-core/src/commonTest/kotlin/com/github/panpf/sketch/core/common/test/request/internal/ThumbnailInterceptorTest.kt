@@ -12,7 +12,7 @@ import com.github.panpf.sketch.request.ImageResult
 import com.github.panpf.sketch.request.Interceptor
 import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.request.internal.ThumbnailInterceptor
-import com.github.panpf.sketch.request.internal.ThumbnailInterceptor.Companion.KEY_THUMBNAIL
+import com.github.panpf.sketch.request.internal.ThumbnailInterceptor.Companion.THUMBNAIL_KEY
 import com.github.panpf.sketch.request.internal.ThumbnailTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.BlockInterceptor
@@ -173,7 +173,7 @@ class ThumbnailInterceptorTest {
         assertNotNull(originRequest.memoryCacheKey)
         assertNotNull(originRequest.resultCacheKey)
         assertNotNull(originRequest.downloadCacheKey)
-        assertNotNull(originRequest.extras?.get(KEY_THUMBNAIL))
+        assertNotNull(originRequest.extras?.get(THUMBNAIL_KEY))
         assertNotNull(originRequest.listener)
         assertNotNull(originRequest.progressListener)
         assertTrue(originRequest.target !is ThumbnailTarget)
@@ -182,7 +182,7 @@ class ThumbnailInterceptorTest {
         assertNull(thumbnailRequest.memoryCacheKey)
         assertNull(thumbnailRequest.resultCacheKey)
         assertNull(thumbnailRequest.downloadCacheKey)
-        assertNull(thumbnailRequest.extras?.get(KEY_THUMBNAIL))
+        assertNull(thumbnailRequest.extras?.get(THUMBNAIL_KEY))
         assertNull(thumbnailRequest.listener)
         assertNull(thumbnailRequest.progressListener)
         assertTrue(thumbnailRequest.target is ThumbnailTarget)
@@ -219,7 +219,7 @@ class ThumbnailInterceptorTest {
         assertNotNull(originRequest2.memoryCacheKey)
         assertNotNull(originRequest2.resultCacheKey)
         assertNotNull(originRequest2.downloadCacheKey)
-        assertNotNull(originRequest2.extras?.get(KEY_THUMBNAIL))
+        assertNotNull(originRequest2.extras?.get(THUMBNAIL_KEY))
         assertNotNull(originRequest2.listener)
         assertNotNull(originRequest2.progressListener)
         assertTrue(originRequest2.target !is ThumbnailTarget)
@@ -228,7 +228,7 @@ class ThumbnailInterceptorTest {
         assertNull(thumbnailRequest2.memoryCacheKey)
         assertNull(thumbnailRequest2.resultCacheKey)
         assertNull(thumbnailRequest2.downloadCacheKey)
-        assertNull(thumbnailRequest2.extras?.get(KEY_THUMBNAIL))
+        assertNull(thumbnailRequest2.extras?.get(THUMBNAIL_KEY))
         assertNull(thumbnailRequest2.listener)
         assertNull(thumbnailRequest2.progressListener)
         assertTrue(thumbnailRequest2.target is ThumbnailTarget)
@@ -265,7 +265,7 @@ class ThumbnailInterceptorTest {
         assertNotNull(originRequest3.memoryCacheKey)
         assertNotNull(originRequest3.resultCacheKey)
         assertNotNull(originRequest3.downloadCacheKey)
-        assertNotNull(originRequest3.extras?.get(KEY_THUMBNAIL))
+        assertNotNull(originRequest3.extras?.get(THUMBNAIL_KEY))
         assertNotNull(originRequest3.listener)
         assertNotNull(originRequest3.progressListener)
         assertTrue(originRequest3.target !is ThumbnailTarget)
@@ -274,7 +274,7 @@ class ThumbnailInterceptorTest {
         assertNotNull(thumbnailRequest3.memoryCacheKey)
         assertNotNull(thumbnailRequest3.resultCacheKey)
         assertNotNull(thumbnailRequest3.downloadCacheKey)
-        assertNull(thumbnailRequest3.extras?.get(KEY_THUMBNAIL))
+        assertNull(thumbnailRequest3.extras?.get(THUMBNAIL_KEY))
         assertNotNull(thumbnailRequest3.listener)
         assertNotNull(thumbnailRequest3.progressListener)
         assertTrue(thumbnailRequest3.target is ThumbnailTarget)

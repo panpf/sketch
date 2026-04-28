@@ -173,45 +173,6 @@ class AbsAbilityImageViewTest {
     }
 
     @Test
-    fun testTouchEventObserver() = runTest {
-        // TODO test: Not testable. no way to send touch events has been found yet
-//        ViewAbilityTestActivity::class.launchActivity().use { activityScenario ->
-//            val activity = activityScenario.getActivitySync()
-//            sendTouchClick(500, 500)
-//            block(100)
-//            assertEquals(
-//                expected = listOf("onTouchEvent"),
-//                actual = touchEventViewAbility.actions
-//            )
-//        }
-    }
-//
-//    @WorkerThread
-//    private fun sendTouchClick(x: Int, y: Int) {
-//        val instrumentation = InstrumentationRegistry.getInstrumentation()
-//
-//        // Create a MotionEvent object to represent the press operation
-//        val downTime = SystemClock.uptimeMillis()
-//        val eventTime = SystemClock.uptimeMillis()
-//        val downEvent = MotionEvent.obtain(
-//            downTime, eventTime, MotionEvent.ACTION_DOWN, x.toFloat(), y.toFloat(), 0
-//        )
-//        // Send pressed event
-//        instrumentation.sendPointerSync(downEvent)
-//
-//        // Create a MotionEvent object to represent the lift operation
-//        val upEvent = MotionEvent.obtain(
-//            downTime, eventTime, MotionEvent.ACTION_UP, x.toFloat(), y.toFloat(), 0
-//        )
-//        // Send lift event
-//        instrumentation.sendPointerSync(upEvent)
-//
-//        // Recycling MotionEvent objects
-//        downEvent.recycle()
-//        upEvent.recycle()
-//    }
-
-    @Test
     fun testClickObserver() = runTest {
         ViewAbilityTestActivity::class.launchActivity().use { activityScenario ->
             val activity = activityScenario.getActivitySync()

@@ -19,6 +19,9 @@ package com.github.panpf.sketch.video.core.common.test.request
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.PREFER_VIDEO_COVER_KEY
+import com.github.panpf.sketch.request.VIDEO_FRAME_MICROS_KEY
+import com.github.panpf.sketch.request.VIDEO_FRAME_PERCENT_KEY
 import com.github.panpf.sketch.request.preferVideoCover
 import com.github.panpf.sketch.request.videoFrameMicros
 import com.github.panpf.sketch.request.videoFrameMillis
@@ -32,6 +35,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -48,6 +52,10 @@ class VideoFrameExtensionsTest {
             this.videoFrameMicros(1000000)
         }.apply {
             assertEquals(1000000L, videoFrameMicros)
+            extras!!.entry(VIDEO_FRAME_MICROS_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNotNull(this.cacheKey)
+            }
         }
         ImageRequest(context, ComposeResImageFiles.mp4.uri) {
             this.videoFrameMillis(1000)
@@ -143,6 +151,10 @@ class VideoFrameExtensionsTest {
             this.videoFramePercent(0.45f)
         }.apply {
             assertEquals(0.45f, videoFramePercent)
+            extras!!.entry(VIDEO_FRAME_PERCENT_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNotNull(this.cacheKey)
+            }
         }
         assertFailsWith(IllegalArgumentException::class) {
             ImageRequest(context, ComposeResImageFiles.mp4.uri) {
@@ -239,7 +251,10 @@ class VideoFrameExtensionsTest {
             preferVideoCover()
         }.apply {
             assertTrue(preferVideoCover!!)
-            // TODO test requestKey and cacheKey
+            extras!!.entry(PREFER_VIDEO_COVER_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNotNull(this.cacheKey)
+            }
         }.newRequest {
             preferVideoCover(null)
         }.apply {

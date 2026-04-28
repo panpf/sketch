@@ -22,6 +22,8 @@ import com.github.panpf.sketch.request.Depth.NETWORK
 import com.github.panpf.sketch.request.DepthException
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.SAVE_CELLULAR_TRAFFIC_ENABLED_KEY
+import com.github.panpf.sketch.request.SAVE_CELLULAR_TRAFFIC_IGNORED_KEY
 import com.github.panpf.sketch.request.SAVE_CELLULAR_TRAFFIC_KEY
 import com.github.panpf.sketch.request.ignoreSaveCellularTraffic
 import com.github.panpf.sketch.request.isCausedBySaveCellularTraffic
@@ -37,6 +39,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class SaveCellularTrafficExtensionsTest {
@@ -53,6 +57,10 @@ class SaveCellularTrafficExtensionsTest {
             saveCellularTraffic()
         }.apply {
             assertTrue(isSaveCellularTraffic)
+            extras!!.entry(SAVE_CELLULAR_TRAFFIC_ENABLED_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNull(this.cacheKey)
+            }
         }
         ImageRequest(context, "http://sample.com/sample.jpeg") {
             saveCellularTraffic(false)
@@ -79,6 +87,10 @@ class SaveCellularTrafficExtensionsTest {
             saveCellularTraffic()
         }.apply {
             assertTrue(isSaveCellularTraffic)
+            extras!!.entry(SAVE_CELLULAR_TRAFFIC_ENABLED_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNull(this.cacheKey)
+            }
         }
         ImageOptions {
             saveCellularTraffic(false)
@@ -115,6 +127,10 @@ class SaveCellularTrafficExtensionsTest {
             ignoreSaveCellularTraffic()
         }.apply {
             assertTrue(isIgnoredSaveCellularTraffic)
+            extras!!.entry(SAVE_CELLULAR_TRAFFIC_IGNORED_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNull(this.cacheKey)
+            }
         }
         ImageRequest(context, "http://sample.com/sample.jpeg") {
             ignoreSaveCellularTraffic(false)
@@ -141,6 +157,10 @@ class SaveCellularTrafficExtensionsTest {
             ignoreSaveCellularTraffic()
         }.apply {
             assertTrue(isIgnoredSaveCellularTraffic)
+            extras!!.entry(SAVE_CELLULAR_TRAFFIC_IGNORED_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNull(this.cacheKey)
+            }
         }
         ImageOptions {
             ignoreSaveCellularTraffic(false)

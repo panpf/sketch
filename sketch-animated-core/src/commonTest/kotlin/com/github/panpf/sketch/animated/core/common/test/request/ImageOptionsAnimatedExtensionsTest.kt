@@ -1,5 +1,10 @@
 package com.github.panpf.sketch.animated.core.common.test.request
 
+import com.github.panpf.sketch.request.ANIMATED_TRANSFORMATION_KEY
+import com.github.panpf.sketch.request.ANIMATION_END_CALLBACK_KEY
+import com.github.panpf.sketch.request.ANIMATION_REPEAT_COUNT_KEY
+import com.github.panpf.sketch.request.ANIMATION_START_CALLBACK_KEY
+import com.github.panpf.sketch.request.DISALLOW_ANIMATED_IMAGE_KEY
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.animatedTransformation
 import com.github.panpf.sketch.request.animationEndCallback
@@ -15,6 +20,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class ImageOptionsAnimatedExtensionsTest {
@@ -33,6 +39,10 @@ class ImageOptionsAnimatedExtensionsTest {
             repeatCount(5)
         }.apply {
             assertEquals(5, repeatCount)
+            extras!!.entry(ANIMATION_REPEAT_COUNT_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNotNull(this.cacheKey)
+            }
         }
     }
 
@@ -47,6 +57,10 @@ class ImageOptionsAnimatedExtensionsTest {
             onAnimationStart(myAnimationStartCallback)
         }.apply {
             assertEquals(myAnimationStartCallback, animationStartCallback)
+            extras!!.entry(ANIMATION_START_CALLBACK_KEY)!!.apply {
+                assertNull(this.requestKey)
+                assertNull(this.cacheKey)
+            }
         }
     }
 
@@ -61,6 +75,10 @@ class ImageOptionsAnimatedExtensionsTest {
             onAnimationEnd(myAnimationEndCallback)
         }.apply {
             assertEquals(myAnimationEndCallback, animationEndCallback)
+            extras!!.entry(ANIMATION_END_CALLBACK_KEY)!!.apply {
+                assertNull(this.requestKey)
+                assertNull(this.cacheKey)
+            }
         }
     }
 
@@ -75,6 +93,10 @@ class ImageOptionsAnimatedExtensionsTest {
             animatedTransformation(myAnimatedTransformation)
         }.apply {
             assertEquals(myAnimatedTransformation, animatedTransformation)
+            extras!!.entry(ANIMATED_TRANSFORMATION_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNull(this.cacheKey)
+            }
         }
     }
 
@@ -88,6 +110,10 @@ class ImageOptionsAnimatedExtensionsTest {
             disallowAnimatedImage()
             build().apply {
                 assertEquals(true, disallowAnimatedImage)
+                extras!!.entry(DISALLOW_ANIMATED_IMAGE_KEY)!!.apply {
+                    assertNotNull(this.requestKey)
+                    assertNotNull(this.cacheKey)
+                }
             }
 
             disallowAnimatedImage(false)

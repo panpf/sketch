@@ -19,6 +19,8 @@ package com.github.panpf.sketch.extensions.core.common.test.request
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY
+import com.github.panpf.sketch.request.PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY
 import com.github.panpf.sketch.request.ignorePauseLoadWhenScrolling
 import com.github.panpf.sketch.request.isIgnoredPauseLoadWhenScrolling
 import com.github.panpf.sketch.request.isPauseLoadWhenScrolling
@@ -30,6 +32,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class PauseLoadWhenScrollingExtensionsTest {
@@ -46,6 +50,10 @@ class PauseLoadWhenScrollingExtensionsTest {
             pauseLoadWhenScrolling()
         }.apply {
             assertTrue(isPauseLoadWhenScrolling)
+            extras!!.entry(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNull(this.cacheKey)
+            }
         }
         ImageRequest(context, "http://sample.com/sample.jpeg") {
             pauseLoadWhenScrolling(false)
@@ -72,6 +80,10 @@ class PauseLoadWhenScrollingExtensionsTest {
             pauseLoadWhenScrolling()
         }.apply {
             assertTrue(isPauseLoadWhenScrolling)
+            extras!!.entry(PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNull(this.cacheKey)
+            }
         }
         ImageOptions {
             pauseLoadWhenScrolling(false)
@@ -108,6 +120,10 @@ class PauseLoadWhenScrollingExtensionsTest {
             ignorePauseLoadWhenScrolling()
         }.apply {
             assertTrue(isIgnoredPauseLoadWhenScrolling)
+            extras!!.entry(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNull(this.cacheKey)
+            }
         }
         ImageRequest(context, "http://sample.com/sample.jpeg") {
             ignorePauseLoadWhenScrolling(false)
@@ -134,6 +150,10 @@ class PauseLoadWhenScrollingExtensionsTest {
             ignorePauseLoadWhenScrolling()
         }.apply {
             assertTrue(isIgnoredPauseLoadWhenScrolling)
+            extras!!.entry(PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNull(this.cacheKey)
+            }
         }
         ImageOptions {
             ignorePauseLoadWhenScrolling(false)

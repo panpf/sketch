@@ -19,6 +19,8 @@ package com.github.panpf.sketch.svg.common.test.request
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.SVG_BACKGROUND_COLOR_KEY
+import com.github.panpf.sketch.request.SVG_CSS_KEY
 import com.github.panpf.sketch.request.svgBackgroundColor
 import com.github.panpf.sketch.request.svgCss
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
@@ -28,6 +30,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class SvgExtensionsTest {
@@ -43,6 +46,10 @@ class SvgExtensionsTest {
             this.svgBackgroundColor(TestColor.BLUE)
         }.apply {
             assertEquals(TestColor.BLUE, svgBackgroundColor)
+            extras!!.entry(SVG_BACKGROUND_COLOR_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNotNull(this.cacheKey)
+            }
         }
 
         ImageRequest(context, ComposeResImageFiles.svg.uri).apply {
@@ -70,6 +77,10 @@ class SvgExtensionsTest {
             svgBackgroundColor(TestColor.BLUE)
         }.apply {
             assertEquals(TestColor.BLUE, svgBackgroundColor)
+            extras!!.entry(SVG_BACKGROUND_COLOR_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNotNull(this.cacheKey)
+            }
         }
 
         val key1 = ImageRequest(context, ComposeResImageFiles.svg.uri).key
@@ -102,6 +113,10 @@ class SvgExtensionsTest {
             this.svgCss("css1")
         }.apply {
             assertEquals("css1", svgCss)
+            extras!!.entry(SVG_CSS_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNotNull(this.cacheKey)
+            }
         }
 
         ImageRequest(context, ComposeResImageFiles.svg.uri).apply {
@@ -129,6 +144,10 @@ class SvgExtensionsTest {
             svgCss("css1")
         }.apply {
             assertEquals("css1", svgCss)
+            extras!!.entry(SVG_CSS_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNotNull(this.cacheKey)
+            }
         }
 
         val key1 = ImageRequest(context, ComposeResImageFiles.svg.uri).key

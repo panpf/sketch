@@ -2,11 +2,13 @@ package com.github.panpf.sketch.http.core.common.test.request
 
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.images.ComposeResImageFiles
+import com.github.panpf.sketch.request.HTTP_HEADERS_KEY
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.httpHeaders
 import com.github.panpf.sketch.test.utils.getTestContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class ImageRequestHttpExtensionsTest {
@@ -24,6 +26,10 @@ class ImageRequestHttpExtensionsTest {
             httpHeaders(HttpHeaders())
             build().apply {
                 assertEquals(HttpHeaders(), httpHeaders)
+                extras!!.entry(HTTP_HEADERS_KEY)!!.apply {
+                    assertNotNull(this.requestKey)
+                    assertNull(this.cacheKey)
+                }
             }
 
             httpHeaders(HttpHeaders.Builder().set("key1", "value1").build())

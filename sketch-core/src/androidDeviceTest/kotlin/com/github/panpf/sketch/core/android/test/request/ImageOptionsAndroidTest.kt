@@ -8,6 +8,7 @@ import com.github.panpf.sketch.decode.BitmapColorSpace
 import com.github.panpf.sketch.decode.FixedColorType
 import com.github.panpf.sketch.drawable.ColorEquitableDrawable
 import com.github.panpf.sketch.request.ImageOptions
+import com.github.panpf.sketch.request.PREFER_QUALITY_OVER_SPEED_KEY
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.colorType
 import com.github.panpf.sketch.request.error
@@ -228,6 +229,10 @@ class ImageOptionsAndroidTest {
             preferQualityOverSpeed()
             build().apply {
                 assertEquals(true, preferQualityOverSpeed)
+                extras!!.entry(PREFER_QUALITY_OVER_SPEED_KEY)!!.apply {
+                    assertNotNull(this.requestKey)
+                    assertNotNull(this.cacheKey)
+                }
             }
 
             preferQualityOverSpeed(false)

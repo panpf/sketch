@@ -41,7 +41,7 @@ import com.github.panpf.sketch.request.internal.Listeners
 import com.github.panpf.sketch.request.internal.PairListener
 import com.github.panpf.sketch.request.internal.PairProgressListener
 import com.github.panpf.sketch.request.internal.ProgressListeners
-import com.github.panpf.sketch.request.internal.ThumbnailInterceptor.Companion.KEY_THUMBNAIL
+import com.github.panpf.sketch.request.internal.ThumbnailInterceptor.Companion.THUMBNAIL_KEY
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
 import com.github.panpf.sketch.resize.FixedSizeResolver
@@ -1689,7 +1689,7 @@ class ImageRequestTest {
         val (context, sketch) = getTestContextAndSketch()
 
         val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri).apply {
-            assertNull(extras?.get(KEY_THUMBNAIL))
+            assertNull(extras?.get(THUMBNAIL_KEY))
         }
         val requestContext = request.toRequestContext(sketch)
 
@@ -1698,8 +1698,12 @@ class ImageRequestTest {
         }.apply {
             assertEquals(
                 expected = "thumbnail1",
-                actual = extras?.get(KEY_THUMBNAIL)
+                actual = extras?.get(THUMBNAIL_KEY)
             )
+            extras!!.entry(THUMBNAIL_KEY)!!.apply {
+                assertNull(this.requestKey)
+                assertNull(this.cacheKey)
+            }
         }
         val requestContext1 = request1.toRequestContext(sketch)
 
@@ -1708,12 +1712,12 @@ class ImageRequestTest {
         }.apply {
             assertEquals(
                 expected = "thumbnail1",
-                actual = extras?.get(KEY_THUMBNAIL)
+                actual = extras?.get(THUMBNAIL_KEY)
             )
         }.newRequest {
             thumbnail(null as String?)
         }.apply {
-            assertNull(extras?.get(KEY_THUMBNAIL))
+            assertNull(extras?.get(THUMBNAIL_KEY))
         }
 
         val request2 = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
@@ -1721,7 +1725,7 @@ class ImageRequestTest {
         }.apply {
             assertEquals(
                 expected = ImageRequest(context, "thumbnail2"),
-                actual = extras?.get(KEY_THUMBNAIL)
+                actual = extras?.get(THUMBNAIL_KEY)
             )
         }
         val requestContext2 = request2.toRequestContext(sketch)
@@ -1731,12 +1735,12 @@ class ImageRequestTest {
         }.apply {
             assertEquals(
                 expected = ImageRequest(context, "thumbnail2"),
-                actual = extras?.get(KEY_THUMBNAIL)
+                actual = extras?.get(THUMBNAIL_KEY)
             )
         }.newRequest {
             thumbnail(null as ImageRequest?)
         }.apply {
-            assertNull(extras?.get(KEY_THUMBNAIL))
+            assertNull(extras?.get(THUMBNAIL_KEY))
         }
 
         assertEquals(requestContext.memoryCacheKey, requestContext1.memoryCacheKey)

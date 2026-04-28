@@ -33,7 +33,7 @@ import com.github.panpf.sketch.request.Extras
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.get
-import com.github.panpf.sketch.request.internal.ThumbnailInterceptor.Companion.KEY_THUMBNAIL
+import com.github.panpf.sketch.request.internal.ThumbnailInterceptor.Companion.THUMBNAIL_KEY
 import com.github.panpf.sketch.request.isNotEmpty
 import com.github.panpf.sketch.resize.FixedPrecisionDecider
 import com.github.panpf.sketch.resize.FixedScaleDecider
@@ -1549,7 +1549,7 @@ class ImageOptionsTest {
         val context = getTestContext()
 
         ImageOptions().apply {
-            assertNull(extras?.get(KEY_THUMBNAIL))
+            assertNull(extras?.get(THUMBNAIL_KEY))
         }
 
         ImageOptions {
@@ -1557,19 +1557,23 @@ class ImageOptionsTest {
         }.apply {
             assertEquals(
                 expected = "thumbnail1",
-                actual = extras?.get(KEY_THUMBNAIL)
+                actual = extras?.get(THUMBNAIL_KEY)
             )
+            extras!!.entry(THUMBNAIL_KEY)!!.apply {
+                assertNull(this.requestKey)
+                assertNull(this.cacheKey)
+            }
         }.newOptions {
 
         }.apply {
             assertEquals(
                 expected = "thumbnail1",
-                actual = extras?.get(KEY_THUMBNAIL)
+                actual = extras?.get(THUMBNAIL_KEY)
             )
         }.newOptions {
             thumbnail(null as String?)
         }.apply {
-            assertNull(extras?.get(KEY_THUMBNAIL))
+            assertNull(extras?.get(THUMBNAIL_KEY))
         }
 
         ImageOptions {
@@ -1577,19 +1581,19 @@ class ImageOptionsTest {
         }.apply {
             assertEquals(
                 expected = ImageRequest(context, "thumbnail2"),
-                actual = extras?.get(KEY_THUMBNAIL)
+                actual = extras?.get(THUMBNAIL_KEY)
             )
         }.newOptions {
 
         }.apply {
             assertEquals(
                 expected = ImageRequest(context, "thumbnail2"),
-                actual = extras?.get(KEY_THUMBNAIL)
+                actual = extras?.get(THUMBNAIL_KEY)
             )
         }.newOptions {
             thumbnail(null as ImageRequest?)
         }.apply {
-            assertNull(extras?.get(KEY_THUMBNAIL))
+            assertNull(extras?.get(THUMBNAIL_KEY))
         }
     }
 

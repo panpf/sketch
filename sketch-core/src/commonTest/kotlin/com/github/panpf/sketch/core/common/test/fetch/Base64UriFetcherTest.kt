@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.core.common.test.fetch
 
+import com.github.panpf.sketch.fetch.BASE64_URI_SPEC_KEY
 import com.github.panpf.sketch.fetch.Base64Spec
 import com.github.panpf.sketch.fetch.Base64UriFetcher
 import com.github.panpf.sketch.fetch.base64UriSpec
@@ -35,6 +36,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -80,12 +82,18 @@ class Base64UriFetcherTest {
             expected = null,
             actual = ImageOptions().base64UriSpec
         )
-        assertEquals(
-            expected = Base64Spec.Default,
-            actual = ImageOptions {
-                base64UriSpec(Base64Spec.Default)
-            }.base64UriSpec
-        )
+        ImageOptions {
+            base64UriSpec(Base64Spec.Default)
+        }.apply {
+            assertEquals(
+                expected = Base64Spec.Default,
+                actual = this.base64UriSpec
+            )
+            extras!!.entry(BASE64_URI_SPEC_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNull(this.cacheKey)
+            }
+        }
         assertEquals(
             expected = Base64Spec.Mime,
             actual = ImageOptions {
@@ -103,12 +111,18 @@ class Base64UriFetcherTest {
             expected = null,
             actual = ImageRequest(context, "http://sample.com/sample.jpeg").base64UriSpec
         )
-        assertEquals(
-            expected = Base64Spec.Default,
-            actual = ImageRequest(context, "http://sample.com/sample.jpeg") {
-                base64UriSpec(Base64Spec.Default)
-            }.base64UriSpec
-        )
+        ImageRequest(context, "http://sample.com/sample.jpeg") {
+            base64UriSpec(Base64Spec.Default)
+        }.apply {
+            assertEquals(
+                expected = Base64Spec.Default,
+                actual = this.base64UriSpec
+            )
+            extras!!.entry(BASE64_URI_SPEC_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNull(this.cacheKey)
+            }
+        }
         assertEquals(
             expected = Base64Spec.Mime,
             actual = ImageRequest(context, "http://sample.com/sample.jpeg") {

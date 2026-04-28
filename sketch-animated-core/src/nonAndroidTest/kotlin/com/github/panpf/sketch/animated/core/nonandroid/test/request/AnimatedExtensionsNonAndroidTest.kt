@@ -7,8 +7,8 @@ import com.github.panpf.sketch.request.cacheDecodeTimeoutFrame
 import com.github.panpf.sketch.test.utils.getTestContext
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -16,11 +16,6 @@ class AnimatedExtensionsNonAndroidTest {
 
     @Test
     fun testCacheDecodeTimeoutFrame() = runTest {
-        assertEquals(
-            expected = "sketch#animated_cache_decode_timeout_frame",
-            actual = ANIMATED_CACHE_DECODE_TIMEOUT_FRAME_KEY
-        )
-
         val context = getTestContext()
 
         ImageRequest(context, "http://sample/com/sample.jpeg").apply {
@@ -31,6 +26,10 @@ class AnimatedExtensionsNonAndroidTest {
             cacheDecodeTimeoutFrame()
         }.apply {
             assertTrue(actual = cacheDecodeTimeoutFrame!!)
+            extras!!.entry(ANIMATED_CACHE_DECODE_TIMEOUT_FRAME_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNull(this.cacheKey)
+            }
         }
 
         ImageRequest(context, "http://sample/com/sample.jpeg") {
@@ -63,6 +62,10 @@ class AnimatedExtensionsNonAndroidTest {
             cacheDecodeTimeoutFrame()
         }.apply {
             assertTrue(actual = cacheDecodeTimeoutFrame!!)
+            extras!!.entry(ANIMATED_CACHE_DECODE_TIMEOUT_FRAME_KEY)!!.apply {
+                assertNotNull(this.requestKey)
+                assertNull(this.cacheKey)
+            }
         }
 
         ImageOptions {
