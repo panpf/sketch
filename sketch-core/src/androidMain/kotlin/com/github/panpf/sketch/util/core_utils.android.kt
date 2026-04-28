@@ -74,7 +74,7 @@ internal fun getTrimLevelName(level: Int): String = when (level) {
 /**
  * Get the suffix of the current process name
  *
- * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testFileNameCompatibilityMultiProcess
+ * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testGetProcessNameCompat
  */
 internal fun fileNameCompatibilityMultiProcess(context: Context, file: File): File {
     val processNameSuffix = getProcessNameSuffix(context)
@@ -130,7 +130,7 @@ internal fun getProcessNameCompat(context: Context): String? {
 /**
  * Get the suffix of the current process name
  *
- * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testGetProcessNameSuffix
+ * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testGetProcessNameCompat
  */
 internal fun getProcessNameSuffix(context: Context, processName: String? = null): String? {
     val packageName = context.packageName

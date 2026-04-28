@@ -18,11 +18,13 @@ package com.github.panpf.sketch.core.android.test.util
 
 import android.content.ComponentCallbacks2
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.github.panpf.sketch.images.block
 import com.github.panpf.sketch.util.MimeTypeMap.getMimeTypeFromUrl
 import com.github.panpf.sketch.util.getTrimLevelName
 import com.github.panpf.sketch.util.isMainThread
 import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.util.requiredWorkThread
+import com.github.panpf.tools4a.test.ktx.launchActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
@@ -108,17 +110,28 @@ class CoreUtilsAndroidTest {
     }
 
     @Test
-    fun testFileNameCompatibilityMultiProcess() {
-        // TODO test: Not testable, because the test method cannot be run on a non-main thread
-    }
-
-    @Test
     fun testGetProcessNameCompat() {
-        // TODO test: Not testable, because the test method cannot be run on a non-main thread
-    }
+        ProcessNameTestActivity::class.launchActivity()
 
-    @Test
-    fun testGetProcessNameSuffix() {
-        // TODO test: Not testable, because the test method cannot be run on a non-main thread
+        val resultFile = ProcessNameTestService.resultFile
+        resultFile.delete()
+        assertTrue(!resultFile.exists(), message = "resultFile: ${resultFile.absolutePath}")
+
+        var count = 0
+        while (count < 10) {
+            if (resultFile.exists()) {
+                break
+            } else {
+                block(1000)
+            }
+            count++
+        }
+
+        if (resultFile.exists()) {
+            val text = resultFile.readText()
+            assertEquals("[com.github.panpf.sketch.core.test:test, test, /test/file-test]", text)
+        } else {
+            throw Exception("resultFile: ${resultFile.absolutePath} does not exist")
+        }
     }
 }
