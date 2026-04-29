@@ -1,11 +1,11 @@
 package com.github.panpf.sketch.video.ios.test.decode
 
 import com.github.panpf.sketch.ComponentRegistry
-import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.FileVideoFrameDecoder
 import com.github.panpf.sketch.decode.supportFileVideoFrame
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.images.ComposeResImageFiles
+import com.github.panpf.sketch.images.getOnlyTempFile
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.preferVideoCover
 import com.github.panpf.sketch.source.ByteArrayDataSource
@@ -17,7 +17,6 @@ import kotlinx.coroutines.test.runTest
 import okio.Path.Companion.toPath
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -106,28 +105,35 @@ class FileVideoFrameDecoderTest {
     fun testImageInfo() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, "/sdcard/sample_rotation.mp4")
-        val dataSource = FileDataSource(
-            path = "/sdcard/sample_rotation.mp4".toPath(),
-            fileSystem = sketch.fileSystem,
-        )
-
-        // [Test not completed] Because the test environment cannot access the kotlin resource files, the test cannot be completed.
-        assertFailsWith(DecodeException::class) {
+        val imageFile = ComposeResImageFiles.rotationMp4
+        val tempFile = imageFile.getOnlyTempFile(context, sketch.fileSystem)
+        val request = ImageRequest(context, tempFile.toString())
+        val dataSource = FileDataSource(tempFile)
+        try {
             FileVideoFrameDecoder(
                 requestContext = request.toRequestContext(sketch),
                 dataSource = dataSource,
-                mimeType = "video/mp4"
-            ).getImageInfo()
-        }
+                mimeType = imageFile.mimeType
+            ).getImageInfo().apply {
+                assertEquals(
+                    expected = "ImageInfo(size=1080x1920, mimeType='video/mp4')",
+                    actual = this.toString()
+                )
+            }
 
-        // [Test not completed] Because the test environment cannot access the kotlin resource files, the test cannot be completed.
-        assertFailsWith(DecodeException::class) {
             FileVideoFrameDecoder(
-                requestContext = request.newRequest { preferVideoCover() }.toRequestContext(sketch),
+                requestContext = request.newRequest { preferVideoCover() }
+                    .toRequestContext(sketch),
                 dataSource = dataSource,
-                mimeType = "video/mp4"
-            ).getImageInfo()
+                mimeType = imageFile.mimeType
+            ).getImageInfo().apply {
+                assertEquals(
+                    expected = "ImageInfo(size=1600x1200, mimeType='video/mp4')",
+                    actual = this.toString()
+                )
+            }
+        } finally {
+            sketch.fileSystem.delete(tempFile)
         }
     }
 
@@ -135,28 +141,35 @@ class FileVideoFrameDecoderTest {
     fun testDecode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, "/sdcard/sample_rotation.mp4")
-        val dataSource = FileDataSource(
-            path = "/sdcard/sample_rotation.mp4".toPath(),
-            fileSystem = sketch.fileSystem,
-        )
-
-        // [Test not completed] Because the test environment cannot access the kotlin resource files, the test cannot be completed.
-        assertFailsWith(DecodeException::class) {
+        val imageFile = ComposeResImageFiles.rotationMp4
+        val tempFile = imageFile.getOnlyTempFile(context, sketch.fileSystem)
+        val request = ImageRequest(context, tempFile.toString())
+        val dataSource = FileDataSource(tempFile)
+        try {
             FileVideoFrameDecoder(
                 requestContext = request.toRequestContext(sketch),
                 dataSource = dataSource,
-                mimeType = "video/mp4"
-            ).decode()
-        }
+                mimeType = imageFile.mimeType
+            ).decode().apply {
+                assertEquals(
+                    expected = "ImageInfo(size=1080x1920, mimeType='video/mp4')",
+                    actual = this.imageInfo.toString()
+                )
+            }
 
-        // [Test not completed] Because the test environment cannot access the kotlin resource files, the test cannot be completed.
-        assertFailsWith(DecodeException::class) {
             FileVideoFrameDecoder(
-                requestContext = request.newRequest { preferVideoCover() }.toRequestContext(sketch),
+                requestContext = request.newRequest { preferVideoCover() }
+                    .toRequestContext(sketch),
                 dataSource = dataSource,
-                mimeType = "video/mp4"
-            ).decode()
+                mimeType = imageFile.mimeType
+            ).decode().apply {
+                assertEquals(
+                    expected = "ImageInfo(size=1600x1200, mimeType='video/mp4')",
+                    actual = this.imageInfo.toString()
+                )
+            }
+        } finally {
+            sketch.fileSystem.delete(tempFile)
         }
     }
 

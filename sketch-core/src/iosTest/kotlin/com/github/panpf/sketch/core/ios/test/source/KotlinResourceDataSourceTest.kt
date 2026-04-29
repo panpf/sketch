@@ -1,18 +1,16 @@
 package com.github.panpf.sketch.core.ios.test.source
 
 import com.github.panpf.sketch.fetch.newKotlinResourceUri
-import com.github.panpf.sketch.images.ComposeResImageFiles
+import com.github.panpf.sketch.images.KotlinResImageFiles
 import com.github.panpf.sketch.source.DataFrom
 import com.github.panpf.sketch.source.KotlinResourceDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import kotlinx.coroutines.test.runTest
-import okio.FileNotFoundException
 import okio.Path
 import okio.buffer
 import okio.use
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
@@ -47,33 +45,23 @@ class KotlinResourceDataSourceTest {
 
     @Test
     fun testOpenSource() {
-        // [Test not completed] Because the test environment cannot access the kotlin resource files, the test cannot be completed.
-        assertFailsWith(FileNotFoundException::class) {
-            KotlinResourceDataSource(ComposeResImageFiles.jpeg.name)
-                .openSource().buffer()
-                .use { it.readByteArray() }
-        }
-
-        assertFailsWith(FileNotFoundException::class) {
-            KotlinResourceDataSource(ComposeResImageFiles.png.name)
-                .openSource().buffer()
-                .use { it.readByteArray() }
-                .decodeToString()
-        }
+        KotlinResourceDataSource(KotlinResImageFiles.bear.name)
+            .openSource().buffer()
+            .use { it.readByteArray() }
     }
 
     @Test
     fun testGetFile() {
         val (_, sketch) = getTestContextAndSketch()
         val path1: Path
-        KotlinResourceDataSource(ComposeResImageFiles.jpeg.name)
+        KotlinResourceDataSource(KotlinResImageFiles.bear.name)
             .getFile(sketch).apply {
                 path1 = this
                 assertTrue(actual = toString().contains("/compose-resources/"))
             }
 
         val path2: Path
-        KotlinResourceDataSource(ComposeResImageFiles.jpeg.name)
+        KotlinResourceDataSource(KotlinResImageFiles.bear.name)
             .getFile(sketch).apply {
                 path2 = this
                 assertTrue(actual = toString().contains("/compose-resources/"))

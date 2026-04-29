@@ -1,15 +1,18 @@
 package com.github.panpf.sketch.video.ios.test.decode.internal
 
-import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.internal.FileVideoFrameDecodeHelper
+import com.github.panpf.sketch.images.ComposeResImageFiles
+import com.github.panpf.sketch.images.getOnlyTempFile
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.preferVideoCover
+import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.util.Rect
 import kotlinx.coroutines.test.runTest
 import okio.Path.Companion.toPath
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
@@ -39,30 +42,34 @@ class FileVideoFrameDecodeHelperTest {
     fun testImageInfo() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, "/sdcard/sample_rotation.mp4")
-        val dataSource = FileDataSource(
-            path = "/sdcard/sample_rotation.mp4".toPath(),
-            fileSystem = sketch.fileSystem,
-        )
+        val imageFile = ComposeResImageFiles.rotationMp4
+        val tempFile = imageFile.getOnlyTempFile(context, sketch.fileSystem)
+        val request = ImageRequest(context, tempFile.toString())
+        val dataSource = FileDataSource(tempFile)
+        try {
+            FileVideoFrameDecodeHelper(
+                request = request,
+                dataSource = dataSource,
+                mimeType = imageFile.mimeType
+            ).getImageInfo().apply {
+                assertEquals(
+                    expected = "ImageInfo(size=1080x1920, mimeType='video/mp4')",
+                    actual = this.toString()
+                )
+            }
 
-        // [Test not completed] Because the test environment cannot access the kotlin resource file, the test cannot be completed.
-        val decodeHelper = FileVideoFrameDecodeHelper(
-            request = request,
-            dataSource = dataSource,
-            mimeType = "video/mp4"
-        )
-        assertFailsWith(DecodeException::class) {
-            decodeHelper.getImageInfo()
-        }
-
-        // [Test not completed] Because the test environment cannot access the kotlin resource file, the test cannot be completed.
-        val decodeHelper2 = FileVideoFrameDecodeHelper(
-            request = request.newRequest { preferVideoCover() },
-            dataSource = dataSource,
-            mimeType = "video/mp4"
-        )
-        assertFailsWith(DecodeException::class) {
-            decodeHelper2.getImageInfo()
+            FileVideoFrameDecodeHelper(
+                request = request.newRequest { preferVideoCover() },
+                dataSource = dataSource,
+                mimeType = imageFile.mimeType
+            ).getImageInfo().apply {
+                assertEquals(
+                    expected = "ImageInfo(size=1600x1200, mimeType='video/mp4')",
+                    actual = this.toString()
+                )
+            }
+        } finally {
+            sketch.fileSystem.delete(tempFile)
         }
     }
 
@@ -70,57 +77,71 @@ class FileVideoFrameDecodeHelperTest {
     fun testSupportRegion() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, "/sdcard/sample_rotation.mp4")
-        val dataSource = FileDataSource(
-            path = "/sdcard/sample_rotation.mp4".toPath(),
-            fileSystem = sketch.fileSystem,
-        )
+        val imageFile = ComposeResImageFiles.rotationMp4
+        val tempFile = imageFile.getOnlyTempFile(context, sketch.fileSystem)
+        val request = ImageRequest(context, tempFile.toString())
+        val dataSource = FileDataSource(tempFile)
+        try {
+            FileVideoFrameDecodeHelper(
+                request = request,
+                dataSource = dataSource,
+                mimeType = imageFile.mimeType
+            ).isSupportRegion().apply {
+                assertFalse(this)
+            }
 
-        // [Test not completed] Because the test environment cannot access the kotlin resource file, the test cannot be completed.
-        val decodeHelper = FileVideoFrameDecodeHelper(
-            request = request,
-            dataSource = dataSource,
-            mimeType = "video/mp4"
-        )
-        assertFalse(decodeHelper.isSupportRegion())
-
-        // [Test not completed] Because the test environment cannot access the kotlin resource file, the test cannot be completed.
-        val decodeHelper2 = FileVideoFrameDecodeHelper(
-            request = request.newRequest { preferVideoCover() },
-            dataSource = dataSource,
-            mimeType = "video/mp4"
-        )
-        assertFalse(decodeHelper2.isSupportRegion())
+            FileVideoFrameDecodeHelper(
+                request = request.newRequest { preferVideoCover() },
+                dataSource = dataSource,
+                mimeType = imageFile.mimeType
+            ).isSupportRegion().apply {
+                assertTrue(this)
+            }
+        } finally {
+            sketch.fileSystem.delete(tempFile)
+        }
     }
 
     @Test
     fun testDecode() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, "/sdcard/sample_rotation.mp4")
-        val dataSource = FileDataSource(
-            path = "/sdcard/sample_rotation.mp4".toPath(),
-            fileSystem = sketch.fileSystem,
-        )
+        val imageFile = ComposeResImageFiles.rotationMp4
+        val tempFile = imageFile.getOnlyTempFile(context, sketch.fileSystem)
+        val request = ImageRequest(context, tempFile.toString())
+        val dataSource = FileDataSource(tempFile)
+        try {
+            FileVideoFrameDecodeHelper(
+                request = request,
+                dataSource = dataSource,
+                mimeType = imageFile.mimeType
+            ).decode(1).apply {
+                assertEquals("1080x1920", this.size.toString())
+            }
+            FileVideoFrameDecodeHelper(
+                request = request,
+                dataSource = dataSource,
+                mimeType = imageFile.mimeType
+            ).decode(2).apply {
+                assertEquals("540x960", this.size.toString())
+            }
 
-        // [Test not completed] Because the test environment cannot access the kotlin resource file, the test cannot be completed.
-        val decodeHelper = FileVideoFrameDecodeHelper(
-            request = request,
-            dataSource = dataSource,
-            mimeType = "video/mp4"
-        )
-        assertFailsWith(DecodeException::class) {
-            decodeHelper.decode(1)
-        }
-
-        // [Test not completed] Because the test environment cannot access the kotlin resource file, the test cannot be completed.
-        val decodeHelper2 = FileVideoFrameDecodeHelper(
-            request = request.newRequest { preferVideoCover() },
-            dataSource = dataSource,
-            mimeType = "video/mp4"
-        )
-        assertFailsWith(DecodeException::class) {
-            decodeHelper2.decode(1)
+            FileVideoFrameDecodeHelper(
+                request = request.newRequest { preferVideoCover() },
+                dataSource = dataSource,
+                mimeType = imageFile.mimeType
+            ).decode(1).apply {
+                assertEquals("1600x1200", this.size.toString())
+            }
+            FileVideoFrameDecodeHelper(
+                request = request.newRequest { preferVideoCover() },
+                dataSource = dataSource,
+                mimeType = imageFile.mimeType
+            ).decode(2).apply {
+                assertEquals("800x600", this.size.toString())
+            }
+        } finally {
+            sketch.fileSystem.delete(tempFile)
         }
     }
 
@@ -128,30 +149,28 @@ class FileVideoFrameDecodeHelperTest {
     fun testDecodeRegion() = runTest {
         val (context, sketch) = getTestContextAndSketch()
 
-        val request = ImageRequest(context, "/sdcard/sample_rotation.mp4")
-        val dataSource = FileDataSource(
-            path = "/sdcard/sample_rotation.mp4".toPath(),
-            fileSystem = sketch.fileSystem,
-        )
+        val imageFile = ComposeResImageFiles.rotationMp4
+        val tempFile = imageFile.getOnlyTempFile(context, sketch.fileSystem)
+        val request = ImageRequest(context, tempFile.toString())
+        val dataSource = FileDataSource(tempFile)
+        try {
+            assertFailsWith(UnsupportedOperationException::class) {
+                FileVideoFrameDecodeHelper(
+                    request = request,
+                    dataSource = dataSource,
+                    mimeType = imageFile.mimeType
+                ).decodeRegion(Rect(100, 200, 200, 500), 1)
+            }
 
-        // [Test not completed] Because the test environment cannot access the kotlin resource file, the test cannot be completed.
-        val decodeHelper = FileVideoFrameDecodeHelper(
-            request = request,
-            dataSource = dataSource,
-            mimeType = "video/mp4"
-        )
-        assertFailsWith(UnsupportedOperationException::class) {
-            decodeHelper.decodeRegion(Rect(100, 200, 200, 100), 1)
-        }
-
-        // [Test not completed] Because the test environment cannot access the kotlin resource file, the test cannot be completed.
-        val decodeHelper2 = FileVideoFrameDecodeHelper(
-            request = request.newRequest { preferVideoCover() },
-            dataSource = dataSource,
-            mimeType = "video/mp4"
-        )
-        assertFailsWith(UnsupportedOperationException::class) {
-            decodeHelper2.decodeRegion(Rect(100, 200, 200, 100), 1)
+            FileVideoFrameDecodeHelper(
+                request = request.newRequest { preferVideoCover() },
+                dataSource = dataSource,
+                mimeType = imageFile.mimeType
+            ).decodeRegion(Rect(100, 200, 200, 500), 1).apply {
+                assertEquals("100x300", this.size.toString())
+            }
+        } finally {
+            sketch.fileSystem.delete(tempFile)
         }
     }
 

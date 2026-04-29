@@ -81,7 +81,6 @@ class PaintersTest {
             )
         }
 
-        // [Test not completed] Because the test environment cannot access the kotlin resource files, the test cannot be completed.
         runComposeUiTest {
             setContent {
                 painterResource(Res.drawable.ic_image_outline).apply {
@@ -140,7 +139,6 @@ class PaintersTest {
             actual = colorPainter.toLogString()
         )
 
-        // [Test not completed] Because the test environment cannot access the kotlin resource files, the test cannot be completed.
         runComposeUiTest {
             setContent {
                 val vectorPainter = painterResource(Res.drawable.ic_image_outline)
