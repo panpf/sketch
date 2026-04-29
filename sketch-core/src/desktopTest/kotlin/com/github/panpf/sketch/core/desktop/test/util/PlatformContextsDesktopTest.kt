@@ -15,6 +15,7 @@ import com.github.panpf.sketch.util.screenSize
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 class PlatformContextsDesktopTest {
 
@@ -53,6 +54,10 @@ class PlatformContextsDesktopTest {
             .let { Size(it.width, it.height) }
         assertEquals(
             expected = screenSize,
+            actual = PlatformContext.INSTANCE.screenSize(),
+        )
+        assertNotEquals(
+            illegal = Size(0, 0),
             actual = PlatformContext.INSTANCE.screenSize(),
         )
     }

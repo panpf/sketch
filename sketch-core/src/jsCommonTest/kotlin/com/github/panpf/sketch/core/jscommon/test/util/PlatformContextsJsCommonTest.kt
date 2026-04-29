@@ -7,6 +7,7 @@ import com.github.panpf.sketch.util.maxMemory
 import com.github.panpf.sketch.util.screenSize
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 class PlatformContextsJsCommonTest {
 
@@ -30,6 +31,10 @@ class PlatformContextsJsCommonTest {
     fun testScreenSize() {
         assertEquals(
             expected = Size(1920, 1080),
+            actual = PlatformContext.INSTANCE.screenSize(),
+        )
+        assertNotEquals(
+            illegal = Size(0, 0),
             actual = PlatformContext.INSTANCE.screenSize(),
         )
     }

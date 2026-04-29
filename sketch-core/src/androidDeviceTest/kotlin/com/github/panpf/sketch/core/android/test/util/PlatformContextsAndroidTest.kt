@@ -62,5 +62,9 @@ class PlatformContextsAndroidTest {
             expected = screenSize,
             actual = context.screenSize(),
         )
+        assertNotEquals(
+            illegal = Size(0, 0),
+            actual = context.screenSize(),
+        )
     }
 }

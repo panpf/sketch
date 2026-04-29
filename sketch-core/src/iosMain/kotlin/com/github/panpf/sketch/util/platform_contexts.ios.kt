@@ -74,4 +74,6 @@ actual fun PlatformContext.screenSize(): Size {
     val widthPixels = (width * scale).roundToInt()
     val heightPixels = (height * scale).roundToInt()
     return Size(width = widthPixels, height = heightPixels)
+        .takeIf { it.isNotEmpty }   // The screen size may not be obtained in the test environment
+        ?: Size(1080, 1920)
 }

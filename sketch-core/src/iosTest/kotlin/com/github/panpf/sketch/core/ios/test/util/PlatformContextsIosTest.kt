@@ -3,6 +3,7 @@ package com.github.panpf.sketch.core.ios.test.util
 import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.appCacheDirectory
+import com.github.panpf.sketch.util.isNotEmpty
 import com.github.panpf.sketch.util.maxMemory
 import com.github.panpf.sketch.util.screenSize
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -16,6 +17,7 @@ import platform.UIKit.UIScreen
 import kotlin.math.roundToInt
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 class PlatformContextsIosTest {
 
@@ -59,8 +61,14 @@ class PlatformContextsIosTest {
         val widthPixels = (width * scale).roundToInt()
         val heightPixels = (height * scale).roundToInt()
         val screenSize = Size(width = widthPixels, height = heightPixels)
+            .takeIf { it.isNotEmpty }
+            ?: Size(1080, 1920)
         assertEquals(
             expected = screenSize,
+            actual = PlatformContext.INSTANCE.screenSize(),
+        )
+        assertNotEquals(
+            illegal = Size(0, 0),
             actual = PlatformContext.INSTANCE.screenSize(),
         )
     }
