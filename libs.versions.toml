@@ -158,6 +158,7 @@ ktor2-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor2"
 ktor2-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor2" }
 ktor2-client-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor2" }
 ktor2-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor2" }
+ktor2-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor2" }
 
 ktor3-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor3" }
 ktor3-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor3" }
@@ -166,6 +167,7 @@ ktor3-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "kt
 ktor3-client-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor3" }
 ktor3-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor3" }
 ktor3-client-wasmJs = { module = "io.ktor:ktor-client-js-wasm-js", version.ref = "ktor3" }
+ktor3-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor3" }
 ktor3-serialization-kotlinxJson = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor3" }
 
 leakcanary = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }

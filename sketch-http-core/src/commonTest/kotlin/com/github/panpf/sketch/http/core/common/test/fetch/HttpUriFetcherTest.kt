@@ -71,7 +71,6 @@ class HttpUriFetcherTest {
         assertEquals("text/plain", HttpUriFetcher.MIME_TYPE_TEXT_PLAIN)
     }
 
-    // TODO An error is reported here on the iOS platform.
     @Test
     fun testRepeatDownload() = runTest {
         runInNewSketchWithUse { context, sketch ->
@@ -428,50 +427,6 @@ class HttpUriFetcherTest {
             block(500)
             job.cancel()
             assertEquals(progressList.size, 0)
-        }
-    }
-
-    @Test
-    fun testErrorUrl() = runTest {
-        runInNewSketchWithUse { context, sketch ->
-            val progressList = mutableListOf<Long>()
-            val request = ImageRequest(context, "http://error.com/sample.jpeg") {
-                addProgressListener { _, progress ->
-                    progressList.add(progress.completedLength)
-                }
-            }
-            val downloadCacheKey = request.toRequestContext(sketch).downloadCacheKey
-            sketch.downloadCache.clear()
-            try {
-                HttpUriFetcher(sketch, TestHttpStack(context), request, downloadCacheKey).fetch()
-                    .getOrThrow()
-                fail("No exception thrown")
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            assertEquals(0, progressList.size)
-        }
-    }
-
-    @Test
-    fun testContentUrl() = runTest {
-        runInNewSketchWithUse { context, sketch ->
-            val progressList = mutableListOf<Long>()
-            val request = ImageRequest(context, TestHttpStack.errorImage.uri) {
-                addProgressListener { _, progress ->
-                    progressList.add(progress.completedLength)
-                }
-            }
-            val downloadCacheKey = request.toRequestContext(sketch).downloadCacheKey
-            sketch.downloadCache.clear()
-            try {
-                HttpUriFetcher(sketch, TestHttpStack(context), request, downloadCacheKey).fetch()
-                    .getOrThrow()
-                fail("No exception thrown")
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            assertEquals(0, progressList.size)
         }
     }
 

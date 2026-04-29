@@ -244,7 +244,6 @@ class AsyncImageStateTest {
         assertEquals(expected = FilterQuality.High, actual = asyncImageState.filterQuality)
     }
 
-    // TODO An error is reported here on the iOS platform.
     @Test
     fun testSize() {
         val context = getTestContext()

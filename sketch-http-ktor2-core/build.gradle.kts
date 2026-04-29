@@ -22,6 +22,7 @@ kotlin {
         commonTest.dependencies {
             implementation(projects.internal.test)
             implementation(projects.internal.testSingleton)
+            implementation(libs.ktor2.client.mock)
         }
         androidDeviceTest.dependencies {
             implementation(projects.internal.test)
