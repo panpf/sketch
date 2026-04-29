@@ -112,7 +112,7 @@ fun Project.copyResourcesToIosTestBin() {
         /* type = */ Copy::class.java
     ) {
         group = LifecycleBasePlugin.VERIFICATION_GROUP
-        description = "Copy composeResources to iOS simulator build bin directory for tests"
+        description = "Copy compose resources to iOS simulator build bin directory for tests"
         duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.INCLUDE
 
         val fromDir = file("${project.rootDir}/internal/images/src/commonMain/composeResources")
@@ -124,7 +124,7 @@ fun Project.copyResourcesToIosTestBin() {
         val destDir =
             layout.buildDirectory.dir("bin/iosSimulatorArm64/debugTest/compose-resources/composeResources/com.github.panpf.sketch.images")
         into(destDir)
-        println("Copyed composeResources from '$fromDir' to '${destDir.get()}'")
+        println("Copyed compose resources from '$fromDir' to '${destDir.get()}'")
     }
 
     val copyKotlinResourcesTask = tasks.register(
