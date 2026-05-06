@@ -1,0 +1,37 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <sketch:sketch-video-core>
+final const val com.github.panpf.sketch.request/PREFER_VIDEO_COVER_KEY // com.github.panpf.sketch.request/PREFER_VIDEO_COVER_KEY|{}PREFER_VIDEO_COVER_KEY[0]
+    final fun <get-PREFER_VIDEO_COVER_KEY>(): kotlin/String // com.github.panpf.sketch.request/PREFER_VIDEO_COVER_KEY.<get-PREFER_VIDEO_COVER_KEY>|<get-PREFER_VIDEO_COVER_KEY>(){}[0]
+final const val com.github.panpf.sketch.request/VIDEO_FRAME_MICROS_KEY // com.github.panpf.sketch.request/VIDEO_FRAME_MICROS_KEY|{}VIDEO_FRAME_MICROS_KEY[0]
+    final fun <get-VIDEO_FRAME_MICROS_KEY>(): kotlin/String // com.github.panpf.sketch.request/VIDEO_FRAME_MICROS_KEY.<get-VIDEO_FRAME_MICROS_KEY>|<get-VIDEO_FRAME_MICROS_KEY>(){}[0]
+final const val com.github.panpf.sketch.request/VIDEO_FRAME_PERCENT_KEY // com.github.panpf.sketch.request/VIDEO_FRAME_PERCENT_KEY|{}VIDEO_FRAME_PERCENT_KEY[0]
+    final fun <get-VIDEO_FRAME_PERCENT_KEY>(): kotlin/String // com.github.panpf.sketch.request/VIDEO_FRAME_PERCENT_KEY.<get-VIDEO_FRAME_PERCENT_KEY>|<get-VIDEO_FRAME_PERCENT_KEY>(){}[0]
+
+final val com.github.panpf.sketch.request/preferVideoCover // com.github.panpf.sketch.request/preferVideoCover|@com.github.panpf.sketch.request.ImageOptions{}preferVideoCover[0]
+    final fun (com.github.panpf.sketch.request/ImageOptions).<get-preferVideoCover>(): kotlin/Boolean? // com.github.panpf.sketch.request/preferVideoCover.<get-preferVideoCover>|<get-preferVideoCover>@com.github.panpf.sketch.request.ImageOptions(){}[0]
+final val com.github.panpf.sketch.request/preferVideoCover // com.github.panpf.sketch.request/preferVideoCover|@com.github.panpf.sketch.request.ImageRequest{}preferVideoCover[0]
+    final fun (com.github.panpf.sketch.request/ImageRequest).<get-preferVideoCover>(): kotlin/Boolean? // com.github.panpf.sketch.request/preferVideoCover.<get-preferVideoCover>|<get-preferVideoCover>@com.github.panpf.sketch.request.ImageRequest(){}[0]
+final val com.github.panpf.sketch.request/videoFrameMicros // com.github.panpf.sketch.request/videoFrameMicros|@com.github.panpf.sketch.request.ImageOptions{}videoFrameMicros[0]
+    final fun (com.github.panpf.sketch.request/ImageOptions).<get-videoFrameMicros>(): kotlin/Long? // com.github.panpf.sketch.request/videoFrameMicros.<get-videoFrameMicros>|<get-videoFrameMicros>@com.github.panpf.sketch.request.ImageOptions(){}[0]
+final val com.github.panpf.sketch.request/videoFrameMicros // com.github.panpf.sketch.request/videoFrameMicros|@com.github.panpf.sketch.request.ImageRequest{}videoFrameMicros[0]
+    final fun (com.github.panpf.sketch.request/ImageRequest).<get-videoFrameMicros>(): kotlin/Long? // com.github.panpf.sketch.request/videoFrameMicros.<get-videoFrameMicros>|<get-videoFrameMicros>@com.github.panpf.sketch.request.ImageRequest(){}[0]
+final val com.github.panpf.sketch.request/videoFramePercent // com.github.panpf.sketch.request/videoFramePercent|@com.github.panpf.sketch.request.ImageOptions{}videoFramePercent[0]
+    final fun (com.github.panpf.sketch.request/ImageOptions).<get-videoFramePercent>(): kotlin/Float? // com.github.panpf.sketch.request/videoFramePercent.<get-videoFramePercent>|<get-videoFramePercent>@com.github.panpf.sketch.request.ImageOptions(){}[0]
+final val com.github.panpf.sketch.request/videoFramePercent // com.github.panpf.sketch.request/videoFramePercent|@com.github.panpf.sketch.request.ImageRequest{}videoFramePercent[0]
+    final fun (com.github.panpf.sketch.request/ImageRequest).<get-videoFramePercent>(): kotlin/Float? // com.github.panpf.sketch.request/videoFramePercent.<get-videoFramePercent>|<get-videoFramePercent>@com.github.panpf.sketch.request.ImageRequest(){}[0]
+
+final fun (com.github.panpf.sketch.request/ImageOptions.Builder).com.github.panpf.sketch.request/preferVideoCover(kotlin/Boolean? = ...): com.github.panpf.sketch.request/ImageOptions.Builder // com.github.panpf.sketch.request/preferVideoCover|preferVideoCover@com.github.panpf.sketch.request.ImageOptions.Builder(kotlin.Boolean?){}[0]
+final fun (com.github.panpf.sketch.request/ImageOptions.Builder).com.github.panpf.sketch.request/videoFrameMicros(kotlin/Long?): com.github.panpf.sketch.request/ImageOptions.Builder // com.github.panpf.sketch.request/videoFrameMicros|videoFrameMicros@com.github.panpf.sketch.request.ImageOptions.Builder(kotlin.Long?){}[0]
+final fun (com.github.panpf.sketch.request/ImageOptions.Builder).com.github.panpf.sketch.request/videoFrameMillis(kotlin/Long): com.github.panpf.sketch.request/ImageOptions.Builder // com.github.panpf.sketch.request/videoFrameMillis|videoFrameMillis@com.github.panpf.sketch.request.ImageOptions.Builder(kotlin.Long){}[0]
+final fun (com.github.panpf.sketch.request/ImageOptions.Builder).com.github.panpf.sketch.request/videoFramePercent(kotlin/Float?): com.github.panpf.sketch.request/ImageOptions.Builder // com.github.panpf.sketch.request/videoFramePercent|videoFramePercent@com.github.panpf.sketch.request.ImageOptions.Builder(kotlin.Float?){}[0]
+final fun (com.github.panpf.sketch.request/ImageRequest.Builder).com.github.panpf.sketch.request/preferVideoCover(kotlin/Boolean? = ...): com.github.panpf.sketch.request/ImageRequest.Builder // com.github.panpf.sketch.request/preferVideoCover|preferVideoCover@com.github.panpf.sketch.request.ImageRequest.Builder(kotlin.Boolean?){}[0]
+final fun (com.github.panpf.sketch.request/ImageRequest.Builder).com.github.panpf.sketch.request/videoFrameMicros(kotlin/Long?): com.github.panpf.sketch.request/ImageRequest.Builder // com.github.panpf.sketch.request/videoFrameMicros|videoFrameMicros@com.github.panpf.sketch.request.ImageRequest.Builder(kotlin.Long?){}[0]
+final fun (com.github.panpf.sketch.request/ImageRequest.Builder).com.github.panpf.sketch.request/videoFrameMillis(kotlin/Long): com.github.panpf.sketch.request/ImageRequest.Builder // com.github.panpf.sketch.request/videoFrameMillis|videoFrameMillis@com.github.panpf.sketch.request.ImageRequest.Builder(kotlin.Long){}[0]
+final fun (com.github.panpf.sketch.request/ImageRequest.Builder).com.github.panpf.sketch.request/videoFramePercent(kotlin/Float?): com.github.panpf.sketch.request/ImageRequest.Builder // com.github.panpf.sketch.request/videoFramePercent|videoFramePercent@com.github.panpf.sketch.request.ImageRequest.Builder(kotlin.Float?){}[0]
+final fun com.github.panpf.sketch.util/resolveRequestVideoFrameMicros(kotlin/Long?, kotlin/Long?, kotlin/Float?): kotlin/Long // com.github.panpf.sketch.util/resolveRequestVideoFrameMicros|resolveRequestVideoFrameMicros(kotlin.Long?;kotlin.Long?;kotlin.Float?){}[0]

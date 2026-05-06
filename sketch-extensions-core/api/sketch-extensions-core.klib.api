@@ -1,0 +1,142 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <sketch:sketch-extensions-core>
+final class com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor : com.github.panpf.sketch.request/Interceptor { // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor|null[0]
+    constructor <init>() // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor.<init>|<init>(){}[0]
+
+    final val key // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor.key|{}key[0]
+        final fun <get-key>(): kotlin/String? // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor.key.<get-key>|<get-key>(){}[0]
+    final val sortWeight // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor.sortWeight|{}sortWeight[0]
+        final fun <get-sortWeight>(): kotlin/Int // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor.sortWeight.<get-sortWeight>|<get-sortWeight>(){}[0]
+
+    final var enabled // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor.enabled|{}enabled[0]
+        final fun <get-enabled>(): kotlin/Boolean // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor.enabled.<get-enabled>|<get-enabled>(){}[0]
+        final fun <set-enabled>(kotlin/Boolean) // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor.enabled.<set-enabled>|<set-enabled>(kotlin.Boolean){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor.toString|toString(){}[0]
+    final suspend fun intercept(com.github.panpf.sketch.request/Interceptor.Chain): kotlin/Result<com.github.panpf.sketch.request/ImageData> // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor.intercept|intercept(com.github.panpf.sketch.request.Interceptor.Chain){}[0]
+
+    final object Companion { // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor.Companion|null[0]
+        final const val SORT_WEIGHT // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor.Companion.SORT_WEIGHT|{}SORT_WEIGHT[0]
+            final fun <get-SORT_WEIGHT>(): kotlin/Int // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor.Companion.SORT_WEIGHT.<get-SORT_WEIGHT>|<get-SORT_WEIGHT>(){}[0]
+
+        final var scrolling // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor.Companion.scrolling|{}scrolling[0]
+            final fun <get-scrolling>(): kotlin/Boolean // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor.Companion.scrolling.<get-scrolling>|<get-scrolling>(){}[0]
+            final fun <set-scrolling>(kotlin/Boolean) // com.github.panpf.sketch.request/PauseLoadWhenScrollingInterceptor.Companion.scrolling.<set-scrolling>|<set-scrolling>(kotlin.Boolean){}[0]
+    }
+}
+
+final class com.github.panpf.sketch.request/SaveCellularTrafficInterceptor : com.github.panpf.sketch.request/Interceptor { // com.github.panpf.sketch.request/SaveCellularTrafficInterceptor|null[0]
+    constructor <init>(kotlin/Function1<com.github.panpf.sketch/Sketch, kotlin/Boolean>? = ...) // com.github.panpf.sketch.request/SaveCellularTrafficInterceptor.<init>|<init>(kotlin.Function1<com.github.panpf.sketch.Sketch,kotlin.Boolean>?){}[0]
+
+    final val key // com.github.panpf.sketch.request/SaveCellularTrafficInterceptor.key|{}key[0]
+        final fun <get-key>(): kotlin/String? // com.github.panpf.sketch.request/SaveCellularTrafficInterceptor.key.<get-key>|<get-key>(){}[0]
+    final val sortWeight // com.github.panpf.sketch.request/SaveCellularTrafficInterceptor.sortWeight|{}sortWeight[0]
+        final fun <get-sortWeight>(): kotlin/Int // com.github.panpf.sketch.request/SaveCellularTrafficInterceptor.sortWeight.<get-sortWeight>|<get-sortWeight>(){}[0]
+
+    final var enabled // com.github.panpf.sketch.request/SaveCellularTrafficInterceptor.enabled|{}enabled[0]
+        final fun <get-enabled>(): kotlin/Boolean // com.github.panpf.sketch.request/SaveCellularTrafficInterceptor.enabled.<get-enabled>|<get-enabled>(){}[0]
+        final fun <set-enabled>(kotlin/Boolean) // com.github.panpf.sketch.request/SaveCellularTrafficInterceptor.enabled.<set-enabled>|<set-enabled>(kotlin.Boolean){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.request/SaveCellularTrafficInterceptor.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.github.panpf.sketch.request/SaveCellularTrafficInterceptor.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.github.panpf.sketch.request/SaveCellularTrafficInterceptor.toString|toString(){}[0]
+    final suspend fun intercept(com.github.panpf.sketch.request/Interceptor.Chain): kotlin/Result<com.github.panpf.sketch.request/ImageData> // com.github.panpf.sketch.request/SaveCellularTrafficInterceptor.intercept|intercept(com.github.panpf.sketch.request.Interceptor.Chain){}[0]
+
+    final object Companion { // com.github.panpf.sketch.request/SaveCellularTrafficInterceptor.Companion|null[0]
+        final const val SORT_WEIGHT // com.github.panpf.sketch.request/SaveCellularTrafficInterceptor.Companion.SORT_WEIGHT|{}SORT_WEIGHT[0]
+            final fun <get-SORT_WEIGHT>(): kotlin/Int // com.github.panpf.sketch.request/SaveCellularTrafficInterceptor.Companion.SORT_WEIGHT.<get-SORT_WEIGHT>|<get-SORT_WEIGHT>(){}[0]
+    }
+}
+
+final object com.github.panpf.sketch.state/SaveCellularTrafficCondition : com.github.panpf.sketch.state/ConditionStateImage.Condition { // com.github.panpf.sketch.state/SaveCellularTrafficCondition|null[0]
+    final val key // com.github.panpf.sketch.state/SaveCellularTrafficCondition.key|{}key[0]
+        final fun <get-key>(): kotlin/String // com.github.panpf.sketch.state/SaveCellularTrafficCondition.key.<get-key>|<get-key>(){}[0]
+
+    final fun accept(com.github.panpf.sketch.request/ImageRequest, kotlin/Throwable?): kotlin/Boolean // com.github.panpf.sketch.state/SaveCellularTrafficCondition.accept|accept(com.github.panpf.sketch.request.ImageRequest;kotlin.Throwable?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.state/SaveCellularTrafficCondition.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.github.panpf.sketch.state/SaveCellularTrafficCondition.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.github.panpf.sketch.state/SaveCellularTrafficCondition.toString|toString(){}[0]
+}
+
+final const val com.github.panpf.sketch.ability/DATA_FROM_DEFAULT_SIZE // com.github.panpf.sketch.ability/DATA_FROM_DEFAULT_SIZE|{}DATA_FROM_DEFAULT_SIZE[0]
+    final fun <get-DATA_FROM_DEFAULT_SIZE>(): kotlin/Float // com.github.panpf.sketch.ability/DATA_FROM_DEFAULT_SIZE.<get-DATA_FROM_DEFAULT_SIZE>|<get-DATA_FROM_DEFAULT_SIZE>(){}[0]
+final const val com.github.panpf.sketch.ability/PROGRESS_INDICATOR_BACKGROUND_ALPHA_PERCENT // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_BACKGROUND_ALPHA_PERCENT|{}PROGRESS_INDICATOR_BACKGROUND_ALPHA_PERCENT[0]
+    final fun <get-PROGRESS_INDICATOR_BACKGROUND_ALPHA_PERCENT>(): kotlin/Float // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_BACKGROUND_ALPHA_PERCENT.<get-PROGRESS_INDICATOR_BACKGROUND_ALPHA_PERCENT>|<get-PROGRESS_INDICATOR_BACKGROUND_ALPHA_PERCENT>(){}[0]
+final const val com.github.panpf.sketch.ability/PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED|{}PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED[0]
+    final fun <get-PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED>(): kotlin/Boolean // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED.<get-PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED>|<get-PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED>(){}[0]
+final const val com.github.panpf.sketch.ability/PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE|{}PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE[0]
+    final fun <get-PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE>(): kotlin/Boolean // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE.<get-PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE>|<get-PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE>(){}[0]
+final const val com.github.panpf.sketch.ability/PROGRESS_INDICATOR_MASK_COLOR // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_MASK_COLOR|{}PROGRESS_INDICATOR_MASK_COLOR[0]
+    final fun <get-PROGRESS_INDICATOR_MASK_COLOR>(): kotlin/Int // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_MASK_COLOR.<get-PROGRESS_INDICATOR_MASK_COLOR>|<get-PROGRESS_INDICATOR_MASK_COLOR>(){}[0]
+final const val com.github.panpf.sketch.ability/PROGRESS_INDICATOR_RING_COLOR // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_RING_COLOR|{}PROGRESS_INDICATOR_RING_COLOR[0]
+    final fun <get-PROGRESS_INDICATOR_RING_COLOR>(): kotlin/Int // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_RING_COLOR.<get-PROGRESS_INDICATOR_RING_COLOR>|<get-PROGRESS_INDICATOR_RING_COLOR>(){}[0]
+final const val com.github.panpf.sketch.ability/PROGRESS_INDICATOR_RING_SIZE // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_RING_SIZE|{}PROGRESS_INDICATOR_RING_SIZE[0]
+    final fun <get-PROGRESS_INDICATOR_RING_SIZE>(): kotlin/Float // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_RING_SIZE.<get-PROGRESS_INDICATOR_RING_SIZE>|<get-PROGRESS_INDICATOR_RING_SIZE>(){}[0]
+final const val com.github.panpf.sketch.ability/PROGRESS_INDICATOR_RING_WIDTH_PERCENT // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_RING_WIDTH_PERCENT|{}PROGRESS_INDICATOR_RING_WIDTH_PERCENT[0]
+    final fun <get-PROGRESS_INDICATOR_RING_WIDTH_PERCENT>(): kotlin/Float // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_RING_WIDTH_PERCENT.<get-PROGRESS_INDICATOR_RING_WIDTH_PERCENT>|<get-PROGRESS_INDICATOR_RING_WIDTH_PERCENT>(){}[0]
+final const val com.github.panpf.sketch.ability/PROGRESS_INDICATOR_SECTOR_BACKGROUND_COLOR // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_SECTOR_BACKGROUND_COLOR|{}PROGRESS_INDICATOR_SECTOR_BACKGROUND_COLOR[0]
+    final fun <get-PROGRESS_INDICATOR_SECTOR_BACKGROUND_COLOR>(): kotlin/Int // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_SECTOR_BACKGROUND_COLOR.<get-PROGRESS_INDICATOR_SECTOR_BACKGROUND_COLOR>|<get-PROGRESS_INDICATOR_SECTOR_BACKGROUND_COLOR>(){}[0]
+final const val com.github.panpf.sketch.ability/PROGRESS_INDICATOR_SECTOR_PROGRESS_COLOR // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_SECTOR_PROGRESS_COLOR|{}PROGRESS_INDICATOR_SECTOR_PROGRESS_COLOR[0]
+    final fun <get-PROGRESS_INDICATOR_SECTOR_PROGRESS_COLOR>(): kotlin/Int // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_SECTOR_PROGRESS_COLOR.<get-PROGRESS_INDICATOR_SECTOR_PROGRESS_COLOR>|<get-PROGRESS_INDICATOR_SECTOR_PROGRESS_COLOR>(){}[0]
+final const val com.github.panpf.sketch.ability/PROGRESS_INDICATOR_SECTOR_SIZE // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_SECTOR_SIZE|{}PROGRESS_INDICATOR_SECTOR_SIZE[0]
+    final fun <get-PROGRESS_INDICATOR_SECTOR_SIZE>(): kotlin/Float // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_SECTOR_SIZE.<get-PROGRESS_INDICATOR_SECTOR_SIZE>|<get-PROGRESS_INDICATOR_SECTOR_SIZE>(){}[0]
+final const val com.github.panpf.sketch.ability/PROGRESS_INDICATOR_SECTOR_STROKE_COLOR // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_SECTOR_STROKE_COLOR|{}PROGRESS_INDICATOR_SECTOR_STROKE_COLOR[0]
+    final fun <get-PROGRESS_INDICATOR_SECTOR_STROKE_COLOR>(): kotlin/Int // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_SECTOR_STROKE_COLOR.<get-PROGRESS_INDICATOR_SECTOR_STROKE_COLOR>|<get-PROGRESS_INDICATOR_SECTOR_STROKE_COLOR>(){}[0]
+final const val com.github.panpf.sketch.ability/PROGRESS_INDICATOR_SECTOR_STROKE_WIDTH_PERCENT // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_SECTOR_STROKE_WIDTH_PERCENT|{}PROGRESS_INDICATOR_SECTOR_STROKE_WIDTH_PERCENT[0]
+    final fun <get-PROGRESS_INDICATOR_SECTOR_STROKE_WIDTH_PERCENT>(): kotlin/Float // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_SECTOR_STROKE_WIDTH_PERCENT.<get-PROGRESS_INDICATOR_SECTOR_STROKE_WIDTH_PERCENT>|<get-PROGRESS_INDICATOR_SECTOR_STROKE_WIDTH_PERCENT>(){}[0]
+final const val com.github.panpf.sketch.ability/PROGRESS_INDICATOR_STEP_ANIMATION_DURATION // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_STEP_ANIMATION_DURATION|{}PROGRESS_INDICATOR_STEP_ANIMATION_DURATION[0]
+    final fun <get-PROGRESS_INDICATOR_STEP_ANIMATION_DURATION>(): kotlin/Int // com.github.panpf.sketch.ability/PROGRESS_INDICATOR_STEP_ANIMATION_DURATION.<get-PROGRESS_INDICATOR_STEP_ANIMATION_DURATION>|<get-PROGRESS_INDICATOR_STEP_ANIMATION_DURATION>(){}[0]
+final const val com.github.panpf.sketch.request/PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY // com.github.panpf.sketch.request/PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY|{}PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY[0]
+    final fun <get-PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY>(): kotlin/String // com.github.panpf.sketch.request/PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY.<get-PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY>|<get-PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY>(){}[0]
+final const val com.github.panpf.sketch.request/PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY // com.github.panpf.sketch.request/PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY|{}PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY[0]
+    final fun <get-PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY>(): kotlin/String // com.github.panpf.sketch.request/PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY.<get-PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY>|<get-PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY>(){}[0]
+final const val com.github.panpf.sketch.request/SAVE_CELLULAR_TRAFFIC_ENABLED_KEY // com.github.panpf.sketch.request/SAVE_CELLULAR_TRAFFIC_ENABLED_KEY|{}SAVE_CELLULAR_TRAFFIC_ENABLED_KEY[0]
+    final fun <get-SAVE_CELLULAR_TRAFFIC_ENABLED_KEY>(): kotlin/String // com.github.panpf.sketch.request/SAVE_CELLULAR_TRAFFIC_ENABLED_KEY.<get-SAVE_CELLULAR_TRAFFIC_ENABLED_KEY>|<get-SAVE_CELLULAR_TRAFFIC_ENABLED_KEY>(){}[0]
+final const val com.github.panpf.sketch.request/SAVE_CELLULAR_TRAFFIC_IGNORED_KEY // com.github.panpf.sketch.request/SAVE_CELLULAR_TRAFFIC_IGNORED_KEY|{}SAVE_CELLULAR_TRAFFIC_IGNORED_KEY[0]
+    final fun <get-SAVE_CELLULAR_TRAFFIC_IGNORED_KEY>(): kotlin/String // com.github.panpf.sketch.request/SAVE_CELLULAR_TRAFFIC_IGNORED_KEY.<get-SAVE_CELLULAR_TRAFFIC_IGNORED_KEY>|<get-SAVE_CELLULAR_TRAFFIC_IGNORED_KEY>(){}[0]
+final const val com.github.panpf.sketch.request/SAVE_CELLULAR_TRAFFIC_KEY // com.github.panpf.sketch.request/SAVE_CELLULAR_TRAFFIC_KEY|{}SAVE_CELLULAR_TRAFFIC_KEY[0]
+    final fun <get-SAVE_CELLULAR_TRAFFIC_KEY>(): kotlin/String // com.github.panpf.sketch.request/SAVE_CELLULAR_TRAFFIC_KEY.<get-SAVE_CELLULAR_TRAFFIC_KEY>|<get-SAVE_CELLULAR_TRAFFIC_KEY>(){}[0]
+
+final val com.github.panpf.sketch.request/isDepthFromSaveCellularTraffic // com.github.panpf.sketch.request/isDepthFromSaveCellularTraffic|@com.github.panpf.sketch.request.ImageOptions{}isDepthFromSaveCellularTraffic[0]
+    final fun (com.github.panpf.sketch.request/ImageOptions).<get-isDepthFromSaveCellularTraffic>(): kotlin/Boolean // com.github.panpf.sketch.request/isDepthFromSaveCellularTraffic.<get-isDepthFromSaveCellularTraffic>|<get-isDepthFromSaveCellularTraffic>@com.github.panpf.sketch.request.ImageOptions(){}[0]
+final val com.github.panpf.sketch.request/isDepthFromSaveCellularTraffic // com.github.panpf.sketch.request/isDepthFromSaveCellularTraffic|@com.github.panpf.sketch.request.ImageRequest{}isDepthFromSaveCellularTraffic[0]
+    final fun (com.github.panpf.sketch.request/ImageRequest).<get-isDepthFromSaveCellularTraffic>(): kotlin/Boolean // com.github.panpf.sketch.request/isDepthFromSaveCellularTraffic.<get-isDepthFromSaveCellularTraffic>|<get-isDepthFromSaveCellularTraffic>@com.github.panpf.sketch.request.ImageRequest(){}[0]
+final val com.github.panpf.sketch.request/isIgnoredPauseLoadWhenScrolling // com.github.panpf.sketch.request/isIgnoredPauseLoadWhenScrolling|@com.github.panpf.sketch.request.ImageOptions{}isIgnoredPauseLoadWhenScrolling[0]
+    final fun (com.github.panpf.sketch.request/ImageOptions).<get-isIgnoredPauseLoadWhenScrolling>(): kotlin/Boolean // com.github.panpf.sketch.request/isIgnoredPauseLoadWhenScrolling.<get-isIgnoredPauseLoadWhenScrolling>|<get-isIgnoredPauseLoadWhenScrolling>@com.github.panpf.sketch.request.ImageOptions(){}[0]
+final val com.github.panpf.sketch.request/isIgnoredPauseLoadWhenScrolling // com.github.panpf.sketch.request/isIgnoredPauseLoadWhenScrolling|@com.github.panpf.sketch.request.ImageRequest{}isIgnoredPauseLoadWhenScrolling[0]
+    final fun (com.github.panpf.sketch.request/ImageRequest).<get-isIgnoredPauseLoadWhenScrolling>(): kotlin/Boolean // com.github.panpf.sketch.request/isIgnoredPauseLoadWhenScrolling.<get-isIgnoredPauseLoadWhenScrolling>|<get-isIgnoredPauseLoadWhenScrolling>@com.github.panpf.sketch.request.ImageRequest(){}[0]
+final val com.github.panpf.sketch.request/isIgnoredSaveCellularTraffic // com.github.panpf.sketch.request/isIgnoredSaveCellularTraffic|@com.github.panpf.sketch.request.ImageOptions{}isIgnoredSaveCellularTraffic[0]
+    final fun (com.github.panpf.sketch.request/ImageOptions).<get-isIgnoredSaveCellularTraffic>(): kotlin/Boolean // com.github.panpf.sketch.request/isIgnoredSaveCellularTraffic.<get-isIgnoredSaveCellularTraffic>|<get-isIgnoredSaveCellularTraffic>@com.github.panpf.sketch.request.ImageOptions(){}[0]
+final val com.github.panpf.sketch.request/isIgnoredSaveCellularTraffic // com.github.panpf.sketch.request/isIgnoredSaveCellularTraffic|@com.github.panpf.sketch.request.ImageRequest{}isIgnoredSaveCellularTraffic[0]
+    final fun (com.github.panpf.sketch.request/ImageRequest).<get-isIgnoredSaveCellularTraffic>(): kotlin/Boolean // com.github.panpf.sketch.request/isIgnoredSaveCellularTraffic.<get-isIgnoredSaveCellularTraffic>|<get-isIgnoredSaveCellularTraffic>@com.github.panpf.sketch.request.ImageRequest(){}[0]
+final val com.github.panpf.sketch.request/isPauseLoadWhenScrolling // com.github.panpf.sketch.request/isPauseLoadWhenScrolling|@com.github.panpf.sketch.request.ImageOptions{}isPauseLoadWhenScrolling[0]
+    final fun (com.github.panpf.sketch.request/ImageOptions).<get-isPauseLoadWhenScrolling>(): kotlin/Boolean // com.github.panpf.sketch.request/isPauseLoadWhenScrolling.<get-isPauseLoadWhenScrolling>|<get-isPauseLoadWhenScrolling>@com.github.panpf.sketch.request.ImageOptions(){}[0]
+final val com.github.panpf.sketch.request/isPauseLoadWhenScrolling // com.github.panpf.sketch.request/isPauseLoadWhenScrolling|@com.github.panpf.sketch.request.ImageRequest{}isPauseLoadWhenScrolling[0]
+    final fun (com.github.panpf.sketch.request/ImageRequest).<get-isPauseLoadWhenScrolling>(): kotlin/Boolean // com.github.panpf.sketch.request/isPauseLoadWhenScrolling.<get-isPauseLoadWhenScrolling>|<get-isPauseLoadWhenScrolling>@com.github.panpf.sketch.request.ImageRequest(){}[0]
+final val com.github.panpf.sketch.request/isSaveCellularTraffic // com.github.panpf.sketch.request/isSaveCellularTraffic|@com.github.panpf.sketch.request.ImageOptions{}isSaveCellularTraffic[0]
+    final fun (com.github.panpf.sketch.request/ImageOptions).<get-isSaveCellularTraffic>(): kotlin/Boolean // com.github.panpf.sketch.request/isSaveCellularTraffic.<get-isSaveCellularTraffic>|<get-isSaveCellularTraffic>@com.github.panpf.sketch.request.ImageOptions(){}[0]
+final val com.github.panpf.sketch.request/isSaveCellularTraffic // com.github.panpf.sketch.request/isSaveCellularTraffic|@com.github.panpf.sketch.request.ImageRequest{}isSaveCellularTraffic[0]
+    final fun (com.github.panpf.sketch.request/ImageRequest).<get-isSaveCellularTraffic>(): kotlin/Boolean // com.github.panpf.sketch.request/isSaveCellularTraffic.<get-isSaveCellularTraffic>|<get-isSaveCellularTraffic>@com.github.panpf.sketch.request.ImageRequest(){}[0]
+
+final fun (com.github.panpf.sketch.request/ImageOptions.Builder).com.github.panpf.sketch.request/ignorePauseLoadWhenScrolling(kotlin/Boolean? = ...): com.github.panpf.sketch.request/ImageOptions.Builder // com.github.panpf.sketch.request/ignorePauseLoadWhenScrolling|ignorePauseLoadWhenScrolling@com.github.panpf.sketch.request.ImageOptions.Builder(kotlin.Boolean?){}[0]
+final fun (com.github.panpf.sketch.request/ImageOptions.Builder).com.github.panpf.sketch.request/ignoreSaveCellularTraffic(kotlin/Boolean? = ...): com.github.panpf.sketch.request/ImageOptions.Builder // com.github.panpf.sketch.request/ignoreSaveCellularTraffic|ignoreSaveCellularTraffic@com.github.panpf.sketch.request.ImageOptions.Builder(kotlin.Boolean?){}[0]
+final fun (com.github.panpf.sketch.request/ImageOptions.Builder).com.github.panpf.sketch.request/pauseLoadWhenScrolling(kotlin/Boolean? = ...): com.github.panpf.sketch.request/ImageOptions.Builder // com.github.panpf.sketch.request/pauseLoadWhenScrolling|pauseLoadWhenScrolling@com.github.panpf.sketch.request.ImageOptions.Builder(kotlin.Boolean?){}[0]
+final fun (com.github.panpf.sketch.request/ImageOptions.Builder).com.github.panpf.sketch.request/saveCellularTraffic(kotlin/Boolean? = ...): com.github.panpf.sketch.request/ImageOptions.Builder // com.github.panpf.sketch.request/saveCellularTraffic|saveCellularTraffic@com.github.panpf.sketch.request.ImageOptions.Builder(kotlin.Boolean?){}[0]
+final fun (com.github.panpf.sketch.request/ImageRequest.Builder).com.github.panpf.sketch.request/ignorePauseLoadWhenScrolling(kotlin/Boolean? = ...): com.github.panpf.sketch.request/ImageRequest.Builder // com.github.panpf.sketch.request/ignorePauseLoadWhenScrolling|ignorePauseLoadWhenScrolling@com.github.panpf.sketch.request.ImageRequest.Builder(kotlin.Boolean?){}[0]
+final fun (com.github.panpf.sketch.request/ImageRequest.Builder).com.github.panpf.sketch.request/ignoreSaveCellularTraffic(kotlin/Boolean? = ...): com.github.panpf.sketch.request/ImageRequest.Builder // com.github.panpf.sketch.request/ignoreSaveCellularTraffic|ignoreSaveCellularTraffic@com.github.panpf.sketch.request.ImageRequest.Builder(kotlin.Boolean?){}[0]
+final fun (com.github.panpf.sketch.request/ImageRequest.Builder).com.github.panpf.sketch.request/pauseLoadWhenScrolling(kotlin/Boolean? = ...): com.github.panpf.sketch.request/ImageRequest.Builder // com.github.panpf.sketch.request/pauseLoadWhenScrolling|pauseLoadWhenScrolling@com.github.panpf.sketch.request.ImageRequest.Builder(kotlin.Boolean?){}[0]
+final fun (com.github.panpf.sketch.request/ImageRequest.Builder).com.github.panpf.sketch.request/saveCellularTraffic(kotlin/Boolean? = ...): com.github.panpf.sketch.request/ImageRequest.Builder // com.github.panpf.sketch.request/saveCellularTraffic|saveCellularTraffic@com.github.panpf.sketch.request.ImageRequest.Builder(kotlin.Boolean?){}[0]
+final fun (com.github.panpf.sketch.state/ConditionStateImage.Builder).com.github.panpf.sketch.state/saveCellularTrafficError(com.github.panpf.sketch.state/StateImage): com.github.panpf.sketch.state/ConditionStateImage.Builder // com.github.panpf.sketch.state/saveCellularTrafficError|saveCellularTrafficError@com.github.panpf.sketch.state.ConditionStateImage.Builder(com.github.panpf.sketch.state.StateImage){}[0]
+final fun (com.github.panpf.sketch/ComponentRegistry.Builder).com.github.panpf.sketch.request/supportPauseLoadWhenScrolling(): com.github.panpf.sketch/ComponentRegistry.Builder // com.github.panpf.sketch.request/supportPauseLoadWhenScrolling|supportPauseLoadWhenScrolling@com.github.panpf.sketch.ComponentRegistry.Builder(){}[0]
+final fun (com.github.panpf.sketch/ComponentRegistry.Builder).com.github.panpf.sketch.request/supportSaveCellularTraffic(): com.github.panpf.sketch/ComponentRegistry.Builder // com.github.panpf.sketch.request/supportSaveCellularTraffic|supportSaveCellularTraffic@com.github.panpf.sketch.ComponentRegistry.Builder(){}[0]
+final fun com.github.panpf.sketch.ability/dataFromColor(com.github.panpf.sketch.source/DataFrom): kotlin/Int // com.github.panpf.sketch.ability/dataFromColor|dataFromColor(com.github.panpf.sketch.source.DataFrom){}[0]
+final fun com.github.panpf.sketch.ability/getMimeTypeFromImageResult(com.github.panpf.sketch.request/ImageResult?, kotlin/String? = ...): kotlin/String? // com.github.panpf.sketch.ability/getMimeTypeFromImageResult|getMimeTypeFromImageResult(com.github.panpf.sketch.request.ImageResult?;kotlin.String?){}[0]
+final fun com.github.panpf.sketch.request/isCausedBySaveCellularTraffic(com.github.panpf.sketch.request/ImageRequest, kotlin/Throwable?): kotlin/Boolean // com.github.panpf.sketch.request/isCausedBySaveCellularTraffic|isCausedBySaveCellularTraffic(com.github.panpf.sketch.request.ImageRequest;kotlin.Throwable?){}[0]

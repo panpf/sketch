@@ -1,0 +1,763 @@
+public final class com/github/panpf/sketch/AsyncImageKt {
+	public static final fun AsyncImage-10Xjiaw (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Sketch;Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/github/panpf/sketch/AsyncImageState;Landroidx/compose/ui/Alignment;Landroidx/compose/ui/layout/ContentScale;FLandroidx/compose/ui/graphics/ColorFilter;IZLandroidx/compose/runtime/Composer;III)V
+	public static final fun AsyncImage-10Xjiaw (Ljava/lang/String;Lcom/github/panpf/sketch/Sketch;Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/github/panpf/sketch/AsyncImageState;Landroidx/compose/ui/Alignment;Landroidx/compose/ui/layout/ContentScale;FLandroidx/compose/ui/graphics/ColorFilter;IZLandroidx/compose/runtime/Composer;III)V
+	public static final fun AsyncImage-gl8XCv8 (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Sketch;Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/github/panpf/sketch/AsyncImageState;Landroidx/compose/ui/Alignment;Landroidx/compose/ui/layout/ContentScale;FLandroidx/compose/ui/graphics/ColorFilter;IZZLandroidx/compose/runtime/Composer;III)V
+	public static final fun AsyncImage-gl8XCv8 (Ljava/lang/String;Lcom/github/panpf/sketch/Sketch;Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/github/panpf/sketch/AsyncImageState;Landroidx/compose/ui/Alignment;Landroidx/compose/ui/layout/ContentScale;FLandroidx/compose/ui/graphics/ColorFilter;IZZLandroidx/compose/runtime/Composer;III)V
+}
+
+public final class com/github/panpf/sketch/AsyncImagePainter : androidx/compose/ui/graphics/painter/Painter, com/github/panpf/sketch/painter/SketchPainter {
+	public static final field $stable I
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getIntrinsicSize-NH-jbRc ()J
+	public final fun getState ()Lcom/github/panpf/sketch/AsyncImageState;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/AsyncImagePainterKt {
+	public static final fun rememberAsyncImagePainter-19ie5dc (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/AsyncImageState;Landroidx/compose/ui/layout/ContentScale;ILandroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/AsyncImagePainter;
+	public static final fun rememberAsyncImagePainter-19ie5dc (Ljava/lang/String;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/AsyncImageState;Landroidx/compose/ui/layout/ContentScale;ILandroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/AsyncImagePainter;
+	public static final fun rememberAsyncImagePainter-5jETZwI (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/AsyncImageState;Landroidx/compose/ui/Alignment;Landroidx/compose/ui/layout/ContentScale;ILandroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/AsyncImagePainter;
+	public static final fun rememberAsyncImagePainter-5jETZwI (Ljava/lang/String;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/AsyncImageState;Landroidx/compose/ui/Alignment;Landroidx/compose/ui/layout/ContentScale;ILandroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/AsyncImagePainter;
+}
+
+public final class com/github/panpf/sketch/AsyncImageState : androidx/compose/runtime/RememberObserver {
+	public static final field $stable I
+	public final fun getAlignment ()Landroidx/compose/ui/Alignment;
+	public final fun getContentScale ()Landroidx/compose/ui/layout/ContentScale;
+	public final fun getContext ()Lcom/github/panpf/sketch/PlatformContext;
+	public final fun getFilterQuality-f-v9h1I ()I
+	public final fun getImageOptions ()Lcom/github/panpf/sketch/request/ImageOptions;
+	public final fun getInspectionMode ()Z
+	public final fun getLifecycle ()Landroidx/lifecycle/Lifecycle;
+	public final fun getLoadState ()Lcom/github/panpf/sketch/request/LoadState;
+	public final fun getOnLoadState ()Lkotlin/jvm/functions/Function1;
+	public final fun getOnPainterState ()Lkotlin/jvm/functions/Function1;
+	public final fun getPainter ()Landroidx/compose/ui/graphics/painter/Painter;
+	public final fun getPainterState ()Lcom/github/panpf/sketch/PainterState;
+	public final fun getProgress ()Lcom/github/panpf/sketch/request/Progress;
+	public final fun getRequest ()Lcom/github/panpf/sketch/request/ImageRequest;
+	public final fun getResult ()Lcom/github/panpf/sketch/request/ImageResult;
+	public final fun getSize-bOM6tXw ()Landroidx/compose/ui/unit/IntSize;
+	public final fun getSketch ()Lcom/github/panpf/sketch/Sketch;
+	public final fun getWindowContainerSize-bOM6tXw ()Landroidx/compose/ui/unit/IntSize;
+	public fun onAbandoned ()V
+	public fun onForgotten ()V
+	public fun onRemembered ()V
+	public final fun restart ()V
+	public final fun setOnLoadState (Lkotlin/jvm/functions/Function1;)V
+	public final fun setOnPainterState (Lkotlin/jvm/functions/Function1;)V
+	public final fun setSize-ozmzZPI (J)V
+	public final fun setSizeWithLeast-ozmzZPI (J)V
+	public final fun setWindowContainerSizeWithLeast-ozmzZPI (J)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/AsyncImageStateKt {
+	public static final fun rememberAsyncImageState (Lcom/github/panpf/sketch/request/ImageOptions;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/AsyncImageState;
+	public static final fun rememberAsyncImageState (Lkotlin/jvm/functions/Function0;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/AsyncImageState;
+}
+
+public final class com/github/panpf/sketch/LocalPlatformContext_nonAndroidKt {
+	public static final fun getLocalPlatformContext ()Landroidx/compose/runtime/ProvidableCompositionLocal;
+}
+
+public final class com/github/panpf/sketch/PainterImage : com/github/panpf/sketch/Image {
+	public static final field $stable I
+	public fun <init> (Landroidx/compose/ui/graphics/painter/Painter;Z)V
+	public synthetic fun <init> (Landroidx/compose/ui/graphics/painter/Painter;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun checkValid ()Z
+	public final fun component1 ()Landroidx/compose/ui/graphics/painter/Painter;
+	public final fun component2 ()Z
+	public final fun copy (Landroidx/compose/ui/graphics/painter/Painter;Z)Lcom/github/panpf/sketch/PainterImage;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/PainterImage;Landroidx/compose/ui/graphics/painter/Painter;ZILjava/lang/Object;)Lcom/github/panpf/sketch/PainterImage;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getByteCount ()J
+	public fun getHeight ()I
+	public final fun getPainter ()Landroidx/compose/ui/graphics/painter/Painter;
+	public fun getShareable ()Z
+	public fun getWidth ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/PainterImageKt {
+	public static final fun asImage (Landroidx/compose/ui/graphics/painter/Painter;Z)Lcom/github/panpf/sketch/PainterImage;
+	public static synthetic fun asImage$default (Landroidx/compose/ui/graphics/painter/Painter;ZILjava/lang/Object;)Lcom/github/panpf/sketch/PainterImage;
+	public static final fun asPainter-50PEsBU (Lcom/github/panpf/sketch/Image;I)Landroidx/compose/ui/graphics/painter/Painter;
+	public static synthetic fun asPainter-50PEsBU$default (Lcom/github/panpf/sketch/Image;IILjava/lang/Object;)Landroidx/compose/ui/graphics/painter/Painter;
+}
+
+public final class com/github/panpf/sketch/PainterImage_nonAndroidKt {
+	public static final fun asPainterOrNull-50PEsBU (Lcom/github/panpf/sketch/Image;I)Landroidx/compose/ui/graphics/painter/Painter;
+	public static synthetic fun asPainterOrNull-50PEsBU$default (Lcom/github/panpf/sketch/Image;IILjava/lang/Object;)Landroidx/compose/ui/graphics/painter/Painter;
+}
+
+public abstract interface class com/github/panpf/sketch/PainterState {
+	public abstract fun getPainter ()Landroidx/compose/ui/graphics/painter/Painter;
+}
+
+public final class com/github/panpf/sketch/PainterState$Error : com/github/panpf/sketch/PainterState {
+	public static final field $stable I
+	public fun <init> (Lcom/github/panpf/sketch/request/ImageResult$Error;Landroidx/compose/ui/graphics/painter/Painter;)V
+	public final fun component1 ()Lcom/github/panpf/sketch/request/ImageResult$Error;
+	public final fun component2 ()Landroidx/compose/ui/graphics/painter/Painter;
+	public final fun copy (Lcom/github/panpf/sketch/request/ImageResult$Error;Landroidx/compose/ui/graphics/painter/Painter;)Lcom/github/panpf/sketch/PainterState$Error;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/PainterState$Error;Lcom/github/panpf/sketch/request/ImageResult$Error;Landroidx/compose/ui/graphics/painter/Painter;ILjava/lang/Object;)Lcom/github/panpf/sketch/PainterState$Error;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getPainter ()Landroidx/compose/ui/graphics/painter/Painter;
+	public final fun getResult ()Lcom/github/panpf/sketch/request/ImageResult$Error;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/PainterState$Loading : com/github/panpf/sketch/PainterState {
+	public static final field $stable I
+	public fun <init> (Landroidx/compose/ui/graphics/painter/Painter;)V
+	public final fun component1 ()Landroidx/compose/ui/graphics/painter/Painter;
+	public final fun copy (Landroidx/compose/ui/graphics/painter/Painter;)Lcom/github/panpf/sketch/PainterState$Loading;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/PainterState$Loading;Landroidx/compose/ui/graphics/painter/Painter;ILjava/lang/Object;)Lcom/github/panpf/sketch/PainterState$Loading;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getPainter ()Landroidx/compose/ui/graphics/painter/Painter;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/PainterState$Success : com/github/panpf/sketch/PainterState {
+	public static final field $stable I
+	public fun <init> (Lcom/github/panpf/sketch/request/ImageResult$Success;Landroidx/compose/ui/graphics/painter/Painter;)V
+	public final fun component1 ()Lcom/github/panpf/sketch/request/ImageResult$Success;
+	public final fun component2 ()Landroidx/compose/ui/graphics/painter/Painter;
+	public final fun copy (Lcom/github/panpf/sketch/request/ImageResult$Success;Landroidx/compose/ui/graphics/painter/Painter;)Lcom/github/panpf/sketch/PainterState$Success;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/PainterState$Success;Lcom/github/panpf/sketch/request/ImageResult$Success;Landroidx/compose/ui/graphics/painter/Painter;ILjava/lang/Object;)Lcom/github/panpf/sketch/PainterState$Success;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getPainter ()Landroidx/compose/ui/graphics/painter/Painter;
+	public final fun getResult ()Lcom/github/panpf/sketch/request/ImageResult$Success;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/PainterStateKt {
+	public static final fun getName (Lcom/github/panpf/sketch/PainterState;)Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/SubcomposeAsyncImageKt {
+	public static final fun SubcomposeAsyncImage-10Xjiaw (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Sketch;Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/github/panpf/sketch/AsyncImageState;Landroidx/compose/ui/Alignment;Landroidx/compose/ui/layout/ContentScale;FLandroidx/compose/ui/graphics/ColorFilter;ILkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;III)V
+	public static final fun SubcomposeAsyncImage-10Xjiaw (Ljava/lang/String;Lcom/github/panpf/sketch/Sketch;Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/github/panpf/sketch/AsyncImageState;Landroidx/compose/ui/Alignment;Landroidx/compose/ui/layout/ContentScale;FLandroidx/compose/ui/graphics/ColorFilter;ILkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;III)V
+	public static final fun SubcomposeAsyncImage-NSYyRI0 (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Sketch;Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/github/panpf/sketch/AsyncImageState;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;Landroidx/compose/ui/Alignment;Landroidx/compose/ui/layout/ContentScale;FLandroidx/compose/ui/graphics/ColorFilter;IZLandroidx/compose/runtime/Composer;III)V
+	public static final fun SubcomposeAsyncImage-NSYyRI0 (Ljava/lang/String;Lcom/github/panpf/sketch/Sketch;Ljava/lang/String;Landroidx/compose/ui/Modifier;Lcom/github/panpf/sketch/AsyncImageState;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;Lkotlin/jvm/functions/Function4;Landroidx/compose/ui/Alignment;Landroidx/compose/ui/layout/ContentScale;FLandroidx/compose/ui/graphics/ColorFilter;IZLandroidx/compose/runtime/Composer;III)V
+	public static final fun SubcomposeAsyncImageContent (Lcom/github/panpf/sketch/SubcomposeAsyncImageScope;Landroidx/compose/ui/Modifier;Landroidx/compose/ui/graphics/painter/Painter;Ljava/lang/String;Landroidx/compose/ui/Alignment;Landroidx/compose/ui/layout/ContentScale;FLandroidx/compose/ui/graphics/ColorFilter;ZLandroidx/compose/runtime/Composer;II)V
+}
+
+public abstract interface class com/github/panpf/sketch/SubcomposeAsyncImageScope : androidx/compose/foundation/layout/BoxScope {
+	public abstract fun getAlignment ()Landroidx/compose/ui/Alignment;
+	public abstract fun getAlpha ()F
+	public abstract fun getColorFilter ()Landroidx/compose/ui/graphics/ColorFilter;
+	public abstract fun getContentDescription ()Ljava/lang/String;
+	public abstract fun getContentScale ()Landroidx/compose/ui/layout/ContentScale;
+	public abstract fun getPainter ()Lcom/github/panpf/sketch/AsyncImagePainter;
+	public abstract fun getState ()Lcom/github/panpf/sketch/AsyncImageState;
+}
+
+public final class com/github/panpf/sketch/internal/AsyncImageContentKt {
+	public static final fun AsyncImageContent (Landroidx/compose/ui/Modifier;Landroidx/compose/ui/graphics/painter/Painter;Ljava/lang/String;Landroidx/compose/ui/Alignment;Landroidx/compose/ui/layout/ContentScale;FLandroidx/compose/ui/graphics/ColorFilter;ZLandroidx/compose/runtime/Composer;II)V
+}
+
+public final class com/github/panpf/sketch/internal/UtilsKt {
+	public static final fun requestOf (Lcom/github/panpf/sketch/PlatformContext;Ljava/lang/String;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/request/ImageRequest;
+	public static final fun requestOf (Ljava/lang/String;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/request/ImageRequest;
+}
+
+public abstract interface class com/github/panpf/sketch/painter/AnimatablePainter {
+	public abstract fun isRunning ()Z
+	public abstract fun start ()V
+	public abstract fun stop ()V
+}
+
+public final class com/github/panpf/sketch/painter/AnimatablePainterKt {
+	public static final fun startWithLifecycle (Lcom/github/panpf/sketch/painter/AnimatablePainter;Landroidx/compose/runtime/Composer;I)V
+}
+
+public final class com/github/panpf/sketch/painter/AnimatedImagePainter : androidx/compose/ui/graphics/painter/Painter, androidx/compose/runtime/RememberObserver, com/github/panpf/sketch/painter/AnimatablePainter {
+	public static final field $stable I
+	public synthetic fun <init> (Lcom/github/panpf/sketch/AnimatedImage;JJIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/github/panpf/sketch/AnimatedImage;JJILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getIntrinsicSize-NH-jbRc ()J
+	public fun hashCode ()I
+	public fun isRunning ()Z
+	public fun onAbandoned ()V
+	public fun onForgotten ()V
+	public fun onRemembered ()V
+	public fun start ()V
+	public fun stop ()V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/painter/CrossfadePainter : androidx/compose/ui/graphics/painter/Painter, androidx/compose/runtime/RememberObserver, com/github/panpf/sketch/painter/AnimatablePainter, com/github/panpf/sketch/painter/SketchPainter, com/github/panpf/sketch/transition/TransitionPainter {
+	public static final field $stable I
+	public static final field Companion Lcom/github/panpf/sketch/painter/CrossfadePainter$Companion;
+	public fun <init> (Landroidx/compose/ui/graphics/painter/Painter;Landroidx/compose/ui/graphics/painter/Painter;Landroidx/compose/ui/layout/ContentScale;Landroidx/compose/ui/Alignment;IZZ)V
+	public synthetic fun <init> (Landroidx/compose/ui/graphics/painter/Painter;Landroidx/compose/ui/graphics/painter/Painter;Landroidx/compose/ui/layout/ContentScale;Landroidx/compose/ui/Alignment;IZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Landroidx/compose/ui/graphics/painter/Painter;Landroidx/compose/ui/graphics/painter/Painter;ZIZZ)V
+	public synthetic fun <init> (Landroidx/compose/ui/graphics/painter/Painter;Landroidx/compose/ui/graphics/painter/Painter;ZIZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAlignment ()Landroidx/compose/ui/Alignment;
+	public final fun getContentScale ()Landroidx/compose/ui/layout/ContentScale;
+	public final fun getDurationMillis ()I
+	public final fun getEnd ()Landroidx/compose/ui/graphics/painter/Painter;
+	public final fun getFadeStart ()Z
+	public final fun getFitScale ()Z
+	public fun getIntrinsicSize-NH-jbRc ()J
+	public final fun getPreferExactIntrinsicSize ()Z
+	public final fun getStart ()Landroidx/compose/ui/graphics/painter/Painter;
+	public fun hashCode ()I
+	public fun isRunning ()Z
+	public fun onAbandoned ()V
+	public fun onForgotten ()V
+	public fun onRemembered ()V
+	public fun start ()V
+	public fun stop ()V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/painter/CrossfadePainter$Companion {
+}
+
+public final class com/github/panpf/sketch/painter/EqualsPainterKt {
+	public static final fun asEquitable (Landroidx/compose/ui/graphics/painter/BrushPainter;)Lcom/github/panpf/sketch/painter/EquitablePainter;
+	public static final fun asEquitable (Landroidx/compose/ui/graphics/painter/ColorPainter;)Lcom/github/panpf/sketch/painter/EquitablePainter;
+	public static final fun asEquitable (Landroidx/compose/ui/graphics/painter/Painter;Ljava/lang/Object;)Lcom/github/panpf/sketch/painter/EquitablePainter;
+}
+
+public final class com/github/panpf/sketch/painter/EquitableAnimatablePainter : com/github/panpf/sketch/painter/EquitablePainter, com/github/panpf/sketch/painter/AnimatablePainter, com/github/panpf/sketch/util/Key {
+	public static final field $stable I
+	public fun <init> (Landroidx/compose/ui/graphics/painter/Painter;Ljava/lang/Object;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun isRunning ()Z
+	public fun start ()V
+	public fun stop ()V
+	public fun toString ()Ljava/lang/String;
+}
+
+public class com/github/panpf/sketch/painter/EquitablePainter : com/github/panpf/sketch/painter/PainterWrapper, com/github/panpf/sketch/painter/SketchPainter, com/github/panpf/sketch/util/Key {
+	public static final field $stable I
+	public fun <init> (Landroidx/compose/ui/graphics/painter/Painter;Ljava/lang/Object;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEqualityKey ()Ljava/lang/Object;
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/painter/IconAnimatablePainter : com/github/panpf/sketch/painter/IconPainter, com/github/panpf/sketch/painter/AnimatablePainter {
+	public static final field $stable I
+	public synthetic fun <init> (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun isRunning ()Z
+	public fun start ()V
+	public fun stop ()V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/painter/IconAnimatablePainter_commonKt {
+	public static final fun rememberIconAnimatablePainter (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/painter/IconAnimatablePainter;
+	public static final fun rememberIconAnimatablePainter (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconAnimatablePainter;
+	public static final fun rememberIconAnimatablePainter-5oXFXW4 (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconAnimatablePainter;
+	public static final fun rememberIconAnimatablePainter-D2uFLQQ (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconAnimatablePainter;
+	public static final fun rememberIconAnimatablePainter-DWLq7jM (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconAnimatablePainter;
+	public static final fun rememberIconAnimatablePainter-ZLcQsz0 (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconAnimatablePainter;
+	public static final fun rememberIconAnimatablePainter-bU_wl9k (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconAnimatablePainter;
+	public static final fun rememberIconAnimatablePainter-qxKsBhk (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconAnimatablePainter;
+	public static final fun rememberIconAnimatablePainter-vMSDqxM (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconAnimatablePainter;
+}
+
+public class com/github/panpf/sketch/painter/IconPainter : androidx/compose/ui/graphics/painter/Painter, androidx/compose/runtime/RememberObserver, com/github/panpf/sketch/painter/SketchPainter, com/github/panpf/sketch/util/Key {
+	public static final field $stable I
+	public synthetic fun <init> (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	protected fun applyAlpha (F)Z
+	protected fun applyColorFilter (Landroidx/compose/ui/graphics/ColorFilter;)Z
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBackground ()Lcom/github/panpf/sketch/painter/EquitablePainter;
+	public final fun getIcon ()Lcom/github/panpf/sketch/painter/EquitablePainter;
+	public final fun getIconSize-VsRJwc0 ()Landroidx/compose/ui/geometry/Size;
+	public final fun getIconTint-QN2ZGVo ()Landroidx/compose/ui/graphics/Color;
+	public fun getIntrinsicSize-NH-jbRc ()J
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun onAbandoned ()V
+	protected fun onDraw (Landroidx/compose/ui/graphics/drawscope/DrawScope;)V
+	public fun onForgotten ()V
+	public fun onRemembered ()V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/painter/IconPainter_commonKt {
+	public static final fun rememberIconPainter (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter-5oXFXW4 (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter-D2uFLQQ (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter-DWLq7jM (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter-ZLcQsz0 (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter-bU_wl9k (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter-qxKsBhk (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter-vMSDqxM (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+}
+
+public final class com/github/panpf/sketch/painter/ImageBitmapPainter : androidx/compose/ui/graphics/painter/Painter, com/github/panpf/sketch/painter/SketchPainter {
+	public static final field $stable I
+	public synthetic fun <init> (Landroidx/compose/ui/graphics/ImageBitmap;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Landroidx/compose/ui/graphics/ImageBitmap;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBitmap ()Landroidx/compose/ui/graphics/ImageBitmap;
+	public final fun getFilterQuality-f-v9h1I ()I
+	public fun getIntrinsicSize-NH-jbRc ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/painter/ImageBitmapPainterKt {
+	public static final fun asPainter-50PEsBU (Landroidx/compose/ui/graphics/ImageBitmap;I)Landroidx/compose/ui/graphics/painter/Painter;
+	public static synthetic fun asPainter-50PEsBU$default (Landroidx/compose/ui/graphics/ImageBitmap;IILjava/lang/Object;)Landroidx/compose/ui/graphics/painter/Painter;
+}
+
+public class com/github/panpf/sketch/painter/PainterWrapper : androidx/compose/ui/graphics/painter/Painter {
+	public static final field $stable I
+	public fun <init> (Landroidx/compose/ui/graphics/painter/Painter;)V
+	protected fun applyAlpha (F)Z
+	protected fun applyColorFilter (Landroidx/compose/ui/graphics/ColorFilter;)Z
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getIntrinsicSize-NH-jbRc ()J
+	public final fun getPainter ()Landroidx/compose/ui/graphics/painter/Painter;
+	public fun hashCode ()I
+	protected fun onDraw (Landroidx/compose/ui/graphics/drawscope/DrawScope;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/painter/Painters_commonKt {
+	public static final fun key (Landroidx/compose/ui/graphics/painter/Painter;Ljava/lang/Object;)Ljava/lang/String;
+	public static synthetic fun key$default (Landroidx/compose/ui/graphics/painter/Painter;Ljava/lang/Object;ILjava/lang/Object;)Ljava/lang/String;
+	public static final fun toLogString (Landroidx/compose/ui/graphics/painter/Painter;)Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/painter/ResizeAnimatablePainter : com/github/panpf/sketch/painter/ResizePainter, com/github/panpf/sketch/painter/AnimatablePainter {
+	public static final field $stable I
+	public synthetic fun <init> (Landroidx/compose/ui/graphics/painter/Painter;JLandroidx/compose/ui/layout/ContentScale;Landroidx/compose/ui/Alignment;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Landroidx/compose/ui/graphics/painter/Painter;JLandroidx/compose/ui/layout/ContentScale;Landroidx/compose/ui/Alignment;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Landroidx/compose/ui/graphics/painter/Painter;JLcom/github/panpf/sketch/resize/Scale;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun isRunning ()Z
+	public fun start ()V
+	public fun stop ()V
+	public fun toString ()Ljava/lang/String;
+}
+
+public class com/github/panpf/sketch/painter/ResizePainter : androidx/compose/ui/graphics/painter/Painter, androidx/compose/runtime/RememberObserver, com/github/panpf/sketch/painter/SketchPainter {
+	public static final field $stable I
+	public synthetic fun <init> (Landroidx/compose/ui/graphics/painter/Painter;JLandroidx/compose/ui/layout/ContentScale;Landroidx/compose/ui/Alignment;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Landroidx/compose/ui/graphics/painter/Painter;JLandroidx/compose/ui/layout/ContentScale;Landroidx/compose/ui/Alignment;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Landroidx/compose/ui/graphics/painter/Painter;JLcom/github/panpf/sketch/resize/Scale;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	protected fun applyAlpha (F)Z
+	protected fun applyColorFilter (Landroidx/compose/ui/graphics/ColorFilter;)Z
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAlignment ()Landroidx/compose/ui/Alignment;
+	public final fun getContentScale ()Landroidx/compose/ui/layout/ContentScale;
+	public fun getIntrinsicSize-NH-jbRc ()J
+	public final fun getPainter ()Landroidx/compose/ui/graphics/painter/Painter;
+	public final fun getScale ()Lcom/github/panpf/sketch/resize/Scale;
+	public final fun getSize-NH-jbRc ()J
+	public fun hashCode ()I
+	public fun onAbandoned ()V
+	protected fun onDraw (Landroidx/compose/ui/graphics/drawscope/DrawScope;)V
+	public fun onForgotten ()V
+	public fun onRemembered ()V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/painter/ResizePainterKt {
+	public static final fun rememberResizePainter-H1y-IFE (Landroidx/compose/ui/graphics/painter/Painter;JLandroidx/compose/ui/layout/ContentScale;Landroidx/compose/ui/Alignment;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/ResizePainter;
+	public static final fun rememberResizePainter-eZhPAX0 (Landroidx/compose/ui/graphics/painter/Painter;JLcom/github/panpf/sketch/resize/Scale;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/painter/ResizePainter;
+	public static final fun resize-12SF9DM (Landroidx/compose/ui/graphics/painter/Painter;JLcom/github/panpf/sketch/resize/Scale;)Lcom/github/panpf/sketch/painter/ResizePainter;
+	public static final fun resize-x_KDEd0 (Landroidx/compose/ui/graphics/painter/Painter;JLandroidx/compose/ui/layout/ContentScale;Landroidx/compose/ui/Alignment;)Lcom/github/panpf/sketch/painter/ResizePainter;
+	public static synthetic fun resize-x_KDEd0$default (Landroidx/compose/ui/graphics/painter/Painter;JLandroidx/compose/ui/layout/ContentScale;Landroidx/compose/ui/Alignment;ILjava/lang/Object;)Lcom/github/panpf/sketch/painter/ResizePainter;
+}
+
+public abstract interface class com/github/panpf/sketch/painter/SketchPainter {
+	public abstract fun equals (Ljava/lang/Object;)Z
+	public abstract fun hashCode ()I
+	public abstract fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/request/ImageOptions_composeCommonKt {
+	public static final fun ComposableImageOptions (Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/request/ImageOptions;
+	public static final fun error-4WTKRHQ (Lcom/github/panpf/sketch/request/ImageOptions$Builder;J)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun fallback-4WTKRHQ (Lcom/github/panpf/sketch/request/ImageOptions$Builder;J)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun placeholder-4WTKRHQ (Lcom/github/panpf/sketch/request/ImageOptions$Builder;J)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun resize-95KtPRI (Lcom/github/panpf/sketch/request/ImageOptions$Builder;JLcom/github/panpf/sketch/resize/Precision;Lcom/github/panpf/sketch/resize/Scale;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static synthetic fun resize-95KtPRI$default (Lcom/github/panpf/sketch/request/ImageOptions$Builder;JLcom/github/panpf/sketch/resize/Precision;Lcom/github/panpf/sketch/resize/Scale;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun size-O0kMr_c (Lcom/github/panpf/sketch/request/ImageOptions$Builder;J)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+}
+
+public final class com/github/panpf/sketch/request/ImageOptions_composeNonAndroidKt {
+	public static final fun sizeWithWindow (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+}
+
+public final class com/github/panpf/sketch/request/ImageRequest_composeCommonKt {
+	public static final fun ComposableImageRequest (Lcom/github/panpf/sketch/PlatformContext;Ljava/lang/String;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/request/ImageRequest;
+	public static final fun ComposableImageRequest (Lcom/github/panpf/sketch/PlatformContext;Ljava/lang/String;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/request/ImageRequest;
+	public static final fun ComposableImageRequest (Ljava/lang/String;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/request/ImageRequest;
+	public static final fun ComposableImageRequest (Ljava/lang/String;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/request/ImageRequest;
+	public static final fun error-4WTKRHQ (Lcom/github/panpf/sketch/request/ImageRequest$Builder;J)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun fallback-4WTKRHQ (Lcom/github/panpf/sketch/request/ImageRequest$Builder;J)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun placeholder-4WTKRHQ (Lcom/github/panpf/sketch/request/ImageRequest$Builder;J)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun resize-95KtPRI (Lcom/github/panpf/sketch/request/ImageRequest$Builder;JLcom/github/panpf/sketch/resize/Precision;Lcom/github/panpf/sketch/resize/Scale;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static synthetic fun resize-95KtPRI$default (Lcom/github/panpf/sketch/request/ImageRequest$Builder;JLcom/github/panpf/sketch/resize/Precision;Lcom/github/panpf/sketch/resize/Scale;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun size-O0kMr_c (Lcom/github/panpf/sketch/request/ImageRequest$Builder;J)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+}
+
+public final class com/github/panpf/sketch/request/ImageRequest_composeNonAndroidKt {
+	public static final fun sizeWithWindow (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+}
+
+public final class com/github/panpf/sketch/request/internal/ComposeRequestDelegate : com/github/panpf/sketch/request/internal/BaseRequestDelegate {
+	public static final field $stable I
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/ComposeTarget;Lkotlinx/coroutines/Job;)V
+	public fun assertActive ()V
+	public fun finish ()V
+}
+
+public final class com/github/panpf/sketch/request/internal/ComposeRequestManager : com/github/panpf/sketch/request/internal/BaseRequestManager {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun isAttached ()Z
+	public final fun onForgotten ()V
+	public final fun onRemembered ()V
+}
+
+public final class com/github/panpf/sketch/resize/AsyncImageSizeResolver : com/github/panpf/sketch/resize/SizeResolver {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKey ()Ljava/lang/String;
+	public final fun getSizeState ()Lkotlinx/coroutines/flow/MutableStateFlow;
+	public fun hashCode ()I
+	public fun size (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/resize/ComposeResizeOnDrawHelper : com/github/panpf/sketch/resize/ResizeOnDrawHelper {
+	public static final field $stable I
+	public static final field INSTANCE Lcom/github/panpf/sketch/resize/ComposeResizeOnDrawHelper;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun resize (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/Image;)Lcom/github/panpf/sketch/Image;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/state/ColorPainterStateImage : com/github/panpf/sketch/state/StateImage {
+	public static final field $stable I
+	public synthetic fun <init> (JLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-0d7_KjU ()J
+	public final fun copy-8_81llA (J)Lcom/github/panpf/sketch/state/ColorPainterStateImage;
+	public static synthetic fun copy-8_81llA$default (Lcom/github/panpf/sketch/state/ColorPainterStateImage;JILjava/lang/Object;)Lcom/github/panpf/sketch/state/ColorPainterStateImage;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getColor-0d7_KjU ()J
+	public fun getImage (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Ljava/lang/Throwable;)Lcom/github/panpf/sketch/Image;
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/state/ColorPainterStateImageKt {
+	public static final fun rememberColorPainterStateImage-ek8zF_U (JLandroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/state/ColorPainterStateImage;
+	public static final fun rememberColorPainterStateImageWithInt (ILandroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/state/ColorPainterStateImage;
+	public static final fun rememberColorPainterStateImageWithLong (JLandroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/state/ColorPainterStateImage;
+}
+
+public final class com/github/panpf/sketch/state/ConditionStateImage_composeKt {
+	public static final fun ComposableConditionStateImage (Lcom/github/panpf/sketch/state/StateImage;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/ConditionStateImage;
+	public static final fun ComposableConditionStateImage-Iv8Zu3U (JLkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/state/ConditionStateImage;
+	public static final fun addState-mxwnekA (Lcom/github/panpf/sketch/state/ConditionStateImage$Builder;Lcom/github/panpf/sketch/state/ConditionStateImage$Condition;J)Lcom/github/panpf/sketch/state/ConditionStateImage$Builder;
+}
+
+public final class com/github/panpf/sketch/state/CurrentStateImage_composeKt {
+	public static final fun CurrentStateImage (Lcom/github/panpf/sketch/painter/EquitablePainter;)Lcom/github/panpf/sketch/state/CurrentStateImage;
+	public static final fun CurrentStateImage-8_81llA (J)Lcom/github/panpf/sketch/state/CurrentStateImage;
+}
+
+public final class com/github/panpf/sketch/state/IconAnimatablePainterStateImage : com/github/panpf/sketch/state/StateImage {
+	public static final field $stable I
+	public synthetic fun <init> (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/github/panpf/sketch/painter/EquitablePainter;
+	public final fun component2 ()Lcom/github/panpf/sketch/painter/EquitablePainter;
+	public final fun component3-VsRJwc0 ()Landroidx/compose/ui/geometry/Size;
+	public final fun component4-QN2ZGVo ()Landroidx/compose/ui/graphics/Color;
+	public final fun copy-pAE-tCQ (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;)Lcom/github/panpf/sketch/state/IconAnimatablePainterStateImage;
+	public static synthetic fun copy-pAE-tCQ$default (Lcom/github/panpf/sketch/state/IconAnimatablePainterStateImage;Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatablePainterStateImage;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBackground ()Lcom/github/panpf/sketch/painter/EquitablePainter;
+	public final fun getIcon ()Lcom/github/panpf/sketch/painter/EquitablePainter;
+	public final fun getIconSize-VsRJwc0 ()Landroidx/compose/ui/geometry/Size;
+	public final fun getIconTint-QN2ZGVo ()Landroidx/compose/ui/graphics/Color;
+	public fun getImage (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Ljava/lang/Throwable;)Lcom/github/panpf/sketch/Image;
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/state/IconAnimatablePainterStateImage_commonKt {
+	public static final fun rememberIconAnimatablePainterStateImage (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/state/IconAnimatablePainterStateImage;
+	public static final fun rememberIconAnimatablePainterStateImage (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconAnimatablePainterStateImage;
+	public static final fun rememberIconAnimatablePainterStateImage-5oXFXW4 (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconAnimatablePainterStateImage;
+	public static final fun rememberIconAnimatablePainterStateImage-D2uFLQQ (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconAnimatablePainterStateImage;
+	public static final fun rememberIconAnimatablePainterStateImage-DWLq7jM (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconAnimatablePainterStateImage;
+	public static final fun rememberIconAnimatablePainterStateImage-ZLcQsz0 (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconAnimatablePainterStateImage;
+	public static final fun rememberIconAnimatablePainterStateImage-bU_wl9k (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconAnimatablePainterStateImage;
+	public static final fun rememberIconAnimatablePainterStateImage-qxKsBhk (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconAnimatablePainterStateImage;
+	public static final fun rememberIconAnimatablePainterStateImage-vMSDqxM (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconAnimatablePainterStateImage;
+}
+
+public final class com/github/panpf/sketch/state/IconPainterStateImage : com/github/panpf/sketch/state/StateImage {
+	public static final field $stable I
+	public synthetic fun <init> (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/github/panpf/sketch/painter/EquitablePainter;
+	public final fun component2 ()Lcom/github/panpf/sketch/painter/EquitablePainter;
+	public final fun component3-VsRJwc0 ()Landroidx/compose/ui/geometry/Size;
+	public final fun component4-QN2ZGVo ()Landroidx/compose/ui/graphics/Color;
+	public final fun copy-pAE-tCQ (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static synthetic fun copy-pAE-tCQ$default (Lcom/github/panpf/sketch/state/IconPainterStateImage;Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBackground ()Lcom/github/panpf/sketch/painter/EquitablePainter;
+	public final fun getIcon ()Lcom/github/panpf/sketch/painter/EquitablePainter;
+	public final fun getIconSize-VsRJwc0 ()Landroidx/compose/ui/geometry/Size;
+	public final fun getIconTint-QN2ZGVo ()Landroidx/compose/ui/graphics/Color;
+	public fun getImage (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Ljava/lang/Throwable;)Lcom/github/panpf/sketch/Image;
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/state/IconPainterStateImage_commonKt {
+	public static final fun rememberIconPainterStateImage (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage-5oXFXW4 (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage-D2uFLQQ (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage-DWLq7jM (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage-ZLcQsz0 (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage-bU_wl9k (Lcom/github/panpf/sketch/painter/EquitablePainter;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage-qxKsBhk (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage-vMSDqxM (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+}
+
+public final class com/github/panpf/sketch/state/PainterStateImage : com/github/panpf/sketch/state/StateImage {
+	public static final field $stable I
+	public fun <init> (Lcom/github/panpf/sketch/painter/EquitablePainter;)V
+	public final fun component1 ()Lcom/github/panpf/sketch/painter/EquitablePainter;
+	public final fun copy (Lcom/github/panpf/sketch/painter/EquitablePainter;)Lcom/github/panpf/sketch/state/PainterStateImage;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/state/PainterStateImage;Lcom/github/panpf/sketch/painter/EquitablePainter;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/PainterStateImage;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getImage (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Ljava/lang/Throwable;)Lcom/github/panpf/sketch/Image;
+	public fun getKey ()Ljava/lang/String;
+	public final fun getPainter ()Lcom/github/panpf/sketch/painter/EquitablePainter;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/state/PainterStateImageKt {
+	public static final fun rememberPainterStateImage (Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/state/PainterStateImage;
+}
+
+public final class com/github/panpf/sketch/target/AsyncImageTarget : com/github/panpf/sketch/target/GenericComposeTarget {
+	public static final field $stable I
+	public fun <init> (Lcom/github/panpf/sketch/AsyncImageState;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getAlignment ()Landroidx/compose/ui/Alignment;
+	public fun getContentScale ()Landroidx/compose/ui/layout/ContentScale;
+	public fun getFilterQuality-f-v9h1I ()I
+	public fun getImageOptions ()Lcom/github/panpf/sketch/request/ImageOptions;
+	public final fun getImageState ()Lcom/github/panpf/sketch/AsyncImageState;
+	public fun getLifecycleResolver ()Lcom/github/panpf/sketch/request/LifecycleResolver;
+	public synthetic fun getListener ()Lcom/github/panpf/sketch/request/Listener;
+	public fun getListener ()Lcom/github/panpf/sketch/target/internal/AsyncImageListener;
+	public fun getPainter ()Landroidx/compose/ui/graphics/painter/Painter;
+	public synthetic fun getProgressListener ()Lcom/github/panpf/sketch/request/ProgressListener;
+	public fun getProgressListener ()Lcom/github/panpf/sketch/target/internal/AsyncImageListener;
+	public fun getRequestManager ()Lcom/github/panpf/sketch/request/internal/ComposeRequestManager;
+	public synthetic fun getRequestManager ()Lcom/github/panpf/sketch/request/internal/RequestManager;
+	public fun getSizeResolver ()Lcom/github/panpf/sketch/resize/AsyncImageSizeResolver;
+	public synthetic fun getSizeResolver ()Lcom/github/panpf/sketch/resize/SizeResolver;
+	public fun hashCode ()I
+	public fun onError (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Error;Lcom/github/panpf/sketch/Image;)V
+	public final fun onForgotten ()V
+	public final fun onRemembered ()V
+	public fun onStart (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Image;)V
+	public fun onSuccess (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Success;Lcom/github/panpf/sketch/Image;)V
+	public final fun setImageState (Lcom/github/panpf/sketch/AsyncImageState;)V
+	public final fun setPreviewImage (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Image;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/github/panpf/sketch/target/ComposeTarget : com/github/panpf/sketch/target/Target {
+	public fun convertTransition (Lcom/github/panpf/sketch/transition/Transition$Factory;)Lcom/github/panpf/sketch/transition/Transition$Factory;
+	public abstract fun getAlignment ()Landroidx/compose/ui/Alignment;
+	public abstract fun getContentScale ()Landroidx/compose/ui/layout/ContentScale;
+	public fun getCurrentImage ()Lcom/github/panpf/sketch/Image;
+	public abstract fun getPainter ()Landroidx/compose/ui/graphics/painter/Painter;
+	public fun getResizeOnDrawHelper ()Lcom/github/panpf/sketch/resize/ResizeOnDrawHelper;
+	public fun getScaleDecider ()Lcom/github/panpf/sketch/resize/ScaleDecider;
+	public fun newRequestDelegate (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lkotlinx/coroutines/Job;)Lcom/github/panpf/sketch/request/internal/RequestDelegate;
+}
+
+public final class com/github/panpf/sketch/target/ComposeTarget$DefaultImpls {
+	public static fun convertTransition (Lcom/github/panpf/sketch/target/ComposeTarget;Lcom/github/panpf/sketch/transition/Transition$Factory;)Lcom/github/panpf/sketch/transition/Transition$Factory;
+	public static fun getComponents (Lcom/github/panpf/sketch/target/ComposeTarget;)Lcom/github/panpf/sketch/ComponentRegistry;
+	public static fun getCurrentImage (Lcom/github/panpf/sketch/target/ComposeTarget;)Lcom/github/panpf/sketch/Image;
+	public static fun getImageOptions (Lcom/github/panpf/sketch/target/ComposeTarget;)Lcom/github/panpf/sketch/request/ImageOptions;
+	public static fun getLifecycleResolver (Lcom/github/panpf/sketch/target/ComposeTarget;)Lcom/github/panpf/sketch/request/LifecycleResolver;
+	public static fun getListener (Lcom/github/panpf/sketch/target/ComposeTarget;)Lcom/github/panpf/sketch/request/Listener;
+	public static fun getProgressListener (Lcom/github/panpf/sketch/target/ComposeTarget;)Lcom/github/panpf/sketch/request/ProgressListener;
+	public static fun getRequestManager (Lcom/github/panpf/sketch/target/ComposeTarget;)Lcom/github/panpf/sketch/request/internal/RequestManager;
+	public static fun getResizeOnDrawHelper (Lcom/github/panpf/sketch/target/ComposeTarget;)Lcom/github/panpf/sketch/resize/ResizeOnDrawHelper;
+	public static fun getScaleDecider (Lcom/github/panpf/sketch/target/ComposeTarget;)Lcom/github/panpf/sketch/resize/ScaleDecider;
+	public static fun getSizeResolver (Lcom/github/panpf/sketch/target/ComposeTarget;)Lcom/github/panpf/sketch/resize/SizeResolver;
+	public static fun newRequestDelegate (Lcom/github/panpf/sketch/target/ComposeTarget;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lkotlinx/coroutines/Job;)Lcom/github/panpf/sketch/request/internal/RequestDelegate;
+	public static fun onError (Lcom/github/panpf/sketch/target/ComposeTarget;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Error;Lcom/github/panpf/sketch/Image;)V
+	public static fun onStart (Lcom/github/panpf/sketch/target/ComposeTarget;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Image;)V
+	public static fun onSuccess (Lcom/github/panpf/sketch/target/ComposeTarget;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Success;Lcom/github/panpf/sketch/Image;)V
+}
+
+public abstract class com/github/panpf/sketch/target/GenericComposeTarget : androidx/lifecycle/LifecycleEventObserver, com/github/panpf/sketch/request/internal/AttachObserver, com/github/panpf/sketch/target/ComposeTarget, com/github/panpf/sketch/transition/TransitionComposeTarget {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun convertTransition (Lcom/github/panpf/sketch/transition/Transition$Factory;)Lcom/github/panpf/sketch/transition/Transition$Factory;
+	public fun getComponents ()Lcom/github/panpf/sketch/ComponentRegistry;
+	public fun getCurrentImage ()Lcom/github/panpf/sketch/Image;
+	public fun getFilterQuality-f-v9h1I ()I
+	public fun getFitScale ()Z
+	public fun getImageOptions ()Lcom/github/panpf/sketch/request/ImageOptions;
+	public fun getLifecycleResolver ()Lcom/github/panpf/sketch/request/LifecycleResolver;
+	public fun getListener ()Lcom/github/panpf/sketch/request/Listener;
+	public fun getProgressListener ()Lcom/github/panpf/sketch/request/ProgressListener;
+	public fun getRequestManager ()Lcom/github/panpf/sketch/request/internal/RequestManager;
+	public fun getResizeOnDrawHelper ()Lcom/github/panpf/sketch/resize/ResizeOnDrawHelper;
+	public fun getScaleDecider ()Lcom/github/panpf/sketch/resize/ScaleDecider;
+	public fun getSizeResolver ()Lcom/github/panpf/sketch/resize/SizeResolver;
+	public fun newRequestDelegate (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lkotlinx/coroutines/Job;)Lcom/github/panpf/sketch/request/internal/RequestDelegate;
+	public fun onAttachedChanged (Z)V
+	public fun onError (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Error;Lcom/github/panpf/sketch/Image;)V
+	public fun onStart (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Image;)V
+	public fun onStateChanged (Landroidx/lifecycle/LifecycleOwner;Landroidx/lifecycle/Lifecycle$Event;)V
+	public fun onSuccess (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Success;Lcom/github/panpf/sketch/Image;)V
+	protected abstract fun setPainter (Landroidx/compose/ui/graphics/painter/Painter;)V
+	protected final fun updateAnimation ()V
+}
+
+public final class com/github/panpf/sketch/target/internal/AsyncImageListener : com/github/panpf/sketch/request/Listener, com/github/panpf/sketch/request/ProgressListener {
+	public static final field $stable I
+	public fun <init> (Lcom/github/panpf/sketch/target/AsyncImageTarget;)V
+	public final fun getAsyncImageTarget ()Lcom/github/panpf/sketch/target/AsyncImageTarget;
+	public fun onCancel (Lcom/github/panpf/sketch/request/ImageRequest;)V
+	public fun onError (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Error;)V
+	public fun onStart (Lcom/github/panpf/sketch/request/ImageRequest;)V
+	public fun onSuccess (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Success;)V
+	public fun onUpdateProgress (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/Progress;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/transition/ComposeCrossfadeTransition : com/github/panpf/sketch/transition/Transition {
+	public static final field $stable I
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/ComposeTarget;Lcom/github/panpf/sketch/request/ImageResult;IZZZ)V
+	public synthetic fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/ComposeTarget;Lcom/github/panpf/sketch/request/ImageResult;IZZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/ComposeTarget;Lcom/github/panpf/sketch/request/ImageResult;Landroidx/compose/ui/layout/ContentScale;Landroidx/compose/ui/Alignment;IZZ)V
+	public synthetic fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/ComposeTarget;Lcom/github/panpf/sketch/request/ImageResult;Landroidx/compose/ui/layout/ContentScale;Landroidx/compose/ui/Alignment;IZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAlignment ()Landroidx/compose/ui/Alignment;
+	public final fun getContentScale ()Landroidx/compose/ui/layout/ContentScale;
+	public final fun getDurationMillis ()I
+	public final fun getFadeStart ()Z
+	public final fun getFitScale ()Z
+	public final fun getPreferExactIntrinsicSize ()Z
+	public fun transition ()V
+}
+
+public final class com/github/panpf/sketch/transition/ComposeCrossfadeTransition$Factory : com/github/panpf/sketch/transition/Transition$Factory {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun <init> (I)V
+	public fun <init> (IZ)V
+	public fun <init> (IZZ)V
+	public fun <init> (IZZZ)V
+	public synthetic fun <init> (IZZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun create (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/Target;Lcom/github/panpf/sketch/request/ImageResult;)Lcom/github/panpf/sketch/transition/Transition;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAlwaysUse ()Z
+	public final fun getDurationMillis ()I
+	public final fun getFadeStart ()Z
+	public fun getKey ()Ljava/lang/String;
+	public final fun getPreferExactIntrinsicSize ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/github/panpf/sketch/transition/TransitionComposeTarget : com/github/panpf/sketch/transition/TransitionTarget {
+	public abstract fun getPainter ()Landroidx/compose/ui/graphics/painter/Painter;
+}
+
+public final class com/github/panpf/sketch/transition/TransitionComposeTarget$DefaultImpls {
+	public static fun convertTransition (Lcom/github/panpf/sketch/transition/TransitionComposeTarget;Lcom/github/panpf/sketch/transition/Transition$Factory;)Lcom/github/panpf/sketch/transition/Transition$Factory;
+	public static fun getComponents (Lcom/github/panpf/sketch/transition/TransitionComposeTarget;)Lcom/github/panpf/sketch/ComponentRegistry;
+	public static fun getCurrentImage (Lcom/github/panpf/sketch/transition/TransitionComposeTarget;)Lcom/github/panpf/sketch/Image;
+	public static fun getImageOptions (Lcom/github/panpf/sketch/transition/TransitionComposeTarget;)Lcom/github/panpf/sketch/request/ImageOptions;
+	public static fun getLifecycleResolver (Lcom/github/panpf/sketch/transition/TransitionComposeTarget;)Lcom/github/panpf/sketch/request/LifecycleResolver;
+	public static fun getListener (Lcom/github/panpf/sketch/transition/TransitionComposeTarget;)Lcom/github/panpf/sketch/request/Listener;
+	public static fun getProgressListener (Lcom/github/panpf/sketch/transition/TransitionComposeTarget;)Lcom/github/panpf/sketch/request/ProgressListener;
+	public static fun getRequestManager (Lcom/github/panpf/sketch/transition/TransitionComposeTarget;)Lcom/github/panpf/sketch/request/internal/RequestManager;
+	public static fun getResizeOnDrawHelper (Lcom/github/panpf/sketch/transition/TransitionComposeTarget;)Lcom/github/panpf/sketch/resize/ResizeOnDrawHelper;
+	public static fun getScaleDecider (Lcom/github/panpf/sketch/transition/TransitionComposeTarget;)Lcom/github/panpf/sketch/resize/ScaleDecider;
+	public static fun getSizeResolver (Lcom/github/panpf/sketch/transition/TransitionComposeTarget;)Lcom/github/panpf/sketch/resize/SizeResolver;
+	public static fun newRequestDelegate (Lcom/github/panpf/sketch/transition/TransitionComposeTarget;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lkotlinx/coroutines/Job;)Lcom/github/panpf/sketch/request/internal/RequestDelegate;
+	public static fun onError (Lcom/github/panpf/sketch/transition/TransitionComposeTarget;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Error;Lcom/github/panpf/sketch/Image;)V
+	public static fun onStart (Lcom/github/panpf/sketch/transition/TransitionComposeTarget;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Image;)V
+	public static fun onSuccess (Lcom/github/panpf/sketch/transition/TransitionComposeTarget;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Success;Lcom/github/panpf/sketch/Image;)V
+}
+
+public abstract interface class com/github/panpf/sketch/transition/TransitionPainter {
+}
+
+public final class com/github/panpf/sketch/util/Compose_core_utils_commonKt {
+	public static final fun findDeepestPainter (Landroidx/compose/ui/graphics/painter/Painter;)Landroidx/compose/ui/graphics/painter/Painter;
+	public static final fun findLeafPainter (Landroidx/compose/ui/graphics/painter/Painter;)Landroidx/compose/ui/graphics/painter/Painter;
+	public static final fun fromScale (Lcom/github/panpf/sketch/resize/Scale;)Lkotlin/Pair;
+	public static final fun getFitScale (Landroidx/compose/ui/layout/ContentScale;)Z
+	public static final fun toIntSize (Lcom/github/panpf/sketch/util/Size;)J
+	public static final fun toLogString (Landroidx/compose/ui/graphics/ImageBitmap;)Ljava/lang/String;
+	public static final fun toLogString-uvyYCjk (J)Ljava/lang/String;
+	public static final fun toScale (Landroidx/compose/ui/layout/ContentScale;)Lcom/github/panpf/sketch/resize/Scale;
+	public static final fun toScale (Landroidx/compose/ui/layout/ContentScale;Landroidx/compose/ui/Alignment;)Lcom/github/panpf/sketch/resize/Scale;
+	public static final fun toSize (Lcom/github/panpf/sketch/util/Size;)J
+	public static final fun toSketchSize-ozmzZPI (J)Lcom/github/panpf/sketch/util/Size;
+}
+
+public final class com/github/panpf/sketch/util/Compose_core_utils_nonAndroidKt {
+	public static final fun asComposeImageBitmap (Lorg/jetbrains/skia/Bitmap;)Landroidx/compose/ui/graphics/ImageBitmap;
+	public static final fun windowContainerSize (Landroidx/compose/runtime/Composer;I)J
+}
+
+public final class com/github/panpf/sketch/util/RememberedCounter {
+	public static final field $stable I
+	public fun <init> ()V
+	public final fun forget ()Z
+	public final fun getCount ()I
+	public final fun isRemembered ()Z
+	public final fun remember ()Z
+}
+

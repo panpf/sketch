@@ -1,0 +1,48 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <sketch:sketch-animated-webp>
+final class com.github.panpf.sketch.decode/SkiaAnimatedWebpDecoder : com.github.panpf.sketch.decode.internal/SkiaAnimatedDecoder { // com.github.panpf.sketch.decode/SkiaAnimatedWebpDecoder|null[0]
+    constructor <init>(com.github.panpf.sketch.request/RequestContext, com.github.panpf.sketch.source/DataSource) // com.github.panpf.sketch.decode/SkiaAnimatedWebpDecoder.<init>|<init>(com.github.panpf.sketch.request.RequestContext;com.github.panpf.sketch.source.DataSource){}[0]
+
+    final class Factory : com.github.panpf.sketch.decode/Decoder.Factory { // com.github.panpf.sketch.decode/SkiaAnimatedWebpDecoder.Factory|null[0]
+        constructor <init>() // com.github.panpf.sketch.decode/SkiaAnimatedWebpDecoder.Factory.<init>|<init>(){}[0]
+
+        final val key // com.github.panpf.sketch.decode/SkiaAnimatedWebpDecoder.Factory.key|{}key[0]
+            final fun <get-key>(): kotlin/String // com.github.panpf.sketch.decode/SkiaAnimatedWebpDecoder.Factory.key.<get-key>|<get-key>(){}[0]
+        final val sortWeight // com.github.panpf.sketch.decode/SkiaAnimatedWebpDecoder.Factory.sortWeight|{}sortWeight[0]
+            final fun <get-sortWeight>(): kotlin/Int // com.github.panpf.sketch.decode/SkiaAnimatedWebpDecoder.Factory.sortWeight.<get-sortWeight>|<get-sortWeight>(){}[0]
+
+        final fun create(com.github.panpf.sketch.request/RequestContext, com.github.panpf.sketch.fetch/FetchResult): com.github.panpf.sketch.decode/SkiaAnimatedWebpDecoder? // com.github.panpf.sketch.decode/SkiaAnimatedWebpDecoder.Factory.create|create(com.github.panpf.sketch.request.RequestContext;com.github.panpf.sketch.fetch.FetchResult){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.decode/SkiaAnimatedWebpDecoder.Factory.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.github.panpf.sketch.decode/SkiaAnimatedWebpDecoder.Factory.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.github.panpf.sketch.decode/SkiaAnimatedWebpDecoder.Factory.toString|toString(){}[0]
+    }
+
+    final object Companion { // com.github.panpf.sketch.decode/SkiaAnimatedWebpDecoder.Companion|null[0]
+        final const val SORT_WEIGHT // com.github.panpf.sketch.decode/SkiaAnimatedWebpDecoder.Companion.SORT_WEIGHT|{}SORT_WEIGHT[0]
+            final fun <get-SORT_WEIGHT>(): kotlin/Int // com.github.panpf.sketch.decode/SkiaAnimatedWebpDecoder.Companion.SORT_WEIGHT.<get-SORT_WEIGHT>|<get-SORT_WEIGHT>(){}[0]
+    }
+}
+
+final class com.github.panpf.sketch.util/AnimatedWebpComponentProvider : com.github.panpf.sketch.util/ComponentProvider { // com.github.panpf.sketch.util/AnimatedWebpComponentProvider|null[0]
+    constructor <init>() // com.github.panpf.sketch.util/AnimatedWebpComponentProvider.<init>|<init>(){}[0]
+
+    final fun addDecoders(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<com.github.panpf.sketch.decode/Decoder.Factory>? // com.github.panpf.sketch.util/AnimatedWebpComponentProvider.addDecoders|addDecoders(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun addFetchers(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<com.github.panpf.sketch.fetch/Fetcher.Factory>? // com.github.panpf.sketch.util/AnimatedWebpComponentProvider.addFetchers|addFetchers(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun addInterceptors(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<com.github.panpf.sketch.request/Interceptor>? // com.github.panpf.sketch.util/AnimatedWebpComponentProvider.addInterceptors|addInterceptors(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun disabledDecoders(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<kotlin.reflect/KClass<out com.github.panpf.sketch.decode/Decoder.Factory>>? // com.github.panpf.sketch.util/AnimatedWebpComponentProvider.disabledDecoders|disabledDecoders(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun disabledFetchers(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<kotlin.reflect/KClass<out com.github.panpf.sketch.fetch/Fetcher.Factory>>? // com.github.panpf.sketch.util/AnimatedWebpComponentProvider.disabledFetchers|disabledFetchers(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun disabledInterceptors(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<kotlin.reflect/KClass<out com.github.panpf.sketch.request/Interceptor>>? // com.github.panpf.sketch.util/AnimatedWebpComponentProvider.disabledInterceptors|disabledInterceptors(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun toString(): kotlin/String // com.github.panpf.sketch.util/AnimatedWebpComponentProvider.toString|toString(){}[0]
+}
+
+final val com.github.panpf.sketch.util/animatedWebpComponentProviderInitHook // com.github.panpf.sketch.util/animatedWebpComponentProviderInitHook|{}animatedWebpComponentProviderInitHook[0]
+    final fun <get-animatedWebpComponentProviderInitHook>(): kotlin/Any // com.github.panpf.sketch.util/animatedWebpComponentProviderInitHook.<get-animatedWebpComponentProviderInitHook>|<get-animatedWebpComponentProviderInitHook>(){}[0]
+
+final fun (com.github.panpf.sketch/ComponentRegistry.Builder).com.github.panpf.sketch.decode/supportAnimatedWebp(): com.github.panpf.sketch/ComponentRegistry.Builder // com.github.panpf.sketch.decode/supportAnimatedWebp|supportAnimatedWebp@com.github.panpf.sketch.ComponentRegistry.Builder(){}[0]
+final fun (com.github.panpf.sketch/ComponentRegistry.Builder).com.github.panpf.sketch.decode/supportSkiaAnimatedWebp(): com.github.panpf.sketch/ComponentRegistry.Builder // com.github.panpf.sketch.decode/supportSkiaAnimatedWebp|supportSkiaAnimatedWebp@com.github.panpf.sketch.ComponentRegistry.Builder(){}[0]

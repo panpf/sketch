@@ -1,0 +1,137 @@
+public final class com/github/panpf/sketch/fetch/HurlHttpUriFetcher : com/github/panpf/sketch/fetch/HttpUriFetcher {
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/http/HurlStack;Lcom/github/panpf/sketch/request/ImageRequest;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/fetch/HurlHttpUriFetcher$Factory : com/github/panpf/sketch/fetch/Fetcher$Factory {
+	public fun <init> ()V
+	public fun <init> (Lcom/github/panpf/sketch/http/HurlStack;)V
+	public synthetic fun <init> (Lcom/github/panpf/sketch/http/HurlStack;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun create (Lcom/github/panpf/sketch/request/RequestContext;)Lcom/github/panpf/sketch/fetch/Fetcher;
+	public fun create (Lcom/github/panpf/sketch/request/RequestContext;)Lcom/github/panpf/sketch/fetch/HttpUriFetcher;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHttpStack ()Lcom/github/panpf/sketch/http/HurlStack;
+	public fun getSortWeight ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/fetch/HurlHttpUriFetcherKt {
+	public static final fun supportHurlHttpUri (Lcom/github/panpf/sketch/ComponentRegistry$Builder;Lcom/github/panpf/sketch/http/HurlStack;)Lcom/github/panpf/sketch/ComponentRegistry$Builder;
+	public static synthetic fun supportHurlHttpUri$default (Lcom/github/panpf/sketch/ComponentRegistry$Builder;Lcom/github/panpf/sketch/http/HurlStack;ILjava/lang/Object;)Lcom/github/panpf/sketch/ComponentRegistry$Builder;
+}
+
+public final class com/github/panpf/sketch/http/HurlStack : com/github/panpf/sketch/http/HttpStack {
+	public synthetic fun <init> (Ljava/util/List;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getInterceptors ()Ljava/util/List;
+	public fun getResponse (Ljava/lang/String;Lcom/github/panpf/sketch/http/HttpHeaders;Lcom/github/panpf/sketch/request/Extras;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun request (Ljava/lang/String;Lcom/github/panpf/sketch/http/HttpHeaders;Lcom/github/panpf/sketch/request/Extras;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/http/HurlStack$Builder {
+	public fun <init> ()V
+	public final fun addHeaders (Ljava/util/List;)Lcom/github/panpf/sketch/http/HurlStack$Builder;
+	public final fun addHeaders ([Lkotlin/Pair;)Lcom/github/panpf/sketch/http/HurlStack$Builder;
+	public final fun addInterceptor (Lcom/github/panpf/sketch/http/HurlStack$Interceptor;)Lcom/github/panpf/sketch/http/HurlStack$Builder;
+	public final fun build ()Lcom/github/panpf/sketch/http/HurlStack;
+	public final fun connectTimeoutMillis (I)Lcom/github/panpf/sketch/http/HurlStack$Builder;
+	public final fun headers (Ljava/util/Map;)Lcom/github/panpf/sketch/http/HurlStack$Builder;
+	public final fun headers ([Lkotlin/Pair;)Lcom/github/panpf/sketch/http/HurlStack$Builder;
+	public final fun readTimeoutMillis (I)Lcom/github/panpf/sketch/http/HurlStack$Builder;
+	public final fun userAgent (Ljava/lang/String;)Lcom/github/panpf/sketch/http/HurlStack$Builder;
+}
+
+public final class com/github/panpf/sketch/http/HurlStack$Content : com/github/panpf/sketch/http/HttpStack$Content {
+	public fun <init> (Ljava/io/InputStream;)V
+	public fun close ()V
+	public fun read ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/github/panpf/sketch/http/HurlStack$HttpHeadersInterceptor : com/github/panpf/sketch/http/HurlStack$Interceptor {
+	public fun <init> (Lcom/github/panpf/sketch/http/HttpHeaders;)V
+	public final fun component1 ()Lcom/github/panpf/sketch/http/HttpHeaders;
+	public final fun copy (Lcom/github/panpf/sketch/http/HttpHeaders;)Lcom/github/panpf/sketch/http/HurlStack$HttpHeadersInterceptor;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/http/HurlStack$HttpHeadersInterceptor;Lcom/github/panpf/sketch/http/HttpHeaders;ILjava/lang/Object;)Lcom/github/panpf/sketch/http/HurlStack$HttpHeadersInterceptor;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHttpHeaders ()Lcom/github/panpf/sketch/http/HttpHeaders;
+	public fun hashCode ()I
+	public fun intercept (Lcom/github/panpf/sketch/http/HurlStack$Interceptor$Chain;)Lcom/github/panpf/sketch/http/HurlStack$Response;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/github/panpf/sketch/http/HurlStack$Interceptor {
+	public abstract fun intercept (Lcom/github/panpf/sketch/http/HurlStack$Interceptor$Chain;)Lcom/github/panpf/sketch/http/HurlStack$Response;
+}
+
+public abstract interface class com/github/panpf/sketch/http/HurlStack$Interceptor$Chain {
+	public abstract fun getConnection ()Ljava/net/HttpURLConnection;
+	public abstract fun proceed ()Lcom/github/panpf/sketch/http/HurlStack$Response;
+}
+
+public final class com/github/panpf/sketch/http/HurlStack$Response : com/github/panpf/sketch/http/HttpStack$Response {
+	public fun <init> (Ljava/net/HttpURLConnection;)V
+	public fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getCode ()I
+	public final fun getConnection ()Ljava/net/HttpURLConnection;
+	public fun getContentLength ()J
+	public fun getContentType ()Ljava/lang/String;
+	public fun getHeaderField (Ljava/lang/String;)Ljava/lang/String;
+	public fun getMessage ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/http/HurlStack$TimeoutInterceptor : com/github/panpf/sketch/http/HurlStack$Interceptor {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/Integer;Ljava/lang/Integer;)V
+	public synthetic fun <init> (Ljava/lang/Integer;Ljava/lang/Integer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/Integer;
+	public final fun component2 ()Ljava/lang/Integer;
+	public final fun copy (Ljava/lang/Integer;Ljava/lang/Integer;)Lcom/github/panpf/sketch/http/HurlStack$TimeoutInterceptor;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/http/HurlStack$TimeoutInterceptor;Ljava/lang/Integer;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/http/HurlStack$TimeoutInterceptor;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getConnectTimeout ()Ljava/lang/Integer;
+	public final fun getReadTimeout ()Ljava/lang/Integer;
+	public fun hashCode ()I
+	public fun intercept (Lcom/github/panpf/sketch/http/HurlStack$Interceptor$Chain;)Lcom/github/panpf/sketch/http/HurlStack$Response;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/http/HurlStack$UserAgentInterceptor : com/github/panpf/sketch/http/HurlStack$Interceptor {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lcom/github/panpf/sketch/http/HurlStack$UserAgentInterceptor;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/http/HurlStack$UserAgentInterceptor;Ljava/lang/String;ILjava/lang/Object;)Lcom/github/panpf/sketch/http/HurlStack$UserAgentInterceptor;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getUserAgent ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun intercept (Lcom/github/panpf/sketch/http/HurlStack$Interceptor$Chain;)Lcom/github/panpf/sketch/http/HurlStack$Response;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/http/internal/TlsCompatSocketFactory : javax/net/ssl/SSLSocketFactory {
+	public fun <init> ([Ljava/lang/String;)V
+	public fun createSocket (Ljava/lang/String;I)Ljava/net/Socket;
+	public fun createSocket (Ljava/lang/String;ILjava/net/InetAddress;I)Ljava/net/Socket;
+	public fun createSocket (Ljava/net/InetAddress;I)Ljava/net/Socket;
+	public fun createSocket (Ljava/net/InetAddress;ILjava/net/InetAddress;I)Ljava/net/Socket;
+	public fun createSocket (Ljava/net/Socket;Ljava/lang/String;IZ)Ljava/net/Socket;
+	public fun getDefaultCipherSuites ()[Ljava/lang/String;
+	public final fun getEnabledTlsProtocols ()[Ljava/lang/String;
+	public fun getSupportedCipherSuites ()[Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/util/HurlHttpComponentProvider : com/github/panpf/sketch/util/ComponentProvider {
+	public fun <init> ()V
+	public fun addDecoders (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun addFetchers (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun addInterceptors (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun disabledDecoders (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun disabledFetchers (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun disabledInterceptors (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+

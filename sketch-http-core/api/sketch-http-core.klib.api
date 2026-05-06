@@ -1,0 +1,110 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <sketch:sketch-http-core>
+abstract interface com.github.panpf.sketch.http/HttpStack { // com.github.panpf.sketch.http/HttpStack|null[0]
+    abstract suspend fun <#A1: kotlin/Any?> request(kotlin/String, com.github.panpf.sketch.http/HttpHeaders?, com.github.panpf.sketch.request/Extras?, kotlin.coroutines/SuspendFunction1<com.github.panpf.sketch.http/HttpStack.Response, #A1>): #A1 // com.github.panpf.sketch.http/HttpStack.request|request(kotlin.String;com.github.panpf.sketch.http.HttpHeaders?;com.github.panpf.sketch.request.Extras?;kotlin.coroutines.SuspendFunction1<com.github.panpf.sketch.http.HttpStack.Response,0:0>){0§<kotlin.Any?>}[0]
+    open suspend fun getResponse(kotlin/String, com.github.panpf.sketch.http/HttpHeaders?, com.github.panpf.sketch.request/Extras?): com.github.panpf.sketch.http/HttpStack.Response // com.github.panpf.sketch.http/HttpStack.getResponse|getResponse(kotlin.String;com.github.panpf.sketch.http.HttpHeaders?;com.github.panpf.sketch.request.Extras?){}[0]
+
+    abstract interface Content : okio/Closeable { // com.github.panpf.sketch.http/HttpStack.Content|null[0]
+        abstract suspend fun read(kotlin/ByteArray): kotlin/Int // com.github.panpf.sketch.http/HttpStack.Content.read|read(kotlin.ByteArray){}[0]
+    }
+
+    abstract interface Response { // com.github.panpf.sketch.http/HttpStack.Response|null[0]
+        abstract val code // com.github.panpf.sketch.http/HttpStack.Response.code|{}code[0]
+            abstract fun <get-code>(): kotlin/Int // com.github.panpf.sketch.http/HttpStack.Response.code.<get-code>|<get-code>(){}[0]
+        abstract val contentLength // com.github.panpf.sketch.http/HttpStack.Response.contentLength|{}contentLength[0]
+            abstract fun <get-contentLength>(): kotlin/Long // com.github.panpf.sketch.http/HttpStack.Response.contentLength.<get-contentLength>|<get-contentLength>(){}[0]
+        abstract val contentType // com.github.panpf.sketch.http/HttpStack.Response.contentType|{}contentType[0]
+            abstract fun <get-contentType>(): kotlin/String? // com.github.panpf.sketch.http/HttpStack.Response.contentType.<get-contentType>|<get-contentType>(){}[0]
+        abstract val message // com.github.panpf.sketch.http/HttpStack.Response.message|{}message[0]
+            abstract fun <get-message>(): kotlin/String? // com.github.panpf.sketch.http/HttpStack.Response.message.<get-message>|<get-message>(){}[0]
+
+        abstract fun getHeaderField(kotlin/String): kotlin/String? // com.github.panpf.sketch.http/HttpStack.Response.getHeaderField|getHeaderField(kotlin.String){}[0]
+        abstract suspend fun content(): com.github.panpf.sketch.http/HttpStack.Content // com.github.panpf.sketch.http/HttpStack.Response.content|content(){}[0]
+    }
+}
+
+final class com.github.panpf.sketch.http/HttpHeaders : com.github.panpf.sketch.util/Mergeable { // com.github.panpf.sketch.http/HttpHeaders|null[0]
+    constructor <init>() // com.github.panpf.sketch.http/HttpHeaders.<init>|<init>(){}[0]
+    constructor <init>(kotlin.collections/List<kotlin/Pair<kotlin/String, kotlin/String>>, kotlin.collections/List<kotlin/Pair<kotlin/String, kotlin/String>>) // com.github.panpf.sketch.http/HttpHeaders.<init>|<init>(kotlin.collections.List<kotlin.Pair<kotlin.String,kotlin.String>>;kotlin.collections.List<kotlin.Pair<kotlin.String,kotlin.String>>){}[0]
+
+    final val addList // com.github.panpf.sketch.http/HttpHeaders.addList|{}addList[0]
+        final fun <get-addList>(): kotlin.collections/List<kotlin/Pair<kotlin/String, kotlin/String>> // com.github.panpf.sketch.http/HttpHeaders.addList.<get-addList>|<get-addList>(){}[0]
+    final val addSize // com.github.panpf.sketch.http/HttpHeaders.addSize|{}addSize[0]
+        final fun <get-addSize>(): kotlin/Int // com.github.panpf.sketch.http/HttpHeaders.addSize.<get-addSize>|<get-addSize>(){}[0]
+    final val setList // com.github.panpf.sketch.http/HttpHeaders.setList|{}setList[0]
+        final fun <get-setList>(): kotlin.collections/List<kotlin/Pair<kotlin/String, kotlin/String>> // com.github.panpf.sketch.http/HttpHeaders.setList.<get-setList>|<get-setList>(){}[0]
+    final val setSize // com.github.panpf.sketch.http/HttpHeaders.setSize|{}setSize[0]
+        final fun <get-setSize>(): kotlin/Int // com.github.panpf.sketch.http/HttpHeaders.setSize.<get-setSize>|<get-setSize>(){}[0]
+    final val size // com.github.panpf.sketch.http/HttpHeaders.size|{}size[0]
+        final fun <get-size>(): kotlin/Int // com.github.panpf.sketch.http/HttpHeaders.size.<get-size>|<get-size>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.http/HttpHeaders.equals|equals(kotlin.Any?){}[0]
+    final fun getAdd(kotlin/String): kotlin.collections/List<kotlin/String>? // com.github.panpf.sketch.http/HttpHeaders.getAdd|getAdd(kotlin.String){}[0]
+    final fun getSet(kotlin/String): kotlin/String? // com.github.panpf.sketch.http/HttpHeaders.getSet|getSet(kotlin.String){}[0]
+    final fun hashCode(): kotlin/Int // com.github.panpf.sketch.http/HttpHeaders.hashCode|hashCode(){}[0]
+    final fun isEmpty(): kotlin/Boolean // com.github.panpf.sketch.http/HttpHeaders.isEmpty|isEmpty(){}[0]
+    final fun merge(com.github.panpf.sketch.util/Mergeable): com.github.panpf.sketch.util/Mergeable // com.github.panpf.sketch.http/HttpHeaders.merge|merge(com.github.panpf.sketch.util.Mergeable){}[0]
+    final fun newBuilder(kotlin/Function1<com.github.panpf.sketch.http/HttpHeaders.Builder, kotlin/Unit>? = ...): com.github.panpf.sketch.http/HttpHeaders.Builder // com.github.panpf.sketch.http/HttpHeaders.newBuilder|newBuilder(kotlin.Function1<com.github.panpf.sketch.http.HttpHeaders.Builder,kotlin.Unit>?){}[0]
+    final fun newHttpHeaders(kotlin/Function1<com.github.panpf.sketch.http/HttpHeaders.Builder, kotlin/Unit>? = ...): com.github.panpf.sketch.http/HttpHeaders // com.github.panpf.sketch.http/HttpHeaders.newHttpHeaders|newHttpHeaders(kotlin.Function1<com.github.panpf.sketch.http.HttpHeaders.Builder,kotlin.Unit>?){}[0]
+    final fun toString(): kotlin/String // com.github.panpf.sketch.http/HttpHeaders.toString|toString(){}[0]
+
+    final class Builder { // com.github.panpf.sketch.http/HttpHeaders.Builder|null[0]
+        constructor <init>() // com.github.panpf.sketch.http/HttpHeaders.Builder.<init>|<init>(){}[0]
+        constructor <init>(com.github.panpf.sketch.http/HttpHeaders) // com.github.panpf.sketch.http/HttpHeaders.Builder.<init>|<init>(com.github.panpf.sketch.http.HttpHeaders){}[0]
+
+        final fun add(kotlin/String, kotlin/String): com.github.panpf.sketch.http/HttpHeaders.Builder // com.github.panpf.sketch.http/HttpHeaders.Builder.add|add(kotlin.String;kotlin.String){}[0]
+        final fun build(): com.github.panpf.sketch.http/HttpHeaders // com.github.panpf.sketch.http/HttpHeaders.Builder.build|build(){}[0]
+        final fun removeAll(kotlin/String): com.github.panpf.sketch.http/HttpHeaders.Builder // com.github.panpf.sketch.http/HttpHeaders.Builder.removeAll|removeAll(kotlin.String){}[0]
+        final fun set(kotlin/String, kotlin/String): com.github.panpf.sketch.http/HttpHeaders.Builder // com.github.panpf.sketch.http/HttpHeaders.Builder.set|set(kotlin.String;kotlin.String){}[0]
+    }
+}
+
+open class com.github.panpf.sketch.fetch/HttpUriFetcher : com.github.panpf.sketch.fetch/Fetcher { // com.github.panpf.sketch.fetch/HttpUriFetcher|null[0]
+    constructor <init>(com.github.panpf.sketch/Sketch, com.github.panpf.sketch.http/HttpStack, com.github.panpf.sketch.request/ImageRequest, kotlin/String) // com.github.panpf.sketch.fetch/HttpUriFetcher.<init>|<init>(com.github.panpf.sketch.Sketch;com.github.panpf.sketch.http.HttpStack;com.github.panpf.sketch.request.ImageRequest;kotlin.String){}[0]
+
+    final val downloadCacheKey // com.github.panpf.sketch.fetch/HttpUriFetcher.downloadCacheKey|{}downloadCacheKey[0]
+        final fun <get-downloadCacheKey>(): kotlin/String // com.github.panpf.sketch.fetch/HttpUriFetcher.downloadCacheKey.<get-downloadCacheKey>|<get-downloadCacheKey>(){}[0]
+    final val httpStack // com.github.panpf.sketch.fetch/HttpUriFetcher.httpStack|{}httpStack[0]
+        final fun <get-httpStack>(): com.github.panpf.sketch.http/HttpStack // com.github.panpf.sketch.fetch/HttpUriFetcher.httpStack.<get-httpStack>|<get-httpStack>(){}[0]
+    final val request // com.github.panpf.sketch.fetch/HttpUriFetcher.request|{}request[0]
+        final fun <get-request>(): com.github.panpf.sketch.request/ImageRequest // com.github.panpf.sketch.fetch/HttpUriFetcher.request.<get-request>|<get-request>(){}[0]
+    final val sketch // com.github.panpf.sketch.fetch/HttpUriFetcher.sketch|{}sketch[0]
+        final fun <get-sketch>(): com.github.panpf.sketch/Sketch // com.github.panpf.sketch.fetch/HttpUriFetcher.sketch.<get-sketch>|<get-sketch>(){}[0]
+
+    open fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.fetch/HttpUriFetcher.equals|equals(kotlin.Any?){}[0]
+    open fun hashCode(): kotlin/Int // com.github.panpf.sketch.fetch/HttpUriFetcher.hashCode|hashCode(){}[0]
+    open fun toString(): kotlin/String // com.github.panpf.sketch.fetch/HttpUriFetcher.toString|toString(){}[0]
+    open suspend fun fetch(): kotlin/Result<com.github.panpf.sketch.fetch/FetchResult> // com.github.panpf.sketch.fetch/HttpUriFetcher.fetch|fetch(){}[0]
+
+    final object Companion { // com.github.panpf.sketch.fetch/HttpUriFetcher.Companion|null[0]
+        final const val MIME_TYPE_TEXT_PLAIN // com.github.panpf.sketch.fetch/HttpUriFetcher.Companion.MIME_TYPE_TEXT_PLAIN|{}MIME_TYPE_TEXT_PLAIN[0]
+            final fun <get-MIME_TYPE_TEXT_PLAIN>(): kotlin/String // com.github.panpf.sketch.fetch/HttpUriFetcher.Companion.MIME_TYPE_TEXT_PLAIN.<get-MIME_TYPE_TEXT_PLAIN>|<get-MIME_TYPE_TEXT_PLAIN>(){}[0]
+        final const val SCHEME_HTTP // com.github.panpf.sketch.fetch/HttpUriFetcher.Companion.SCHEME_HTTP|{}SCHEME_HTTP[0]
+            final fun <get-SCHEME_HTTP>(): kotlin/String // com.github.panpf.sketch.fetch/HttpUriFetcher.Companion.SCHEME_HTTP.<get-SCHEME_HTTP>|<get-SCHEME_HTTP>(){}[0]
+        final const val SCHEME_HTTPS // com.github.panpf.sketch.fetch/HttpUriFetcher.Companion.SCHEME_HTTPS|{}SCHEME_HTTPS[0]
+            final fun <get-SCHEME_HTTPS>(): kotlin/String // com.github.panpf.sketch.fetch/HttpUriFetcher.Companion.SCHEME_HTTPS.<get-SCHEME_HTTPS>|<get-SCHEME_HTTPS>(){}[0]
+        final const val SORT_WEIGHT // com.github.panpf.sketch.fetch/HttpUriFetcher.Companion.SORT_WEIGHT|{}SORT_WEIGHT[0]
+            final fun <get-SORT_WEIGHT>(): kotlin/Int // com.github.panpf.sketch.fetch/HttpUriFetcher.Companion.SORT_WEIGHT.<get-SORT_WEIGHT>|<get-SORT_WEIGHT>(){}[0]
+    }
+}
+
+final const val com.github.panpf.sketch.request/HTTP_HEADERS_KEY // com.github.panpf.sketch.request/HTTP_HEADERS_KEY|{}HTTP_HEADERS_KEY[0]
+    final fun <get-HTTP_HEADERS_KEY>(): kotlin/String // com.github.panpf.sketch.request/HTTP_HEADERS_KEY.<get-HTTP_HEADERS_KEY>|<get-HTTP_HEADERS_KEY>(){}[0]
+
+final val com.github.panpf.sketch.request/httpHeaders // com.github.panpf.sketch.request/httpHeaders|@com.github.panpf.sketch.request.ImageOptions{}httpHeaders[0]
+    final fun (com.github.panpf.sketch.request/ImageOptions).<get-httpHeaders>(): com.github.panpf.sketch.http/HttpHeaders? // com.github.panpf.sketch.request/httpHeaders.<get-httpHeaders>|<get-httpHeaders>@com.github.panpf.sketch.request.ImageOptions(){}[0]
+final val com.github.panpf.sketch.request/httpHeaders // com.github.panpf.sketch.request/httpHeaders|@com.github.panpf.sketch.request.ImageRequest{}httpHeaders[0]
+    final fun (com.github.panpf.sketch.request/ImageRequest).<get-httpHeaders>(): com.github.panpf.sketch.http/HttpHeaders? // com.github.panpf.sketch.request/httpHeaders.<get-httpHeaders>|<get-httpHeaders>@com.github.panpf.sketch.request.ImageRequest(){}[0]
+
+final fun (com.github.panpf.sketch.http/HttpHeaders).com.github.panpf.sketch.http/isNotEmpty(): kotlin/Boolean // com.github.panpf.sketch.http/isNotEmpty|isNotEmpty@com.github.panpf.sketch.http.HttpHeaders(){}[0]
+final fun (com.github.panpf.sketch.http/HttpHeaders?).com.github.panpf.sketch.http/merged(com.github.panpf.sketch.http/HttpHeaders?): com.github.panpf.sketch.http/HttpHeaders? // com.github.panpf.sketch.http/merged|merged@com.github.panpf.sketch.http.HttpHeaders?(com.github.panpf.sketch.http.HttpHeaders?){}[0]
+final fun (com.github.panpf.sketch.request/ImageOptions.Builder).com.github.panpf.sketch.request/httpHeaders(com.github.panpf.sketch.http/HttpHeaders?): com.github.panpf.sketch.request/ImageOptions.Builder // com.github.panpf.sketch.request/httpHeaders|httpHeaders@com.github.panpf.sketch.request.ImageOptions.Builder(com.github.panpf.sketch.http.HttpHeaders?){}[0]
+final fun (com.github.panpf.sketch.request/ImageRequest.Builder).com.github.panpf.sketch.request/httpHeaders(com.github.panpf.sketch.http/HttpHeaders?): com.github.panpf.sketch.request/ImageRequest.Builder // com.github.panpf.sketch.request/httpHeaders|httpHeaders@com.github.panpf.sketch.request.ImageRequest.Builder(com.github.panpf.sketch.http.HttpHeaders?){}[0]
+final fun com.github.panpf.sketch.fetch/isHttpUri(com.github.panpf.sketch.util/Uri): kotlin/Boolean // com.github.panpf.sketch.fetch/isHttpUri|isHttpUri(com.github.panpf.sketch.util.Uri){}[0]
+final fun com.github.panpf.sketch.http/HttpHeaders(kotlin/Function1<com.github.panpf.sketch.http/HttpHeaders.Builder, kotlin/Unit>): com.github.panpf.sketch.http/HttpHeaders // com.github.panpf.sketch.http/HttpHeaders|HttpHeaders(kotlin.Function1<com.github.panpf.sketch.http.HttpHeaders.Builder,kotlin.Unit>){}[0]

@@ -1,0 +1,111 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <sketch:sketch-video>
+abstract class com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper : com.github.panpf.sketch.decode.internal/DecodeHelper { // com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper|null[0]
+    constructor <init>(com.github.panpf.sketch.request/ImageRequest, kotlin/String) // com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper.<init>|<init>(com.github.panpf.sketch.request.ImageRequest;kotlin.String){}[0]
+
+    final val asset // com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper.asset|{}asset[0]
+        final fun <get-asset>(): platform.AVFoundation/AVAsset // com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper.asset.<get-asset>|<get-asset>(){}[0]
+    final val mimeType // com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper.mimeType|{}mimeType[0]
+        final fun <get-mimeType>(): kotlin/String // com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper.mimeType.<get-mimeType>|<get-mimeType>(){}[0]
+    final val request // com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper.request|{}request[0]
+        final fun <get-request>(): com.github.panpf.sketch.request/ImageRequest // com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper.request.<get-request>|<get-request>(){}[0]
+
+    abstract fun readImageInfo(): com.github.panpf.sketch.decode/ImageInfo // com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper.readImageInfo|readImageInfo(){}[0]
+    abstract fun requestVideoAsset(): platform.AVFoundation/AVAsset // com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper.requestVideoAsset|requestVideoAsset(){}[0]
+    final fun decodeFrame(kotlin/Long, com.github.panpf.sketch.util/Size?): kotlinx.cinterop/CPointer<cnames.structs/CGImage>? // com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper.decodeFrame|decodeFrame(kotlin.Long;com.github.panpf.sketch.util.Size?){}[0]
+    open fun close() // com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper.close|close(){}[0]
+    open suspend fun decode(kotlin/Int): com.github.panpf.sketch/Image // com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper.decode|decode(kotlin.Int){}[0]
+    open suspend fun decodeRegion(com.github.panpf.sketch.util/Rect, kotlin/Int): com.github.panpf.sketch/Image // com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper.decodeRegion|decodeRegion(com.github.panpf.sketch.util.Rect;kotlin.Int){}[0]
+    open suspend fun getImageInfo(): com.github.panpf.sketch.decode/ImageInfo // com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper.getImageInfo|getImageInfo(){}[0]
+    open suspend fun isSupportRegion(): kotlin/Boolean // com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper.isSupportRegion|isSupportRegion(){}[0]
+}
+
+final class com.github.panpf.sketch.decode.internal/FileVideoFrameDecodeHelper : com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper { // com.github.panpf.sketch.decode.internal/FileVideoFrameDecodeHelper|null[0]
+    constructor <init>(com.github.panpf.sketch.request/ImageRequest, com.github.panpf.sketch.source/FileDataSource, kotlin/String) // com.github.panpf.sketch.decode.internal/FileVideoFrameDecodeHelper.<init>|<init>(com.github.panpf.sketch.request.ImageRequest;com.github.panpf.sketch.source.FileDataSource;kotlin.String){}[0]
+
+    final val dataSource // com.github.panpf.sketch.decode.internal/FileVideoFrameDecodeHelper.dataSource|{}dataSource[0]
+        final fun <get-dataSource>(): com.github.panpf.sketch.source/FileDataSource // com.github.panpf.sketch.decode.internal/FileVideoFrameDecodeHelper.dataSource.<get-dataSource>|<get-dataSource>(){}[0]
+
+    final fun readImageInfo(): com.github.panpf.sketch.decode/ImageInfo // com.github.panpf.sketch.decode.internal/FileVideoFrameDecodeHelper.readImageInfo|readImageInfo(){}[0]
+    final fun requestVideoAsset(): platform.AVFoundation/AVAsset // com.github.panpf.sketch.decode.internal/FileVideoFrameDecodeHelper.requestVideoAsset|requestVideoAsset(){}[0]
+}
+
+final class com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper : com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper { // com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper|null[0]
+    constructor <init>(com.github.panpf.sketch.request/ImageRequest, com.github.panpf.sketch.source/PhotosAssetDataSource, kotlin/String) // com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper.<init>|<init>(com.github.panpf.sketch.request.ImageRequest;com.github.panpf.sketch.source.PhotosAssetDataSource;kotlin.String){}[0]
+
+    final val dataSource // com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper.dataSource|{}dataSource[0]
+        final fun <get-dataSource>(): com.github.panpf.sketch.source/PhotosAssetDataSource // com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper.dataSource.<get-dataSource>|<get-dataSource>(){}[0]
+
+    final fun readImageInfo(): com.github.panpf.sketch.decode/ImageInfo // com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper.readImageInfo|readImageInfo(){}[0]
+    final fun requestVideoAsset(): platform.AVFoundation/AVAsset // com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper.requestVideoAsset|requestVideoAsset(){}[0]
+}
+
+final class com.github.panpf.sketch.decode/FileVideoFrameDecoder : com.github.panpf.sketch.decode.internal/HelperDecoder { // com.github.panpf.sketch.decode/FileVideoFrameDecoder|null[0]
+    constructor <init>(com.github.panpf.sketch.request/RequestContext, com.github.panpf.sketch.source/FileDataSource, kotlin/String) // com.github.panpf.sketch.decode/FileVideoFrameDecoder.<init>|<init>(com.github.panpf.sketch.request.RequestContext;com.github.panpf.sketch.source.FileDataSource;kotlin.String){}[0]
+
+    final class Factory : com.github.panpf.sketch.decode/Decoder.Factory { // com.github.panpf.sketch.decode/FileVideoFrameDecoder.Factory|null[0]
+        constructor <init>() // com.github.panpf.sketch.decode/FileVideoFrameDecoder.Factory.<init>|<init>(){}[0]
+
+        final val key // com.github.panpf.sketch.decode/FileVideoFrameDecoder.Factory.key|{}key[0]
+            final fun <get-key>(): kotlin/String // com.github.panpf.sketch.decode/FileVideoFrameDecoder.Factory.key.<get-key>|<get-key>(){}[0]
+        final val sortWeight // com.github.panpf.sketch.decode/FileVideoFrameDecoder.Factory.sortWeight|{}sortWeight[0]
+            final fun <get-sortWeight>(): kotlin/Int // com.github.panpf.sketch.decode/FileVideoFrameDecoder.Factory.sortWeight.<get-sortWeight>|<get-sortWeight>(){}[0]
+
+        final fun create(com.github.panpf.sketch.request/RequestContext, com.github.panpf.sketch.fetch/FetchResult): com.github.panpf.sketch.decode/FileVideoFrameDecoder? // com.github.panpf.sketch.decode/FileVideoFrameDecoder.Factory.create|create(com.github.panpf.sketch.request.RequestContext;com.github.panpf.sketch.fetch.FetchResult){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.decode/FileVideoFrameDecoder.Factory.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.github.panpf.sketch.decode/FileVideoFrameDecoder.Factory.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.github.panpf.sketch.decode/FileVideoFrameDecoder.Factory.toString|toString(){}[0]
+    }
+
+    final object Companion { // com.github.panpf.sketch.decode/FileVideoFrameDecoder.Companion|null[0]
+        final const val SORT_WEIGHT // com.github.panpf.sketch.decode/FileVideoFrameDecoder.Companion.SORT_WEIGHT|{}SORT_WEIGHT[0]
+            final fun <get-SORT_WEIGHT>(): kotlin/Int // com.github.panpf.sketch.decode/FileVideoFrameDecoder.Companion.SORT_WEIGHT.<get-SORT_WEIGHT>|<get-SORT_WEIGHT>(){}[0]
+    }
+}
+
+final class com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder : com.github.panpf.sketch.decode.internal/HelperDecoder { // com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder|null[0]
+    constructor <init>(com.github.panpf.sketch.request/RequestContext, com.github.panpf.sketch.source/PhotosAssetDataSource, kotlin/String) // com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder.<init>|<init>(com.github.panpf.sketch.request.RequestContext;com.github.panpf.sketch.source.PhotosAssetDataSource;kotlin.String){}[0]
+
+    final class Factory : com.github.panpf.sketch.decode/Decoder.Factory { // com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder.Factory|null[0]
+        constructor <init>() // com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder.Factory.<init>|<init>(){}[0]
+
+        final val key // com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder.Factory.key|{}key[0]
+            final fun <get-key>(): kotlin/String // com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder.Factory.key.<get-key>|<get-key>(){}[0]
+        final val sortWeight // com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder.Factory.sortWeight|{}sortWeight[0]
+            final fun <get-sortWeight>(): kotlin/Int // com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder.Factory.sortWeight.<get-sortWeight>|<get-sortWeight>(){}[0]
+
+        final fun create(com.github.panpf.sketch.request/RequestContext, com.github.panpf.sketch.fetch/FetchResult): com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder? // com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder.Factory.create|create(com.github.panpf.sketch.request.RequestContext;com.github.panpf.sketch.fetch.FetchResult){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder.Factory.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder.Factory.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder.Factory.toString|toString(){}[0]
+    }
+
+    final object Companion { // com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder.Companion|null[0]
+        final const val SORT_WEIGHT // com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder.Companion.SORT_WEIGHT|{}SORT_WEIGHT[0]
+            final fun <get-SORT_WEIGHT>(): kotlin/Int // com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder.Companion.SORT_WEIGHT.<get-SORT_WEIGHT>|<get-SORT_WEIGHT>(){}[0]
+    }
+}
+
+final class com.github.panpf.sketch.util/VideoComponentProvider : com.github.panpf.sketch.util/ComponentProvider { // com.github.panpf.sketch.util/VideoComponentProvider|null[0]
+    constructor <init>() // com.github.panpf.sketch.util/VideoComponentProvider.<init>|<init>(){}[0]
+
+    final fun addDecoders(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<com.github.panpf.sketch.decode/Decoder.Factory> // com.github.panpf.sketch.util/VideoComponentProvider.addDecoders|addDecoders(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun addFetchers(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<com.github.panpf.sketch.fetch/Fetcher.Factory>? // com.github.panpf.sketch.util/VideoComponentProvider.addFetchers|addFetchers(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun addInterceptors(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<com.github.panpf.sketch.request/Interceptor>? // com.github.panpf.sketch.util/VideoComponentProvider.addInterceptors|addInterceptors(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun disabledDecoders(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<kotlin.reflect/KClass<out com.github.panpf.sketch.decode/Decoder.Factory>>? // com.github.panpf.sketch.util/VideoComponentProvider.disabledDecoders|disabledDecoders(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun disabledFetchers(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<kotlin.reflect/KClass<out com.github.panpf.sketch.fetch/Fetcher.Factory>>? // com.github.panpf.sketch.util/VideoComponentProvider.disabledFetchers|disabledFetchers(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun disabledInterceptors(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<kotlin.reflect/KClass<out com.github.panpf.sketch.request/Interceptor>>? // com.github.panpf.sketch.util/VideoComponentProvider.disabledInterceptors|disabledInterceptors(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun toString(): kotlin/String // com.github.panpf.sketch.util/VideoComponentProvider.toString|toString(){}[0]
+}
+
+final val com.github.panpf.sketch.util/videoComponentProviderInitHook // com.github.panpf.sketch.util/videoComponentProviderInitHook|{}videoComponentProviderInitHook[0]
+    final fun <get-videoComponentProviderInitHook>(): kotlin/Any // com.github.panpf.sketch.util/videoComponentProviderInitHook.<get-videoComponentProviderInitHook>|<get-videoComponentProviderInitHook>(){}[0]
+
+final fun (com.github.panpf.sketch/ComponentRegistry.Builder).com.github.panpf.sketch.decode/supportFileVideoFrame(): com.github.panpf.sketch/ComponentRegistry.Builder // com.github.panpf.sketch.decode/supportFileVideoFrame|supportFileVideoFrame@com.github.panpf.sketch.ComponentRegistry.Builder(){}[0]
+final fun (com.github.panpf.sketch/ComponentRegistry.Builder).com.github.panpf.sketch.decode/supportPhotosAssetVideoFrame(): com.github.panpf.sketch/ComponentRegistry.Builder // com.github.panpf.sketch.decode/supportPhotosAssetVideoFrame|supportPhotosAssetVideoFrame@com.github.panpf.sketch.ComponentRegistry.Builder(){}[0]

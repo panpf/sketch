@@ -1,0 +1,89 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <sketch:sketch-extensions-compose>
+abstract class com.github.panpf.sketch.painter.internal/AbsProgressPainter : com.github.panpf.sketch.painter/ProgressPainter { // com.github.panpf.sketch.painter.internal/AbsProgressPainter|null[0]
+    constructor <init>(kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Int = ...) // com.github.panpf.sketch.painter.internal/AbsProgressPainter.<init>|<init>(kotlin.Boolean;kotlin.Boolean;kotlin.Int){}[0]
+
+    final val hiddenWhenCompleted // com.github.panpf.sketch.painter.internal/AbsProgressPainter.hiddenWhenCompleted|{}hiddenWhenCompleted[0]
+        final fun <get-hiddenWhenCompleted>(): kotlin/Boolean // com.github.panpf.sketch.painter.internal/AbsProgressPainter.hiddenWhenCompleted.<get-hiddenWhenCompleted>|<get-hiddenWhenCompleted>(){}[0]
+    final val hiddenWhenIndeterminate // com.github.panpf.sketch.painter.internal/AbsProgressPainter.hiddenWhenIndeterminate|{}hiddenWhenIndeterminate[0]
+        final fun <get-hiddenWhenIndeterminate>(): kotlin/Boolean // com.github.panpf.sketch.painter.internal/AbsProgressPainter.hiddenWhenIndeterminate.<get-hiddenWhenIndeterminate>|<get-hiddenWhenIndeterminate>(){}[0]
+    final val stepAnimationDuration // com.github.panpf.sketch.painter.internal/AbsProgressPainter.stepAnimationDuration|{}stepAnimationDuration[0]
+        final fun <get-stepAnimationDuration>(): kotlin/Int // com.github.panpf.sketch.painter.internal/AbsProgressPainter.stepAnimationDuration.<get-stepAnimationDuration>|<get-stepAnimationDuration>(){}[0]
+
+    final var progress // com.github.panpf.sketch.painter.internal/AbsProgressPainter.progress|{}progress[0]
+        final fun <get-progress>(): kotlin/Float // com.github.panpf.sketch.painter.internal/AbsProgressPainter.progress.<get-progress>|<get-progress>(){}[0]
+        final fun <set-progress>(kotlin/Float) // com.github.panpf.sketch.painter.internal/AbsProgressPainter.progress.<set-progress>|<set-progress>(kotlin.Float){}[0]
+
+    abstract fun (androidx.compose.ui.graphics.drawscope/DrawScope).drawProgress(kotlin/Float) // com.github.panpf.sketch.painter.internal/AbsProgressPainter.drawProgress|drawProgress@androidx.compose.ui.graphics.drawscope.DrawScope(kotlin.Float){}[0]
+    open fun (androidx.compose.ui.graphics.drawscope/DrawScope).onDraw() // com.github.panpf.sketch.painter.internal/AbsProgressPainter.onDraw|onDraw@androidx.compose.ui.graphics.drawscope.DrawScope(){}[0]
+}
+
+abstract class com.github.panpf.sketch.painter/ProgressPainter : androidx.compose.ui.graphics.painter/Painter { // com.github.panpf.sketch.painter/ProgressPainter|null[0]
+    constructor <init>() // com.github.panpf.sketch.painter/ProgressPainter.<init>|<init>(){}[0]
+
+    abstract var progress // com.github.panpf.sketch.painter/ProgressPainter.progress|{}progress[0]
+        abstract fun <get-progress>(): kotlin/Float // com.github.panpf.sketch.painter/ProgressPainter.progress.<get-progress>|<get-progress>(){}[0]
+        abstract fun <set-progress>(kotlin/Float) // com.github.panpf.sketch.painter/ProgressPainter.progress.<set-progress>|<set-progress>(kotlin.Float){}[0]
+}
+
+final class com.github.panpf.sketch.painter/MaskProgressPainter : com.github.panpf.sketch.painter.internal/AbsProgressPainter, com.github.panpf.sketch.painter/SketchPainter { // com.github.panpf.sketch.painter/MaskProgressPainter|null[0]
+    constructor <init>(androidx.compose.ui.graphics/Color = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Int = ...) // com.github.panpf.sketch.painter/MaskProgressPainter.<init>|<init>(androidx.compose.ui.graphics.Color;kotlin.Boolean;kotlin.Boolean;kotlin.Int){}[0]
+
+    final val intrinsicSize // com.github.panpf.sketch.painter/MaskProgressPainter.intrinsicSize|{}intrinsicSize[0]
+        final fun <get-intrinsicSize>(): androidx.compose.ui.geometry/Size // com.github.panpf.sketch.painter/MaskProgressPainter.intrinsicSize.<get-intrinsicSize>|<get-intrinsicSize>(){}[0]
+
+    final fun (androidx.compose.ui.graphics.drawscope/DrawScope).drawProgress(kotlin/Float) // com.github.panpf.sketch.painter/MaskProgressPainter.drawProgress|drawProgress@androidx.compose.ui.graphics.drawscope.DrawScope(kotlin.Float){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.painter/MaskProgressPainter.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.github.panpf.sketch.painter/MaskProgressPainter.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.github.panpf.sketch.painter/MaskProgressPainter.toString|toString(){}[0]
+}
+
+final class com.github.panpf.sketch.painter/RingProgressPainter : com.github.panpf.sketch.painter.internal/AbsProgressPainter, com.github.panpf.sketch.painter/SketchPainter { // com.github.panpf.sketch.painter/RingProgressPainter|null[0]
+    constructor <init>(androidx.compose.ui.unit/Density, androidx.compose.ui.unit/Dp = ..., androidx.compose.ui.unit/Dp = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Int = ...) // com.github.panpf.sketch.painter/RingProgressPainter.<init>|<init>(androidx.compose.ui.unit.Density;androidx.compose.ui.unit.Dp;androidx.compose.ui.unit.Dp;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;kotlin.Boolean;kotlin.Boolean;kotlin.Int){}[0]
+
+    final val intrinsicSize // com.github.panpf.sketch.painter/RingProgressPainter.intrinsicSize|{}intrinsicSize[0]
+        final fun <get-intrinsicSize>(): androidx.compose.ui.geometry/Size // com.github.panpf.sketch.painter/RingProgressPainter.intrinsicSize.<get-intrinsicSize>|<get-intrinsicSize>(){}[0]
+
+    final fun (androidx.compose.ui.graphics.drawscope/DrawScope).drawProgress(kotlin/Float) // com.github.panpf.sketch.painter/RingProgressPainter.drawProgress|drawProgress@androidx.compose.ui.graphics.drawscope.DrawScope(kotlin.Float){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.painter/RingProgressPainter.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.github.panpf.sketch.painter/RingProgressPainter.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.github.panpf.sketch.painter/RingProgressPainter.toString|toString(){}[0]
+}
+
+final class com.github.panpf.sketch.painter/SectorProgressPainter : com.github.panpf.sketch.painter.internal/AbsProgressPainter, com.github.panpf.sketch.painter/SketchPainter { // com.github.panpf.sketch.painter/SectorProgressPainter|null[0]
+    constructor <init>(androidx.compose.ui.unit/Density, androidx.compose.ui.unit/Dp = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.graphics/Color = ..., androidx.compose.ui.unit/Dp = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Int = ...) // com.github.panpf.sketch.painter/SectorProgressPainter.<init>|<init>(androidx.compose.ui.unit.Density;androidx.compose.ui.unit.Dp;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.unit.Dp;kotlin.Boolean;kotlin.Boolean;kotlin.Int){}[0]
+
+    final val intrinsicSize // com.github.panpf.sketch.painter/SectorProgressPainter.intrinsicSize|{}intrinsicSize[0]
+        final fun <get-intrinsicSize>(): androidx.compose.ui.geometry/Size // com.github.panpf.sketch.painter/SectorProgressPainter.intrinsicSize.<get-intrinsicSize>|<get-intrinsicSize>(){}[0]
+
+    final fun (androidx.compose.ui.graphics.drawscope/DrawScope).drawProgress(kotlin/Float) // com.github.panpf.sketch.painter/SectorProgressPainter.drawProgress|drawProgress@androidx.compose.ui.graphics.drawscope.DrawScope(kotlin.Float){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.painter/SectorProgressPainter.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.github.panpf.sketch.painter/SectorProgressPainter.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.github.panpf.sketch.painter/SectorProgressPainter.toString|toString(){}[0]
+}
+
+final val com.github.panpf.sketch.painter.internal/com_github_panpf_sketch_painter_internal_AbsProgressPainter$stableprop // com.github.panpf.sketch.painter.internal/com_github_panpf_sketch_painter_internal_AbsProgressPainter$stableprop|#static{}com_github_panpf_sketch_painter_internal_AbsProgressPainter$stableprop[0]
+final val com.github.panpf.sketch.painter/com_github_panpf_sketch_painter_MaskProgressPainter$stableprop // com.github.panpf.sketch.painter/com_github_panpf_sketch_painter_MaskProgressPainter$stableprop|#static{}com_github_panpf_sketch_painter_MaskProgressPainter$stableprop[0]
+final val com.github.panpf.sketch.painter/com_github_panpf_sketch_painter_ProgressPainter$stableprop // com.github.panpf.sketch.painter/com_github_panpf_sketch_painter_ProgressPainter$stableprop|#static{}com_github_panpf_sketch_painter_ProgressPainter$stableprop[0]
+final val com.github.panpf.sketch.painter/com_github_panpf_sketch_painter_RingProgressPainter$stableprop // com.github.panpf.sketch.painter/com_github_panpf_sketch_painter_RingProgressPainter$stableprop|#static{}com_github_panpf_sketch_painter_RingProgressPainter$stableprop[0]
+final val com.github.panpf.sketch.painter/com_github_panpf_sketch_painter_SectorProgressPainter$stableprop // com.github.panpf.sketch.painter/com_github_panpf_sketch_painter_SectorProgressPainter$stableprop|#static{}com_github_panpf_sketch_painter_SectorProgressPainter$stableprop[0]
+
+final fun (androidx.compose.ui/Modifier).com.github.panpf.sketch.ability/dataFromLogo(com.github.panpf.sketch/AsyncImageState, androidx.compose.ui.unit/Dp = ...): androidx.compose.ui/Modifier // com.github.panpf.sketch.ability/dataFromLogo|dataFromLogo@androidx.compose.ui.Modifier(com.github.panpf.sketch.AsyncImageState;androidx.compose.ui.unit.Dp){}[0]
+final fun (androidx.compose.ui/Modifier).com.github.panpf.sketch.ability/mimeTypeLogo(com.github.panpf.sketch/AsyncImageState, kotlin.collections/Map<kotlin/String, androidx.compose.ui.graphics.painter/Painter>, androidx.compose.ui.unit/Dp = ...): androidx.compose.ui/Modifier // com.github.panpf.sketch.ability/mimeTypeLogo|mimeTypeLogo@androidx.compose.ui.Modifier(com.github.panpf.sketch.AsyncImageState;kotlin.collections.Map<kotlin.String,androidx.compose.ui.graphics.painter.Painter>;androidx.compose.ui.unit.Dp){}[0]
+final fun (androidx.compose.ui/Modifier).com.github.panpf.sketch.ability/progressIndicator(com.github.panpf.sketch/AsyncImageState, com.github.panpf.sketch.painter/ProgressPainter): androidx.compose.ui/Modifier // com.github.panpf.sketch.ability/progressIndicator|progressIndicator@androidx.compose.ui.Modifier(com.github.panpf.sketch.AsyncImageState;com.github.panpf.sketch.painter.ProgressPainter){}[0]
+final fun (com.github.panpf.sketch.state/ConditionStateImage.Builder).com.github.panpf.sketch.state/saveCellularTrafficError(androidx.compose.ui.graphics/Color): com.github.panpf.sketch.state/ConditionStateImage.Builder // com.github.panpf.sketch.state/saveCellularTrafficError|saveCellularTrafficError@com.github.panpf.sketch.state.ConditionStateImage.Builder(androidx.compose.ui.graphics.Color){}[0]
+final fun com.github.panpf.sketch.ability/bindPauseLoadWhenScrolling(androidx.compose.foundation.gestures/ScrollableState, androidx.compose.runtime/Composer?, kotlin/Int) // com.github.panpf.sketch.ability/bindPauseLoadWhenScrolling|bindPauseLoadWhenScrolling(androidx.compose.foundation.gestures.ScrollableState;androidx.compose.runtime.Composer?;kotlin.Int){}[0]
+final fun com.github.panpf.sketch.painter.internal/com_github_panpf_sketch_painter_internal_AbsProgressPainter$stableprop_getter(): kotlin/Int // com.github.panpf.sketch.painter.internal/com_github_panpf_sketch_painter_internal_AbsProgressPainter$stableprop_getter|com_github_panpf_sketch_painter_internal_AbsProgressPainter$stableprop_getter(){}[0]
+final fun com.github.panpf.sketch.painter/com_github_panpf_sketch_painter_MaskProgressPainter$stableprop_getter(): kotlin/Int // com.github.panpf.sketch.painter/com_github_panpf_sketch_painter_MaskProgressPainter$stableprop_getter|com_github_panpf_sketch_painter_MaskProgressPainter$stableprop_getter(){}[0]
+final fun com.github.panpf.sketch.painter/com_github_panpf_sketch_painter_ProgressPainter$stableprop_getter(): kotlin/Int // com.github.panpf.sketch.painter/com_github_panpf_sketch_painter_ProgressPainter$stableprop_getter|com_github_panpf_sketch_painter_ProgressPainter$stableprop_getter(){}[0]
+final fun com.github.panpf.sketch.painter/com_github_panpf_sketch_painter_RingProgressPainter$stableprop_getter(): kotlin/Int // com.github.panpf.sketch.painter/com_github_panpf_sketch_painter_RingProgressPainter$stableprop_getter|com_github_panpf_sketch_painter_RingProgressPainter$stableprop_getter(){}[0]
+final fun com.github.panpf.sketch.painter/com_github_panpf_sketch_painter_SectorProgressPainter$stableprop_getter(): kotlin/Int // com.github.panpf.sketch.painter/com_github_panpf_sketch_painter_SectorProgressPainter$stableprop_getter|com_github_panpf_sketch_painter_SectorProgressPainter$stableprop_getter(){}[0]
+final fun com.github.panpf.sketch.painter/rememberMaskProgressPainter(androidx.compose.ui.graphics/Color, kotlin/Boolean, kotlin/Boolean, kotlin/Int, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int): com.github.panpf.sketch.painter/MaskProgressPainter // com.github.panpf.sketch.painter/rememberMaskProgressPainter|rememberMaskProgressPainter(androidx.compose.ui.graphics.Color;kotlin.Boolean;kotlin.Boolean;kotlin.Int;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun com.github.panpf.sketch.painter/rememberRingProgressPainter(androidx.compose.ui.unit/Dp, androidx.compose.ui.unit/Dp, androidx.compose.ui.graphics/Color, androidx.compose.ui.graphics/Color, kotlin/Boolean, kotlin/Boolean, kotlin/Int, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int): com.github.panpf.sketch.painter/RingProgressPainter // com.github.panpf.sketch.painter/rememberRingProgressPainter|rememberRingProgressPainter(androidx.compose.ui.unit.Dp;androidx.compose.ui.unit.Dp;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;kotlin.Boolean;kotlin.Boolean;kotlin.Int;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]
+final fun com.github.panpf.sketch.painter/rememberSectorProgressPainter(androidx.compose.ui.unit/Dp, androidx.compose.ui.graphics/Color, androidx.compose.ui.graphics/Color, androidx.compose.ui.graphics/Color, androidx.compose.ui.unit/Dp, kotlin/Boolean, kotlin/Boolean, kotlin/Int, androidx.compose.runtime/Composer?, kotlin/Int, kotlin/Int): com.github.panpf.sketch.painter/SectorProgressPainter // com.github.panpf.sketch.painter/rememberSectorProgressPainter|rememberSectorProgressPainter(androidx.compose.ui.unit.Dp;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.graphics.Color;androidx.compose.ui.unit.Dp;kotlin.Boolean;kotlin.Boolean;kotlin.Int;androidx.compose.runtime.Composer?;kotlin.Int;kotlin.Int){}[0]

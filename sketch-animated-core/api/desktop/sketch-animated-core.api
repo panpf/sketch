@@ -1,0 +1,111 @@
+public final class com/github/panpf/sketch/SkiaAnimatedImage : com/github/panpf/sketch/AnimatedImage {
+	public fun <init> (Lorg/jetbrains/skia/Codec;Lorg/jetbrains/skia/ColorInfo;IZ)V
+	public synthetic fun <init> (Lorg/jetbrains/skia/Codec;Lorg/jetbrains/skia/ColorInfo;IZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun checkValid ()Z
+	public final fun component1 ()Lorg/jetbrains/skia/Codec;
+	public final fun component2 ()Lorg/jetbrains/skia/ColorInfo;
+	public final fun component3 ()I
+	public final fun component4 ()Z
+	public final fun copy (Lorg/jetbrains/skia/Codec;Lorg/jetbrains/skia/ColorInfo;IZ)Lcom/github/panpf/sketch/SkiaAnimatedImage;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/SkiaAnimatedImage;Lorg/jetbrains/skia/Codec;Lorg/jetbrains/skia/ColorInfo;IZILjava/lang/Object;)Lcom/github/panpf/sketch/SkiaAnimatedImage;
+	public fun createFrameBitmap (II)Lorg/jetbrains/skia/Bitmap;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getAnimatedTransformation ()Lkotlin/jvm/functions/Function2;
+	public fun getAnimationEndCallback ()Lkotlin/jvm/functions/Function0;
+	public fun getAnimationStartCallback ()Lkotlin/jvm/functions/Function0;
+	public fun getByteCount ()J
+	public fun getCacheDecodeTimeoutFrame ()Z
+	public final fun getCodec ()Lorg/jetbrains/skia/Codec;
+	public final fun getColorInfo ()Lorg/jetbrains/skia/ColorInfo;
+	public fun getFrameCount ()I
+	public fun getFrameDurations ()[Ljava/lang/Integer;
+	public fun getHeight ()I
+	public fun getRepeatCount ()I
+	public fun getShareable ()Z
+	public fun getWidth ()I
+	public fun hashCode ()I
+	public fun readFrame (Lorg/jetbrains/skia/Bitmap;I)V
+	public fun setAnimatedTransformation (Lkotlin/jvm/functions/Function2;)V
+	public fun setAnimationEndCallback (Lkotlin/jvm/functions/Function0;)V
+	public fun setAnimationStartCallback (Lkotlin/jvm/functions/Function0;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/decode/internal/Animated_decode_utilsKt {
+	public static final fun isAnimatedHeif ([B)Z
+	public static final fun isAnimatedWebP ([B)Z
+	public static final fun isGif ([B)Z
+	public static final fun isHeif ([B)Z
+	public static final fun isWebP ([B)Z
+}
+
+public class com/github/panpf/sketch/decode/internal/SkiaAnimatedDecoder : com/github/panpf/sketch/decode/Decoder {
+	public fun <init> (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/source/DataSource;)V
+	public fun decode (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getImageInfo (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/github/panpf/sketch/request/Animated_extensions_nonAndroidKt {
+	public static final field ANIMATED_CACHE_DECODE_TIMEOUT_FRAME_KEY Ljava/lang/String;
+	public static final fun cacheDecodeTimeoutFrame (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Boolean;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun cacheDecodeTimeoutFrame (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Boolean;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static synthetic fun cacheDecodeTimeoutFrame$default (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static synthetic fun cacheDecodeTimeoutFrame$default (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun getCacheDecodeTimeoutFrame (Lcom/github/panpf/sketch/request/ImageOptions;)Ljava/lang/Boolean;
+	public static final fun getCacheDecodeTimeoutFrame (Lcom/github/panpf/sketch/request/ImageRequest;)Ljava/lang/Boolean;
+}
+
+public final class com/github/panpf/sketch/request/Image_options_animated_extensionsKt {
+	public static final field ANIMATED_TRANSFORMATION_KEY Ljava/lang/String;
+	public static final field ANIMATION_END_CALLBACK_KEY Ljava/lang/String;
+	public static final field ANIMATION_REPEAT_COUNT_KEY Ljava/lang/String;
+	public static final field ANIMATION_REPEAT_INFINITE I
+	public static final field ANIMATION_START_CALLBACK_KEY Ljava/lang/String;
+	public static final field DISALLOW_ANIMATED_IMAGE_KEY Ljava/lang/String;
+	public static final fun animatedTransformation (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Lcom/github/panpf/sketch/transform/AnimatedTransformation;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun disallowAnimatedImage (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Boolean;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static synthetic fun disallowAnimatedImage$default (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun getAnimatedTransformation (Lcom/github/panpf/sketch/request/ImageOptions;)Lcom/github/panpf/sketch/transform/AnimatedTransformation;
+	public static final fun getAnimationEndCallback (Lcom/github/panpf/sketch/request/ImageOptions;)Lkotlin/jvm/functions/Function0;
+	public static final fun getAnimationStartCallback (Lcom/github/panpf/sketch/request/ImageOptions;)Lkotlin/jvm/functions/Function0;
+	public static final fun getDisallowAnimatedImage (Lcom/github/panpf/sketch/request/ImageOptions;)Ljava/lang/Boolean;
+	public static final fun getRepeatCount (Lcom/github/panpf/sketch/request/ImageOptions;)Ljava/lang/Integer;
+	public static final fun onAnimationEnd (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Lkotlin/jvm/functions/Function0;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun onAnimationStart (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Lkotlin/jvm/functions/Function0;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun repeatCount (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Integer;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+}
+
+public final class com/github/panpf/sketch/request/Image_request_animated_extensionsKt {
+	public static final fun animatedTransformation (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Lcom/github/panpf/sketch/transform/AnimatedTransformation;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun disallowAnimatedImage (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Boolean;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static synthetic fun disallowAnimatedImage$default (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun getAnimatedTransformation (Lcom/github/panpf/sketch/request/ImageRequest;)Lcom/github/panpf/sketch/transform/AnimatedTransformation;
+	public static final fun getAnimationEndCallback (Lcom/github/panpf/sketch/request/ImageRequest;)Lkotlin/jvm/functions/Function0;
+	public static final fun getAnimationStartCallback (Lcom/github/panpf/sketch/request/ImageRequest;)Lkotlin/jvm/functions/Function0;
+	public static final fun getDisallowAnimatedImage (Lcom/github/panpf/sketch/request/ImageRequest;)Ljava/lang/Boolean;
+	public static final fun getRepeatCount (Lcom/github/panpf/sketch/request/ImageRequest;)Ljava/lang/Integer;
+	public static final fun onAnimationEnd (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Lkotlin/jvm/functions/Function0;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun onAnimationStart (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Lkotlin/jvm/functions/Function0;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun repeatCount (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Integer;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+}
+
+public abstract interface class com/github/panpf/sketch/transform/AnimatedTransformation : com/github/panpf/sketch/util/Key {
+	public abstract fun equals (Ljava/lang/Object;)Z
+	public abstract fun hashCode ()I
+	public abstract fun toString ()Ljava/lang/String;
+	public abstract fun transform (Ljava/lang/Object;Lcom/github/panpf/sketch/util/Rect;)Lcom/github/panpf/sketch/transform/PixelOpacity;
+}
+
+public final class com/github/panpf/sketch/transform/PixelOpacity : java/lang/Enum {
+	public static final field OPAQUE Lcom/github/panpf/sketch/transform/PixelOpacity;
+	public static final field TRANSLUCENT Lcom/github/panpf/sketch/transform/PixelOpacity;
+	public static final field UNCHANGED Lcom/github/panpf/sketch/transform/PixelOpacity;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lcom/github/panpf/sketch/transform/PixelOpacity;
+	public static fun values ()[Lcom/github/panpf/sketch/transform/PixelOpacity;
+}
+
+public final class com/github/panpf/sketch/util/Animated_imagesKt {
+	public static final fun toLogString (Lorg/jetbrains/skia/Codec;)Ljava/lang/String;
+}
+

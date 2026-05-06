@@ -1,0 +1,120 @@
+public final class com/github/panpf/sketch/fetch/ComposeResourceUriFetcher : com/github/panpf/sketch/fetch/Fetcher {
+	public static final field $stable I
+	public static final field Companion Lcom/github/panpf/sketch/fetch/ComposeResourceUriFetcher$Companion;
+	public static final field PATH_ROOT Ljava/lang/String;
+	public static final field SCHEME Ljava/lang/String;
+	public static final field SORT_WEIGHT I
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun fetch-IoAF18A (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getResourcePath ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/fetch/ComposeResourceUriFetcher$Companion {
+}
+
+public final class com/github/panpf/sketch/fetch/ComposeResourceUriFetcher$Factory : com/github/panpf/sketch/fetch/Fetcher$Factory {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun create (Lcom/github/panpf/sketch/request/RequestContext;)Lcom/github/panpf/sketch/fetch/ComposeResourceUriFetcher;
+	public synthetic fun create (Lcom/github/panpf/sketch/request/RequestContext;)Lcom/github/panpf/sketch/fetch/Fetcher;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getSortWeight ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/fetch/ComposeResourceUriFetcherKt {
+	public static final fun isComposeResourceUri (Lcom/github/panpf/sketch/util/Uri;)Z
+	public static final fun newComposeResourceUri (Ljava/lang/String;)Ljava/lang/String;
+	public static final fun supportComposeResources (Lcom/github/panpf/sketch/ComponentRegistry$Builder;)Lcom/github/panpf/sketch/ComponentRegistry$Builder;
+}
+
+public final class com/github/panpf/sketch/painter/EquitablePainter_composeResourcesKt {
+	public static final fun equitablePainterResource (Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/painter/EquitablePainter;
+	public static final fun rememberEquitablePainterResource (Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/painter/EquitablePainter;
+}
+
+public final class com/github/panpf/sketch/painter/IconAnimatablePainter_composeResourcesKt {
+	public static final fun rememberIconAnimatablePainter (Lcom/github/panpf/sketch/painter/EquitablePainter;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconAnimatablePainter;
+	public static final fun rememberIconAnimatablePainter-D2uFLQQ (Lcom/github/panpf/sketch/painter/EquitablePainter;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconAnimatablePainter;
+	public static final fun rememberIconAnimatablePainter-bU_wl9k (Lcom/github/panpf/sketch/painter/EquitablePainter;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconAnimatablePainter;
+}
+
+public final class com/github/panpf/sketch/painter/IconPainter_composeResourcesKt {
+	public static final fun rememberIconPainter (Lcom/github/panpf/sketch/painter/EquitablePainter;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter (Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter (Lorg/jetbrains/compose/resources/DrawableResource;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter (Lorg/jetbrains/compose/resources/DrawableResource;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter-5oXFXW4 (Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter-D2uFLQQ (Lcom/github/panpf/sketch/painter/EquitablePainter;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter-D2uFLQQ (Lorg/jetbrains/compose/resources/DrawableResource;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter-D2uFLQQ (Lorg/jetbrains/compose/resources/DrawableResource;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter-DWLq7jM (Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter-ZLcQsz0 (Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter-bU_wl9k (Lcom/github/panpf/sketch/painter/EquitablePainter;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter-bU_wl9k (Lorg/jetbrains/compose/resources/DrawableResource;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter-bU_wl9k (Lorg/jetbrains/compose/resources/DrawableResource;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter-qxKsBhk (Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+	public static final fun rememberIconPainter-vMSDqxM (Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/painter/IconPainter;
+}
+
+public final class com/github/panpf/sketch/request/ImageOptions_composeResourcesKt {
+	public static final fun error (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun fallback (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun placeholder (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+}
+
+public final class com/github/panpf/sketch/request/ImageRequest_composeResourcesKt {
+	public static final fun error (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun fallback (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun placeholder (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+}
+
+public final class com/github/panpf/sketch/state/ConditionStateImage_composeResourcesKt {
+	public static final fun ComposableConditionStateImage (Lorg/jetbrains/compose/resources/DrawableResource;Lkotlin/jvm/functions/Function3;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/state/ConditionStateImage;
+	public static final fun addState (Lcom/github/panpf/sketch/state/ConditionStateImage$Builder;Lcom/github/panpf/sketch/state/ConditionStateImage$Condition;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/state/ConditionStateImage$Builder;
+}
+
+public final class com/github/panpf/sketch/state/IconAnimatablePainterStateImage_composeResourcesKt {
+	public static final fun rememberIconAnimatablePainterStateImage (Lcom/github/panpf/sketch/painter/EquitablePainter;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconAnimatablePainterStateImage;
+	public static final fun rememberIconAnimatablePainterStateImage-D2uFLQQ (Lcom/github/panpf/sketch/painter/EquitablePainter;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconAnimatablePainterStateImage;
+	public static final fun rememberIconAnimatablePainterStateImage-bU_wl9k (Lcom/github/panpf/sketch/painter/EquitablePainter;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconAnimatablePainterStateImage;
+}
+
+public final class com/github/panpf/sketch/state/IconPainterStateImage_composeResourcesKt {
+	public static final fun rememberIconPainterStateImage (Lcom/github/panpf/sketch/painter/EquitablePainter;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage (Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage (Lorg/jetbrains/compose/resources/DrawableResource;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage (Lorg/jetbrains/compose/resources/DrawableResource;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage-5oXFXW4 (Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage-D2uFLQQ (Lcom/github/panpf/sketch/painter/EquitablePainter;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage-D2uFLQQ (Lorg/jetbrains/compose/resources/DrawableResource;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage-D2uFLQQ (Lorg/jetbrains/compose/resources/DrawableResource;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage-DWLq7jM (Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage-ZLcQsz0 (Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage-bU_wl9k (Lcom/github/panpf/sketch/painter/EquitablePainter;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage-bU_wl9k (Lorg/jetbrains/compose/resources/DrawableResource;Lcom/github/panpf/sketch/painter/EquitablePainter;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage-bU_wl9k (Lorg/jetbrains/compose/resources/DrawableResource;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage-qxKsBhk (Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/geometry/Size;Landroidx/compose/ui/graphics/Color;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+	public static final fun rememberIconPainterStateImage-vMSDqxM (Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/ui/graphics/Color;Landroidx/compose/ui/geometry/Size;Landroidx/compose/runtime/Composer;II)Lcom/github/panpf/sketch/state/IconPainterStateImage;
+}
+
+public final class com/github/panpf/sketch/state/PainterStateImage_composeResourcesKt {
+	public static final fun rememberPainterStateImage (Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/state/PainterStateImage;
+}
+
+public final class com/github/panpf/sketch/util/ComposeResourceComponentProvider : com/github/panpf/sketch/util/ComponentProvider {
+	public static final field $stable I
+	public fun <init> ()V
+	public fun addDecoders (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun addFetchers (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun addInterceptors (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun disabledDecoders (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun disabledFetchers (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun disabledInterceptors (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+

@@ -1,0 +1,9 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <sketch:sketch-extensions-compose-resources>
+final fun (com.github.panpf.sketch.state/ConditionStateImage.Builder).com.github.panpf.sketch.state/saveCellularTrafficError(org.jetbrains.compose.resources/DrawableResource, androidx.compose.runtime/Composer?, kotlin/Int): com.github.panpf.sketch.state/ConditionStateImage.Builder // com.github.panpf.sketch.state/saveCellularTrafficError|saveCellularTrafficError@com.github.panpf.sketch.state.ConditionStateImage.Builder(org.jetbrains.compose.resources.DrawableResource;androidx.compose.runtime.Composer?;kotlin.Int){}[0]

@@ -1,0 +1,26 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <sketch:sketch-singleton>
+final object com.github.panpf.sketch/SingletonSketch { // com.github.panpf.sketch/SingletonSketch|null[0]
+    final fun get(com.github.panpf.sketch/PlatformContext): com.github.panpf.sketch/Sketch // com.github.panpf.sketch/SingletonSketch.get|get(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun reset() // com.github.panpf.sketch/SingletonSketch.reset|reset(){}[0]
+    final fun setSafe(com.github.panpf.sketch/SingletonSketch.Factory) // com.github.panpf.sketch/SingletonSketch.setSafe|setSafe(com.github.panpf.sketch.SingletonSketch.Factory){}[0]
+    final fun setUnsafe(com.github.panpf.sketch/SingletonSketch.Factory) // com.github.panpf.sketch/SingletonSketch.setUnsafe|setUnsafe(com.github.panpf.sketch.SingletonSketch.Factory){}[0]
+    final fun setUnsafe(com.github.panpf.sketch/Sketch) // com.github.panpf.sketch/SingletonSketch.setUnsafe|setUnsafe(com.github.panpf.sketch.Sketch){}[0]
+
+    abstract fun interface Factory { // com.github.panpf.sketch/SingletonSketch.Factory|null[0]
+        abstract fun createSketch(com.github.panpf.sketch/PlatformContext): com.github.panpf.sketch/Sketch // com.github.panpf.sketch/SingletonSketch.Factory.createSketch|createSketch(com.github.panpf.sketch.PlatformContext){}[0]
+    }
+}
+
+final val com.github.panpf.sketch/sketch // com.github.panpf.sketch/sketch|@com.github.panpf.sketch.PlatformContext{}sketch[0]
+    final fun (com.github.panpf.sketch/PlatformContext).<get-sketch>(): com.github.panpf.sketch/Sketch // com.github.panpf.sketch/sketch.<get-sketch>|<get-sketch>@com.github.panpf.sketch.PlatformContext(){}[0]
+
+final fun (com.github.panpf.sketch.request/ImageRequest).com.github.panpf.sketch.request/enqueue(com.github.panpf.sketch/Sketch = ...): com.github.panpf.sketch.request/Disposable // com.github.panpf.sketch.request/enqueue|enqueue@com.github.panpf.sketch.request.ImageRequest(com.github.panpf.sketch.Sketch){}[0]
+final fun (com.github.panpf.sketch/SingletonSketch).com.github.panpf.sketch/get(): com.github.panpf.sketch/Sketch // com.github.panpf.sketch/get|get@com.github.panpf.sketch.SingletonSketch(){}[0]
+final suspend fun (com.github.panpf.sketch.request/ImageRequest).com.github.panpf.sketch.request/execute(com.github.panpf.sketch/Sketch = ...): com.github.panpf.sketch.request/ImageResult // com.github.panpf.sketch.request/execute|execute@com.github.panpf.sketch.request.ImageRequest(com.github.panpf.sketch.Sketch){}[0]

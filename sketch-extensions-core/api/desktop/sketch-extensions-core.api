@@ -1,0 +1,123 @@
+public final class com/github/panpf/sketch/ability/Data_from_logoKt {
+	public static final field DATA_FROM_DEFAULT_SIZE F
+	public static final fun dataFromColor (Lcom/github/panpf/sketch/source/DataFrom;)I
+}
+
+public final class com/github/panpf/sketch/ability/Mime_type_logoKt {
+	public static final fun getMimeTypeFromImageResult (Lcom/github/panpf/sketch/request/ImageResult;Ljava/lang/String;)Ljava/lang/String;
+	public static synthetic fun getMimeTypeFromImageResult$default (Lcom/github/panpf/sketch/request/ImageResult;Ljava/lang/String;ILjava/lang/Object;)Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/ability/Progress_indicatorKt {
+	public static final field PROGRESS_INDICATOR_BACKGROUND_ALPHA_PERCENT F
+	public static final field PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED Z
+	public static final field PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE Z
+	public static final field PROGRESS_INDICATOR_MASK_COLOR I
+	public static final field PROGRESS_INDICATOR_RING_COLOR I
+	public static final field PROGRESS_INDICATOR_RING_SIZE F
+	public static final field PROGRESS_INDICATOR_RING_WIDTH_PERCENT F
+	public static final field PROGRESS_INDICATOR_SECTOR_BACKGROUND_COLOR I
+	public static final field PROGRESS_INDICATOR_SECTOR_PROGRESS_COLOR I
+	public static final field PROGRESS_INDICATOR_SECTOR_SIZE F
+	public static final field PROGRESS_INDICATOR_SECTOR_STROKE_COLOR I
+	public static final field PROGRESS_INDICATOR_SECTOR_STROKE_WIDTH_PERCENT F
+	public static final field PROGRESS_INDICATOR_STEP_ANIMATION_DURATION I
+}
+
+public final class com/github/panpf/sketch/request/PauseLoadWhenScrollingExtensionsKt {
+	public static final field PAUSE_LOAD_WHEN_SCROLLING_ENABLED_KEY Ljava/lang/String;
+	public static final field PAUSE_LOAD_WHEN_SCROLLING_IGNORED_KEY Ljava/lang/String;
+	public static final fun ignorePauseLoadWhenScrolling (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Boolean;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun ignorePauseLoadWhenScrolling (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Boolean;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static synthetic fun ignorePauseLoadWhenScrolling$default (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static synthetic fun ignorePauseLoadWhenScrolling$default (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun isIgnoredPauseLoadWhenScrolling (Lcom/github/panpf/sketch/request/ImageOptions;)Z
+	public static final fun isIgnoredPauseLoadWhenScrolling (Lcom/github/panpf/sketch/request/ImageRequest;)Z
+	public static final fun isPauseLoadWhenScrolling (Lcom/github/panpf/sketch/request/ImageOptions;)Z
+	public static final fun isPauseLoadWhenScrolling (Lcom/github/panpf/sketch/request/ImageRequest;)Z
+	public static final fun pauseLoadWhenScrolling (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Boolean;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun pauseLoadWhenScrolling (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Boolean;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static synthetic fun pauseLoadWhenScrolling$default (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static synthetic fun pauseLoadWhenScrolling$default (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+}
+
+public final class com/github/panpf/sketch/request/PauseLoadWhenScrollingInterceptor : com/github/panpf/sketch/request/Interceptor {
+	public static final field Companion Lcom/github/panpf/sketch/request/PauseLoadWhenScrollingInterceptor$Companion;
+	public static final field SORT_WEIGHT I
+	public fun <init> ()V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEnabled ()Z
+	public fun getKey ()Ljava/lang/String;
+	public fun getSortWeight ()I
+	public fun hashCode ()I
+	public fun intercept-gIAlu-s (Lcom/github/panpf/sketch/request/Interceptor$Chain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun setEnabled (Z)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/request/PauseLoadWhenScrollingInterceptor$Companion {
+	public final fun getScrolling ()Z
+	public final fun setScrolling (Z)V
+}
+
+public final class com/github/panpf/sketch/request/PauseLoadWhenScrollingInterceptorKt {
+	public static final fun supportPauseLoadWhenScrolling (Lcom/github/panpf/sketch/ComponentRegistry$Builder;)Lcom/github/panpf/sketch/ComponentRegistry$Builder;
+}
+
+public final class com/github/panpf/sketch/request/SaveCellularTrafficExtensionsKt {
+	public static final field SAVE_CELLULAR_TRAFFIC_ENABLED_KEY Ljava/lang/String;
+	public static final field SAVE_CELLULAR_TRAFFIC_IGNORED_KEY Ljava/lang/String;
+	public static final field SAVE_CELLULAR_TRAFFIC_KEY Ljava/lang/String;
+	public static final fun ignoreSaveCellularTraffic (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Boolean;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun ignoreSaveCellularTraffic (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Boolean;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static synthetic fun ignoreSaveCellularTraffic$default (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static synthetic fun ignoreSaveCellularTraffic$default (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun isCausedBySaveCellularTraffic (Lcom/github/panpf/sketch/request/ImageRequest;Ljava/lang/Throwable;)Z
+	public static final fun isDepthFromSaveCellularTraffic (Lcom/github/panpf/sketch/request/ImageOptions;)Z
+	public static final fun isDepthFromSaveCellularTraffic (Lcom/github/panpf/sketch/request/ImageRequest;)Z
+	public static final fun isIgnoredSaveCellularTraffic (Lcom/github/panpf/sketch/request/ImageOptions;)Z
+	public static final fun isIgnoredSaveCellularTraffic (Lcom/github/panpf/sketch/request/ImageRequest;)Z
+	public static final fun isSaveCellularTraffic (Lcom/github/panpf/sketch/request/ImageOptions;)Z
+	public static final fun isSaveCellularTraffic (Lcom/github/panpf/sketch/request/ImageRequest;)Z
+	public static final fun saveCellularTraffic (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Boolean;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun saveCellularTraffic (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Boolean;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static synthetic fun saveCellularTraffic$default (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static synthetic fun saveCellularTraffic$default (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+}
+
+public final class com/github/panpf/sketch/request/SaveCellularTrafficInterceptor : com/github/panpf/sketch/request/Interceptor {
+	public static final field Companion Lcom/github/panpf/sketch/request/SaveCellularTrafficInterceptor$Companion;
+	public static final field SORT_WEIGHT I
+	public fun <init> ()V
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEnabled ()Z
+	public fun getKey ()Ljava/lang/String;
+	public fun getSortWeight ()I
+	public fun hashCode ()I
+	public fun intercept-gIAlu-s (Lcom/github/panpf/sketch/request/Interceptor$Chain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun setEnabled (Z)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/request/SaveCellularTrafficInterceptor$Companion {
+}
+
+public final class com/github/panpf/sketch/request/SaveCellularTrafficInterceptorKt {
+	public static final fun supportSaveCellularTraffic (Lcom/github/panpf/sketch/ComponentRegistry$Builder;)Lcom/github/panpf/sketch/ComponentRegistry$Builder;
+}
+
+public final class com/github/panpf/sketch/state/SaveCellularTrafficCondition : com/github/panpf/sketch/state/ConditionStateImage$Condition {
+	public static final field INSTANCE Lcom/github/panpf/sketch/state/SaveCellularTrafficCondition;
+	public fun accept (Lcom/github/panpf/sketch/request/ImageRequest;Ljava/lang/Throwable;)Z
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/state/Save_cellular_traffic_extensions_commonKt {
+	public static final fun saveCellularTrafficError (Lcom/github/panpf/sketch/state/ConditionStateImage$Builder;Lcom/github/panpf/sketch/state/StateImage;)Lcom/github/panpf/sketch/state/ConditionStateImage$Builder;
+}
+

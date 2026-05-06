@@ -1,0 +1,94 @@
+public final class com/github/panpf/sketch/fetch/OkHttpHttpUriFetcher : com/github/panpf/sketch/fetch/HttpUriFetcher {
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/http/OkHttpStack;Lcom/github/panpf/sketch/request/ImageRequest;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/fetch/OkHttpHttpUriFetcher$Factory : com/github/panpf/sketch/fetch/Fetcher$Factory {
+	public fun <init> ()V
+	public fun <init> (Lcom/github/panpf/sketch/http/OkHttpStack;)V
+	public synthetic fun <init> (Lcom/github/panpf/sketch/http/OkHttpStack;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun create (Lcom/github/panpf/sketch/request/RequestContext;)Lcom/github/panpf/sketch/fetch/Fetcher;
+	public fun create (Lcom/github/panpf/sketch/request/RequestContext;)Lcom/github/panpf/sketch/fetch/HttpUriFetcher;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHttpStack ()Lcom/github/panpf/sketch/http/OkHttpStack;
+	public fun getSortWeight ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/fetch/OkHttpHttpUriFetcherKt {
+	public static final fun supportOkHttpHttpUri (Lcom/github/panpf/sketch/ComponentRegistry$Builder;Lcom/github/panpf/sketch/http/OkHttpStack;)Lcom/github/panpf/sketch/ComponentRegistry$Builder;
+	public static synthetic fun supportOkHttpHttpUri$default (Lcom/github/panpf/sketch/ComponentRegistry$Builder;Lcom/github/panpf/sketch/http/OkHttpStack;ILjava/lang/Object;)Lcom/github/panpf/sketch/ComponentRegistry$Builder;
+}
+
+public final class com/github/panpf/sketch/http/OkHttpStack : com/github/panpf/sketch/http/HttpStack {
+	public fun <init> (Lokhttp3/OkHttpClient;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getOkHttpClient ()Lokhttp3/OkHttpClient;
+	public fun getResponse (Ljava/lang/String;Lcom/github/panpf/sketch/http/HttpHeaders;Lcom/github/panpf/sketch/request/Extras;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun request (Ljava/lang/String;Lcom/github/panpf/sketch/http/HttpHeaders;Lcom/github/panpf/sketch/request/Extras;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/http/OkHttpStack$Builder {
+	public fun <init> ()V
+	public final fun addHeaders (Ljava/util/List;)Lcom/github/panpf/sketch/http/OkHttpStack$Builder;
+	public final fun addHeaders ([Lkotlin/Pair;)Lcom/github/panpf/sketch/http/OkHttpStack$Builder;
+	public final fun build ()Lcom/github/panpf/sketch/http/OkHttpStack;
+	public final fun connectTimeoutMillis (I)Lcom/github/panpf/sketch/http/OkHttpStack$Builder;
+	public final fun headers (Ljava/util/Map;)Lcom/github/panpf/sketch/http/OkHttpStack$Builder;
+	public final fun headers ([Lkotlin/Pair;)Lcom/github/panpf/sketch/http/OkHttpStack$Builder;
+	public final fun interceptors ([Lokhttp3/Interceptor;)Lcom/github/panpf/sketch/http/OkHttpStack$Builder;
+	public final fun networkInterceptors ([Lokhttp3/Interceptor;)Lcom/github/panpf/sketch/http/OkHttpStack$Builder;
+	public final fun readTimeoutMillis (I)Lcom/github/panpf/sketch/http/OkHttpStack$Builder;
+	public final fun userAgent (Ljava/lang/String;)Lcom/github/panpf/sketch/http/OkHttpStack$Builder;
+}
+
+public final class com/github/panpf/sketch/http/OkHttpStack$Content : com/github/panpf/sketch/http/HttpStack$Content {
+	public fun <init> (Ljava/io/InputStream;)V
+	public fun close ()V
+	public fun read ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/github/panpf/sketch/http/OkHttpStack$MyInterceptor : okhttp3/Interceptor {
+	public fun <init> (Ljava/lang/String;Ljava/util/Map;Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/Map;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/Map;
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/util/Map;Ljava/util/List;)Lcom/github/panpf/sketch/http/OkHttpStack$MyInterceptor;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/http/OkHttpStack$MyInterceptor;Ljava/lang/String;Ljava/util/Map;Ljava/util/List;ILjava/lang/Object;)Lcom/github/panpf/sketch/http/OkHttpStack$MyInterceptor;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAddHeaders ()Ljava/util/List;
+	public final fun getHeaders ()Ljava/util/Map;
+	public final fun getUserAgent ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun intercept (Lokhttp3/Interceptor$Chain;)Lokhttp3/Response;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/http/OkHttpStack$Response : com/github/panpf/sketch/http/HttpStack$Response {
+	public fun <init> (Lokhttp3/Response;)V
+	public fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getCode ()I
+	public fun getContentLength ()J
+	public fun getContentType ()Ljava/lang/String;
+	public fun getHeaderField (Ljava/lang/String;)Ljava/lang/String;
+	public fun getMessage ()Ljava/lang/String;
+	public final fun getResponse ()Lokhttp3/Response;
+}
+
+public final class com/github/panpf/sketch/util/OkHttpHttpComponentProvider : com/github/panpf/sketch/util/ComponentProvider {
+	public fun <init> ()V
+	public fun addDecoders (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun addFetchers (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun addInterceptors (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun disabledDecoders (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun disabledFetchers (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun disabledInterceptors (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+

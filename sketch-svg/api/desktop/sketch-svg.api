@@ -1,0 +1,59 @@
+public final class com/github/panpf/sketch/decode/SvgDecoder : com/github/panpf/sketch/decode/Decoder {
+	public static final field Companion Lcom/github/panpf/sketch/decode/SvgDecoder$Companion;
+	public static final field MIME_TYPE Ljava/lang/String;
+	public static final field SORT_WEIGHT I
+	public fun <init> (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/source/DataSource;Z)V
+	public synthetic fun <init> (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/source/DataSource;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun decode (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getImageInfo (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/github/panpf/sketch/decode/SvgDecoder$Companion {
+}
+
+public final class com/github/panpf/sketch/decode/SvgDecoder$Factory : com/github/panpf/sketch/decode/Decoder$Factory {
+	public fun <init> ()V
+	public fun <init> (Z)V
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun create (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/fetch/FetchResult;)Lcom/github/panpf/sketch/decode/Decoder;
+	public fun create (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/fetch/FetchResult;)Lcom/github/panpf/sketch/decode/SvgDecoder;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKey ()Ljava/lang/String;
+	public fun getSortWeight ()I
+	public final fun getUseViewBoundsAsIntrinsicSize ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/decode/SvgDecoderKt {
+	public static final fun supportSvg (Lcom/github/panpf/sketch/ComponentRegistry$Builder;)Lcom/github/panpf/sketch/ComponentRegistry$Builder;
+}
+
+public final class com/github/panpf/sketch/decode/internal/Svgs_commonKt {
+	public static final fun isSvg ([B)Z
+}
+
+public final class com/github/panpf/sketch/request/SvgExtensionsKt {
+	public static final field SVG_BACKGROUND_COLOR_KEY Ljava/lang/String;
+	public static final field SVG_CSS_KEY Ljava/lang/String;
+	public static final fun getSvgBackgroundColor (Lcom/github/panpf/sketch/request/ImageOptions;)Ljava/lang/Integer;
+	public static final fun getSvgBackgroundColor (Lcom/github/panpf/sketch/request/ImageRequest;)Ljava/lang/Integer;
+	public static final fun getSvgCss (Lcom/github/panpf/sketch/request/ImageOptions;)Ljava/lang/String;
+	public static final fun getSvgCss (Lcom/github/panpf/sketch/request/ImageRequest;)Ljava/lang/String;
+	public static final fun svgBackgroundColor (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Integer;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun svgBackgroundColor (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Integer;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun svgCss (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/String;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun svgCss (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/String;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+}
+
+public final class com/github/panpf/sketch/util/SvgComponentProvider : com/github/panpf/sketch/util/ComponentProvider {
+	public fun <init> ()V
+	public fun addDecoders (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun addFetchers (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun addInterceptors (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun disabledDecoders (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun disabledFetchers (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun disabledInterceptors (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+

@@ -1,0 +1,10 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <sketch:sketch-koin>
+final fun (com.github.panpf.sketch.request/ImageRequest).com.github.panpf.sketch.request/enqueue(com.github.panpf.sketch/Sketch = ...): com.github.panpf.sketch.request/Disposable // com.github.panpf.sketch.request/enqueue|enqueue@com.github.panpf.sketch.request.ImageRequest(com.github.panpf.sketch.Sketch){}[0]
+final suspend fun (com.github.panpf.sketch.request/ImageRequest).com.github.panpf.sketch.request/execute(com.github.panpf.sketch/Sketch = ...): com.github.panpf.sketch.request/ImageResult // com.github.panpf.sketch.request/execute|execute@com.github.panpf.sketch.request.ImageRequest(com.github.panpf.sketch.Sketch){}[0]

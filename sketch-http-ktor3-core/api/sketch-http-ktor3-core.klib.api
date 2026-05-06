@@ -1,0 +1,82 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <sketch:sketch-http-ktor3-core>
+final class com.github.panpf.sketch.fetch/KtorHttpUriFetcher : com.github.panpf.sketch.fetch/HttpUriFetcher { // com.github.panpf.sketch.fetch/KtorHttpUriFetcher|null[0]
+    constructor <init>(com.github.panpf.sketch/Sketch, com.github.panpf.sketch.http/KtorStack, com.github.panpf.sketch.request/ImageRequest, kotlin/String) // com.github.panpf.sketch.fetch/KtorHttpUriFetcher.<init>|<init>(com.github.panpf.sketch.Sketch;com.github.panpf.sketch.http.KtorStack;com.github.panpf.sketch.request.ImageRequest;kotlin.String){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.fetch/KtorHttpUriFetcher.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.github.panpf.sketch.fetch/KtorHttpUriFetcher.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.github.panpf.sketch.fetch/KtorHttpUriFetcher.toString|toString(){}[0]
+
+    final class Factory : com.github.panpf.sketch.fetch/Fetcher.Factory { // com.github.panpf.sketch.fetch/KtorHttpUriFetcher.Factory|null[0]
+        constructor <init>(com.github.panpf.sketch.http/KtorStack = ...) // com.github.panpf.sketch.fetch/KtorHttpUriFetcher.Factory.<init>|<init>(com.github.panpf.sketch.http.KtorStack){}[0]
+
+        final val httpStack // com.github.panpf.sketch.fetch/KtorHttpUriFetcher.Factory.httpStack|{}httpStack[0]
+            final fun <get-httpStack>(): com.github.panpf.sketch.http/KtorStack // com.github.panpf.sketch.fetch/KtorHttpUriFetcher.Factory.httpStack.<get-httpStack>|<get-httpStack>(){}[0]
+        final val sortWeight // com.github.panpf.sketch.fetch/KtorHttpUriFetcher.Factory.sortWeight|{}sortWeight[0]
+            final fun <get-sortWeight>(): kotlin/Int // com.github.panpf.sketch.fetch/KtorHttpUriFetcher.Factory.sortWeight.<get-sortWeight>|<get-sortWeight>(){}[0]
+
+        final fun create(com.github.panpf.sketch.request/RequestContext): com.github.panpf.sketch.fetch/HttpUriFetcher? // com.github.panpf.sketch.fetch/KtorHttpUriFetcher.Factory.create|create(com.github.panpf.sketch.request.RequestContext){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.fetch/KtorHttpUriFetcher.Factory.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.github.panpf.sketch.fetch/KtorHttpUriFetcher.Factory.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.github.panpf.sketch.fetch/KtorHttpUriFetcher.Factory.toString|toString(){}[0]
+    }
+}
+
+final class com.github.panpf.sketch.http/KtorStack : com.github.panpf.sketch.http/HttpStack { // com.github.panpf.sketch.http/KtorStack|null[0]
+    constructor <init>(io.ktor.client/HttpClient = ...) // com.github.panpf.sketch.http/KtorStack.<init>|<init>(io.ktor.client.HttpClient){}[0]
+
+    final val client // com.github.panpf.sketch.http/KtorStack.client|{}client[0]
+        final fun <get-client>(): io.ktor.client/HttpClient // com.github.panpf.sketch.http/KtorStack.client.<get-client>|<get-client>(){}[0]
+
+    final fun toString(): kotlin/String // com.github.panpf.sketch.http/KtorStack.toString|toString(){}[0]
+    final suspend fun <#A1: kotlin/Any?> request(kotlin/String, com.github.panpf.sketch.http/HttpHeaders?, com.github.panpf.sketch.request/Extras?, kotlin.coroutines/SuspendFunction1<com.github.panpf.sketch.http/HttpStack.Response, #A1>): #A1 // com.github.panpf.sketch.http/KtorStack.request|request(kotlin.String;com.github.panpf.sketch.http.HttpHeaders?;com.github.panpf.sketch.request.Extras?;kotlin.coroutines.SuspendFunction1<com.github.panpf.sketch.http.HttpStack.Response,0:0>){0§<kotlin.Any?>}[0]
+    final suspend fun getResponse(kotlin/String, com.github.panpf.sketch.http/HttpHeaders?, com.github.panpf.sketch.request/Extras?): com.github.panpf.sketch.http/HttpStack.Response // com.github.panpf.sketch.http/KtorStack.getResponse|getResponse(kotlin.String;com.github.panpf.sketch.http.HttpHeaders?;com.github.panpf.sketch.request.Extras?){}[0]
+
+    final class Content : com.github.panpf.sketch.http/HttpStack.Content { // com.github.panpf.sketch.http/KtorStack.Content|null[0]
+        constructor <init>(io.ktor.utils.io/ByteReadChannel) // com.github.panpf.sketch.http/KtorStack.Content.<init>|<init>(io.ktor.utils.io.ByteReadChannel){}[0]
+
+        final fun close() // com.github.panpf.sketch.http/KtorStack.Content.close|close(){}[0]
+        final suspend fun read(kotlin/ByteArray): kotlin/Int // com.github.panpf.sketch.http/KtorStack.Content.read|read(kotlin.ByteArray){}[0]
+    }
+
+    final class Response : com.github.panpf.sketch.http/HttpStack.Response { // com.github.panpf.sketch.http/KtorStack.Response|null[0]
+        constructor <init>(io.ktor.client.statement/HttpResponse) // com.github.panpf.sketch.http/KtorStack.Response.<init>|<init>(io.ktor.client.statement.HttpResponse){}[0]
+
+        final val code // com.github.panpf.sketch.http/KtorStack.Response.code|{}code[0]
+            final fun <get-code>(): kotlin/Int // com.github.panpf.sketch.http/KtorStack.Response.code.<get-code>|<get-code>(){}[0]
+        final val contentLength // com.github.panpf.sketch.http/KtorStack.Response.contentLength|{}contentLength[0]
+            final fun <get-contentLength>(): kotlin/Long // com.github.panpf.sketch.http/KtorStack.Response.contentLength.<get-contentLength>|<get-contentLength>(){}[0]
+        final val contentType // com.github.panpf.sketch.http/KtorStack.Response.contentType|{}contentType[0]
+            final fun <get-contentType>(): kotlin/String? // com.github.panpf.sketch.http/KtorStack.Response.contentType.<get-contentType>|<get-contentType>(){}[0]
+        final val httpResponse // com.github.panpf.sketch.http/KtorStack.Response.httpResponse|{}httpResponse[0]
+            final fun <get-httpResponse>(): io.ktor.client.statement/HttpResponse // com.github.panpf.sketch.http/KtorStack.Response.httpResponse.<get-httpResponse>|<get-httpResponse>(){}[0]
+        final val message // com.github.panpf.sketch.http/KtorStack.Response.message|{}message[0]
+            final fun <get-message>(): kotlin/String // com.github.panpf.sketch.http/KtorStack.Response.message.<get-message>|<get-message>(){}[0]
+
+        final fun getHeaderField(kotlin/String): kotlin/String? // com.github.panpf.sketch.http/KtorStack.Response.getHeaderField|getHeaderField(kotlin.String){}[0]
+        final suspend fun content(): com.github.panpf.sketch.http/HttpStack.Content // com.github.panpf.sketch.http/KtorStack.Response.content|content(){}[0]
+    }
+}
+
+final class com.github.panpf.sketch.util/KtorHttpComponentProvider : com.github.panpf.sketch.util/ComponentProvider { // com.github.panpf.sketch.util/KtorHttpComponentProvider|null[0]
+    constructor <init>() // com.github.panpf.sketch.util/KtorHttpComponentProvider.<init>|<init>(){}[0]
+
+    final fun addDecoders(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<com.github.panpf.sketch.decode/Decoder.Factory>? // com.github.panpf.sketch.util/KtorHttpComponentProvider.addDecoders|addDecoders(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun addFetchers(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<com.github.panpf.sketch.fetch/Fetcher.Factory>? // com.github.panpf.sketch.util/KtorHttpComponentProvider.addFetchers|addFetchers(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun addInterceptors(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<com.github.panpf.sketch.request/Interceptor>? // com.github.panpf.sketch.util/KtorHttpComponentProvider.addInterceptors|addInterceptors(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun disabledDecoders(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<kotlin.reflect/KClass<out com.github.panpf.sketch.decode/Decoder.Factory>>? // com.github.panpf.sketch.util/KtorHttpComponentProvider.disabledDecoders|disabledDecoders(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun disabledFetchers(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<kotlin.reflect/KClass<out com.github.panpf.sketch.fetch/Fetcher.Factory>>? // com.github.panpf.sketch.util/KtorHttpComponentProvider.disabledFetchers|disabledFetchers(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun disabledInterceptors(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<kotlin.reflect/KClass<out com.github.panpf.sketch.request/Interceptor>>? // com.github.panpf.sketch.util/KtorHttpComponentProvider.disabledInterceptors|disabledInterceptors(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun toString(): kotlin/String // com.github.panpf.sketch.util/KtorHttpComponentProvider.toString|toString(){}[0]
+}
+
+final val com.github.panpf.sketch.util/ktorHttpComponentProviderInitHook // com.github.panpf.sketch.util/ktorHttpComponentProviderInitHook|{}ktorHttpComponentProviderInitHook[0]
+    final fun <get-ktorHttpComponentProviderInitHook>(): kotlin/Any // com.github.panpf.sketch.util/ktorHttpComponentProviderInitHook.<get-ktorHttpComponentProviderInitHook>|<get-ktorHttpComponentProviderInitHook>(){}[0]
+
+final fun (com.github.panpf.sketch/ComponentRegistry.Builder).com.github.panpf.sketch.fetch/supportKtorHttpUri(com.github.panpf.sketch.http/KtorStack = ...): com.github.panpf.sketch/ComponentRegistry.Builder // com.github.panpf.sketch.fetch/supportKtorHttpUri|supportKtorHttpUri@com.github.panpf.sketch.ComponentRegistry.Builder(com.github.panpf.sketch.http.KtorStack){}[0]

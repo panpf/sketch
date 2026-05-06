@@ -1,0 +1,39 @@
+public final class com/github/panpf/sketch/decode/GifDecoder_desktopKt {
+	public static final fun supportGif (Lcom/github/panpf/sketch/ComponentRegistry$Builder;)Lcom/github/panpf/sketch/ComponentRegistry$Builder;
+}
+
+public final class com/github/panpf/sketch/decode/SkiaGifDecoder : com/github/panpf/sketch/decode/internal/SkiaAnimatedDecoder {
+	public static final field Companion Lcom/github/panpf/sketch/decode/SkiaGifDecoder$Companion;
+	public static final field SORT_WEIGHT I
+	public fun <init> (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/source/DataSource;)V
+}
+
+public final class com/github/panpf/sketch/decode/SkiaGifDecoder$Companion {
+}
+
+public final class com/github/panpf/sketch/decode/SkiaGifDecoder$Factory : com/github/panpf/sketch/decode/Decoder$Factory {
+	public fun <init> ()V
+	public synthetic fun create (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/fetch/FetchResult;)Lcom/github/panpf/sketch/decode/Decoder;
+	public fun create (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/fetch/FetchResult;)Lcom/github/panpf/sketch/decode/SkiaGifDecoder;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKey ()Ljava/lang/String;
+	public fun getSortWeight ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/decode/SkiaGifDecoderKt {
+	public static final fun supportSkiaGif (Lcom/github/panpf/sketch/ComponentRegistry$Builder;)Lcom/github/panpf/sketch/ComponentRegistry$Builder;
+}
+
+public final class com/github/panpf/sketch/util/GifComponentProvider : com/github/panpf/sketch/util/ComponentProvider {
+	public fun <init> ()V
+	public fun addDecoders (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun addFetchers (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun addInterceptors (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun disabledDecoders (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun disabledFetchers (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun disabledInterceptors (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+

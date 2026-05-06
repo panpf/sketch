@@ -1,0 +1,25 @@
+public final class com/github/panpf/sketch/SingletonSketch {
+	public static final field INSTANCE Lcom/github/panpf/sketch/SingletonSketch;
+	public final fun get (Lcom/github/panpf/sketch/PlatformContext;)Lcom/github/panpf/sketch/Sketch;
+	public static final fun reset ()V
+	public static final fun setSafe (Lcom/github/panpf/sketch/SingletonSketch$Factory;)V
+	public static final fun setUnsafe (Lcom/github/panpf/sketch/SingletonSketch$Factory;)V
+	public final fun setUnsafe (Lcom/github/panpf/sketch/Sketch;)V
+}
+
+public abstract interface class com/github/panpf/sketch/SingletonSketch$Factory {
+	public abstract fun createSketch (Lcom/github/panpf/sketch/PlatformContext;)Lcom/github/panpf/sketch/Sketch;
+}
+
+public final class com/github/panpf/sketch/SingletonSketch_nonAndroidKt {
+	public static final fun get (Lcom/github/panpf/sketch/SingletonSketch;)Lcom/github/panpf/sketch/Sketch;
+	public static final fun getSketch (Lcom/github/panpf/sketch/PlatformContext;)Lcom/github/panpf/sketch/Sketch;
+}
+
+public final class com/github/panpf/sketch/request/ImageRequest_singletonKt {
+	public static final fun enqueue (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Sketch;)Lcom/github/panpf/sketch/request/Disposable;
+	public static synthetic fun enqueue$default (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Sketch;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/Disposable;
+	public static final fun execute (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Sketch;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun execute$default (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Sketch;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+

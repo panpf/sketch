@@ -1,0 +1,72 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, js, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <sketch:sketch-svg>
+final class com.github.panpf.sketch.decode/SvgDecoder : com.github.panpf.sketch.decode/Decoder { // com.github.panpf.sketch.decode/SvgDecoder|null[0]
+    constructor <init>(com.github.panpf.sketch.request/RequestContext, com.github.panpf.sketch.source/DataSource, kotlin/Boolean = ...) // com.github.panpf.sketch.decode/SvgDecoder.<init>|<init>(com.github.panpf.sketch.request.RequestContext;com.github.panpf.sketch.source.DataSource;kotlin.Boolean){}[0]
+
+    final suspend fun decode(): com.github.panpf.sketch.request/ImageData // com.github.panpf.sketch.decode/SvgDecoder.decode|decode(){}[0]
+    final suspend fun getImageInfo(): com.github.panpf.sketch.decode/ImageInfo // com.github.panpf.sketch.decode/SvgDecoder.getImageInfo|getImageInfo(){}[0]
+
+    final class Factory : com.github.panpf.sketch.decode/Decoder.Factory { // com.github.panpf.sketch.decode/SvgDecoder.Factory|null[0]
+        constructor <init>(kotlin/Boolean = ...) // com.github.panpf.sketch.decode/SvgDecoder.Factory.<init>|<init>(kotlin.Boolean){}[0]
+
+        final val key // com.github.panpf.sketch.decode/SvgDecoder.Factory.key|{}key[0]
+            final fun <get-key>(): kotlin/String // com.github.panpf.sketch.decode/SvgDecoder.Factory.key.<get-key>|<get-key>(){}[0]
+        final val sortWeight // com.github.panpf.sketch.decode/SvgDecoder.Factory.sortWeight|{}sortWeight[0]
+            final fun <get-sortWeight>(): kotlin/Int // com.github.panpf.sketch.decode/SvgDecoder.Factory.sortWeight.<get-sortWeight>|<get-sortWeight>(){}[0]
+        final val useViewBoundsAsIntrinsicSize // com.github.panpf.sketch.decode/SvgDecoder.Factory.useViewBoundsAsIntrinsicSize|{}useViewBoundsAsIntrinsicSize[0]
+            final fun <get-useViewBoundsAsIntrinsicSize>(): kotlin/Boolean // com.github.panpf.sketch.decode/SvgDecoder.Factory.useViewBoundsAsIntrinsicSize.<get-useViewBoundsAsIntrinsicSize>|<get-useViewBoundsAsIntrinsicSize>(){}[0]
+
+        final fun create(com.github.panpf.sketch.request/RequestContext, com.github.panpf.sketch.fetch/FetchResult): com.github.panpf.sketch.decode/SvgDecoder? // com.github.panpf.sketch.decode/SvgDecoder.Factory.create|create(com.github.panpf.sketch.request.RequestContext;com.github.panpf.sketch.fetch.FetchResult){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.decode/SvgDecoder.Factory.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.github.panpf.sketch.decode/SvgDecoder.Factory.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.github.panpf.sketch.decode/SvgDecoder.Factory.toString|toString(){}[0]
+    }
+
+    final object Companion { // com.github.panpf.sketch.decode/SvgDecoder.Companion|null[0]
+        final const val MIME_TYPE // com.github.panpf.sketch.decode/SvgDecoder.Companion.MIME_TYPE|{}MIME_TYPE[0]
+            final fun <get-MIME_TYPE>(): kotlin/String // com.github.panpf.sketch.decode/SvgDecoder.Companion.MIME_TYPE.<get-MIME_TYPE>|<get-MIME_TYPE>(){}[0]
+        final const val SORT_WEIGHT // com.github.panpf.sketch.decode/SvgDecoder.Companion.SORT_WEIGHT|{}SORT_WEIGHT[0]
+            final fun <get-SORT_WEIGHT>(): kotlin/Int // com.github.panpf.sketch.decode/SvgDecoder.Companion.SORT_WEIGHT.<get-SORT_WEIGHT>|<get-SORT_WEIGHT>(){}[0]
+    }
+}
+
+final class com.github.panpf.sketch.util/SvgComponentProvider : com.github.panpf.sketch.util/ComponentProvider { // com.github.panpf.sketch.util/SvgComponentProvider|null[0]
+    constructor <init>() // com.github.panpf.sketch.util/SvgComponentProvider.<init>|<init>(){}[0]
+
+    final fun addDecoders(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<com.github.panpf.sketch.decode/Decoder.Factory>? // com.github.panpf.sketch.util/SvgComponentProvider.addDecoders|addDecoders(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun addFetchers(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<com.github.panpf.sketch.fetch/Fetcher.Factory>? // com.github.panpf.sketch.util/SvgComponentProvider.addFetchers|addFetchers(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun addInterceptors(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<com.github.panpf.sketch.request/Interceptor>? // com.github.panpf.sketch.util/SvgComponentProvider.addInterceptors|addInterceptors(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun disabledDecoders(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<kotlin.reflect/KClass<out com.github.panpf.sketch.decode/Decoder.Factory>>? // com.github.panpf.sketch.util/SvgComponentProvider.disabledDecoders|disabledDecoders(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun disabledFetchers(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<kotlin.reflect/KClass<out com.github.panpf.sketch.fetch/Fetcher.Factory>>? // com.github.panpf.sketch.util/SvgComponentProvider.disabledFetchers|disabledFetchers(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun disabledInterceptors(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<kotlin.reflect/KClass<out com.github.panpf.sketch.request/Interceptor>>? // com.github.panpf.sketch.util/SvgComponentProvider.disabledInterceptors|disabledInterceptors(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun toString(): kotlin/String // com.github.panpf.sketch.util/SvgComponentProvider.toString|toString(){}[0]
+}
+
+final const val com.github.panpf.sketch.request/SVG_BACKGROUND_COLOR_KEY // com.github.panpf.sketch.request/SVG_BACKGROUND_COLOR_KEY|{}SVG_BACKGROUND_COLOR_KEY[0]
+    final fun <get-SVG_BACKGROUND_COLOR_KEY>(): kotlin/String // com.github.panpf.sketch.request/SVG_BACKGROUND_COLOR_KEY.<get-SVG_BACKGROUND_COLOR_KEY>|<get-SVG_BACKGROUND_COLOR_KEY>(){}[0]
+final const val com.github.panpf.sketch.request/SVG_CSS_KEY // com.github.panpf.sketch.request/SVG_CSS_KEY|{}SVG_CSS_KEY[0]
+    final fun <get-SVG_CSS_KEY>(): kotlin/String // com.github.panpf.sketch.request/SVG_CSS_KEY.<get-SVG_CSS_KEY>|<get-SVG_CSS_KEY>(){}[0]
+
+final val com.github.panpf.sketch.request/svgBackgroundColor // com.github.panpf.sketch.request/svgBackgroundColor|@com.github.panpf.sketch.request.ImageOptions{}svgBackgroundColor[0]
+    final fun (com.github.panpf.sketch.request/ImageOptions).<get-svgBackgroundColor>(): kotlin/Int? // com.github.panpf.sketch.request/svgBackgroundColor.<get-svgBackgroundColor>|<get-svgBackgroundColor>@com.github.panpf.sketch.request.ImageOptions(){}[0]
+final val com.github.panpf.sketch.request/svgBackgroundColor // com.github.panpf.sketch.request/svgBackgroundColor|@com.github.panpf.sketch.request.ImageRequest{}svgBackgroundColor[0]
+    final fun (com.github.panpf.sketch.request/ImageRequest).<get-svgBackgroundColor>(): kotlin/Int? // com.github.panpf.sketch.request/svgBackgroundColor.<get-svgBackgroundColor>|<get-svgBackgroundColor>@com.github.panpf.sketch.request.ImageRequest(){}[0]
+final val com.github.panpf.sketch.request/svgCss // com.github.panpf.sketch.request/svgCss|@com.github.panpf.sketch.request.ImageOptions{}svgCss[0]
+    final fun (com.github.panpf.sketch.request/ImageOptions).<get-svgCss>(): kotlin/String? // com.github.panpf.sketch.request/svgCss.<get-svgCss>|<get-svgCss>@com.github.panpf.sketch.request.ImageOptions(){}[0]
+final val com.github.panpf.sketch.request/svgCss // com.github.panpf.sketch.request/svgCss|@com.github.panpf.sketch.request.ImageRequest{}svgCss[0]
+    final fun (com.github.panpf.sketch.request/ImageRequest).<get-svgCss>(): kotlin/String? // com.github.panpf.sketch.request/svgCss.<get-svgCss>|<get-svgCss>@com.github.panpf.sketch.request.ImageRequest(){}[0]
+final val com.github.panpf.sketch.util/svgComponentProviderInitHook // com.github.panpf.sketch.util/svgComponentProviderInitHook|{}svgComponentProviderInitHook[0]
+    final fun <get-svgComponentProviderInitHook>(): kotlin/Any // com.github.panpf.sketch.util/svgComponentProviderInitHook.<get-svgComponentProviderInitHook>|<get-svgComponentProviderInitHook>(){}[0]
+
+final fun (com.github.panpf.sketch.request/ImageOptions.Builder).com.github.panpf.sketch.request/svgBackgroundColor(kotlin/Int?): com.github.panpf.sketch.request/ImageOptions.Builder // com.github.panpf.sketch.request/svgBackgroundColor|svgBackgroundColor@com.github.panpf.sketch.request.ImageOptions.Builder(kotlin.Int?){}[0]
+final fun (com.github.panpf.sketch.request/ImageOptions.Builder).com.github.panpf.sketch.request/svgCss(kotlin/String?): com.github.panpf.sketch.request/ImageOptions.Builder // com.github.panpf.sketch.request/svgCss|svgCss@com.github.panpf.sketch.request.ImageOptions.Builder(kotlin.String?){}[0]
+final fun (com.github.panpf.sketch.request/ImageRequest.Builder).com.github.panpf.sketch.request/svgBackgroundColor(kotlin/Int?): com.github.panpf.sketch.request/ImageRequest.Builder // com.github.panpf.sketch.request/svgBackgroundColor|svgBackgroundColor@com.github.panpf.sketch.request.ImageRequest.Builder(kotlin.Int?){}[0]
+final fun (com.github.panpf.sketch.request/ImageRequest.Builder).com.github.panpf.sketch.request/svgCss(kotlin/String?): com.github.panpf.sketch.request/ImageRequest.Builder // com.github.panpf.sketch.request/svgCss|svgCss@com.github.panpf.sketch.request.ImageRequest.Builder(kotlin.String?){}[0]
+final fun (com.github.panpf.sketch/ComponentRegistry.Builder).com.github.panpf.sketch.decode/supportSvg(): com.github.panpf.sketch/ComponentRegistry.Builder // com.github.panpf.sketch.decode/supportSvg|supportSvg@com.github.panpf.sketch.ComponentRegistry.Builder(){}[0]
+final fun (kotlin/ByteArray).com.github.panpf.sketch.decode.internal/isSvg(): kotlin/Boolean // com.github.panpf.sketch.decode.internal/isSvg|isSvg@kotlin.ByteArray(){}[0]
