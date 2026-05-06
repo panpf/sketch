@@ -124,7 +124,10 @@ fun Project.copyResourcesToIosTestBin() {
         val destDir =
             layout.buildDirectory.dir("bin/iosSimulatorArm64/debugTest/compose-resources/composeResources/com.github.panpf.sketch.images")
         into(destDir)
-        println("Copyed compose resources from '$fromDir' to '${destDir.get()}'")
+
+        doLast {
+            println("Copyed compose resources from '$fromDir' to '${destDir.get()}'")
+        }
     }
 
     val copyKotlinResourcesTask = tasks.register(
@@ -144,7 +147,10 @@ fun Project.copyResourcesToIosTestBin() {
         val destDir =
             layout.buildDirectory.dir("bin/iosSimulatorArm64/debugTest/compose-resources")
         into(destDir)
-        println("Copyed kotlin resources from '$fromDir' to '${destDir.get()}'")
+
+        doLast {
+            println("Copyed kotlin resources from '$fromDir' to '${destDir.get()}'")
+        }
     }
 
     afterEvaluate {
