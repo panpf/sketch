@@ -11,46 +11,48 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotEquals
+import kotlin.test.assertSame
 
 class PhotosAssetDataSourceTest {
 
     @Test
     fun testConstructor() {
+        val asset1 = PHAsset()
+        val resource1 = PHAssetResource()
         PhotosAssetDataSource(
             "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001",
             true,
             false,
-            PHAsset(),
-            PHAssetResource()
+            asset1,
+            resource1
         ).apply {
             assertEquals("DB16113B-984A-4D12-B4D0-50FC46066781/L0/001", this.localIdentifier)
             assertEquals(true, this.preferredThumbnail)
             assertEquals(false, this.allowNetworkAccess)
-            assertEquals(PHAsset(), this.asset)
-            assertEquals(PHAssetResource(), this.resource)
+            assertSame(asset1, this.asset)
+            assertSame(resource1, this.resource)
         }
 
         PhotosAssetDataSource(
             "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001",
             false,
             true,
-            PHAsset(),
-            PHAssetResource()
+            asset1,
+            resource1
         ).apply {
             assertEquals("DB16113B-984A-4D12-B4D0-50FC46066781/L0/001", this.localIdentifier)
             assertEquals(false, this.preferredThumbnail)
             assertEquals(true, this.allowNetworkAccess)
-            assertEquals(PHAsset(), this.asset)
-            assertEquals(PHAssetResource(), this.resource)
+            assertSame(asset1, this.asset)
+            assertSame(resource1, this.resource)
         }
-
 
         PhotosAssetDataSource(
             localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001",
             preferredThumbnail = true,
             allowNetworkAccess = false,
-            asset = PHAsset(),
-            resource = PHAssetResource()
+            asset = asset1,
+            resource = resource1
         )
     }
 
