@@ -33,7 +33,7 @@ jobs:
           path: samples/androidApp/build/outputs/apk/release/*.apk
 
   package-ios:
-    name: Package ios
+    name: Package iOS
     runs-on: macos-26
     steps:
       - uses: actions/checkout@v6
@@ -90,7 +90,7 @@ jobs:
           path: samples/desktopApp/build/compose/binaries/main-release/deb/*.deb
 
   package-macos:
-    name: Package macos desktop
+    name: Package macOS desktop
     runs-on: macos-26
     steps:
       - uses: actions/checkout@v6
@@ -171,7 +171,7 @@ jobs:
           path: samples/jsApp/build/dist/js/productionExecutable/*.zip
 
   package-wasm-js:
-    name: Package wasm js browser
+    name: Package wasmJs browser
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6

@@ -75,7 +75,7 @@ jobs:
           path: samples/androidApp/build/outputs/apk/release/*.apk
 
   package-ios:
-    name: Package ios
+    name: Package iOS
     #    needs: [checks, test]
     needs: [ checks ]
     runs-on: macos-26
@@ -136,7 +136,7 @@ jobs:
           path: samples/desktopApp/build/compose/binaries/main-release/deb/*.deb
 
   package-macos:
-    name: Package macos desktop
+    name: Package macOS desktop
     #    needs: [checks, test]
     needs: [ checks ]
     runs-on: macos-26
@@ -223,7 +223,7 @@ jobs:
           path: samples/jsApp/build/dist/js/productionExecutable/*.zip
 
   package-wasm-js:
-    name: Package wasm js browser
+    name: Package wasmJs browser
     #    needs: [checks, test]
     needs: [ checks ]
     runs-on: ubuntu-latest
@@ -308,12 +308,8 @@ jobs:
     needs: deploy-api-docs
     runs-on: macos-26
     steps:
-      - name: Checkout
-        id: check
-        uses: actions/checkout@v4
-
-      - name: Set up JDK
-        uses: actions/setup-java@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
@@ -391,7 +387,7 @@ jobs:
           body: |
             Please check the [CHANGELOG.md](https://github.com/panpf/sketch/blob/main/CHANGELOG.md) file for updated log.
             
-            Android, ios, desktop and web packages, see the Assets attachment.
+            Android, iOS, desktop and web packages, see the Assets attachment.
             
             Web example：https://panpf.github.io/sketch/app.
           files: ./downloaded/*
