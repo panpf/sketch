@@ -1,6 +1,5 @@
 /*
  * Copyright (C) 2024 panpf <panpfpanpf@outlook.com>
- * Copyright 2023 Coil Contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -128,41 +127,6 @@ fun Project.androidApplication(
 
     action()
 }
-
-//fun KotlinMultiplatformExtension.androidKmpLibrary(
-//    nameSpace: String,
-//    action: KotlinMultiplatformAndroidLibraryExtension.() -> Unit = {},
-//) = androidLibrary {
-//    namespace = nameSpace
-//    compileSdk = project.compileSdk
-//    minSdk = project.minSdk
-//
-//    // Enable Android resource processing. Multiplatform library modules do not enable this by default.
-//    androidResources {
-//        enable = true
-//    }
-//
-//    // Opt-in to enable and configure host-side (unit) tests. Multiplatform library modules do not enable this by default.
-//    withHostTest {
-//        isIncludeAndroidResources = true
-//        enableCoverage = true
-//    }
-//    // Opt-in to enable and configure device-side (instrumented) tests. Multiplatform library modules do not enable this by default.
-//    withDeviceTest {
-//        instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-//        execution = "HOST"
-//        enableCoverage = true
-//    }
-//
-//    packaging {
-//        resources.pickFirsts += listOf(
-//            "META-INF/AL2.0",
-//            "META-INF/LGPL2.1",
-//            "META-INF/*kotlin_module",
-//        )
-//    }
-//    action()
-//}
 
 fun Project.kmpAndroidLibrary(
     nameSpace: String,

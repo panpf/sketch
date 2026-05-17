@@ -7,7 +7,7 @@ import com.github.panpf.sketch.sample.ui.App
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
-    initialApp(PlatformContext.Companion.INSTANCE)
+    initialApp(PlatformContext.INSTANCE)
     ComposeViewport {
         App()
     }
