@@ -2,19 +2,25 @@ name: Package
 
 on: workflow_dispatch
 
+env:
+  JAVA_VERSION: 21
+  JAVA_DISTRIBUTION: zulu
+
 jobs:
   package-android:
     name: Package android
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repository
-        uses: actions/checkout@v2
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
-          distribution: temurin
-          java-version: 17
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: gradle/actions/setup-gradle@v6
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          cache-overwrite-existing: true
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
@@ -30,19 +36,21 @@ jobs:
 
   package-ios:
     name: Package ios
-    runs-on: macos-latest
+    runs-on: macos-26
     steps:
-      - name: Check out the repository
-        uses: actions/checkout@v2
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
-          distribution: temurin
-          java-version: 17
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: gradle/actions/setup-gradle@v6
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          cache-overwrite-existing: true
 
       - name: Run package
-        run: xcodebuild -project samples/iosApp/iosApp.xcodeproj -scheme iosApp -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO -derivedDataPath samples/shared/build/ios/outputs/
+        run: xcodebuild -project samples/iosApp/iosApp.xcodeproj -scheme iosApp -destination 'generic/platform=iOS Simulator' ARCHS=arm64 CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO -derivedDataPath samples/shared/build/ios/outputs/
 
       - name: Read version name
         id: version_name_step
@@ -53,7 +61,7 @@ jobs:
       - name: File name add version
         run: mv "samples/shared/build/ios/outputs/Build/Products/Debug-iphonesimulator/Sketch4 Sample.app" "samples/shared/build/ios/outputs/Build/Products/Debug-iphonesimulator/Sketch4 Sample-${{ steps.version_name_step.outputs.version_name }}.app"
 
-      - name: Upload APK artifacts
+      - name: Upload ios artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ios-files
@@ -63,14 +71,16 @@ jobs:
     name: Package linux desktop
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repository
-        uses: actions/checkout@v2
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
-          distribution: temurin
-          java-version: 17
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: gradle/actions/setup-gradle@v6
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          cache-overwrite-existing: true
 
       - name: Run package
         run: ./gradlew samples:desktopApp:packageReleaseDeb
@@ -83,16 +93,18 @@ jobs:
 
   package-macos:
     name: Package macos desktop
-    runs-on: macos-latest
+    runs-on: macos-26
     steps:
-      - name: Check out the repository
-        uses: actions/checkout@v2
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
-          distribution: temurin
-          java-version: 17
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: gradle/actions/setup-gradle@v6
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          cache-overwrite-existing: true
 
       - name: Run package
         run: ./gradlew samples:desktopApp:packageReleaseDmg
@@ -107,14 +119,16 @@ jobs:
     name: Package windows desktop
     runs-on: windows-latest
     steps:
-      - name: Check out the repository
-        uses: actions/checkout@v2
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
-          distribution: temurin
-          java-version: 17
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: gradle/actions/setup-gradle@v6
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          cache-overwrite-existing: true
 
       - name: Run package
         run: ./gradlew samples:desktopApp:packageReleaseMsi
@@ -129,14 +143,16 @@ jobs:
     name: Package js browser
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repository
-        uses: actions/checkout@v2
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
-          distribution: temurin
-          java-version: 17
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: gradle/actions/setup-gradle@v6
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          cache-overwrite-existing: true
 
       - name: Run package
         run: ./gradlew samples:jsApp:jsBrowserDistribution
@@ -160,14 +176,16 @@ jobs:
     name: Package wasm js browser
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repository
-        uses: actions/checkout@v2
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
-          distribution: temurin
-          java-version: 17
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: gradle/actions/setup-gradle@v6
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          cache-overwrite-existing: true
 
       - name: Run package
         run: ./gradlew samples:wasmJsApp:wasmJsBrowserDistribution

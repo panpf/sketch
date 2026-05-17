@@ -5,6 +5,10 @@ on:
   push:
     branches: main
 
+env:
+  JAVA_VERSION: 21
+  JAVA_DISTRIBUTION: zulu
+
 jobs:
   deploy-web-app:
     name: Deploy wiki
@@ -12,14 +16,16 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Check out the repository
-        uses: actions/checkout@v2
-
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
         with:
-          distribution: temurin
-          java-version: 17
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: gradle/actions/setup-gradle@v6
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          cache-overwrite-existing: true
 
       - name: Build wiki
         run: |
