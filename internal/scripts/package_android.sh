@@ -3,14 +3,9 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-if [ "$1" != "--skipFindRootDir" ]; then
-  cd ../../
-fi
+cd ../../
 
-if [ "$1" != "--skipClean" ]; then
-  ./gradlew clean
-fi
-
+./gradlew clean
 ./gradlew samples:androidApp:assembleRelease
 
 echo "✅  Android package is created successfully. The distribution is written to $(pwd)/samples/androidApp/build/outputs/apk/release/"
