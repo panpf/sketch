@@ -63,9 +63,7 @@ jobs:
         timeout-minutes: 5
         with:
           cache-overwrite-existing: true
-
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v4
 
       - name: Run package
         run: ./gradlew samples:androidApp:assembleRelease
@@ -324,9 +322,7 @@ jobs:
         timeout-minutes: 5
         with:
           cache-overwrite-existing: true
-
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v4
 
       - name: Run publish
         env:
