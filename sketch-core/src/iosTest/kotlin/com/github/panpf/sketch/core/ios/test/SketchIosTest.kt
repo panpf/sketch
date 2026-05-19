@@ -5,7 +5,7 @@ import com.github.panpf.sketch.decode.PhotosAssetDecoder
 import com.github.panpf.sketch.decode.SkiaDecoder
 import com.github.panpf.sketch.decode.internal.UseSkiaInterceptor
 import com.github.panpf.sketch.fetch.KotlinResourceUriFetcher
-import com.github.panpf.sketch.fetch.PhotosAssetFetcher
+import com.github.panpf.sketch.fetch.PhotosAssetUriFetcher
 import com.github.panpf.sketch.platformComponents
 import com.github.panpf.sketch.test.utils.getTestContext
 import kotlin.test.Test
@@ -18,7 +18,7 @@ class SketchIosTest {
         val context = getTestContext()
         assertEquals(
             expected = ComponentRegistry {
-                add(PhotosAssetFetcher.Factory())
+                add(PhotosAssetUriFetcher.Factory())
                 add(KotlinResourceUriFetcher.Factory())
 
                 add(PhotosAssetDecoder.Factory())

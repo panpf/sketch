@@ -16,7 +16,7 @@
 | [AssetUriFetcher]           | file:///android_asset/         | newAssetUri()           | -                                   | ✅       | ❌   | ❌       | ❌   |
 | [ResourceUriFetcher]        | android.resource://            | newResourceUri()        | -                                   | ✅       | ❌   | ❌       | ❌   |
 | [AppIconUriFetcher]         | app.icon://                    | newAppIconUri()         | sketch-extensions-appicon           | ✅       | ❌   | ❌       | ❌   |
-| [PhotosAssetFetcher]        | file:///photos_asset/          | newPhotosAssetUri()     | -                                   | ❌       | ✅   | ❌       | ❌   |
+| [PhotosAssetUriFetcher]     | file:///photos_asset/          | newPhotosAssetUri()     | -                                   | ❌       | ✅   | ❌       | ❌   |
 | [KotlinResourceUriFetcher]  | file:///kotlin_resource/       | newKotlinResourceUri()  | -                                   | ❌       | ✅   | ✅       | ❌   |
 | [Base64UriFetcher]          | data:image/jpeg;base64         | newBase64Uri()          | -                                   | ✅       | ✅   | ✅       | ✅   |
 | [BlurHashUriFetcher]        | blurhash://                    | newBlurHashUri()        | sketch-blurhash                     | ✅       | ✅   | ✅       | ✅   |
@@ -34,7 +34,7 @@
 * [ResourceUriFetcher]：用于从 Android 的 resources 目录加载图片
 * [AppIconUriFetcher]：用于加载已安装 App 的图标，它还需要依赖 `sketch-extensions-appicon`
   模块。[了解更多](apk_app_icon.zh.md#加载已安装-App-的图标)
-* [PhotosAssetFetcher]：支持从 iOS 的 Photos Library 加载图片
+* [PhotosAssetUriFetcher]：支持从 iOS 的 Photos Library 加载图片
 * [KotlinResourceUriFetcher]：用于从 kotlin 的 resources 目录加载图片
 * [Base64UriFetcher]：用于从 uri 本身的 base64 数据块中加载图片
 * [BlurHashUriFetcher]：支持从 BlurHash 字符串加载图片，它还需要依赖 `sketch-extensions-appicon`
@@ -113,9 +113,9 @@ imageView.loadImage(imageUri)
 val imageUri = newResourceUr(R.drawable.ic_launcher)
 val imageUri2 = newResourceUr("drawable", "ic_launcher")
 // 从其它 App 中加载图片
-val imageUri = newResourceUr("com.android.launcher", R.drawable.ic_launcher)    
+val imageUri = newResourceUr("com.android.launcher", R.drawable.ic_launcher)
 // 从其它 App 中加载图片
-val imageUri2 = newResourceUr("com.android.launcher", "drawable", "ic_launcher")    
+val imageUri2 = newResourceUr("com.android.launcher", "drawable", "ic_launcher")
 
 // compose
 AsyncImage(
@@ -194,9 +194,9 @@ imageView.loadImage(imageUri)
 val imageUri = newPhotosAssetUri("DB16113B-984A-4D12-B4D0-50FC46066781/L0/001")
 val request = ImageRequest(context, imageUri) {
     // 优先加载缩略图，默认值为 false，即优先加载原图
-    preferThumbnailForPhotosAsset(true)   
+  preferThumbnailForPhotosAsset(true)
     // 允许从 iCloud 加载图片，默认值为 false，即不允许从 iCloud 加载图片
-    allowNetworkAccessPhotosAsset(true)   
+  allowNetworkAccessPhotosAsset(true)
 }
 AsyncImage(
     request = request,
@@ -272,6 +272,6 @@ imageView.loadImage(imageUri)
 
 [BlurHashUriFetcher]: ../sketch-blurhash/src/commonMain/kotlin/com/github/panpf/sketch/fetch/BlurHashUriFetcher.kt
 
-[PhotosAssetFetcher]: ../sketch-core/src/iosMain/kotlin/com/github/panpf/sketch/fetch/PhotosAssetFetcher.kt
+[PhotosAssetUriFetcher]: ../sketch-core/src/iosMain/kotlin/com/github/panpf/sketch/fetch/PhotosAssetUriFetcher.kt
 
 [DataSource]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/source/DataSource.kt

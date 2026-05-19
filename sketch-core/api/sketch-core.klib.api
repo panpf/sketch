@@ -3234,40 +3234,40 @@ final class com.github.panpf.sketch.fetch/KotlinResourceUriFetcher : com.github.
 }
 
 // Targets: [ios]
-final class com.github.panpf.sketch.fetch/PhotosAssetFetcher : com.github.panpf.sketch.fetch/Fetcher { // com.github.panpf.sketch.fetch/PhotosAssetFetcher|null[0]
-    constructor <init>(kotlin/String, kotlin/Boolean, kotlin/Boolean) // com.github.panpf.sketch.fetch/PhotosAssetFetcher.<init>|<init>(kotlin.String;kotlin.Boolean;kotlin.Boolean){}[0]
+final class com.github.panpf.sketch.fetch/PhotosAssetUriFetcher : com.github.panpf.sketch.fetch/Fetcher { // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher|null[0]
+    constructor <init>(kotlin/String, kotlin/Boolean, kotlin/Boolean) // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.<init>|<init>(kotlin.String;kotlin.Boolean;kotlin.Boolean){}[0]
 
-    final val allowNetworkAccess // com.github.panpf.sketch.fetch/PhotosAssetFetcher.allowNetworkAccess|{}allowNetworkAccess[0]
-        final fun <get-allowNetworkAccess>(): kotlin/Boolean // com.github.panpf.sketch.fetch/PhotosAssetFetcher.allowNetworkAccess.<get-allowNetworkAccess>|<get-allowNetworkAccess>(){}[0]
-    final val localIdentifier // com.github.panpf.sketch.fetch/PhotosAssetFetcher.localIdentifier|{}localIdentifier[0]
-        final fun <get-localIdentifier>(): kotlin/String // com.github.panpf.sketch.fetch/PhotosAssetFetcher.localIdentifier.<get-localIdentifier>|<get-localIdentifier>(){}[0]
-    final val preferredThumbnail // com.github.panpf.sketch.fetch/PhotosAssetFetcher.preferredThumbnail|{}preferredThumbnail[0]
-        final fun <get-preferredThumbnail>(): kotlin/Boolean // com.github.panpf.sketch.fetch/PhotosAssetFetcher.preferredThumbnail.<get-preferredThumbnail>|<get-preferredThumbnail>(){}[0]
+    final val allowNetworkAccess // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.allowNetworkAccess|{}allowNetworkAccess[0]
+        final fun <get-allowNetworkAccess>(): kotlin/Boolean // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.allowNetworkAccess.<get-allowNetworkAccess>|<get-allowNetworkAccess>(){}[0]
+    final val localIdentifier // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.localIdentifier|{}localIdentifier[0]
+        final fun <get-localIdentifier>(): kotlin/String // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.localIdentifier.<get-localIdentifier>|<get-localIdentifier>(){}[0]
+    final val preferredThumbnail // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.preferredThumbnail|{}preferredThumbnail[0]
+        final fun <get-preferredThumbnail>(): kotlin/Boolean // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.preferredThumbnail.<get-preferredThumbnail>|<get-preferredThumbnail>(){}[0]
 
-    final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.fetch/PhotosAssetFetcher.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // com.github.panpf.sketch.fetch/PhotosAssetFetcher.hashCode|hashCode(){}[0]
-    final fun toString(): kotlin/String // com.github.panpf.sketch.fetch/PhotosAssetFetcher.toString|toString(){}[0]
-    final suspend fun fetch(): kotlin/Result<com.github.panpf.sketch.fetch/FetchResult> // com.github.panpf.sketch.fetch/PhotosAssetFetcher.fetch|fetch(){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.toString|toString(){}[0]
+    final suspend fun fetch(): kotlin/Result<com.github.panpf.sketch.fetch/FetchResult> // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.fetch|fetch(){}[0]
 
-    final class Factory : com.github.panpf.sketch.fetch/Fetcher.Factory { // com.github.panpf.sketch.fetch/PhotosAssetFetcher.Factory|null[0]
-        constructor <init>() // com.github.panpf.sketch.fetch/PhotosAssetFetcher.Factory.<init>|<init>(){}[0]
+    final class Factory : com.github.panpf.sketch.fetch/Fetcher.Factory { // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.Factory|null[0]
+        constructor <init>() // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.Factory.<init>|<init>(){}[0]
 
-        final val sortWeight // com.github.panpf.sketch.fetch/PhotosAssetFetcher.Factory.sortWeight|{}sortWeight[0]
-            final fun <get-sortWeight>(): kotlin/Int // com.github.panpf.sketch.fetch/PhotosAssetFetcher.Factory.sortWeight.<get-sortWeight>|<get-sortWeight>(){}[0]
+        final val sortWeight // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.Factory.sortWeight|{}sortWeight[0]
+            final fun <get-sortWeight>(): kotlin/Int // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.Factory.sortWeight.<get-sortWeight>|<get-sortWeight>(){}[0]
 
-        final fun create(com.github.panpf.sketch.request/RequestContext): com.github.panpf.sketch.fetch/PhotosAssetFetcher? // com.github.panpf.sketch.fetch/PhotosAssetFetcher.Factory.create|create(com.github.panpf.sketch.request.RequestContext){}[0]
-        final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.fetch/PhotosAssetFetcher.Factory.equals|equals(kotlin.Any?){}[0]
-        final fun hashCode(): kotlin/Int // com.github.panpf.sketch.fetch/PhotosAssetFetcher.Factory.hashCode|hashCode(){}[0]
-        final fun toString(): kotlin/String // com.github.panpf.sketch.fetch/PhotosAssetFetcher.Factory.toString|toString(){}[0]
+        final fun create(com.github.panpf.sketch.request/RequestContext): com.github.panpf.sketch.fetch/PhotosAssetUriFetcher? // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.Factory.create|create(com.github.panpf.sketch.request.RequestContext){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.Factory.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.Factory.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.Factory.toString|toString(){}[0]
     }
 
-    final object Companion { // com.github.panpf.sketch.fetch/PhotosAssetFetcher.Companion|null[0]
-        final const val PATH_ROOT // com.github.panpf.sketch.fetch/PhotosAssetFetcher.Companion.PATH_ROOT|{}PATH_ROOT[0]
-            final fun <get-PATH_ROOT>(): kotlin/String // com.github.panpf.sketch.fetch/PhotosAssetFetcher.Companion.PATH_ROOT.<get-PATH_ROOT>|<get-PATH_ROOT>(){}[0]
-        final const val SCHEME // com.github.panpf.sketch.fetch/PhotosAssetFetcher.Companion.SCHEME|{}SCHEME[0]
-            final fun <get-SCHEME>(): kotlin/String // com.github.panpf.sketch.fetch/PhotosAssetFetcher.Companion.SCHEME.<get-SCHEME>|<get-SCHEME>(){}[0]
-        final const val SORT_WEIGHT // com.github.panpf.sketch.fetch/PhotosAssetFetcher.Companion.SORT_WEIGHT|{}SORT_WEIGHT[0]
-            final fun <get-SORT_WEIGHT>(): kotlin/Int // com.github.panpf.sketch.fetch/PhotosAssetFetcher.Companion.SORT_WEIGHT.<get-SORT_WEIGHT>|<get-SORT_WEIGHT>(){}[0]
+    final object Companion { // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.Companion|null[0]
+        final const val PATH_ROOT // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.Companion.PATH_ROOT|{}PATH_ROOT[0]
+            final fun <get-PATH_ROOT>(): kotlin/String // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.Companion.PATH_ROOT.<get-PATH_ROOT>|<get-PATH_ROOT>(){}[0]
+        final const val SCHEME // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.Companion.SCHEME|{}SCHEME[0]
+            final fun <get-SCHEME>(): kotlin/String // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.Companion.SCHEME.<get-SCHEME>|<get-SCHEME>(){}[0]
+        final const val SORT_WEIGHT // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.Companion.SORT_WEIGHT|{}SORT_WEIGHT[0]
+            final fun <get-SORT_WEIGHT>(): kotlin/Int // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.Companion.SORT_WEIGHT.<get-SORT_WEIGHT>|<get-SORT_WEIGHT>(){}[0]
     }
 }
 

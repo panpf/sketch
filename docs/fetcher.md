@@ -17,7 +17,7 @@ There are corresponding [Fetcher] to provide support for it, as shown in the fol
 | [AssetUriFetcher]           | file:///android_asset/         | newAssetUri()           | -                                   | ✅       | ❌   | ❌       | ❌   |
 | [ResourceUriFetcher]        | android.resource://            | newResourceUri()        | -                                   | ✅       | ❌   | ❌       | ❌   |
 | [AppIconUriFetcher]         | app.icon://                    | newAppIconUri()         | sketch-extensions-appicon           | ✅       | ❌   | ❌       | ❌   |
-| [PhotosAssetFetcher]        | file:///photos_asset/          | newPhotosAssetUri()     | -                                   | ❌       | ✅   | ❌       | ❌   |
+| [PhotosAssetUriFetcher]     | file:///photos_asset/          | newPhotosAssetUri()     | -                                   | ❌       | ✅   | ❌       | ❌   |
 | [KotlinResourceUriFetcher]  | file:///kotlin_resource/       | newKotlinResourceUri()  | -                                   | ❌       | ✅   | ✅       | ❌   |
 | [Base64UriFetcher]          | data:image/jpeg;base64         | newBase64Uri()          | -                                   | ✅       | ✅   | ✅       | ✅   |
 | [BlurHashUriFetcher]        | blurhash://                    | newBlurHashUri()        | sketch-blurhash                     | ✅       | ✅   | ✅       | ✅   |
@@ -37,7 +37,7 @@ The uses of each [Fetcher] are as follows:
 * [AppIconUriFetcher]: is used to load the icon of the installed App. It also needs to rely
   on `sketch-extensions-appicon`
   module. [Learn more](apk_app_icon.md#Load-installed-app-icon)
-* [PhotosAssetFetcher]: Supports loading images from iOS Photos Library
+* [PhotosAssetUriFetcher]: Supports loading images from iOS Photos Library
 * [KotlinResourceUriFetcher]: is used to load images from the resources directory of kotlin
 * [Base64UriFetcher]: is used to load images from the base64 data block of the uri itself
 * [BlurHashUriFetcher]：Supports loading images from BlurHash strings, it also needs to depend on
@@ -287,6 +287,6 @@ Then refer to the document [《Register component》](register_component.md) to 
 
 [BlurHashUriFetcher]: ../sketch-blurhash/src/commonMain/kotlin/com/github/panpf/sketch/fetch/BlurHashUriFetcher.kt
 
-[PhotosAssetFetcher]: ../sketch-core/src/iosMain/kotlin/com/github/panpf/sketch/fetch/PhotosAssetFetcher.kt
+[PhotosAssetUriFetcher]: ../sketch-core/src/iosMain/kotlin/com/github/panpf/sketch/fetch/PhotosAssetUriFetcher.kt
 
 [DataSource]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/source/DataSource.kt

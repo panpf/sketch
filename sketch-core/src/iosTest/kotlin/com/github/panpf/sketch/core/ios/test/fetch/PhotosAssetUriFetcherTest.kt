@@ -1,6 +1,6 @@
 package com.github.panpf.sketch.core.ios.test.fetch
 
-import com.github.panpf.sketch.fetch.PhotosAssetFetcher
+import com.github.panpf.sketch.fetch.PhotosAssetUriFetcher
 import com.github.panpf.sketch.fetch.isPhotosAssetUri
 import com.github.panpf.sketch.fetch.newPhotosAssetUri
 import com.github.panpf.sketch.fetch.parseLocalIdentifier
@@ -58,8 +58,8 @@ class PhotosAssetUriFetcherTest {
     @Test
     fun testConstructor() {
         val localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001"
-        PhotosAssetFetcher(localIdentifier, false, true)
-        PhotosAssetFetcher(
+        PhotosAssetUriFetcher(localIdentifier, false, true)
+        PhotosAssetUriFetcher(
             localIdentifier = localIdentifier,
             preferredThumbnail = false,
             allowNetworkAccess = true
@@ -68,15 +68,15 @@ class PhotosAssetUriFetcherTest {
 
     @Test
     fun testCompanion() {
-        assertEquals("file", PhotosAssetFetcher.SCHEME)
-        assertEquals("photos_asset", PhotosAssetFetcher.PATH_ROOT)
-        assertEquals(expected = 30, actual = PhotosAssetFetcher.SORT_WEIGHT)
+        assertEquals("file", PhotosAssetUriFetcher.SCHEME)
+        assertEquals("photos_asset", PhotosAssetUriFetcher.PATH_ROOT)
+        assertEquals(expected = 30, actual = PhotosAssetUriFetcher.SORT_WEIGHT)
     }
 
     @Test
     fun testFetch() = runTest {
         val localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001"
-        val result = PhotosAssetFetcher(
+        val result = PhotosAssetUriFetcher(
             localIdentifier = localIdentifier,
             preferredThumbnail = false,
             allowNetworkAccess = true
@@ -88,11 +88,11 @@ class PhotosAssetUriFetcherTest {
     fun testEqualsAndHashCode() {
         val localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001"
         val localIdentifier2 = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/002"
-        val factory1 = PhotosAssetFetcher(localIdentifier, false, true)
-        val factory11 = PhotosAssetFetcher(localIdentifier, false, true)
-        val factory2 = PhotosAssetFetcher(localIdentifier2, false, true)
-        val factory3 = PhotosAssetFetcher(localIdentifier, true, true)
-        val factory4 = PhotosAssetFetcher(localIdentifier, false, false)
+        val factory1 = PhotosAssetUriFetcher(localIdentifier, false, true)
+        val factory11 = PhotosAssetUriFetcher(localIdentifier, false, true)
+        val factory2 = PhotosAssetUriFetcher(localIdentifier2, false, true)
+        val factory3 = PhotosAssetUriFetcher(localIdentifier, true, true)
+        val factory4 = PhotosAssetUriFetcher(localIdentifier, false, false)
 
         assertEquals(expected = factory1, actual = factory11)
         assertNotEquals(illegal = factory1, actual = factory2)
@@ -112,21 +112,21 @@ class PhotosAssetUriFetcherTest {
     @Test
     fun testToString() {
         val localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001"
-        val fetcher = PhotosAssetFetcher(localIdentifier, false, true)
+        val fetcher = PhotosAssetUriFetcher(localIdentifier, false, true)
         assertEquals(
-            expected = "PhotosAssetFetcher(localIdentifier='$localIdentifier', preferredThumbnail=false, allowNetworkAccess=true)",
+            expected = "PhotosAssetUriFetcher(localIdentifier='$localIdentifier', preferredThumbnail=false, allowNetworkAccess=true)",
             actual = fetcher.toString()
         )
     }
 
     @Test
     fun testFactoryConstructor() {
-        PhotosAssetFetcher.Factory()
+        PhotosAssetUriFetcher.Factory()
     }
 
     @Test
     fun testFactoryCreate() {
-        val factory = PhotosAssetFetcher.Factory()
+        val factory = PhotosAssetUriFetcher.Factory()
         val (context, sketch) = getTestContextAndSketch()
         val localIdentifier = "DB16113B-984A-4D12-B4D0-50FC46066781/L0/001"
         val imageUri = newPhotosAssetUri(localIdentifier)
@@ -163,8 +163,8 @@ class PhotosAssetUriFetcherTest {
 
     @Test
     fun testFactoryEqualsAndHashCode() {
-        val factory1 = PhotosAssetFetcher.Factory()
-        val factory11 = PhotosAssetFetcher.Factory()
+        val factory1 = PhotosAssetUriFetcher.Factory()
+        val factory11 = PhotosAssetUriFetcher.Factory()
         assertEquals(expected = factory1, actual = factory11)
         assertEquals(expected = factory1.hashCode(), actual = factory11.hashCode())
     }
@@ -172,8 +172,8 @@ class PhotosAssetUriFetcherTest {
     @Test
     fun testFactoryToString() {
         assertEquals(
-            expected = "PhotosAssetFetcher",
-            actual = PhotosAssetFetcher.Factory().toString()
+            expected = "PhotosAssetUriFetcher",
+            actual = PhotosAssetUriFetcher.Factory().toString()
         )
     }
 }

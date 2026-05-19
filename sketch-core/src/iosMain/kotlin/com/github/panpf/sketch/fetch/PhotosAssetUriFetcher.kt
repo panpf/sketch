@@ -34,7 +34,7 @@ import okio.IOException
  * @see com.github.panpf.sketch.core.ios.test.fetch.PhotosAssetUriFetcherTest.testNewPhotosAssetUri
  */
 fun newPhotosAssetUri(localIdentifier: String): String =
-    "${PhotosAssetFetcher.SCHEME}:///${PhotosAssetFetcher.PATH_ROOT}/$localIdentifier"
+    "${PhotosAssetUriFetcher.SCHEME}:///${PhotosAssetUriFetcher.PATH_ROOT}/$localIdentifier"
 
 /**
  * Check if the uri is a photos asset uri
@@ -44,9 +44,9 @@ fun newPhotosAssetUri(localIdentifier: String): String =
  * @see com.github.panpf.sketch.core.ios.test.fetch.PhotosAssetUriFetcherTest.testIsPhotosAssetUri
  */
 fun isPhotosAssetUri(uri: Uri): Boolean =
-    PhotosAssetFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
+    PhotosAssetUriFetcher.SCHEME.equals(uri.scheme, ignoreCase = true)
             && uri.authority?.takeIf { it.isNotEmpty() } == null
-            && PhotosAssetFetcher.PATH_ROOT
+            && PhotosAssetUriFetcher.PATH_ROOT
         .equals(uri.pathSegments.firstOrNull(), ignoreCase = true)
 
 /**
@@ -62,11 +62,11 @@ fun parseLocalIdentifier(uri: Uri): String? =
     }
 
 /**
- * PhotosAssetFetcher is a Fetcher that fetches photo assets from the iOS Photos library using their local identifiers. It supports fetching both the original and thumbnail versions of the assets, and can optionally use Skia for image processing.
+ * PhotosAssetUriFetcher is a Fetcher that fetches photo assets from the iOS Photos library using their local identifiers. It supports fetching both the original and thumbnail versions of the assets, and can optionally use Skia for image processing.
  *
  * @see com.github.panpf.sketch.core.ios.test.fetch.PhotosAssetUriFetcherTest
  */
-class PhotosAssetFetcher(
+class PhotosAssetUriFetcher(
     val localIdentifier: String,
     val preferredThumbnail: Boolean,
     val allowNetworkAccess: Boolean,
@@ -98,7 +98,7 @@ class PhotosAssetFetcher(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || this::class != other::class) return false
-        other as PhotosAssetFetcher
+        other as PhotosAssetUriFetcher
         if (localIdentifier != other.localIdentifier) return false
         if (preferredThumbnail != other.preferredThumbnail) return false
         if (allowNetworkAccess != other.allowNetworkAccess) return false
@@ -113,20 +113,20 @@ class PhotosAssetFetcher(
     }
 
     override fun toString(): String {
-        return "PhotosAssetFetcher(localIdentifier='$localIdentifier', preferredThumbnail=$preferredThumbnail, allowNetworkAccess=$allowNetworkAccess)"
+        return "PhotosAssetUriFetcher(localIdentifier='$localIdentifier', preferredThumbnail=$preferredThumbnail, allowNetworkAccess=$allowNetworkAccess)"
     }
 
     class Factory : Fetcher.Factory {
 
         override val sortWeight: Int = SORT_WEIGHT
 
-        override fun create(requestContext: RequestContext): PhotosAssetFetcher? {
+        override fun create(requestContext: RequestContext): PhotosAssetUriFetcher? {
             val request = requestContext.request
             val uri = request.uri
             val localIdentifier = parseLocalIdentifier(uri) ?: return null
             val preferredThumbnail = request.preferThumbnailForPhotosAsset ?: false
             val allowNetworkAccess = request.allowNetworkAccessPhotosAsset ?: false
-            return PhotosAssetFetcher(
+            return PhotosAssetUriFetcher(
                 localIdentifier = localIdentifier,
                 preferredThumbnail = preferredThumbnail,
                 allowNetworkAccess = allowNetworkAccess,
@@ -140,6 +140,6 @@ class PhotosAssetFetcher(
 
         override fun hashCode(): Int = this::class.hashCode()
 
-        override fun toString(): String = "PhotosAssetFetcher"
+        override fun toString(): String = "PhotosAssetUriFetcher"
     }
 }
