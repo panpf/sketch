@@ -3,7 +3,6 @@ package com.github.panpf.sketch.core.ios.test
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.decode.PhotosAssetDecoder
 import com.github.panpf.sketch.decode.SkiaDecoder
-import com.github.panpf.sketch.decode.internal.UseSkiaInterceptor
 import com.github.panpf.sketch.fetch.KotlinResourceUriFetcher
 import com.github.panpf.sketch.fetch.PhotosAssetUriFetcher
 import com.github.panpf.sketch.platformComponents
@@ -23,8 +22,6 @@ class SketchIosTest {
 
                 add(PhotosAssetDecoder.Factory())
                 add(SkiaDecoder.Factory())
-
-                add(UseSkiaInterceptor())
             },
             actual = platformComponents(context)
         )

@@ -18,15 +18,38 @@
 package com.github.panpf.sketch.fetch
 
 import com.github.panpf.sketch.annotation.WorkerThread
+import com.github.panpf.sketch.cache.CachePolicy
+import com.github.panpf.sketch.cache.DiskCache
+import com.github.panpf.sketch.cache.isReadAndWrite
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.allowNetworkAccessPhotosAsset
+import com.github.panpf.sketch.request.preferFileCacheForImagePhotosAsset
 import com.github.panpf.sketch.request.preferThumbnailForPhotosAsset
+import com.github.panpf.sketch.request.useSkiaForImagePhotosAsset
+import com.github.panpf.sketch.source.ByteArrayDataSource
+import com.github.panpf.sketch.source.DataFrom
+import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.source.PhotosAssetDataSource
 import com.github.panpf.sketch.util.Uri
 import com.github.panpf.sketch.util.fetchPhotosAsset
 import com.github.panpf.sketch.util.resolveMimeType
 import com.github.panpf.sketch.util.selectPrimaryResource
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.reinterpret
+import kotlinx.cinterop.usePinned
+import kotlinx.coroutines.suspendCancellableCoroutine
+import okio.Buffer
 import okio.IOException
+import okio.Path
+import okio.buffer
+import okio.use
+import platform.Photos.PHAssetResourceManager
+import platform.Photos.PHAssetResourceRequestOptions
+import platform.darwin.ByteVar
+import platform.posix.memcpy
+import kotlin.coroutines.resumeWithException
 
 /**
  * Sample: 'file:///photos_asset/DB16113B-984A-4D12-B4D0-50FC46066781/L0/001'
@@ -70,6 +93,10 @@ class PhotosAssetUriFetcher(
     val localIdentifier: String,
     val preferredThumbnail: Boolean,
     val allowNetworkAccess: Boolean,
+    val useSkiaForImagePhotosAsset: Boolean,
+    val preferFileCacheForImagePhotosAsset: Boolean,
+    val downloadCache: DiskCache,
+    val downloadCachePolicy: CachePolicy,
 ) : Fetcher {
 
     companion object {
@@ -92,7 +119,137 @@ class PhotosAssetUriFetcher(
             asset = asset,
             resource = resource,
         )
-        FetchResult(dataSource, mimeType)
+        // Important. The processing of useSkiaForImagePhotosAsset must be done in PhotosAssetUriFetcher,
+        // because other libraries may use Components.newFetcherOrThrow directly to obtain the DataSource
+        val convertedDataSource = if (shouldUseSkia(mimeType, useSkiaForImagePhotosAsset)) {
+            convertDataSource(dataSource)
+        } else {
+            dataSource
+        }
+        FetchResult(convertedDataSource, mimeType)
+    }
+
+    private fun shouldUseSkia(mimeType: String?, useSkiaForImagePhotosAsset: Boolean): Boolean {
+        if (mimeType == null) return false
+        // PhotosAssetDecoder does not support gif and animated webp, just use skia to decode it.
+        if (mimeType == "image/gif" || mimeType == "image/webp") return true
+        return useSkiaForImagePhotosAsset && mimeType.startsWith("image/")
+    }
+
+    private suspend fun convertDataSource(dataSource: PhotosAssetDataSource): DataSource {
+        // Currently, both SkiaDecoder and SkiaAnimatedDecoder need to load all the image data into memory before decoding.
+        // So it makes no sense to cache the original image data locally and then read it again.
+        // If SkiaDecoder and SkiaAnimatedDecoder support streaming decoding later,
+        // By default, locally cached files can be used first for decoding to avoid taking up too much memory.
+        return if (preferFileCacheForImagePhotosAsset) {
+            val cachePolicy = downloadCachePolicy
+            val (cacheFilePath, dataFrom) = cacheDataSource(dataSource, cachePolicy)
+            FileDataSource(cacheFilePath, downloadCache.fileSystem, dataFrom)
+        } else {
+            val bytes = readBytes(dataSource)
+            ByteArrayDataSource(data = bytes, dataFrom = DataFrom.LOCAL)
+        }
+    }
+
+    private suspend fun cacheDataSource(
+        dataSource: PhotosAssetDataSource,
+        cachePolicy: CachePolicy
+    ): Pair<Path, DataFrom> {
+        if (!cachePolicy.isReadAndWrite) {
+            throw Exception("Cache policy disabled read and write")
+        }
+
+        val cacheKey = dataSource.key
+        return downloadCache.withLock(cacheKey) {
+            readCache(downloadCache, cacheKey)?.let { it to DataFrom.DOWNLOAD_CACHE }
+                ?: (writeCache(downloadCache, cacheKey, dataSource) to DataFrom.LOCAL)
+        }
+    }
+
+    @WorkerThread
+    private fun readCache(downloadCache: DiskCache, cacheKey: String): Path? {
+        return downloadCache.openSnapshot(cacheKey)?.use { it.data }
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
+    @WorkerThread
+    private suspend fun writeCache(
+        downloadCache: DiskCache,
+        cacheKey: String,
+        dataSource: PhotosAssetDataSource
+    ): Path {
+        val editor = downloadCache.openEditor(cacheKey)
+            ?: throw IOException("Disk cache cannot be used")
+        val sink = downloadCache.fileSystem.sink(editor.data).buffer()
+        try {
+            suspendCancellableCoroutine { continuation ->
+                val options = PHAssetResourceRequestOptions().apply {
+                    this.networkAccessAllowed = dataSource.allowNetworkAccess
+                }
+                PHAssetResourceManager.defaultManager().requestDataForAssetResource(
+                    resource = dataSource.resource,
+                    options = options,
+                    dataReceivedHandler = { chunk ->
+                        val byteVars = chunk?.bytes?.reinterpret<ByteVar>()
+                        if (byteVars != null) {
+                            val byteArray = ByteArray(chunk.length.toInt())
+                            byteArray.usePinned { pinned ->
+                                memcpy(pinned.addressOf(0), byteVars, chunk.length)
+                            }
+                            sink.write(byteArray)
+                        }
+                    },
+                    completionHandler = { error ->
+                        if (error == null) {
+                            continuation.resumeWith(Result.success(true))
+                        } else {
+                            val message =
+                                "Failed to write PHAssetResource '${dataSource.resource.originalFilename}' to cache: ${error.localizedDescription}"
+                            continuation.resumeWithException(IOException(message))
+                        }
+                    },
+                )
+            }
+            editor.commit()
+            return editor.data
+        } catch (t: Throwable) {
+            editor.abort()
+            throw t
+        }
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
+    private suspend fun readBytes(dataSource: PhotosAssetDataSource): ByteArray {
+        return suspendCancellableCoroutine { continuation ->
+            val buffer = Buffer()
+            val options = PHAssetResourceRequestOptions().apply {
+                this.networkAccessAllowed = dataSource.allowNetworkAccess
+            }
+            PHAssetResourceManager.defaultManager().requestDataForAssetResource(
+                resource = dataSource.resource,
+                options = options,
+                dataReceivedHandler = { chunk ->
+                    val byteVars = chunk?.bytes?.reinterpret<ByteVar>()
+                    if (byteVars != null) {
+                        val byteArray = ByteArray(chunk.length.toInt())
+                        byteArray.usePinned { pinned ->
+                            memcpy(pinned.addressOf(0), byteVars, chunk.length)
+                        }
+                        buffer.write(byteArray)
+                    }
+                },
+                completionHandler = { error ->
+                    val byteArray = buffer.readByteArray()
+                    if (byteArray.isNotEmpty()) {
+                        continuation.resumeWith(Result.success(byteArray))
+                    } else {
+                        val message =
+                            "Failed get bytes for PHAssetResource '${dataSource.resource.originalFilename}': ${error?.localizedDescription}"
+                        continuation.resumeWithException(IOException(message))
+                    }
+                },
+            )
+        }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -102,6 +259,10 @@ class PhotosAssetUriFetcher(
         if (localIdentifier != other.localIdentifier) return false
         if (preferredThumbnail != other.preferredThumbnail) return false
         if (allowNetworkAccess != other.allowNetworkAccess) return false
+        if (useSkiaForImagePhotosAsset != other.useSkiaForImagePhotosAsset) return false
+        if (preferFileCacheForImagePhotosAsset != other.preferFileCacheForImagePhotosAsset) return false
+        if (downloadCache != other.downloadCache) return false
+        if (downloadCachePolicy != other.downloadCachePolicy) return false
         return true
     }
 
@@ -109,11 +270,22 @@ class PhotosAssetUriFetcher(
         var result = localIdentifier.hashCode()
         result = 31 * result + preferredThumbnail.hashCode()
         result = 31 * result + allowNetworkAccess.hashCode()
+        result = 31 * result + useSkiaForImagePhotosAsset.hashCode()
+        result = 31 * result + preferFileCacheForImagePhotosAsset.hashCode()
+        result = 31 * result + downloadCache.hashCode()
+        result = 31 * result + downloadCachePolicy.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "PhotosAssetUriFetcher(localIdentifier='$localIdentifier', preferredThumbnail=$preferredThumbnail, allowNetworkAccess=$allowNetworkAccess)"
+        return "PhotosAssetUriFetcher(" +
+                "localIdentifier='$localIdentifier', " +
+                "preferredThumbnail=$preferredThumbnail, " +
+                "allowNetworkAccess=$allowNetworkAccess, " +
+                "useSkiaForImagePhotosAsset=$useSkiaForImagePhotosAsset, " +
+                "preferFileCacheForImagePhotosAsset=$preferFileCacheForImagePhotosAsset, " +
+                "downloadCache=$downloadCache, " +
+                "downloadCachePolicy=$downloadCachePolicy)"
     }
 
     class Factory : Fetcher.Factory {
@@ -126,10 +298,18 @@ class PhotosAssetUriFetcher(
             val localIdentifier = parseLocalIdentifier(uri) ?: return null
             val preferredThumbnail = request.preferThumbnailForPhotosAsset ?: false
             val allowNetworkAccess = request.allowNetworkAccessPhotosAsset ?: false
+            val useSkiaForImagePhotosAsset = request.useSkiaForImagePhotosAsset ?: false
+            val preferFileCacheForImagePhotosAsset =
+                request.preferFileCacheForImagePhotosAsset ?: false
+            val downloadCachePolicy = request.downloadCachePolicy
             return PhotosAssetUriFetcher(
                 localIdentifier = localIdentifier,
                 preferredThumbnail = preferredThumbnail,
                 allowNetworkAccess = allowNetworkAccess,
+                useSkiaForImagePhotosAsset = useSkiaForImagePhotosAsset,
+                preferFileCacheForImagePhotosAsset = preferFileCacheForImagePhotosAsset,
+                downloadCache = requestContext.sketch.downloadCache,
+                downloadCachePolicy = downloadCachePolicy,
             )
         }
 

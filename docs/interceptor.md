@@ -20,8 +20,6 @@ use [Interceptor] to change the input and output of any link in the execution pr
   image can be transformed, such as circular, rounded, blurred, etc.
 * [FetcherInterceptor]: Provides the function of loading original image data from Uri, and loading
   original image data from the network, files, resources and other sources for Decoder to decode.
-* [UseSkiaInterceptor]: Convert PhotosAssetDataSource from Photos Library on iOS platform to
-  ByteArrayDataSource that can be decoded by Skia
 * [DecoderInterceptor]: Provides decoding function to decode the original image data into Bitmap
 
 [Interceptor] provided by sketch-extensions-core module:
@@ -98,8 +96,6 @@ ImageRequest(context, "https://example.com/image.jpg") {
 [TransformationInterceptor]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/internal/TransformationInterceptor.kt
 
 [FetcherInterceptor]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/internal/FetcherInterceptor.kt
-
-[UseSkiaInterceptor]: ../sketch-core/src/iosMain/kotlin/com/github/panpf/sketch/decode/internal/UseSkiaInterceptor.kt
 
 [DecoderInterceptor]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/decode/internal/DecoderInterceptor.kt
 

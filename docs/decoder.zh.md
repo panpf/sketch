@@ -96,7 +96,8 @@ AsyncImage(
 )
 ```
 
-[UseSkiaInterceptor] 在检测到 useSkiaForImagePhotosAsset 为 true 后就会在 fetch 之后将图片原始数据全部读到内存中再包装成
+[PhotosAssetUriFetcher] 在检测到 useSkiaForImagePhotosAsset 为 true 后就会在 fetch
+之后将图片原始数据全部读到内存中再包装成
 ByteArrayDataSource 供 [SkiaDecoder] 解码
 
 如果你还想将来自 Photos Library 的图片原始数据缓存到下载缓存中再包装成 FileDataSource
@@ -274,5 +275,3 @@ ImageRequest(context, "https://example.com/image.jpg") {
 [DataSource]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/source/DataSource.kt
 
 [PhotosAssetUriFetcher]: ../sketch-core/src/iosMain/kotlin/com/github/panpf/sketch/fetch/PhotosAssetUriFetcher.kt
-
-[UseSkiaInterceptor]: ../sketch-core/src/iosMain/kotlin/com/github/panpf/sketch/decode/internal/UseSkiaInterceptor.kt

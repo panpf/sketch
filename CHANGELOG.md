@@ -11,6 +11,11 @@ Translations: [简体中文](CHANGELOG.zh.md)
 
 # new
 
+## iOS
+
+* change: PhotosAssetFetcher renamed to PhotosAssetUriFetcher
+* change: Merge the functionality of UseSkiaInterceptor into PhotosAssetUriFetcher and remove it
+
 ## Dependencies
 
 * Upgrade to kotlinx coroutines 1.11.0

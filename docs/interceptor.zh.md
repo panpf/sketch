@@ -14,8 +14,6 @@ Sketch 核心模块提供的 [Interceptor]：
 * [TransformationInterceptor]：提供变换功能，图片加载后对图片进行变换处理，如圆形、圆角、模糊等
 * [FetcherInterceptor]：提供从 Uri 加载图片原始数据功能，从网络、文件、资源等来源加载图片原始数据供
   Decoder 解码
-* [UseSkiaInterceptor]：将 iOS 平台来自 Photos Library 的 PhotosAssetDataSource 转换为可供 Skia 解码的
-  ByteArrayDataSource
 * [DecoderInterceptor]：提供解码功能，将图片原始数据解码为 Bitmap
 
 sketch-extensions-core 模块提供的 [Interceptor]：
@@ -88,8 +86,6 @@ ImageRequest(context, "https://example.com/image.jpg") {
 [TransformationInterceptor]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/transform/internal/TransformationInterceptor.kt
 
 [FetcherInterceptor]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/fetch/internal/FetcherInterceptor.kt
-
-[UseSkiaInterceptor]: ../sketch-core/src/iosMain/kotlin/com/github/panpf/sketch/decode/internal/UseSkiaInterceptor.kt
 
 [DecoderInterceptor]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/decode/internal/DecoderInterceptor.kt
 

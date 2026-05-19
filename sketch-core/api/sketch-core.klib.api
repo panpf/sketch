@@ -3154,26 +3154,6 @@ final class com.github.panpf.sketch.decode.internal/PhotosAssetDecodeHelper : co
 }
 
 // Targets: [ios]
-final class com.github.panpf.sketch.decode.internal/UseSkiaInterceptor : com.github.panpf.sketch.request/Interceptor { // com.github.panpf.sketch.decode.internal/UseSkiaInterceptor|null[0]
-    constructor <init>() // com.github.panpf.sketch.decode.internal/UseSkiaInterceptor.<init>|<init>(){}[0]
-
-    final val key // com.github.panpf.sketch.decode.internal/UseSkiaInterceptor.key|{}key[0]
-        final fun <get-key>(): kotlin/String? // com.github.panpf.sketch.decode.internal/UseSkiaInterceptor.key.<get-key>|<get-key>(){}[0]
-    final val sortWeight // com.github.panpf.sketch.decode.internal/UseSkiaInterceptor.sortWeight|{}sortWeight[0]
-        final fun <get-sortWeight>(): kotlin/Int // com.github.panpf.sketch.decode.internal/UseSkiaInterceptor.sortWeight.<get-sortWeight>|<get-sortWeight>(){}[0]
-
-    final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.decode.internal/UseSkiaInterceptor.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // com.github.panpf.sketch.decode.internal/UseSkiaInterceptor.hashCode|hashCode(){}[0]
-    final fun toString(): kotlin/String // com.github.panpf.sketch.decode.internal/UseSkiaInterceptor.toString|toString(){}[0]
-    final suspend fun intercept(com.github.panpf.sketch.request/Interceptor.Chain): kotlin/Result<com.github.panpf.sketch.request/ImageData> // com.github.panpf.sketch.decode.internal/UseSkiaInterceptor.intercept|intercept(com.github.panpf.sketch.request.Interceptor.Chain){}[0]
-
-    final object Companion { // com.github.panpf.sketch.decode.internal/UseSkiaInterceptor.Companion|null[0]
-        final const val SORT_WEIGHT // com.github.panpf.sketch.decode.internal/UseSkiaInterceptor.Companion.SORT_WEIGHT|{}SORT_WEIGHT[0]
-            final fun <get-SORT_WEIGHT>(): kotlin/Int // com.github.panpf.sketch.decode.internal/UseSkiaInterceptor.Companion.SORT_WEIGHT.<get-SORT_WEIGHT>|<get-SORT_WEIGHT>(){}[0]
-    }
-}
-
-// Targets: [ios]
 final class com.github.panpf.sketch.decode/PhotosAssetDecoder : com.github.panpf.sketch.decode.internal/HelperDecoder { // com.github.panpf.sketch.decode/PhotosAssetDecoder|null[0]
     constructor <init>(com.github.panpf.sketch.request/RequestContext, com.github.panpf.sketch.source/PhotosAssetDataSource, kotlin/String) // com.github.panpf.sketch.decode/PhotosAssetDecoder.<init>|<init>(com.github.panpf.sketch.request.RequestContext;com.github.panpf.sketch.source.PhotosAssetDataSource;kotlin.String){}[0]
 
@@ -3235,14 +3215,22 @@ final class com.github.panpf.sketch.fetch/KotlinResourceUriFetcher : com.github.
 
 // Targets: [ios]
 final class com.github.panpf.sketch.fetch/PhotosAssetUriFetcher : com.github.panpf.sketch.fetch/Fetcher { // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher|null[0]
-    constructor <init>(kotlin/String, kotlin/Boolean, kotlin/Boolean) // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.<init>|<init>(kotlin.String;kotlin.Boolean;kotlin.Boolean){}[0]
+    constructor <init>(kotlin/String, kotlin/Boolean, kotlin/Boolean, kotlin/Boolean, kotlin/Boolean, com.github.panpf.sketch.cache/DiskCache, com.github.panpf.sketch.cache/CachePolicy) // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.<init>|<init>(kotlin.String;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;com.github.panpf.sketch.cache.DiskCache;com.github.panpf.sketch.cache.CachePolicy){}[0]
 
     final val allowNetworkAccess // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.allowNetworkAccess|{}allowNetworkAccess[0]
         final fun <get-allowNetworkAccess>(): kotlin/Boolean // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.allowNetworkAccess.<get-allowNetworkAccess>|<get-allowNetworkAccess>(){}[0]
+    final val downloadCache // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.downloadCache|{}downloadCache[0]
+        final fun <get-downloadCache>(): com.github.panpf.sketch.cache/DiskCache // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.downloadCache.<get-downloadCache>|<get-downloadCache>(){}[0]
+    final val downloadCachePolicy // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.downloadCachePolicy|{}downloadCachePolicy[0]
+        final fun <get-downloadCachePolicy>(): com.github.panpf.sketch.cache/CachePolicy // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.downloadCachePolicy.<get-downloadCachePolicy>|<get-downloadCachePolicy>(){}[0]
     final val localIdentifier // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.localIdentifier|{}localIdentifier[0]
         final fun <get-localIdentifier>(): kotlin/String // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.localIdentifier.<get-localIdentifier>|<get-localIdentifier>(){}[0]
+    final val preferFileCacheForImagePhotosAsset // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.preferFileCacheForImagePhotosAsset|{}preferFileCacheForImagePhotosAsset[0]
+        final fun <get-preferFileCacheForImagePhotosAsset>(): kotlin/Boolean // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.preferFileCacheForImagePhotosAsset.<get-preferFileCacheForImagePhotosAsset>|<get-preferFileCacheForImagePhotosAsset>(){}[0]
     final val preferredThumbnail // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.preferredThumbnail|{}preferredThumbnail[0]
         final fun <get-preferredThumbnail>(): kotlin/Boolean // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.preferredThumbnail.<get-preferredThumbnail>|<get-preferredThumbnail>(){}[0]
+    final val useSkiaForImagePhotosAsset // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.useSkiaForImagePhotosAsset|{}useSkiaForImagePhotosAsset[0]
+        final fun <get-useSkiaForImagePhotosAsset>(): kotlin/Boolean // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.useSkiaForImagePhotosAsset.<get-useSkiaForImagePhotosAsset>|<get-useSkiaForImagePhotosAsset>(){}[0]
 
     final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.hashCode|hashCode(){}[0]

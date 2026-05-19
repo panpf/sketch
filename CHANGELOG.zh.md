@@ -9,6 +9,11 @@
 
 # new
 
+## iOS
+
+* change: PhotosAssetFetcher 重命名为 PhotosAssetUriFetcher
+* change: 合并 UseSkiaInterceptor 的功能到 PhotosAssetUriFetcher 中并删除它
+
 ## Dependencies
 
 * 升级 kotlinx coroutines 1.11.0

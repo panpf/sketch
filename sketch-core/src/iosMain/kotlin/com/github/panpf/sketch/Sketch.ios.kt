@@ -18,7 +18,6 @@ package com.github.panpf.sketch
 
 import com.github.panpf.sketch.decode.PhotosAssetDecoder
 import com.github.panpf.sketch.decode.SkiaDecoder
-import com.github.panpf.sketch.decode.internal.UseSkiaInterceptor
 import com.github.panpf.sketch.fetch.KotlinResourceUriFetcher
 import com.github.panpf.sketch.fetch.PhotosAssetUriFetcher
 
@@ -29,7 +28,6 @@ import com.github.panpf.sketch.fetch.PhotosAssetUriFetcher
  */
 internal actual fun platformComponents(context: PlatformContext): ComponentRegistry {
     return ComponentRegistry {
-        add(UseSkiaInterceptor())
         add(KotlinResourceUriFetcher.Factory())
         add(PhotosAssetUriFetcher.Factory())
         add(PhotosAssetDecoder.Factory())
