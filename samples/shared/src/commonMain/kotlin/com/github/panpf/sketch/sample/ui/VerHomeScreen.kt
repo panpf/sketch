@@ -97,9 +97,6 @@ fun VerHomeScreen() {
     }
 }
 
-@Composable
-expect fun VerHomeHeader()
-
 val gridCellsMinSize: Dp = if (Platform.current.isMobile()) 100.dp else 150.dp
 
 enum class HomeTab(

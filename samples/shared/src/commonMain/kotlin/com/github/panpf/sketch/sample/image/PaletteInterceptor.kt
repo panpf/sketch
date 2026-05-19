@@ -116,6 +116,16 @@ fun Palette.Companion.fromPropertyString(propertyString: String): SimplePalette 
     )
 }
 
+fun Palette.toSimplePalette(): SimplePalette = SimplePalette(
+    dominantSwatch = dominantSwatch,
+    darkMutedSwatch = darkMutedSwatch,
+    mutedSwatch = mutedSwatch,
+    lightMutedSwatch = lightMutedSwatch,
+    darkVibrantSwatch = darkVibrantSwatch,
+    vibrantSwatch = vibrantSwatch,
+    lightVibrantSwatch = lightVibrantSwatch,
+)
+
 class SimplePalette(
     val dominantSwatch: Palette.Swatch?,
     val darkMutedSwatch: Palette.Swatch?,

@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
 import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.PermissionsControllerFactory
@@ -29,12 +30,12 @@ actual fun PermissionContainer(
         BindEffect(controller)
         var showContent by remember { mutableStateOf(false) }
         var deniedDialogShowing by remember { mutableStateOf(false) }
-        val startPermissionFlow = remember { MutableStateFlow<Int?>(1) }
+        val requestPermissionFlow = remember { MutableStateFlow<Int?>(1) }
         LaunchedEffect(Unit) {
-            startPermissionFlow.filterNotNull().collect {
-                startPermissionFlow.value = null
+            requestPermissionFlow.filterNotNull().collect {
+                requestPermissionFlow.value = null
                 try {
-                    controller.providePermission(permission as dev.icerock.moko.permissions.Permission)
+                    controller.providePermission(permission as Permission)
                     showContent = true
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -61,7 +62,7 @@ actual fun PermissionContainer(
                     Text(text = "The current page must be granted '$permission' permission before it can be used normally. Please grant permission again.")
                 },
                 confirmButton = {
-                    Button(onClick = { startPermissionFlow.value = 1 }) {
+                    Button(onClick = { requestPermissionFlow.value = 1 }) {
                         Text(text = "OK")
                     }
                 },

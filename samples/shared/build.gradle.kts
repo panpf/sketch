@@ -55,10 +55,11 @@ kotlin {
             api(libs.androidx.paging.compose)
             api(libs.jetbrains.compose.components.resources)
             api(libs.jetbrains.compose.material)    // pull refresh
-            api(libs.jetbrains.compose.material3)
             api(libs.jetbrains.compose.material.icons.core)
+            api(libs.jetbrains.compose.material3)
             api(libs.jetbrains.compose.material3.adaptiveNavigation3)
             api(libs.jetbrains.compose.ui.tooling.preview)  // 'libs.jetbrains.compose.ui.tooling' must also be configured, otherwise the preview will report an error: java.lang.ClassNotFoundException: androidx.compose.ui.tooling.PreviewParameterProvider
+            api(libs.jetbrains.lifecycle.viewmodel)
             api(libs.jetbrains.lifecycle.viewmodelNavigation3)
             api(libs.jetbrains.navigation3.ui)
             api(libs.koin.core)
@@ -86,9 +87,6 @@ kotlin {
             api(libs.androidx.navigation.ui)
             api(libs.koin.android)
             api(libs.kotlinx.serialization.json)
-            api(libs.moko.permissions)
-            api(libs.moko.permissions.storage)
-            api(libs.moko.permissions.gallery)
             api(libs.panpf.tools4a.activity)
             api(libs.panpf.tools4a.device)
             api(libs.panpf.tools4a.dimen)
@@ -115,10 +113,12 @@ kotlin {
             resources.srcDirs("../../internal/images/src/iosMain/resources")
             dependencies {
                 api(projects.sketchVideo)
-                api(libs.moko.permissions)
-                api(libs.moko.permissions.storage)
-                api(libs.moko.permissions.gallery)
             }
+        }
+        phoneMain.dependencies {
+            api(libs.moko.permissions)
+            api(libs.moko.permissions.storage)
+            api(libs.moko.permissions.gallery)
         }
         jsCommonMain.dependencies {
             api(libs.kotlinx.browser)

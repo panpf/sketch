@@ -4,20 +4,12 @@ import com.github.panpf.sketch.sample.ui.model.Photo
 import kotlinx.serialization.Serializable
 
 @Serializable
-expect class PhotoPagerParams {
-
-    val photos: List<Photo>
-    val totalCount: Int
-    val startPosition: Int
+data class PhotoPagerParams(
+    val photos: List<Photo>,
+    val totalCount: Int,
+    val startPosition: Int,
     val initialPosition: Int
-
-    constructor(
-        photos: List<Photo>,
-        totalCount: Int,
-        startPosition: Int,
-        initialPosition: Int
-    )
-}
+)
 
 fun buildPhotoPagerParams(
     items: List<Photo>,
