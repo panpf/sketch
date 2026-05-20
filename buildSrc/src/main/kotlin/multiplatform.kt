@@ -254,3 +254,6 @@ val NamedDomainObjectContainer<KotlinSourceSet>.phoneMain: NamedDomainObjectProv
 
 val NamedDomainObjectContainer<KotlinSourceSet>.nonPhoneMain: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("nonPhoneMain")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.nonIosMain: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonIosMain")

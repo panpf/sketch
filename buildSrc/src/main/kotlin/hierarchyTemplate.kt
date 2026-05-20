@@ -38,8 +38,8 @@ private val hierarchyTemplate = KotlinHierarchyTemplate {
         groupNonJsCommon()
         groupJvmCommon()
         groupNonJvmCommon()
-        groupNative()
-        groupNonNative()
+        groupIos()
+        groupNonIos()
         groupPhone()
         groupNonPhone()
     }
@@ -48,7 +48,7 @@ private val hierarchyTemplate = KotlinHierarchyTemplate {
 private fun KotlinHierarchyBuilder.groupNonAndroid() {
     group("nonAndroid") {
         withJvm()
-        groupNative()
+        groupIos()
         withJs()
         withWasmJs()
         groupJsCommon()
@@ -65,9 +65,9 @@ private fun KotlinHierarchyBuilder.groupJsCommon() {
 private fun KotlinHierarchyBuilder.groupNonJsCommon() {
     group("nonJsCommon") {
         withAndroid()
+        groupIos()
         withJvm()
         groupJvmCommon()
-        groupNative()
     }
 }
 
@@ -80,33 +80,21 @@ private fun KotlinHierarchyBuilder.groupJvmCommon() {
 
 private fun KotlinHierarchyBuilder.groupNonJvmCommon() {
     group("nonJvmCommon") {
-        groupNative()
+        groupIos()
         withJs()
         withWasmJs()
         groupJsCommon()
     }
 }
 
-private fun KotlinHierarchyBuilder.groupNative() {
-    group("native") {
-        withNative()
-
-        group("apple") {
-            withApple()
-
-            group("ios") {
-                withIos()
-            }
-
-            group("macos") {
-                withMacos()
-            }
-        }
+private fun KotlinHierarchyBuilder.groupIos() {
+    group("ios") {
+        withIos()
     }
 }
 
-private fun KotlinHierarchyBuilder.groupNonNative() {
-    group("nonNative") {
+private fun KotlinHierarchyBuilder.groupNonIos() {
+    group("nonIos") {
         withAndroid()
         withJvm()
         withJs()
