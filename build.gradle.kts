@@ -184,12 +184,12 @@ allprojects {
     // Enable ABI validation for all publishable library modules.
     if (isPublishableModule) {
         configureAbiValidation()
-        configureAndroidLegacyAbiValidation()
     }
 }
 
 @OptIn(ExperimentalAbiValidation::class)
 fun Project.configureAbiValidation() {
+    // TODO The Android platform's ABI does not currently work
     afterEvaluate {
         val kotlinExtension =
             extensions.findByType<KotlinProjectExtension>() ?: return@afterEvaluate
@@ -202,58 +202,4 @@ fun Project.configureAbiValidation() {
             enabled.set(true)
         }
     }
-}
-
-fun Project.configureAndroidLegacyAbiValidation() {
-    // TODO doesn't work. api files will not be generated for android platform
-    plugins.withId("com.android.kotlin.multiplatform.library") {
-        afterEvaluate {
-            tasks
-                .matching { it.name == "dumpLegacyAbi" || it.name.startsWith("dumpLegacyAbi") }
-                .configureEach {
-                    tasks.findByName("compileAndroidMain")?.let { dependsOn(it) }
-                    configureAndroidLegacyAbiDumpInput(this@configureAndroidLegacyAbiValidation)
-                }
-        }
-    }
-}
-
-private fun Task.configureAndroidLegacyAbiDumpInput(project: Project) {
-    val dumpTaskClass = javaClass
-    val getJvm = runCatching { dumpTaskClass.getMethod("getJvm") }.getOrNull() ?: return
-    val jvmProperty = getJvm.invoke(this)
-
-    val propertyClass = jvmProperty.javaClass
-    val get = propertyClass.getMethod("get")
-    val set = propertyClass.getMethod("set", Iterable::class.java)
-
-    val existingEntries = mutableListOf<Any>()
-    val currentEntries = get.invoke(jvmProperty)
-    if (currentEntries is Iterable<*>) {
-        currentEntries.filterNotNullTo(existingEntries)
-    } else {
-        return
-    }
-
-    val entryClass = existingEntries.firstOrNull()?.javaClass
-        ?: runCatching {
-            dumpTaskClass.classLoader.loadClass(
-                $$"org.jetbrains.kotlin.gradle.tasks.abi.KotlinLegacyAbiDumpTaskImpl$JvmTargetInfo",
-            )
-        }.getOrNull()
-        ?: return
-
-    val getSubdirectoryName = entryClass.getMethod("getSubdirectoryName")
-    if (existingEntries.any { getSubdirectoryName.invoke(it) == "android" }) return
-
-    val constructor = entryClass.getConstructor(String::class.java, FileCollection::class.java)
-    val androidClasses = project.files(
-        project.layout.buildDirectory.dir("classes/kotlin/android/main"),
-        project.layout.buildDirectory.dir("classes/java/android/main"),
-        project.layout.buildDirectory.dir("intermediates/javac/androidMain/classes"),
-    )
-    val androidEntry = constructor.newInstance("android", androidClasses)
-
-    existingEntries.add(androidEntry)
-    set.invoke(jvmProperty, existingEntries)
 }
