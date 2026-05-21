@@ -1,33 +1,35 @@
 package com.github.panpf.sketch.sample.ui.setting
 
+import androidx.compose.runtime.Composable
 import com.github.panpf.sketch.sample.AppEvents
 import com.github.panpf.sketch.sample.AppSettings
+import com.github.panpf.sketch.sample.ui.components.SwitchSettingItem
+import org.koin.compose.koinInject
 
-actual fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
-    add(
-        SwitchSettingItem(
-            title = "Cache Decode Timeout Frame",
-            desc = null,
-            state = appSettings.cacheDecodeTimeoutFrame,
-        )
+@Composable
+actual fun PlatformAnimatedSettingsList(appSettings: AppSettings) {
+    SwitchSettingItem(
+        title = "Cache Decode Timeout Frame",
+        desc = null,
+        state = appSettings.cacheDecodeTimeoutFrame,
     )
 }
 
-actual fun platformVideoMenuList(appSettings: AppSettings): List<SettingItem> = emptyList()
+@Composable
+actual fun VideoSettingsList(appSettings: AppSettings) {
 
-actual fun platformOtherMenuList(
-    appSettings: AppSettings,
-    page: Page,
-    appEvents: AppEvents
-): List<SettingItem> = buildList {
-    add(
-        SwitchSettingItem(
-            title = "Use JsDecoder",
-            desc = null,
-            state = appSettings.useJsDecoder,
-            onClick = {
-                appEvents.toastFlow.emit("Restart the app to take effect")
-            }
-        )
+}
+
+@Composable
+actual fun PlatformOtherSettingsList(appSettings: AppSettings, page: AppSettingsPage) {
+    val appEvents: AppEvents = koinInject()
+
+    SwitchSettingItem(
+        title = "Use JsDecoder",
+        desc = null,
+        state = appSettings.useJsDecoder,
+        onClick = {
+            appEvents.toastFlow.emit("Restart the app to take effect")
+        }
     )
 }

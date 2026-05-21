@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 class AppSettingsViewModel(
     val sketch: Sketch,
     val appSettings: AppSettings,
-    private val page: Page
+    private val page: AppSettingsPage
 ) : ViewModel() {
 
     private val _menuListData = MutableStateFlow<List<Any>>(emptyList())
@@ -67,10 +67,10 @@ class AppSettingsViewModel(
 
     private fun updateList() {
         _menuListData.value = buildList {
-            if (page == Page.LIST) {
+            if (page == AppSettingsPage.LIST) {
                 add(MenuGroup("List"))
                 addAll(makeListMenuList())
-            } else if (page == Page.VIEWER) {
+            } else if (page == AppSettingsPage.VIEWER) {
                 add(MenuGroup("Viewer"))
                 addAll(viewerZoomMenuList())
                 add(MenuGroup("Zoom"))

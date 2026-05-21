@@ -32,11 +32,7 @@ class AppSettingsDialogFragment : BaseBindingDialogFragment<FragmentRecyclerBind
 
     private val args by navArgs<AppSettingsDialogFragmentArgs>()
     private val settingsViewModel by viewModel<AppSettingsViewModel> {
-        parametersOf(
-            Page.valueOf(
-                args.page
-            )
-        )
+        parametersOf(AppSettingsPage.valueOf(args.page))
     }
 
     init {

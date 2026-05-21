@@ -42,7 +42,7 @@ import com.github.panpf.sketch.sample.image.palette.PhotoPalette
 import com.github.panpf.sketch.sample.image.simplePalette
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.sample.ui.setting.Page
+import com.github.panpf.sketch.sample.ui.setting.AppSettingsPage
 import com.github.panpf.sketch.sample.util.collectWithLifecycle
 import com.github.panpf.sketch.sample.util.ignoreFirst
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
@@ -146,7 +146,7 @@ class PhotoPagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
 
         binding.settingsImage.setOnClickListener {
             findNavController().navigate(
-                NavMainDirections.actionSettingsDialogFragment(Page.VIEWER.name)
+                NavMainDirections.actionSettingsDialogFragment(AppSettingsPage.VIEWER.name)
             )
         }
 

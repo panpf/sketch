@@ -1,57 +1,64 @@
 package com.github.panpf.sketch.sample.ui.setting
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import com.github.panpf.sketch.sample.AppEvents
 import com.github.panpf.sketch.sample.AppSettings
+import com.github.panpf.sketch.sample.ui.components.ClickableSettingItem
+import com.github.panpf.sketch.sample.ui.components.DropdownSettingItem
+import com.github.panpf.sketch.sample.ui.components.SwitchSettingItem
+import org.koin.compose.koinInject
 import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.SwingUtilities
 
-actual fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
-    add(
-        SwitchSettingItem(
-            title = "Cache Decode Timeout Frame",
-            desc = null,
-            state = appSettings.cacheDecodeTimeoutFrame,
-        )
+@Composable
+actual fun PlatformAnimatedSettingsList(appSettings: AppSettings) {
+    SwitchSettingItem(
+        title = "Cache Decode Timeout Frame",
+        desc = null,
+        state = appSettings.cacheDecodeTimeoutFrame,
     )
 }
 
-actual fun platformVideoMenuList(appSettings: AppSettings): List<SettingItem> = emptyList()
+@Composable
+actual fun VideoSettingsList(appSettings: AppSettings) {
 
-actual fun platformOtherMenuList(
-    appSettings: AppSettings,
-    page: Page,
-    appEvents: AppEvents
-): List<SettingItem> = buildList {
-    add(
-        DropdownSettingItem(
-            title = "Http Client",
-            desc = null,
-            values = listOf("Ktor", "OkHttp", "HttpURLConnection"),
-            state = appSettings.httpClient,
-            onItemClick = {
-                appEvents.toastFlow.emit("Restart the app to take effect")
-            }
-        )
+}
+
+@Composable
+actual fun PlatformOtherSettingsList(appSettings: AppSettings, page: AppSettingsPage) {
+    val appEvents: AppEvents = koinInject()
+
+    val httpClientValues = remember {
+        listOf("Ktor", "OkHttp", "HttpURLConnection")
+    }
+    DropdownSettingItem(
+        title = "Http Client",
+        desc = null,
+        values = httpClientValues,
+        state = appSettings.httpClient,
+        onItemClick = {
+            appEvents.toastFlow.emit("Restart the app to take effect")
+        }
     )
-    if (page == Page.LIST) {
-        add(
-            ClickableSettingItem(
-                title = "Local Album Path",
-                desc = "Add a local album path. Long press to clear.",
-                value = appSettings.localPhotosDirPath,
-                onClick = {
-                    SwingUtilities.invokeLater {
-                        val dir = pickDir()
-                        if (dir != null) {
-                            appSettings.localPhotosDirPath.value = dir.absolutePath
-                        }
+
+    if (page == AppSettingsPage.LIST) {
+        ClickableSettingItem(
+            title = "Local Album Path",
+            desc = "Add a local album path. Long press to clear.",
+            value = appSettings.localPhotosDirPath,
+            onClick = {
+                SwingUtilities.invokeLater {
+                    val dir = pickDir()
+                    if (dir != null) {
+                        appSettings.localPhotosDirPath.value = dir.absolutePath
                     }
-                },
-                onLongClick = {
-                    appSettings.localPhotosDirPath.value = ""
                 }
-            )
+            },
+            onLongClick = {
+                appSettings.localPhotosDirPath.value = ""
+            }
         )
     }
 }

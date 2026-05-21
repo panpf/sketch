@@ -1,38 +1,43 @@
 package com.github.panpf.sketch.sample.ui.setting
 
-import com.github.panpf.sketch.sample.AppEvents
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import com.github.panpf.sketch.sample.AppSettings
+import com.github.panpf.sketch.sample.ui.components.DividerSettingItem
+import com.github.panpf.sketch.sample.ui.components.DropdownSettingItem
+import com.github.panpf.sketch.sample.ui.components.SwitchSettingItem
 
-actual fun platformAnimatedMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
-    add(
-        SwitchSettingItem(
-            title = "Cache Decode Timeout Frame",
-            desc = null,
-            state = appSettings.cacheDecodeTimeoutFrame,
-        )
+@Composable
+actual fun PlatformAnimatedSettingsList(appSettings: AppSettings) {
+    SwitchSettingItem(
+        title = "Cache Decode Timeout Frame",
+        desc = null,
+        state = appSettings.cacheDecodeTimeoutFrame,
     )
 }
 
-actual fun platformVideoMenuList(appSettings: AppSettings): List<SettingItem> = buildList {
-    add(
-        DropdownSettingItem(
-            title = "Video Frame Percent",
-            desc = null,
-            values = listOf(0f, 0.25f, 0.5f, 0.75f, 1f),
-            state = appSettings.videoFramePercent,
-        )
+@Composable
+actual fun VideoSettingsList(appSettings: AppSettings) {
+    DividerSettingItem("Video")
+
+    val videoFramePercentValue = remember {
+        listOf(0f, 0.25f, 0.5f, 0.75f, 1f)
+    }
+    DropdownSettingItem(
+        title = "Video Frame Percent",
+        desc = null,
+        values = videoFramePercentValue,
+        state = appSettings.videoFramePercent,
     )
-    add(
-        SwitchSettingItem(
-            title = "Prefer Video Cover",
-            desc = null,
-            state = appSettings.preferVideoCover,
-        )
+
+    SwitchSettingItem(
+        title = "Prefer Video Cover",
+        desc = null,
+        state = appSettings.preferVideoCover,
     )
 }
 
-actual fun platformOtherMenuList(
-    appSettings: AppSettings,
-    page: Page,
-    appEvents: AppEvents
-): List<SettingItem> = emptyList()
+@Composable
+actual fun PlatformOtherSettingsList(appSettings: AppSettings, page: AppSettingsPage) {
+
+}

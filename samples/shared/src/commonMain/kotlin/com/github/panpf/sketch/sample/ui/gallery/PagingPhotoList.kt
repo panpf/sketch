@@ -94,6 +94,8 @@ fun PagingPhotoList(
         )
 
         PagingListRefreshState(pagingItems)
+
+        BottomToolbar(modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp))
     }
 }
 

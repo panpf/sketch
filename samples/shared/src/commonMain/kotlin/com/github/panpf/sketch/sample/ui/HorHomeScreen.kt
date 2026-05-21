@@ -30,7 +30,6 @@ import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.Res
 import com.github.panpf.sketch.sample.logo
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
-import com.github.panpf.sketch.sample.ui.gallery.MainMenu
 import com.github.panpf.sketch.sample.ui.theme.DarkModeSwitch
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -96,16 +95,12 @@ fun HorHomeScreen() {
                 )
             }
 
-            Box(modifier = Modifier.fillMaxSize().weight(1f)) {
-                VerticalPager(
-                    state = pagerState,
-                    modifier = Modifier.fillMaxSize(),
-                    userScrollEnabled = false,
-                ) { pageIndex ->
-                    homeTabs[pageIndex].content.invoke()
-                }
-
-                MainMenu(modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp))
+            VerticalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxSize().weight(1f),
+                userScrollEnabled = false,
+            ) { pageIndex ->
+                homeTabs[pageIndex].content.invoke()
             }
         }
     }

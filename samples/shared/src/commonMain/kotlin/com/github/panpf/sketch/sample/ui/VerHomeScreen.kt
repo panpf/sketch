@@ -2,11 +2,9 @@
 
 package com.github.panpf.sketch.sample.ui
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -19,7 +17,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -32,7 +29,6 @@ import com.github.panpf.sketch.sample.ic_phone
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.gallery.GiphyPhotoListPage
 import com.github.panpf.sketch.sample.ui.gallery.LocalPhotoListPage
-import com.github.panpf.sketch.sample.ui.gallery.MainMenu
 import com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoListPage
 import com.github.panpf.sketch.sample.ui.test.TestPage
 import com.github.panpf.sketch.sample.util.Platform
@@ -65,15 +61,11 @@ fun VerHomeScreen() {
                         appSettings.currentPageIndex.value = index
                     }
                 }
-                Box(modifier = Modifier.fillMaxSize().weight(1f)) {
-                    HorizontalPager(
-                        state = pagerState,
-                        modifier = Modifier.fillMaxSize(),
-                    ) { pageIndex ->
-                        homeTabs[pageIndex].content.invoke()
-                    }
-
-                    MainMenu(modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp))
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxSize().weight(1f),
+                ) { pageIndex ->
+                    homeTabs[pageIndex].content.invoke()
                 }
 
                 NavigationBar(Modifier.fillMaxWidth()) {

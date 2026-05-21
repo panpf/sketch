@@ -24,12 +24,12 @@ import com.github.panpf.sketch.sample.ic_settings
 import com.github.panpf.sketch.sample.ui.components.MyDialog
 import com.github.panpf.sketch.sample.ui.components.rememberMyDialogState
 import com.github.panpf.sketch.sample.ui.setting.AppSettingsList
-import com.github.panpf.sketch.sample.ui.setting.Page.LIST
+import com.github.panpf.sketch.sample.ui.setting.AppSettingsPage.LIST
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 
 @Composable
-fun MainMenu(modifier: Modifier = Modifier) {
+fun BottomToolbar(modifier: Modifier = Modifier) {
     val colorScheme = MaterialTheme.colorScheme
     Row(
         modifier = modifier
@@ -37,29 +37,31 @@ fun MainMenu(modifier: Modifier = Modifier) {
             .background(color = colorScheme.tertiaryContainer)
     ) {
         val appSettings: AppSettings = koinInject()
+
         val disallowAnimatedImageInList by appSettings.disallowAnimatedImageInList.collectAsState()
-        val staggeredGridMode by appSettings.staggeredGridMode.collectAsState()
         val playIcon = if (disallowAnimatedImageInList) {
             painterResource(drawable.ic_play)
         } else {
             painterResource(drawable.ic_pause)
         }
-        val staggeredGridModeIcon = if (staggeredGridMode) {
-            painterResource(drawable.ic_layout_grid)
-        } else {
-            painterResource(drawable.ic_layout_grid_staggered)
-        }
         Icon(
             painter = playIcon,
             contentDescription = null,
+            tint = colorScheme.onTertiaryContainer,
             modifier = Modifier
                 .size(40.dp)
                 .clickable {
                     appSettings.disallowAnimatedImageInList.value = !disallowAnimatedImageInList
                 }
-                .padding(10.dp),
-            tint = colorScheme.onTertiaryContainer
+                .padding(10.dp)
         )
+
+        val staggeredGridMode by appSettings.staggeredGridMode.collectAsState()
+        val staggeredGridModeIcon = if (staggeredGridMode) {
+            painterResource(drawable.ic_layout_grid)
+        } else {
+            painterResource(drawable.ic_layout_grid_staggered)
+        }
         Icon(
             painter = staggeredGridModeIcon,
             contentDescription = null,
@@ -70,6 +72,7 @@ fun MainMenu(modifier: Modifier = Modifier) {
                 .padding(10.dp),
             tint = colorScheme.onTertiaryContainer
         )
+
         val settingsDialogState = rememberMyDialogState()
         Icon(
             painter = painterResource(drawable.ic_settings),

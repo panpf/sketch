@@ -40,7 +40,7 @@ import com.github.panpf.sketch.sample.ui.LocalNavBackStack
 import com.github.panpf.sketch.sample.ui.components.MyDialog
 import com.github.panpf.sketch.sample.ui.components.rememberMyDialogState
 import com.github.panpf.sketch.sample.ui.setting.AppSettingsList
-import com.github.panpf.sketch.sample.ui.setting.Page
+import com.github.panpf.sketch.sample.ui.setting.AppSettingsPage
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
@@ -128,7 +128,7 @@ fun PhotoPagerHeaders(
                 )
             }
             MyDialog(settingsDialogState) {
-                AppSettingsList(Page.VIEWER)
+                AppSettingsList(AppSettingsPage.VIEWER)
             }
 
             Spacer(modifier = Modifier.size(10.dp))

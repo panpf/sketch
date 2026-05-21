@@ -37,7 +37,7 @@ import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LocalVideoItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.MyLoadStateAdapter
 import com.github.panpf.sketch.sample.ui.model.VideoInfoDiffCallback
-import com.github.panpf.sketch.sample.ui.setting.Page
+import com.github.panpf.sketch.sample.ui.setting.AppSettingsPage
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.tools4a.toast.ktx.showLongToast
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -72,7 +72,7 @@ class LocalVideoListFragment : BaseToolbarBindingFragment<FragmentRecyclerRefres
                 setOnMenuItemClickListener {
                     this@LocalVideoListFragment.findNavController().navigate(
                         NavMainDirections.actionSettingsDialogFragment(
-                            Page.LIST.name
+                            AppSettingsPage.LIST.name
                         )
                     )
                     true

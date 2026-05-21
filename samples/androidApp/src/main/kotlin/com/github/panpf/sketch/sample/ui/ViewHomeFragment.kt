@@ -32,7 +32,7 @@ import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.gallery.GiphyPhotoListFragment
 import com.github.panpf.sketch.sample.ui.gallery.LocalPhotoListFragment
 import com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoListFragment
-import com.github.panpf.sketch.sample.ui.setting.Page
+import com.github.panpf.sketch.sample.ui.setting.AppSettingsPage
 import com.github.panpf.sketch.sample.ui.test.TestHomeFragment
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 
@@ -107,7 +107,11 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
         }
 
         binding.settingsImage.setOnClickListener {
-            findNavController().navigate(NavMainDirections.actionSettingsDialogFragment(Page.LIST.name))
+            findNavController().navigate(
+                NavMainDirections.actionSettingsDialogFragment(
+                    AppSettingsPage.LIST.name
+                )
+            )
         }
 
         binding.pager.apply {
