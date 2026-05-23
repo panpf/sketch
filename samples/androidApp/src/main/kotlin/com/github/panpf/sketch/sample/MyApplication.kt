@@ -28,7 +28,6 @@ import com.github.panpf.sketch.sample.ui.test.transform.MultiTransformationTestV
 import com.github.panpf.sketch.sample.ui.test.transform.RotateTransformationTestViewModel
 import com.github.panpf.sketch.sample.ui.test.transform.RoundedCornersTransformationTestViewModel
 import org.koin.core.module.Module
-import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import java.security.SecureRandom
@@ -49,7 +48,7 @@ class MyApplication : Application() {
     }
 
     private fun viewModule(): Module = module {
-        viewModel { AppSettingsViewModel(sketch = get(), appSettings = get(), page = it.get()) }
+        viewModelOf(::AppSettingsViewModel)
         viewModelOf(::DrawableScaleTypeViewModel)
         viewModelOf(::BlurTransformationTestViewModel)
         viewModelOf(::MaskTransformationTestViewModel)

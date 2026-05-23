@@ -31,7 +31,7 @@ import org.koin.core.parameter.parametersOf
 class AppSettingsDialogFragment : BaseBindingDialogFragment<FragmentRecyclerBinding>() {
 
     private val args by navArgs<AppSettingsDialogFragmentArgs>()
-    private val settingsViewModel by viewModel<AppSettingsViewModel> {
+    private val appSettingsViewModel by viewModel<AppSettingsViewModel> {
         parametersOf(AppSettingsPage.valueOf(args.page))
     }
 
@@ -49,7 +49,7 @@ class AppSettingsDialogFragment : BaseBindingDialogFragment<FragmentRecyclerBind
                     MenuGroupItemFactory(),
                 )
             ).apply {
-                settingsViewModel.menuListData
+                appSettingsViewModel.data
                     .repeatCollectWithLifecycle(owner = viewLifecycleOwner, state = State.CREATED) {
                         submitList(it)
                     }

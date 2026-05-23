@@ -21,15 +21,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
+import org.koin.mp.KoinPlatform
 
-class AppSettingsViewModel(
-    val sketch: Sketch,
-    val appSettings: AppSettings,
-    private val page: AppSettingsPage
-) : ViewModel() {
+class AppSettingsViewModel(val page: AppSettingsPage) : ViewModel() {
 
-    private val _menuListData = MutableStateFlow<List<Any>>(emptyList())
-    val menuListData: StateFlow<List<Any>> = _menuListData
+    private val sketch: Sketch = KoinPlatform.getKoin().get()
+    private val appSettings: AppSettings = KoinPlatform.getKoin().get()
+    private val _data = MutableStateFlow<List<Any>>(emptyList())
+    val data: StateFlow<List<Any>> = _data
 
     init {
         val states = listOfNotNull(
@@ -66,7 +65,7 @@ class AppSettingsViewModel(
     }
 
     private fun updateList() {
-        _menuListData.value = buildList {
+        _data.value = buildList {
             if (page == AppSettingsPage.LIST) {
                 add(MenuGroup("List"))
                 addAll(makeListMenuList())
@@ -184,7 +183,7 @@ class AppSettingsViewModel(
             MultiSelectMenu(
                 title = "Resize Precision",
                 desc = null,
-                values = Precision.values().map { it.name }.plus(listOf("LongImageMode")),
+                values = Precision.entries.map { it.name }.plus(listOf("LongImageMode")),
                 getValue = { appSettings.precisionName.value },
                 onSelect = { _, value -> appSettings.precisionName.value = value }
             )
@@ -193,7 +192,7 @@ class AppSettingsViewModel(
             MultiSelectMenu(
                 title = "Resize Scale",
                 desc = null,
-                values = Scale.values().map { it.name }.plus(listOf("LongImageMode")),
+                values = Scale.entries.map { it.name }.plus(listOf("LongImageMode")),
                 getValue = { appSettings.scaleName.value },
                 onSelect = { _, value -> appSettings.scaleName.value = value }
             )
@@ -203,7 +202,7 @@ class AppSettingsViewModel(
                 MultiSelectMenu(
                     title = "Long Image Resize Scale",
                     desc = "Only Resize Scale is LongImageMode",
-                    values = Scale.values().map { it.name },
+                    values = Scale.entries.map { it.name },
                     getValue = { appSettings.longImageScale.value.name },
                     onSelect = { _, value ->
                         appSettings.longImageScale.value = Scale.valueOf(value)
@@ -214,7 +213,7 @@ class AppSettingsViewModel(
                 MultiSelectMenu(
                     title = "Other Image Resize Scale",
                     desc = "Only Resize Scale is LongImageMode",
-                    values = Scale.values().map { it.name },
+                    values = Scale.entries.map { it.name },
                     getValue = { appSettings.otherImageScale.value.name },
                     onSelect = { _, value ->
                         appSettings.otherImageScale.value = Scale.valueOf(value)
@@ -454,7 +453,7 @@ class AppSettingsViewModel(
             MultiSelectMenu(
                 title = "ZoomImage Logger Level",
                 desc = if (appSettings.zoomImageLogLevel.value <= com.github.panpf.zoomimage.util.Logger.Level.Debug) "DEBUG and below will reduce UI fluency" else "",
-                values = Logger.Level.values().map { it.name },
+                values = Logger.Level.entries.map { it.name },
                 getValue = { appSettings.zoomImageLogLevel.value.name },
                 onSelect = { _, value ->
                     appSettings.zoomImageLogLevel.value =
