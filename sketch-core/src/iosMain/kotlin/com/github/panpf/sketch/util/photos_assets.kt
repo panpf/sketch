@@ -314,7 +314,12 @@ fun UIImage.toBitmap(): Bitmap {
             try {
                 CGContextDrawImage(
                     c = context,
-                    rect = CGRectMake(0.0, 0.0, width.toDouble(), height.toDouble()),
+                    rect = CGRectMake(
+                        0.0,
+                        0.0,
+                        width.toDouble(),
+                        height.toDouble()
+                    ),   // TODO Can support subsampling?
                     image = cgImage,
                 )
             } finally {
