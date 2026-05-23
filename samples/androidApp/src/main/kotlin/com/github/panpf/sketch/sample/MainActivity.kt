@@ -19,6 +19,7 @@ package com.github.panpf.sketch.sample
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.github.panpf.sketch.sample.service.NotificationService
 import com.github.panpf.sketch.sample.ui.ComposeMainActivity
 import com.github.panpf.sketch.sample.ui.ViewMainActivity
@@ -28,9 +29,10 @@ class MainActivity : BaseActivity() {
 
     @SuppressLint("RestrictedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
-        applyDarkMode(appSettings)
 
+        applyDarkMode(appSettings)
         if (appSettings.composePage.value) {
             startActivity(Intent(this, ComposeMainActivity::class.java))
         } else {

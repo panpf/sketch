@@ -70,6 +70,7 @@ dependencies {
     implementation(projects.sketchExtensionsView)
     implementation(projects.sketchViewKoin)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.viewmodel)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.recyclerview)

@@ -30,5 +30,11 @@
         <item name="colorPrimaryInverse">@color/md_theme_inversePrimary</item>
     </style>
 
-    <style name="AppTheme" parent="Material3Theme"></style>
+    <style name="AppTheme" parent="Material3Theme" />
+
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen.IconBackground">
+        <item name="windowSplashScreenBackground">@color/md_theme_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_icon</item>
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
+    </style>
 </resources>
