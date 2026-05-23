@@ -16,7 +16,6 @@
 
 package com.github.panpf.sketch.sample.ui.base
 
-import android.R
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -24,11 +23,11 @@ import androidx.viewbinding.ViewBinding
 
 abstract class BaseBindingActivity<VIEW_BINDING : ViewBinding> : BaseActivity() {
 
-    @Suppress("UNCHECKED_CAST")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val content: ViewGroup = findViewById(R.id.content)
-        val binding = createViewBinding(LayoutInflater.from(this), content) as VIEW_BINDING
+
+        val contentParent: ViewGroup = findViewById(android.R.id.content)
+        val binding = createViewBinding(LayoutInflater.from(this), contentParent) as VIEW_BINDING
         setContentView(binding.root)
         onCreate(binding, savedInstanceState)
     }

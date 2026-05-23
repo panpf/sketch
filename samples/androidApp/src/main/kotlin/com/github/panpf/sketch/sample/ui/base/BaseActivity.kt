@@ -16,6 +16,7 @@
 
 package com.github.panpf.sketch.sample.ui.base
 
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.github.panpf.sketch.sample.AppSettings
 import org.koin.android.ext.android.inject
@@ -23,10 +24,15 @@ import org.koin.android.ext.android.inject
 abstract class BaseActivity : AppCompatActivity() {
 
     protected val appSettings: AppSettings by inject()
-
     private var resumeCount = 0
 
     var resumed = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        EdgeToEdgeController.onCreateBefore(this)
+        super.onCreate(savedInstanceState)
+        EdgeToEdgeController.onCreateAfter(this)
+    }
 
     override fun onResume() {
         super.onResume()

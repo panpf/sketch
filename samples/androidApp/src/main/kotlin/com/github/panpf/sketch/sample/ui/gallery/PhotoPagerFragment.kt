@@ -63,7 +63,7 @@ class PhotoPagerFragment : BaseBindingFragment<FragmentImagePagerBinding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lightStatusAndNavigationBar = false
+        lightModeSystemBars = false
     }
 
     override fun getStatusBarInsetsView(binding: FragmentImagePagerBinding): View {
