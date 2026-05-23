@@ -289,3 +289,9 @@ ImageRequest(context, "https://example.com/image.jpg") {
 [DataSource]: ../sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/source/DataSource.kt
 
 [PhotosAssetUriFetcher]: ../sketch-core/src/iosMain/kotlin/com/github/panpf/sketch/fetch/PhotosAssetUriFetcher.kt
+
+[PhotosAssetDecoder]: ../sketch-core/src/iosMain/kotlin/com/github/panpf/sketch/decode/PhotosAssetDecoder.kt
+
+[PhotosAssetVideoFrameDecoder]: ../sketch-video/src/iosMain/kotlin/com/github/panpf/sketch/decode/PhotosAssetVideoFrameDecoder.kt
+
+[FileVideoFrameDecoder]: ../sketch-video/src/iosMain/kotlin/com/github/panpf/sketch/decode/FileVideoFrameDecoder.kt
