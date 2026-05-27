@@ -33,13 +33,13 @@ import com.github.panpf.sketch.sample.ui.base.BaseToolbarBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.LoadStateItemFactory
 import com.github.panpf.sketch.sample.ui.gallery.PhotoGridItemFactory
 import com.github.panpf.sketch.sample.ui.model.Photo
-import com.github.panpf.sketch.sample.ui.util.parentViewModel
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 import com.github.panpf.tools4k.lang.asOrThrow
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DisplayInsanityTestFragment : BaseToolbarBindingFragment<FragmentRecyclerBinding>() {
 
-    private val viewModel by parentViewModel<DisplayInsanityTestViewModel>()
+    private val viewModel by viewModel<DisplayInsanityTestViewModel>()
 
     override fun getNavigationBarInsetsView(binding: FragmentRecyclerBinding): View {
         return binding.root

@@ -37,9 +37,9 @@ import com.github.panpf.sketch.request.updateImageOptions
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.databinding.FragmentImageViewerBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
+import com.github.panpf.sketch.sample.ui.base.parentViewModelWith
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.sample.ui.util.createThemeSectorProgressDrawable
-import com.github.panpf.sketch.sample.ui.util.parentViewModel
 import com.github.panpf.sketch.sample.util.WithDataActivityResultContracts
 import com.github.panpf.sketch.sample.util.registerForActivityResult
 import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
@@ -60,7 +60,7 @@ import kotlin.math.roundToInt
 class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
 
     private val args by navArgs<PhotoViewerFragmentArgs>()
-    private val photoPaletteViewModel by parentViewModel<PhotoPaletteViewModel>()
+    private val photoPaletteViewModel by parentViewModelWith<PhotoPaletteViewModel, PhotoPagerFragment>()
     private val photoViewerViewModel by viewModel<PhotoViewerViewModel>()
     private val requestPermissionResult =
         registerForActivityResult(WithDataActivityResultContracts.RequestPermission())
