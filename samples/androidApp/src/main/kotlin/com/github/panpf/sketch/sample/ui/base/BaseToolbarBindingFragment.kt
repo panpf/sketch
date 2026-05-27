@@ -21,23 +21,33 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
+import com.github.panpf.sketch.sample.databinding.FragmentToolbarPageBinding
 
-abstract class BaseToolbarBindingFragment<VIEW_BINDING : ViewBinding> : BaseToolbarFragment() {
+abstract class BaseToolbarBindingFragment<VIEW_BINDING : ViewBinding> : BasePermissionFragment() {
 
+    protected var toolbarPageBinding: FragmentToolbarPageBinding? = null
     protected var binding: VIEW_BINDING? = null
 
-    @Suppress("UNCHECKED_CAST")
-    override fun createView(
-        toolbar: Toolbar,
+    final override fun onCreateView(
         inflater: LayoutInflater,
-        container: ViewGroup
-    ): View = (createViewBinding(inflater, container) as VIEW_BINDING).apply {
-        this@BaseToolbarBindingFragment.binding = this
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View = FragmentToolbarPageBinding.inflate(inflater, container, false).apply {
+        this@BaseToolbarBindingFragment.toolbarPageBinding = this
+        @Suppress("UNCHECKED_CAST")
+        val view = (createViewBinding(inflater, content) as VIEW_BINDING).apply {
+            this@BaseToolbarBindingFragment.binding = this
+        }.root
+        content.addView(view)
     }.root
 
-    final override fun onViewCreated(toolbar: Toolbar, savedInstanceState: Bundle?) {
-        onViewCreated(toolbar, binding!!, savedInstanceState)
+    final override fun onPermissionsPassed(view: View, savedInstanceState: Bundle?) {
+        this.toolbarPageBinding!!.toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
+        onViewCreated(toolbarPageBinding!!.toolbar, binding!!, savedInstanceState)
     }
 
     protected open fun onViewCreated(
@@ -52,9 +62,14 @@ abstract class BaseToolbarBindingFragment<VIEW_BINDING : ViewBinding> : BaseTool
         return getNavigationBarInsetsView(binding!!)
     }
 
+    final override fun getStatusBarInsetsView(): View {
+        return toolbarPageBinding!!.root
+    }
+
     open fun getNavigationBarInsetsView(binding: VIEW_BINDING): View? = null
 
     override fun onDestroyView() {
+        this.toolbarPageBinding = null
         this.binding = null
         super.onDestroyView()
     }
