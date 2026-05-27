@@ -2,12 +2,18 @@ package com.github.panpf.sketch.sample.ui.base
 
 import android.graphics.Color
 import android.os.Build
+import android.view.View
 import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
+import androidx.core.graphics.Insets
 import androidx.core.graphics.toColorInt
+import androidx.core.view.OnApplyWindowInsetsListener
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 
 object EdgeToEdgeController {
 
@@ -43,7 +49,7 @@ object EdgeToEdgeController {
 
     fun setNavigationBarStyle(window: Window, isLightMode: Boolean) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // TODO API 35 navigation bar cannot be changed to dark color
+            // TODO The navigation bar on the API 35 simulator cannot be changed to dark color
             val controller = WindowCompat.getInsetsController(window, window.decorView)
             controller.isAppearanceLightNavigationBars = isLightMode
         } else {
@@ -53,6 +59,38 @@ object EdgeToEdgeController {
             @Suppress("DEPRECATION")
             window.navigationBarColor =
                 if (isLightMode) "#60000000".toColorInt() else Color.TRANSPARENT
+        }
+    }
+
+    fun applyWindowInsets(
+        view: View,
+        @WindowInsetsCompat.Type.InsetsType typeMask: Int,
+        addedInsets: Insets? = null,
+    ) {
+        val listener = SuperOnApplyWindowInsetsListener(typeMask, addedInsets)
+        ViewCompat.setOnApplyWindowInsetsListener(view, listener)
+        if (view.isAttachedToWindow) {
+            ViewCompat.requestApplyInsets(view)
+        }
+    }
+
+    private class SuperOnApplyWindowInsetsListener(
+        @property:WindowInsetsCompat.Type.InsetsType val typeMask: Int,
+        val addedInsets: Insets? = null,
+    ) : OnApplyWindowInsetsListener {
+
+        override fun onApplyWindowInsets(
+            view: View,
+            insets: WindowInsetsCompat
+        ): WindowInsetsCompat {
+            val windowInsets = insets.getInsets(typeMask)
+            view.updatePadding(
+                left = windowInsets.left + (addedInsets?.left ?: 0),
+                top = windowInsets.top + (addedInsets?.top ?: 0),
+                right = windowInsets.right + (addedInsets?.right ?: 0),
+                bottom = windowInsets.bottom + (addedInsets?.bottom ?: 0),
+            )
+            return insets
         }
     }
 }

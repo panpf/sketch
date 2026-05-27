@@ -39,22 +39,22 @@ abstract class BaseBindingFragment<VIEW_BINDING : ViewBinding> : BasePermissionF
         onViewCreated(this.binding!!, savedInstanceState)
     }
 
-    abstract fun onViewCreated(binding: VIEW_BINDING, savedInstanceState: Bundle?)
-
     final override fun getStatusBarInsetsView(): View? {
-        return getStatusBarInsetsView(binding!!) ?: super.getStatusBarInsetsView()
+        return getStatusBarInsetsView(binding!!)
     }
-
-    open fun getStatusBarInsetsView(binding: VIEW_BINDING): View? = null
 
     final override fun getNavigationBarInsetsView(): View? {
-        return getNavigationBarInsetsView(binding!!) ?: super.getNavigationBarInsetsView()
+        return getNavigationBarInsetsView(binding!!)
     }
-
-    open fun getNavigationBarInsetsView(binding: VIEW_BINDING): View? = null
 
     override fun onDestroyView() {
         this.binding = null
         super.onDestroyView()
     }
+
+    abstract fun onViewCreated(binding: VIEW_BINDING, savedInstanceState: Bundle?)
+
+    open fun getStatusBarInsetsView(binding: VIEW_BINDING): View? = null
+
+    open fun getNavigationBarInsetsView(binding: VIEW_BINDING): View? = null
 }

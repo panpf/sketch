@@ -16,7 +16,6 @@
 
 package com.github.panpf.sketch.sample.ui.base
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.WindowInsetsCompat
@@ -24,7 +23,6 @@ import androidx.fragment.app.Fragment
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.ui.util.getWindowBackgroundColor
 import com.github.panpf.sketch.sample.ui.util.isDarkTheme
-import com.google.android.material.internal.ViewUtils
 import org.koin.android.ext.android.inject
 
 abstract class BaseFragment : Fragment() {
@@ -81,25 +79,21 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
-    @SuppressLint("RestrictedApi")
     private fun setupWindowInsets() {
         val statusBarInsetsView = getStatusBarInsetsView()
         if (statusBarInsetsView != null) {
-            ViewUtils.doOnApplyWindowInsets(statusBarInsetsView) { _, insets, initialPadding ->
-                initialPadding.top = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
-                initialPadding.applyToView(statusBarInsetsView)
-                insets
-            }
+            EdgeToEdgeController.applyWindowInsets(
+                view = statusBarInsetsView,
+                typeMask = WindowInsetsCompat.Type.statusBars(),
+            )
         }
 
         val navigationBarInsetsLayout = getNavigationBarInsetsView()
         if (navigationBarInsetsLayout != null) {
-            ViewUtils.doOnApplyWindowInsets(navigationBarInsetsLayout) { _, insets, initialPadding ->
-                initialPadding.bottom =
-                    insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
-                initialPadding.applyToView(navigationBarInsetsLayout)
-                insets
-            }
+            EdgeToEdgeController.applyWindowInsets(
+                view = navigationBarInsetsLayout,
+                typeMask = WindowInsetsCompat.Type.navigationBars(),
+            )
         }
     }
 

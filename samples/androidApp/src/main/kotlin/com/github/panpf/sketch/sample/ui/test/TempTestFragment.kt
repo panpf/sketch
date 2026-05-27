@@ -30,10 +30,6 @@ import pl.droidsonroids.gif.GifDrawable
 
 class TempTestFragment : BaseToolbarBindingFragment<FragmentTestTempBinding>() {
 
-    override fun getStatusBarInsetsView(binding: FragmentTestTempBinding): View {
-        return binding.root
-    }
-
     override fun getNavigationBarInsetsView(binding: FragmentTestTempBinding): View {
         return binding.root
     }

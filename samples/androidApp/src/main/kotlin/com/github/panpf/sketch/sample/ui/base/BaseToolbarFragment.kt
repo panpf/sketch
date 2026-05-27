@@ -58,7 +58,7 @@ abstract class BaseToolbarFragment : BasePermissionFragment() {
 
     }
 
-    override fun getStatusBarInsetsView(): View? {
+    final override fun getStatusBarInsetsView(): View {
         return toolbarPageBinding!!.root
     }
 
