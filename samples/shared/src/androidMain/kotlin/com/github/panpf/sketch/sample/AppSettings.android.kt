@@ -47,7 +47,7 @@ actual class AppSettings actual constructor(context: PlatformContext) : BaseAppS
 
 actual fun platformSupportedDarkModes(): List<DarkMode> {
     return if (VERSION.SDK_INT >= VERSION_CODES.O) {
-        DarkMode.values().toList()
+        DarkMode.entries
     } else {
         listOf(DarkMode.LIGHT, DarkMode.DARK)
     }

@@ -30,7 +30,7 @@ import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.Res
 import com.github.panpf.sketch.sample.logo
 import com.github.panpf.sketch.sample.ui.base.BaseScreen
-import com.github.panpf.sketch.sample.ui.theme.DarkModeSwitch
+import com.github.panpf.sketch.sample.ui.components.DarkModeSwitch
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject

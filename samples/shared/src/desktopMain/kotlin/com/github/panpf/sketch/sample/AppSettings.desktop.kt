@@ -17,4 +17,4 @@ actual class AppSettings actual constructor(context: PlatformContext) : BaseAppS
     }
 }
 
-actual fun platformSupportedDarkModes(): List<DarkMode> = DarkMode.values().toList()
+actual fun platformSupportedDarkModes(): List<DarkMode> = DarkMode.entries

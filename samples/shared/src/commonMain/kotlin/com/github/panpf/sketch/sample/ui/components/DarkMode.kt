@@ -1,8 +1,8 @@
-package com.github.panpf.sketch.sample.ui.theme
+package com.github.panpf.sketch.sample.ui.components
 
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.IconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState

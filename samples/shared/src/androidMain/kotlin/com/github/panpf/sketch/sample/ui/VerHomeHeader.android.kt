@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.compose.R
-import com.github.panpf.sketch.sample.ui.theme.DarkModeSwitch
+import com.github.panpf.sketch.sample.ui.components.DarkModeSwitch
 import org.koin.compose.koinInject
 
 @Composable
@@ -57,7 +57,7 @@ actual fun VerHomeHeader() {
                 }
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_android),
+                    painter = painterResource(R.drawable.ic_android),
                     tint = NavigationRailItemDefaults.colors().unselectedIconColor,
                     contentDescription = "Android Page",
                     modifier = Modifier.size(20.dp)

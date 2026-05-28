@@ -13,6 +13,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationIconTint="@color/md_theme_onSurfaceVariant"
         app:title="@string/app_name" />
 
     <FrameLayout
