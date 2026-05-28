@@ -25,7 +25,6 @@ import com.github.panpf.sketch.sample.ui.test.ProgressTestScreen
 import com.github.panpf.sketch.sample.ui.test.ResizePainterTestScreen
 import com.github.panpf.sketch.sample.ui.test.TempTestScreen
 import com.github.panpf.sketch.sample.ui.test.TransformationTestScreen
-import com.github.panpf.sketch.sample.ui.test.UserZoomTestScreen
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.modules.PolymorphicModuleBuilder
 import kotlinx.serialization.modules.SerializersModule
@@ -97,9 +96,6 @@ data object BlurHashTestRoute : Route
 data object DisplayInsanityTestRoute : Route
 
 @Serializable
-data object UserZoomTestRoute : Route
-
-@Serializable
 data object TempTestRoute : Route
 
 val navSavedStateConfig = SavedStateConfiguration {
@@ -127,7 +123,6 @@ val navSavedStateConfig = SavedStateConfiguration {
             subclass(ProgressIndicatorTestRoute::class, ProgressIndicatorTestRoute.serializer())
             subclass(BlurHashTestRoute::class, BlurHashTestRoute.serializer())
             subclass(DisplayInsanityTestRoute::class, DisplayInsanityTestRoute.serializer())
-            subclass(UserZoomTestRoute::class, UserZoomTestRoute.serializer())
             subclass(TempTestRoute::class, TempTestRoute.serializer())
 
             platformSerializersModule()
@@ -157,7 +152,6 @@ val navEntryProvider = entryProvider<NavKey> {
     entry<ProgressIndicatorTestRoute> { ProgressIndicatorTestScreen() }
     entry<BlurHashTestRoute> { BlurHashTestScreen() }
     entry<DisplayInsanityTestRoute> { DisplayInsanityTestScreen() }
-    entry<UserZoomTestRoute> { UserZoomTestScreen() }
     entry<TempTestRoute> { TempTestScreen() }
 
     platformEntryProvider()

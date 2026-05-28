@@ -32,76 +32,24 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation3.runtime.NavKey
 import com.github.panpf.sketch.sample.Res
 import com.github.panpf.sketch.sample.ic_github
-import com.github.panpf.sketch.sample.ui.AnimatablePlaceholderTestRoute
-import com.github.panpf.sketch.sample.ui.AnimatedImageTestRoute
-import com.github.panpf.sketch.sample.ui.BlurHashTestRoute
-import com.github.panpf.sketch.sample.ui.CrossfadePainterTestRoute
-import com.github.panpf.sketch.sample.ui.DecoderTestRoute
-import com.github.panpf.sketch.sample.ui.DisplayInsanityTestRoute
-import com.github.panpf.sketch.sample.ui.ExifOrientationTestRoute
-import com.github.panpf.sketch.sample.ui.FetcherTestRoute
-import com.github.panpf.sketch.sample.ui.IconPainterTestRoute
 import com.github.panpf.sketch.sample.ui.LocalNavBackStack
-import com.github.panpf.sketch.sample.ui.PainterMixTestRoute
-import com.github.panpf.sketch.sample.ui.PreviewTestRoute
-import com.github.panpf.sketch.sample.ui.ProgressIndicatorTestRoute
-import com.github.panpf.sketch.sample.ui.ProgressTestRoute
-import com.github.panpf.sketch.sample.ui.ResizePainterTestRoute
-import com.github.panpf.sketch.sample.ui.TempTestRoute
-import com.github.panpf.sketch.sample.ui.TransformationTestRoute
-import com.github.panpf.sketch.sample.ui.UserZoomTestRoute
 import com.github.panpf.sketch.sample.ui.components.AutoLinkText
 import com.github.panpf.sketch.sample.util.Platform
 import com.github.panpf.sketch.sample.util.current
 import com.github.panpf.sketch.sample.util.isMobile
 import org.jetbrains.compose.resources.painterResource
 
-expect fun platformTestScreens(): List<TestItem>
+expect fun platformTestScreens(): List<Any>
 
 @Composable
 fun TestPage() {
-    val testItems = remember {
-        buildList {
-            add(TestGroup("Components"))
-            add(TestItem("Decoder", DecoderTestRoute))
-            add(TestItem("Fetcher", FetcherTestRoute))
-
-            add(TestGroup("Functions"))
-            add(TestItem("AnimatedImage", AnimatedImageTestRoute))
-            add(TestItem("ExifOrientation", ExifOrientationTestRoute))
-            add(TestItem("Transformation", TransformationTestRoute))
-            add(TestItem("Progress", ProgressTestRoute))
-
-            add(TestGroup("UI"))
-            add(TestItem("CrossfadePainter", CrossfadePainterTestRoute))
-            add(TestItem("ResizePainter", ResizePainterTestRoute))
-            add(TestItem("Painter Mix", PainterMixTestRoute))
-            add(TestItem("IconPainter", IconPainterTestRoute))
-            add(TestItem("AnimatablePlaceholder", AnimatablePlaceholderTestRoute))
-            add(TestItem("Preview", PreviewTestRoute))
-            add(TestItem("ProgressIndicator", ProgressIndicatorTestRoute))
-            add(TestItem("BlurHash", BlurHashTestRoute))
-
-            val platformTestScreens = platformTestScreens()
-            if (platformTestScreens.isNotEmpty()) {
-                add(TestGroup("Platform"))
-                addAll(platformTestScreens)
-            }
-
-            add(TestGroup("Other"))
-            add(TestItem("DisplayInsanity", DisplayInsanityTestRoute))
-            add(TestItem("UserZoom", UserZoomTestRoute))
-            add(TestItem("Temp", TempTestRoute))
-
-            add(ProjectInfo)
-        }
-    }
+    val testItems = remember { platformTestScreens() }
     val gridState = rememberLazyGridState()
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
         columns = GridCells.Fixed(if (Platform.current.isMobile()) 2 else 4),
         state = gridState,
-        contentPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 96.dp),
+        contentPadding = PaddingValues(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
@@ -193,7 +141,7 @@ fun ProjectInfoItem() {
             .fillMaxWidth()
             .padding(top = 50.dp)
             .clip(RoundedCornerShape(20.dp))
-            .background(colorScheme.primaryContainer)
+            .background(colorScheme.tertiaryContainer)
             .padding(16.dp),
     ) {
         Icon(

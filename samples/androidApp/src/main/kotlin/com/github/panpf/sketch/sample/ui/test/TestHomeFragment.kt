@@ -13,7 +13,7 @@ import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.common.list.ProjectInfoItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.TestGroupItemFactory
 import com.github.panpf.sketch.sample.ui.common.list.TestItemItemFactory
-import com.github.panpf.sketch.sample.ui.common.list.ViewTestGroup
+import com.github.panpf.sketch.sample.ui.model.ViewTestGroup
 import com.github.panpf.sketch.sample.ui.model.ViewTestItem
 import com.github.panpf.tools4a.dimen.ktx.dp2px
 
@@ -24,9 +24,6 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
         savedInstanceState: Bundle?
     ) {
         binding.recycler.apply {
-            setPadding(0, 0, 0, 80.dp2px)
-            clipToPadding = false
-
             layoutManager = AssemblyGridLayoutManager.Builder(requireContext(), 2).apply {
                 itemSpanByItemFactory(
                     ProjectInfoItemFactory::class to ItemSpan.fullSpan(),
@@ -81,6 +78,14 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
             title = "Progress",
             navDirections = NavMainDirections.actionProgressTestFragment()
         ),
+        ViewTestItem(
+            title = "Local Videos",
+            navDirections = NavMainDirections.actionLocalVideoListFragment(),
+        ),
+        ViewTestItem(
+            title = "DisplayInsanity",
+            navDirections = NavMainDirections.actionInsanityTestViewFragment()
+        ),
 
         ViewTestGroup("UI"),
         ViewTestItem(
@@ -117,14 +122,6 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
         ),
 
         ViewTestGroup("Other"),
-        ViewTestItem(
-            title = "DisplayInsanity",
-            navDirections = NavMainDirections.actionInsanityTestViewFragment()
-        ),
-        ViewTestItem(
-            title = "Local Videos",
-            navDirections = NavMainDirections.actionLocalVideoListFragment(),
-        ),
 //        Link(
 //            title = "ShareElement",
 //            navDirections = NavMainDirections.actionShareElementTestFragment(),
@@ -133,6 +130,7 @@ class TestHomeFragment : BaseBindingFragment<FragmentRecyclerBinding>() {
             title = "Android Temp",
             navDirections = NavMainDirections.actionTempTestFragment()
         ),
+
         "ProjectInfo"
     )
 }

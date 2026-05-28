@@ -34,6 +34,7 @@ package com.github.panpf.sketch.sample.ui.common.list
 import android.content.Context
 import com.github.panpf.sketch.sample.databinding.ListItemTestGroupBinding
 import com.github.panpf.sketch.sample.ui.base.BaseBindingItemFactory
+import com.github.panpf.sketch.sample.ui.model.ViewTestGroup
 
 class TestGroupItemFactory :
     BaseBindingItemFactory<ViewTestGroup, ListItemTestGroupBinding>(ViewTestGroup::class) {

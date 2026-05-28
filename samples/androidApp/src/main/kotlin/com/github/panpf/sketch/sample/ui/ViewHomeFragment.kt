@@ -18,12 +18,9 @@ package com.github.panpf.sketch.sample.ui
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Lifecycle.State
-import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.github.panpf.assemblyadapter.pager2.ArrayFragmentStateAdapter
 import com.github.panpf.sketch.sample.DarkMode
-import com.github.panpf.sketch.sample.NavMainDirections
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.applyDarkMode
 import com.github.panpf.sketch.sample.databinding.FragmentViewHomeBinding
@@ -32,9 +29,7 @@ import com.github.panpf.sketch.sample.ui.base.BaseBindingFragment
 import com.github.panpf.sketch.sample.ui.gallery.GiphyPhotoListFragment
 import com.github.panpf.sketch.sample.ui.gallery.LocalPhotoListFragment
 import com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoListFragment
-import com.github.panpf.sketch.sample.ui.setting.AppSettingsPage
 import com.github.panpf.sketch.sample.ui.test.TestHomeFragment
-import com.github.panpf.sketch.sample.util.repeatCollectWithLifecycle
 
 class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
 
@@ -51,31 +46,6 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
 
     override fun onViewCreated(binding: FragmentViewHomeBinding, savedInstanceState: Bundle?) {
         binding.toolbar.subtitle = "View"
-
-        binding.playImage.apply {
-            appSettings.disallowAnimatedImageInList
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
-                    val iconResId =
-                        if (it) com.github.panpf.sketch.sample.compose.R.drawable.ic_play else R.drawable.ic_pause
-                    setImageResource(iconResId)
-                }
-            setOnClickListener {
-                appSettings.disallowAnimatedImageInList.value =
-                    !appSettings.disallowAnimatedImageInList.value
-            }
-        }
-
-        binding.layoutImage.apply {
-            appSettings.staggeredGridMode
-                .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
-                    val iconResId =
-                        if (it) R.drawable.ic_layout_grid else R.drawable.ic_layout_grid_staggered
-                    setImageResource(iconResId)
-                }
-            setOnClickListener {
-                appSettings.staggeredGridMode.value = !appSettings.staggeredGridMode.value
-            }
-        }
 
         binding.composePageIcon.setOnClickListener {
             appSettings.composePage.value = true
@@ -104,14 +74,6 @@ class ViewHomeFragment : BaseBindingFragment<FragmentViewHomeBinding>() {
                 setIcon(nextDarkMode())
                 applyDarkMode(appSettings)
             }
-        }
-
-        binding.settingsImage.setOnClickListener {
-            findNavController().navigate(
-                NavMainDirections.actionSettingsDialogFragment(
-                    AppSettingsPage.LIST.name
-                )
-            )
         }
 
         binding.pager.apply {

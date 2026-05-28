@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.github.panpf.sketch.sample.ui.widget.MyRecyclerView
+            android:id="@+id/myRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            tools:listitem="@layout/list_item_test_item" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="20dp"
+        android:background="@drawable/bg_container_oval_tertiary"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/playImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="10dp"
+            app:srcCompat="@drawable/ic_play"
+            app:tint="@color/md_theme_onTertiaryContainer" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/layoutImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="10dp"
+            app:srcCompat="@drawable/ic_layout_grid"
+            app:tint="@color/md_theme_onTertiaryContainer" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/settingsImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:padding="10dp"
+            app:srcCompat="@drawable/ic_settings"
+            app:tint="@color/md_theme_onTertiaryContainer" />
+    </LinearLayout>
+
+    <com.github.panpf.sketch.sample.ui.widget.StateView
+        android:id="@+id/state"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</FrameLayout>

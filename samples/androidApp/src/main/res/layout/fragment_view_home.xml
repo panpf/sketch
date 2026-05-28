@@ -75,38 +75,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pager"
         app:menu="@menu/main_navigation" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_margin="20dp"
-        android:background="@drawable/bg_container_oval_tertiary"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="@id/pager"
-        app:layout_constraintEnd_toEndOf="@id/pager">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/playImage"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="10dp"
-            app:srcCompat="@drawable/ic_play"
-            app:tint="@color/md_theme_onTertiaryContainer" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/layoutImage"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="10dp"
-            app:srcCompat="@drawable/ic_layout_grid"
-            app:tint="@color/md_theme_onTertiaryContainer" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/settingsImage"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="10dp"
-            app:srcCompat="@drawable/ic_settings"
-            app:tint="@color/md_theme_onTertiaryContainer" />
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
