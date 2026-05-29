@@ -27,75 +27,72 @@ import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ComposableImageRequest
 import com.github.panpf.sketch.sample.Res
 import com.github.panpf.sketch.sample.ic_image_outline
-import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.state.rememberIconPainterStateImage
 
 @Composable
 fun PreviewTestScreen() {
-    BaseScreen {
-        ToolbarScaffold(title = "PreviewTest") {
-            Row(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .windowInsetsPadding(WindowInsets.navigationBars),
+    ToolbarScaffold(title = "PreviewTest") {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.navigationBars),
+        ) {
+            Column(
+                Modifier.weight(1f).fillMaxHeight().padding(20.dp),
+                horizontalAlignment = CenterHorizontally
             ) {
-                Column(
-                    Modifier.weight(1f).fillMaxHeight().padding(20.dp),
-                    horizontalAlignment = CenterHorizontally
-                ) {
-                    Text(text = "Preview Mode")
+                Text(text = "Preview Mode")
 
-                    Spacer(Modifier.size(10.dp))
+                Spacer(Modifier.size(10.dp))
 
-                    CompositionLocalProvider(LocalInspectionMode provides true) {
-                        AsyncImage(
-                            request = ComposableImageRequest(ComposeResImageFiles.jpeg.uri) {
-                                placeholder(
-                                    rememberIconPainterStateImage(
-                                        icon = Res.drawable.ic_image_outline,
-                                        background = colorScheme.primaryContainer,
-                                        iconTint = colorScheme.onPrimaryContainer
-                                    )
+                CompositionLocalProvider(LocalInspectionMode provides true) {
+                    AsyncImage(
+                        request = ComposableImageRequest(ComposeResImageFiles.jpeg.uri) {
+                            placeholder(
+                                rememberIconPainterStateImage(
+                                    icon = Res.drawable.ic_image_outline,
+                                    background = colorScheme.primaryContainer,
+                                    iconTint = colorScheme.onPrimaryContainer
                                 )
-                            },
-                            contentDescription = "example",
-                            modifier = Modifier
-                                .fillMaxWidth(0.5f)
-                                .aspectRatio(1f)
-                                .border(2.dp, Color.Red)
-                                .padding(2.dp)
-                        )
-                    }
+                            )
+                        },
+                        contentDescription = "example",
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .aspectRatio(1f)
+                            .border(2.dp, Color.Red)
+                            .padding(2.dp)
+                    )
                 }
+            }
 
-                Column(
-                    Modifier.weight(1f).fillMaxHeight().padding(20.dp),
-                    horizontalAlignment = CenterHorizontally
-                ) {
-                    Text(text = "Non Preview Mode")
+            Column(
+                Modifier.weight(1f).fillMaxHeight().padding(20.dp),
+                horizontalAlignment = CenterHorizontally
+            ) {
+                Text(text = "Non Preview Mode")
 
-                    Spacer(Modifier.size(10.dp))
+                Spacer(Modifier.size(10.dp))
 
-                    CompositionLocalProvider(LocalInspectionMode provides false) {
-                        AsyncImage(
-                            request = ComposableImageRequest(ComposeResImageFiles.jpeg.uri) {
-                                placeholder(
-                                    rememberIconPainterStateImage(
-                                        icon = Res.drawable.ic_image_outline,
-                                        background = colorScheme.primaryContainer,
-                                        iconTint = colorScheme.onPrimaryContainer
-                                    )
+                CompositionLocalProvider(LocalInspectionMode provides false) {
+                    AsyncImage(
+                        request = ComposableImageRequest(ComposeResImageFiles.jpeg.uri) {
+                            placeholder(
+                                rememberIconPainterStateImage(
+                                    icon = Res.drawable.ic_image_outline,
+                                    background = colorScheme.primaryContainer,
+                                    iconTint = colorScheme.onPrimaryContainer
                                 )
-                            },
-                            contentDescription = "example",
-                            modifier = Modifier
-                                .fillMaxWidth(0.5f)
-                                .aspectRatio(1f)
-                                .border(2.dp, Color.Red)
-                                .padding(2.dp)
-                        )
-                    }
+                            )
+                        },
+                        contentDescription = "example",
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .aspectRatio(1f)
+                            .border(2.dp, Color.Red)
+                            .padding(2.dp)
+                    )
                 }
             }
         }

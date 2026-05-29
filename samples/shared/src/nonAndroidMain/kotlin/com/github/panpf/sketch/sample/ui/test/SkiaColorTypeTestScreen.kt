@@ -24,7 +24,6 @@ import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.error
 import com.github.panpf.sketch.sample.Res
 import com.github.panpf.sketch.sample.ic_image_broken_outline
-import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.components.MyAsyncImage
 import com.github.panpf.sketch.sample.ui.setting.platformColorTypes
@@ -37,66 +36,64 @@ import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun SkiaColorTypeTestScreen() {
-    BaseScreen {
-        ToolbarScaffold(title = "SkiaColorTypeTest") {
-            Column(Modifier.fillMaxSize().padding(16.dp)) {
-                val convertPixelsValues =
-                    remember { listOf("Enabled", "Disabled").toImmutableList() }
-                val convertPixelsState = remember { mutableStateOf("Disabled") }
+    ToolbarScaffold(title = "SkiaColorTypeTest") {
+        Column(Modifier.fillMaxSize().padding(16.dp)) {
+            val convertPixelsValues =
+                remember { listOf("Enabled", "Disabled").toImmutableList() }
+            val convertPixelsState = remember { mutableStateOf("Disabled") }
 
-                val colorTypeValues =
-                    remember { listOf("Default").plus(platformColorTypes()).toImmutableList() }
-                val colorTypeState = remember { mutableStateOf("Default") }
-                val colorType = remember(colorTypeState.value) {
-                    colorTypeState.value.takeIf { it != "Default" }?.let { BitmapColorType(it) }
-                }
+            val colorTypeValues =
+                remember { listOf("Default").plus(platformColorTypes()).toImmutableList() }
+            val colorTypeState = remember { mutableStateOf("Default") }
+            val colorType = remember(colorTypeState.value) {
+                colorTypeState.value.takeIf { it != "Default" }?.let { BitmapColorType(it) }
+            }
 
-                Row(Modifier.fillMaxWidth().weight(1f)) {
-                    MyAsyncImage(
-                        request = ComposableImageRequest(ComposeResImageFiles.jpeg.uri) {
-                            memoryCachePolicy(DISABLED)
-                            resultCachePolicy(DISABLED)
-                            colorType(colorType)
-                            if (convertPixelsState.value == "Enabled") {
-                                addTransformations(ConvertPixelsTransformation)
-                            }
-                            error(Res.drawable.ic_image_broken_outline)
-                        },
-                        contentDescription = "image",
-                        modifier = Modifier.fillMaxHeight().weight(1f)
-                    )
-
-                    Spacer(Modifier.size(16.dp))
-
-                    MyAsyncImage(
-                        request = ComposableImageRequest(ComposeResImageFiles.png.uri) {
-                            memoryCachePolicy(DISABLED)
-                            resultCachePolicy(DISABLED)
-                            colorType(colorType)
-                            if (convertPixelsState.value == "Enabled") {
-                                addTransformations(ConvertPixelsTransformation)
-                            }
-                            error(Res.drawable.ic_image_broken_outline)
-                        },
-                        contentDescription = "image",
-                        modifier = Modifier.fillMaxHeight().weight(1f)
-                    )
-                }
+            Row(Modifier.fillMaxWidth().weight(1f)) {
+                MyAsyncImage(
+                    request = ComposableImageRequest(ComposeResImageFiles.jpeg.uri) {
+                        memoryCachePolicy(DISABLED)
+                        resultCachePolicy(DISABLED)
+                        colorType(colorType)
+                        if (convertPixelsState.value == "Enabled") {
+                            addTransformations(ConvertPixelsTransformation)
+                        }
+                        error(Res.drawable.ic_image_broken_outline)
+                    },
+                    contentDescription = "image",
+                    modifier = Modifier.fillMaxHeight().weight(1f)
+                )
 
                 Spacer(Modifier.size(16.dp))
 
-                singleChoiceListItem(
-                    title = "Convert Pixels",
-                    values = convertPixelsValues,
-                    state = convertPixelsState
-                )
-
-                singleChoiceListItem(
-                    title = "Bitmap Color Type",
-                    values = colorTypeValues,
-                    state = colorTypeState
+                MyAsyncImage(
+                    request = ComposableImageRequest(ComposeResImageFiles.png.uri) {
+                        memoryCachePolicy(DISABLED)
+                        resultCachePolicy(DISABLED)
+                        colorType(colorType)
+                        if (convertPixelsState.value == "Enabled") {
+                            addTransformations(ConvertPixelsTransformation)
+                        }
+                        error(Res.drawable.ic_image_broken_outline)
+                    },
+                    contentDescription = "image",
+                    modifier = Modifier.fillMaxHeight().weight(1f)
                 )
             }
+
+            Spacer(Modifier.size(16.dp))
+
+            singleChoiceListItem(
+                title = "Convert Pixels",
+                values = convertPixelsValues,
+                state = convertPixelsState
+            )
+
+            singleChoiceListItem(
+                title = "Bitmap Color Type",
+                values = colorTypeValues,
+                state = colorTypeState
+            )
         }
     }
 }

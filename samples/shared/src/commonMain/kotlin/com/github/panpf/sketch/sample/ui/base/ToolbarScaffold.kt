@@ -26,27 +26,29 @@ fun ToolbarScaffold(
     title: String,
     content: @Composable BoxScope.() -> Unit
 ) {
-    val navBackStack = LocalNavBackStack.current
-    Column(Modifier.fillMaxSize()) {
-        TopAppBar(
-            title = {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                )
-            }, navigationIcon = {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = "Back",
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clickable { navBackStack.removeLastOrNull() }
-                        .padding(14.dp),
-                )
+    BaseScreen {
+        val navBackStack = LocalNavBackStack.current
+        Column(Modifier.fillMaxSize()) {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                }, navigationIcon = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = "Back",
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clickable { navBackStack.removeLastOrNull() }
+                            .padding(14.dp),
+                    )
+                }
+            )
+            Box(Modifier.fillMaxWidth().weight(1f)) {
+                content()
             }
-        )
-        Box(Modifier.fillMaxWidth().weight(1f)) {
-            content()
         }
     }
 }

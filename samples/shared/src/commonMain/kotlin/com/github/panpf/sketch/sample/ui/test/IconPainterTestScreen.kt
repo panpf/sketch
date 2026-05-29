@@ -20,70 +20,67 @@ import com.github.panpf.sketch.painter.rememberIconPainter
 import com.github.panpf.sketch.sample.Res
 import com.github.panpf.sketch.sample.ic_image_outline
 import com.github.panpf.sketch.sample.ic_image_outline_big
-import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.images.Res as ImagesRes
 
 @Composable
 fun IconPainterTestScreen() {
-    BaseScreen {
-        ToolbarScaffold(title = "IconPainterTest") {
-            Column(
+    ToolbarScaffold(title = "IconPainterTest") {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .windowInsetsPadding(WindowInsets.navigationBars),
+            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+        ) {
+            Spacer(Modifier.size(20.dp))
+
+            Image(
+                painter = rememberIconPainter(
+                    icon = Res.drawable.ic_image_outline,
+                    background = Color.Green,
+                    iconTint = Color(0xFF775740)
+                ),
+                contentDescription = "example",
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .windowInsetsPadding(WindowInsets.navigationBars),
-                horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
-            ) {
-                Spacer(Modifier.size(20.dp))
+                    .weight(1f)
+                    .aspectRatio(1f)
+                    .border(2.dp, Color.Red)
+                    .padding(2.dp)
+            )
 
-                Image(
-                    painter = rememberIconPainter(
-                        icon = Res.drawable.ic_image_outline,
-                        background = Color.Green,
-                        iconTint = Color(0xFF775740)
-                    ),
-                    contentDescription = "example",
-                    modifier = Modifier
-                        .weight(1f)
-                        .aspectRatio(1f)
-                        .border(2.dp, Color.Red)
-                        .padding(2.dp)
-                )
+            Spacer(Modifier.size(20.dp))
 
-                Spacer(Modifier.size(20.dp))
+            Image(
+                painter = rememberIconPainter(
+                    icon = Res.drawable.ic_image_outline_big,
+                    background = Color.Green,
+                    iconTint = Color(0xFF775740)
+                ),
+                contentDescription = "example",
+                modifier = Modifier
+                    .weight(1f)
+                    .aspectRatio(1f)
+                    .border(2.dp, Color.Red)
+                    .padding(2.dp)
+            )
 
-                Image(
-                    painter = rememberIconPainter(
-                        icon = Res.drawable.ic_image_outline_big,
-                        background = Color.Green,
-                        iconTint = Color(0xFF775740)
-                    ),
-                    contentDescription = "example",
-                    modifier = Modifier
-                        .weight(1f)
-                        .aspectRatio(1f)
-                        .border(2.dp, Color.Red)
-                        .padding(2.dp)
-                )
+            Spacer(Modifier.size(20.dp))
 
-                Spacer(Modifier.size(20.dp))
+            Image(
+                painter = rememberIconPainter(
+                    icon = Res.drawable.ic_image_outline,
+                    background = ImagesRes.drawable.elephant,
+                    iconTint = Color(0xFF775740)
+                ),
+                contentDescription = "example",
+                modifier = Modifier
+                    .weight(1f)
+                    .aspectRatio(1f)
+                    .border(2.dp, Color.Red)
+                    .padding(2.dp)
+            )
 
-                Image(
-                    painter = rememberIconPainter(
-                        icon = Res.drawable.ic_image_outline,
-                        background = ImagesRes.drawable.elephant,
-                        iconTint = Color(0xFF775740)
-                    ),
-                    contentDescription = "example",
-                    modifier = Modifier
-                        .weight(1f)
-                        .aspectRatio(1f)
-                        .border(2.dp, Color.Red)
-                        .padding(2.dp)
-                )
-
-                Spacer(Modifier.size(20.dp))
-            }
+            Spacer(Modifier.size(20.dp))
         }
     }
 }

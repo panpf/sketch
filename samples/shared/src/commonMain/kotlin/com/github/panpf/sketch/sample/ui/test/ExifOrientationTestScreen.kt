@@ -10,7 +10,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
-import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.common.listContentPaddingWithNavigationBarsWindowInset
 import com.github.panpf.sketch.sample.ui.util.plus
@@ -18,28 +17,26 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ExifOrientationTestScreen() {
-    BaseScreen {
-        ToolbarScaffold(title = "ExifOrientationTest") {
-            val gridState = rememberLazyGridState()
-            val viewModel: ExifOrientationTestViewModel = koinViewModel()
-            val photoTestItems by viewModel.data.collectAsState()
-            val windowInsetContentPadding = listContentPaddingWithNavigationBarsWindowInset()
-            val contentPadding = remember(windowInsetContentPadding) {
-                windowInsetContentPadding + PaddingValues(4.dp)
-            }
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                state = gridState,
-                contentPadding = contentPadding,
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-                items(
-                    count = photoTestItems.size,
-                    contentType = { 1 }
-                ) { index ->
-                    GridPhotoTestItem(photoTestItems[index])
-                }
+    ToolbarScaffold(title = "ExifOrientationTest") {
+        val gridState = rememberLazyGridState()
+        val viewModel: ExifOrientationTestViewModel = koinViewModel()
+        val photoTestItems by viewModel.data.collectAsState()
+        val windowInsetContentPadding = listContentPaddingWithNavigationBarsWindowInset()
+        val contentPadding = remember(windowInsetContentPadding) {
+            windowInsetContentPadding + PaddingValues(4.dp)
+        }
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            state = gridState,
+            contentPadding = contentPadding,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            items(
+                count = photoTestItems.size,
+                contentType = { 1 }
+            ) { index ->
+                GridPhotoTestItem(photoTestItems[index])
             }
         }
     }

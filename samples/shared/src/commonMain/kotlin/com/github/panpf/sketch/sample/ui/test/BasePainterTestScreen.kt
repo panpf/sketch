@@ -40,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.util.name
 
@@ -49,127 +48,125 @@ fun BasePainterTestScreen(
     title: String,
     buildPainters: suspend (context: PlatformContext, contentScale: ContentScale, alignment: Alignment, itemWidth: Float) -> List<Pair<String, Painter>>
 ) {
-    BaseScreen {
-        ToolbarScaffold(title = title) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .windowInsetsPadding(WindowInsets.navigationBars),
-                horizontalAlignment = Alignment.CenterHorizontally,
+    ToolbarScaffold(title = title) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.navigationBars),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            val context = LocalPlatformContext.current
+            var contentScale by remember { mutableStateOf(ContentScale.Fit) }
+            var alignment by remember { mutableStateOf(Alignment.Center) }
+            val containerSize = LocalWindowInfo.current.containerSize
+            val gridCells = if (containerSize.width > containerSize.height) 5 else 3
+            val gridDividerSizeDp = 8.dp
+            val gridDividerSizePx = with(LocalDensity.current) { gridDividerSizeDp.toPx() }
+            val gridWidth =
+                (containerSize.width - (gridCells + 1) * gridDividerSizePx) / gridCells
+            var painterList by remember {
+                mutableStateOf<List<Pair<String, Painter>>>(emptyList())
+            }
+            LaunchedEffect(contentScale, alignment) {
+                painterList = buildPainters(
+                    context,
+                    contentScale,
+                    alignment,
+                    gridWidth,
+                )
+            }
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(gridCells),
+                modifier = Modifier.fillMaxWidth().weight(1f),
+                contentPadding = PaddingValues(gridDividerSizeDp),
+                horizontalArrangement = Arrangement.spacedBy(gridDividerSizeDp),
+                verticalArrangement = Arrangement.spacedBy(gridDividerSizeDp),
             ) {
-                val context = LocalPlatformContext.current
-                var contentScale by remember { mutableStateOf(ContentScale.Fit) }
-                var alignment by remember { mutableStateOf(Alignment.Center) }
-                val containerSize = LocalWindowInfo.current.containerSize
-                val gridCells = if (containerSize.width > containerSize.height) 5 else 3
-                val gridDividerSizeDp = 8.dp
-                val gridDividerSizePx = with(LocalDensity.current) { gridDividerSizeDp.toPx() }
-                val gridWidth =
-                    (containerSize.width - (gridCells + 1) * gridDividerSizePx) / gridCells
-                var painterList by remember {
-                    mutableStateOf<List<Pair<String, Painter>>>(emptyList())
+                items(painterList) { pair ->
+                    Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp))) {
+                        val colorScheme = MaterialTheme.colorScheme
+                        BasicText(
+                            text = pair.first,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp)
+                                .align(Alignment.CenterHorizontally)
+                                .background(colorScheme.tertiaryContainer)
+                                .padding(4.dp),
+                            color = { colorScheme.onTertiaryContainer },
+                            autoSize = TextAutoSize.StepBased(minFontSize = 8.sp)
+                        )
+                        val painter = remember(pair.second) { pair.second }
+                        Image(
+                            painter = painter,
+                            contentDescription = pair.first,
+                            contentScale = contentScale,
+                            alignment = alignment,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(0.75f)
+                                .background(colorScheme.primaryContainer)
+                                .padding(4.dp)
+                        )
+                    }
                 }
-                LaunchedEffect(contentScale, alignment) {
-                    painterList = buildPainters(
-                        context,
-                        contentScale,
-                        alignment,
-                        gridWidth,
+            }
+
+            FlowRow(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                val contentScales = remember {
+                    listOf(
+                        ContentScale.Fit,
+                        ContentScale.Crop,
+                        ContentScale.Inside,
+                        ContentScale.None,
+                        ContentScale.FillWidth,
+                        ContentScale.FillHeight,
+                        ContentScale.FillBounds,
                     )
                 }
-
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(gridCells),
-                    modifier = Modifier.fillMaxWidth().weight(1f),
-                    contentPadding = PaddingValues(gridDividerSizeDp),
-                    horizontalArrangement = Arrangement.spacedBy(gridDividerSizeDp),
-                    verticalArrangement = Arrangement.spacedBy(gridDividerSizeDp),
-                ) {
-                    items(painterList) { pair ->
-                        Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp))) {
-                            val colorScheme = MaterialTheme.colorScheme
-                            BasicText(
-                                text = pair.first,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(48.dp)
-                                    .align(Alignment.CenterHorizontally)
-                                    .background(colorScheme.tertiaryContainer)
-                                    .padding(4.dp),
-                                color = { colorScheme.onTertiaryContainer },
-                                autoSize = TextAutoSize.StepBased(minFontSize = 8.sp)
-                            )
-                            val painter = remember(pair.second) { pair.second }
-                            Image(
-                                painter = painter,
-                                contentDescription = pair.first,
-                                contentScale = contentScale,
-                                alignment = alignment,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(0.75f)
-                                    .background(colorScheme.primaryContainer)
-                                    .padding(4.dp)
-                            )
-                        }
+                contentScales.forEach { contentScaleItem ->
+                    Button(
+                        onClick = { contentScale = contentScaleItem },
+                        enabled = contentScaleItem != contentScale,
+                        contentPadding = PaddingValues(horizontal = 4.dp),
+                        modifier = Modifier.height(30.dp)
+                    ) {
+                        Text(text = contentScaleItem.name, fontSize = 12.sp)
                     }
                 }
+            }
 
-                FlowRow(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    val contentScales = remember {
-                        listOf(
-                            ContentScale.Fit,
-                            ContentScale.Crop,
-                            ContentScale.Inside,
-                            ContentScale.None,
-                            ContentScale.FillWidth,
-                            ContentScale.FillHeight,
-                            ContentScale.FillBounds,
-                        )
-                    }
-                    contentScales.forEach { contentScaleItem ->
-                        Button(
-                            onClick = { contentScale = contentScaleItem },
-                            enabled = contentScaleItem != contentScale,
-                            contentPadding = PaddingValues(horizontal = 4.dp),
-                            modifier = Modifier.height(30.dp)
-                        ) {
-                            Text(text = contentScaleItem.name, fontSize = 12.sp)
-                        }
-                    }
+            FlowRow(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                val alignments = remember {
+                    listOf(
+                        Alignment.TopStart,
+                        Alignment.TopCenter,
+                        Alignment.TopEnd,
+                        Alignment.CenterStart,
+                        Alignment.Center,
+                        Alignment.CenterEnd,
+                        Alignment.BottomStart,
+                        Alignment.BottomCenter,
+                        Alignment.BottomEnd,
+                    )
                 }
-
-                FlowRow(
-                    modifier = Modifier.fillMaxWidth().padding(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    val alignments = remember {
-                        listOf(
-                            Alignment.TopStart,
-                            Alignment.TopCenter,
-                            Alignment.TopEnd,
-                            Alignment.CenterStart,
-                            Alignment.Center,
-                            Alignment.CenterEnd,
-                            Alignment.BottomStart,
-                            Alignment.BottomCenter,
-                            Alignment.BottomEnd,
-                        )
-                    }
-                    alignments.forEach { alignmentItem ->
-                        Button(
-                            onClick = { alignment = alignmentItem },
-                            enabled = alignmentItem != alignment,
-                            contentPadding = PaddingValues(horizontal = 4.dp),
-                            modifier = Modifier.height(30.dp)
-                        ) {
-                            Text(text = alignmentItem.name, fontSize = 12.sp)
-                        }
+                alignments.forEach { alignmentItem ->
+                    Button(
+                        onClick = { alignment = alignmentItem },
+                        enabled = alignmentItem != alignment,
+                        contentPadding = PaddingValues(horizontal = 4.dp),
+                        modifier = Modifier.height(30.dp)
+                    ) {
+                        Text(text = alignmentItem.name, fontSize = 12.sp)
                     }
                 }
             }

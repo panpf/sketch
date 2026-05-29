@@ -43,59 +43,86 @@ import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.sample.Res
 import com.github.panpf.sketch.sample.ic_image_broken_outline
 import com.github.panpf.sketch.sample.ic_image_outline
-import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.util.platformGifDecoders
 import com.github.panpf.sketch.state.rememberIconPainterStateImage
 
 @Composable
 fun AnimatedImageTestScreen() {
-    BaseScreen {
-        ToolbarScaffold(title = "AnimatedImageTest") {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .windowInsetsPadding(WindowInsets.navigationBars)
-                    .padding(20.dp)
+    ToolbarScaffold(title = "AnimatedImageTest") {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .windowInsetsPadding(WindowInsets.navigationBars)
+                .padding(20.dp)
+        ) {
+            Text("Formats", fontSize = 20.sp, color = colorScheme.primary)
+            Spacer(Modifier.size(10.dp))
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(20.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
-                Text("Formats", fontSize = 20.sp, color = colorScheme.primary)
-                Spacer(Modifier.size(10.dp))
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp),
-                ) {
-                    Column(Modifier.width(100.dp)) {
-                        Text(text = "GIF")
-                        Spacer(Modifier.size(10.dp))
-                        AsyncImage(
-                            request = buildImageRequest(ComposeResImageFiles.animGif.uri),
-                            contentDescription = "example",
-                            modifier = Modifier
-                                .size(100.dp)
-                                .border(2.dp, Color.Red)
-                                .padding(2.dp)
-                        )
-                    }
+                Column(Modifier.width(100.dp)) {
+                    Text(text = "GIF")
+                    Spacer(Modifier.size(10.dp))
+                    AsyncImage(
+                        request = buildImageRequest(ComposeResImageFiles.animGif.uri),
+                        contentDescription = "example",
+                        modifier = Modifier
+                            .size(100.dp)
+                            .border(2.dp, Color.Red)
+                            .padding(2.dp)
+                    )
+                }
 
-                    Column(Modifier.width(100.dp)) {
-                        Text(text = "WEBP")
-                        Spacer(Modifier.size(10.dp))
-                        AsyncImage(
-                            request = buildImageRequest(ComposeResImageFiles.animWebp.uri),
-                            contentDescription = "example",
-                            modifier = Modifier
-                                .size(100.dp)
-                                .border(2.dp, Color.Red)
-                                .padding(2.dp)
-                        )
-                    }
+                Column(Modifier.width(100.dp)) {
+                    Text(text = "WEBP")
+                    Spacer(Modifier.size(10.dp))
+                    AsyncImage(
+                        request = buildImageRequest(ComposeResImageFiles.animWebp.uri),
+                        contentDescription = "example",
+                        modifier = Modifier
+                            .size(100.dp)
+                            .border(2.dp, Color.Red)
+                            .padding(2.dp)
+                    )
+                }
 
+                Column(Modifier.width(100.dp)) {
+                    Text(text = "HEIF")
+                    Spacer(Modifier.size(10.dp))
+                    AsyncImage(
+                        request = buildImageRequest(ComposeResImageFiles.animHeif.uri),
+                        contentDescription = "example",
+                        modifier = Modifier
+                            .size(100.dp)
+                            .border(2.dp, Color.Red)
+                            .padding(2.dp)
+                    )
+                }
+            }
+
+            Spacer(Modifier.size(30.dp))
+
+            Text("repeatCount (0)", fontSize = 20.sp, color = colorScheme.primary)
+            Spacer(Modifier.size(10.dp))
+            val gifDecoders = remember { platformGifDecoders() }
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(20.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+            ) {
+                gifDecoders.forEach { gifDecoder ->
                     Column(Modifier.width(100.dp)) {
-                        Text(text = "HEIF")
+                        Text(text = gifDecoder.toString())
                         Spacer(Modifier.size(10.dp))
                         AsyncImage(
-                            request = buildImageRequest(ComposeResImageFiles.animHeif.uri),
+                            request = buildImageRequest(ComposeResImageFiles.numbersGif.uri) {
+                                components {
+                                    add(gifDecoder)
+                                }
+                                repeatCount(0)
+                            },
                             contentDescription = "example",
                             modifier = Modifier
                                 .size(100.dp)
@@ -104,117 +131,87 @@ fun AnimatedImageTestScreen() {
                         )
                     }
                 }
+            }
 
-                Spacer(Modifier.size(30.dp))
+            Spacer(Modifier.size(30.dp))
 
-                Text("repeatCount (0)", fontSize = 20.sp, color = colorScheme.primary)
-                Spacer(Modifier.size(10.dp))
-                val gifDecoders = remember { platformGifDecoders() }
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp),
-                ) {
-                    gifDecoders.forEach { gifDecoder ->
-                        Column(Modifier.width(100.dp)) {
-                            Text(text = gifDecoder.toString())
-                            Spacer(Modifier.size(10.dp))
-                            AsyncImage(
-                                request = buildImageRequest(ComposeResImageFiles.numbersGif.uri) {
-                                    components {
-                                        add(gifDecoder)
+            Text("Animation Callback", fontSize = 20.sp, color = colorScheme.primary)
+            Spacer(Modifier.size(10.dp))
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(20.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+            ) {
+                gifDecoders.forEach { gifDecoder ->
+                    Column(Modifier.width(100.dp)) {
+                        var playing by remember { mutableStateOf(false) }
+                        val startCallback = remember { { playing = true } }
+                        val endCallback = remember { { playing = false } }
+                        Text(text = gifDecoder.toString())
+                        Spacer(Modifier.size(10.dp))
+                        Spacer(Modifier.size(10.dp))
+                        val state = rememberAsyncImageState()
+                        AsyncImage(
+                            request = buildImageRequest(ComposeResImageFiles.numbersGif.uri) {
+                                components {
+                                    add(gifDecoder)
+                                }
+                                onAnimationStart(startCallback)
+                                onAnimationEnd(endCallback)
+                            },
+                            contentDescription = "example",
+                            state = state,
+                            modifier = Modifier
+                                .size(100.dp)
+                                .border(2.dp, Color.Red)
+                                .padding(2.dp)
+                        )
+
+                        Button(
+                            onClick = {
+                                val painter = state.painter
+                                if (painter is AnimatablePainter) {
+                                    if (playing) {
+                                        painter.stop()
+                                    } else {
+                                        painter.start()
                                     }
-                                    repeatCount(0)
-                                },
-                                contentDescription = "example",
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .border(2.dp, Color.Red)
-                                    .padding(2.dp)
-                            )
+                                }
+                            },
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        ) {
+                            Text(text = if (playing) "Stop" else "Play")
                         }
                     }
                 }
+            }
 
-                Spacer(Modifier.size(30.dp))
+            Spacer(Modifier.size(30.dp))
 
-                Text("Animation Callback", fontSize = 20.sp, color = colorScheme.primary)
-                Spacer(Modifier.size(10.dp))
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp),
-                ) {
-                    gifDecoders.forEach { gifDecoder ->
-                        Column(Modifier.width(100.dp)) {
-                            var playing by remember { mutableStateOf(false) }
-                            val startCallback = remember { { playing = true } }
-                            val endCallback = remember { { playing = false } }
-                            Text(text = gifDecoder.toString())
-                            Spacer(Modifier.size(10.dp))
-                            Spacer(Modifier.size(10.dp))
-                            val state = rememberAsyncImageState()
-                            AsyncImage(
-                                request = buildImageRequest(ComposeResImageFiles.numbersGif.uri) {
-                                    components {
-                                        add(gifDecoder)
-                                    }
-                                    onAnimationStart(startCallback)
-                                    onAnimationEnd(endCallback)
-                                },
-                                contentDescription = "example",
-                                state = state,
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .border(2.dp, Color.Red)
-                                    .padding(2.dp)
-                            )
-
-                            Button(
-                                onClick = {
-                                    val painter = state.painter
-                                    if (painter is AnimatablePainter) {
-                                        if (playing) {
-                                            painter.stop()
-                                        } else {
-                                            painter.start()
-                                        }
-                                    }
-                                },
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                            ) {
-                                Text(text = if (playing) "Stop" else "Play")
-                            }
-                        }
-                    }
-                }
-
-                Spacer(Modifier.size(30.dp))
-
-                Text("Animated Transformation", fontSize = 20.sp, color = colorScheme.primary)
-                Spacer(Modifier.size(10.dp))
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(20.dp),
-                ) {
-                    gifDecoders.forEach { gifDecoder ->
-                        Column(Modifier.width(100.dp)) {
-                            Text(text = gifDecoder.toString())
-                            Spacer(Modifier.size(10.dp))
-                            val state = rememberAsyncImageState()
-                            AsyncImage(
-                                request = buildImageRequest(ComposeResImageFiles.animGif.uri) {
-                                    animatedTransformation(TestAnimatedTransformation)
-                                    components {
-                                        add(gifDecoder)
-                                    }
-                                },
-                                contentDescription = "example",
-                                state = state,
-                                modifier = Modifier
-                                    .size(100.dp)
-                                    .border(2.dp, Color.Red)
-                                    .padding(2.dp)
-                            )
-                        }
+            Text("Animated Transformation", fontSize = 20.sp, color = colorScheme.primary)
+            Spacer(Modifier.size(10.dp))
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(20.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+            ) {
+                gifDecoders.forEach { gifDecoder ->
+                    Column(Modifier.width(100.dp)) {
+                        Text(text = gifDecoder.toString())
+                        Spacer(Modifier.size(10.dp))
+                        val state = rememberAsyncImageState()
+                        AsyncImage(
+                            request = buildImageRequest(ComposeResImageFiles.animGif.uri) {
+                                animatedTransformation(TestAnimatedTransformation)
+                                components {
+                                    add(gifDecoder)
+                                }
+                            },
+                            contentDescription = "example",
+                            state = state,
+                            modifier = Modifier
+                                .size(100.dp)
+                                .border(2.dp, Color.Red)
+                                .padding(2.dp)
+                        )
                     }
                 }
             }

@@ -14,27 +14,24 @@ import androidx.compose.ui.unit.dp
 import com.github.panpf.sketch.AsyncImage
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ComposableImageRequest
-import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 
 @Composable
 fun TempTestScreen() {
-    BaseScreen {
-        ToolbarScaffold(title = "TempTest") {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .windowInsetsPadding(WindowInsets.navigationBars)
-            ) {
-                AsyncImage(
-                    request = ComposableImageRequest(ComposeResImageFiles.svg.uri) {
-                        crossfade(alwaysUse = true)
-                    },
-                    contentDescription = "",
-                    modifier = Modifier.size(100.dp),
-                    colorFilter = ColorFilter.tint(Color.Blue)
-                )
-            }
+    ToolbarScaffold(title = "TempTest") {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.navigationBars)
+        ) {
+            AsyncImage(
+                request = ComposableImageRequest(ComposeResImageFiles.svg.uri) {
+                    crossfade(alwaysUse = true)
+                },
+                contentDescription = "",
+                modifier = Modifier.size(100.dp),
+                colorFilter = ColorFilter.tint(Color.Blue)
+            )
         }
     }
 }

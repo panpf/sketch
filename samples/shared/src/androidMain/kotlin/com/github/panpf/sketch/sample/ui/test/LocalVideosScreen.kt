@@ -32,7 +32,6 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.panpf.sketch.LocalPlatformContext
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.videoFramePercent
-import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.sample.ui.common.PagingListAppendState
 import com.github.panpf.sketch.sample.ui.common.PagingListRefreshState
@@ -47,55 +46,53 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
 fun LocalVideosTestScreen() {
-    BaseScreen {
-        ToolbarScaffold(title = "Local Videos") {
-            PermissionContainer(
-                permission = Permission.GALLERY,
-                permissionRequired = false,
+    ToolbarScaffold(title = "Local Videos") {
+        PermissionContainer(
+            permission = Permission.GALLERY,
+            permissionRequired = false,
+        ) {
+            val viewModel: LocalVideoListViewModel = koinViewModel()
+            val pagingItems = viewModel.pagingFlow.collectAsLazyPagingItems()
+            val pullRefreshState = rememberPullRefreshState(
+                refreshing = pagingItems.loadState.refresh is Loading,
+                onRefresh = { pagingItems.refresh() }
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .pullRefresh(pullRefreshState)
             ) {
-                val viewModel: LocalVideoListViewModel = koinViewModel()
-                val pagingItems = viewModel.pagingFlow.collectAsLazyPagingItems()
-                val pullRefreshState = rememberPullRefreshState(
-                    refreshing = pagingItems.loadState.refresh is Loading,
-                    onRefresh = { pagingItems.refresh() }
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .pullRefresh(pullRefreshState)
+                val listState = rememberLazyListState()
+                val windowInsetContentPadding =
+                    listContentPaddingWithNavigationBarsWindowInset()
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = windowInsetContentPadding
                 ) {
-                    val listState = rememberLazyListState()
-                    val windowInsetContentPadding =
-                        listContentPaddingWithNavigationBarsWindowInset()
-                    LazyColumn(
-                        state = listState,
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = windowInsetContentPadding
-                    ) {
-                        items(
-                            count = pagingItems.itemCount,
-                            contentType = { 1 }
-                        ) { index ->
-                            VideoItem(pagingItems[index]!!)
-                        }
-                        if (pagingItems.itemCount > 0) {
-                            item(
-                                key = "AppendState",
-                                contentType = 2
-                            ) {
-                                PagingListAppendState(pagingItems)
-                            }
+                    items(
+                        count = pagingItems.itemCount,
+                        contentType = { 1 }
+                    ) { index ->
+                        VideoItem(pagingItems[index]!!)
+                    }
+                    if (pagingItems.itemCount > 0) {
+                        item(
+                            key = "AppendState",
+                            contentType = 2
+                        ) {
+                            PagingListAppendState(pagingItems)
                         }
                     }
-
-                    PullRefreshIndicator(
-                        refreshing = pagingItems.loadState.refresh is Loading,
-                        state = pullRefreshState,
-                        modifier = Modifier.align(Alignment.TopCenter)
-                    )
-
-                    PagingListRefreshState(pagingItems)
                 }
+
+                PullRefreshIndicator(
+                    refreshing = pagingItems.loadState.refresh is Loading,
+                    state = pullRefreshState,
+                    modifier = Modifier.align(Alignment.TopCenter)
+                )
+
+                PagingListRefreshState(pagingItems)
             }
         }
     }

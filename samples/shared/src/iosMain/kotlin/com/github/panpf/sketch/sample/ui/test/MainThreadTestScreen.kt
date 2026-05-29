@@ -10,7 +10,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.panpf.sketch.sample.ui.base.BaseScreen
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -20,37 +19,35 @@ import kotlin.time.measureTime
 
 @Composable
 fun MainThreadTestScreen() {
-    BaseScreen {
-        ToolbarScaffold(title = "MainThreadTest") {
-            var result by remember { mutableStateOf<Pair<Boolean, Boolean>?>(null) }
-            LaunchedEffect(Unit) {
-                val isMainThreadInIO = withContext(Dispatchers.IO) {
+    ToolbarScaffold(title = "MainThreadTest") {
+        var result by remember { mutableStateOf<Pair<Boolean, Boolean>?>(null) }
+        LaunchedEffect(Unit) {
+            val isMainThreadInIO = withContext(Dispatchers.IO) {
+                NSThread.isMainThread
+            }
+            val isMainThreadInMain = withContext(Dispatchers.Main) {
+                NSThread.isMainThread
+            }
+            result = isMainThreadInIO to isMainThreadInMain
+        }
+        val time = remember {
+            measureTime {
+                repeat(100) {
                     NSThread.isMainThread
                 }
-                val isMainThreadInMain = withContext(Dispatchers.Main) {
-                    NSThread.isMainThread
-                }
-                result = isMainThreadInIO to isMainThreadInMain
             }
-            val time = remember {
-                measureTime {
-                    repeat(100) {
-                        NSThread.isMainThread
-                    }
-                }
-            }
-            val result1 = result
-            if (result1 != null) {
-                val (isMainThreadInIO, isMainThreadInMain) = result1
-                Text(
-                    text = """
+        }
+        val result1 = result
+        if (result1 != null) {
+            val (isMainThreadInIO, isMainThreadInMain) = result1
+            Text(
+                text = """
                         isMainThreadInIO: $isMainThreadInIO
                         isMainThreadInMain: $isMainThreadInMain
                         100 times: $time, average: ${time.inWholeMicroseconds / 100} us
                     """.trimIndent(),
-                    modifier = Modifier.padding(50.dp)
-                )
-            }
+                modifier = Modifier.padding(50.dp)
+            )
         }
     }
 }
