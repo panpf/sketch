@@ -1,18 +1,22 @@
 package com.github.panpf.sketch.core.ios.test.util
 
 import androidx.compose.ui.graphics.decodeToImageBitmap
+import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.fetchPhotosAsset
+import com.github.panpf.sketch.util.isIOSVersionAtLeast
 import com.github.panpf.sketch.util.pixelSize
 import com.github.panpf.sketch.util.preferredImageResourceTypeOrder
 import com.github.panpf.sketch.util.preferredVideoResourceTypeOrder
 import com.github.panpf.sketch.util.resolveMimeType
 import com.github.panpf.sketch.util.resolveMimeTypeWithPHAssetResourceType
 import com.github.panpf.sketch.util.selectPrimaryResource
+import com.github.panpf.sketch.util.size
 import com.github.panpf.sketch.util.sketchSize
 import com.github.panpf.sketch.util.toBitmap
 import com.github.panpf.sketch.util.toByteArray
@@ -28,7 +32,9 @@ import platform.Photos.PHAssetResource
 import platform.UIKit.UIImage
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class IosPlatformUtilsTest {
 
@@ -345,8 +351,102 @@ class IosPlatformUtilsTest {
         val imageFile = ComposeResImageFiles.jpeg
         val data = imageFile.toDataSource(context).toByteArray()
         val uiImage = UIImage.imageWithData(data.toNSData())!!
-        val newBitmap = uiImage.toBitmap()
-        assertEquals(expected = imageFile.size, actual = newBitmap.size)
+
+        assertEquals(
+            expected = imageFile.size,
+            actual = uiImage.toBitmap().size
+        )
+        assertEquals(
+            expected = imageFile.size,
+            actual = uiImage.toBitmap(sampleSize = 1, cropRect = null).size
+        )
+
+        assertEquals(
+            expected = calculateSampledBitmapSize(
+                imageSize = imageFile.size,
+                sampleSize = 2
+            ),
+            actual = uiImage.toBitmap(sampleSize = 2).size
+        )
+
+        val cropRect = Rect(101, 202, 708, 503)
+        assertEquals(
+            expected = cropRect.size,
+            actual = uiImage.toBitmap(cropRect = cropRect).size
+        )
+        assertEquals(
+            expected = calculateSampledBitmapSize(
+                imageSize = cropRect.size,
+                sampleSize = 2
+            ),
+            actual = uiImage.toBitmap(sampleSize = 2, cropRect = cropRect).size
+        )
+
+        assertFailsWith(exceptionClass = IllegalArgumentException::class) {
+            uiImage.toBitmap(sampleSize = 0)
+        }
+        assertFailsWith(exceptionClass = IllegalArgumentException::class) {
+            uiImage.toBitmap(sampleSize = -1)
+        }
+        assertFailsWith(exceptionClass = IllegalArgumentException::class) {
+            uiImage.toBitmap(sampleSize = 3)
+        }
+        assertFailsWith(exceptionClass = IllegalArgumentException::class) {
+            uiImage.toBitmap(sampleSize = 5)
+        }
+
+        assertFailsWith(exceptionClass = IllegalArgumentException::class) {
+            uiImage.toBitmap(cropRect = Rect(left = 100, top = 300, right = 100, bottom = 500))
+        }
+        assertFailsWith(exceptionClass = IllegalArgumentException::class) {
+            uiImage.toBitmap(cropRect = Rect(left = 100, top = 300, right = 600, bottom = 300))
+        }
+        assertFailsWith(exceptionClass = IllegalArgumentException::class) {
+            uiImage.toBitmap(cropRect = Rect(left = 100, top = 300, right = 50, bottom = 500))
+        }
+        assertFailsWith(exceptionClass = IllegalArgumentException::class) {
+            uiImage.toBitmap(cropRect = Rect(left = 100, top = 300, right = 600, bottom = 200))
+        }
+        assertFailsWith(exceptionClass = IllegalArgumentException::class) {
+            uiImage.toBitmap(
+                cropRect = Rect(
+                    left = -1,
+                    top = 0,
+                    right = imageFile.size.width,
+                    bottom = imageFile.size.height
+                )
+            )
+        }
+        assertFailsWith(exceptionClass = IllegalArgumentException::class) {
+            uiImage.toBitmap(
+                cropRect = Rect(
+                    left = 0,
+                    top = -1,
+                    right = imageFile.size.width,
+                    bottom = imageFile.size.height
+                )
+            )
+        }
+        assertFailsWith(exceptionClass = IllegalArgumentException::class) {
+            uiImage.toBitmap(
+                cropRect = Rect(
+                    left = 0,
+                    top = 0,
+                    right = imageFile.size.width + 1,
+                    bottom = imageFile.size.height
+                )
+            )
+        }
+        assertFailsWith(exceptionClass = IllegalArgumentException::class) {
+            uiImage.toBitmap(
+                cropRect = Rect(
+                    left = 0,
+                    top = 0,
+                    right = imageFile.size.width,
+                    bottom = imageFile.size.height + 1
+                )
+            )
+        }
     }
 
     @Test
@@ -379,5 +479,11 @@ class IosPlatformUtilsTest {
         val newBitmap = nsData.toByteArray().decodeToImageBitmap()
         assertEquals(imageFile.size.width, newBitmap.width)
         assertEquals(imageFile.size.height, newBitmap.height)
+    }
+
+    @Test
+    fun testIsIOSVersionAtLeast() {
+        assertTrue(isIOSVersionAtLeast(16))
+        assertTrue(isIOSVersionAtLeast(26))
     }
 }

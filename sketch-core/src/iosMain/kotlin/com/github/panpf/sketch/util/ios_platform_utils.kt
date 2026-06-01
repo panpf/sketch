@@ -21,9 +21,11 @@ package com.github.panpf.sketch.util
 
 import com.github.panpf.sketch.Bitmap
 import com.github.panpf.sketch.decode.DecodeException
+import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.cValue
 import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.useContents
 import kotlinx.cinterop.usePinned
@@ -35,11 +37,15 @@ import platform.CoreGraphics.CGColorSpaceRelease
 import platform.CoreGraphics.CGContextDrawImage
 import platform.CoreGraphics.CGContextRelease
 import platform.CoreGraphics.CGImageAlphaInfo
+import platform.CoreGraphics.CGImageCreateWithImageInRect
 import platform.CoreGraphics.CGImageGetHeight
 import platform.CoreGraphics.CGImageGetWidth
+import platform.CoreGraphics.CGImageRelease
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.kCGBitmapByteOrder32Big
 import platform.Foundation.NSData
+import platform.Foundation.NSOperatingSystemVersion
+import platform.Foundation.NSProcessInfo
 import platform.Foundation.create
 import platform.Photos.PHAsset
 import platform.Photos.PHAssetMediaType
@@ -296,59 +302,99 @@ fun PHAsset.pixelSize(): Size = Size(
  *
  * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testUIImageToBitmap
  */
-fun UIImage.toBitmap(): Bitmap {
-    val cgImage = this.CGImage
-        ?: throw DecodeException("UIImage has no CGImage")
-    val width = CGImageGetWidth(cgImage).toInt().coerceAtLeast(1)
-    val height = CGImageGetHeight(cgImage).toInt().coerceAtLeast(1)
-    val bytesPerRow = width * 4
-    val pixels = ByteArray(bytesPerRow * height)
-
-    val colorSpace = CGColorSpaceCreateDeviceRGB()
-        ?: throw DecodeException("Failed to create RGB color space")
-    try {
-        pixels.usePinned { pinned ->
-            val context = CGBitmapContextCreate(
-                data = pinned.addressOf(0),
-                width = width.toULong(),
-                height = height.toULong(),
-                bitsPerComponent = 8u,
-                bytesPerRow = bytesPerRow.toULong(),
-                space = colorSpace,
-                bitmapInfo = CGImageAlphaInfo.kCGImageAlphaPremultipliedLast.value or kCGBitmapByteOrder32Big,
-            ) ?: throw DecodeException("Failed to create bitmap context")
-            try {
-                CGContextDrawImage(
-                    c = context,
-                    rect = CGRectMake(
-                        0.0,
-                        0.0,
-                        width.toDouble(),
-                        height.toDouble()
-                    ),   // TODO Can support subsampling?
-                    image = cgImage,
-                )
-            } finally {
-                CGContextRelease(context)
-            }
+fun UIImage.toBitmap(sampleSize: Int = 1, cropRect: Rect? = null): Bitmap {
+    require((sampleSize > 0) && ((sampleSize == 1) || ((sampleSize % 2) == 0))) {
+        "sampleSize must be 1 or a power of 2, but was $sampleSize"
+    }
+    val cgImage = this.CGImage ?: throw DecodeException("UIImage has no CGImage")
+    val originalWidth = CGImageGetWidth(cgImage).toInt()
+    val originalHeight = CGImageGetHeight(cgImage).toInt()
+    val fullRect = Rect(left = 0, top = 0, right = originalWidth, bottom = originalHeight)
+    if (cropRect != null) {
+        require(value = !cropRect.isEmpty) {
+            "cropRect invalid: ${cropRect.toShortString()}"
         }
-    } finally {
-        CGColorSpaceRelease(colorSpace)
+        require(value = fullRect.contains(cropRect)) {
+            "cropRect out of bounds: ${cropRect.toShortString()}, originalSize=${originalWidth}x${originalHeight}"
+        }
     }
 
-    val imageInfo = org.jetbrains.skia.ImageInfo(
-        width = width,
-        height = height,
-        colorType = ColorType.RGBA_8888,
-        alphaType = ColorAlphaType.PREMUL,
-        colorSpace = null,
-    )
-    val bitmap = Bitmap()
-    if (!bitmap.installPixels(imageInfo, pixels, bytesPerRow)) {
-        throw DecodeException("Failed to install RGBA pixels into bitmap")
+    // Crop CGImage
+    val finalCropRect = cropRect ?: fullRect
+    val croppedCGImage = if (finalCropRect != fullRect) {
+        CGImageCreateWithImageInRect(
+            image = cgImage,
+            rect = CGRectMake(
+                x = finalCropRect.left.toDouble(),
+                y = finalCropRect.top.toDouble(),
+                width = finalCropRect.width().toDouble(),
+                height = finalCropRect.height().toDouble()
+            )
+        ) ?: throw DecodeException("Failed to create cropped CGImage")
+    } else {
+        cgImage
     }
-    bitmap.setImmutable()
-    return bitmap
+
+    try {
+        val sampledBitmapSize = calculateSampledBitmapSize(
+            imageSize = Size(
+                width = finalCropRect.width(),
+                height = finalCropRect.height()
+            ),
+            sampleSize = sampleSize
+        )
+        val bytesPerRow = sampledBitmapSize.width * 4
+        val pixels = ByteArray(bytesPerRow * sampledBitmapSize.height)
+        val colorSpace = CGColorSpaceCreateDeviceRGB()
+            ?: throw DecodeException("Failed to create RGB color space")
+        try {
+            pixels.usePinned { pinned ->
+                val context = CGBitmapContextCreate(
+                    data = pinned.addressOf(0),
+                    width = sampledBitmapSize.width.toULong(),
+                    height = sampledBitmapSize.height.toULong(),
+                    bitsPerComponent = 8u,
+                    bytesPerRow = bytesPerRow.toULong(),
+                    space = colorSpace,
+                    bitmapInfo = CGImageAlphaInfo.kCGImageAlphaPremultipliedLast.value or kCGBitmapByteOrder32Big,
+                ) ?: throw DecodeException("Failed to create bitmap context")
+                try {
+                    CGContextDrawImage(
+                        c = context,
+                        rect = CGRectMake(
+                            x = 0.0,
+                            y = 0.0,
+                            width = sampledBitmapSize.width.toDouble(),
+                            height = sampledBitmapSize.height.toDouble()
+                        ),
+                        image = croppedCGImage,
+                    )
+                } finally {
+                    CGContextRelease(context)
+                }
+            }
+        } finally {
+            CGColorSpaceRelease(colorSpace)
+        }
+
+        val imageInfo = org.jetbrains.skia.ImageInfo(
+            width = sampledBitmapSize.width,
+            height = sampledBitmapSize.height,
+            colorType = ColorType.RGBA_8888,
+            alphaType = ColorAlphaType.PREMUL,
+            colorSpace = null,
+        )
+        val bitmap = Bitmap()
+        if (!bitmap.installPixels(imageInfo, pixels, bytesPerRow)) {
+            throw DecodeException("Failed to install RGBA pixels into bitmap")
+        }
+        bitmap.setImmutable()
+        return bitmap
+    } finally {
+        if (finalCropRect != fullRect) {
+            CGImageRelease(croppedCGImage)
+        }
+    }
 }
 
 /**
@@ -387,4 +433,18 @@ fun NSData.toByteArray(): ByteArray {
         }
     }
     return byteArray
+}
+
+/**
+ * Check if the current iOS version is at least the specified major, minor, and patch version by creating an NSOperatingSystemVersion struct and using NSProcessInfo to compare it against the current system version.
+ *
+ * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testIsIOSVersionAtLeast
+ */
+fun isIOSVersionAtLeast(major: Int, minor: Int = 0, patch: Int = 0): Boolean {
+    val version = cValue<NSOperatingSystemVersion> {
+        majorVersion = major.toLong()
+        minorVersion = minor.toLong()
+        patchVersion = patch.toLong()
+    }
+    return NSProcessInfo.processInfo.isOperatingSystemAtLeastVersion(version)
 }

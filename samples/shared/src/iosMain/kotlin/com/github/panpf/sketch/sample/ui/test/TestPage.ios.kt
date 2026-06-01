@@ -18,6 +18,7 @@ import com.github.panpf.sketch.sample.ui.ResizePainterTestRoute
 import com.github.panpf.sketch.sample.ui.SkiaColorTypeTestRoute
 import com.github.panpf.sketch.sample.ui.TempTestRoute
 import com.github.panpf.sketch.sample.ui.TransformationTestRoute
+import com.github.panpf.sketch.sample.ui.UIImageTestRoute
 
 actual fun platformTestScreens(): List<Any> = listOf(
     TestGroup("Components"),
@@ -44,7 +45,8 @@ actual fun platformTestScreens(): List<Any> = listOf(
     TestGroup("Other"),
     TestItem("Main Thread Test", MainThreadTestRoute),
     TestItem("SkiaColorTypeTest", SkiaColorTypeTestRoute),
-    TestItem("Temp", TempTestRoute),
+    TestItem("UIImageTest", UIImageTestRoute),
+    TestItem("Temp (Common)", TempTestRoute),
 
     ProjectInfo,
 )
