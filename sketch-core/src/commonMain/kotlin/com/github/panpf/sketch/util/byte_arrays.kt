@@ -37,6 +37,25 @@ fun ByteArray.rangeEquals(offset: Int, bytes: ByteArray): Boolean {
     return result
 }
 
+//@Suppress("SameParameterValue")
+//fun ByteArray.slidingRangeEquals(
+//    offset: Int,
+//    step: Int,
+//    brands: Array<ByteArray>
+//): Boolean {
+//    var index = offset
+//    while (true) {
+//        if (brands.any { this@slidingRangeEquals.rangeEquals(index, it) }) {
+//            return true
+//        } else {
+//            index += step
+//            if (index >= this@slidingRangeEquals.size) {
+//                return false
+//            }
+//        }
+//    }
+//}
+
 /**
  * Returns the index within this byte array of the first occurrence of the specified byte, starting from the specified index.
  *

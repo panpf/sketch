@@ -11,6 +11,16 @@ Translations: [简体中文](CHANGELOG.zh.md)
 
 # new
 
+## Multiplatform
+
+* new: A series of new functions such as isGifFile(), isWebpFile(), isHeifFile(), isAvifFile() are
+  used to determine whether the file is an image of the corresponding type. For more functions,
+  please see
+  the [file_types.kt](sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/util/file_types.kt)
+  file
+* change: Abandon ByteArray.isGif(), ByteArray.isWebp(), ByteArray.isHeif() and other functions, and
+  use the previous newly added function instead
+
 ## iOS
 
 * change: PhotosAssetFetcher renamed to PhotosAssetUriFetcher

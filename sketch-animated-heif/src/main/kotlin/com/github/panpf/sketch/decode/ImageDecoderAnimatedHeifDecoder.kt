@@ -20,11 +20,11 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.decode.internal.ImageDecoderAnimatedDecoder
-import com.github.panpf.sketch.decode.internal.isAnimatedHeif
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.util.isAnimatedHeifFile
 
 /**
  * Adds animation heif support by AnimatedImageDrawable
@@ -84,7 +84,7 @@ class ImageDecoderAnimatedHeifDecoder(
         }
 
         private fun isApplicable(fetchResult: FetchResult): Boolean {
-            return fetchResult.headerBytes.isAnimatedHeif()
+            return isAnimatedHeifFile(fetchResult.headerBytes)
         }
 
         override fun equals(other: Any?): Boolean {

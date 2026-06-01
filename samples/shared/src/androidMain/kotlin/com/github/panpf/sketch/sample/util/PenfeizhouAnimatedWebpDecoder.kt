@@ -22,7 +22,6 @@ import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.calculateSampleSize
-import com.github.panpf.sketch.decode.internal.isAnimatedWebP
 import com.github.panpf.sketch.decode.internal.resize
 import com.github.panpf.sketch.drawable.ScaledAnimatableDrawable
 import com.github.panpf.sketch.fetch.FetchResult
@@ -37,6 +36,7 @@ import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.source.FileDataSource
 import com.github.panpf.sketch.source.ResourceDataSource
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.isAnimatedWebPFile
 import com.github.penfeizhou.animation.loader.AssetStreamLoader
 import com.github.penfeizhou.animation.loader.ByteBufferLoader
 import com.github.penfeizhou.animation.loader.FileLoader
@@ -139,7 +139,7 @@ class PenfeizhouAnimatedWebpDecoder(
         }
 
         private fun isApplicable(fetchResult: FetchResult): Boolean {
-            return fetchResult.headerBytes.isAnimatedWebP()
+            return isAnimatedWebPFile(fetchResult.headerBytes)
         }
 
         override fun equals(other: Any?): Boolean {

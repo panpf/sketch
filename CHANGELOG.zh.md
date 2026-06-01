@@ -9,6 +9,13 @@
 
 # new
 
+## Multiplatform
+
+* new: 新增 isGifFile(), isWebpFile(), isHeifFile(), isAvifFile()
+  等一系列函数用于判断文件是否为对应类型的图片，更多函数请查看 [file_types.kt](sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/util/file_types.kt)
+  文件
+* change: 废弃 ByteArray.isGif(), ByteArray.isWebp(), ByteArray.isHeif() 等函数，改为使用上一条新增的函数
+
 ## iOS
 
 * change: PhotosAssetFetcher 重命名为 PhotosAssetUriFetcher

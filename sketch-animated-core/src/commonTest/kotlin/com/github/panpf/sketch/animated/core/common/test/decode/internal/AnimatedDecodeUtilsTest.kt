@@ -63,8 +63,11 @@ class AnimatedDecodeUtilsTest {
             ImageRequest(context, ComposeResImageFiles.animWebp.uri).fetch(sketch)
         val jpegFetchResult = ImageRequest(context, ComposeResImageFiles.jpeg.uri).fetch(sketch)
         val heicFetchResult = ImageRequest(context, ComposeResImageFiles.heic.uri).fetch(sketch)
+        val animatedHeicFetchResult =
+            ImageRequest(context, ComposeResImageFiles.animHeif.uri).fetch(sketch)
 
         assertTrue(heicFetchResult.headerBytes.isHeif())
+        assertTrue(animatedHeicFetchResult.headerBytes.isHeif())
         assertFalse(animWebpFetchResult.headerBytes.isHeif())
         assertFalse(jpegFetchResult.headerBytes.isHeif())
     }

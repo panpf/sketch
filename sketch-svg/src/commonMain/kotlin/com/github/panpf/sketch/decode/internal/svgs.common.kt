@@ -20,20 +20,15 @@ import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
-import com.github.panpf.sketch.util.indexOf
-import com.github.panpf.sketch.util.rangeEquals
-import okio.ByteString.Companion.encodeUtf8
-
-private val SVG_TAG = "<svg ".encodeUtf8().toByteArray()
-private val LEFT_ANGLE_BRACKET = "<".encodeUtf8().toByteArray()
+import com.github.panpf.sketch.util.isSvgFile
 
 /**
  * Check if the data is an SVG image
  *
  * @see com.github.panpf.sketch.svg.common.test.decode.internal.SvgsTest.testIsSvg
  */
-fun ByteArray.isSvg(): Boolean =
-    rangeEquals(0, LEFT_ANGLE_BRACKET) && indexOf(SVG_TAG, 0, 1024) != -1
+@Deprecated("Use isSvgFile instead", ReplaceWith("isSvgFile(this)"))
+fun ByteArray.isSvg(): Boolean = isSvgFile(this)
 
 /**
  * Decode the SVG image info

@@ -91,6 +91,13 @@ object ComposeResImageFiles {
         mimeType = "image/heif",
         animated = true
     )
+    val animAvif: ComposeResImageFile = ComposeResImageFile(
+        name = "sample_anim.avif",
+        size = Size(1920, 1080),
+        length = 2658451,
+        mimeType = "image/avif",
+        animated = true
+    )
     val anims = arrayOf(animGif, animWebp, animHeif)
 
     val mp4: ComposeResImageFile = ComposeResImageFile(

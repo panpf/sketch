@@ -18,11 +18,11 @@ package com.github.panpf.sketch.decode
 
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.decode.internal.SkiaAnimatedDecoder
-import com.github.panpf.sketch.decode.internal.isAnimatedWebP
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.request.disallowAnimatedImage
 import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.util.isAnimatedWebPFile
 
 /**
  * Adds animation webp support by Skia
@@ -80,7 +80,7 @@ class SkiaAnimatedWebpDecoder(
         }
 
         private fun isApplicable(fetchResult: FetchResult): Boolean {
-            return fetchResult.headerBytes.isAnimatedWebP()
+            return isAnimatedWebPFile(fetchResult.headerBytes)
         }
 
         override fun equals(other: Any?): Boolean {

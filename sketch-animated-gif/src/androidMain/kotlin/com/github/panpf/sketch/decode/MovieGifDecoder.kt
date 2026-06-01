@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-@file:OptIn(InternalCoroutinesApi::class)
-@file:Suppress("DEPRECATION")
-
 package com.github.panpf.sketch.decode
 
 import android.graphics.Movie
@@ -26,7 +23,6 @@ import com.github.panpf.sketch.asImage
 import com.github.panpf.sketch.decode.internal.ImageFormat
 import com.github.panpf.sketch.decode.internal.checkImageInfo
 import com.github.panpf.sketch.decode.internal.checkImageSize
-import com.github.panpf.sketch.decode.internal.isGif
 import com.github.panpf.sketch.drawable.AnimatableDrawable
 import com.github.panpf.sketch.drawable.MovieDrawable
 import com.github.panpf.sketch.fetch.FetchResult
@@ -41,10 +37,10 @@ import com.github.panpf.sketch.request.repeatCount
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.animatable2CompatCallbackOf
+import com.github.panpf.sketch.util.isGifFile
 import com.github.panpf.sketch.util.safeToSoftware
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.launch
 import okio.buffer
 
@@ -168,7 +164,7 @@ class MovieGifDecoder(
         }
 
         private fun isApplicable(fetchResult: FetchResult): Boolean {
-            return fetchResult.headerBytes.isGif()
+            return isGifFile(fetchResult.headerBytes)
         }
 
         override fun equals(other: Any?): Boolean {
