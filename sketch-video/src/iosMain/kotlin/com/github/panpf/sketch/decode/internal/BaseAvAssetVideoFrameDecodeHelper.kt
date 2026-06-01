@@ -31,10 +31,8 @@ import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.resolveRequestVideoFrameMicros
 import com.github.panpf.sketch.util.toBitmap
+import com.github.panpf.sketch.util.toByteArray
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.reinterpret
-import kotlinx.cinterop.usePinned
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.AVFoundation.AVAsset
@@ -50,8 +48,6 @@ import platform.CoreGraphics.CGSizeMake
 import platform.CoreMedia.CMTimeMakeWithSeconds
 import platform.Foundation.NSData
 import platform.UIKit.UIImage
-import platform.darwin.ByteVar
-import platform.posix.memcpy
 import kotlin.coroutines.resume
 
 @OptIn(ExperimentalForeignApi::class)
@@ -161,11 +157,7 @@ abstract class BaseAvAssetVideoFrameDecodeHelper(
             }
         }
         if (nsData == null || nsData.length.toLong() == 0L) return null
-        val byteArray = ByteArray(nsData.length.toInt())
-        val byteVars = nsData.bytes?.reinterpret<ByteVar>()
-        byteArray.usePinned { pinned ->
-            memcpy(pinned.addressOf(0), byteVars, nsData.length)
-        }
+        val byteArray = nsData.toByteArray()
         return byteArray
     }
 

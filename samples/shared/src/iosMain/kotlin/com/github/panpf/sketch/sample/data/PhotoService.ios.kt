@@ -12,11 +12,10 @@ import com.github.panpf.sketch.sample.image.photoUri2PhotoInfo
 import com.github.panpf.sketch.sample.ui.model.Photo
 import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.toNSData
 import com.github.panpf.sketch.util.toUri
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.usePinned
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -24,7 +23,6 @@ import kotlinx.coroutines.withContext
 import platform.Foundation.NSData
 import platform.Foundation.NSPredicate
 import platform.Foundation.NSSortDescriptor
-import platform.Foundation.create
 import platform.Photos.PHAsset
 import platform.Photos.PHAssetCreationRequest
 import platform.Photos.PHAssetMediaTypeImage
@@ -96,10 +94,8 @@ actual class PhotoService actual constructor(val sketch: Sketch) {
         }
         val imageBytes = imageBytesResult.getOrThrow()
 
-        val data = imageBytes.usePinned { pinned ->
-            NSData.create(bytes = pinned.addressOf(0), length = imageBytes.size.toULong())
-        }
-        val result = saveImageDataToGallery(data)
+        val nSData = imageBytes.toNSData()
+        val result = saveImageDataToGallery(nSData)
         return if (result.isSuccess && result.getOrThrow()) {
             Result.success(null)
         } else {
@@ -123,10 +119,8 @@ actual class PhotoService actual constructor(val sketch: Sketch) {
         }
         val imageBytes = imageBytesResult.getOrThrow()
 
-        val data = imageBytes.usePinned { pinned ->
-            NSData.create(bytes = pinned.addressOf(0), length = imageBytes.size.toULong())
-        }
-        val uiImage = UIImage.imageWithData(data)
+        val nSData = imageBytes.toNSData()
+        val uiImage = UIImage.imageWithData(nSData)
             ?: return Result.failure(Exception("Unable to create UIImage"))
 
         val activityItems = listOf(uiImage)

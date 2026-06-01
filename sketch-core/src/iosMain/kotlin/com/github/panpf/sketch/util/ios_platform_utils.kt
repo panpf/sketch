@@ -24,6 +24,8 @@ import com.github.panpf.sketch.decode.DecodeException
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
+import kotlinx.cinterop.reinterpret
+import kotlinx.cinterop.useContents
 import kotlinx.cinterop.usePinned
 import org.jetbrains.skia.ColorAlphaType
 import org.jetbrains.skia.ColorType
@@ -37,6 +39,8 @@ import platform.CoreGraphics.CGImageGetHeight
 import platform.CoreGraphics.CGImageGetWidth
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.kCGBitmapByteOrder32Big
+import platform.Foundation.NSData
+import platform.Foundation.create
 import platform.Photos.PHAsset
 import platform.Photos.PHAssetMediaType
 import platform.Photos.PHAssetMediaTypeAudio
@@ -45,6 +49,8 @@ import platform.Photos.PHAssetMediaTypeVideo
 import platform.Photos.PHAssetResource
 import platform.UIKit.UIImage
 import platform.UniformTypeIdentifiers.UTType
+import platform.darwin.ByteVar
+import platform.posix.memcpy
 
 private const val RESOURCE_TYPE_PHOTO = 1L
 private const val RESOURCE_TYPE_VIDEO = 2L
@@ -70,7 +76,7 @@ private val IMAGE_RESOURCE_TYPES = setOf(
 )
 
 /**
- * @see com.github.panpf.sketch.core.ios.test.util.PhotosAssetsTest.testPreferredVideoResourceTypeOrder
+ * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testPreferredVideoResourceTypeOrder
  */
 internal fun preferredVideoResourceTypeOrder(): List<Long> = listOf(
     RESOURCE_TYPE_FULL_SIZE_VIDEO,
@@ -80,7 +86,7 @@ internal fun preferredVideoResourceTypeOrder(): List<Long> = listOf(
 )
 
 /**
- * @see com.github.panpf.sketch.core.ios.test.util.PhotosAssetsTest.testPreferredImageResourceTypeOrder
+ * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testPreferredImageResourceTypeOrder
  */
 internal fun preferredImageResourceTypeOrder(preferredThumbnail: Boolean): List<Long> =
     if (preferredThumbnail) {
@@ -102,7 +108,7 @@ internal fun preferredImageResourceTypeOrder(preferredThumbnail: Boolean): List<
 /**
  * Fetch a PHAsset from the Photos library using its local identifier.
  *
- * @see com.github.panpf.sketch.core.ios.test.util.PhotosAssetsTest.testFetchPhotosAsset
+ * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testFetchPhotosAsset
  */
 internal fun fetchPhotosAsset(localIdentifier: String): PHAsset? {
     val fetchResult = PHAsset.fetchAssetsWithLocalIdentifiers(
@@ -116,7 +122,7 @@ internal fun fetchPhotosAsset(localIdentifier: String): PHAsset? {
 /**
  * Select the primary PHAssetResource for a given PHAsset, prioritizing certain resource types based on the media type and thumbnail preference.
  *
- * @see com.github.panpf.sketch.core.ios.test.util.PhotosAssetsTest.testSelectPrimaryResource
+ * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testSelectPrimaryResource
  */
 internal fun selectPrimaryResource(
     asset: PHAsset,
@@ -153,7 +159,7 @@ private fun pickResourceByTypeOrder(
 /**
  * Resolve the MIME type of a PHAssetResource by first attempting to use its uniform type identifier and original filename, and if that fails, by checking its resource type code against known video and image resource types.
  *
- * @see com.github.panpf.sketch.core.ios.test.util.PhotosAssetsTest.testResolveMimeTypeWithPHAssetResource
+ * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testResolveMimeTypeWithPHAssetResource
  */
 internal fun resolveMimeType(resource: PHAssetResource): String? {
     return resolveMimeType(
@@ -174,7 +180,7 @@ internal fun resolveMimeType(resource: PHAssetResource): String? {
  * @param originalFilename The original filename of the PHAssetResource, which can be used to infer the MIME type from its extension if necessary.
  * @return The resolved MIME type as a string, or null if it cannot be determined.
  *
- * @see com.github.panpf.sketch.core.ios.test.util.PhotosAssetsTest.testResolveMimeTypeWithUniformTypeIdentifierAndOriginalFilename
+ * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testResolveMimeTypeWithUniformTypeIdentifierAndOriginalFilename
  */
 internal fun resolveMimeType(uniformTypeIdentifier: String?, originalFilename: String?): String? {
     val preferredMimeType = uniformTypeIdentifier
@@ -239,7 +245,7 @@ internal fun resolveMimeType(uniformTypeIdentifier: String?, originalFilename: S
 /**
  * Resolve the MIME type of a PHAssetResource based on its resource type code, by checking if it matches known video or image resource types.
  *
- * @see com.github.panpf.sketch.core.ios.test.util.PhotosAssetsTest.testResolveMimeTypeWithPHAssetResourceType
+ * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testResolveMimeTypeWithPHAssetResourceType
  */
 internal fun resolveMimeTypeWithPHAssetResourceType(type: Long): String? {
     when (type) {
@@ -252,14 +258,14 @@ internal fun resolveMimeTypeWithPHAssetResourceType(type: Long): String? {
 /**
  * Resolve the MIME type of a PHAsset based on its media type.
  *
- * @see com.github.panpf.sketch.core.ios.test.util.PhotosAssetsTest.testResolveMimeTypeWithPHAsset
+ * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testResolveMimeTypeWithPHAsset
  */
 internal fun resolveMimeType(asset: PHAsset): String? = resolveMimeType(asset.mediaType)
 
 /**
  * Map the media type of PHAsset (video, picture, audio) to the corresponding MIME type string
  *
- * @see com.github.panpf.sketch.core.ios.test.util.PhotosAssetsTest.testResolveMimeTypeWithPHAssetMediaType
+ * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testResolveMimeTypeWithPHAssetMediaType
  */
 internal fun resolveMimeType(mediaType: PHAssetMediaType): String? = when (mediaType) {
     PHAssetMediaTypeImage -> "image/*"
@@ -278,7 +284,7 @@ private fun PHAssetResource.typeCode(): Long = when (val raw: Any = type) {
 /**
  * Get the pixel dimensions of a PHAsset as a Size object, using its pixelWidth and pixelHeight properties.
  *
- * @see com.github.panpf.sketch.core.ios.test.util.PhotosAssetsTest.testPixelSize
+ * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testPixelSize
  */
 fun PHAsset.pixelSize(): Size = Size(
     width = pixelWidth.toInt(),
@@ -288,7 +294,7 @@ fun PHAsset.pixelSize(): Size = Size(
 /**
  * Convert a UIImage to a Bitmap by creating a bitmap context, drawing the image into it, and then installing the pixel data into a Bitmap object.
  *
- * @see com.github.panpf.sketch.core.ios.test.util.PhotosAssetsTest.testUIImageToBitmap
+ * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testUIImageToBitmap
  */
 fun UIImage.toBitmap(): Bitmap {
     val cgImage = this.CGImage
@@ -343,4 +349,42 @@ fun UIImage.toBitmap(): Bitmap {
     }
     bitmap.setImmutable()
     return bitmap
+}
+
+/**
+ * Get the size of a UIImage as a Size object, using its size property which contains the width and height in points, and converting them to integers.
+ *
+ * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testSketchSize
+ */
+fun UIImage.sketchSize(): Size {
+    return size().useContents {
+        Size(this.width.toInt(), this.height.toInt())
+    }
+}
+
+/**
+ * Convert a ByteArray to NSData by pinning the byte array and creating an NSData object that references the pinned memory.
+ *
+ * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testByteArrayToNSData
+ */
+fun ByteArray.toNSData(): NSData {
+    return usePinned { pinned ->
+        NSData.create(bytes = pinned.addressOf(0), length = size.toULong())
+    }
+}
+
+/**
+ * Convert an NSData to ByteArray by creating a new ByteArray of the appropriate size and copying the bytes from the NSData into it using memcpy.
+ *
+ * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testNSDataToByteArray
+ */
+fun NSData.toByteArray(): ByteArray {
+    val byteArray = ByteArray(length.toInt())
+    val byteVars = this.bytes?.reinterpret<ByteVar>()
+    if (byteVars != null) {
+        byteArray.usePinned { pinned ->
+            memcpy(pinned.addressOf(0), byteVars, this@toByteArray.length)
+        }
+    }
+    return byteArray
 }

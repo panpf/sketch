@@ -35,10 +35,8 @@ import com.github.panpf.sketch.util.Uri
 import com.github.panpf.sketch.util.fetchPhotosAsset
 import com.github.panpf.sketch.util.resolveMimeType
 import com.github.panpf.sketch.util.selectPrimaryResource
+import com.github.panpf.sketch.util.toByteArray
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.reinterpret
-import kotlinx.cinterop.usePinned
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okio.Buffer
 import okio.IOException
@@ -47,8 +45,6 @@ import okio.buffer
 import okio.use
 import platform.Photos.PHAssetResourceManager
 import platform.Photos.PHAssetResourceRequestOptions
-import platform.darwin.ByteVar
-import platform.posix.memcpy
 import kotlin.coroutines.resumeWithException
 
 /**
@@ -190,12 +186,8 @@ class PhotosAssetUriFetcher(
                     resource = dataSource.resource,
                     options = options,
                     dataReceivedHandler = { chunk ->
-                        val byteVars = chunk?.bytes?.reinterpret<ByteVar>()
-                        if (byteVars != null) {
-                            val byteArray = ByteArray(chunk.length.toInt())
-                            byteArray.usePinned { pinned ->
-                                memcpy(pinned.addressOf(0), byteVars, chunk.length)
-                            }
+                        val byteArray = chunk?.toByteArray()
+                        if (byteArray != null) {
                             sink.write(byteArray)
                         }
                     },
@@ -229,12 +221,8 @@ class PhotosAssetUriFetcher(
                 resource = dataSource.resource,
                 options = options,
                 dataReceivedHandler = { chunk ->
-                    val byteVars = chunk?.bytes?.reinterpret<ByteVar>()
-                    if (byteVars != null) {
-                        val byteArray = ByteArray(chunk.length.toInt())
-                        byteArray.usePinned { pinned ->
-                            memcpy(pinned.addressOf(0), byteVars, chunk.length)
-                        }
+                    val byteArray = chunk?.toByteArray()
+                    if (byteArray != null) {
                         buffer.write(byteArray)
                     }
                 },

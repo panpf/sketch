@@ -1,9 +1,10 @@
 package com.github.panpf.sketch.core.ios.test.util
 
-import com.github.panpf.sketch.images.Base64Images
-import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
-import com.github.panpf.sketch.test.utils.bytes2nsData
-import com.github.panpf.sketch.test.utils.readBytes
+import androidx.compose.ui.graphics.decodeToImageBitmap
+import com.github.panpf.sketch.images.ComposeResImageFiles
+import com.github.panpf.sketch.size
+import com.github.panpf.sketch.source.toByteArray
+import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.fetchPhotosAsset
 import com.github.panpf.sketch.util.pixelSize
@@ -12,7 +13,10 @@ import com.github.panpf.sketch.util.preferredVideoResourceTypeOrder
 import com.github.panpf.sketch.util.resolveMimeType
 import com.github.panpf.sketch.util.resolveMimeTypeWithPHAssetResourceType
 import com.github.panpf.sketch.util.selectPrimaryResource
+import com.github.panpf.sketch.util.sketchSize
 import com.github.panpf.sketch.util.toBitmap
+import com.github.panpf.sketch.util.toByteArray
+import com.github.panpf.sketch.util.toNSData
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.test.runTest
 import platform.Photos.PHAsset
@@ -26,7 +30,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-class PhotosAssetsTest {
+class IosPlatformUtilsTest {
 
     @Test
     fun testPreferredVideoResourceTypeOrder() {
@@ -337,13 +341,43 @@ class PhotosAssetsTest {
     @Test
     @OptIn(ExperimentalForeignApi::class)
     fun testUIImageToBitmap() = runTest {
-        // [Test not completed] Because the test environment cannot access the photo library, the test cannot be completed.
-        val (_, sketch) = getTestContextAndSketch()
-        val bytes = readBytes(sketch, Base64Images.KOTLIN_ICON)
-        val nsData = bytes2nsData(bytes)
-        val uiImage = UIImage(nsData)
+        val context = getTestContext()
+        val imageFile = ComposeResImageFiles.jpeg
+        val data = imageFile.toDataSource(context).toByteArray()
+        val uiImage = UIImage.imageWithData(data.toNSData())!!
         val newBitmap = uiImage.toBitmap()
-        assertEquals(expected = 96, actual = newBitmap.imageInfo.width)
-        assertEquals(expected = 48, actual = newBitmap.imageInfo.height)
+        assertEquals(expected = imageFile.size, actual = newBitmap.size)
+    }
+
+    @Test
+    fun testSketchSize() = runTest {
+        val context = getTestContext()
+        val imageFile = ComposeResImageFiles.jpeg
+        val data = imageFile.toDataSource(context).toByteArray()
+        val uiImage = UIImage.imageWithData(data.toNSData())!!
+        assertEquals(imageFile.size, uiImage.sketchSize())
+    }
+
+    @Test
+    fun testByteArrayToNSData() = runTest {
+        val context = getTestContext()
+        val imageFile = ComposeResImageFiles.jpeg
+        val data = imageFile.toDataSource(context).toByteArray()
+        val uiImage = UIImage.imageWithData(data.toNSData())!!
+        assertEquals(imageFile.size, uiImage.sketchSize())
+    }
+
+    @Test
+    fun testNSDataToByteArray() = runTest {
+        val context = getTestContext()
+        val imageFile = ComposeResImageFiles.jpeg
+        val data = imageFile.toDataSource(context).toByteArray()
+        val nsData = data.toNSData()
+        val uiImage = UIImage.imageWithData(nsData)!!
+        assertEquals(imageFile.size, uiImage.sketchSize())
+
+        val newBitmap = nsData.toByteArray().decodeToImageBitmap()
+        assertEquals(imageFile.size.width, newBitmap.width)
+        assertEquals(imageFile.size.height, newBitmap.height)
     }
 }
