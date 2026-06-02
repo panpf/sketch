@@ -45,21 +45,6 @@ import wseemann.media.FFmpegMediaMetadataRetriever
 /**
  * Use FFmpegMediaMetadataRetriever to decode video frames
  *
- * The following decoding related properties are supported:
- *
- * * sizeResolver: Only sampleSize
- * * sizeMultiplier
- * * precisionDecider: Only LESS_PIXELS and SMALLER_SIZE is supported
- * * videoFrameMicros
- * * videoFramePercent
- * * videoFrameOption
- *
- * The following decoding related properties are not supported:
- *
- * * scaleDecider
- * * colorType
- * * colorSpace
- *
  * @see com.github.panpf.sketch.video.ffmpeg.test.decode.internal.FFmpegVideoFrameDecodeHelperTest
  */
 class FFmpegVideoFrameDecodeHelper(

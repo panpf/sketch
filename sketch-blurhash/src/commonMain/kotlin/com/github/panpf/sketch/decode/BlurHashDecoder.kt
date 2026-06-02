@@ -9,6 +9,15 @@ import com.github.panpf.sketch.source.BlurHashDataSource
 /**
  * A [Decoder] that decodes images from a [com.github.panpf.sketch.source.BlurHashDataSource].
  *
+ * The following decoding related properties are supported:
+ *
+ * * sizeResolver
+ * * sizeMultiplier
+ * * precisionDecider
+ * * scaleDecider
+ * * colorType
+ * * colorSpace
+ *
  * @see com.github.panpf.sketch.blurhash.android.test.decode.BlurHashDecoderAndroidTest
  * @see com.github.panpf.sketch.blurhash.nonandroid.test.decode.BlurHashDecoderNonAndroidTest
  */

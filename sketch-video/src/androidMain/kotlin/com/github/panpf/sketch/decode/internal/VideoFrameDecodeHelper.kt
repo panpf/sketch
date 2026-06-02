@@ -48,21 +48,6 @@ import com.github.panpf.sketch.util.shapeType
 /**
  * Use MediaMetadataRetriever to decode video frames
  *
- * The following decoding related properties are supported:
- *
- * * sizeResolver: Only sampleSize
- * * sizeMultiplier
- * * precisionDecider: Only LESS_PIXELS and SMALLER_SIZE is supported
- * * colorSpace: Only on Android 30 or later
- * * videoFrameMicros
- * * videoFramePercent
- * * videoFrameOption
- *
- * The following decoding related properties are not supported:
- *
- * * scaleDecider
- * * colorType
- *
  * @see com.github.panpf.sketch.video.android.test.decode.internal.VideoFrameDecodeHelperTest
  */
 class VideoFrameDecodeHelper constructor(

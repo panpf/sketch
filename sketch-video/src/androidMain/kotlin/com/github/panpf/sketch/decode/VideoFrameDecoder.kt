@@ -45,9 +45,10 @@ fun ComponentRegistry.Builder.supportVideoFrame(): ComponentRegistry.Builder = a
  *
  * The following decoding related properties are supported:
  *
- * * sizeResolver: Only sampleSize
+ * * sizeResolver
  * * sizeMultiplier
- * * precisionDecider: Only LESS_PIXELS and SMALLER_SIZE is supported
+ * * precisionDecider
+ * * scaleDecider
  * * colorSpace: Only on Android 30 or later
  * * videoFrameMicros
  * * videoFramePercent
@@ -55,7 +56,6 @@ fun ComponentRegistry.Builder.supportVideoFrame(): ComponentRegistry.Builder = a
  *
  * The following decoding related properties are not supported:
  *
- * * scaleDecider
  * * colorType
  *
  * @see com.github.panpf.sketch.video.android.test.decode.VideoFrameDecoderTest

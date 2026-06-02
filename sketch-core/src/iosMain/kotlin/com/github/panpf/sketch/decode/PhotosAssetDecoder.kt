@@ -29,6 +29,19 @@ import kotlinx.cinterop.ExperimentalForeignApi
 /**
  * Decode the photos asset in the iOS system album.
  *
+ * The following decoding related properties are supported:
+ *
+ * * sizeResolver
+ * * sizeMultiplier
+ * * precisionDecider
+ * * scaleDecider
+ * * exifOrientation
+ *
+ * The following features are not supported:
+ *
+ * * colorType
+ * * colorSpace
+ *
  * @see com.github.panpf.sketch.core.ios.test.decode.PhotosAssetDecoderTest
  */
 class PhotosAssetDecoder(

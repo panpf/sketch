@@ -33,6 +33,7 @@ import com.github.panpf.sketch.source.DataSource
  * * scaleDecider
  * * colorType
  * * colorSpace
+ * * exifOrientation
  *
  * @see com.github.panpf.sketch.core.nonandroid.test.decode.SkiaDecoderTest
  */

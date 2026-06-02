@@ -42,15 +42,15 @@ fun ComponentRegistry.Builder.supportPhotosAssetVideoFrame(): ComponentRegistry.
  *
  * The following decoding related properties are supported:
  *
- * * sizeResolver: Only sampleSize
+ * * sizeResolver
  * * sizeMultiplier
- * * precisionDecider: Only LESS_PIXELS and SMALLER_SIZE is supported
+ * * precisionDecider
+ * * scaleDecider
  * * videoFrameMicros
  * * videoFramePercent
  *
  * The following decoding related properties are not supported:
  *
- * * scaleDecider
  * * colorType
  * * colorSpace
  *
