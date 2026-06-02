@@ -269,10 +269,7 @@ fun supportBitmapRegionDecoder(mimeType: String, animated: Boolean = false): Boo
         ImageFormat.SVG.mimeType -> false
         ImageFormat.HEIC.mimeType -> VERSION.SDK_INT >= VERSION_CODES.O_MR1
         ImageFormat.HEIF.mimeType -> VERSION.SDK_INT >= VERSION_CODES.O_MR1
-        // For the AVIF format, BitmapFactory starts to support it from API 31.
-        // But BitmapRegionDecoder still does not support it until API 35.
-        // At present, it can only be assumed that API 36 starts to support it.
-        ImageFormat.AVIF.mimeType -> if (VERSION.SDK_INT <= 35) false else null
+        ImageFormat.AVIF.mimeType -> VERSION.SDK_INT >= 37
         // Other formats are supported by default, In order to prevent BitmapRegionDecoder from supporting new formats in the future, our failure to adapt will result in unavailability.
         else -> null
     }
