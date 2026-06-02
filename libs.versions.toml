@@ -26,8 +26,7 @@ buildkonfig = "0.20.0"
 
 dokka = "2.2.0"
 
-# https://github.com/wseemann/FFmpegMediaMetadataRetriever/issues/294
-ffmpegMediaMetadataRetriever = "1.0.21"
+ffmpegMediaMetadataRetriever = "1.0.22"
 
 google-flexbox = "3.0.0"
 google-material = "1.14.0"

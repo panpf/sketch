@@ -9,6 +9,12 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
+# new
+
+## Dependencies
+
+* depend: Upgrade to FFmpegMediaMetadataRetriever 1.0.22
+
 # 4.5.0-beta01
 
 ## Multiplatform
@@ -29,7 +35,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
 
 ## Dependencies
 
-* Upgrade to kotlinx coroutines 1.11.0
+* depend: Upgrade to kotlinx coroutines 1.11.0
 
 # 4.5.0-alpha03
 
@@ -58,8 +64,8 @@ Translations: [简体中文](CHANGELOG.zh.md)
 
 ## Dependencies
 
-* Upgrade to ktor 3.4.3
-* Upgrade to koin 4.2.1
+* depend: Upgrade to ktor 3.4.3
+* depend: Upgrade to koin 4.2.1
 
 # 4.5.0-alpha02
 
@@ -114,12 +120,12 @@ Translations: [简体中文](CHANGELOG.zh.md)
 
 ## Dependencies
 
-* Upgrade to kotlin 2.3.20
-* Upgrade to jetbrains compose 1.10.3
-* Upgrade to ktor 3.4.2
-* Upgrade to okio 3.17.0
-* Upgrade to androidx-core 1.18.0
-* Upgrade to androidgifdrawable 1.2.31
+* depend: Upgrade to kotlin 2.3.20
+* depend: Upgrade to jetbrains compose 1.10.3
+* depend: Upgrade to ktor 3.4.2
+* depend: Upgrade to okio 3.17.0
+* depend: Upgrade to androidx-core 1.18.0
+* depend: Upgrade to androidgifdrawable 1.2.31
 
 # 4.4.0
 

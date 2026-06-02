@@ -7,6 +7,12 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
+# new
+
+## Dependencies
+
+* depend: 升级 FFmpegMediaMetadataRetriever 1.0.22
+
 # 4.5.0-beta01
 
 ## Multiplatform
@@ -24,7 +30,7 @@
 
 ## Dependencies
 
-* 升级 kotlinx coroutines 1.11.0
+* depend: 升级 kotlinx coroutines 1.11.0
 
 # 4.5.0-alpha03
 
@@ -50,8 +56,8 @@
 
 ## Dependencies
 
-* 升级 ktor 3.4.3
-* 升级 koib 4.2.1
+* depend: 升级 ktor 3.4.3
+* depend: 升级 koib 4.2.1
 
 # 4.5.0-alpha02
 
@@ -100,12 +106,12 @@
 
 ## Dependencies
 
-* 升级 kotlin 2.3.20
-* 升级 jetbrains compose 1.10.3
-* 升级 ktor 3.4.2
-* 升级 okio 3.17.0
-* 升级 androidx-core 1.18.0
-* 升级 androidgifdrawable 1.2.31
+* depend: 升级 kotlin 2.3.20
+* depend: 升级 jetbrains compose 1.10.3
+* depend: 升级 ktor 3.4.2
+* depend: 升级 okio 3.17.0
+* depend: 升级 androidx-core 1.18.0
+* depend: 升级 androidgifdrawable 1.2.31
 
 # 4.4.0
 
