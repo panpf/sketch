@@ -8,6 +8,7 @@ import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.sketch.util.correctExifOrientation
 import com.github.panpf.sketch.util.fetchPhotosAsset
 import com.github.panpf.sketch.util.isIOSVersionAtLeast
 import com.github.panpf.sketch.util.pixelSize
@@ -33,7 +34,9 @@ import platform.UIKit.UIImage
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNotSame
 import kotlin.test.assertNull
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class IosPlatformUtilsTest {
@@ -342,6 +345,25 @@ class IosPlatformUtilsTest {
         // [Test not completed] Because the test environment cannot access the photo library, the test cannot be completed.
         val asset = PHAsset()
         assertEquals(expected = Size(0, 0), actual = asset.pixelSize())
+    }
+
+    @Test
+    @OptIn(ExperimentalForeignApi::class)
+    fun testCorrectExifOrientation() = runTest {
+        val context = getTestContext()
+        val data = ComposeResImageFiles.jpeg.toDataSource(context).toByteArray()
+        val uiImage = UIImage.imageWithData(data.toNSData())!!
+        val newImage = uiImage.correctExifOrientation()
+        assertSame(expected = uiImage, actual = newImage)
+
+        val data2 = ComposeResImageFiles.clockExifRotate90.toDataSource(context).toByteArray()
+        val uiImage2 = UIImage.imageWithData(data2.toNSData())!!
+        val newImage2 = uiImage2.correctExifOrientation()
+        assertNotSame(illegal = uiImage2, actual = newImage2)
+        assertNotSame(
+            illegal = uiImage2.sketchSize().let { Size(it.height, it.width) },
+            actual = newImage2.sketchSize()
+        )
     }
 
     @Test

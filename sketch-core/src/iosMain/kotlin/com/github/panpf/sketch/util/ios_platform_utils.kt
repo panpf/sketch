@@ -30,6 +30,7 @@ import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.useContents
 import kotlinx.cinterop.usePinned
 import org.jetbrains.skia.ColorAlphaType
+import org.jetbrains.skia.ColorSpace
 import org.jetbrains.skia.ColorType
 import platform.CoreGraphics.CGBitmapContextCreate
 import platform.CoreGraphics.CGColorSpaceCreateDeviceRGB
@@ -54,6 +55,7 @@ import platform.Photos.PHAssetMediaTypeImage
 import platform.Photos.PHAssetMediaTypeVideo
 import platform.Photos.PHAssetResource
 import platform.UIKit.UIImage
+import platform.UIKit.UIImageOrientation
 import platform.UniformTypeIdentifiers.UTType
 import platform.darwin.ByteVar
 import platform.posix.memcpy
@@ -298,6 +300,23 @@ fun PHAsset.pixelSize(): Size = Size(
 )
 
 /**
+ * Correct the orientation of a UIImage by checking its imageOrientation property and, if it is not already in the upright orientation, creating a new image with the correct orientation using UIGraphicsImageRenderer.
+ *
+ * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testCorrectExifOrientation
+ */
+fun UIImage.correctExifOrientation(): UIImage {
+    if (this.imageOrientation == UIImageOrientation.UIImageOrientationUp) return this
+    val format = platform.UIKit.UIGraphicsImageRendererFormat.defaultFormat()
+    val renderer = platform.UIKit.UIGraphicsImageRenderer(size = this.size, format = format)
+    val newImage = renderer.imageWithActions {
+        val width = this.size.useContents { width }
+        val height = this.size.useContents { height }
+        this.drawInRect(CGRectMake(x = 0.0, y = 0.0, width = width, height = height))
+    }
+    return newImage
+}
+
+/**
  * Convert a UIImage to a Bitmap by creating a bitmap context, drawing the image into it, and then installing the pixel data into a Bitmap object.
  *
  * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testUIImageToBitmap
@@ -382,7 +401,7 @@ fun UIImage.toBitmap(sampleSize: Int = 1, cropRect: Rect? = null): Bitmap {
             height = sampledBitmapSize.height,
             colorType = ColorType.RGBA_8888,
             alphaType = ColorAlphaType.PREMUL,
-            colorSpace = null,
+            colorSpace = ColorSpace.sRGB,
         )
         val bitmap = Bitmap()
         if (!bitmap.installPixels(imageInfo, pixels, bytesPerRow)) {
@@ -395,6 +414,15 @@ fun UIImage.toBitmap(sampleSize: Int = 1, cropRect: Rect? = null): Bitmap {
             CGImageRelease(croppedCGImage)
         }
     }
+}
+
+/**
+ * Convert a UIImage to a Bitmap by creating a bitmap context, drawing the image into it, and then installing the pixel data into a Bitmap object.
+ *
+ * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testUIImageToBitmap
+ */
+fun UIImage.toBitmap(): Bitmap {
+    return toBitmap(sampleSize = 1, cropRect = null)
 }
 
 /**

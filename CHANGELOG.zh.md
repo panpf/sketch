@@ -20,6 +20,7 @@
 
 * change: PhotosAssetFetcher 重命名为 PhotosAssetUriFetcher
 * change: 合并 UseSkiaInterceptor 的功能到 PhotosAssetUriFetcher 中并删除它
+* new: 新增 UIImageDecoder 支持解码 heif 和 avif 格式图片
 
 ## Dependencies
 

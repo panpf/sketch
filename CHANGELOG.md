@@ -25,6 +25,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
 
 * change: PhotosAssetFetcher renamed to PhotosAssetUriFetcher
 * change: Merge the functionality of UseSkiaInterceptor into PhotosAssetUriFetcher and remove it
+* new: Added UIImageDecoder to support decoding heif and avif format images
 
 ## Dependencies
 

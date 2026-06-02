@@ -2635,6 +2635,23 @@ public final class com/github/panpf/sketch/util/DownloadData$Cache : com/github/
 	public final fun getPath ()Lokio/Path;
 }
 
+public final class com/github/panpf/sketch/util/File_typesKt {
+	public static final fun isAnimatedAvifFile ([B)Z
+	public static final fun isAnimatedHeifFile ([B)Z
+	public static final fun isAnimatedWebPFile ([B)Z
+	public static final fun isAvifFile ([B)Z
+	public static final fun isBmpFile ([B)Z
+	public static final fun isGifFile ([B)Z
+	public static final fun isHeifFile ([B)Z
+	public static final fun isJpegFile ([B)Z
+	public static final fun isPngFile ([B)Z
+	public static final fun isStaticsAvifFile ([B)Z
+	public static final fun isStaticsHeifFile ([B)Z
+	public static final fun isStaticsWebPFile ([B)Z
+	public static final fun isSvgFile ([B)Z
+	public static final fun isWebPFile ([B)Z
+}
+
 public final class com/github/panpf/sketch/util/GraphicsKt {
 	public static final fun calculateRotatedSize (Lcom/github/panpf/sketch/util/Size;D)Lcom/github/panpf/sketch/util/Size;
 	public static final fun fastGaussianBlur ([IIII)V

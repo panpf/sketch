@@ -3126,6 +3126,20 @@ final fun com.github.panpf.sketch.util/computeScaleMultiplierWithFit(kotlin/Int,
 final fun com.github.panpf.sketch.util/computeScaleMultiplierWithOneSide(com.github.panpf.sketch.util/Size, com.github.panpf.sketch.util/Size): kotlin/Float // com.github.panpf.sketch.util/computeScaleMultiplierWithOneSide|computeScaleMultiplierWithOneSide(com.github.panpf.sketch.util.Size;com.github.panpf.sketch.util.Size){}[0]
 final fun com.github.panpf.sketch.util/fastGaussianBlur(kotlin/IntArray, kotlin/Int, kotlin/Int, kotlin/Int) // com.github.panpf.sketch.util/fastGaussianBlur|fastGaussianBlur(kotlin.IntArray;kotlin.Int;kotlin.Int;kotlin.Int){}[0]
 final fun com.github.panpf.sketch.util/ioCoroutineDispatcher(): kotlinx.coroutines/CoroutineDispatcher // com.github.panpf.sketch.util/ioCoroutineDispatcher|ioCoroutineDispatcher(){}[0]
+final fun com.github.panpf.sketch.util/isAnimatedAvifFile(kotlin/ByteArray): kotlin/Boolean // com.github.panpf.sketch.util/isAnimatedAvifFile|isAnimatedAvifFile(kotlin.ByteArray){}[0]
+final fun com.github.panpf.sketch.util/isAnimatedHeifFile(kotlin/ByteArray): kotlin/Boolean // com.github.panpf.sketch.util/isAnimatedHeifFile|isAnimatedHeifFile(kotlin.ByteArray){}[0]
+final fun com.github.panpf.sketch.util/isAnimatedWebPFile(kotlin/ByteArray): kotlin/Boolean // com.github.panpf.sketch.util/isAnimatedWebPFile|isAnimatedWebPFile(kotlin.ByteArray){}[0]
+final fun com.github.panpf.sketch.util/isAvifFile(kotlin/ByteArray): kotlin/Boolean // com.github.panpf.sketch.util/isAvifFile|isAvifFile(kotlin.ByteArray){}[0]
+final fun com.github.panpf.sketch.util/isBmpFile(kotlin/ByteArray): kotlin/Boolean // com.github.panpf.sketch.util/isBmpFile|isBmpFile(kotlin.ByteArray){}[0]
+final fun com.github.panpf.sketch.util/isGifFile(kotlin/ByteArray): kotlin/Boolean // com.github.panpf.sketch.util/isGifFile|isGifFile(kotlin.ByteArray){}[0]
+final fun com.github.panpf.sketch.util/isHeifFile(kotlin/ByteArray): kotlin/Boolean // com.github.panpf.sketch.util/isHeifFile|isHeifFile(kotlin.ByteArray){}[0]
+final fun com.github.panpf.sketch.util/isJpegFile(kotlin/ByteArray): kotlin/Boolean // com.github.panpf.sketch.util/isJpegFile|isJpegFile(kotlin.ByteArray){}[0]
+final fun com.github.panpf.sketch.util/isPngFile(kotlin/ByteArray): kotlin/Boolean // com.github.panpf.sketch.util/isPngFile|isPngFile(kotlin.ByteArray){}[0]
+final fun com.github.panpf.sketch.util/isStaticsAvifFile(kotlin/ByteArray): kotlin/Boolean // com.github.panpf.sketch.util/isStaticsAvifFile|isStaticsAvifFile(kotlin.ByteArray){}[0]
+final fun com.github.panpf.sketch.util/isStaticsHeifFile(kotlin/ByteArray): kotlin/Boolean // com.github.panpf.sketch.util/isStaticsHeifFile|isStaticsHeifFile(kotlin.ByteArray){}[0]
+final fun com.github.panpf.sketch.util/isStaticsWebPFile(kotlin/ByteArray): kotlin/Boolean // com.github.panpf.sketch.util/isStaticsWebPFile|isStaticsWebPFile(kotlin.ByteArray){}[0]
+final fun com.github.panpf.sketch.util/isSvgFile(kotlin/ByteArray): kotlin/Boolean // com.github.panpf.sketch.util/isSvgFile|isSvgFile(kotlin.ByteArray){}[0]
+final fun com.github.panpf.sketch.util/isWebPFile(kotlin/ByteArray): kotlin/Boolean // com.github.panpf.sketch.util/isWebPFile|isWebPFile(kotlin.ByteArray){}[0]
 final fun com.github.panpf.sketch.util/key(kotlin/Any): kotlin/String // com.github.panpf.sketch.util/key|key(kotlin.Any){}[0]
 final fun com.github.panpf.sketch.util/keyOrNull(kotlin/Any?): kotlin/String? // com.github.panpf.sketch.util/keyOrNull|keyOrNull(kotlin.Any?){}[0]
 final fun com.github.panpf.sketch.util/requiredWorkThread() // com.github.panpf.sketch.util/requiredWorkThread|requiredWorkThread(){}[0]
@@ -3154,6 +3168,20 @@ final class com.github.panpf.sketch.decode.internal/PhotosAssetDecodeHelper : co
 }
 
 // Targets: [ios]
+final class com.github.panpf.sketch.decode.internal/UIImageDecodeHelper : com.github.panpf.sketch.decode.internal/DecodeHelper { // com.github.panpf.sketch.decode.internal/UIImageDecodeHelper|null[0]
+    constructor <init>(com.github.panpf.sketch.source/DataSource, kotlin/String) // com.github.panpf.sketch.decode.internal/UIImageDecodeHelper.<init>|<init>(com.github.panpf.sketch.source.DataSource;kotlin.String){}[0]
+
+    final val dataSource // com.github.panpf.sketch.decode.internal/UIImageDecodeHelper.dataSource|{}dataSource[0]
+        final fun <get-dataSource>(): com.github.panpf.sketch.source/DataSource // com.github.panpf.sketch.decode.internal/UIImageDecodeHelper.dataSource.<get-dataSource>|<get-dataSource>(){}[0]
+
+    final fun close() // com.github.panpf.sketch.decode.internal/UIImageDecodeHelper.close|close(){}[0]
+    final suspend fun decode(kotlin/Int): com.github.panpf.sketch/Image // com.github.panpf.sketch.decode.internal/UIImageDecodeHelper.decode|decode(kotlin.Int){}[0]
+    final suspend fun decodeRegion(com.github.panpf.sketch.util/Rect, kotlin/Int): com.github.panpf.sketch/Image // com.github.panpf.sketch.decode.internal/UIImageDecodeHelper.decodeRegion|decodeRegion(com.github.panpf.sketch.util.Rect;kotlin.Int){}[0]
+    final suspend fun getImageInfo(): com.github.panpf.sketch.decode/ImageInfo // com.github.panpf.sketch.decode.internal/UIImageDecodeHelper.getImageInfo|getImageInfo(){}[0]
+    final suspend fun isSupportRegion(): kotlin/Boolean // com.github.panpf.sketch.decode.internal/UIImageDecodeHelper.isSupportRegion|isSupportRegion(){}[0]
+}
+
+// Targets: [ios]
 final class com.github.panpf.sketch.decode/PhotosAssetDecoder : com.github.panpf.sketch.decode.internal/HelperDecoder { // com.github.panpf.sketch.decode/PhotosAssetDecoder|null[0]
     constructor <init>(com.github.panpf.sketch.request/RequestContext, com.github.panpf.sketch.source/PhotosAssetDataSource, kotlin/String) // com.github.panpf.sketch.decode/PhotosAssetDecoder.<init>|<init>(com.github.panpf.sketch.request.RequestContext;com.github.panpf.sketch.source.PhotosAssetDataSource;kotlin.String){}[0]
 
@@ -3174,6 +3202,44 @@ final class com.github.panpf.sketch.decode/PhotosAssetDecoder : com.github.panpf
     final object Companion { // com.github.panpf.sketch.decode/PhotosAssetDecoder.Companion|null[0]
         final const val SORT_WEIGHT // com.github.panpf.sketch.decode/PhotosAssetDecoder.Companion.SORT_WEIGHT|{}SORT_WEIGHT[0]
             final fun <get-SORT_WEIGHT>(): kotlin/Int // com.github.panpf.sketch.decode/PhotosAssetDecoder.Companion.SORT_WEIGHT.<get-SORT_WEIGHT>|<get-SORT_WEIGHT>(){}[0]
+    }
+}
+
+// Targets: [ios]
+final class com.github.panpf.sketch.decode/UIImageDecoder : com.github.panpf.sketch.decode.internal/HelperDecoder { // com.github.panpf.sketch.decode/UIImageDecoder|null[0]
+    constructor <init>(com.github.panpf.sketch.request/RequestContext, com.github.panpf.sketch.source/DataSource, kotlin/String) // com.github.panpf.sketch.decode/UIImageDecoder.<init>|<init>(com.github.panpf.sketch.request.RequestContext;com.github.panpf.sketch.source.DataSource;kotlin.String){}[0]
+
+    final class Factory : com.github.panpf.sketch.decode/Decoder.Factory { // com.github.panpf.sketch.decode/UIImageDecoder.Factory|null[0]
+        constructor <init>() // com.github.panpf.sketch.decode/UIImageDecoder.Factory.<init>|<init>(){}[0]
+
+        final val key // com.github.panpf.sketch.decode/UIImageDecoder.Factory.key|{}key[0]
+            final fun <get-key>(): kotlin/String // com.github.panpf.sketch.decode/UIImageDecoder.Factory.key.<get-key>|<get-key>(){}[0]
+        final val sortWeight // com.github.panpf.sketch.decode/UIImageDecoder.Factory.sortWeight|{}sortWeight[0]
+            final fun <get-sortWeight>(): kotlin/Int // com.github.panpf.sketch.decode/UIImageDecoder.Factory.sortWeight.<get-sortWeight>|<get-sortWeight>(){}[0]
+
+        final fun create(com.github.panpf.sketch.request/RequestContext, com.github.panpf.sketch.fetch/FetchResult): com.github.panpf.sketch.decode/UIImageDecoder? // com.github.panpf.sketch.decode/UIImageDecoder.Factory.create|create(com.github.panpf.sketch.request.RequestContext;com.github.panpf.sketch.fetch.FetchResult){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.decode/UIImageDecoder.Factory.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.github.panpf.sketch.decode/UIImageDecoder.Factory.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.github.panpf.sketch.decode/UIImageDecoder.Factory.toString|toString(){}[0]
+    }
+
+    final class SupplementSkiaFactory : com.github.panpf.sketch.decode/Decoder.Factory { // com.github.panpf.sketch.decode/UIImageDecoder.SupplementSkiaFactory|null[0]
+        constructor <init>() // com.github.panpf.sketch.decode/UIImageDecoder.SupplementSkiaFactory.<init>|<init>(){}[0]
+
+        final val key // com.github.panpf.sketch.decode/UIImageDecoder.SupplementSkiaFactory.key|{}key[0]
+            final fun <get-key>(): kotlin/String // com.github.panpf.sketch.decode/UIImageDecoder.SupplementSkiaFactory.key.<get-key>|<get-key>(){}[0]
+        final val sortWeight // com.github.panpf.sketch.decode/UIImageDecoder.SupplementSkiaFactory.sortWeight|{}sortWeight[0]
+            final fun <get-sortWeight>(): kotlin/Int // com.github.panpf.sketch.decode/UIImageDecoder.SupplementSkiaFactory.sortWeight.<get-sortWeight>|<get-sortWeight>(){}[0]
+
+        final fun create(com.github.panpf.sketch.request/RequestContext, com.github.panpf.sketch.fetch/FetchResult): com.github.panpf.sketch.decode/UIImageDecoder? // com.github.panpf.sketch.decode/UIImageDecoder.SupplementSkiaFactory.create|create(com.github.panpf.sketch.request.RequestContext;com.github.panpf.sketch.fetch.FetchResult){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.decode/UIImageDecoder.SupplementSkiaFactory.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.github.panpf.sketch.decode/UIImageDecoder.SupplementSkiaFactory.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.github.panpf.sketch.decode/UIImageDecoder.SupplementSkiaFactory.toString|toString(){}[0]
+    }
+
+    final object Companion { // com.github.panpf.sketch.decode/UIImageDecoder.Companion|null[0]
+        final const val SORT_WEIGHT // com.github.panpf.sketch.decode/UIImageDecoder.Companion.SORT_WEIGHT|{}SORT_WEIGHT[0]
+            final fun <get-SORT_WEIGHT>(): kotlin/Int // com.github.panpf.sketch.decode/UIImageDecoder.Companion.SORT_WEIGHT.<get-SORT_WEIGHT>|<get-SORT_WEIGHT>(){}[0]
     }
 }
 
@@ -3362,10 +3428,25 @@ final fun (com.github.panpf.sketch.request/ImageRequest.Builder).com.github.panp
 final fun (com.github.panpf.sketch.request/ImageRequest.Builder).com.github.panpf.sketch.request/useSkiaForImagePhotosAsset(kotlin/Boolean? = ...): com.github.panpf.sketch.request/ImageRequest.Builder // com.github.panpf.sketch.request/useSkiaForImagePhotosAsset|useSkiaForImagePhotosAsset@com.github.panpf.sketch.request.ImageRequest.Builder(kotlin.Boolean?){}[0]
 
 // Targets: [ios]
+final fun (kotlin/ByteArray).com.github.panpf.sketch.util/toNSData(): platform.Foundation/NSData // com.github.panpf.sketch.util/toNSData|toNSData@kotlin.ByteArray(){}[0]
+
+// Targets: [ios]
+final fun (platform.Foundation/NSData).com.github.panpf.sketch.util/toByteArray(): kotlin/ByteArray // com.github.panpf.sketch.util/toByteArray|toByteArray@platform.Foundation.NSData(){}[0]
+
+// Targets: [ios]
 final fun (platform.Photos/PHAsset).com.github.panpf.sketch.util/pixelSize(): com.github.panpf.sketch.util/Size // com.github.panpf.sketch.util/pixelSize|pixelSize@platform.Photos.PHAsset(){}[0]
 
 // Targets: [ios]
+final fun (platform.UIKit/UIImage).com.github.panpf.sketch.util/correctExifOrientation(): platform.UIKit/UIImage // com.github.panpf.sketch.util/correctExifOrientation|correctExifOrientation@platform.UIKit.UIImage(){}[0]
+
+// Targets: [ios]
+final fun (platform.UIKit/UIImage).com.github.panpf.sketch.util/sketchSize(): com.github.panpf.sketch.util/Size // com.github.panpf.sketch.util/sketchSize|sketchSize@platform.UIKit.UIImage(){}[0]
+
+// Targets: [ios]
 final fun (platform.UIKit/UIImage).com.github.panpf.sketch.util/toBitmap(): org.jetbrains.skia/Bitmap // com.github.panpf.sketch.util/toBitmap|toBitmap@platform.UIKit.UIImage(){}[0]
+
+// Targets: [ios]
+final fun (platform.UIKit/UIImage).com.github.panpf.sketch.util/toBitmap(kotlin/Int = ..., com.github.panpf.sketch.util/Rect? = ...): org.jetbrains.skia/Bitmap // com.github.panpf.sketch.util/toBitmap|toBitmap@platform.UIKit.UIImage(kotlin.Int;com.github.panpf.sketch.util.Rect?){}[0]
 
 // Targets: [ios]
 final fun com.github.panpf.sketch.fetch/isKotlinResourceUri(com.github.panpf.sketch.util/Uri): kotlin/Boolean // com.github.panpf.sketch.fetch/isKotlinResourceUri|isKotlinResourceUri(com.github.panpf.sketch.util.Uri){}[0]
@@ -3381,3 +3462,6 @@ final fun com.github.panpf.sketch.fetch/newPhotosAssetUri(kotlin/String): kotlin
 
 // Targets: [ios]
 final fun com.github.panpf.sketch.fetch/parseLocalIdentifier(com.github.panpf.sketch.util/Uri): kotlin/String? // com.github.panpf.sketch.fetch/parseLocalIdentifier|parseLocalIdentifier(com.github.panpf.sketch.util.Uri){}[0]
+
+// Targets: [ios]
+final fun com.github.panpf.sketch.util/isIOSVersionAtLeast(kotlin/Int, kotlin/Int = ..., kotlin/Int = ...): kotlin/Boolean // com.github.panpf.sketch.util/isIOSVersionAtLeast|isIOSVersionAtLeast(kotlin.Int;kotlin.Int;kotlin.Int){}[0]

@@ -18,6 +18,7 @@ package com.github.panpf.sketch
 
 import com.github.panpf.sketch.decode.PhotosAssetDecoder
 import com.github.panpf.sketch.decode.SkiaDecoder
+import com.github.panpf.sketch.decode.UIImageDecoder
 import com.github.panpf.sketch.fetch.KotlinResourceUriFetcher
 import com.github.panpf.sketch.fetch.PhotosAssetUriFetcher
 
@@ -31,6 +32,7 @@ internal actual fun platformComponents(context: PlatformContext): ComponentRegis
         add(KotlinResourceUriFetcher.Factory())
         add(PhotosAssetUriFetcher.Factory())
         add(PhotosAssetDecoder.Factory())
+        add(UIImageDecoder.SupplementSkiaFactory())
         add(SkiaDecoder.Factory())
     }
 }
