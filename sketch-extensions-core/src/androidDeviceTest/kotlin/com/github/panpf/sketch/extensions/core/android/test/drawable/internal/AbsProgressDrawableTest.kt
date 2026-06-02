@@ -28,6 +28,7 @@ class AbsProgressDrawableTest {
 
     @Test
     fun testProgress() = runTest {
+        // TODO It is easy to fail during batch testing and needs to be improved or blocked.
         // It was found that the test can only be completed stably on Android 8.0, so.
         // Maybe you can change the test plan when View supports screenshot testing.
         if (VERSION.SDK_INT != VERSION_CODES.O) return@runTest
