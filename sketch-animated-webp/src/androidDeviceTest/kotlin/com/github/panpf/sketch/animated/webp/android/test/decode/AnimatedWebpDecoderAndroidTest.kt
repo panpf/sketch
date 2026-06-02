@@ -68,7 +68,10 @@ class AnimatedWebpDecoderAndroidTest {
                     expected = "ComponentRegistry(" +
                             "fetchers=[]," +
                             "decoders=[]," +
-                            "interceptors=[]" +
+                            "interceptors=[]," +
+                            "disabledFetchers=[]," +
+                            "disabledDecoders=[]," +
+                            "disabledInterceptors=[]" +
                             ")",
                     actual = toString()
                 )
@@ -82,7 +85,10 @@ class AnimatedWebpDecoderAndroidTest {
                     expected = "ComponentRegistry(" +
                             "fetchers=[]," +
                             "decoders=[]," +
-                            "interceptors=[]" +
+                            "interceptors=[]," +
+                            "disabledFetchers=[]," +
+                            "disabledDecoders=[]," +
+                            "disabledInterceptors=[]" +
                             ")",
                     actual = toString()
                 )

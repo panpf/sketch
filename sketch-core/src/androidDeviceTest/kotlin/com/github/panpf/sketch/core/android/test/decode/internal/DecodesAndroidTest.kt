@@ -609,8 +609,8 @@ class DecodesAndroidTest {
 
         val maxSize = getMaxBitmapSize()?.width ?: 0
         val expected = when {
-            maxSize <= 4096 -> 32
-            maxSize <= 8192 -> 16
+            maxSize <= 4096 -> 8
+            maxSize <= 8192 -> 4
             else -> 4
         }
         assertEquals(
@@ -913,8 +913,8 @@ class DecodesAndroidTest {
 
         val maxSize = getMaxBitmapSize()?.width ?: 0
         val expected = when {
-            maxSize <= 4096 -> 32
-            maxSize <= 8192 -> 16
+            maxSize <= 4096 -> 8
+            maxSize <= 8192 -> 4
             else -> 4
         }
         assertEquals(
