@@ -98,11 +98,12 @@ class SkiaDecoderTest {
     @Test
     fun testDecodeDefault() = runTest {
         val (context, sketch) = getTestContextAndSketch()
+        val factory = SkiaDecoder.Factory()
 
         ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(3000, 3000)
             precision(LESS_PIXELS)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
                 expected = "Bitmap(1291x1936,${defaultColorType.name},sRGB)",
@@ -119,7 +120,7 @@ class SkiaDecoderTest {
         ImageRequest(context, ComposeResImageFiles.webp.uri) {
             size(3000, 3000)
             precision(LESS_PIXELS)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
                 expected = "Bitmap(1080x1344,${defaultColorType.name},sRGB)",
@@ -138,7 +139,7 @@ class SkiaDecoderTest {
             ImageRequest(context, imageFile.uri) {
                 size(3000, 3000)
                 precision(LESS_PIXELS)
-            }.decode(sketch).apply {
+            }.decode(sketch, factory).apply {
                 val bitmap = image.getBitmapOrThrow()
                 assertEquals(
                     expected = "Bitmap(1500x750,${defaultColorType.name},sRGB)",
@@ -157,12 +158,47 @@ class SkiaDecoderTest {
     @Test
     fun testDecodeColorType() = runTest {
         val (context, sketch) = getTestContextAndSketch()
+        val factory = SkiaDecoder.Factory()
+
+        ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
+            size(3000, 3000)
+            precision(LESS_PIXELS)
+        }.decode(sketch, factory).apply {
+            val bitmap = image.getBitmapOrThrow()
+            assertEquals(
+                expected = "Bitmap(1291x1936,RGBA_8888,sRGB)",
+                actual = bitmap.toShortInfoString()
+            )
+            assertEquals(
+                expected = "ImageInfo(1291x1936,'image/jpeg')",
+                actual = imageInfo.toShortString()
+            )
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNull(actual = transformeds)
+        }
+
+        ImageRequest(context, ComposeResImageFiles.webp.uri) {
+            size(3000, 3000)
+            precision(LESS_PIXELS)
+        }.decode(sketch, factory).apply {
+            val bitmap = image.getBitmapOrThrow()
+            assertEquals(
+                expected = "Bitmap(1080x1344,RGBA_8888,sRGB)",
+                actual = bitmap.toShortInfoString()
+            )
+            assertEquals(
+                expected = "ImageInfo(1080x1344,'image/webp')",
+                actual = imageInfo.toShortString()
+            )
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNull(actual = transformeds)
+        }
 
         ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(3000, 3000)
             precision(LESS_PIXELS)
             colorType(ColorType.RGB_565)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
                 expected = "Bitmap(1291x1936,RGB_565,sRGB)",
@@ -180,7 +216,7 @@ class SkiaDecoderTest {
             size(3000, 3000)
             precision(LESS_PIXELS)
             colorType(ColorType.RGB_565)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
                 expected = "Bitmap(1080x1344,RGB_565,sRGB)",
@@ -198,11 +234,12 @@ class SkiaDecoderTest {
     @Test
     fun testDecodeColorSpace() = runTest {
         val (context, sketch) = getTestContextAndSketch()
+        val factory = SkiaDecoder.Factory()
 
         ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(3000, 3000)
             precision(LESS_PIXELS)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
                 expected = "Bitmap(1291x1936,${defaultColorType.name},sRGB)",
@@ -220,7 +257,7 @@ class SkiaDecoderTest {
         ImageRequest(context, ComposeResImageFiles.webp.uri) {
             size(3000, 3000)
             precision(LESS_PIXELS)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
                 expected = "Bitmap(1080x1344,${defaultColorType.name},sRGB)",
@@ -239,7 +276,7 @@ class SkiaDecoderTest {
             size(3000, 3000)
             precision(LESS_PIXELS)
             colorSpace(ColorSpace.displayP3)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
                 expected = "Bitmap(1291x1936,${defaultColorType.name},displayP3)",
@@ -258,7 +295,7 @@ class SkiaDecoderTest {
             size(3000, 3000)
             precision(LESS_PIXELS)
             colorSpace(ColorSpace.displayP3)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertEquals(
                 expected = "Bitmap(1080x1344,${defaultColorType.name},displayP3)",
@@ -277,12 +314,13 @@ class SkiaDecoderTest {
     @Test
     fun testDecodeResize() = runTest {
         val (context, sketch) = getTestContextAndSketch()
+        val factory = SkiaDecoder.Factory()
 
         // precision = LESS_PIXELS
         ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(800, 800)
             precision(LESS_PIXELS)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 actual = (bitmap.width * bitmap.height) <= (800 * 800 * 1.1f),
@@ -309,7 +347,7 @@ class SkiaDecoderTest {
         ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(500, 500)
             precision(LESS_PIXELS)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 actual = (bitmap.width * bitmap.height) <= (500 * 500 * 1.1f),
@@ -338,7 +376,7 @@ class SkiaDecoderTest {
         ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 actual = (bitmap.width * bitmap.height) <= (500 * 300 * 1.1f),
@@ -365,7 +403,7 @@ class SkiaDecoderTest {
         ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(300, 500)
             precision(SAME_ASPECT_RATIO)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 actual = (bitmap.width * bitmap.height) <= (300 * 500 * 1.1f),
@@ -394,7 +432,7 @@ class SkiaDecoderTest {
         ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(500, 300)
             precision(EXACTLY)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 actual = (bitmap.width * bitmap.height) <= (500 * 300 * 1.1f),
@@ -417,7 +455,7 @@ class SkiaDecoderTest {
         ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(300, 500)
             precision(EXACTLY)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 actual = bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
@@ -443,22 +481,22 @@ class SkiaDecoderTest {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(START_CROP)
-        }.decode(sketch).image.getBitmapOrThrow()
+        }.decode(sketch, factory).image.getBitmapOrThrow()
         val centerCropBitmap = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(CENTER_CROP)
-        }.decode(sketch).image.getBitmapOrThrow()
+        }.decode(sketch, factory).image.getBitmapOrThrow()
         val endCropBitmap = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(END_CROP)
-        }.decode(sketch).image.getBitmapOrThrow()
+        }.decode(sketch, factory).image.getBitmapOrThrow()
         val fillBitmap = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(FILL)
-        }.decode(sketch).image.getBitmapOrThrow()
+        }.decode(sketch, factory).image.getBitmapOrThrow()
         assertTrue(actual = startCropBitmap.width * startCropBitmap.height <= 500 * 300 * 1.1f)
         assertTrue(actual = centerCropBitmap.width * centerCropBitmap.height <= 500 * 300 * 1.1f)
         assertTrue(actual = endCropBitmap.width * endCropBitmap.height <= 500 * 300 * 1.1f)
@@ -492,12 +530,13 @@ class SkiaDecoderTest {
     @Test
     fun testDecodeResizeNoRegion() = runTest {
         val (context, sketch) = getTestContextAndSketch()
+        val factory = SkiaDecoder.Factory()
 
         // precision = LESS_PIXELS
         ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(500, 500)
             precision(LESS_PIXELS)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 (bitmap.width * bitmap.height) <= (500 * 500 * 1.1f),
@@ -523,7 +562,7 @@ class SkiaDecoderTest {
         ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(200, 200)
             precision(LESS_PIXELS)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 (bitmap.width * bitmap.height) <= (200 * 200 * 1.1f),
@@ -551,7 +590,7 @@ class SkiaDecoderTest {
         ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 actual = bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
@@ -577,7 +616,7 @@ class SkiaDecoderTest {
         ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(300, 500)
             precision(SAME_ASPECT_RATIO)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 actual = bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
@@ -604,7 +643,7 @@ class SkiaDecoderTest {
         ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(500, 300)
             precision(EXACTLY)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 actual = bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
@@ -626,7 +665,7 @@ class SkiaDecoderTest {
         ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(300, 500)
             precision(EXACTLY)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 actual = bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
@@ -651,22 +690,22 @@ class SkiaDecoderTest {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(START_CROP)
-        }.decode(sketch).image.getBitmapOrThrow()
+        }.decode(sketch, factory).image.getBitmapOrThrow()
         val centerCropBitmap = ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(CENTER_CROP)
-        }.decode(sketch).image.getBitmapOrThrow()
+        }.decode(sketch, factory).image.getBitmapOrThrow()
         val endCropBitmap = ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(END_CROP)
-        }.decode(sketch).image.getBitmapOrThrow()
+        }.decode(sketch, factory).image.getBitmapOrThrow()
         val fillBitmap = ImageRequest(context, ComposeResImageFiles.bmp.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(FILL)
-        }.decode(sketch).image.getBitmapOrThrow()
+        }.decode(sketch, factory).image.getBitmapOrThrow()
         assertTrue(actual = startCropBitmap.width * startCropBitmap.height <= 500 * 300 * 1.1f)
         assertTrue(actual = centerCropBitmap.width * centerCropBitmap.height <= 500 * 300 * 1.1f)
         assertTrue(actual = endCropBitmap.width * endCropBitmap.height <= 500 * 300 * 1.1f)
@@ -700,6 +739,7 @@ class SkiaDecoderTest {
     @Test
     fun testDecodeResizeExif() = runTest {
         val (context, sketch) = getTestContextAndSketch()
+        val factory = SkiaDecoder.Factory()
 
         val testFile = ComposeResImageFiles.clockExifTranspose
 
@@ -707,7 +747,7 @@ class SkiaDecoderTest {
         ImageRequest(context, testFile.uri) {
             size(800, 800)
             precision(LESS_PIXELS)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 actual = bitmap.width * bitmap.height <= 800 * 800 * 1.1f,
@@ -734,7 +774,7 @@ class SkiaDecoderTest {
         ImageRequest(context, testFile.uri) {
             size(500, 500)
             precision(LESS_PIXELS)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 actual = bitmap.width * bitmap.height <= 500 * 500 * 1.1f,
@@ -763,7 +803,7 @@ class SkiaDecoderTest {
         ImageRequest(context, testFile.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 actual = bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
@@ -790,7 +830,7 @@ class SkiaDecoderTest {
         ImageRequest(context, testFile.uri) {
             size(300, 500)
             precision(SAME_ASPECT_RATIO)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 actual = bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
@@ -819,7 +859,7 @@ class SkiaDecoderTest {
         ImageRequest(context, testFile.uri) {
             size(500, 300)
             precision(EXACTLY)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 actual = bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
@@ -842,7 +882,7 @@ class SkiaDecoderTest {
         ImageRequest(context, testFile.uri) {
             size(300, 500)
             precision(EXACTLY)
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 actual = bitmap.width * bitmap.height <= 300 * 500 * 1.1f,
@@ -874,7 +914,7 @@ class SkiaDecoderTest {
                     )
                 )
             )
-        }.decode(sketch).apply {
+        }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
             assertTrue(
                 actual = bitmap.width * bitmap.height <= 500 * 300 * 1.1f,
@@ -900,22 +940,22 @@ class SkiaDecoderTest {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(START_CROP)
-        }.decode(sketch).image.getBitmapOrThrow()
+        }.decode(sketch, factory).image.getBitmapOrThrow()
         val centerCropBitmap = ImageRequest(context, testFile.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(CENTER_CROP)
-        }.decode(sketch).image.getBitmapOrThrow()
+        }.decode(sketch, factory).image.getBitmapOrThrow()
         val endCropBitmap = ImageRequest(context, testFile.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(END_CROP)
-        }.decode(sketch).image.getBitmapOrThrow()
+        }.decode(sketch, factory).image.getBitmapOrThrow()
         val fillBitmap = ImageRequest(context, testFile.uri) {
             size(500, 300)
             precision(SAME_ASPECT_RATIO)
             scale(FILL)
-        }.decode(sketch).image.getBitmapOrThrow()
+        }.decode(sketch, factory).image.getBitmapOrThrow()
         assertTrue(actual = startCropBitmap.width * startCropBitmap.height <= 500 * 300 * 1.1f)
         assertTrue(actual = centerCropBitmap.width * centerCropBitmap.height <= 500 * 300 * 1.1f)
         assertTrue(actual = endCropBitmap.width * endCropBitmap.height <= 500 * 300 * 1.1f)
