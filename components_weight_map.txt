@@ -1,0 +1,47 @@
+Decoders:
+    MovieGifDecoder: 15
+    ImageDecoderGifDecoder: 15
+    ImageDecoderAnimatedWebpDecoder: 15
+    ImageDecoderAnimatedHeifDecoder: 15
+    SkiaGifDecoder: 15
+    KoralGifDecoder: 15
+    SkiaAnimatedWebpDecoder: 15
+    AwxkeeAvifDecoder: 25
+    PhotosAssetVideoFrameDecoder: 30
+    FileVideoFrameDecoder: 30
+    VideoFrameDecoder: 30
+    FFmpegVideoFrameDecoder: 30
+    SvgDecoder: 45
+    BlurHashDecoder: 45
+    DrawableDecoder: 45
+    ApkIconDecoder: 45
+    PhotosAssetDecoder: 60
+    UIImageDecoder: SkiaDecoder.WEIGHT - 1
+    SkiaDecoder: 100
+    BitmapFactoryDecoder: 100
+
+Fetchers:
+    HurlHttpUriFetcher: 15
+    OkHttpHttpUriFetcher: 15
+    KtorHttpUriFetcher: 15
+    PhotosAssetUriFetcher: 30
+    ContentUriFetcher: 30
+    KotlinResourceUriFetcher: 45
+    ResourceUriFetcher: 45
+    AssetUriFetcher: 45
+    ComposeResourceUriFetcher: 45
+    FileUriFetcher: 60
+    BlurHashUriFetcher: 60
+    AppIconUriFetcher: 60
+    FileUriFetcher: 75
+
+Interceptors:
+    SaveCellularTrafficInterceptor: 0
+    MemoryCacheInterceptor: 15
+    PlaceholderInterceptor: 30
+    PauseLoadWhenScrollingInterceptor: ResultCacheInterceptor.SORT_WEIGHT - 1
+    ResultCacheInterceptor: 45
+    ThumbnailInterceptor: 60
+    TransformationInterceptor: 75
+    FetcherInterceptor: 90
+    DecoderInterceptor: 100
