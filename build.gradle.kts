@@ -189,7 +189,7 @@ allprojects {
 
 @OptIn(ExperimentalAbiValidation::class)
 fun Project.configureAbiValidation() {
-    // TODO The Android platform's ABI does not currently work
+    // TODO The abiValidation feature does not yet support kmp Android targets and pure Android modules. https://youtrack.jetbrains.com/issue/KT-78025
     afterEvaluate {
         val kotlinExtension =
             extensions.findByType<KotlinProjectExtension>() ?: return@afterEvaluate
