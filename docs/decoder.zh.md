@@ -9,7 +9,7 @@
 |-----------------------------------|:---------------------------------------------------|---------------------------|---------|:----|:--------|:----|
 | [SkiaDecoder]                     | jpeg, png, webp, bmp                               | -                         | ❌       | ✅   | ✅       | ✅   |
 | [BitmapFactoryDecoder]            | jpeg, png, webp, bmp, heif (API 28), avif (API 31) | -                         | ✅       | ❌   | ❌       | ❌   |
-| [AwxkeeAvifDecoder]               | heif (API 24), avif (API 24)                       | -                         | ✅       | ❌   | ❌       | ❌   |
+| [AwxkeeAvifDecoder]               | heif (API 24), avif (API 24)                       | sketch-avif-awxkee        | ✅       | ❌   | ❌       | ❌   |
 | [PhotosAssetDecoder]              | jpeg, png, webp, bmp, heif (ios 11), avif (ios 16) | -                         | ❌       | ✅   | ❌       | ❌   |
 | [UIImageDecoder]                  | heif (ios 11), avif (ios 16)                       | -                         | ❌       | ✅   | ❌       | ❌   |
 | [SkiaGifDecoder]                  | gif (不支持 resize)                                   | sketch-animated-gif       | ❌       | ✅   | ✅       | ✅   |

@@ -80,6 +80,9 @@ implementation("io.github.panpf.sketch4:sketch-animated-heif:${LAST_VERSION}")
 // Use Android or Skia's built-in decoder to decode webp animations and play them
 implementation("io.github.panpf.sketch4:sketch-animated-webp:${LAST_VERSION}")
 
+// Use awxkee's avif-decoder library to decode avi and heif images
+implementation("io.github.panpf.sketch4:sketch-avif-awxkee:${LAST_VERSION}")
+
 // Supports BlurHash format image
 implementation("io.github.panpf.sketch4:sketch-blurhash:${LAST_VERSION}")
 

@@ -70,6 +70,9 @@ implementation("io.github.panpf.sketch4:sketch-animated-heif:${LAST_VERSION}")
 // 使用 Android 或 Skia 内置的解码器解码 webp 动图并播放
 implementation("io.github.panpf.sketch4:sketch-animated-webp:${LAST_VERSION}")
 
+// 使用 awxkee 的 avif-decoder 库解码 avif 和 heif 图片
+implementation("io.github.panpf.sketch4:sketch-avif-awxkee:${LAST_VERSION}")
+
 // 支持 BlurHash 格式图片
 implementation("io.github.panpf.sketch4:sketch-blurhash:${LAST_VERSION}")
 

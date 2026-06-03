@@ -144,8 +144,8 @@ different, as follows:
 | Feature                                                                                      | Android       | iOS                     | Desktop                 | Web                     |
 |:---------------------------------------------------------------------------------------------|:--------------|:------------------------|:------------------------|:------------------------|
 | jpeg<br/>png<br/>webp<br/>bmp                                                                | ✅             | ✅                       | ✅                       | ✅                       |
-| heif                                                                                         | ✅ (API 28)    | ❌                       | ❌                       | ❌                       |
-| avif                                                                                         | ✅ (API 31)    | ❌                       | ❌                       | ❌                       |
+| heif                                                                                         | ✅ (API 24)    | ✅                       | ❌                       | ❌                       |
+| avif                                                                                         | ✅ (API 24)    | ✅                       | ❌                       | ❌                       |
 | svg                                                                                          | ✅             | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) |
 | gif                                                                                          | ✅             | ✅                       | ✅                       | ✅                       |
 | Animated webp                                                                                | ✅ (API 28)    | ✅                       | ✅                       | ✅                       |
