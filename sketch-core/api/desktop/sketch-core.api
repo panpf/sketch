@@ -2611,6 +2611,8 @@ public final class com/github/panpf/sketch/util/Core_utils_commonKt {
 	public static final fun computeScaleMultiplierWithOneSide (Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/Size;)F
 	public static final fun difference (Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/ImageOptions;)Ljava/lang/String;
 	public static final fun difference (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageRequest;)Ljava/lang/String;
+	public static final fun isThumbnailWithSize (Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/Size;F)Z
+	public static synthetic fun isThumbnailWithSize$default (Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/Size;FILjava/lang/Object;)Z
 }
 
 public final class com/github/panpf/sketch/util/Core_utils_desktopKt {

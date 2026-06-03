@@ -3139,6 +3139,7 @@ final fun com.github.panpf.sketch.util/isStaticsAvifFile(kotlin/ByteArray): kotl
 final fun com.github.panpf.sketch.util/isStaticsHeifFile(kotlin/ByteArray): kotlin/Boolean // com.github.panpf.sketch.util/isStaticsHeifFile|isStaticsHeifFile(kotlin.ByteArray){}[0]
 final fun com.github.panpf.sketch.util/isStaticsWebPFile(kotlin/ByteArray): kotlin/Boolean // com.github.panpf.sketch.util/isStaticsWebPFile|isStaticsWebPFile(kotlin.ByteArray){}[0]
 final fun com.github.panpf.sketch.util/isSvgFile(kotlin/ByteArray): kotlin/Boolean // com.github.panpf.sketch.util/isSvgFile|isSvgFile(kotlin.ByteArray){}[0]
+final fun com.github.panpf.sketch.util/isThumbnailWithSize(com.github.panpf.sketch.util/Size, com.github.panpf.sketch.util/Size, kotlin/Float = ...): kotlin/Boolean // com.github.panpf.sketch.util/isThumbnailWithSize|isThumbnailWithSize(com.github.panpf.sketch.util.Size;com.github.panpf.sketch.util.Size;kotlin.Float){}[0]
 final fun com.github.panpf.sketch.util/isWebPFile(kotlin/ByteArray): kotlin/Boolean // com.github.panpf.sketch.util/isWebPFile|isWebPFile(kotlin.ByteArray){}[0]
 final fun com.github.panpf.sketch.util/key(kotlin/Any): kotlin/String // com.github.panpf.sketch.util/key|key(kotlin.Any){}[0]
 final fun com.github.panpf.sketch.util/keyOrNull(kotlin/Any?): kotlin/String? // com.github.panpf.sketch.util/keyOrNull|keyOrNull(kotlin.Any?){}[0]
