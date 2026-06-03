@@ -3,6 +3,7 @@ package com.github.panpf.sketch.componentloadertest.android.test
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import com.github.panpf.sketch.decode.ApkIconDecoder
+import com.github.panpf.sketch.decode.AwxkeeAvifDecoder
 import com.github.panpf.sketch.decode.BlurHashDecoder
 import com.github.panpf.sketch.decode.FFmpegVideoFrameDecoder
 import com.github.panpf.sketch.decode.ImageDecoderAnimatedHeifDecoder
@@ -26,6 +27,7 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.AnimatedWebpComponentProvider
 import com.github.panpf.sketch.util.ApkIconComponentProvider
 import com.github.panpf.sketch.util.AppIconComponentProvider
+import com.github.panpf.sketch.util.AwxkeeAvifComponentProvider
 import com.github.panpf.sketch.util.BlurHashComponentProvider
 import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.ComposeResourceComponentProvider
@@ -49,7 +51,7 @@ class ComponentLoaderTest {
     @Test
     fun testComponentProviders() {
         val componentProviders = ComponentLoader.componentProviders
-        assertEquals(15, componentProviders.size)
+        assertEquals(16, componentProviders.size)
         assertNotNull(componentProviders.find { it is AppIconComponentProvider })
         assertNotNull(componentProviders.find { it is ComposeResourceComponentProvider })
         assertNotNull(componentProviders.find { it is KtorHttpComponentProvider })
@@ -65,6 +67,7 @@ class ComponentLoaderTest {
         assertNotNull(componentProviders.find { it is SvgComponentProvider })
         assertNotNull(componentProviders.find { it is BlurHashComponentProvider })
         assertNotNull(componentProviders.find { it is DoNothingComponentProvider })
+        assertNotNull(componentProviders.find { it is AwxkeeAvifComponentProvider })
     }
 
     @Test
@@ -80,12 +83,15 @@ class ComponentLoaderTest {
             assertNotNull(fetchers.find { it is BlurHashUriFetcher.Factory })
             assertNotNull(fetchers.find { it is DoNothingFetcher.Factory })
 
-            var expectedDecoderSize = 10
+            var expectedDecoderSize = 11
             if (VERSION.SDK_INT < VERSION_CODES.P) {
                 expectedDecoderSize--   // ImageDecoderAnimatedWebpDecoder
             }
             if (VERSION.SDK_INT < VERSION_CODES.R) {
                 expectedDecoderSize--   // ImageDecoderAnimatedHeifDecoder
+            }
+            if (VERSION.SDK_INT < VERSION_CODES.N) {
+                expectedDecoderSize--   // AwxkeeAvifDecoder
             }
             assertEquals(expectedDecoderSize, decoders.size)
             assertNotNull(decoders.find { it is KoralGifDecoder.Factory })
@@ -110,6 +116,11 @@ class ComponentLoaderTest {
             assertNotNull(decoders.find { it is SvgDecoder.Factory })
             assertNotNull(decoders.find { it is BlurHashDecoder.Factory })
             assertNotNull(decoders.find { it is DoNothingDecoder.Factory })
+            if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                assertNotNull(decoders.find { it is AwxkeeAvifDecoder.Factory })
+            } else {
+                assertNull(decoders.find { it is AwxkeeAvifDecoder.Factory })
+            }
 
             assertEquals(1, interceptors.size)
             assertNotNull(interceptors.find { it is DoNothingInterceptor })
@@ -131,12 +142,15 @@ class ComponentLoaderTest {
             assertNotNull(fetchers.find { it is BlurHashUriFetcher.Factory })
             assertNull(fetchers.find { it is DoNothingFetcher.Factory })
 
-            var expectedDecoderSize2 = 9
+            var expectedDecoderSize2 = 10
             if (VERSION.SDK_INT < VERSION_CODES.P) {
                 expectedDecoderSize2--   // ImageDecoderAnimatedWebpDecoder
             }
             if (VERSION.SDK_INT < VERSION_CODES.R) {
                 expectedDecoderSize2--   // ImageDecoderAnimatedHeifDecoder
+            }
+            if (VERSION.SDK_INT < VERSION_CODES.N) {
+                expectedDecoderSize2--   // AwxkeeAvifDecoder
             }
             assertEquals(expectedDecoderSize2, decoders.size)
             assertNotNull(decoders.find { it is KoralGifDecoder.Factory })
@@ -161,6 +175,11 @@ class ComponentLoaderTest {
             assertNotNull(decoders.find { it is SvgDecoder.Factory })
             assertNotNull(decoders.find { it is BlurHashDecoder.Factory })
             assertNull(decoders.find { it is DoNothingDecoder.Factory })
+            if (VERSION.SDK_INT >= VERSION_CODES.N) {
+                assertNotNull(decoders.find { it is AwxkeeAvifDecoder.Factory })
+            } else {
+                assertNull(decoders.find { it is AwxkeeAvifDecoder.Factory })
+            }
 
             assertEquals(0, interceptors.size)
             assertNull(interceptors.find { it is DoNothingInterceptor })

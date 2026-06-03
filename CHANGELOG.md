@@ -11,6 +11,11 @@ Translations: [简体中文](CHANGELOG.zh.md)
 
 # new
 
+## Android
+
+* new: Added sketch-avif-awxkee module, which can use avif and heif format images in API 24 and
+  above versions
+
 ## Dependencies
 
 * depend: Upgrade to FFmpegMediaMetadataRetriever 1.0.22

@@ -9,6 +9,10 @@
 
 # new
 
+## Android
+
+* new: 新增 sketch-avif-awxkee 模块，可以在 API 24 以上版本使用 avif 和 heif 格式图片
+
 ## Dependencies
 
 * depend: 升级 FFmpegMediaMetadataRetriever 1.0.22

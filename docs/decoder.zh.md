@@ -9,6 +9,7 @@
 |-----------------------------------|:---------------------------------------------------|---------------------------|---------|:----|:--------|:----|
 | [SkiaDecoder]                     | jpeg, png, webp, bmp                               | -                         | ❌       | ✅   | ✅       | ✅   |
 | [BitmapFactoryDecoder]            | jpeg, png, webp, bmp, heif (API 28), avif (API 31) | -                         | ✅       | ❌   | ❌       | ❌   |
+| [AwxkeeAvifDecoder]               | heif (API 24), avif (API 24)                       | -                         | ✅       | ❌   | ❌       | ❌   |
 | [PhotosAssetDecoder]              | jpeg, png, webp, bmp, heif (ios 11), avif (ios 16) | -                         | ❌       | ✅   | ❌       | ❌   |
 | [UIImageDecoder]                  | heif (ios 11), avif (ios 16)                       | -                         | ❌       | ✅   | ❌       | ❌   |
 | [SkiaGifDecoder]                  | gif (不支持 resize)                                   | sketch-animated-gif       | ❌       | ✅   | ✅       | ✅   |
@@ -32,6 +33,7 @@
 * [SkiaDecoder]：在非 Android 平台上使用 Skia 内置的 Image 解码图片，它是非 Android 平台最后的解码器
 * [BitmapFactoryDecoder]：在 Android 平台上使用内置的 [BitmapFactory] 解码图片，它是 Android
   平台最后的解码器
+* [AwxkeeAvifDecoder]: 在 Android 平台上使用 Awxkee 的 avif decoder 库解码 heif 和 avif 格式的图片
 * [PhotosAssetDecoder]：在 iOS 平台上解码来自 Photos Library 的图片
 * [UIImageDecoder]：在 iOS 平台上使用 UIImage 解码图片
 * [SkiaGifDecoder]：在非 Android 平台上使用 Skia 内置的 Codec 解码 gif
@@ -73,6 +75,9 @@
 在 Android 平台上主要使用 [BitmapFactoryDecoder] 解码静态图片，[BitmapFactoryDecoder] 使用 Android
 内置的 BitmapFactory 解码图片，支持的图片格式和最低版本请参考上表。
 
+对于 avif 和 heif 格式的图片如果你需要兼容到 API 24 版本可以使用 sketch-avif-awxkee
+模块提供的 [AwxkeeAvifDecoder] 解码器
+
 #### 桌面和 Web 平台
 
 在桌面和 Web 平台上主要使用 [SkiaDecoder] 解码静态图片，[SkiaDecoder] 使用 Skia 内置的 Image
@@ -82,7 +87,7 @@
 
 ios 平台上同样主要使用 [SkiaDecoder] 解码静态图片
 
-由于 [SkiaDecoder] 不支持 heif 和 avif 格式图片所以默认使用 [UIImageDecoder] 作为未补充专门解码 heif
+由于 [SkiaDecoder] 不支持 heif 和 avif 格式图片，所以默认使用 [UIImageDecoder] 作为补充，专门解码 heif
 和 avif 格式的图片
 
 对于来自 Photos Library 的图片会优先使用 [PhotosAssetDecoder] 解码，[PhotosAssetDecoder] 使用 ios
@@ -289,3 +294,5 @@ ImageRequest(context, "https://example.com/image.jpg") {
 [FileVideoFrameDecoder]: ../sketch-video/src/iosMain/kotlin/com/github/panpf/sketch/decode/FileVideoFrameDecoder.kt
 
 [UIImageDecoder]: ../sketch-core/src/iosMain/kotlin/com/github/panpf/sketch/decode/UIImageDecoder.kt
+
+[AwxkeeAvifDecoder]: ../sketch-avif-awxkee/src/main/kotlin/com/github/panpf/sketch/decode/AwxkeeAvifDecoder.kt

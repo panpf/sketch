@@ -99,8 +99,8 @@ context.sketch.enqueue(request)
 | png     | _                                                |
 | bmp     | _                                                |
 | webp    | _                                                |
-| heif    | _                                                |
-| avif    | _                                                |
+| heif    | _,sketch-avif-awxkee                             |
+| avif    | _,sketch-avif-awxkee                             |
 | svg     | sketch-svg                                       |
 | gif     | sketch-animated-gif<br>sketch-animated-gif-koral |
 | webp 动图 | sketch-animated-webp                             |

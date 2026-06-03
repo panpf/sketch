@@ -27,6 +27,13 @@ suspend fun ComposeResImageFile.decode(
     return decoderHelper.decode(1) as BitmapImage
 }
 
+expect suspend fun ImageRequest.createDecoder(
+    sketch: Sketch,
+    factory: Decoder.Factory,
+    fetchResultMap: ((FetchResult) -> FetchResult)? = null
+): Decoder?
+
+// TODO Do not use this when testing Decoder. Search and replace
 expect suspend fun ImageRequest.createDecoderOrDefault(
     sketch: Sketch,
     factory: Decoder.Factory? = null,
@@ -47,7 +54,13 @@ suspend fun ImageRequest.createDecoderOrNull(
     return decoder
 }
 
+// TODO Do not use this when testing Decoder. Search and replace. rename to decodeOrDefault
 expect suspend fun ImageRequest.decode(
     sketch: Sketch,
     factory: Decoder.Factory? = null
+): ImageData
+
+expect suspend fun ImageRequest.decodeOrThrow(
+    sketch: Sketch,
+    factory: Decoder.Factory
 ): ImageData

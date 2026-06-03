@@ -14,6 +14,19 @@ actual fun createDecodeHelper(request: ImageRequest, dataSource: DataSource): De
     return SkiaDecodeHelper(request, dataSource)
 }
 
+actual suspend fun ImageRequest.createDecoder(
+    sketch: Sketch,
+    factory: Decoder.Factory,
+    fetchResultMap: ((FetchResult) -> FetchResult)?
+): Decoder? {
+    val request = this@createDecoder
+    val requestContext = request.toRequestContext(sketch)
+    val fetcher = sketch.components.newFetcherOrThrow(requestContext)
+    val fetchResult = fetcher.fetch().getOrThrow()
+        .let { fetchResultMap?.invoke(it) ?: it }
+    return factory.create(requestContext, fetchResult)
+}
+
 actual suspend fun ImageRequest.createDecoderOrDefault(
     sketch: Sketch,
     factory: Decoder.Factory?,
@@ -31,4 +44,10 @@ actual suspend fun ImageRequest.createDecoderOrDefault(
 
 actual suspend fun ImageRequest.decode(sketch: Sketch, factory: Decoder.Factory?): ImageData {
     return createDecoderOrDefault(sketch, factory).decode()
+}
+
+actual suspend fun ImageRequest.decodeOrThrow(sketch: Sketch, factory: Decoder.Factory): ImageData {
+    return requireNotNull(createDecoder(sketch, factory)) {
+        "Failed to create decoder for request: $this, factory: ${factory.key}"
+    }.decode()
 }

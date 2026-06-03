@@ -104,8 +104,8 @@ component is destroyed.
 | png           | _                                                |
 | bmp           | _                                                |
 | webp          | _                                                |
-| heif          | _                                                |
-| avif          | _                                                |
+| heif          | _,sketch-avif-awxkee                             |
+| avif          | _,sketch-avif-awxkee                             |
 | svg           | sketch-svg                                       |
 | gif           | sketch-animated-gif<br>sketch-animated-gif-koral |
 | Animated webp | sketch-animated-webp                             |

@@ -74,6 +74,7 @@ kotlin {
         androidMain.dependencies {
             api(projects.sketchAnimatedGifKoral)
             api(projects.sketchAnimatedHeif)
+            api(projects.sketchAvifAwxkee)
             api(projects.sketchExtensionsAppicon)
             api(projects.sketchExtensionsApkicon)
             api(projects.sketchVideo)

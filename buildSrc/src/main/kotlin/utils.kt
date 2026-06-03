@@ -27,6 +27,7 @@ val publicModules = setOf(
     "sketch-animated-gif-koral",
     "sketch-animated-heif",
     "sketch-animated-webp",
+    "sketch-avif-awxkee",
     "sketch-blurhash",
     "sketch-compose",
     "sketch-compose-core",

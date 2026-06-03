@@ -9,6 +9,7 @@ Sketch is supported by a corresponding [Decoder], as shown in the following tabl
 |-----------------------------------|:---------------------------------------------------------|---------------------------|---------|:----|:--------|:----|
 | [SkiaDecoder]                     | jpeg, png, webp, bmp                                     | -                         | ❌       | ✅   | ✅       | ✅   |
 | [BitmapFactoryDecoder]            | jpeg, png, webp, bmp, heif (API 28), avif (API 31)       | -                         | ✅       | ❌   | ❌       | ❌   |
+| [AwxkeeAvifDecoder]               | heif (API 24), avif (API 24)                             | -                         | ✅       | ❌   | ❌       | ❌   |
 | [PhotosAssetDecoder]              | jpeg, png, webp, bmp, heif, heif (ios 11), avif (ios 16) | -                         | ❌       | ✅   | ❌       | ❌   |
 | [UIImageDecoder]                  | heif (ios 11), avif (ios 16)                             | -                         | ❌       | ✅   | ❌       | ❌   |
 | [SkiaGifDecoder]                  | gif (Not Support resize)                                 | sketch-animated-gif       | ❌       | ✅   | ✅       | ✅   |
@@ -33,6 +34,8 @@ The uses of each [Decoder] are as follows:
   for non-Android platforms.
 * [BitmapFactoryDecoder]: On the Android platform, images are decoded using built-in
   BitmapFactory, which is the final decoder on the Android platform.
+* [AwxkeeAvifDecoder]: Use Awxkee's avif decoder library to decode images in heif and avif formats
+  on the Android platform
 * [PhotosAssetDecoder]: Decode images from the Photos Library on iOS platform
 * [UIImageDecoder]: Use UIImage to decode images on iOS platform
 * [SkiaGifDecoder] Use Skia's built-in Codec to decode gif animations on non-Android
@@ -78,6 +81,9 @@ The uses of each [Decoder] are as follows:
 On the Android platform, [BitmapFactoryDecoder] is mainly used to decode static images,
 and [BitmapFactoryDecoder] is used to decode images using Android's built-in BitmapFactory.
 
+For images in avif and heif formats, if you need to be compatible with API 24 version, you can use
+sketch-avif-awxkee [AwxkeeAvifDecoder] decoder provided by module
+
 #### Desktop and Web platforms
 
 On desktop and web platforms, [SkiaDecoder] is mainly used to decode static images,
@@ -87,8 +93,8 @@ and [SkiaDecoder] uses Skia's built-in image to decode images.
 
 The ios platform also mainly uses [SkiaDecoder] to decode static images.
 
-Since [SkiaDecoder] does not support images in heif and avif formats, [UIImageDecoder] is used by
-default as it does not specifically decode images in heif and avif formats.
+Since [SkiaDecoder] does not support heif and avif format images, [UIImageDecoder] is used by
+default as a supplement to specifically decode heif and pictures in avif format
 
 For images from the Photos Library, [PhotosAssetDecoder] will be used to decode the images,
 and [PhotosAssetDecoder] will use the iOS native PHImageManager to decode the images, so that the
@@ -303,3 +309,5 @@ ImageRequest(context, "https://example.com/image.jpg") {
 [FileVideoFrameDecoder]: ../sketch-video/src/iosMain/kotlin/com/github/panpf/sketch/decode/FileVideoFrameDecoder.kt
 
 [UIImageDecoder]: ../sketch-core/src/iosMain/kotlin/com/github/panpf/sketch/decode/UIImageDecoder.kt
+
+[AwxkeeAvifDecoder]: ../sketch-avif-awxkee/src/main/kotlin/com/github/panpf/sketch/decode/AwxkeeAvifDecoder.kt

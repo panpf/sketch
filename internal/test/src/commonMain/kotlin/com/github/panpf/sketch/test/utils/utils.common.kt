@@ -13,6 +13,7 @@ import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.round
 import kotlin.time.TimeSource
@@ -110,4 +111,12 @@ class TestException : Exception() {
     override fun hashCode(): Int {
         return this::class.hashCode()
     }
+}
+
+fun isSameAspectRatio(size: Size, otherSize: Size, epsilon: Float = 0.1f): Boolean {
+    if (size.isEmpty || otherSize.isEmpty) return false
+    val aspectRatio1 = size.width.toFloat() / size.height
+    val aspectRatio2 = otherSize.width.toFloat() / otherSize.height
+    val diff = abs(aspectRatio1 - aspectRatio2)
+    return diff <= epsilon
 }

@@ -21,6 +21,7 @@ androidx-test-runner = "1.7.0"
 androidgifdrawable = "1.2.31"
 androidsvg = "1.4"
 appdirs = "1.5.0"
+avifcoder = "2.2.1"
 
 buildkonfig = "0.21.2"
 
@@ -109,6 +110,7 @@ androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "a
 androidgifdrawable = { module = "pl.droidsonroids.gif:android-gif-drawable", version.ref = "androidgifdrawable" }
 androidsvg = { module = "com.caverock:androidsvg-aar", version.ref = "androidsvg" }
 appdirs = { module = "net.harawata:appdirs", version.ref = "appdirs" }
+avifcoder = { module = "io.github.awxkee:avif-coder", version.ref = "avifcoder" }
 
 ffmpegMediaMetadataRetriever-core = { module = "com.github.wseemann:FFmpegMediaMetadataRetriever-core", version.ref = "ffmpegMediaMetadataRetriever" }
 ffmpegMediaMetadataRetriever-native = { module = "com.github.wseemann:FFmpegMediaMetadataRetriever-native", version.ref = "ffmpegMediaMetadataRetriever" }
