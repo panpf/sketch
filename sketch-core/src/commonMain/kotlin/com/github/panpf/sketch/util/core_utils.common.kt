@@ -655,7 +655,7 @@ fun compareVersions(version1: String, version2: String): Int {
  * @param epsilonPixels The maximum allowable error pixels
  * @see com.github.panpf.sketch.core.common.test.util.CoreUtilsTest.testIsThumbnailWithSize
  */
-internal fun isThumbnailWithSize(
+fun isThumbnailWithSize(
     size: Size,
     otherSize: Size,
     epsilonPixels: Float = 1.0f
