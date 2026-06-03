@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.sample.ui.test
 
+import com.github.panpf.sketch.sample.ui.AndroidTempTestRoute
 import com.github.panpf.sketch.sample.ui.AnimatablePlaceholderTestRoute
 import com.github.panpf.sketch.sample.ui.AnimatedImageTestRoute
 import com.github.panpf.sketch.sample.ui.BlurHashTestRoute
@@ -42,7 +43,8 @@ actual fun platformTestScreens(): List<Any> = listOf(
     TestItem("BlurHash", BlurHashTestRoute),
 
     TestGroup("Other"),
-    TestItem("Temp", TempTestRoute),
+    TestItem("Temp (Common)", TempTestRoute),
+    TestItem("Temp (Android)", AndroidTempTestRoute),
 
     ProjectInfo,
 )

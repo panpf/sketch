@@ -9,6 +9,7 @@ import com.github.panpf.sketch.sample.ui.DisplayInsanityTestRoute
 import com.github.panpf.sketch.sample.ui.ExifOrientationTestRoute
 import com.github.panpf.sketch.sample.ui.FetcherTestRoute
 import com.github.panpf.sketch.sample.ui.IconPainterTestRoute
+import com.github.panpf.sketch.sample.ui.IosTempTestRoute
 import com.github.panpf.sketch.sample.ui.MainThreadTestRoute
 import com.github.panpf.sketch.sample.ui.PainterMixTestRoute
 import com.github.panpf.sketch.sample.ui.PreviewTestRoute
@@ -47,6 +48,7 @@ actual fun platformTestScreens(): List<Any> = listOf(
     TestItem("SkiaColorTypeTest", SkiaColorTypeTestRoute),
     TestItem("UIImageTest", UIImageTestRoute),
     TestItem("Temp (Common)", TempTestRoute),
+    TestItem("Temp (iOS)", IosTempTestRoute),
 
     ProjectInfo,
 )

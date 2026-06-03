@@ -2,6 +2,7 @@ package com.github.panpf.sketch.sample.ui
 
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.panpf.sketch.sample.ui.test.IosTempTestScreen
 import com.github.panpf.sketch.sample.ui.test.MainThreadTestScreen
 import com.github.panpf.sketch.sample.ui.test.SkiaColorTypeTestScreen
 import com.github.panpf.sketch.sample.ui.test.UIImageTestScreen
@@ -20,15 +21,20 @@ data object SkiaColorTypeTestRoute : IosRoute
 @Serializable
 data object UIImageTestRoute : IosRoute
 
+@Serializable
+data object IosTempTestRoute : IosRoute
+
 actual fun PolymorphicModuleBuilder<NavKey>.platformSerializersModule() {
 //    subclassesOfSealed<IosRoute>()
     subclass(MainThreadTestRoute::class, MainThreadTestRoute.serializer())
     subclass(SkiaColorTypeTestRoute::class, SkiaColorTypeTestRoute.serializer())
     subclass(UIImageTestRoute::class, UIImageTestRoute.serializer())
+    subclass(IosTempTestRoute::class, IosTempTestRoute.serializer())
 }
 
 actual fun EntryProviderScope<NavKey>.platformEntryProvider() {
     entry<MainThreadTestRoute> { MainThreadTestScreen() }
     entry<SkiaColorTypeTestRoute> { SkiaColorTypeTestScreen() }
     entry<UIImageTestRoute> { UIImageTestScreen() }
+    entry<IosTempTestRoute> { IosTempTestScreen() }
 }
