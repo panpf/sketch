@@ -21,6 +21,7 @@ package com.github.panpf.sketch.util
  *
  * @see com.github.panpf.sketch.core.common.test.util.ByteArraysTest.testRangeEquals
  */
+@Deprecated("Will be removed in future.")
 fun ByteArray.rangeEquals(offset: Int, bytes: ByteArray): Boolean {
     require(bytes.isNotEmpty()) { "bytes is empty" }
 
@@ -37,25 +38,6 @@ fun ByteArray.rangeEquals(offset: Int, bytes: ByteArray): Boolean {
     return result
 }
 
-//@Suppress("SameParameterValue")
-//fun ByteArray.slidingRangeEquals(
-//    offset: Int,
-//    step: Int,
-//    brands: Array<ByteArray>
-//): Boolean {
-//    var index = offset
-//    while (true) {
-//        if (brands.any { this@slidingRangeEquals.rangeEquals(index, it) }) {
-//            return true
-//        } else {
-//            index += step
-//            if (index >= this@slidingRangeEquals.size) {
-//                return false
-//            }
-//        }
-//    }
-//}
-
 /**
  * Returns the index within this byte array of the first occurrence of the specified byte, starting from the specified index.
  *
@@ -64,6 +46,7 @@ fun ByteArray.rangeEquals(offset: Int, bytes: ByteArray): Boolean {
  *
  * @see com.github.panpf.sketch.core.common.test.util.ByteArraysTest.testIndexOf
  */
+@Deprecated("Will be removed in future.")
 fun ByteArray.indexOf(byte: Byte, fromIndex: Int, toIndex: Int): Int {
     require(fromIndex in 0L..toIndex) { "fromIndex=$fromIndex toIndex=$toIndex" }
     var index = fromIndex
@@ -85,6 +68,7 @@ fun ByteArray.indexOf(byte: Byte, fromIndex: Int, toIndex: Int): Int {
  *
  * @see com.github.panpf.sketch.core.common.test.util.ByteArraysTest.testIndexOf
  */
+@Deprecated("Will be removed in future.")
 fun ByteArray.indexOf(bytes: ByteArray, fromIndex: Int, toIndex: Int): Int {
     require(fromIndex in 0L..toIndex) { "fromIndex=$fromIndex toIndex=$toIndex" }
     require(bytes.isNotEmpty()) { "bytes is empty" }

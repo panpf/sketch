@@ -9,6 +9,13 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
+# new
+
+## Multiplatform
+
+* fix: Fixed the isHeifFile() and isAvifFile() functions failing to correctly recognize image
+  formats with mif1 or msf1 as the main brand. [#289](https://github.com/panpf/sketch/issues/289)
+
 # 4.5.0-beta02
 
 ## Android

@@ -68,6 +68,12 @@ object ComposeResImageFiles {
         length = 83040,
         mimeType = "image/avif"
     )
+    val avif2: ComposeResImageFile = ComposeResImageFile(
+        name = "avif2.avif",
+        size = Size(3840, 2400),
+        length = 606462,
+        mimeType = "image/avif"
+    )
     val statics = arrayOf(jpeg, png, webp, bmp, svg, heic, avif)
 
     val animGif: ComposeResImageFile = ComposeResImageFile(
@@ -290,6 +296,7 @@ object ComposeResImageFiles {
 
     val values: Array<ComposeResImageFile> = statics
         .plus(anims)
+        .plus(animAvif)
         .plus(videos)
         .plus(longs)
         .plus(clockExifs)

@@ -56,6 +56,54 @@ fun Float.format(newScale: Int): Float {
     }
 }
 
+fun ByteArray.set(offset: Int, bytes: ByteArray) {
+    for (i in bytes.indices) {
+        this[offset + i] = bytes[i]
+    }
+}
+
+fun Int.toByteArray(): ByteArray {
+    return byteArrayOf(
+        (this shr 24).toByte(),
+        (this shr 16).toByte(),
+        (this shr 8).toByte(),
+        this.toByte()
+    )
+}
+
+fun Long.toByteArray(): ByteArray {
+    return byteArrayOf(
+        (this shr 56).toByte(),
+        (this shr 48).toByte(),
+        (this shr 40).toByte(),
+        (this shr 32).toByte(),
+        (this shr 24).toByte(),
+        (this shr 16).toByte(),
+        (this shr 8).toByte(),
+        this.toByte()
+    )
+}
+
+fun ByteArray.toInt(): Int {
+    require(this.size == 4) { "Byte array must be of length 4 to convert to Int." }
+    return ((this[0].toInt() and 0xFF) shl 24) or
+            ((this[1].toInt() and 0xFF) shl 16) or
+            ((this[2].toInt() and 0xFF) shl 8) or
+            (this[3].toInt() and 0xFF)
+}
+
+fun ByteArray.toLong(): Long {
+    require(this.size == 8) { "Byte array must be of length 8 to convert to Long." }
+    return ((this[0].toLong() and 0xFF) shl 56) or
+            ((this[1].toLong() and 0xFF) shl 48) or
+            ((this[2].toLong() and 0xFF) shl 40) or
+            ((this[3].toLong() and 0xFF) shl 32) or
+            ((this[4].toLong() and 0xFF) shl 24) or
+            ((this[5].toLong() and 0xFF) shl 16) or
+            ((this[6].toLong() and 0xFF) shl 8) or
+            (this[7].toLong() and 0xFF)
+}
+
 /**
  * Convert to the type specified by the generic, if this is null or cannot be converted return null
  */
