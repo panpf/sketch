@@ -15,13 +15,7 @@ object AssetImageFiles {
         length = 122970,
         mimeType = "image/jpeg"
     )
-    val animGif: AssetImageFile = AssetImageFile(
-        name = "sample_anim.gif",
-        size = Size(480, 480),
-        length = 76938,
-        mimeType = "image/gif",
-        animated = true
-    )
+    val animGif: AssetImageFile = ComposeResImageFiles.animGif.toAssetImageFile()
 }
 
 class AssetImageFile(
@@ -44,3 +38,12 @@ class AssetImageFile(
     override fun toString(): String =
         "AssetResImage(name='$name', size=$size, mimeType='$mimeType', animated=$animated, exifOrientation=$exifOrientation)"
 }
+
+fun ComposeResImageFile.toAssetImageFile(): AssetImageFile = AssetImageFile(
+    name = this.name,
+    size = this.size,
+    length = this.length,
+    mimeType = this.mimeType,
+    animated = this.animated,
+    exifOrientation = this.exifOrientation
+)
