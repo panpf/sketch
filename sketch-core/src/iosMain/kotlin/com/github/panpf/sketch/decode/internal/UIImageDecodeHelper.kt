@@ -60,7 +60,7 @@ class UIImageDecodeHelper(val dataSource: DataSource, mimeType: String) : Decode
     }
 
     override suspend fun decodeRegion(region: Rect, sampleSize: Int): Image {
-        val bitmap = uiImage.toBitmap(sampleSize = sampleSize, cropRect = region)
+        val bitmap = uiImage.toBitmap(sampleSize = sampleSize, region = region)
         return bitmap.asImage()
     }
 

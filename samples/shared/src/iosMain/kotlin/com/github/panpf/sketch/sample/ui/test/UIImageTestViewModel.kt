@@ -62,7 +62,7 @@ class UIImageTestViewModel : ViewModel() {
                 .toDataSource(PlatformContext.INSTANCE)
                 .toByteArray()
             val uiImage = UIImage.imageWithData(data.toNSData())!!
-            val bitmap = uiImage.toBitmap(sampleSize = _sampleSizeFlow.value, cropRect = rect)
+            val bitmap = uiImage.toBitmap(sampleSize = _sampleSizeFlow.value, region = rect)
             _subsamplingBitmapFlow.value = bitmap.asComposeImageBitmap()
         }
     }

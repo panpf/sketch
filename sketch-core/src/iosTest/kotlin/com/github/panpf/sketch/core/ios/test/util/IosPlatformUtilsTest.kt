@@ -380,7 +380,7 @@ class IosPlatformUtilsTest {
         )
         assertEquals(
             expected = imageFile.size,
-            actual = uiImage.toBitmap(sampleSize = 1, cropRect = null).size
+            actual = uiImage.toBitmap(sampleSize = 1, region = null).size
         )
 
         assertEquals(
@@ -394,14 +394,14 @@ class IosPlatformUtilsTest {
         val cropRect = Rect(101, 202, 708, 503)
         assertEquals(
             expected = cropRect.size,
-            actual = uiImage.toBitmap(cropRect = cropRect).size
+            actual = uiImage.toBitmap(region = cropRect).size
         )
         assertEquals(
             expected = calculateSampledBitmapSize(
                 imageSize = cropRect.size,
                 sampleSize = 2
             ),
-            actual = uiImage.toBitmap(sampleSize = 2, cropRect = cropRect).size
+            actual = uiImage.toBitmap(sampleSize = 2, region = cropRect).size
         )
 
         assertFailsWith(exceptionClass = IllegalArgumentException::class) {
@@ -418,20 +418,20 @@ class IosPlatformUtilsTest {
         }
 
         assertFailsWith(exceptionClass = IllegalArgumentException::class) {
-            uiImage.toBitmap(cropRect = Rect(left = 100, top = 300, right = 100, bottom = 500))
+            uiImage.toBitmap(region = Rect(left = 100, top = 300, right = 100, bottom = 500))
         }
         assertFailsWith(exceptionClass = IllegalArgumentException::class) {
-            uiImage.toBitmap(cropRect = Rect(left = 100, top = 300, right = 600, bottom = 300))
+            uiImage.toBitmap(region = Rect(left = 100, top = 300, right = 600, bottom = 300))
         }
         assertFailsWith(exceptionClass = IllegalArgumentException::class) {
-            uiImage.toBitmap(cropRect = Rect(left = 100, top = 300, right = 50, bottom = 500))
+            uiImage.toBitmap(region = Rect(left = 100, top = 300, right = 50, bottom = 500))
         }
         assertFailsWith(exceptionClass = IllegalArgumentException::class) {
-            uiImage.toBitmap(cropRect = Rect(left = 100, top = 300, right = 600, bottom = 200))
+            uiImage.toBitmap(region = Rect(left = 100, top = 300, right = 600, bottom = 200))
         }
         assertFailsWith(exceptionClass = IllegalArgumentException::class) {
             uiImage.toBitmap(
-                cropRect = Rect(
+                region = Rect(
                     left = -1,
                     top = 0,
                     right = imageFile.size.width,
@@ -441,7 +441,7 @@ class IosPlatformUtilsTest {
         }
         assertFailsWith(exceptionClass = IllegalArgumentException::class) {
             uiImage.toBitmap(
-                cropRect = Rect(
+                region = Rect(
                     left = 0,
                     top = -1,
                     right = imageFile.size.width,
@@ -451,7 +451,7 @@ class IosPlatformUtilsTest {
         }
         assertFailsWith(exceptionClass = IllegalArgumentException::class) {
             uiImage.toBitmap(
-                cropRect = Rect(
+                region = Rect(
                     left = 0,
                     top = 0,
                     right = imageFile.size.width + 1,
@@ -461,7 +461,7 @@ class IosPlatformUtilsTest {
         }
         assertFailsWith(exceptionClass = IllegalArgumentException::class) {
             uiImage.toBitmap(
-                cropRect = Rect(
+                region = Rect(
                     left = 0,
                     top = 0,
                     right = imageFile.size.width,

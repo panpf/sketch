@@ -20,7 +20,6 @@
 package com.github.panpf.sketch.util
 
 import com.github.panpf.sketch.Bitmap
-import com.github.panpf.sketch.decode.DecodeException
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -321,35 +320,35 @@ fun UIImage.correctExifOrientation(): UIImage {
  *
  * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testUIImageToBitmap
  */
-fun UIImage.toBitmap(sampleSize: Int = 1, cropRect: Rect? = null): Bitmap {
+fun UIImage.toBitmap(sampleSize: Int = 1, region: Rect? = null): Bitmap {
     require((sampleSize > 0) && ((sampleSize == 1) || ((sampleSize % 2) == 0))) {
         "sampleSize must be 1 or a power of 2, but was $sampleSize"
     }
-    val cgImage = this.CGImage ?: throw DecodeException("UIImage has no CGImage")
+    val cgImage = this.CGImage ?: throw Exception("UIImage has no CGImage")
     val originalWidth = CGImageGetWidth(cgImage).toInt()
     val originalHeight = CGImageGetHeight(cgImage).toInt()
     val fullRect = Rect(left = 0, top = 0, right = originalWidth, bottom = originalHeight)
-    if (cropRect != null) {
-        require(value = !cropRect.isEmpty) {
-            "cropRect invalid: ${cropRect.toShortString()}"
+    if (region != null) {
+        require(value = !region.isEmpty) {
+            "cropRect invalid: ${region.toShortString()}"
         }
-        require(value = fullRect.contains(cropRect)) {
-            "cropRect out of bounds: ${cropRect.toShortString()}, originalSize=${originalWidth}x${originalHeight}"
+        require(value = fullRect.contains(region)) {
+            "cropRect out of bounds: ${region.toShortString()}, originalSize=${originalWidth}x${originalHeight}"
         }
     }
 
     // Crop CGImage
-    val finalCropRect = cropRect ?: fullRect
-    val croppedCGImage = if (finalCropRect != fullRect) {
+    val finalRegion = region ?: fullRect
+    val croppedCGImage = if (finalRegion != fullRect) {
         CGImageCreateWithImageInRect(
             image = cgImage,
             rect = CGRectMake(
-                x = finalCropRect.left.toDouble(),
-                y = finalCropRect.top.toDouble(),
-                width = finalCropRect.width().toDouble(),
-                height = finalCropRect.height().toDouble()
+                x = finalRegion.left.toDouble(),
+                y = finalRegion.top.toDouble(),
+                width = finalRegion.width().toDouble(),
+                height = finalRegion.height().toDouble()
             )
-        ) ?: throw DecodeException("Failed to create cropped CGImage")
+        ) ?: throw Exception("Failed to create cropped CGImage")
     } else {
         cgImage
     }
@@ -357,15 +356,15 @@ fun UIImage.toBitmap(sampleSize: Int = 1, cropRect: Rect? = null): Bitmap {
     try {
         val sampledBitmapSize = calculateSampledBitmapSize(
             imageSize = Size(
-                width = finalCropRect.width(),
-                height = finalCropRect.height()
+                width = finalRegion.width(),
+                height = finalRegion.height()
             ),
             sampleSize = sampleSize
         )
         val bytesPerRow = sampledBitmapSize.width * 4
         val pixels = ByteArray(bytesPerRow * sampledBitmapSize.height)
         val colorSpace = CGColorSpaceCreateDeviceRGB()
-            ?: throw DecodeException("Failed to create RGB color space")
+            ?: throw Exception("Failed to create RGB color space")
         try {
             pixels.usePinned { pinned ->
                 val context = CGBitmapContextCreate(
@@ -376,7 +375,7 @@ fun UIImage.toBitmap(sampleSize: Int = 1, cropRect: Rect? = null): Bitmap {
                     bytesPerRow = bytesPerRow.toULong(),
                     space = colorSpace,
                     bitmapInfo = CGImageAlphaInfo.kCGImageAlphaPremultipliedLast.value or kCGBitmapByteOrder32Big,
-                ) ?: throw DecodeException("Failed to create bitmap context")
+                ) ?: throw Exception("Failed to create bitmap context")
                 try {
                     CGContextDrawImage(
                         c = context,
@@ -405,12 +404,12 @@ fun UIImage.toBitmap(sampleSize: Int = 1, cropRect: Rect? = null): Bitmap {
         )
         val bitmap = Bitmap()
         if (!bitmap.installPixels(imageInfo, pixels, bytesPerRow)) {
-            throw DecodeException("Failed to install RGBA pixels into bitmap")
+            throw Exception("Failed to install RGBA pixels into bitmap")
         }
         bitmap.setImmutable()
         return bitmap
     } finally {
-        if (finalCropRect != fullRect) {
+        if (finalRegion != fullRect) {
             CGImageRelease(croppedCGImage)
         }
     }
@@ -422,7 +421,7 @@ fun UIImage.toBitmap(sampleSize: Int = 1, cropRect: Rect? = null): Bitmap {
  * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testUIImageToBitmap
  */
 fun UIImage.toBitmap(): Bitmap {
-    return toBitmap(sampleSize = 1, cropRect = null)
+    return toBitmap(sampleSize = 1, region = null)
 }
 
 /**
