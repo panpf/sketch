@@ -19,6 +19,7 @@ package com.github.panpf.sketch.test.utils
 import android.content.pm.PackageInfo
 import android.graphics.BitmapRegionDecoder
 import android.graphics.drawable.Drawable
+import android.os.Build
 import androidx.core.graphics.drawable.DrawableCompat
 import com.github.panpf.sketch.util.Size
 import java.io.InputStream
@@ -44,3 +45,5 @@ val PackageInfo.versionCodeCompat: Int
     } else {
         versionCode
     }
+
+fun isVersionAtLeast(api: Int): Boolean = Build.VERSION.SDK_INT >= api

@@ -1,16 +1,19 @@
 package com.github.panpf.sketch.core.ios.test.decode.internal
 
+import com.github.panpf.sketch.asBitmap
 import com.github.panpf.sketch.decode.ImageInfo
 import com.github.panpf.sketch.decode.internal.UIImageDecodeHelper
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.similarity
 import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class UIImageDecodeHelperTest {
 
@@ -107,6 +110,46 @@ class UIImageDecodeHelperTest {
                 expected = calculateSampledBitmapSize(imageSize = regionSize, sampleSize = 4),
                 actual = decodeRegion(sampleSize = 4, region = region).size
             )
+
+            val bitmap1 = decodeRegion(sampleSize = 1, region = region).asBitmap()
+            val region2 = region.let {
+                Rect(it)
+                    .apply { offset(200, 200) }
+            }
+            val bitmap2 = decodeRegion(sampleSize = 1, region = region2).asBitmap()
+            val similarity = bitmap1.similarity(bitmap2)
+            assertTrue(
+                similarity >= 5,
+                "Similarity should be greater than or equal to 5, but was $similarity"
+            )
         }
+
+        // test exif orientation
+        val bitmap1 = ComposeResImageFiles.clockExifNormal.let { imageFile ->
+            val dataSource = imageFile.toDataSource(context)
+            UIImageDecodeHelper(
+                dataSource = dataSource,
+                mimeType = imageFile.mimeType
+            )
+        }.decodeRegion(
+            region = Rect(100, 200, 300, 300),
+            sampleSize = 1
+        ).asBitmap()
+        val bitmap2 = ComposeResImageFiles.clockExifRotate90.let { imageFile ->
+            val dataSource = imageFile.toDataSource(context)
+            UIImageDecodeHelper(
+                dataSource = dataSource,
+                mimeType = imageFile.mimeType
+            )
+        }.decodeRegion(
+            region = Rect(100, 200, 300, 300),
+            sampleSize = 1
+        ).asBitmap()
+        assertEquals(bitmap1.size, bitmap2.size)
+        val similarity = bitmap1.similarity(bitmap2)
+        assertTrue(
+            similarity <= 2,
+            "Similarity should be less than or equal to 2, but was $similarity"
+        )
     }
 }
