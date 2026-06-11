@@ -10,7 +10,7 @@ import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.correctExifOrientation
 import com.github.panpf.sketch.util.fetchPhotosAsset
-import com.github.panpf.sketch.util.isIOSVersionAtLeast
+import com.github.panpf.sketch.util.isVersionAtLeast
 import com.github.panpf.sketch.util.pixelSize
 import com.github.panpf.sketch.util.preferredImageResourceTypeOrder
 import com.github.panpf.sketch.util.preferredVideoResourceTypeOrder
@@ -504,8 +504,8 @@ class IosPlatformUtilsTest {
     }
 
     @Test
-    fun testIsIOSVersionAtLeast() {
-        assertTrue(isIOSVersionAtLeast(16))
-        assertTrue(isIOSVersionAtLeast(26))
+    fun testIsVersionAtLeast() {
+        assertTrue(isVersionAtLeast(16))
+        assertTrue(isVersionAtLeast(26))
     }
 }

@@ -3465,4 +3465,4 @@ final fun com.github.panpf.sketch.fetch/newPhotosAssetUri(kotlin/String): kotlin
 final fun com.github.panpf.sketch.fetch/parseLocalIdentifier(com.github.panpf.sketch.util/Uri): kotlin/String? // com.github.panpf.sketch.fetch/parseLocalIdentifier|parseLocalIdentifier(com.github.panpf.sketch.util.Uri){}[0]
 
 // Targets: [ios]
-final fun com.github.panpf.sketch.util/isIOSVersionAtLeast(kotlin/Int, kotlin/Int = ..., kotlin/Int = ...): kotlin/Boolean // com.github.panpf.sketch.util/isIOSVersionAtLeast|isIOSVersionAtLeast(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+final fun com.github.panpf.sketch.util/isVersionAtLeast(kotlin/Int, kotlin/Int = ..., kotlin/Int = ...): kotlin/Boolean // com.github.panpf.sketch.util/isVersionAtLeast|isVersionAtLeast(kotlin.Int;kotlin.Int;kotlin.Int){}[0]

@@ -25,9 +25,9 @@ import com.github.panpf.sketch.util.isAvifFile
 import com.github.panpf.sketch.util.isBmpFile
 import com.github.panpf.sketch.util.isGifFile
 import com.github.panpf.sketch.util.isHeifFile
-import com.github.panpf.sketch.util.isIOSVersionAtLeast
 import com.github.panpf.sketch.util.isJpegFile
 import com.github.panpf.sketch.util.isPngFile
+import com.github.panpf.sketch.util.isVersionAtLeast
 import com.github.panpf.sketch.util.isWebPFile
 
 /**
@@ -80,10 +80,10 @@ class UIImageDecoder(
         }
 
         private fun isApplicable(fetchResult: FetchResult): String? {
-            if (isIOSVersionAtLeast(11) && isHeifFile(fetchResult.headerBytes)) {
+            if (isVersionAtLeast(11) && isHeifFile(fetchResult.headerBytes)) {
                 return "image/heif"
             }
-            if (isIOSVersionAtLeast(16) && isAvifFile(fetchResult.headerBytes)) {
+            if (isVersionAtLeast(16) && isAvifFile(fetchResult.headerBytes)) {
                 return "image/avif"
             }
             return null
@@ -132,10 +132,10 @@ class UIImageDecoder(
             if (isGifFile(fetchResult.headerBytes)) {
                 return "image/gif"
             }
-            if (isIOSVersionAtLeast(11) && isHeifFile(fetchResult.headerBytes)) {
+            if (isVersionAtLeast(11) && isHeifFile(fetchResult.headerBytes)) {
                 return "image/heif"
             }
-            if (isIOSVersionAtLeast(16) && isAvifFile(fetchResult.headerBytes)) {
+            if (isVersionAtLeast(16) && isAvifFile(fetchResult.headerBytes)) {
                 return "image/avif"
             }
             return "image/*"

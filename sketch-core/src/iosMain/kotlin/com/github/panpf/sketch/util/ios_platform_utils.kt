@@ -466,9 +466,9 @@ fun NSData.toByteArray(): ByteArray {
 /**
  * Check if the current iOS version is at least the specified major, minor, and patch version by creating an NSOperatingSystemVersion struct and using NSProcessInfo to compare it against the current system version.
  *
- * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testIsIOSVersionAtLeast
+ * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testIsVersionAtLeast
  */
-fun isIOSVersionAtLeast(major: Int, minor: Int = 0, patch: Int = 0): Boolean {
+fun isVersionAtLeast(major: Int, minor: Int = 0, patch: Int = 0): Boolean {
     val version = cValue<NSOperatingSystemVersion> {
         majorVersion = major.toLong()
         minorVersion = minor.toLong()
