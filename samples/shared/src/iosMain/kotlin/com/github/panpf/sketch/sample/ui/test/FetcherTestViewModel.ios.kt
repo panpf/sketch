@@ -5,7 +5,6 @@ import com.github.panpf.sketch.fetch.newFileUri
 import com.github.panpf.sketch.images.Base64Images
 import com.github.panpf.sketch.images.ComposeResImageFile
 import com.github.panpf.sketch.images.ComposeResImageFiles
-import com.github.panpf.sketch.images.HttpImages
 import com.github.panpf.sketch.images.KotlinResImageFiles
 import com.github.panpf.sketch.sample.ui.model.PhotoTestItem
 import kotlinx.coroutines.Dispatchers
@@ -29,8 +28,7 @@ actual suspend fun buildFetcherTestItems(
     val fileUriTestFile = getFileUriTestFile(ComposeResImageFiles.jpeg)
     val fileUriTestFile2 = getFileUriTestFile(ComposeResImageFiles.bmp)
     return buildList {
-        add(PhotoTestItem(title = "HTTP", photoUri = HttpImages.HTTP))
-        add(PhotoTestItem(title = "HTTPS", photoUri = HttpImages.HTTPS))
+        add(PhotoTestItem(title = "HTTPS", photoUri = getOnePexelsPhoto()))
         add(PhotoTestItem(title = "FILE_URI", photoUri = newFileUri(fileUriTestFile)))
         add(PhotoTestItem(title = "FILE_PATH", photoUri = fileUriTestFile2.toString()))
         add(PhotoTestItem(title = "RES_KOTLIN", photoUri = KotlinResImageFiles.liuyifei.uri))

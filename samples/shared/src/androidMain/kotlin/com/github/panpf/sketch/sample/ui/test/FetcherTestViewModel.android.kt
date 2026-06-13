@@ -12,7 +12,6 @@ import com.github.panpf.sketch.images.AssetImageFiles
 import com.github.panpf.sketch.images.Base64Images
 import com.github.panpf.sketch.images.ComposeResImageFile
 import com.github.panpf.sketch.images.ComposeResImageFiles
-import com.github.panpf.sketch.images.HttpImages
 import com.github.panpf.sketch.images.R
 import com.github.panpf.sketch.sample.ui.model.PhotoTestItem
 import com.github.panpf.sketch.sample.util.versionCodeCompat
@@ -36,8 +35,7 @@ actual suspend fun buildFetcherTestItems(
     val testFile3 = getPhotoFromFiles(context, ComposeResImageFiles.png).toFile()
     val headerUserPackageInfo = loadUserAppPackageInfo(context, true)
     return buildList {
-        add(PhotoTestItem(title = "HTTP", photoUri = HttpImages.HTTP))
-        add(PhotoTestItem(title = "HTTPS", photoUri = HttpImages.HTTPS))
+        add(PhotoTestItem(title = "HTTPS", photoUri = getOnePexelsPhoto()))
         add(
             PhotoTestItem(
                 title = "CONTENT",
