@@ -23,19 +23,17 @@ kotlin {
     }
 }
 
-val appId = "com.github.panpf.sketch4.sample"
-val appName = "Sketch4 Sample"
 compose.desktop {
     application {
         mainClass = "com.github.panpf.sketch.sample.MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = appName
+            packageName = "Sketch4"
             packageVersion = convertDesktopPackageVersion(property("versionName").toString())
             vendor = "panpfpanpf@outlook.com"
             description = "Sketch4 Image Loader Library Sample App"
             macOS {
-                bundleID = appId
+                bundleID = "com.github.panpf.sketch4.sample"
                 iconFile.set(project.file("icons/icon-macos.icns"))
             }
             windows {
