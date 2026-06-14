@@ -69,7 +69,7 @@ jobs:
         run: ./gradlew samples:androidApp:assembleRelease
 
       - name: Upload APK artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: apk-files
           path: samples/androidApp/build/outputs/apk/release/*.apk
@@ -104,7 +104,7 @@ jobs:
         run: cd samples/shared/build/ios/outputs/Build/Products/Debug-iphonesimulator; zip -r "sketch-sample-${{ steps.version_name_step.outputs.version_name }}.app.zip" "Sketch4.app"; cd -
 
       - name: Upload ios artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ios-files
           path: samples/shared/build/ios/outputs/Build/Products/Debug-iphonesimulator/*.app.zip
@@ -130,7 +130,7 @@ jobs:
         run: ./gradlew samples:desktopApp:packageReleaseDeb
 
       - name: Upload APK artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: deb-files
           path: samples/desktopApp/build/compose/binaries/main-release/deb/*.deb
@@ -156,7 +156,7 @@ jobs:
         run: ./gradlew samples:desktopApp:packageReleaseDmg
 
       - name: Upload APK artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dmg-files
           path: samples/desktopApp/build/compose/binaries/main-release/dmg/*.dmg
@@ -182,7 +182,7 @@ jobs:
         run: ./gradlew samples:desktopApp:packageReleaseMsi
 
       - name: Upload APK artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: msi-files
           path: samples/desktopApp/build/compose/binaries/main-release/msi/*.msi
@@ -217,7 +217,7 @@ jobs:
         run: cd samples/jsApp/build/dist/js/productionExecutable; zip -r "sketch-sample-js-${{ steps.version_name_step.outputs.version_name }}.zip" *; cd -
 
       - name: Upload APK artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: js-browser-files
           path: samples/jsApp/build/dist/js/productionExecutable/*.zip
@@ -252,7 +252,7 @@ jobs:
         run: cd samples/wasmJsApp/build/dist/wasmJs/productionExecutable; zip -r "sketch-sample-wasmJs-${{ steps.version_name_step.outputs.version_name }}.zip" *; cd -
 
       - name: Upload APK artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wasm-js-browser-files
           path: samples/wasmJsApp/build/dist/wasmJs/productionExecutable/*.zip
@@ -337,43 +337,43 @@ jobs:
       contents: write
     steps:
       - name: Download APK artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: apk-files
           path: ./downloaded
 
       - name: Download ios artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: ios-files
           path: ./downloaded
 
       - name: Download deb artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: deb-files
           path: ./downloaded
 
       - name: Download dmg artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: dmg-files
           path: ./downloaded
 
       - name: Download msi artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: msi-files
           path: ./downloaded
 
       - name: Download js-browser artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: js-browser-files
           path: ./downloaded
 
       - name: Download wasm-js-browser artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: wasm-js-browser-files
           path: ./downloaded
