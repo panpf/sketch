@@ -58,7 +58,8 @@ class HttpImageFile(
     override val exifOrientation: Int = ExifOrientation.UNDEFINED
 ) : ImageFile {
 
-    override val uri: String = "https://panpf.github.io/zoomimage/app/files/$name"
+    override val uri: String =
+        "https://panpf.github.io/sketch/app/composeResources/com.github.panpf.sketch.images/files/$name"
 
     override val imageInfo: ImageInfo = ImageInfo(size = size, mimeType = mimeType)
 
