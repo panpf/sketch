@@ -77,12 +77,19 @@ tasks.configureEach {
                 .forEach { file ->
                     val fileName = file.name
                     var newFileName = fileName
-                    if (newFileName.contains(appName, ignoreCase = false)) {
-                        newFileName = newFileName.replace(appName, "sketch-sample")
-                    }
-                    // sketch-sample_1.5.0001_amd64.deb -> sketch-sample-1.5.0001-amd64.deb
                     if (fileName.endsWith("deb") || fileName.endsWith("rpm")) {
+                        // deb or rpm packages will convert all uppercase letters to lowercase by default, so case sensitivity must be ignored here.
+                        val lowercaseAppName = appName.lowercase()
+                        if (newFileName.contains(lowercaseAppName, ignoreCase = false)) {
+                            newFileName = newFileName.replace(lowercaseAppName, "sketch-sample")
+                        }
+
+                        // sketch-sample_1.5.0001_amd64.deb -> sketch-sample-1.5.0001-amd64.deb
                         newFileName = newFileName.replace("_", "-")
+                    } else {
+                        if (newFileName.contains(appName, ignoreCase = false)) {
+                            newFileName = newFileName.replace(appName, "sketch-sample")
+                        }
                     }
 
                     if (newFileName != fileName) {
