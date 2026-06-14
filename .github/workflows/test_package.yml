@@ -1,56 +1,14 @@
-name: Deploy Publish Release
+name: Test Package
 
-on:
-  push:
-    tags:
-      - '*'
+on: workflow_dispatch
 
 env:
   JAVA_VERSION: 21
   JAVA_DISTRIBUTION: zulu
 
 jobs:
-  checks:
-    name: Checks
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-java@v5
-        with:
-          distribution: ${{ env.JAVA_DISTRIBUTION }}
-          java-version: ${{ env.JAVA_VERSION }}
-      - uses: gradle/actions/setup-gradle@v6
-        continue-on-error: true
-        timeout-minutes: 5
-        with:
-          cache-overwrite-existing: true
-
-      - name: Check binary compatibility
-        run: ./gradlew checkKotlinAbi || { exit_code=$?; printf "*** Sketch's public API has changed. If this change is intentional, run './gradlew updateKotlinAbi' and commit the new API files. ***"; exit $exit_code; }
-
-  #  test:
-  #    name: Unit tests
-  #    runs-on: ubuntu-latest
-  #    steps:
-  #      - uses: actions/checkout@v6
-  #      - uses: actions/setup-java@v5
-  #        with:
-  #          distribution: ${{ env.JAVA_DISTRIBUTION }}
-  #          java-version: ${{ env.JAVA_VERSION }}
-  #      - uses: gradle/actions/setup-gradle@v6
-  #        continue-on-error: true
-  #        timeout-minutes: 5
-  #        with:
-  #          cache-overwrite-existing: true
-  #
-  #      - name: Run desktop test
-  #        run: ./gradlew desktopTest
-
   package-android:
     name: Package android
-    #    needs: [checks, test]
-    needs: [ checks ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -76,8 +34,6 @@ jobs:
 
   package-ios:
     name: Package iOS
-    #    needs: [checks, test]
-    needs: [ checks ]
     runs-on: macos-26
     steps:
       - uses: actions/checkout@v6
@@ -111,8 +67,6 @@ jobs:
 
   package-linux:
     name: Package linux desktop
-    #    needs: [checks, test]
-    needs: [ checks ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -137,8 +91,6 @@ jobs:
 
   package-macos:
     name: Package macOS desktop
-    #    needs: [checks, test]
-    needs: [ checks ]
     runs-on: macos-26
     steps:
       - uses: actions/checkout@v6
@@ -163,8 +115,6 @@ jobs:
 
   package-windows:
     name: Package windows desktop
-    #    needs: [checks, test]
-    needs: [ checks ]
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v6
@@ -189,8 +139,6 @@ jobs:
 
   package-js:
     name: Package js browser
-    #    needs: [checks, test]
-    needs: [ checks ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -224,8 +172,6 @@ jobs:
 
   package-wasm-js:
     name: Package wasmJs browser
-    #    needs: [checks, test]
-    needs: [ checks ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -256,139 +202,3 @@ jobs:
         with:
           name: wasm-js-browser-files
           path: samples/wasmJsApp/build/dist/wasmJs/productionExecutable/*.zip
-
-  deploy-api-docs:
-    name: Deploy API docs
-    needs: [ package-android, package-ios, package-linux, package-macos, package-windows, package-js, package-wasm-js ]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-java@v5
-        with:
-          distribution: ${{ env.JAVA_DISTRIBUTION }}
-          java-version: ${{ env.JAVA_VERSION }}
-      - uses: gradle/actions/setup-gradle@v6
-        continue-on-error: true
-        timeout-minutes: 5
-        with:
-          cache-overwrite-existing: true
-
-      - name: Build the api docs
-        run: ./gradlew dokkaGenerate
-
-      - name: Check out the gh-pages branch
-        run: |
-          git fetch origin gh-pages:gh-pages
-          git checkout gh-pages
-
-      - name: Remove old api directory
-        run: |
-          rm -rf api/*
-
-      - name: Create api directory
-        run: mkdir -p api
-
-      - name: Move build artifacts to api directory
-        run: |
-          mv build/dokka/html/* api/
-
-      - name: Commit and push changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          commit_message: "Update api docs"
-          branch: gh-pages
-          file_pattern: api/*
-
-  publish:
-    name: Publish and release to maven central
-    needs: deploy-api-docs
-    runs-on: macos-26
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-java@v5
-        with:
-          distribution: ${{ env.JAVA_DISTRIBUTION }}
-          java-version: ${{ env.JAVA_VERSION }}
-      - uses: gradle/actions/setup-gradle@v6
-        continue-on-error: true
-        timeout-minutes: 5
-        with:
-          cache-overwrite-existing: true
-      - uses: android-actions/setup-android@v4
-
-      - name: Run publish
-        env:
-          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
-          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
-          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_IN_MEMORY_KEY }}
-          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_IN_MEMORY_KEY_PASSWORD }}
-        run: ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
-  #        run: ./gradlew publishToMavenCentral --no-configuration-cache
-
-  release:
-    name: Release new version
-    needs: publish
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Download APK artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: apk-files
-          path: ./downloaded
-
-      - name: Download ios artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: ios-files
-          path: ./downloaded
-
-      - name: Download deb artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: deb-files
-          path: ./downloaded
-
-      - name: Download dmg artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: dmg-files
-          path: ./downloaded
-
-      - name: Download msi artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: msi-files
-          path: ./downloaded
-
-      - name: Download js-browser artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: js-browser-files
-          path: ./downloaded
-
-      - name: Download wasm-js-browser artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: wasm-js-browser-files
-          path: ./downloaded
-
-      - name: Release
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        if: startsWith(github.ref, 'refs/tags/') # Only run on tag push
-        with:
-          body: |
-            Please check the [CHANGELOG.md](https://github.com/panpf/sketch/blob/main/CHANGELOG.md) file for updated log.
-            
-            Android, iOS, desktop and web packages, see the Assets attachment.
-            
-            Web example：https://panpf.github.io/sketch/app.
-          files: ./downloaded/*
-          make_latest: true

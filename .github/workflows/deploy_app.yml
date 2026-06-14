@@ -1,4 +1,4 @@
-name: Deploy web app
+name: Deploy App
 
 on:
   workflow_dispatch:
@@ -10,8 +10,8 @@ env:
   JAVA_DISTRIBUTION: zulu
 
 jobs:
-  deploy-web-app:
-    name: Deploy web app
+  deploy-app:
+    name: Deploy app
     runs-on: ubuntu-latest
     permissions:
       contents: write
