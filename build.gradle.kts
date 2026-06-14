@@ -60,22 +60,15 @@ allprojects {
 //        mavenLocal()
     }
 
-    // Minimum compatible Java version
+    // Target JVM 11.
     afterEvaluate {
-        // Must be included in afterEvaluate to find the plugin
-        // Compose Multiplatform 1.8.0 must use JVM target 11+, and Android View also requires 1.8+
-        val (version, target) = if (plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null) {
-            JavaVersion.VERSION_11 to JvmTarget.JVM_11
-        } else {
-            JavaVersion.VERSION_1_8 to JvmTarget.JVM_1_8
-        }
         tasks.withType<JavaCompile>().configureEach {
-            sourceCompatibility = version.toString()
-            targetCompatibility = version.toString()
+            sourceCompatibility = JavaVersion.VERSION_11.toString()
+            targetCompatibility = JavaVersion.VERSION_11.toString()
             options.compilerArgs = options.compilerArgs + "-Xlint:-options"
         }
         tasks.withType<KotlinJvmCompile>().configureEach {
-            compilerOptions.jvmTarget = target
+            compilerOptions.jvmTarget = JvmTarget.JVM_11
         }
     }
 

@@ -36,18 +36,13 @@ fun Project.androidLibrary(
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    // Compose Multiplatform 1.8.0 must use JVM target 11+, and Android View also requires 1.8+
-    val (version, target) = if (plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null) {
-        JavaVersion.VERSION_11 to JvmTarget.JVM_11
-    } else {
-        JavaVersion.VERSION_1_8 to JvmTarget.JVM_1_8
-    }
+    // Target JVM 11.
     compileOptions {
-        sourceCompatibility = version
-        targetCompatibility = version
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     tasks.withType<KotlinCompile>().configureEach {
-        compilerOptions.jvmTarget.set(target)
+        compilerOptions.jvmTarget.set(JvmTarget.JVM_11)
     }
 
     testOptions {
@@ -99,18 +94,13 @@ fun Project.androidApplication(
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    // Compose Multiplatform 1.8.0 must use JVM target 11+, and Android View also requires 1.8+
-    val (version, target) = if (includeCompose) {
-        JavaVersion.VERSION_11 to JvmTarget.JVM_11
-    } else {
-        JavaVersion.VERSION_1_8 to JvmTarget.JVM_1_8
-    }
+    // Target JVM 11.
     compileOptions {
-        sourceCompatibility = version
-        targetCompatibility = version
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     tasks.withType<KotlinCompile>().configureEach {
-        compilerOptions.jvmTarget.set(target)
+        compilerOptions.jvmTarget.set(JvmTarget.JVM_11)
     }
 
     testOptions {
