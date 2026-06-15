@@ -24,11 +24,11 @@ fun PhotoPagerGesturePromptDialog() {
             title = { Text("Operation gestures") },
             text = {
                 Text(
-                    text = """The current page supports the following gestures or operations：
+                    text = """The current page supports the following gestures or operations: 
                             |1. Turn page:
                             |    1.2. Key.LeftBracket + (meta/ctrl)/alt, Key.RightBracket + (meta/ctrl)/alt
                             |    1.3. Key.DirectionLeft + (meta/ctrl)/alt, Key.DirectionRight + (meta/ctrl)/alt
-                            |2. Scaling image：
+                            |2. Scaling image: 
                             |    2.1. Double-click the image with one finger
                             |    2.2. Double-click the image with one finger and slide up and down without letting go.
                             |    2.3. Pinch with two fingers
@@ -36,7 +36,7 @@ fun PhotoPagerGesturePromptDialog() {
                             |    2.5. Key.ZoomIn, Key.ZoomOut, 
                             |        Key.Equals + (meta/ctrl)/alt, Key.Minus + (meta/ctrl)/alt, 
                             |        Key.DirectionUp + (meta/ctrl)/alt, Key.DirectionDown + (meta/ctrl)/alt
-                            |3. Moving image：
+                            |3. Moving image: 
                             |    3.1. Key.DirectionUp, Key.DirectionDown, Key.DirectionLeft, Key.DirectionRight
                             """.trimMargin(),
                     fontSize = 12.sp

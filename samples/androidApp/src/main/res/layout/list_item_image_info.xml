@@ -12,7 +12,7 @@
         android:layout_marginTop="8dp"
         android:textSize="13sp"
         android:textStyle="bold"
-        tools:text="Options：" />
+        tools:text="Options: " />
 
     <TextView
         android:id="@+id/contentText"

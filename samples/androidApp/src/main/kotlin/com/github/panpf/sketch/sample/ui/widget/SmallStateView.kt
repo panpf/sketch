@@ -129,7 +129,7 @@ class SmallStateView @JvmOverloads constructor(
 
         fun message(e: Throwable) {
             val message = when (e) {
-                is SecurityException -> "Network permission error：${e.message}"
+                is SecurityException -> "Network permission error: ${e.message}"
                 is UnknownHostException -> if (binding.root.context.isNetworkConnected())
                     "Unknown Host error" else "No network connection"
 
