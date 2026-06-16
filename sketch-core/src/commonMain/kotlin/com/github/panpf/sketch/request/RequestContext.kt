@@ -122,6 +122,12 @@ class RequestContext constructor(
         private set
 
     /**
+     * Whether the thumbnail has been loaded
+     */
+    var thumbnailLoaded: Boolean = false
+        internal set
+
+    /**
      * The log key of the request
      */
     val logKey: String by lazy { initialRequest.newCacheKey(size) }

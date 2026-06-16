@@ -17,6 +17,7 @@ import com.github.panpf.sketch.request.internal.ThumbnailTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.BlockInterceptor
 import com.github.panpf.sketch.test.utils.FakeStateImage
+import com.github.panpf.sketch.test.utils.ListenerSupervisor
 import com.github.panpf.sketch.test.utils.TestListener
 import com.github.panpf.sketch.test.utils.TestProgressListener
 import com.github.panpf.sketch.test.utils.TestTarget2
@@ -280,37 +281,84 @@ class ThumbnailInterceptorTest {
         assertTrue(thumbnailRequest3.target is ThumbnailTarget)
     }
 
-//    @Test
-//    fun testThumbnailRequest() = runTest {
-//        val (context, sketch) = getTestContextAndSketch()
-//
-//        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri).apply {
-//            assertFalse(isThumbnailRequest())
-//        }
-//        val requestContext = request.toRequestContext(sketch)
-//
-//        val request1 = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
-//            markThumbnailRequest()
-//        }.apply {
-//            assertTrue(isThumbnailRequest())
-//        }
-//        val requestContext1 = request1.toRequestContext(sketch)
-//
-//        request1.newRequest {
-//
-//        }.apply {
-//            assertTrue(isThumbnailRequest())
-//        }.newRequest {
-//            markThumbnailRequest(false)
-//        }.apply {
-//            assertFalse(isThumbnailRequest())
-//        }
-//
-//        assertEquals(requestContext.memoryCacheKey, requestContext1.memoryCacheKey)
-//        assertEquals(requestContext.resultCacheKey, requestContext1.resultCacheKey)
-//        assertEquals(requestContext.downloadCacheKey, requestContext1.downloadCacheKey)
-//        assertEquals(request.key, request1.key)
-//    }
+    @Test
+    fun testMainRequestFail() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val target = TestTarget2(
+            _imageOptions = ImageOptions {
+                memoryCacheKey("memoryCacheKey1")
+                resultCacheKey("resultCacheKey1")
+                downloadCacheKey("downloadCacheKey1")
+            },
+            _listener = TestListener(),
+            _progressListener = TestProgressListener(),
+        )
+        val listenerSupervisor = ListenerSupervisor()
+
+        val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri + "_fake") {
+            memoryCachePolicy(CachePolicy.DISABLED)
+            resultCachePolicy(CachePolicy.DISABLED)
+            downloadCachePolicy(CachePolicy.DISABLED)
+            placeholder(FakeStateImage())
+            target(target)
+            addListener(listenerSupervisor)
+            addProgressListener(TestProgressListener())
+        }
+
+        target.clearImages()
+        listenerSupervisor.callbackActionList.clear()
+        assertEquals(0, target.successImages.size)
+        assertEquals(0, listenerSupervisor.callbackActionList.size)
+        val thumbnailRequest = request.newRequest {
+            thumbnail(request.newRequest(ComposeResImageFiles.png.uri))
+            components {
+                add(
+                    BlockInterceptor(
+                        blockMillis = 2000,
+                        sortWeight = DecoderInterceptor.SORT_WEIGHT - 1
+                    )
+                )
+            }
+        }
+        val result = sketch.execute(thumbnailRequest)
+        block(1000)
+        assertTrue(result is ImageResult.Error)
+        assertEquals(
+            expected = listOf("onStart", "onError"),
+            actual = listenerSupervisor.callbackActionList
+        )
+        assertEquals(expected = 1, actual = target.startImages.size)
+        assertEquals(expected = 1, actual = target.successImages.size)
+        assertEquals(expected = 0, actual = target.errorImages.size)
+
+        target.clearImages()
+        listenerSupervisor.callbackActionList.clear()
+        assertEquals(0, target.successImages.size)
+        assertEquals(0, listenerSupervisor.callbackActionList.size)
+        val thumbnailRequest2 = request.newRequest {
+            thumbnail(request.newRequest(ComposeResImageFiles.png.uri) {
+                components {
+                    add(
+                        BlockInterceptor(
+                            blockMillis = 2000,
+                            sortWeight = DecoderInterceptor.SORT_WEIGHT - 1
+                        )
+                    )
+                }
+            })
+        }
+        val result2 = sketch.execute(thumbnailRequest2)
+        block(1000)
+        assertTrue(result2 is ImageResult.Error)
+        assertEquals(
+            expected = listOf("onStart", "onError"),
+            actual = listenerSupervisor.callbackActionList
+        )
+        assertEquals(expected = 1, actual = target.startImages.size)
+        assertEquals(expected = 1, actual = target.successImages.size)
+        assertEquals(expected = 0, actual = target.errorImages.size)
+    }
 
     @Test
     fun testEqualsAndHashCode() {

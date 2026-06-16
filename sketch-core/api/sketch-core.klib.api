@@ -1989,6 +1989,8 @@ final class com.github.panpf.sketch.request/RequestContext { // com.github.panpf
         final fun <set-fetchResult>(com.github.panpf.sketch.fetch/FetchResult?) // com.github.panpf.sketch.request/RequestContext.fetchResult.<set-fetchResult>|<set-fetchResult>(com.github.panpf.sketch.fetch.FetchResult?){}[0]
     final var size // com.github.panpf.sketch.request/RequestContext.size|{}size[0]
         final fun <get-size>(): com.github.panpf.sketch.util/Size // com.github.panpf.sketch.request/RequestContext.size.<get-size>|<get-size>(){}[0]
+    final var thumbnailLoaded // com.github.panpf.sketch.request/RequestContext.thumbnailLoaded|{}thumbnailLoaded[0]
+        final fun <get-thumbnailLoaded>(): kotlin/Boolean // com.github.panpf.sketch.request/RequestContext.thumbnailLoaded.<get-thumbnailLoaded>|<get-thumbnailLoaded>(){}[0]
 
     final fun computeResize(com.github.panpf.sketch.util/Size): com.github.panpf.sketch.resize/Resize // com.github.panpf.sketch.request/RequestContext.computeResize|computeResize(com.github.panpf.sketch.util.Size){}[0]
 }

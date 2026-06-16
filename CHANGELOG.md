@@ -11,6 +11,11 @@ Translations: [简体中文](CHANGELOG.zh.md)
 
 # new
 
+## Multiplatform
+
+* improve: If the thumbnail request succeeds but the main request fails, the thumbnail will still be
+  displayed. [#290](https://github.com/panpf/sketch/issues/290)
+
 ## jvm
 
 * change: jvmTarget upgraded to 11

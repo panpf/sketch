@@ -26,6 +26,7 @@ import com.github.panpf.sketch.request.get
 import com.github.panpf.sketch.resize.resizeOnDraw
 import com.github.panpf.sketch.target.Target
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
@@ -43,13 +44,13 @@ class ThumbnailInterceptor : Interceptor {
 
         @Deprecated("Use THUMBNAIL_KEY", ReplaceWith("THUMBNAIL_KEY"))
         const val KEY_THUMBNAIL = THUMBNAIL_KEY
-//        const val FROM_THUMBNAIL_KEY = "sketch#fromThumbnail"
     }
 
     override val key: String? = null
     override val sortWeight: Int = SORT_WEIGHT
 
     @MainThread
+    @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun intercept(chain: Interceptor.Chain): Result<ImageData> {
         val requestContext = chain.requestContext
         val request = chain.request
@@ -57,6 +58,10 @@ class ThumbnailInterceptor : Interceptor {
         val thumbnail: Any? = request.extras?.get(THUMBNAIL_KEY)
         return if (thumbnail != null && target != null) {
             coroutineScope {
+                requestContext.thumbnailLoaded = false
+                val mainTask = async {
+                    chain.proceed(request)
+                }
                 val thumbnailTask = async {
                     loadThumbnail(
                         coroutineScope = this@async,
@@ -67,12 +72,17 @@ class ThumbnailInterceptor : Interceptor {
                     )
                 }
 
-                val result = async {
-                    chain.proceed(request)
-                }.await()
+                val result = mainTask.await()
                 if (thumbnailTask.isActive) {
-                    thumbnailTask.cancel()
+                    if (result.isSuccess) {
+                        thumbnailTask.cancel()
+                    } else {
+                        thumbnailTask.await()
+                    }
                 }
+
+                requestContext.thumbnailLoaded =
+                    thumbnailTask.isCompleted && thumbnailTask.getCompleted()
                 result
             }
         } else {
@@ -86,7 +96,7 @@ class ThumbnailInterceptor : Interceptor {
         request: ImageRequest,
         target: Target,
         thumbnail: Any,
-    ) {
+    ): Boolean {
         val sketch = requestContext.sketch
         sketch.logger.d {
             "Request thumbnail started. '${requestContext.logKey}'"
@@ -97,7 +107,7 @@ class ThumbnailInterceptor : Interceptor {
             sketch.logger.w {
                 "Request thumbnail failed. Thumbnail extra must be String or ImageRequest. '$thumbnail'. '${requestContext.logKey}'"
             }
-            return
+            return false
         }
 
         val thumbnailRequestContext = RequestContext(
@@ -112,14 +122,16 @@ class ThumbnailInterceptor : Interceptor {
         ).proceed(thumbnailRequest)
         val thumbnailImageData = thumbnailResult.getOrNull()
 
-        if (!coroutineScope.isActive) {
+        return if (!coroutineScope.isActive) {
             sketch.logger.i {
                 "Request thumbnail canceled. '${requestContext.logKey}'"
             }
+            false
         } else if (thumbnailImageData == null) {
             sketch.logger.w(tr = thumbnailResult.exceptionOrNull()) {
                 "Request thumbnail failed. ${thumbnailResult.exceptionOrNull()}. '${requestContext.logKey}'"
             }
+            false
         } else {
             displayThumbnailImage(
                 request = request,
@@ -130,6 +142,7 @@ class ThumbnailInterceptor : Interceptor {
             sketch.logger.d {
                 "Request thumbnail successful. $thumbnailImageData '${requestContext.logKey}'"
             }
+            true
         }
     }
 

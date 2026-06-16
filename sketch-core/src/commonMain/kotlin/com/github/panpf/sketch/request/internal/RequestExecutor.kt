@@ -174,24 +174,21 @@ class RequestExecutor constructor(val sketch: Sketch) {
             image = errorImage,
             throwable = throwable
         )
-        val target = lastRequest.target
-        val throwable1 = errorResult.throwable
-        if (target != null) {
-            setupImageWithTransition(sketch, lastRequest, target, errorResult) {
-                target.onError(sketch, lastRequest, errorResult, errorResult.image)
+        if (requestContext?.thumbnailLoaded != true) {
+            val target = lastRequest.target
+            if (target != null) {
+                setupImageWithTransition(sketch, lastRequest, target, errorResult) {
+                    target.onError(sketch, lastRequest, errorResult, errorResult.image)
+                }
             }
         }
         lastRequest.listener?.onError(lastRequest, errorResult)
-        val logMessage =
-            "Request failed. '${throwable1.message}'. '${
-                requestContext?.logKey ?: request.newCacheKey(
-                    null
-                )
-            }'"
-        when (throwable1) {
+        val logMessage = "Request failed. '${throwable.message}'. " +
+                "'${requestContext?.logKey ?: request.newCacheKey(null)}'"
+        when (throwable) {
             is DepthException -> sketch.logger.d { logMessage }
             is SketchException -> sketch.logger.e(logMessage)
-            else -> sketch.logger.e(throwable1, logMessage)
+            else -> sketch.logger.e(throwable, logMessage)
         }
         return errorResult
     }

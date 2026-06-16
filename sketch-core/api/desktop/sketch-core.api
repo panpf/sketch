@@ -1669,6 +1669,7 @@ public final class com/github/panpf/sketch/request/RequestContext {
 	public final fun getResultCacheKey ()Ljava/lang/String;
 	public final fun getSize ()Lcom/github/panpf/sketch/util/Size;
 	public final fun getSketch ()Lcom/github/panpf/sketch/Sketch;
+	public final fun getThumbnailLoaded ()Z
 	public final fun setFetchResult (Lcom/github/panpf/sketch/fetch/FetchResult;)V
 }
 

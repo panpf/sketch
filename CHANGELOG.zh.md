@@ -9,6 +9,11 @@
 
 # new
 
+## Multiplatform
+
+* improve:
+  缩略图请求成功但主请求失败时，仍然会一直显示缩略图。[#290](https://github.com/panpf/sketch/issues/290)
+
 ## jvm
 
 * change: jvmTarget 升级到 11
