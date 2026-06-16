@@ -23,6 +23,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle.State
 import androidx.lifecycle.lifecycleScope
@@ -81,7 +82,10 @@ class PhotoViewerFragment : BaseBindingFragment<FragmentImageViewerBinding>() {
                 .merge()
                 .repeatCollectWithLifecycle(viewLifecycleOwner, State.CREATED) {
                     scrollBar = if (appSettings.scrollBarEnabled.value) {
-                        ScrollBarSpec.Default.copy(color = photoPaletteViewModel.photoPaletteState.value.containerColorInt)
+                        ScrollBarSpec.Medium.copy(
+                            color = photoPaletteViewModel.photoPaletteState.value.containerColorInt,
+                            windowInsetsTypeMask = WindowInsetsCompat.Type.systemBars()
+                        )
                     } else {
                         null
                     }

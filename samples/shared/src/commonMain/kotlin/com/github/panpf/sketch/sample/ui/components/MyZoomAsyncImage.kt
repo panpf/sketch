@@ -1,5 +1,7 @@
 package com.github.panpf.sketch.sample.ui.components
 
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -90,9 +92,11 @@ fun MyZoomAsyncImage(
     val alignment by appSettings.alignment.collectAsState()
 
     val scrollBarEnabled by appSettings.scrollBarEnabled.collectAsState()
+    val windowInsets = WindowInsets.systemBars
     val scrollBar = remember(scrollBarEnabled, highlightColor) {
-        if (scrollBarEnabled && highlightColor != null)
-            ScrollBarSpec.Default.copy(color = highlightColor) else null
+        if (scrollBarEnabled && highlightColor != null) {
+            ScrollBarSpec.Medium.copy(color = highlightColor, windowInsets = windowInsets)
+        } else null
     }
 
     SketchZoomAsyncImage(

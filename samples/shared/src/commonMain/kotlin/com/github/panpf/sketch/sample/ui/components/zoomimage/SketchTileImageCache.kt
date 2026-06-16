@@ -27,7 +27,6 @@ import com.github.panpf.zoomimage.subsampling.TileImageCache
  * @see com.github.panpf.zoomimage.core.sketch4.android.test.SketchTileImageCacheTest
  * @see com.github.panpf.zoomimage.core.sketch4.nonandroid.test.SketchTileImageCacheTest
  */
-@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 expect class SketchTileImageCache(sketch: Sketch) : TileImageCache {
 
     override fun get(key: String): TileImage?

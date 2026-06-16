@@ -18,6 +18,7 @@ package com.github.panpf.zoomimage
 
 import androidx.annotation.MainThread
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.NonRestartableComposable
 import androidx.compose.runtime.remember
@@ -44,6 +45,7 @@ import com.github.panpf.sketch.name
 import com.github.panpf.sketch.rememberAsyncImagePainter
 import com.github.panpf.sketch.rememberAsyncImageState
 import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.sample.ui.util.toShortString
 import com.github.panpf.zoomimage.compose.internal.BaseZoomImage
 import com.github.panpf.zoomimage.compose.subsampling.subsampling
 import com.github.panpf.zoomimage.compose.zoom.ScrollBarSpec
@@ -251,6 +253,11 @@ fun SketchZoomAsyncImage(
             Box(
                 Modifier
                     .matchParentSize()
+                    .let {
+                        val windowInsets = scrollBar.windowInsets
+                        if (windowInsets != null)
+                            it.windowInsetsPadding(windowInsets) else it
+                    }
                     .zoomScrollBar(zoomState.zoomable, scrollBar)
             )
         }
@@ -271,7 +278,7 @@ private suspend fun updateZoom(
         ?.takeIf { it.width > 0 && it.height > 0 }
         ?: IntSize.Zero
     zoomState.zoomable.logger.d {
-        "SketchZoomAsyncImage. ${painterState.name}. contentSize=${painterSize}. uri='${request.uri}'"
+        "SketchZoomAsyncImage. ${painterState.name}. contentSize=${painterSize.toShortString()}. uri='${request.uri}'"
     }
     zoomState.zoomable.setContentSize(painterSize)
 

@@ -86,7 +86,8 @@ class SketchImageSource constructor(
         override val key: String = request.key
 
         override suspend fun create(): SketchImageSource {
-            val requestContext = RequestContext(sketch, request, Size.Empty)
+            val finalRequest = platformRequest(request)
+            val requestContext = RequestContext(sketch, finalRequest, Size.Empty)
             val fetcher = sketch.components.newFetcherOrThrow(requestContext)
             val fetchResult = fetcher.fetch().getOrThrow()
             val dataSource = fetchResult.dataSource
@@ -113,3 +114,5 @@ class SketchImageSource constructor(
         }
     }
 }
+
+expect fun platformRequest(request: ImageRequest): ImageRequest
