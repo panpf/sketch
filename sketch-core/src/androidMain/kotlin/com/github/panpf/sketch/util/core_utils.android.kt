@@ -60,16 +60,18 @@ actual fun requiredWorkThread() {
  *
  * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testGetTrimLevelName
  */
-internal fun getTrimLevelName(level: Int): String = when (level) {
-    ComponentCallbacks2.TRIM_MEMORY_COMPLETE -> "COMPLETE"
-    ComponentCallbacks2.TRIM_MEMORY_MODERATE -> "MODERATE"
-    ComponentCallbacks2.TRIM_MEMORY_BACKGROUND -> "BACKGROUND"
-    ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN -> "UI_HIDDEN"
-    ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL -> "RUNNING_CRITICAL"
-    ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW -> "RUNNING_LOW"
-    ComponentCallbacks2.TRIM_MEMORY_RUNNING_MODERATE -> "RUNNING_MODERATE"
-    else -> "UNKNOWN"
-}
+internal fun getTrimLevelName(level: Int): String =
+    @Suppress("DEPRECATION")
+    when (level) {
+        ComponentCallbacks2.TRIM_MEMORY_COMPLETE -> "COMPLETE"
+        ComponentCallbacks2.TRIM_MEMORY_MODERATE -> "MODERATE"
+        ComponentCallbacks2.TRIM_MEMORY_BACKGROUND -> "BACKGROUND"
+        ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN -> "UI_HIDDEN"
+        ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL -> "RUNNING_CRITICAL"
+        ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW -> "RUNNING_LOW"
+        ComponentCallbacks2.TRIM_MEMORY_RUNNING_MODERATE -> "RUNNING_MODERATE"
+        else -> "UNKNOWN"
+    }
 
 /**
  * Get the suffix of the current process name

@@ -95,7 +95,7 @@ class PhotoInfoDialogFragment : BaseBindingDialogFragment<DialogImageInfoBinding
                     "${width}x${height}, $mimeType"
                 }
 
-                optionsInfo = imageResult.cacheKey
+                optionsInfo = imageResult.memoryCacheKey
                     .replace(imageResult.request.uri.toString(), "")
                     .let { if (it.startsWith("?")) it.substring(1) else it }
                     .split("&")

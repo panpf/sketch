@@ -91,7 +91,7 @@ fun Resources.getEquitableDrawableCompatForDensity(
  * @see com.github.panpf.sketch.core.android.test.drawable.EquitableDrawableTest.testResourcesGetEquitableDrawable
  */
 @Deprecated(
-    message = "Use getEquitableDrawable(Int, Int, Resources.Theme) instead.",
+    message = "Use getEquitableDrawable(Int, Int, Theme) instead.",
     replaceWith = ReplaceWith("getEquitableDrawable(resId, density, theme)")
 )
 fun Resources.getEquitableDrawable(@DrawableRes resId: Int): EquitableDrawable {
@@ -107,7 +107,7 @@ fun Resources.getEquitableDrawable(@DrawableRes resId: Int): EquitableDrawable {
  */
 fun Resources.getEquitableDrawable(
     @DrawableRes resId: Int,
-    theme: Resources.Theme?
+    theme: Theme?
 ): EquitableDrawable {
     val drawable = getDrawable(resId, theme)
     checkNotNull(drawable) { "Invalid resource ID: $resId" }
@@ -120,7 +120,7 @@ fun Resources.getEquitableDrawable(
  * @see com.github.panpf.sketch.core.android.test.drawable.EquitableDrawableTest.testResourcesGetEquitableDrawableForDensity
  */
 @Deprecated(
-    message = "Use getEquitableDrawableForDensity(Int, Int, Resources.Theme) instead.",
+    message = "Use getEquitableDrawableForDensity(Int, Int, Theme) instead.",
     replaceWith = ReplaceWith("getEquitableDrawableForDensity(resId, density, theme)")
 )
 fun Resources.getEquitableDrawableForDensity(
@@ -140,7 +140,7 @@ fun Resources.getEquitableDrawableForDensity(
 fun Resources.getEquitableDrawableForDensity(
     @DrawableRes resId: Int,
     density: Int,
-    theme: Resources.Theme?
+    theme: Theme?
 ): EquitableDrawable {
     val drawable = getDrawableForDensity(resId, density, theme)
     checkNotNull(drawable) { "Invalid resource ID: $resId" }

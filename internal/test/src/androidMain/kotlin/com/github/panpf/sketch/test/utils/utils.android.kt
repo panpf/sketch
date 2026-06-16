@@ -16,11 +16,11 @@
 
 package com.github.panpf.sketch.test.utils
 
+import android.annotation.SuppressLint
 import android.content.pm.PackageInfo
 import android.graphics.BitmapRegionDecoder
 import android.graphics.drawable.Drawable
 import android.os.Build
-import androidx.core.graphics.drawable.DrawableCompat
 import com.github.panpf.sketch.util.Size
 import java.io.InputStream
 
@@ -28,22 +28,20 @@ val Drawable.intrinsicSize: Size
     get() = Size(intrinsicWidth, intrinsicHeight)
 
 fun InputStream.newBitmapRegionDecoderInstanceCompat(): BitmapRegionDecoder? =
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         BitmapRegionDecoder.newInstance(this)
     } else {
         @Suppress("DEPRECATION")
         BitmapRegionDecoder.newInstance(this, false)
     }
 
-val Drawable.alphaCompat: Int
-    get() = DrawableCompat.getAlpha(this)
-
 @Suppress("DEPRECATION")
 val PackageInfo.versionCodeCompat: Int
-    get() = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+    get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
         longVersionCode.toInt()
     } else {
         versionCode
     }
 
+@SuppressLint("AnnotateVersionCheck")
 fun isVersionAtLeast(api: Int): Boolean = Build.VERSION.SDK_INT >= api

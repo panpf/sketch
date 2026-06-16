@@ -30,7 +30,6 @@ import android.graphics.drawable.Drawable.Callback
 import android.os.Build
 import android.os.Build.VERSION_CODES
 import androidx.annotation.ColorInt
-import androidx.core.graphics.drawable.DrawableCompat
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.calculateScaleMultiplierWithCrop
 import com.github.panpf.sketch.util.calculateScaleMultiplierWithInside
@@ -64,7 +63,7 @@ open class IconDrawable constructor(
         }
         background?.callback = this
         icon.callback = this
-        iconTint?.let { DrawableCompat.setTint(icon, it) }
+        iconTint?.let { icon.setTint(it) }
     }
 
     override fun draw(canvas: Canvas) {
@@ -160,7 +159,7 @@ open class IconDrawable constructor(
     }
 
     override fun getAlpha(): Int {
-        return DrawableCompat.getAlpha(icon)
+        return icon.alpha
     }
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
@@ -177,7 +176,7 @@ open class IconDrawable constructor(
     }
 
     override fun getColorFilter(): ColorFilter? {
-        return DrawableCompat.getColorFilter(icon)
+        return icon.colorFilter
     }
 
     @Deprecated("Deprecated in Java")
@@ -229,35 +228,34 @@ open class IconDrawable constructor(
     }
 
     override fun setAutoMirrored(mirrored: Boolean) {
-        background?.let { DrawableCompat.setAutoMirrored(it, mirrored) }
-        DrawableCompat.setAutoMirrored(icon, mirrored)
+        background?.setAutoMirrored(mirrored)
+        icon.setAutoMirrored(mirrored)
     }
 
     override fun isAutoMirrored(): Boolean {
-        return background?.let { DrawableCompat.isAutoMirrored(it) } == true
-                || DrawableCompat.isAutoMirrored(icon)
+        return background?.isAutoMirrored == true || icon.isAutoMirrored
     }
 
     override fun setTint(tint: Int) {
-        DrawableCompat.setTint(icon, tint)
+        icon.setTint(tint)
     }
 
     override fun setTintList(tint: ColorStateList?) {
-        DrawableCompat.setTintList(icon, tint)
+        icon.setTintList(tint)
     }
 
     override fun setTintMode(tintMode: Mode?) {
-        DrawableCompat.setTintMode(icon, tintMode)
+        icon.setTintMode(tintMode)
     }
 
     override fun setHotspot(x: Float, y: Float) {
-        background?.let { DrawableCompat.setHotspot(it, x, y) }
-        DrawableCompat.setHotspot(icon, x, y)
+        background?.setHotspot(x, y)
+        icon.setHotspot(x, y)
     }
 
     override fun setHotspotBounds(left: Int, top: Int, right: Int, bottom: Int) {
-        background?.let { DrawableCompat.setHotspotBounds(it, left, top, right, bottom) }
-        DrawableCompat.setHotspotBounds(icon, left, top, right, bottom)
+        background?.setHotspotBounds(left, top, right, bottom)
+        icon.setHotspotBounds(left, top, right, bottom)
     }
 
     override fun invalidateDrawable(who: Drawable) {

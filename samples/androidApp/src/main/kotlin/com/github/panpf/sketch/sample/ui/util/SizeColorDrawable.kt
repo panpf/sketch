@@ -40,6 +40,7 @@ open class SizeColorDrawable constructor(
         mPaint.colorFilter = colorFilter
     }
 
+    @Deprecated("Deprecated in Java")
     override fun getOpacity(): Int {
         return PixelFormat.TRANSPARENT
     }

@@ -44,7 +44,7 @@ fun ComponentRegistry.Builder.supportComposeResources(): ComponentRegistry.Build
  * * Res.getUri("files/huge_china.jpg") on android: 'jar:file:/data/app/com.github.panpf.sketch4.sample-1==/base.apk!/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
  * * Res.getUri("files/huge_china.jpg") on desktop: 'file:/Users/panpf/Workspace/sketch/sample/build/processedResources/desktop/main/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
  * * Res.getUri("files/huge_china.jpg") on js: 'http://localhost:8080/./composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
- * * Res.getUri("files/huge_china.jpg") on ios: 'file:///Users/panpf/Library/Developer/ CoreSimulator/Devices/F828C881-A750-432B-8210-93A84C45E/data/Containers/Bundle/Application/CBD75605-D35E-47A7-B56B-6C5690B062CC/SketchSample.app/compose-resources/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
+ * * Res.getUri("files/huge_china.jpg") on ios: 'file:///Users/panpf/Library/Developer/CoreSimulator/Devices/F828C881-A750-432B-8210-93A84C45E/data/Containers/Bundle/Application/CBD75605-D35E-47A7-B56B-6C5690B062CC/Sketch4.app/compose-resources/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
  * @return 'file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg'
  *
  * @see com.github.panpf.sketch.compose.resources.common.test.fetch.ComposeResourceUriFetcherTest.testNewComposeResourceUri

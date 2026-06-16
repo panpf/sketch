@@ -421,4 +421,4 @@ private fun ByteArray.indexOf2(byte: Byte, fromIndex: Int, toIndex: Int): Int {
     return -1
 }
 
-private inline infix fun Byte.and(other: Byte): Byte = (this.toInt() and other.toInt()).toByte()
+private infix fun Byte.and(other: Byte): Byte = (this.toInt() and other.toInt()).toByte()

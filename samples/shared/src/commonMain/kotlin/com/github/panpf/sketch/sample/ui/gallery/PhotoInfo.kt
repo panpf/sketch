@@ -27,7 +27,7 @@ fun PhotoInfo(imageResult: ImageResult?) {
         PhotoInfoItem(null, uri.orEmpty())
 
         if (imageResult is ImageResult.Success) {
-            val optionsInfo = imageResult.cacheKey
+            val optionsInfo = imageResult.memoryCacheKey
                 .replace(imageResult.request.uri.toString(), "")
                 .let { if (it.startsWith("?")) it.substring(1) else it }
                 .split("&")

@@ -19,12 +19,12 @@ package com.github.panpf.sketch.decode
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.decode.SvgDecoder.Factory
 import com.github.panpf.sketch.decode.internal.decodeSvg
-import com.github.panpf.sketch.decode.internal.isSvg
 import com.github.panpf.sketch.decode.internal.readSvgImageInfo
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.ImageData
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
+import com.github.panpf.sketch.util.isSvgFile
 
 /**
  * Adds SVG support
@@ -96,7 +96,7 @@ class SvgDecoder(
 
         private fun isApplicable(fetchResult: FetchResult): Boolean {
             // Some svg files have comments at the header, which causes the svg tag to be found within 1024 bytes, so first detect mimeType
-            return fetchResult.mimeType == MIME_TYPE || fetchResult.headerBytes.isSvg()
+            return fetchResult.mimeType == MIME_TYPE || isSvgFile(fetchResult.headerBytes)
         }
 
         override fun equals(other: Any?): Boolean {

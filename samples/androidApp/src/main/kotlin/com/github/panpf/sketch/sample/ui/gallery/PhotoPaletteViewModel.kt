@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.sample.ui.gallery
 
 import android.app.Application
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.AndroidViewModel
 import com.github.panpf.sketch.sample.R
 import com.github.panpf.sketch.sample.image.palette.PhotoPalette
@@ -23,10 +24,18 @@ class PhotoPaletteViewModel(application: Application) : AndroidViewModel(applica
     }
 
     private fun getPrimaryColor(): Int {
-        return (getApplication() as Application).resources.getColor(R.color.md_theme_primary)
+        return ResourcesCompat.getColor(
+            (getApplication() as Application).resources,
+            R.color.md_theme_primary,
+            null
+        )
     }
 
     private fun getPrimaryContainerColor(): Int {
-        return (getApplication() as Application).resources.getColor(R.color.md_theme_primaryContainer)
+        return ResourcesCompat.getColor(
+            (getApplication() as Application).resources,
+            R.color.md_theme_primaryContainer,
+            null
+        )
     }
 }

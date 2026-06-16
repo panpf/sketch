@@ -27,7 +27,8 @@ abstract class BaseBindingActivity<VIEW_BINDING : ViewBinding> : BaseActivity() 
         super.onCreate(savedInstanceState)
 
         val contentParent: ViewGroup = findViewById(android.R.id.content)
-        val binding = createViewBinding(LayoutInflater.from(this), contentParent) as VIEW_BINDING
+        @Suppress("UNCHECKED_CAST") val binding =
+            createViewBinding(LayoutInflater.from(this), contentParent) as VIEW_BINDING
         setContentView(binding.root)
         onCreate(binding, savedInstanceState)
     }

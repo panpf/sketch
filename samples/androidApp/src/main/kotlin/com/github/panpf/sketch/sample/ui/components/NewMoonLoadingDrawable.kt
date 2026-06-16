@@ -86,6 +86,7 @@ class NewMoonLoadingDrawable(val intrinsicSize: Size) : Drawable(), Animatable {
         dstPaint.colorFilter = colorFilter
     }
 
+    @Deprecated("Deprecated in Java")
     override fun getOpacity(): Int {
         return PixelFormat.TRANSPARENT
     }

@@ -11,7 +11,7 @@ import com.github.panpf.sketch.request.videoFramePercent
 import com.github.panpf.sketch.sample.AppSettings
 
 @Composable
-actual inline fun composablePlatformAsyncImageSettings(appSettings: AppSettings): ImageOptions {
+actual fun composablePlatformAsyncImageSettings(appSettings: AppSettings): ImageOptions {
     return ComposableImageOptions {
         val cache by appSettings.cacheDecodeTimeoutFrame.collectAsState()
         cacheDecodeTimeoutFrame(cache)

@@ -201,7 +201,6 @@ private fun buildListImageRequest(
         val scale = remember(scaleName, longImageScale, otherImageScale) {
             buildScale(scaleName, longImageScale, otherImageScale)
         }
-//        val scale by appSettings.scale.collectAsState()   // stateCombine will cause UI lag
         scale(scale)
 
         val repeatCount by appSettings.repeatCount.collectAsState()

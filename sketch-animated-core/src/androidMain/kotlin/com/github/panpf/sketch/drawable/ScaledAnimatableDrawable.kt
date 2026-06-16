@@ -28,7 +28,6 @@ import android.graphics.drawable.AnimatedImageDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Drawable.Callback
 import androidx.annotation.RequiresApi
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.withSave
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import com.github.panpf.sketch.drawable.internal.AnimatableCallbackHelper
@@ -69,16 +68,17 @@ class ScaledAnimatableDrawable @JvmOverloads constructor(
         }
     }
 
-    override fun getAlpha() = DrawableCompat.getAlpha(drawable)
+    override fun getAlpha() = drawable.alpha
 
     override fun setAlpha(alpha: Int) {
         drawable.alpha = alpha
     }
 
     @Deprecated("Deprecated in Java", ReplaceWith("child.opacity"))
+    @Suppress("DEPRECATION")
     override fun getOpacity() = drawable.opacity
 
-    override fun getColorFilter(): ColorFilter? = DrawableCompat.getColorFilter(drawable)
+    override fun getColorFilter(): ColorFilter? = drawable.colorFilter
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
         drawable.colorFilter = colorFilter
@@ -124,12 +124,12 @@ class ScaledAnimatableDrawable @JvmOverloads constructor(
 
     override fun getIntrinsicHeight() = drawable.intrinsicHeight
 
-    override fun setTint(tintColor: Int) = DrawableCompat.setTint(drawable, tintColor)
+    override fun setTint(tintColor: Int) = drawable.setTint(tintColor)
 
-    override fun setTintList(tint: ColorStateList?) = DrawableCompat.setTintList(drawable, tint)
+    override fun setTintList(tint: ColorStateList?) = drawable.setTintList(tint)
 
     override fun setTintMode(tintMode: PorterDuff.Mode?) =
-        DrawableCompat.setTintMode(drawable, tintMode ?: PorterDuff.Mode.SRC_IN)
+        drawable.setTintMode(tintMode ?: PorterDuff.Mode.SRC_IN)
 
     @RequiresApi(29)
     override fun setTintBlendMode(blendMode: BlendMode?) = drawable.setTintBlendMode(blendMode)

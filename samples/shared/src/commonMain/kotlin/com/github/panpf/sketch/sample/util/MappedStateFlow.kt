@@ -1,11 +1,13 @@
 package com.github.panpf.sketch.sample.util
 
+import kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.StateFlow
 
 fun <T, R> StateFlow<T>.stateMap(transform: (value: T) -> R): StateFlow<R> =
     MappedStateFlow(this, transform)
 
+@OptIn(ExperimentalForInheritanceCoroutinesApi::class)
 class MappedStateFlow<T, R>(
     private val source: StateFlow<T>,
     private val transform: (value: T) -> R

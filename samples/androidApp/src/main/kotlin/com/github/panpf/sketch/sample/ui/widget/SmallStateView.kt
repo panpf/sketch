@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.github.panpf.sketch.sample.ui.widget
 
 import android.content.Context

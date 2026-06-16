@@ -26,6 +26,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.core.graphics.drawable.toDrawable
 import com.github.panpf.sketch.util.ColorFetcher
 import com.github.panpf.sketch.util.Key
 import com.github.panpf.sketch.util.getDrawableCompat
@@ -137,7 +138,7 @@ class RealColorDrawableFetcher constructor(@ColorInt val color: Int) : DrawableF
     override val key: String = "RealColorDrawable($color)"
 
     override fun getDrawable(context: Context): Drawable {
-        return ColorDrawable(color)
+        return color.toDrawable()
     }
 
     override fun equals(other: Any?): Boolean {

@@ -34,7 +34,6 @@ import android.os.Looper
 import android.os.SystemClock
 import android.widget.ImageView.ScaleType
 import androidx.annotation.RequiresApi
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.drawable.TintAwareDrawable
 import androidx.core.graphics.withSave
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
@@ -257,13 +256,13 @@ class CrossfadeDrawable @JvmOverloads constructor(
     override fun getIntrinsicHeight() = intrinsicHeight
 
     override fun setTint(tintColor: Int) {
-        startDrawable?.let { DrawableCompat.setTint(it, tintColor) }
-        endDrawable?.let { DrawableCompat.setTint(it, tintColor) }
+        startDrawable?.setTint(tintColor)
+        endDrawable?.setTint(tintColor)
     }
 
     override fun setTintList(tint: ColorStateList?) {
-        startDrawable?.let { DrawableCompat.setTintList(it, tint) }
-        endDrawable?.let { DrawableCompat.setTintList(it, tint) }
+        startDrawable?.setTintList(tint)
+        endDrawable?.setTintList(tint)
     }
 
     @SuppressLint("RestrictedApi", "ObsoleteSdkInt")

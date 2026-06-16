@@ -138,7 +138,7 @@ object BlurHashUtil {
         )
     }
 
-    private inline fun decode83(str: String, from: Int, to: Int): Int {
+    private fun decode83(str: String, from: Int, to: Int): Int {
         var acc = 0
         for (p in from until to) acc = acc * 83 + CHAR_TO_CODE[str[p].code]
         return acc
@@ -150,7 +150,7 @@ object BlurHashUtil {
         out[2] = srgbToLinear(colorEnc and 0xFF)
     }
 
-    private inline fun srgbToLinear(enc: Int) = SRGB_TO_LINEAR[enc]
+    private fun srgbToLinear(enc: Int) = SRGB_TO_LINEAR[enc]
 
     private fun decodeAc(value: Int, maxAc: Float, out: FloatArray, outIndex: Int) {
         val oneNinth = 1f / 9f
@@ -219,7 +219,7 @@ object BlurHashUtil {
         cos(PI * x * i / size).toFloat()
     }
 
-    private inline fun linearToSrgb(v: Float) = LINEAR_TO_SRGB[(v.coerceIn(0f, 1f) * 4095f).toInt()]
+    private fun linearToSrgb(v: Float) = LINEAR_TO_SRGB[(v.coerceIn(0f, 1f) * 4095f).toInt()]
 
     fun isValid(blurHash: String?): Boolean {
         if (blurHash == null || blurHash.length < 6) return false

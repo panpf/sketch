@@ -62,8 +62,6 @@ expect class AppSettings(context: PlatformContext) {
     val scaleName: SettingsStateFlow<String>
     val longImageScale: SettingsStateFlow<Scale>
     val otherImageScale: SettingsStateFlow<Scale>
-    // stateCombine will cause UI lag
-//    val scale: StateFlow<ScaleDecider>
 
     val saveCellularTrafficInList: SettingsStateFlow<Boolean>
 
@@ -211,7 +209,7 @@ abstract class BaseAppSettings constructor(val context: PlatformContext) {
             convert = { Scale.valueOf(it) },
         )
     }
-    // stateCombine will cause UI lag
+    // TODO stateCombine will cause UI lag
 //    val scale: StateFlow<ScaleDecider> =
 //        stateCombine(listOf(scaleName, longImageScale, otherImageScale)) {
 //            val scaleName: String = it[0] as String

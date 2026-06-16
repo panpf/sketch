@@ -45,6 +45,15 @@ class AndroidSystemCallbacks(sketch: Sketch) : SystemCallbacks {
         override fun onConfigurationChanged(newConfig: Configuration) {
         }
 
+        /**
+         * @deprecated Since API level 14 this is superseded by
+         *             {@link ComponentCallbacks2#onTrimMemory}.
+         *             Since API level 34 this is never called.
+         *             If you're overriding ComponentCallbacks2#onTrimMemory and
+         *             your minSdkVersion is greater than API 14, you can provide
+         *             an empty implementation for this method.
+         */
+        @Deprecated("Deprecated in Java")
         override fun onLowMemory() {
             val sketch1 = sketchReference.get() ?: return
             val memoryCache = sketch1.memoryCache
@@ -59,6 +68,7 @@ class AndroidSystemCallbacks(sketch: Sketch) : SystemCallbacks {
             val sketch1 = sketchReference.get() ?: return
             val memoryCache = sketch1.memoryCache
             val oldSize = memoryCache.size
+            @Suppress("DEPRECATION")
             when {
                 level >= ComponentCallbacks2.TRIM_MEMORY_BACKGROUND -> {
                     memoryCache.clear()

@@ -14,7 +14,7 @@ import com.github.panpf.sketch.sample.AppSettings
 
 @Suppress("NOTHING_TO_INLINE")
 @Composable
-actual inline fun composablePlatformAsyncImageSettings(appSettings: AppSettings): ImageOptions {
+actual fun composablePlatformAsyncImageSettings(appSettings: AppSettings): ImageOptions {
     return ComposableImageOptions {
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             val colorSpace by appSettings.colorSpace.collectAsState()

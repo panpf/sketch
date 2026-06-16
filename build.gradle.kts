@@ -72,6 +72,15 @@ allprojects {
         }
     }
 
+    // Avoid 'This annotation is currently applied to the value parameter only, but in the future it will also be applied to field.' warning
+    afterEvaluate {
+        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+            compilerOptions {
+                freeCompilerArgs.add("-Xannotation-default-target=param-property")
+            }
+        }
+    }
+
     // 'expect'/'actual' classes (including interfaces, objects, annotations, enums, and 'actual' typealiases) are in Beta. Consider using the '-Xexpect-actual-classes' flag to suppress this warning.
     // Also see: https://youtrack.jetbrains.com/issue/KT-61573
     plugins.withId("org.jetbrains.kotlin.multiplatform") {

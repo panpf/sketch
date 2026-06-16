@@ -112,7 +112,7 @@ val ColorSpace.simpleName: String
  */
 @Suppress("USELESS_ELVIS")
 val Bitmap.configOrNull: ColorType?
-    get() = config ?: null
+    get() = config
 
 /**
  * Get the configuration of the bitmap, if it is null, return [ColorType].ARGB_8888

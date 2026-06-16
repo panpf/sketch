@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.sample.util
 
+import kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -10,6 +11,8 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.resumeWithException
 
+// collectAsState in compose will cause UI lag
+@OptIn(ExperimentalForInheritanceCoroutinesApi::class)
 inline fun <reified T, R> stateCombine(
     sources: Iterable<StateFlow<T>>,
     crossinline transform: (Array<T>) -> R
@@ -24,8 +27,7 @@ inline fun <reified T, R> stateCombine(
         get() = transform(sources.map { it.value }.toTypedArray())
 
     override suspend fun collect(collector: FlowCollector<R>): Nothing = coroutineScope {
-        // collectAsState in compose will cause UI lag
-        suspendCancellableCoroutine<Nothing> { continuation ->
+        suspendCancellableCoroutine { continuation ->
             val flow: Flow<R> = combine(flows = sources, transform)
             val job = launch {
                 try {

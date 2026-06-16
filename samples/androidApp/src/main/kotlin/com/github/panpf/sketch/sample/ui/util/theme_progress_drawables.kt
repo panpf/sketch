@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.sample.ui.util
 
 import android.content.Context
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED
 import com.github.panpf.sketch.ability.PROGRESS_INDICATOR_HIDDEN_WHEN_INDETERMINATE
@@ -17,7 +18,7 @@ fun createThemeMaskProgressDrawable(
     hiddenWhenCompleted: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED,
     stepAnimationDuration: Int = PROGRESS_INDICATOR_STEP_ANIMATION_DURATION,
 ): MaskProgressDrawable {
-    val primary = context.resources.getColor(R.color.md_theme_primary)
+    val primary = ResourcesCompat.getColor(context.resources, R.color.md_theme_primary, null)
     val primaryContainer = ColorUtils.setAlphaComponent(primary, 100)
     return MaskProgressDrawable(
         hiddenWhenIndeterminate = hiddenWhenIndeterminate,
@@ -34,7 +35,7 @@ fun createThemeRingProgressDrawable(
     hiddenWhenCompleted: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED,
     stepAnimationDuration: Int = PROGRESS_INDICATOR_STEP_ANIMATION_DURATION,
 ): RingProgressDrawable {
-    val primary = context.resources.getColor(R.color.md_theme_primary)
+    val primary = ResourcesCompat.getColor(context.resources, R.color.md_theme_primary, null)
     val primaryContainer = ColorUtils.setAlphaComponent(primary, 100)
     return RingProgressDrawable(
         hiddenWhenIndeterminate = hiddenWhenIndeterminate,
@@ -51,7 +52,7 @@ fun createThemeSectorProgressDrawable(
     hiddenWhenCompleted: Boolean = PROGRESS_INDICATOR_HIDDEN_WHEN_COMPLETED,
     stepAnimationDuration: Int = PROGRESS_INDICATOR_STEP_ANIMATION_DURATION,
 ): SectorProgressDrawable {
-    val primary = context.resources.getColor(R.color.md_theme_primary)
+    val primary = ResourcesCompat.getColor(context.resources, R.color.md_theme_primary, null)
     val primaryContainer = ColorUtils.setAlphaComponent(primary, 100)
     return SectorProgressDrawable(
         hiddenWhenIndeterminate = hiddenWhenIndeterminate,

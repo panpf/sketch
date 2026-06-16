@@ -21,6 +21,7 @@ import com.russhwolf.settings.Settings
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,6 +37,7 @@ private val PlatformContext.settings: Settings
 
 expect fun createSettings(context: PlatformContext): Settings
 
+@OptIn(ExperimentalForInheritanceCoroutinesApi::class)
 interface SettingsStateFlow<T> : MutableStateFlow<T>
 
 fun booleanSettingsStateFlow(
