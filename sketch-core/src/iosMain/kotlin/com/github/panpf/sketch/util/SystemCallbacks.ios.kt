@@ -64,8 +64,8 @@ internal class IosSystemCallbacks(val sketch: Sketch) : SystemCallbacks {
                 val memoryCache = sketch.memoryCache
                 val oldSize = memoryCache.size
                 when (it) {
-                    MemoryPressure.CRITICAL -> memoryCache.trim(memoryCache.size / 2)
-                    MemoryPressure.WARN -> memoryCache.clear()
+                    MemoryPressure.CRITICAL -> memoryCache.clear()
+                    MemoryPressure.WARN -> memoryCache.trim(memoryCache.size / 2)
                     else -> {}
                 }
                 sketch.logger.d {
