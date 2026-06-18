@@ -9,6 +9,12 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
+# new
+
+## ios
+
+* improve: swapped memory actions: critical -> clear; warn -> trim
+
 # 4.5.0-beta04
 
 ## Multiplatform
