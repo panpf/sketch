@@ -11,6 +11,7 @@ import com.github.panpf.sketch.resize.Resize
 import com.github.panpf.sketch.resize.Scale
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.util.Size
+import com.github.panpf.zoomimage.test.core.BuildKonfig
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
@@ -169,4 +170,4 @@ fun isSameAspectRatio(size: Size, otherSize: Size, epsilon: Float = 0.1f): Boole
     return diff <= epsilon
 }
 
-expect fun isGitHubActions(): Boolean
+fun isGitHubActions(): Boolean = BuildKonfig.IS_GITHUB_ACTIONS

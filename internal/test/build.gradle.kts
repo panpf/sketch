@@ -1,5 +1,6 @@
 plugins {
     id("com.android.kotlin.multiplatform.library")
+    id("com.codingfeline.buildkonfig")
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.kotlinx.atomicfu")
 }
@@ -39,5 +40,22 @@ kotlin {
             api(skikoAwtRuntimeDependency(libs.versions.skiko.get()))
             api(libs.appdirs)
         }
+    }
+}
+
+// The ios, js, wasmJs test running environment and the gradle environment are isolated.
+// It is impossible to judge whether it is running in GitHub Actions through environment variables.
+// Therefore, the environment variables are read in gradle first,
+// and the results are passed to the code for use through BuildKonfig.
+val isGitHubActions = System.getenv("GITHUB_ACTIONS") == "true"
+buildkonfig {
+    packageName = "com.github.panpf.zoomimage.test.core"
+    defaultConfigs {
+        buildConfigField(
+            type = com.codingfeline.buildkonfig.compiler.FieldSpec.Type.BOOLEAN,
+            name = "IS_GITHUB_ACTIONS",
+            value = isGitHubActions.toString(),
+            const = true
+        )
     }
 }
