@@ -11,7 +11,7 @@ env:
 
 jobs:
   check-abi:
-    name: Checks
+    name: Check Abi
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
