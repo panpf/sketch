@@ -168,3 +168,5 @@ fun isSameAspectRatio(size: Size, otherSize: Size, epsilon: Float = 0.1f): Boole
     val diff = abs(aspectRatio1 - aspectRatio2)
     return diff <= epsilon
 }
+
+expect fun isGitHubActions(): Boolean
