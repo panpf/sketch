@@ -20,102 +20,119 @@ import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+private val desugaringLibrary = "com.android.tools:desugar_jdk_libs:2.1.5"
+
 fun Project.androidLibrary(
     nameSpace: String,
     action: LibraryExtension.() -> Unit = {},
-) = android<LibraryExtension> {
-    namespace = nameSpace
-    compileSdk = project.compileSdk
-    defaultConfig {
-        minSdk = project.lowMinSdk
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
+) {
+    android<LibraryExtension> {
+        namespace = nameSpace
+        compileSdk = project.compileSdk
+        defaultConfig {
+            minSdk = project.lowMinSdk
+            testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        }
 
-    // Target JVM 11.
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    tasks.withType<KotlinCompile>().configureEach {
-        compilerOptions.jvmTarget.set(JvmTarget.JVM_11)
-    }
+        // Target JVM 11.
+        compileOptions {
+            isCoreLibraryDesugaringEnabled = true
+            sourceCompatibility = JavaVersion.VERSION_11
+            targetCompatibility = JavaVersion.VERSION_11
+        }
+        tasks.withType<KotlinCompile>().configureEach {
+            compilerOptions.jvmTarget.set(JvmTarget.JVM_11)
+        }
 
-    testOptions {
-        unitTests.isIncludeAndroidResources = true
-        unitTests.all { test ->
-            test.testLogging {
-                exceptionFormat = TestExceptionFormat.FULL
-                showExceptions = true
-                showStackTraces = true
-                showCauses = false
+        testOptions {
+            unitTests.isIncludeAndroidResources = true
+            unitTests.all { test ->
+                test.testLogging {
+                    exceptionFormat = TestExceptionFormat.FULL
+                    showExceptions = true
+                    showStackTraces = true
+                    showCauses = false
+                }
             }
         }
-    }
 
-    buildTypes {
-        debug {
-            enableUnitTestCoverage = true
-            enableAndroidTestCoverage = true
+        buildTypes {
+            debug {
+                enableUnitTestCoverage = true
+                enableAndroidTestCoverage = true
+            }
         }
+
+        packaging {
+            resources.pickFirsts += listOf(
+                "META-INF/AL2.0",
+                "META-INF/LGPL2.1",
+                "META-INF/*kotlin_module",
+            )
+        }
+
+        action()
     }
 
-    packaging {
-        resources.pickFirsts += listOf(
-            "META-INF/AL2.0",
-            "META-INF/LGPL2.1",
-            "META-INF/*kotlin_module",
-        )
+    dependencies {
+        add("coreLibraryDesugaring", desugaringLibrary)
     }
-
-    action()
 }
 
 fun Project.androidApplication(
     nameSpace: String,
     applicationId: String = nameSpace,
     action: ApplicationExtension.() -> Unit = {},
-) = android<ApplicationExtension> {
-    val includeCompose = plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null
+) {
+    android<ApplicationExtension> {
+        val includeCompose = plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null
 
-    namespace = nameSpace
-    compileSdk = project.compileSdk
-    defaultConfig {
-        this.applicationId = applicationId
-        versionCode = project.versionCode
-        versionName = project.versionName
-        vectorDrawables.useSupportLibrary = true
-        minSdk = if (includeCompose) project.minSdk else project.lowMinSdk
-        targetSdk = project.targetSdk
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        namespace = nameSpace
+        compileSdk = project.compileSdk
+        defaultConfig {
+            this.applicationId = applicationId
+            versionCode = project.versionCode
+            versionName = project.versionName
+            vectorDrawables.useSupportLibrary = true
+            minSdk = if (includeCompose) project.minSdk else project.lowMinSdk
+            targetSdk = project.targetSdk
+            testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        }
+
+        // Target JVM 11.
+        compileOptions {
+            isCoreLibraryDesugaringEnabled = true
+            sourceCompatibility = JavaVersion.VERSION_11
+            targetCompatibility = JavaVersion.VERSION_11
+        }
+        tasks.withType<KotlinCompile>().configureEach {
+            compilerOptions.jvmTarget.set(JvmTarget.JVM_11)
+        }
+
+        testOptions {
+            unitTests.isIncludeAndroidResources = true
+        }
+
+        packaging {
+            resources.pickFirsts += listOf(
+                "META-INF/AL2.0",
+                "META-INF/LGPL2.1",
+                "META-INF/*kotlin_module",
+            )
+        }
+
+        action()
     }
 
-    // Target JVM 11.
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+    dependencies {
+        add("coreLibraryDesugaring", desugaringLibrary)
     }
-    tasks.withType<KotlinCompile>().configureEach {
-        compilerOptions.jvmTarget.set(JvmTarget.JVM_11)
-    }
-
-    testOptions {
-        unitTests.isIncludeAndroidResources = true
-    }
-
-    packaging {
-        resources.pickFirsts += listOf(
-            "META-INF/AL2.0",
-            "META-INF/LGPL2.1",
-            "META-INF/*kotlin_module",
-        )
-    }
-
-    action()
 }
 
 fun Project.kmpAndroidLibrary(
