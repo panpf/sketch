@@ -82,6 +82,7 @@ class VideoFrameDecodeHelper constructor(
     private val _imageInfo: ImageInfo by lazy { readImageInfo() }
 
     override suspend fun getImageInfo(): ImageInfo {
+        // TODO It is not possible to force override with the MimeType of the video here.
         return coverHelper?.getImageInfo()?.copy(mimeType = mimeType) ?: _imageInfo
     }
 

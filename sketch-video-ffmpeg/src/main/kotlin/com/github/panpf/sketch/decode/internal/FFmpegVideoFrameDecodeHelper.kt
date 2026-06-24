@@ -79,6 +79,7 @@ class FFmpegVideoFrameDecodeHelper(
     private val _imageInfo: ImageInfo by lazy { readImageInfo() }
 
     override suspend fun getImageInfo(): ImageInfo {
+        // TODO It is not possible to force override with the MimeType of the video here.
         return coverHelper?.getImageInfo()?.copy(mimeType = mimeType) ?: _imageInfo
     }
 
@@ -132,6 +133,7 @@ class FFmpegVideoFrameDecodeHelper(
     }
 
     private fun readImageInfo(): ImageInfo {
+        // TODO FFmpegMediaMetadataRetriever does not support rotation
         val srcWidth = mediaMetadataRetriever
             .extractMetadata(FFmpegMediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toIntOrNull()
             ?: 0
