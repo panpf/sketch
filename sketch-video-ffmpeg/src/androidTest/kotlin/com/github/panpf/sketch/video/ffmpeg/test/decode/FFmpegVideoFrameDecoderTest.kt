@@ -145,7 +145,7 @@ class FFmpegVideoFrameDecoderTest {
             .createDecoderOrDefault(sketch, factory)
             .apply {
                 assertEquals(
-                    expected = ImageInfo(1080, 1920, "video/mp4"),
+                    expected = ImageInfo(1920, 1080, "video/mp4"),
                     actual = getImageInfo()
                 )
             }
@@ -171,36 +171,38 @@ class FFmpegVideoFrameDecoderTest {
         val (context, sketch) = getTestContextAndSketch()
         val factory = FFmpegVideoFrameDecoder.Factory()
 
-        ImageRequest(context, ComposeResImageFiles.rotationMp4.uri)
-            .decode(sketch, factory).apply {
-                assertEquals(
-                    expected = "Bitmap(1080x1920,ARGB_8888${shortInfoColorSpace("SRGB")})",
-                    actual = image.getBitmapOrThrow().toShortInfoString()
-                )
-                assertEquals(
-                    expected = "ImageInfo(1080x1920,'video/mp4')",
-                    actual = imageInfo.toShortString()
-                )
-                assertEquals(expected = LOCAL, actual = dataFrom)
-                assertNull(actual = transformeds)
-            }
+        ImageRequest(context, ComposeResImageFiles.rotationMp4.uri) {
+            size(Size.Origin)
+        }.decode(sketch, factory).apply {
+            assertEquals(
+                expected = "Bitmap(1920x1080,ARGB_8888${shortInfoColorSpace("SRGB")})",
+                actual = image.getBitmapOrThrow().toShortInfoString()
+            )
+            assertEquals(
+                expected = "ImageInfo(1920x1080,'video/mp4')",
+                actual = imageInfo.toShortString()
+            )
+            assertEquals(expected = LOCAL, actual = dataFrom)
+            assertNull(actual = transformeds)
+        }
 
         ImageRequest(context, ComposeResImageFiles.rotationMp4.uri) {
             resize(300, 300, LESS_PIXELS)
         }.decode(sketch, factory).apply {
             assertEquals(
-                expected = "Bitmap(135x240,ARGB_8888${shortInfoColorSpace("SRGB")})",
+                expected = "Bitmap(240x135,ARGB_8888${shortInfoColorSpace("SRGB")})",
                 actual = image.getBitmapOrThrow().toShortInfoString()
             )
             assertEquals(
-                expected = "ImageInfo(1080x1920,'video/mp4')",
+                expected = "ImageInfo(1920x1080,'video/mp4')",
                 actual = imageInfo.toShortString()
             )
             assertEquals(expected = LOCAL, actual = dataFrom)
-            assertEquals(expected = listOf(createInSampledTransformed(2)), transformeds)
+            assertEquals(expected = listOf(createInSampledTransformed(8)), transformeds)
         }
 
         ImageRequest(context, ComposeResImageFiles.rotationMp4.uri) {
+            size(Size.Origin)
             preferVideoCover()
         }.decode(sketch, factory).apply {
             assertEquals(

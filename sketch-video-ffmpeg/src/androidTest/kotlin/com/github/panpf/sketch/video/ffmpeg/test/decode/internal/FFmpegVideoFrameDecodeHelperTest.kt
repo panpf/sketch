@@ -16,20 +16,99 @@ import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.colorSpace
 import com.github.panpf.sketch.request.colorType
+import com.github.panpf.sketch.request.preferVideoCover
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.assertSizeEquals
 import com.github.panpf.sketch.test.utils.toRect
+import com.github.panpf.sketch.util.Rect
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.tools4a.device.Devicex
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 class FFmpegVideoFrameDecodeHelperTest {
+
+    @Test
+    fun testConstructor() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val request = ImageRequest(context, "/sdcard/sample_rotation.mp4")
+        val dataSource = ComposeResImageFiles.rotationMp4.toDataSource(context)
+
+        FFmpegVideoFrameDecodeHelper(sketch, request, dataSource, "video/mp4")
+        FFmpegVideoFrameDecodeHelper(
+            sketch = sketch,
+            request = request,
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
+    }
+
+    @Test
+    fun testImageInfo() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val imageFile = ComposeResImageFiles.rotationMp4
+        val request = ImageRequest(context, imageFile.uri)
+        val dataSource = imageFile.toDataSource(context)
+        FFmpegVideoFrameDecodeHelper(
+            sketch = sketch,
+            request = request,
+            dataSource = dataSource,
+            mimeType = imageFile.mimeType
+        ).getImageInfo().apply {
+            assertEquals(
+                expected = "ImageInfo(size=1920x1080, mimeType='video/mp4')",
+                actual = this.toString()
+            )
+        }
+
+        FFmpegVideoFrameDecodeHelper(
+            sketch = sketch,
+            request = request.newRequest { preferVideoCover() },
+            dataSource = dataSource,
+            mimeType = imageFile.mimeType
+        ).getImageInfo().apply {
+            assertEquals(
+                expected = "ImageInfo(size=1600x1200, mimeType='video/mp4')",
+                actual = this.toString()
+            )
+        }
+    }
+
+    @Test
+    fun testSupportRegion() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val imageFile = ComposeResImageFiles.rotationMp4
+        val request = ImageRequest(context, imageFile.uri)
+        val dataSource = imageFile.toDataSource(context)
+        FFmpegVideoFrameDecodeHelper(
+            sketch = sketch,
+            request = request,
+            dataSource = dataSource,
+            mimeType = imageFile.mimeType
+        ).isSupportRegion().apply {
+            assertFalse(this)
+        }
+
+        FFmpegVideoFrameDecodeHelper(
+            sketch = sketch,
+            request = request.newRequest { preferVideoCover() },
+            dataSource = dataSource,
+            mimeType = imageFile.mimeType
+        ).isSupportRegion().apply {
+            assertTrue(this)
+        }
+    }
 
     @Test
     fun testDecode() = runTest {
@@ -40,9 +119,7 @@ class FFmpegVideoFrameDecodeHelperTest {
 
         val (context, sketch) = getTestContextAndSketch()
 
-        /*
-         * config: sampleSize
-         */
+        // normal
         val imageFile = ComposeResImageFiles.mp4
         imageFile.toDecodeHelper(context, sketch)
             .decode(sampleSize = 1)
@@ -53,7 +130,25 @@ class FFmpegVideoFrameDecodeHelperTest {
                     actual = size,
                     delta = Size(1, 1)
                 )
+                val expectedColorType = if (VERSION.SDK_INT >= VERSION_CODES.R)
+                    ColorType.ARGB_8888 else ColorType.RGB_565
+                assertEquals(
+                    expected = expectedColorType,
+                    actual = colorType,
+                )
+                assertEquals(
+                    expected = ColorSpace.get(ColorSpace.Named.SRGB),
+                    actual = colorSpace,
+                )
+                if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                    assertEquals(
+                        expected = ColorSpace.get(ColorSpace.Named.SRGB),
+                        actual = colorSpace,
+                    )
+                }
             }
+
+        // sampleSize
         imageFile.toDecodeHelper(context, sketch)
             .decode(sampleSize = 2)
             .asOrThrow<BitmapImage>().bitmap
@@ -65,43 +160,7 @@ class FFmpegVideoFrameDecodeHelperTest {
                 )
             }
 
-        // videoRotation
-        val rotationImageFile = ComposeResImageFiles.rotationMp4
-        rotationImageFile.toDecodeHelper(context, sketch)
-            .decode(sampleSize = 1)
-            .asOrThrow<BitmapImage>().bitmap
-            .apply {
-                assertSizeEquals(
-                    expected = rotationImageFile.size,
-                    actual = size,
-                    delta = Size(1, 1)
-                )
-            }
-        rotationImageFile.toDecodeHelper(context, sketch)
-            .decode(sampleSize = 2)
-            .asOrThrow<BitmapImage>().bitmap
-            .apply {
-                assertSizeEquals(
-                    expected = calculateSampledBitmapSize(rotationImageFile.size, 2),
-                    actual = size,
-                    delta = Size(1, 1)
-                )
-            }
-
-        /*
-         * config: colorType
-         */
-        imageFile.toDecodeHelper(context, sketch)
-            .decode(sampleSize = 1)
-            .asOrThrow<BitmapImage>().bitmap
-            .apply {
-                val expected =
-                    if (VERSION.SDK_INT >= VERSION_CODES.N) ColorType.ARGB_8888 else ColorType.RGB_565
-                assertEquals(
-                    expected = expected,
-                    actual = colorType,
-                )
-            }
+        // colorType
         if (VERSION.SDK_INT >= VERSION_CODES.R) {
             imageFile.toDecodeHelper(context, sketch) {
                 colorType(ColorType.RGBA_F16)
@@ -115,19 +174,8 @@ class FFmpegVideoFrameDecodeHelperTest {
                 }
         }
 
-        /*
-         * config: colorSpace
-         */
+        // colorSpace
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            imageFile.toDecodeHelper(context, sketch)
-                .decode(sampleSize = 1)
-                .asOrThrow<BitmapImage>().bitmap
-                .apply {
-                    assertEquals(
-                        expected = ColorSpace.get(ColorSpace.Named.SRGB),
-                        actual = colorSpace,
-                    )
-                }
             imageFile.toDecodeHelper(context, sketch) {
                 colorSpace(ColorSpace.Named.DISPLAY_P3)
             }.decode(sampleSize = 1)
@@ -139,6 +187,43 @@ class FFmpegVideoFrameDecodeHelperTest {
                     )
                 }
         }
+
+        // videoRotation
+        val rotationImageFile = ComposeResImageFiles.rotationMp4
+        val invertedSize = rotationImageFile.size.let { Size(it.height, it.width) }
+        rotationImageFile.toDecodeHelper(context, sketch)
+            .decode(sampleSize = 1)
+            .asOrThrow<BitmapImage>().bitmap
+            .apply {
+                assertSizeEquals(
+                    expected = invertedSize,
+                    actual = size,
+                    delta = Size(1, 1)
+                )
+            }
+        rotationImageFile.toDecodeHelper(context, sketch)
+            .decode(sampleSize = 2)
+            .asOrThrow<BitmapImage>().bitmap
+            .apply {
+                assertSizeEquals(
+                    expected = calculateSampledBitmapSize(invertedSize, 2),
+                    actual = size,
+                    delta = Size(1, 1)
+                )
+            }
+
+        // preferVideoCover
+        rotationImageFile.toDecodeHelper(context, sketch) {
+            preferVideoCover()
+        }.decode(sampleSize = 1)
+            .asOrThrow<BitmapImage>().bitmap
+            .apply {
+                assertSizeEquals(
+                    expected = Size(1600, 1200),
+                    actual = size,
+                    delta = Size(1, 1)
+                )
+            }
 
         /*
          * error
@@ -158,7 +243,7 @@ class FFmpegVideoFrameDecodeHelperTest {
 
         val (context, sketch) = getTestContextAndSketch()
 
-        val imageFile = ComposeResImageFiles.mp4
+        val imageFile = ComposeResImageFiles.rotationMp4
         assertFailsWith(UnsupportedOperationException::class) {
             imageFile.toDecodeHelper(context, sketch)
                 .decodeRegion(
@@ -166,6 +251,44 @@ class FFmpegVideoFrameDecodeHelperTest {
                     sampleSize = 1
                 )
         }
+
+        imageFile.toDecodeHelper(context, sketch) {
+            preferVideoCover()
+        }.decodeRegion(
+            region = Rect(100, 100, 300, 200),
+            sampleSize = 1
+        ).apply {
+            assertSizeEquals(
+                expected = Size(200, 100),
+                actual = size,
+                delta = Size(1, 1)
+            )
+        }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val request = ImageRequest(context, "/sdcard/sample_rotation.mp4")
+        val dataSource = ComposeResImageFiles.rotationMp4.toDataSource(context)
+        val element1 = FFmpegVideoFrameDecodeHelper(
+            sketch = sketch,
+            request = request,
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
+        val element11 = FFmpegVideoFrameDecodeHelper(
+            sketch = sketch,
+            request = request,
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
+
+        assertNotEquals(illegal = element1, actual = element11)
+        assertNotEquals(illegal = element1, actual = null as Any?)
+        assertNotEquals(illegal = element1, actual = Any())
+        assertNotEquals(illegal = element1.hashCode(), actual = element11.hashCode())
     }
 
     @Test

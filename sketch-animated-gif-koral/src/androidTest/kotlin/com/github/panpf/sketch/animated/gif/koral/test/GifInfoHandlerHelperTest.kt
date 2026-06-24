@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.newFileUri
+import com.github.panpf.sketch.images.AssetImageFiles
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.images.R
 import com.github.panpf.sketch.source.AssetDataSource
@@ -130,7 +131,7 @@ class GifInfoHandlerHelperTest {
             sketch,
             AssetDataSource(
                 context = context,
-                fileName = "sample_anim.gif"
+                fileName = AssetImageFiles.animGif.fileName
             )
         ).apply {
             assertEquals(480, width)
