@@ -128,57 +128,57 @@ class AssetUriFetcherTest {
             ImageRequest(context, assetUri)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(AssetImageFiles.bird.name, fileName)
+            assertEquals(AssetImageFiles.bird.fileName, fileName)
         }
         fetcherFactory.create(
             ImageRequest(context, assetUri2)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(AssetImageFiles.bird.name, fileName)
+            assertEquals(AssetImageFiles.bird.fileName, fileName)
         }
         fetcherFactory.create(
             ImageRequest(context, assetUri3)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(AssetImageFiles.bird.name, fileName)
+            assertEquals(AssetImageFiles.bird.fileName, fileName)
         }
 
         fetcherFactory.create(
             ImageRequest(context, assetUri)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(AssetImageFiles.bird.name, fileName)
+            assertEquals(AssetImageFiles.bird.fileName, fileName)
         }
         fetcherFactory.create(
             ImageRequest(context, assetUri2)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(AssetImageFiles.bird.name, fileName)
+            assertEquals(AssetImageFiles.bird.fileName, fileName)
         }
         fetcherFactory.create(
             ImageRequest(context, assetUri3)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(AssetImageFiles.bird.name, fileName)
+            assertEquals(AssetImageFiles.bird.fileName, fileName)
         }
 
         fetcherFactory.create(
             ImageRequest(context, assetUri)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(AssetImageFiles.bird.name, fileName)
+            assertEquals(AssetImageFiles.bird.fileName, fileName)
         }
         fetcherFactory.create(
             ImageRequest(context, assetUri2)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(AssetImageFiles.bird.name, fileName)
+            assertEquals(AssetImageFiles.bird.fileName, fileName)
         }
         fetcherFactory.create(
             ImageRequest(context, assetUri3)
                 .toRequestContext(sketch, Size.Empty)
         )!!.apply {
-            assertEquals(AssetImageFiles.bird.name, fileName)
+            assertEquals(AssetImageFiles.bird.fileName, fileName)
         }
 
         assertNull(

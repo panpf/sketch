@@ -29,9 +29,9 @@ class AssetDataSourceTest {
 
         AssetDataSource(
             context = context,
-            fileName = AssetImageFiles.bird.name
+            fileName = AssetImageFiles.bird.fileName
         ).apply {
-            assertEquals(AssetImageFiles.bird.name, this.fileName)
+            assertEquals(AssetImageFiles.bird.fileName, this.fileName)
             assertEquals(LOCAL, this.dataFrom)
         }
     }
@@ -41,10 +41,10 @@ class AssetDataSourceTest {
         val context = getTestContext()
         AssetDataSource(
             context = context,
-            fileName = AssetImageFiles.bird.name
+            fileName = AssetImageFiles.bird.fileName
         ).apply {
             assertEquals(
-                expected = newAssetUri(fileName = AssetImageFiles.bird.name),
+                expected = newAssetUri(fileName = AssetImageFiles.bird.fileName),
                 actual = key
             )
         }
@@ -56,7 +56,7 @@ class AssetDataSourceTest {
 
         AssetDataSource(
             context = context,
-            fileName = AssetImageFiles.bird.name
+            fileName = AssetImageFiles.bird.fileName
         ).apply {
             openSource().asOrThrow<Closeable>().close()
         }
@@ -76,7 +76,7 @@ class AssetDataSourceTest {
         val (context, sketch) = getTestContextAndSketch()
         AssetDataSource(
             context = context,
-            fileName = AssetImageFiles.bird.name
+            fileName = AssetImageFiles.bird.fileName
         ).getFile(sketch).apply {
             assertTrue(actual = toString().contains("${Path.DIRECTORY_SEPARATOR}${DiskCache.DownloadBuilder.SUB_DIRECTORY_NAME}${Path.DIRECTORY_SEPARATOR}"))
         }
@@ -87,15 +87,15 @@ class AssetDataSourceTest {
         val context = getTestContext()
         val element1 = AssetDataSource(
             context = context,
-            fileName = AssetImageFiles.bird.name
+            fileName = AssetImageFiles.bird.fileName
         )
         val element11 = AssetDataSource(
             context = context,
-            fileName = AssetImageFiles.bird.name
+            fileName = AssetImageFiles.bird.fileName
         )
         val element2 = AssetDataSource(
             context = context,
-            fileName = AssetImageFiles.bird.name + "_end"
+            fileName = AssetImageFiles.bird.fileName + "_end"
         )
 
         assertEquals(element1, element11)
@@ -113,7 +113,7 @@ class AssetDataSourceTest {
 
         AssetDataSource(
             context = context,
-            fileName = AssetImageFiles.bird.name
+            fileName = AssetImageFiles.bird.fileName
         ).apply {
             assertEquals(
                 "AssetDataSource('bird.jpeg')",
