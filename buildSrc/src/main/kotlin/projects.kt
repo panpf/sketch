@@ -26,8 +26,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-private val desugaringLibrary = "com.android.tools:desugar_jdk_libs:2.1.5"
-
 fun Project.androidLibrary(
     nameSpace: String,
     action: LibraryExtension.() -> Unit = {},
@@ -42,7 +40,6 @@ fun Project.androidLibrary(
 
         // Target JVM 11.
         compileOptions {
-            isCoreLibraryDesugaringEnabled = true
             sourceCompatibility = JavaVersion.VERSION_11
             targetCompatibility = JavaVersion.VERSION_11
         }
@@ -79,10 +76,6 @@ fun Project.androidLibrary(
 
         action()
     }
-
-    dependencies {
-        add("coreLibraryDesugaring", desugaringLibrary)
-    }
 }
 
 fun Project.androidApplication(
@@ -107,7 +100,6 @@ fun Project.androidApplication(
 
         // Target JVM 11.
         compileOptions {
-            isCoreLibraryDesugaringEnabled = true
             sourceCompatibility = JavaVersion.VERSION_11
             targetCompatibility = JavaVersion.VERSION_11
         }
@@ -129,48 +121,47 @@ fun Project.androidApplication(
 
         action()
     }
-
-    dependencies {
-        add("coreLibraryDesugaring", desugaringLibrary)
-    }
 }
 
 fun Project.kmpAndroidLibrary(
     nameSpace: String,
     action: KotlinMultiplatformAndroidLibraryExtension.() -> Unit = {},
-) = kmp {
-    androidLibrary {
-        val includeCompose = plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null
+) {
+    kmp {
+        androidLibrary {
+            val includeCompose = plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null
 
-        namespace = nameSpace
-        compileSdk = project.compileSdk
-        minSdk = if (includeCompose) project.minSdk else project.lowMinSdk
+            namespace = nameSpace
+            compileSdk = project.compileSdk
+            minSdk = if (includeCompose) project.minSdk else project.lowMinSdk
 
-        // Enable Android resource processing. Multiplatform library modules do not enable this by default.
-        androidResources {
-            enable = true
-        }
+            // Enable Android resource processing. Multiplatform library modules do not enable this by default.
+            androidResources {
+                enable = true
+            }
 
-        // Opt-in to enable and configure host-side (unit) tests. Multiplatform library modules do not enable this by default.
-        withHostTest {
-            isIncludeAndroidResources = true
-            enableCoverage = true
-        }
-        // Opt-in to enable and configure device-side (instrumented) tests. Multiplatform library modules do not enable this by default.
-        withDeviceTest {
-            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-            execution = "HOST"
-            enableCoverage = true
-        }
+            // Opt-in to enable and configure host-side (unit) tests. Multiplatform library modules do not enable this by default.
+            withHostTest {
+                isIncludeAndroidResources = true
+                enableCoverage = true
+            }
+            // Opt-in to enable and configure device-side (instrumented) tests. Multiplatform library modules do not enable this by default.
+            withDeviceTest {
+                instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                execution = "HOST"
+                enableCoverage = true
+            }
 
-        packaging {
-            resources.pickFirsts += listOf(
-                "META-INF/AL2.0",
-                "META-INF/LGPL2.1",
-                "META-INF/*kotlin_module",
-            )
+            packaging {
+                resources.pickFirsts += listOf(
+                    "META-INF/AL2.0",
+                    "META-INF/LGPL2.1",
+                    "META-INF/*kotlin_module",
+                )
+            }
+
+            action()
         }
-        action()
     }
 }
 
