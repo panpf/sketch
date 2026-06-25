@@ -38,15 +38,13 @@ jobs:
           git checkout gh-pages
 
       - name: Remove old app directory
-        run: |
-          rm -rf wiki/*
+        run: rm -rf wiki/*
 
       - name: Create app directory
         run: mkdir -p wiki
 
       - name: Move build artifacts to wiki directory
-        run: |
-          mv site/* wiki/
+        run: mv site/* wiki/
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v4

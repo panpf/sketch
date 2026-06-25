@@ -6,6 +6,12 @@ set -e
 rootDir="${PWD%/internal/*}"
 cd $rootDir
 
-./gradlew connectedAndroidTest iosSimulatorArm64Test desktopTest jsBrowserTest wasmJsBrowserTest --continue
+./gradlew \
+  connectedAndroidTest \
+  iosSimulatorArm64Test \
+  desktopTest \
+  jsBrowserTest \
+  wasmJsBrowserTest \
+  --continue
 
 echo "✅  All tests are passed successfully."

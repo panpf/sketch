@@ -36,15 +36,13 @@ jobs:
           git checkout gh-pages
 
       - name: Remove old app directory
-        run: |
-          rm -rf app/*
+        run: rm -rf app/*
 
       - name: Create app directory
         run: mkdir -p app
 
       - name: Move build artifacts to app directory
-        run: |
-          mv samples/wasmJsApp/build/dist/wasmJs/productionExecutable/* app/
+        run: mv samples/wasmJsApp/build/dist/wasmJs/productionExecutable/* app/
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v4

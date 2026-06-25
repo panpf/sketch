@@ -1,0 +1,26 @@
+name: Test Desktop
+
+on: workflow_dispatch
+
+env:
+  JAVA_VERSION: 21
+  JAVA_DISTRIBUTION: zulu
+
+jobs:
+  test-desktop:
+    name: Desktop Unit tests
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: gradle/actions/setup-gradle@v6
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          cache-overwrite-existing: true
+
+      - name: Run desktop test
+        run: internal/test_desktop.sh

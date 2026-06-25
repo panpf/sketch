@@ -45,7 +45,7 @@ jobs:
           cache-overwrite-existing: true
 
       - name: Run desktop test
-        run: ./gradlew desktopTest --continue
+        run: internal/test_desktop.sh
 
   test-ios:
     name: iOS Unit tests
@@ -63,7 +63,7 @@ jobs:
           cache-overwrite-existing: true
 
       - name: Run ios test
-        run: ./gradlew iosSimulatorArm64Test --continue
+        run: internal/test_ios.sh
 
   package-android:
     name: Package android
@@ -106,7 +106,11 @@ jobs:
           cache-overwrite-existing: true
 
       - name: Run package
-        run: xcodebuild -project samples/iosApp/iosApp.xcodeproj -scheme iosApp -destination 'generic/platform=iOS Simulator' ARCHS=arm64 CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO -derivedDataPath samples/shared/build/ios/outputs/
+        run: xcodebuild \
+          -project samples/iosApp/iosApp.xcodeproj \
+          -scheme iosApp \
+          -destination 'generic/platform=iOS Simulator' ARCHS=arm64 CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO \
+          -derivedDataPath samples/shared/build/ios/outputs/
 
       - name: Read version name
         id: version_name_step
@@ -115,7 +119,10 @@ jobs:
           echo "version_name=$versionName" >> $GITHUB_OUTPUT
 
       - name: Compress
-        run: cd samples/shared/build/ios/outputs/Build/Products/Debug-iphonesimulator; zip -r "sketch-sample-${{ steps.version_name_step.outputs.version_name }}.app.zip" "Sketch4.app"; cd -
+        run: |
+          cd samples/shared/build/ios/outputs/Build/Products/Debug-iphonesimulator
+          zip -r "sketch-sample-${{ steps.version_name_step.outputs.version_name }}.app.zip" "Sketch4.app"
+          cd -
 
       - name: Upload ios artifacts
         uses: actions/upload-artifact@v7
@@ -220,7 +227,10 @@ jobs:
           echo "version_name=$versionName" >> $GITHUB_OUTPUT
 
       - name: Compress
-        run: cd samples/jsApp/build/dist/js/productionExecutable; zip -r "sketch-sample-js-${{ steps.version_name_step.outputs.version_name }}.zip" *; cd -
+        run: |
+          cd samples/jsApp/build/dist/js/productionExecutable
+          zip -r "sketch-sample-js-${{ steps.version_name_step.outputs.version_name }}.zip" *
+          cd -
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v7
@@ -253,7 +263,10 @@ jobs:
           echo "version_name=$versionName" >> $GITHUB_OUTPUT
 
       - name: Compress
-        run: cd samples/wasmJsApp/build/dist/wasmJs/productionExecutable; zip -r "sketch-sample-wasmJs-${{ steps.version_name_step.outputs.version_name }}.zip" *; cd -
+        run: |
+          cd samples/wasmJsApp/build/dist/wasmJs/productionExecutable
+          zip -r "sketch-sample-wasmJs-${{ steps.version_name_step.outputs.version_name }}.zip" *
+          cd -
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v7
@@ -288,15 +301,13 @@ jobs:
           git checkout gh-pages
 
       - name: Remove old api directory
-        run: |
-          rm -rf api/*
+        run: rm -rf api/*
 
       - name: Create api directory
         run: mkdir -p api
 
       - name: Move build artifacts to api directory
-        run: |
-          mv build/dokka/html/* api/
+        run: mv build/dokka/html/* api/
 
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v7
