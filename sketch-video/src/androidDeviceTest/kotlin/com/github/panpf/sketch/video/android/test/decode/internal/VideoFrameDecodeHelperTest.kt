@@ -131,10 +131,6 @@ class VideoFrameDecodeHelperTest {
                     expected = expectedColorType,
                     actual = colorType,
                 )
-                assertEquals(
-                    expected = ColorSpace.get(ColorSpace.Named.SRGB),
-                    actual = colorSpace,
-                )
                 if (VERSION.SDK_INT >= VERSION_CODES.O) {
                     assertEquals(
                         expected = ColorSpace.get(ColorSpace.Named.SRGB),

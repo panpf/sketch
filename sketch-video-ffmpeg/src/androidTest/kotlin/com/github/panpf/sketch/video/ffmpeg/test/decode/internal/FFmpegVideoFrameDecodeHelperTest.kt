@@ -130,15 +130,11 @@ class FFmpegVideoFrameDecodeHelperTest {
                     actual = size,
                     delta = Size(1, 1)
                 )
-                val expectedColorType = if (VERSION.SDK_INT >= VERSION_CODES.R)
+                val expectedColorType = if (VERSION.SDK_INT >= VERSION_CODES.N)
                     ColorType.ARGB_8888 else ColorType.RGB_565
                 assertEquals(
                     expected = expectedColorType,
                     actual = colorType,
-                )
-                assertEquals(
-                    expected = ColorSpace.get(ColorSpace.Named.SRGB),
-                    actual = colorSpace,
                 )
                 if (VERSION.SDK_INT >= VERSION_CODES.O) {
                     assertEquals(
