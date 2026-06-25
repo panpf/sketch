@@ -57,7 +57,9 @@ class ImageViewSingletonExtensionsTest {
             assertNull(imageView.drawable)
             imageView.loadImage(Uri.parse(ComposeResImageFiles.png.uri)).job.join()
             assertNotNull(imageView.drawable)
-            imageView.setImageDrawable(null)
+            withContext(Dispatchers.Main) {
+                imageView.setImageDrawable(null)
+            }
             assertNull(imageView.drawable)
             imageView.loadImage(null as Uri?).job.join()
             assertNull(imageView.drawable)

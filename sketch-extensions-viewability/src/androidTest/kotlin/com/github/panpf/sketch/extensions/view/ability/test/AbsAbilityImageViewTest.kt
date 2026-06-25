@@ -39,7 +39,7 @@ class AbsAbilityImageViewTest {
         ViewAbilityTestActivity::class.launchActivity().use { activityScenario ->
             activity = activityScenario.getActivitySync()
         }
-        block(100)
+        block(500)
         assertEquals(
             expected = listOf("onAttachedToWindow", "onDetachedFromWindow"),
             actual = activity.viewAbility.attachActions
@@ -97,7 +97,7 @@ class AbsAbilityImageViewTest {
             withContext(Dispatchers.Main) {
                 activity.abilityView.layoutParams = FrameLayout.LayoutParams(100, 100)
             }
-            block(100)
+            block(500)
 
             assertEquals(
                 expected = listOf("onSizeChanged:$containerSize", "onSizeChanged:100x100"),
@@ -126,7 +126,7 @@ class AbsAbilityImageViewTest {
             withContext(Dispatchers.Main) {
                 activity.abilityView.isVisible = false
             }
-            block(100)
+            block(500)
 
             if (VERSION.SDK_INT >= VERSION_CODES.M) {
                 assertEquals(
@@ -147,7 +147,7 @@ class AbsAbilityImageViewTest {
             withContext(Dispatchers.Main) {
                 activity.abilityView.isVisible = true
             }
-            block(100)
+            block(500)
 
             if (VERSION.SDK_INT >= VERSION_CODES.M) {
                 assertEquals(
@@ -180,7 +180,7 @@ class AbsAbilityImageViewTest {
             withContext(Dispatchers.Main) {
                 activity.abilityView.performClick()
             }
-            block(100)
+            block(500)
 
             assertEquals(
                 expected = listOf("onClick"),
@@ -197,7 +197,7 @@ class AbsAbilityImageViewTest {
             withContext(Dispatchers.Main) {
                 activity.abilityView.performLongClick()
             }
-            block(100)
+            block(500)
 
             assertEquals(
                 expected = listOf("onLongClick"),
@@ -220,7 +220,7 @@ class AbsAbilityImageViewTest {
                 activity.abilityView.setImageDrawable(colorDrawable.asEquitable())
                 activity.abilityView.setImageDrawable(colorDrawable.asEquitable())
             }
-            block(100)
+            block(500)
 
             assertEquals(
                 expected = listOf(
@@ -246,7 +246,7 @@ class AbsAbilityImageViewTest {
                 activity.abilityView.scaleType = FIT_XY
                 activity.abilityView.scaleType
             }
-            block(100)
+            block(500)
 
             assertEquals(
                 expected = listOf(
@@ -277,7 +277,7 @@ class AbsAbilityImageViewTest {
                 activity.abilityView.scaleType = MATRIX
                 activity.abilityView.imageMatrix = matrix
             }
-            block(100)
+            block(500)
 
             assertEquals(
                 expected = listOf("setImageMatrix:Matrix{[0.0, -1.5, 0.0][1.5, 0.0, 0.0][0.0, 0.0, 1.0]}"),
@@ -357,7 +357,7 @@ class AbsAbilityImageViewTest {
             assertEquals(expected = listOf(), actual = activity.viewAbility.instanceStateActions)
 
             activityScenario.recreate()
-            block(100)
+            block(500)
             assertEquals(
                 expected = listOf("onSaveInstanceState"),
                 actual = activity.viewAbility.instanceStateActions

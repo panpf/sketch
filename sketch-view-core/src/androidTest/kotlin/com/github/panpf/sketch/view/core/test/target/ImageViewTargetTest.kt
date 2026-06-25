@@ -14,6 +14,9 @@ import com.github.panpf.sketch.target.ImageViewTarget
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
 import com.github.panpf.sketch.test.utils.fakeSuccessImageResult
 import com.github.panpf.sketch.test.utils.getTestContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import org.junit.runner.RunWith
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -27,7 +30,7 @@ import kotlin.test.assertTrue
 class ImageViewTargetTest {
 
     @Test
-    fun testDrawable() {
+    fun testDrawable() = runTest {
         val (context, sketch) = getTestContextAndSketch()
         val imageView = ImageView(context)
         val target = ImageViewTarget(imageView)
@@ -37,7 +40,9 @@ class ImageViewTargetTest {
 
         val drawable1 = Bitmap.createBitmap(100, 100, RGB_565).asImage().asDrawable()
         val drawable2 = Bitmap.createBitmap(100, 100, RGB_565).asImage().asDrawable()
-        imageView.setImageDrawable(drawable1)
+        withContext(Dispatchers.Main) {
+            imageView.setImageDrawable(drawable1)
+        }
         assertSame(drawable1, imageView.drawable)
         assertSame(drawable1, target.drawable)
 
