@@ -45,7 +45,7 @@ jobs:
           cache-overwrite-existing: true
 
       - name: Run desktop test
-        run: ./gradlew desktopTest
+        run: ./gradlew desktopTest --continue
 
   test-ios:
     name: iOS Unit tests
@@ -63,7 +63,7 @@ jobs:
           cache-overwrite-existing: true
 
       - name: Run ios test
-        run: ./gradlew iosSimulatorArm64Test
+        run: ./gradlew iosSimulatorArm64Test --continue
 
   package-android:
     name: Package android

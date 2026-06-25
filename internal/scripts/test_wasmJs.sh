@@ -5,6 +5,6 @@ set -e
 
 cd ../../
 
-./gradlew wasmJsBrowserTest
+./gradlew wasmJsBrowserTest --continue
 
 echo "✅  WasmJs tests are passed successfully."

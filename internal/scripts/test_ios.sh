@@ -5,6 +5,6 @@ set -e
 
 cd ../../
 
-./gradlew iosSimulatorArm64Test
+./gradlew iosSimulatorArm64Test --continue
 
 echo "✅  iOS tests are passed successfully."

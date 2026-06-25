@@ -5,6 +5,6 @@ set -e
 
 cd ../../
 
-./gradlew jsBrowserTest
+./gradlew jsBrowserTest --continue
 
 echo "✅  JS tests are passed successfully."

@@ -5,6 +5,6 @@ set -e
 
 cd ../../
 
-./gradlew desktopTest
+./gradlew desktopTest --continue
 
 echo "✅  Desktop tests are passed successfully."

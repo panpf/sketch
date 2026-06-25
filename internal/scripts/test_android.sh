@@ -5,6 +5,6 @@ set -e
 
 cd ../../
 
-./gradlew connectedAndroidTest
+./gradlew connectedAndroidTest --continue
 
 echo "✅  Android tests are passed successfully."
