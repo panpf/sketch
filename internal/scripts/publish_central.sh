@@ -3,7 +3,8 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-cd ../../
+rootDir="${PWD%/internal/*}"
+cd $rootDir
 
 # Build and upload the artifacts to 'mavenCentral'.
 ./gradlew clean publishToMavenCentral --no-configuration-cache
