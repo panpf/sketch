@@ -31,10 +31,12 @@ fun Project.androidLibrary(
     action: LibraryExtension.() -> Unit = {},
 ) {
     android<LibraryExtension> {
+        val includeCompose = plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null
+
         namespace = nameSpace
         compileSdk = project.compileSdk
         defaultConfig {
-            minSdk = project.lowMinSdk
+            minSdk = if (includeCompose) project.minSdk else project.lowMinSdk
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
 
