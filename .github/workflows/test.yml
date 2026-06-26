@@ -1,4 +1,4 @@
-name: Test Android
+name: Test
 
 on: workflow_dispatch
 
@@ -99,3 +99,39 @@ jobs:
           script: |
             mv .github/debug.keystore ~/.android
             internal/test_android.sh
+
+  test-ios:
+    name: iOS Unit tests
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: gradle/actions/setup-gradle@v6
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          cache-overwrite-existing: true
+
+      - name: Run ios test
+        run: internal/test_ios.sh
+
+  test-desktop:
+    name: Desktop Unit tests
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: gradle/actions/setup-gradle@v6
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          cache-overwrite-existing: true
+
+      - name: Run desktop test
+        run: internal/test_desktop.sh

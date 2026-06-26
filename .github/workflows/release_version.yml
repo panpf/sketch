@@ -29,24 +29,6 @@ jobs:
       - name: Check binary compatibility
         run: ./gradlew checkKotlinAbi || { exit_code=$?; printf "*** Sketch's public API has changed. If this change is intentional, run './gradlew updateKotlinAbi' and commit the new API files. ***"; exit $exit_code; }
 
-  test-desktop:
-    name: Desktop Unit tests
-    runs-on: macos-26
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-java@v5
-        with:
-          distribution: ${{ env.JAVA_DISTRIBUTION }}
-          java-version: ${{ env.JAVA_VERSION }}
-      - uses: gradle/actions/setup-gradle@v6
-        continue-on-error: true
-        timeout-minutes: 5
-        with:
-          cache-overwrite-existing: true
-
-      - name: Run desktop test
-        run: internal/test_desktop.sh
-
   test-ios:
     name: iOS Unit tests
     runs-on: macos-26
@@ -64,6 +46,24 @@ jobs:
 
       - name: Run ios test
         run: internal/test_ios.sh
+
+  test-desktop:
+    name: Desktop Unit tests
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: gradle/actions/setup-gradle@v6
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          cache-overwrite-existing: true
+
+      - name: Run desktop test
+        run: internal/test_desktop.sh
 
   package-android:
     name: Package android
@@ -276,7 +276,7 @@ jobs:
 
   deploy-api-docs:
     name: Deploy API docs
-    needs: [ check-abi, test-desktop, test-ios, package-android, package-ios, package-linux, package-macos, package-windows, package-js, package-wasm-js ]
+    needs: [ check-abi, test-ios, test-desktop, package-android, package-ios, package-linux, package-macos, package-windows, package-js, package-wasm-js ]
     runs-on: ubuntu-latest
     permissions:
       contents: write
