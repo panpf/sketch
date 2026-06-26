@@ -31,12 +31,10 @@ fun Project.androidLibrary(
     action: LibraryExtension.() -> Unit = {},
 ) {
     android<LibraryExtension> {
-        val includeCompose = plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null
-
         namespace = nameSpace
         compileSdk = project.compileSdk
         defaultConfig {
-            minSdk = if (includeCompose) project.minSdk else project.lowMinSdk
+            minSdk = project.minSdk
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
 
@@ -86,8 +84,6 @@ fun Project.androidApplication(
     action: ApplicationExtension.() -> Unit = {},
 ) {
     android<ApplicationExtension> {
-        val includeCompose = plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null
-
         namespace = nameSpace
         compileSdk = project.compileSdk
         defaultConfig {
@@ -95,7 +91,7 @@ fun Project.androidApplication(
             versionCode = project.versionCode
             versionName = project.versionName
             vectorDrawables.useSupportLibrary = true
-            minSdk = if (includeCompose) project.minSdk else project.lowMinSdk
+            minSdk = project.minSdk
             targetSdk = project.targetSdk
             testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
@@ -131,11 +127,9 @@ fun Project.kmpAndroidLibrary(
 ) {
     kmp {
         androidLibrary {
-            val includeCompose = plugins.findPlugin("org.jetbrains.kotlin.plugin.compose") != null
-
             namespace = nameSpace
             compileSdk = project.compileSdk
-            minSdk = if (includeCompose) project.minSdk else project.lowMinSdk
+            minSdk = project.minSdk
 
             // Enable Android resource processing. Multiplatform library modules do not enable this by default.
             androidResources {
