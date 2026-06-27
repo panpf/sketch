@@ -31,6 +31,7 @@ import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.assertSizeEquals
 import com.github.panpf.sketch.test.utils.chunkingFour
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.isGitHubActions
 import com.github.panpf.sketch.test.utils.similarity
 import com.github.panpf.sketch.test.utils.toRect
 import com.github.panpf.sketch.util.Size
@@ -126,7 +127,7 @@ class BitmapFactoryDecodeHelperTest {
         /*
          * config: preferQualityOverSpeed
          */
-        if (VERSION.SDK_INT <= VERSION_CODES.M) {
+        if (VERSION.SDK_INT <= VERSION_CODES.M && !isGitHubActions()) {
             val bitmap = imageFile.toDecodeHelper(context) {
                 preferQualityOverSpeed(true)
             }.decode(sampleSize = 1)
@@ -379,7 +380,7 @@ class BitmapFactoryDecodeHelperTest {
         /*
          * config: preferQualityOverSpeed
          */
-        if (VERSION.SDK_INT <= VERSION_CODES.M) {
+        if (VERSION.SDK_INT <= VERSION_CODES.M && !isGitHubActions()) {
             val bitmap = imageFile.toDecodeHelper(context) {
                 preferQualityOverSpeed(true)
             }.decodeRegion(

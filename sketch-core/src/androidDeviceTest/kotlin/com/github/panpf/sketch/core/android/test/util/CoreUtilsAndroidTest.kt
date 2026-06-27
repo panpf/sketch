@@ -18,6 +18,8 @@ package com.github.panpf.sketch.core.android.test.util
 
 import android.content.ComponentCallbacks2
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
+import com.github.panpf.sketch.core.android.test.util.ProcessNameTestService.Companion.getResultFile
 import com.github.panpf.sketch.images.block
 import com.github.panpf.sketch.util.MimeTypeMap.getMimeTypeFromUrl
 import com.github.panpf.sketch.util.getTrimLevelName
@@ -111,11 +113,12 @@ class CoreUtilsAndroidTest {
 
     @Test
     fun testGetProcessNameCompat() {
-        ProcessNameTestActivity::class.launchActivity()
-
-        val resultFile = ProcessNameTestService.resultFile
+        val context = InstrumentationRegistry.getInstrumentation().context
+        val resultFile = getResultFile(context)
         resultFile.delete()
         assertTrue(!resultFile.exists(), message = "resultFile: ${resultFile.absolutePath}")
+
+        ProcessNameTestActivity::class.launchActivity()
 
         var count = 0
         while (count < 10) {

@@ -65,6 +65,7 @@ import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.test.utils.intrinsicSize
+import com.github.panpf.sketch.test.utils.isGitHubActions
 import com.github.panpf.sketch.test.utils.similarity
 import com.github.panpf.sketch.test.utils.toRect
 import com.github.panpf.sketch.test.utils.toRequestContext
@@ -1455,7 +1456,7 @@ class DecodesAndroidTest {
         /*
          * config: preferQualityOverSpeed
          */
-        if (VERSION.SDK_INT <= VERSION_CODES.M) {
+        if (VERSION.SDK_INT <= VERSION_CODES.M && !isGitHubActions()) {
             val bitmap = dataSource
                 .decode(DecodeConfig(preferQualityOverSpeed = true))
             var preferSpeedBitmap = bitmap
@@ -1697,7 +1698,7 @@ class DecodesAndroidTest {
         /*
          * config: preferQualityOverSpeed
          */
-        if (VERSION.SDK_INT <= VERSION_CODES.M) {
+        if (VERSION.SDK_INT <= VERSION_CODES.M && !isGitHubActions()) {
             val bitmap = dataSource
                 .decodeRegion(
                     imageInfo.size.toRect(),

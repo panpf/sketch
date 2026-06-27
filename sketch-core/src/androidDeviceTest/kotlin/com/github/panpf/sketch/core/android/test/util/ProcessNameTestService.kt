@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.core.android.test.util
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import com.github.panpf.sketch.util.fileNameCompatibilityMultiProcess
@@ -16,6 +17,10 @@ class ProcessNameTestService : Service() {
             File(FileSystem.SYSTEM_TEMPORARY_DIRECTORY.toString()),
             "ProcessNameTest.txt"
         )
+
+        fun getResultFile(context: Context): File {
+            return File(context.cacheDir, "ProcessNameTest.txt")
+        }
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -32,6 +37,7 @@ class ProcessNameTestService : Service() {
             file = File("/test/file")
         ).toString()
 
+        val resultFile = getResultFile(this)
         resultFile.createNewFile()
         val text = listOf(
             processNameCompat,
