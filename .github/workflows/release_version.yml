@@ -175,7 +175,7 @@ jobs:
       - uses: android-actions/setup-android@v4
 
       - name: Run package
-        run: ./gradlew samples:androidApp:assembleRelease
+        run: internal/package_android.sh
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v7
@@ -199,11 +199,7 @@ jobs:
           cache-overwrite-existing: true
 
       - name: Run package
-        run: xcodebuild \
-          -project samples/iosApp/iosApp.xcodeproj \
-          -scheme iosApp \
-          -destination 'generic/platform=iOS Simulator' ARCHS=arm64 CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO \
-          -derivedDataPath samples/shared/build/ios/outputs/
+        run: internal/package_ios.sh
 
       - name: Read version name
         id: version_name_step
@@ -239,7 +235,7 @@ jobs:
           cache-overwrite-existing: true
 
       - name: Run package
-        run: ./gradlew samples:desktopApp:packageReleaseDeb
+        run: internal/package_desktop.sh
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v7
@@ -263,7 +259,7 @@ jobs:
           cache-overwrite-existing: true
 
       - name: Run package
-        run: ./gradlew samples:desktopApp:packageReleaseDmg
+        run: internal/package_desktop.sh
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v7
@@ -287,7 +283,7 @@ jobs:
           cache-overwrite-existing: true
 
       - name: Run package
-        run: ./gradlew samples:desktopApp:packageReleaseMsi
+        run: internal/package_desktop.sh
 
       - name: Upload APK artifacts
         uses: actions/upload-artifact@v7
@@ -311,7 +307,7 @@ jobs:
           cache-overwrite-existing: true
 
       - name: Run package
-        run: ./gradlew samples:jsApp:jsBrowserDistribution
+        run: internal/package_js.sh
 
       - name: Read version name
         id: version_name_step
@@ -347,7 +343,7 @@ jobs:
           cache-overwrite-existing: true
 
       - name: Run package
-        run: ./gradlew samples:wasmJsApp:wasmJsBrowserDistribution
+        run: internal/package_wasmJs.sh
 
       - name: Read version name
         id: version_name_step
