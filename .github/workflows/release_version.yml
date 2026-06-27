@@ -237,7 +237,7 @@ jobs:
       - name: Run package
         run: internal/package_desktop.sh
 
-      - name: Upload APK artifacts
+      - name: Upload linux artifacts
         uses: actions/upload-artifact@v7
         with:
           name: linux-files
@@ -261,7 +261,7 @@ jobs:
       - name: Run package
         run: internal/package_desktop.sh
 
-      - name: Upload APK artifacts
+      - name: Upload macOS artifacts
         uses: actions/upload-artifact@v7
         with:
           name: macos-files
@@ -283,9 +283,9 @@ jobs:
           cache-overwrite-existing: true
 
       - name: Run package
-        run: internal/package_desktop.sh
+        run: ./gradlew samples:desktopApp:packageReleaseDistributionForCurrentOS
 
-      - name: Upload APK artifacts
+      - name: Upload windows artifacts
         uses: actions/upload-artifact@v7
         with:
           name: windows-files
@@ -321,7 +321,7 @@ jobs:
           zip -r "sketch-sample-js-${{ steps.version_name_step.outputs.version_name }}.zip" *
           cd -
 
-      - name: Upload APK artifacts
+      - name: Upload js artifacts
         uses: actions/upload-artifact@v7
         with:
           name: js-browser-files
@@ -357,7 +357,7 @@ jobs:
           zip -r "sketch-sample-wasmJs-${{ steps.version_name_step.outputs.version_name }}.zip" *
           cd -
 
-      - name: Upload APK artifacts
+      - name: Upload wasmJs artifacts
         uses: actions/upload-artifact@v7
         with:
           name: wasm-js-browser-files
