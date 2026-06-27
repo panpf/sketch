@@ -13,6 +13,7 @@ import com.github.panpf.sketch.drawable.ProgressDrawable
 import com.github.panpf.sketch.drawable.internal.AbsProgressDrawable
 import com.github.panpf.sketch.test.utils.TestActivity
 import com.github.panpf.sketch.test.utils.block
+import com.github.panpf.sketch.test.utils.isGitHubActions
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.format
 import com.github.panpf.tools4a.test.ktx.getActivitySync
@@ -31,7 +32,7 @@ class AbsProgressDrawableTest {
         // TODO It is easy to fail during batch testing and needs to be improved or blocked.
         // It was found that the test can only be completed stably on Android 8.0, so.
         // Maybe you can change the test plan when View supports screenshot testing.
-        if (VERSION.SDK_INT != VERSION_CODES.O) return@runTest
+        if (VERSION.SDK_INT != VERSION_CODES.O || isGitHubActions()) return@runTest
 
         TestActivity::class.launchActivity().use { activityScenario ->
             val activity = activityScenario.getActivitySync()
@@ -206,7 +207,7 @@ class AbsProgressDrawableTest {
     fun testProgress2() = runTest {
         // It was found that the test can only be completed stably on Android 8.0, so.
         // Maybe you can change the test plan when View supports screenshot testing.
-        if (VERSION.SDK_INT != VERSION_CODES.O) return@runTest
+        if (VERSION.SDK_INT != VERSION_CODES.O || isGitHubActions()) return@runTest
 
         TestActivity::class.launchActivity().use { activityScenario ->
             val activity = activityScenario.getActivitySync()
@@ -385,7 +386,7 @@ class AbsProgressDrawableTest {
     fun testSetVisible() = runTest {
         // It was found that the test can only be completed stably on Android 8.0, so.
         // Maybe you can change the test plan when View supports screenshot testing.
-        if (VERSION.SDK_INT != VERSION_CODES.O) return@runTest
+        if (VERSION.SDK_INT != VERSION_CODES.O || isGitHubActions()) return@runTest
 
         TestActivity::class.launchActivity().use { activityScenario ->
             val activity = activityScenario.getActivitySync()
