@@ -7,11 +7,81 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
-# new
+# 4.5.0 Stable
+
+4.5.0-rc01 以来的改变：
 
 * change:
   VideoFrameDecoder、FFmpegVideoFrameDecoder、FileVideoFrameDecoder、PhotosAssetVideoFrameDecode
   当解析视频封面时返回的 mimeType 属性不会再用视频的 mimeType 覆盖
+
+## Multiplatform
+
+* change: Decoder 和 DecodeHelper 的属性都改成了函数，并且主要函数都增加了 suspend 修饰符
+* change: Fetcher 和 Decoder 新增 sortWeight 属性用于排序
+* change: DecoderInterceptor 的包名改回 'com.github.panpf.sketch.decode'
+* change: FetcherProvider 和 DecoderProvider 合并为
+  ComponentProvider，并且支持自动禁用组件，详情请参考文档 [《注册组件》](docs/register_component.zh.md)
+* change: 废弃 ByteArray.isGif(), ByteArray.isWebp(), ByteArray.isHeif() 等函数
+* improve: 移除 GifDecoder 和 AnimatedWebpDecoder，直接使用原本的解码器
+* improve:
+  缩略图请求成功但主请求失败时，仍然会一直显示缩略图。[#290](https://github.com/panpf/sketch/issues/290)
+* new: Interceptor 现在也支持自动注册了
+* new: ComponentRegistry
+  现在支持禁用组件，详情请参考文档 [《注册组件》](docs/register_component.zh.md#禁用组件)
+* new: 增加了 DataSource.toByteArray() 扩展函数，以避免当数据源为 ByteArrayDataSource 时二次创建字节数组
+* new: 新增 isGifFile(), isWebpFile(), isHeifFile(), isAvifFile()
+  等一系列函数用于判断文件是否为对应类型的图片，更多函数请查看 [file_types.kt](sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/util/file_types.kt)
+  文件
+
+## Android
+
+* fix: 修复 Android 平台竖屏视频包含旋转信息时，错误的将视频帧旋转的
+  bug。[#282](https://github.com/panpf/sketch/issues/282)
+* change: 所有模块的 Android 平台最低版本升级到 23
+* improve: 移除 sketch-core 模块 android 平台 manifest 文件中的权限
+* improve: 改进 Android 平台自动清理内存缓存的策略
+* improve: 更新 DrawablePainter
+* improve: 优先使用 jvm 同步锁
+* new: 新增 sketch-avif-awxkee 模块，可以在 API 24 以上版本使用 avif 和 heif 格式图片
+
+## iOS
+
+* change: 不再支持 iosX64 平台
+* improve: iOS 平台支持读取网络类型并监控内存压力以清除缓存
+* improve: 在 iOS 平台上使用最大物理内存的八分之一作为应用的最大可用内存
+* new: 支持从 iOS
+  照片库加载图片，详情请参考文档 [《从 iOS 的 Photos Library 加载图片》](docs/fetcher.zh.md#从-iOS-的-Photos-Library-加载图片)
+  和 [《解码 iOS 平台静态照片》](docs/decoder.zh.md#iOS-平台)
+* new: 支持从 iOS
+  照片库和本地路径加载视频帧，详情请参考文档 [《从 iOS 的 Photos Library 加载图片》](docs/fetcher.zh.md#从-iOS-的-Photos-Library-加载图片)
+  和 [《视频帧》](docs/video_frame.zh.md)
+* new: 新增 UIImageDecoder 支持解码 heif 和 avif 格式图片
+
+## js
+
+* fix: 修复了一个重复函数定义导致 js 环境崩溃的 bug
+* improve: 改进 SvgDecoderProvider js 和 wasmJs 版本文件名
+
+## sketch-video
+
+* new: 新增 preferVideoCover 属性用于优先加载视频封面
+
+## jvm
+
+* change: jvmTarget 升级到 11
+
+## Dependencies
+
+* depend: 升级 androidx-core 1.18.0
+* depend: 升级 androidgifdrawable 1.2.31
+* depend: 升级 FFmpegMediaMetadataRetriever 1.0.22
+* depend: 升级 jetbrains compose 1.10.3
+* depend: 升级 koin 4.2.1
+* depend: 升级 ktor 3.4.3
+* depend: 升级 kotlin 2.3.20
+* depend: 升级 kotlinx coroutines 1.11.0
+* depend: 升级 okio 3.17.0
 
 # 4.5.0-rc01
 
@@ -97,7 +167,7 @@
 ## Dependencies
 
 * depend: 升级 ktor 3.4.3
-* depend: 升级 koib 4.2.1
+* depend: 升级 koin 4.2.1
 
 # 4.5.0-alpha02
 
@@ -119,7 +189,7 @@
 ## Multiplatform
 
 * improve: 移除 GifDecoder 和 AnimatedWebpDecoder，直接使用原本的解码器
-* new: 增加了 DataSource.toByteArray（） 扩展函数，以避免当数据源为 ByteArrayDataSource 时二次创建字节数组
+* new: 增加了 DataSource.toByteArray() 扩展函数，以避免当数据源为 ByteArrayDataSource 时二次创建字节数组
 
 ## Android
 

@@ -9,11 +9,91 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
-# new
+# 4.5.0 Stable
+
+Changes since 4.5.0-rc01:
 
 * change: VideoFrameDecoder, FFmpegVideoFrameDecoder, FileVideoFrameDecoder,
   PhotosAssetVideoFrameDecode The mimeType attribute returned when parsing the video cover will no
   longer be overwritten with the mimeType of the video
+
+## Multiplatform
+
+* change: The properties of Decoder and DecodeHelper have been changed to functions, and the suspend
+  modifier has been added to the main functions.
+* change: Fetcher and Decoder add sortWeight property for sorting.
+* change: The package name of DecoderInterceptor is changed back to 'com.github.panpf.sketch.decode'
+* change: FetcherProvider and DecoderProvider are merged into ComponentProvider and support
+  automatic disabling of components, please refer to the documentation for
+  details [《Register component》](docs/register_component.md)
+* change: Abandon ByteArray.isGif(), ByteArray.isWebp(), ByteArray.isHeif() and other functions
+* improve: Remove GifDecoder and AnimatedWebpDecoder and use the original Decoder directly
+* improve: If the thumbnail request succeeds but the main request fails, the thumbnail will still be
+  displayed. [#290](https://github.com/panpf/sketch/issues/290)
+* new: Interceptor now also supports automatic registration
+* new: ComponentRegistry now supports disabling components, please refer to the documentation for
+  details [《Register component》](docs/register_component.md#disable-component)
+* new: Added DataSource.toByteArray() extension function to avoid secondary creation of
+  ByteArray when DataSource is ByteArrayDataSource
+* new: A series of new functions such as isGifFile(), isWebpFile(), isHeifFile(), isAvifFile() are
+  used to determine whether the file is an image of the corresponding type. For more functions,
+  please see
+  the [file_types.kt](sketch-core/src/commonMain/kotlin/com/github/panpf/sketch/util/file_types.kt)
+  file
+
+## Android
+
+* fix: Fixed a bug that caused the video frame to be incorrectly rotated when the vertical screen
+  video on the Android platform contained rotation
+  information. [#282](https://github.com/panpf/sketch/issues/282)
+* change: The minimum Android platform version of all modules has been upgraded to 23
+* improve: Remove permissions in sketch-core module android platform manifest file
+* improve: Improve the Android platform's strategy for automatically cleaning memory cache
+* improve: Update DrawablePainter
+* improve: The jvm platform uses jvm synchronization lock
+* new: Added sketch-avif-awxkee module, which can use avif and heif format images in API 24 and
+  above versions
+
+## iOS
+
+* change: The iosX64 platform is no longer supported
+* improve: The ios platform supports reading network types and monitoring memory pressure to clear
+  the cache
+* improve: Use one-eighth of the maximum physical memory on the iOS platform as the maximum
+  available memory for the app
+* new: Support loading images from the Photos Library for ios, please refer to the documentation for
+  details [《Load images from the iOS Photos Library》](docs/fetcher.md#Load-images-from-the-iOS-Photos-Library)
+  和 [《Decode iOS platform static photos》](docs/decoder.md#iOS-platform)
+* new: Support loading video frames from iOS Photo Library and local Path, please refer to the
+  documentation for
+  details [《Load images from the iOS Photos Library》](docs/fetcher.md#Load-images-from-the-iOS-Photos-Library)
+  和 [《Video Frame》](docs/video_frame.md)
+* new: Added UIImageDecoder to support decoding heif and avif format images
+
+## js
+
+* fix: Fixed a bug where repeated function definitions caused crashes in the js environment
+* improve: Improve SvgDecoderProvider js and wasmJs version file names
+
+## sketch-video
+
+* new: Added preferVideoCover attribute to load video cover first
+
+## jvm
+
+* change: jvmTarget upgraded to 11
+
+## Dependencies
+
+* depend: Upgrade to androidx-core 1.18.0
+* depend: Upgrade to androidgifdrawable 1.2.31
+* depend: Upgrade to FFmpegMediaMetadataRetriever 1.0.22
+* depend: Upgrade to jetbrains compose 1.10.3
+* depend: Upgrade to koin 4.2.1
+* depend: Upgrade to ktor 3.4.3
+* depend: Upgrade to kotlin 2.3.20
+* depend: Upgrade to kotlinx coroutines 1.11.0
+* depend: Upgrade to okio 3.17.0
 
 # 4.5.0-rc01
 
