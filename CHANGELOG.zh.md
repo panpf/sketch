@@ -7,6 +7,12 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
+# new
+
+* change:
+  VideoFrameDecoder、FFmpegVideoFrameDecoder、FileVideoFrameDecoder、PhotosAssetVideoFrameDecode
+  当解析视频封面时返回的 mimeType 属性不会再用视频的 mimeType 覆盖
+
 # 4.5.0-rc01
 
 ## Android

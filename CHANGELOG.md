@@ -9,6 +9,12 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
+# new
+
+* change: VideoFrameDecoder, FFmpegVideoFrameDecoder, FileVideoFrameDecoder,
+  PhotosAssetVideoFrameDecode The mimeType attribute returned when parsing the video cover will no
+  longer be overwritten with the mimeType of the video
+
 # 4.5.0-rc01
 
 ## Android

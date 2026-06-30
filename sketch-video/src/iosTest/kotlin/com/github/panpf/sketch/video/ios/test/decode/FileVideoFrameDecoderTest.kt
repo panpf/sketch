@@ -128,7 +128,7 @@ class FileVideoFrameDecoderTest {
                 mimeType = imageFile.mimeType
             ).getImageInfo().apply {
                 assertEquals(
-                    expected = "ImageInfo(size=1600x1200, mimeType='video/mp4')",
+                    expected = "ImageInfo(size=1600x1200, mimeType='image/jpeg')",
                     actual = this.toString()
                 )
             }
@@ -164,7 +164,7 @@ class FileVideoFrameDecoderTest {
                 mimeType = imageFile.mimeType
             ).decode().apply {
                 assertEquals(
-                    expected = "ImageInfo(size=1600x1200, mimeType='video/mp4')",
+                    expected = "ImageInfo(size=1600x1200, mimeType='image/jpeg')",
                     actual = this.imageInfo.toString()
                 )
             }

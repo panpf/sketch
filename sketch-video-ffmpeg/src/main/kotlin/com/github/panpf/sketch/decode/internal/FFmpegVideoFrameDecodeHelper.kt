@@ -79,8 +79,7 @@ class FFmpegVideoFrameDecodeHelper(
     private val _imageInfo: ImageInfo by lazy { readImageInfo() }
 
     override suspend fun getImageInfo(): ImageInfo {
-        // TODO It is not possible to force override with the MimeType of the video here.
-        return coverHelper?.getImageInfo()?.copy(mimeType = mimeType) ?: _imageInfo
+        return coverHelper?.getImageInfo() ?: _imageInfo
     }
 
     override suspend fun isSupportRegion(): Boolean {

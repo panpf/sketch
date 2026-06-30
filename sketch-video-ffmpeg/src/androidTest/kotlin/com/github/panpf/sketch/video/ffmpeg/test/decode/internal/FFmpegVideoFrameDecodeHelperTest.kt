@@ -78,7 +78,7 @@ class FFmpegVideoFrameDecodeHelperTest {
             mimeType = imageFile.mimeType
         ).getImageInfo().apply {
             assertEquals(
-                expected = "ImageInfo(size=1600x1200, mimeType='video/mp4')",
+                expected = "ImageInfo(size=1600x1200, mimeType='image/jpeg')",
                 actual = this.toString()
             )
         }

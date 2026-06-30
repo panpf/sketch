@@ -155,7 +155,7 @@ class FFmpegVideoFrameDecoderTest {
         }.createDecoderOrDefault(sketch, factory)
             .apply {
                 assertEquals(
-                    expected = ImageInfo(1600, 1200, "video/mp4"),
+                    expected = ImageInfo(1600, 1200, "image/jpeg"),
                     actual = getImageInfo()
                 )
             }
@@ -210,7 +210,7 @@ class FFmpegVideoFrameDecoderTest {
                 actual = image.getBitmapOrThrow().size
             )
             assertEquals(
-                expected = "ImageInfo(1600x1200,'video/mp4')",
+                expected = "ImageInfo(1600x1200,'image/jpeg')",
                 actual = imageInfo.toShortString()
             )
         }
@@ -224,7 +224,7 @@ class FFmpegVideoFrameDecoderTest {
                 actual = image.getBitmapOrThrow().size
             )
             assertEquals(
-                expected = "ImageInfo(1600x1200,'video/mp4')",
+                expected = "ImageInfo(1600x1200,'image/jpeg')",
                 actual = imageInfo.toShortString()
             )
         }
