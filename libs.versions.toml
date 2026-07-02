@@ -18,7 +18,7 @@ androidx-test-ext-junit = "1.3.0"
 androidx-test-rules = "1.7.0"
 androidx-test-runner = "1.7.0"
 
-androidgifdrawable = "1.2.31"
+androidgifdrawable = "1.2.32"
 androidsvg = "1.4"
 appdirs = "1.5.0"
 avifcoder = "2.2.1"
@@ -27,11 +27,11 @@ buildkonfig = "0.22.0"
 
 dokka = "2.2.0"
 
-ffmpegMediaMetadataRetriever = "1.0.22"
+ffmpegMediaMetadataRetriever = "1.0.23"
 
 google-flexbox = "3.0.0"
 google-material = "1.14.0"
-gradle-maven-publish-plugin = "0.36.0"
+gradle-maven-publish-plugin = "0.37.0"
 
 jetbrains-compose = "1.11.1"
 jetbrains-lifecycle = "2.11.0-beta01"
@@ -65,7 +65,7 @@ panpf-assemblyadapter4 = "4.1.0"
 panpf-tools4a = "1.0.0"
 panpf-tools4j = "1.0.0"
 panpf-tools4k = "1.0.1"
-panpf-zoomimage = "1.5.0-rc01"
+panpf-zoomimage = "1.5.0"
 
 penfeizhou-animation = "3.0.5"
 
