@@ -141,8 +141,8 @@ fun convertDesktopPackageVersion(version: String): String {
             require(preReleaseNumber != null) {
                 "The pre-release number must not be null for '${preReleaseRule.first}', but was: $version"
             }
-            require(preReleaseNumber > 1 && preReleaseNumber < 30) {
-                "The pre-release number must be greater than 1 and less than 30, but was: $version"
+            require(preReleaseNumber > 0 && preReleaseNumber < 30) {
+                "The pre-release number must be greater than 0 and less than 30, but was: $version"
             }
         }
         val finalPreReleaseNumber = preReleaseRule.second + (preReleaseNumber ?: 0)
