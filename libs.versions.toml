@@ -47,7 +47,7 @@ kotlinx-atomicfu = "0.33.0"
 kotlinx-browser = "0.5.0"
 kotlinx-coroutines = "1.11.0"
 kotlinx-cover = "0.9.8"
-kotlinx-datetime = "0.8.0"
+kotlinx-datetime = "0.7.1"  # datetime 0.8.0 version plus kotlin 2.4.0 reports an error when running the iosSimulatorArm64Test task 'IrTypeAliasSymbolImpl is already bound. Signature: kotlinx.datetime/Clock|null[0]. Owner: TYPEALIAS name:Clock visibility:public expandedType:kotlin.time.Clock'
 kotlinx-serialization-json = "1.11.0"
 #noinspection NewerVersionAvailable
 ktor2 = "2.3.13"
