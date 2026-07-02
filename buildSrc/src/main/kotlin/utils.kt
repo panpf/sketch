@@ -97,10 +97,14 @@ private fun Project.booleanProperty(
  * '1.2.0' -> '1.2.0099'
  * '1.2.1' -> '1.2.0199'
  * '1.2.21' -> '1.2.2199'
- * '1.2.1-alpha01' -> '1.2.0101'
- * '1.2.1-alpha01' -> '1.2.0101'
- * '1.2.1-beta01' -> '1.2.0131'
- * '1.2.1-rc01' -> '1.2.0161'
+ * '1.2.1-SNAPSHOT' -> '1.2.0100'
+ * '1.2.21-SNAPSHOT' -> '1.2.2100'
+ * '1.2.1-alpha01' -> '1.2.0111'
+ * '1.2.21-alpha11' -> '1.2.2121'
+ * '1.2.1-beta01' -> '1.2.0141'
+ * '1.2.21-beta11' -> '1.2.2151'
+ * '1.2.1-rc01' -> '1.2.0171'
+ * '1.2.21-rc01' -> '1.2.2181'
  */
 fun convertDesktopPackageVersion(version: String): String {
     val versionItems = version.split("-")
@@ -121,18 +125,27 @@ fun convertDesktopPackageVersion(version: String): String {
 
     val finalPreReleaseNumberFormatted = if (preRelease != null) {
         val preReleaseRules = listOf(
-            "alpha" to 0,
-            "beta" to 30,
-            "rc" to 60
+            "SNAPSHOT" to 0,
+            "alpha" to 10,
+            "beta" to 40,
+            "rc" to 70
         )
         val preReleaseRule = preReleaseRules.find { preRelease.startsWith(it.first) }
-            ?: throw IllegalArgumentException("The pre-release part of the version string must start with 'alpha', 'beta' or 'rc', but was: $version")
-        val preReleaseNumber = preRelease.replace(preReleaseRule.first, "").toIntOrNull()
-            ?: throw IllegalArgumentException("The pre-release part of the version string must start with 'alpha', 'beta' or 'rc', but was: $version")
-        require(preReleaseNumber < 30) {
-            "The pre-release number must be less than 30, but was: $version"
+            ?: throw IllegalArgumentException("The pre-release part of the version string must start with 'SNAPSHOT', 'alpha', 'beta' or 'rc', but was: $version")
+        var preReleaseNumber = preRelease.replace(preReleaseRule.first, "").toIntOrNull()
+        if (preReleaseRule.first == "SNAPSHOT") {
+            require(preReleaseNumber == null) {
+                "The pre-release number must be null for 'SNAPSHOT', but was: $version"
+            }
+        } else {
+            require(preReleaseNumber != null) {
+                "The pre-release number must not be null for '${preReleaseRule.first}', but was: $version"
+            }
+            require(preReleaseNumber > 1 && preReleaseNumber < 30) {
+                "The pre-release number must be greater than 1 and less than 30, but was: $version"
+            }
         }
-        val finalPreReleaseNumber = preReleaseRule.second + preReleaseNumber
+        val finalPreReleaseNumber = preReleaseRule.second + (preReleaseNumber ?: 0)
         String.format("%02d", finalPreReleaseNumber)
     } else {
         "99"
