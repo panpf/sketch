@@ -1,6 +1,6 @@
 public abstract interface class com/github/panpf/sketch/AnimatedImage : com/github/panpf/sketch/Image {
-	public abstract fun createFrameBitmap (II)Lorg/jetbrains/skia/Bitmap;
-	public static synthetic fun createFrameBitmap$default (Lcom/github/panpf/sketch/AnimatedImage;IIILjava/lang/Object;)Lorg/jetbrains/skia/Bitmap;
+	public abstract fun createFrameBitmap (II)Landroid/graphics/Bitmap;
+	public static synthetic fun createFrameBitmap$default (Lcom/github/panpf/sketch/AnimatedImage;IIILjava/lang/Object;)Landroid/graphics/Bitmap;
 	public abstract fun getAnimatedTransformation ()Lkotlin/jvm/functions/Function2;
 	public abstract fun getAnimationEndCallback ()Lkotlin/jvm/functions/Function0;
 	public abstract fun getAnimationStartCallback ()Lkotlin/jvm/functions/Function0;
@@ -8,26 +8,26 @@ public abstract interface class com/github/panpf/sketch/AnimatedImage : com/gith
 	public abstract fun getFrameCount ()I
 	public abstract fun getFrameDurations ()[Ljava/lang/Integer;
 	public abstract fun getRepeatCount ()I
-	public abstract fun readFrame (Lorg/jetbrains/skia/Bitmap;I)V
+	public abstract fun readFrame (Landroid/graphics/Bitmap;I)V
 	public abstract fun setAnimatedTransformation (Lkotlin/jvm/functions/Function2;)V
 	public abstract fun setAnimationEndCallback (Lkotlin/jvm/functions/Function0;)V
 	public abstract fun setAnimationStartCallback (Lkotlin/jvm/functions/Function0;)V
 }
 
 public final class com/github/panpf/sketch/AnimatedImage$DefaultImpls {
-	public static synthetic fun createFrameBitmap$default (Lcom/github/panpf/sketch/AnimatedImage;IIILjava/lang/Object;)Lorg/jetbrains/skia/Bitmap;
+	public static synthetic fun createFrameBitmap$default (Lcom/github/panpf/sketch/AnimatedImage;IIILjava/lang/Object;)Landroid/graphics/Bitmap;
 }
 
 public final class com/github/panpf/sketch/BitmapImage : com/github/panpf/sketch/Image {
-	public fun <init> (Lorg/jetbrains/skia/Bitmap;Z)V
-	public synthetic fun <init> (Lorg/jetbrains/skia/Bitmap;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Landroid/graphics/Bitmap;Z)V
+	public synthetic fun <init> (Landroid/graphics/Bitmap;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun checkValid ()Z
-	public final fun component1 ()Lorg/jetbrains/skia/Bitmap;
+	public final fun component1 ()Landroid/graphics/Bitmap;
 	public final fun component2 ()Z
-	public final fun copy (Lorg/jetbrains/skia/Bitmap;Z)Lcom/github/panpf/sketch/BitmapImage;
-	public static synthetic fun copy$default (Lcom/github/panpf/sketch/BitmapImage;Lorg/jetbrains/skia/Bitmap;ZILjava/lang/Object;)Lcom/github/panpf/sketch/BitmapImage;
+	public final fun copy (Landroid/graphics/Bitmap;Z)Lcom/github/panpf/sketch/BitmapImage;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/BitmapImage;Landroid/graphics/Bitmap;ZILjava/lang/Object;)Lcom/github/panpf/sketch/BitmapImage;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getBitmap ()Lorg/jetbrains/skia/Bitmap;
+	public final fun getBitmap ()Landroid/graphics/Bitmap;
 	public fun getByteCount ()J
 	public fun getHeight ()I
 	public fun getShareable ()Z
@@ -36,29 +36,35 @@ public final class com/github/panpf/sketch/BitmapImage : com/github/panpf/sketch
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/github/panpf/sketch/BitmapImage_commonKt {
-	public static final fun asBitmap (Lcom/github/panpf/sketch/Image;)Lorg/jetbrains/skia/Bitmap;
-	public static final fun asBitmapOrNull (Lcom/github/panpf/sketch/Image;)Lorg/jetbrains/skia/Bitmap;
+public final class com/github/panpf/sketch/BitmapImage_androidKt {
+	public static final fun asImage (Landroid/graphics/Bitmap;Z)Lcom/github/panpf/sketch/BitmapImage;
+	public static synthetic fun asImage$default (Landroid/graphics/Bitmap;ZILjava/lang/Object;)Lcom/github/panpf/sketch/BitmapImage;
 }
 
-public final class com/github/panpf/sketch/BitmapImage_nonAndroidKt {
-	public static final fun asImage (Lorg/jetbrains/skia/Bitmap;Z)Lcom/github/panpf/sketch/BitmapImage;
-	public static synthetic fun asImage$default (Lorg/jetbrains/skia/Bitmap;ZILjava/lang/Object;)Lcom/github/panpf/sketch/BitmapImage;
+public final class com/github/panpf/sketch/BitmapImage_commonKt {
+	public static final fun asBitmap (Lcom/github/panpf/sketch/Image;)Landroid/graphics/Bitmap;
+	public static final fun asBitmapOrNull (Lcom/github/panpf/sketch/Image;)Landroid/graphics/Bitmap;
+}
+
+public final class com/github/panpf/sketch/Bitmap_androidKt {
+	public static final fun createBitmap (IILandroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap;
+	public static final fun createBitmap (IILandroid/graphics/Bitmap$Config;ZLandroid/graphics/ColorSpace;)Landroid/graphics/Bitmap;
+	public static synthetic fun createBitmap$default (IILandroid/graphics/Bitmap$Config;ILjava/lang/Object;)Landroid/graphics/Bitmap;
+	public static synthetic fun createBitmap$default (IILandroid/graphics/Bitmap$Config;ZLandroid/graphics/ColorSpace;ILjava/lang/Object;)Landroid/graphics/Bitmap;
+	public static final fun createEmptyBitmapWith (Landroid/graphics/Bitmap;IILandroid/graphics/Bitmap$Config;Z)Landroid/graphics/Bitmap;
+	public static final fun createEmptyBitmapWith (Landroid/graphics/Bitmap;Lcom/github/panpf/sketch/util/Size;Landroid/graphics/Bitmap$Config;Z)Landroid/graphics/Bitmap;
+	public static synthetic fun createEmptyBitmapWith$default (Landroid/graphics/Bitmap;IILandroid/graphics/Bitmap$Config;ZILjava/lang/Object;)Landroid/graphics/Bitmap;
+	public static synthetic fun createEmptyBitmapWith$default (Landroid/graphics/Bitmap;Lcom/github/panpf/sketch/util/Size;Landroid/graphics/Bitmap$Config;ZILjava/lang/Object;)Landroid/graphics/Bitmap;
+	public static final fun getByteCount (Landroid/graphics/Bitmap;)J
+	public static final fun getColorType (Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap$Config;
+	public static final fun getHeight (Landroid/graphics/Bitmap;)I
+	public static final fun getWidth (Landroid/graphics/Bitmap;)I
+	public static final fun isImmutable (Landroid/graphics/Bitmap;)Z
+	public static final fun isMutable (Landroid/graphics/Bitmap;)Z
 }
 
 public final class com/github/panpf/sketch/Bitmap_commonKt {
-	public static final fun getSize (Lorg/jetbrains/skia/Bitmap;)Lcom/github/panpf/sketch/util/Size;
-}
-
-public final class com/github/panpf/sketch/Bitmap_nonAndroidKt {
-	public static final fun createBitmap (IILorg/jetbrains/skia/ColorType;Lorg/jetbrains/skia/ColorAlphaType;Lorg/jetbrains/skia/ColorSpace;)Lorg/jetbrains/skia/Bitmap;
-	public static final fun createBitmap (Lorg/jetbrains/skia/ImageInfo;)Lorg/jetbrains/skia/Bitmap;
-	public static synthetic fun createBitmap$default (IILorg/jetbrains/skia/ColorType;Lorg/jetbrains/skia/ColorAlphaType;Lorg/jetbrains/skia/ColorSpace;ILjava/lang/Object;)Lorg/jetbrains/skia/Bitmap;
-	public static final fun getByteCount (Lorg/jetbrains/skia/Bitmap;)J
-	public static final fun getHeight (Lorg/jetbrains/skia/Bitmap;)I
-	public static final fun getWidth (Lorg/jetbrains/skia/Bitmap;)I
-	public static final fun isImmutable (Lorg/jetbrains/skia/Bitmap;)Z
-	public static final fun isMutable (Lorg/jetbrains/skia/Bitmap;)Z
+	public static final fun getSize (Landroid/graphics/Bitmap;)Lcom/github/panpf/sketch/util/Size;
 }
 
 public abstract interface class com/github/panpf/sketch/ByteCountProvider {
@@ -124,6 +130,33 @@ public final class com/github/panpf/sketch/Components {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/github/panpf/sketch/DrawableImage : com/github/panpf/sketch/Image {
+	public fun <init> (Landroid/graphics/drawable/Drawable;Z)V
+	public synthetic fun <init> (Landroid/graphics/drawable/Drawable;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun checkValid ()Z
+	public final fun component1 ()Landroid/graphics/drawable/Drawable;
+	public final fun component2 ()Z
+	public final fun copy (Landroid/graphics/drawable/Drawable;Z)Lcom/github/panpf/sketch/DrawableImage;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/DrawableImage;Landroid/graphics/drawable/Drawable;ZILjava/lang/Object;)Lcom/github/panpf/sketch/DrawableImage;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getByteCount ()J
+	public final fun getDrawable ()Landroid/graphics/drawable/Drawable;
+	public fun getHeight ()I
+	public fun getShareable ()Z
+	public fun getWidth ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/DrawableImageKt {
+	public static final fun asDrawable (Lcom/github/panpf/sketch/Image;Landroid/content/res/Resources;)Landroid/graphics/drawable/Drawable;
+	public static synthetic fun asDrawable$default (Lcom/github/panpf/sketch/Image;Landroid/content/res/Resources;ILjava/lang/Object;)Landroid/graphics/drawable/Drawable;
+	public static final fun asDrawableOrNull (Lcom/github/panpf/sketch/Image;Landroid/content/res/Resources;)Landroid/graphics/drawable/Drawable;
+	public static synthetic fun asDrawableOrNull$default (Lcom/github/panpf/sketch/Image;Landroid/content/res/Resources;ILjava/lang/Object;)Landroid/graphics/drawable/Drawable;
+	public static final fun asImage (Landroid/graphics/drawable/Drawable;Z)Lcom/github/panpf/sketch/DrawableImage;
+	public static synthetic fun asImage$default (Landroid/graphics/drawable/Drawable;ZILjava/lang/Object;)Lcom/github/panpf/sketch/DrawableImage;
+}
+
 public abstract interface class com/github/panpf/sketch/Image {
 	public abstract fun checkValid ()Z
 	public abstract fun equals (Ljava/lang/Object;)Z
@@ -139,16 +172,8 @@ public final class com/github/panpf/sketch/ImageKt {
 	public static final fun getSize (Lcom/github/panpf/sketch/Image;)Lcom/github/panpf/sketch/util/Size;
 }
 
-public abstract class com/github/panpf/sketch/PlatformContext {
-	public static final field Companion Lcom/github/panpf/sketch/PlatformContext$Companion;
-}
-
-public final class com/github/panpf/sketch/PlatformContext$Companion {
-	public final fun getINSTANCE ()Lcom/github/panpf/sketch/PlatformContext;
-}
-
-public final class com/github/panpf/sketch/PlatformContext_nonAndroidKt {
-	public static final fun checkPlatformContext (Lcom/github/panpf/sketch/PlatformContext;)V
+public final class com/github/panpf/sketch/PlatformContext_androidKt {
+	public static final fun checkPlatformContext (Landroid/content/Context;)V
 }
 
 public final class com/github/panpf/sketch/Sketch {
@@ -157,7 +182,7 @@ public final class com/github/panpf/sketch/Sketch {
 	public final fun execute (Lcom/github/panpf/sketch/request/ImageRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun executeDownload-gIAlu-s (Lcom/github/panpf/sketch/request/ImageRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getComponents ()Lcom/github/panpf/sketch/Components;
-	public final fun getContext ()Lcom/github/panpf/sketch/PlatformContext;
+	public final fun getContext ()Landroid/content/Context;
 	public final fun getDecodeParallelismLimited ()I
 	public final fun getDecodeTaskDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
 	public final fun getDownloadCache ()Lcom/github/panpf/sketch/cache/DiskCache;
@@ -174,7 +199,7 @@ public final class com/github/panpf/sketch/Sketch {
 }
 
 public final class com/github/panpf/sketch/Sketch$Builder {
-	public fun <init> (Lcom/github/panpf/sketch/PlatformContext;)V
+	public fun <init> (Landroid/content/Context;)V
 	public final fun addComponents (Lcom/github/panpf/sketch/ComponentRegistry;)Lcom/github/panpf/sketch/Sketch$Builder;
 	public final fun addComponents (Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/Sketch$Builder;
 	public final fun addIgnoredComponentProvider ([Lkotlin/reflect/KClass;)Lcom/github/panpf/sketch/Sketch$Builder;
@@ -202,11 +227,18 @@ public final class com/github/panpf/sketch/Sketch$Builder {
 }
 
 public final class com/github/panpf/sketch/Sketch_commonKt {
-	public static final fun Sketch (Lcom/github/panpf/sketch/PlatformContext;Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/Sketch;
-	public static synthetic fun Sketch$default (Lcom/github/panpf/sketch/PlatformContext;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/github/panpf/sketch/Sketch;
+	public static final fun Sketch (Landroid/content/Context;Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/Sketch;
+	public static synthetic fun Sketch$default (Landroid/content/Context;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/github/panpf/sketch/Sketch;
 }
 
 public abstract interface annotation class com/github/panpf/sketch/annotation/WorkerThread : java/lang/annotation/Annotation {
+}
+
+public final class com/github/panpf/sketch/cache/AndroidBitmapImageSerializer : com/github/panpf/sketch/cache/ImageSerializer {
+	public static final field INSTANCE Lcom/github/panpf/sketch/cache/AndroidBitmapImageSerializer;
+	public fun compress (Lcom/github/panpf/sketch/Image;Lokio/BufferedSink;)V
+	public fun decode (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/decode/ImageInfo;Lcom/github/panpf/sketch/source/DataSource;)Lcom/github/panpf/sketch/Image;
+	public fun supportImage (Lcom/github/panpf/sketch/Image;)Z
 }
 
 public abstract interface class com/github/panpf/sketch/cache/CacheKeyMapper {
@@ -252,8 +284,8 @@ public abstract interface class com/github/panpf/sketch/cache/DiskCache : java/i
 public class com/github/panpf/sketch/cache/DiskCache$Builder {
 	public static final field Companion Lcom/github/panpf/sketch/cache/DiskCache$Builder$Companion;
 	public static final field DEFAULT_APP_VERSION I
-	public fun <init> (Lcom/github/panpf/sketch/PlatformContext;Lokio/FileSystem;Ljava/lang/String;FI)V
-	public synthetic fun <init> (Lcom/github/panpf/sketch/PlatformContext;Lokio/FileSystem;Ljava/lang/String;FIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Landroid/content/Context;Lokio/FileSystem;Ljava/lang/String;FI)V
+	public synthetic fun <init> (Landroid/content/Context;Lokio/FileSystem;Ljava/lang/String;FIILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun appCacheDirectory (Lokio/Path;)Lcom/github/panpf/sketch/cache/DiskCache$Builder;
 	public static synthetic fun appCacheDirectory$default (Lcom/github/panpf/sketch/cache/DiskCache$Builder;Lokio/Path;ILjava/lang/Object;)Lcom/github/panpf/sketch/cache/DiskCache$Builder;
 	public final fun appVersion (Ljava/lang/Integer;)Lcom/github/panpf/sketch/cache/DiskCache$Builder;
@@ -261,7 +293,7 @@ public class com/github/panpf/sketch/cache/DiskCache$Builder {
 	public final fun build ()Lcom/github/panpf/sketch/cache/DiskCache;
 	public final fun directory (Lokio/Path;)Lcom/github/panpf/sketch/cache/DiskCache$Builder;
 	public static synthetic fun directory$default (Lcom/github/panpf/sketch/cache/DiskCache$Builder;Lokio/Path;ILjava/lang/Object;)Lcom/github/panpf/sketch/cache/DiskCache$Builder;
-	public final fun getContext ()Lcom/github/panpf/sketch/PlatformContext;
+	public final fun getContext ()Landroid/content/Context;
 	public final fun getFileSystem ()Lokio/FileSystem;
 	public final fun maxSize (Ljava/lang/Long;)Lcom/github/panpf/sketch/cache/DiskCache$Builder;
 	public static synthetic fun maxSize$default (Lcom/github/panpf/sketch/cache/DiskCache$Builder;Ljava/lang/Long;ILjava/lang/Object;)Lcom/github/panpf/sketch/cache/DiskCache$Builder;
@@ -281,7 +313,7 @@ public final class com/github/panpf/sketch/cache/DiskCache$DownloadBuilder : com
 	public static final field INTERNAL_VERSION I
 	public static final field MAX_SIZE_PERCENT F
 	public static final field SUB_DIRECTORY_NAME Ljava/lang/String;
-	public fun <init> (Lcom/github/panpf/sketch/PlatformContext;Lokio/FileSystem;)V
+	public fun <init> (Landroid/content/Context;Lokio/FileSystem;)V
 }
 
 public final class com/github/panpf/sketch/cache/DiskCache$DownloadBuilder$Companion {
@@ -319,7 +351,7 @@ public final class com/github/panpf/sketch/cache/DiskCache$ResultBuilder : com/g
 	public static final field INTERNAL_VERSION I
 	public static final field MAX_SIZE_PERCENT F
 	public static final field SUB_DIRECTORY_NAME Ljava/lang/String;
-	public fun <init> (Lcom/github/panpf/sketch/PlatformContext;Lokio/FileSystem;)V
+	public fun <init> (Landroid/content/Context;Lokio/FileSystem;)V
 }
 
 public final class com/github/panpf/sketch/cache/DiskCache$ResultBuilder$Companion {
@@ -354,7 +386,7 @@ public abstract interface class com/github/panpf/sketch/cache/ImageSerializer {
 	public abstract fun supportImage (Lcom/github/panpf/sketch/Image;)Z
 }
 
-public final class com/github/panpf/sketch/cache/ImageSerializer_nonAndroidKt {
+public final class com/github/panpf/sketch/cache/ImageSerializer_androidKt {
 	public static final fun createImageSerializer ()Lcom/github/panpf/sketch/cache/ImageSerializer;
 }
 
@@ -373,9 +405,9 @@ public abstract interface class com/github/panpf/sketch/cache/MemoryCache {
 }
 
 public final class com/github/panpf/sketch/cache/MemoryCache$Builder {
-	public fun <init> (Lcom/github/panpf/sketch/PlatformContext;)V
+	public fun <init> (Landroid/content/Context;)V
 	public final fun build ()Lcom/github/panpf/sketch/cache/MemoryCache;
-	public final fun getContext ()Lcom/github/panpf/sketch/PlatformContext;
+	public final fun getContext ()Landroid/content/Context;
 	public final fun maxSizeBytes (J)Lcom/github/panpf/sketch/cache/MemoryCache$Builder;
 	public final fun maxSizePercent (D)Lcom/github/panpf/sketch/cache/MemoryCache$Builder;
 }
@@ -393,13 +425,6 @@ public final class com/github/panpf/sketch/cache/MemoryCache_commonKt {
 	public static final fun getResize (Lcom/github/panpf/sketch/cache/MemoryCache$Value;)Lcom/github/panpf/sketch/resize/Resize;
 	public static final fun getTransformeds (Lcom/github/panpf/sketch/cache/MemoryCache$Value;)Ljava/util/List;
 	public static final fun newCacheValueExtras (Lcom/github/panpf/sketch/decode/ImageInfo;Lcom/github/panpf/sketch/resize/Resize;Ljava/util/List;Ljava/util/Map;)Ljava/util/Map;
-}
-
-public final class com/github/panpf/sketch/cache/SkiaBitmapImageSerializer : com/github/panpf/sketch/cache/ImageSerializer {
-	public static final field INSTANCE Lcom/github/panpf/sketch/cache/SkiaBitmapImageSerializer;
-	public fun compress (Lcom/github/panpf/sketch/Image;Lokio/BufferedSink;)V
-	public fun decode (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/decode/ImageInfo;Lcom/github/panpf/sketch/source/DataSource;)Lcom/github/panpf/sketch/Image;
-	public fun supportImage (Lcom/github/panpf/sketch/Image;)Z
 }
 
 public final class com/github/panpf/sketch/cache/internal/EmptyDiskCache : com/github/panpf/sketch/cache/DiskCache {
@@ -441,7 +466,7 @@ public final class com/github/panpf/sketch/cache/internal/EmptyMemoryCache : com
 
 public final class com/github/panpf/sketch/cache/internal/LruDiskCache : com/github/panpf/sketch/cache/DiskCache {
 	public static final field Companion Lcom/github/panpf/sketch/cache/internal/LruDiskCache$Companion;
-	public fun <init> (Lcom/github/panpf/sketch/PlatformContext;Lokio/FileSystem;JLokio/Path;II)V
+	public fun <init> (Landroid/content/Context;Lokio/FileSystem;JLokio/Path;II)V
 	public fun clear ()V
 	public fun close ()V
 	public fun equals (Ljava/lang/Object;)Z
@@ -462,8 +487,8 @@ public final class com/github/panpf/sketch/cache/internal/LruDiskCache : com/git
 public final class com/github/panpf/sketch/cache/internal/LruDiskCache$Companion {
 }
 
-public final class com/github/panpf/sketch/cache/internal/LruDiskCache_nonAndroidKt {
-	public static final fun checkDiskCacheDirectory (Lcom/github/panpf/sketch/PlatformContext;Lokio/Path;)Lokio/Path;
+public final class com/github/panpf/sketch/cache/internal/LruDiskCache_androidKt {
+	public static final fun checkDiskCacheDirectory (Landroid/content/Context;Lokio/Path;)Lokio/Path;
 }
 
 public final class com/github/panpf/sketch/cache/internal/LruMemoryCache : com/github/panpf/sketch/cache/MemoryCache {
@@ -530,12 +555,12 @@ public final class com/github/panpf/sketch/cache/internal/ResultCacheInterceptor
 	public final fun fromMetadataString (Ljava/lang/String;)Lcom/github/panpf/sketch/cache/internal/ResultCacheInterceptor$Metadata;
 }
 
-public final class com/github/panpf/sketch/decode/BitmapColorSapce_commonKt {
-	public static final fun BitmapColorSpace (Ljava/lang/String;)Lcom/github/panpf/sketch/decode/BitmapColorSpace;
+public final class com/github/panpf/sketch/decode/BitmapColorSapce_androidKt {
+	public static final fun BitmapColorSpace (Landroid/graphics/ColorSpace$Named;)Lcom/github/panpf/sketch/decode/BitmapColorSpace;
 }
 
-public final class com/github/panpf/sketch/decode/BitmapColorSapce_nonAndroidKt {
-	public static final fun BitmapColorSpace (Lorg/jetbrains/skia/ColorSpace;)Lcom/github/panpf/sketch/decode/BitmapColorSpace;
+public final class com/github/panpf/sketch/decode/BitmapColorSapce_commonKt {
+	public static final fun BitmapColorSpace (Ljava/lang/String;)Lcom/github/panpf/sketch/decode/BitmapColorSpace;
 }
 
 public abstract interface class com/github/panpf/sketch/decode/BitmapColorSpace : com/github/panpf/sketch/util/Key {
@@ -552,6 +577,10 @@ public abstract interface class com/github/panpf/sketch/decode/BitmapColorType :
 	public abstract fun toString ()Ljava/lang/String;
 }
 
+public final class com/github/panpf/sketch/decode/BitmapColorType_androidKt {
+	public static final fun BitmapColorType (Landroid/graphics/Bitmap$Config;)Lcom/github/panpf/sketch/decode/BitmapColorType;
+}
+
 public final class com/github/panpf/sketch/decode/BitmapColorType_commonKt {
 	public static final fun BitmapColorType (Ljava/lang/String;)Lcom/github/panpf/sketch/decode/BitmapColorType;
 	public static final fun isDynamic (Lcom/github/panpf/sketch/decode/BitmapColorType;)Z
@@ -560,32 +589,25 @@ public final class com/github/panpf/sketch/decode/BitmapColorType_commonKt {
 	public static final fun isLowQuality (Lcom/github/panpf/sketch/decode/BitmapColorType;)Z
 }
 
-public final class com/github/panpf/sketch/decode/BitmapColorType_nonAndroidKt {
-	public static final fun BitmapColorType (Lorg/jetbrains/skia/ColorType;)Lcom/github/panpf/sketch/decode/BitmapColorType;
-}
-
-public final class com/github/panpf/sketch/decode/Color_spaceKt {
-	public static final fun fromName (Lorg/jetbrains/skia/ColorSpace$Companion;Ljava/lang/String;)Lorg/jetbrains/skia/ColorSpace;
-	public static final fun name (Lorg/jetbrains/skia/ColorSpace;)Ljava/lang/String;
-	public static final fun values (Lorg/jetbrains/skia/ColorSpace$Companion;)Ljava/util/List;
-}
-
 public final class com/github/panpf/sketch/decode/DecodeConfig {
 	public fun <init> ()V
-	public fun <init> (Ljava/lang/Integer;Lorg/jetbrains/skia/ColorType;Lorg/jetbrains/skia/ColorSpace;)V
-	public synthetic fun <init> (Ljava/lang/Integer;Lorg/jetbrains/skia/ColorType;Lorg/jetbrains/skia/ColorSpace;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/Integer;Landroid/graphics/Bitmap$Config;Landroid/graphics/ColorSpace;Ljava/lang/Boolean;)V
+	public synthetic fun <init> (Ljava/lang/Integer;Landroid/graphics/Bitmap$Config;Landroid/graphics/ColorSpace;Ljava/lang/Boolean;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/Integer;
-	public final fun component2 ()Lorg/jetbrains/skia/ColorType;
-	public final fun component3 ()Lorg/jetbrains/skia/ColorSpace;
-	public final fun copy (Ljava/lang/Integer;Lorg/jetbrains/skia/ColorType;Lorg/jetbrains/skia/ColorSpace;)Lcom/github/panpf/sketch/decode/DecodeConfig;
-	public static synthetic fun copy$default (Lcom/github/panpf/sketch/decode/DecodeConfig;Ljava/lang/Integer;Lorg/jetbrains/skia/ColorType;Lorg/jetbrains/skia/ColorSpace;ILjava/lang/Object;)Lcom/github/panpf/sketch/decode/DecodeConfig;
+	public final fun component2 ()Landroid/graphics/Bitmap$Config;
+	public final fun component3 ()Landroid/graphics/ColorSpace;
+	public final fun component4 ()Ljava/lang/Boolean;
+	public final fun copy (Ljava/lang/Integer;Landroid/graphics/Bitmap$Config;Landroid/graphics/ColorSpace;Ljava/lang/Boolean;)Lcom/github/panpf/sketch/decode/DecodeConfig;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/decode/DecodeConfig;Ljava/lang/Integer;Landroid/graphics/Bitmap$Config;Landroid/graphics/ColorSpace;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/github/panpf/sketch/decode/DecodeConfig;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getColorSpace ()Lorg/jetbrains/skia/ColorSpace;
-	public final fun getColorType ()Lorg/jetbrains/skia/ColorType;
+	public final fun getColorSpace ()Landroid/graphics/ColorSpace;
+	public final fun getColorType ()Landroid/graphics/Bitmap$Config;
+	public final fun getPreferQualityOverSpeed ()Ljava/lang/Boolean;
 	public final fun getSampleSize ()Ljava/lang/Integer;
 	public fun hashCode ()I
-	public final fun setColorSpace (Lorg/jetbrains/skia/ColorSpace;)V
-	public final fun setColorType (Lorg/jetbrains/skia/ColorType;)V
+	public final fun setColorSpace (Landroid/graphics/ColorSpace;)V
+	public final fun setColorType (Landroid/graphics/Bitmap$Config;)V
+	public final fun setPreferQualityOverSpeed (Ljava/lang/Boolean;)V
 	public final fun setSampleSize (Ljava/lang/Integer;)V
 	public fun toString ()Ljava/lang/String;
 }
@@ -593,6 +615,7 @@ public final class com/github/panpf/sketch/decode/DecodeConfig {
 public final class com/github/panpf/sketch/decode/DecodeConfigKt {
 	public static final fun DecodeConfig (Lcom/github/panpf/sketch/request/ImageRequest;Ljava/lang/String;Z)Lcom/github/panpf/sketch/decode/DecodeConfig;
 	public static synthetic fun DecodeConfig$default (Lcom/github/panpf/sketch/request/ImageRequest;Ljava/lang/String;ZILjava/lang/Object;)Lcom/github/panpf/sketch/decode/DecodeConfig;
+	public static final fun toBitmapOptions (Lcom/github/panpf/sketch/decode/DecodeConfig;)Landroid/graphics/BitmapFactory$Options;
 }
 
 public final class com/github/panpf/sketch/decode/DecodeException : com/github/panpf/sketch/util/SketchException {
@@ -615,8 +638,8 @@ public abstract interface class com/github/panpf/sketch/decode/Decoder$Factory :
 }
 
 public final class com/github/panpf/sketch/decode/FixedColorSpace : com/github/panpf/sketch/decode/BitmapColorSpace {
+	public fun <init> (Landroid/graphics/ColorSpace$Named;)V
 	public fun <init> (Ljava/lang/String;)V
-	public fun <init> (Lorg/jetbrains/skia/ColorSpace;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun copy (Ljava/lang/String;)Lcom/github/panpf/sketch/decode/FixedColorSpace;
 	public static synthetic fun copy$default (Lcom/github/panpf/sketch/decode/FixedColorSpace;Ljava/lang/String;ILjava/lang/Object;)Lcom/github/panpf/sketch/decode/FixedColorSpace;
@@ -629,8 +652,8 @@ public final class com/github/panpf/sketch/decode/FixedColorSpace : com/github/p
 }
 
 public final class com/github/panpf/sketch/decode/FixedColorType : com/github/panpf/sketch/decode/BitmapColorType {
+	public fun <init> (Landroid/graphics/Bitmap$Config;)V
 	public fun <init> (Ljava/lang/String;)V
-	public fun <init> (Lorg/jetbrains/skia/ColorType;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun copy (Ljava/lang/String;)Lcom/github/panpf/sketch/decode/FixedColorType;
 	public static synthetic fun copy$default (Lcom/github/panpf/sketch/decode/FixedColorType;Ljava/lang/String;ILjava/lang/Object;)Lcom/github/panpf/sketch/decode/FixedColorType;
@@ -682,40 +705,53 @@ public final class com/github/panpf/sketch/decode/LowQualityColorType : com/gith
 }
 
 public final class com/github/panpf/sketch/decode/PlatformColorSpace {
-	public fun <init> (Lorg/jetbrains/skia/ColorSpace;)V
-	public final fun component1 ()Lorg/jetbrains/skia/ColorSpace;
-	public final fun copy (Lorg/jetbrains/skia/ColorSpace;)Lcom/github/panpf/sketch/decode/PlatformColorSpace;
-	public static synthetic fun copy$default (Lcom/github/panpf/sketch/decode/PlatformColorSpace;Lorg/jetbrains/skia/ColorSpace;ILjava/lang/Object;)Lcom/github/panpf/sketch/decode/PlatformColorSpace;
+	public fun <init> (Landroid/graphics/ColorSpace$Named;)V
+	public fun <init> (Landroid/graphics/ColorSpace;)V
+	public final fun component1 ()Landroid/graphics/ColorSpace;
+	public final fun copy (Landroid/graphics/ColorSpace;)Lcom/github/panpf/sketch/decode/PlatformColorSpace;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/decode/PlatformColorSpace;Landroid/graphics/ColorSpace;ILjava/lang/Object;)Lcom/github/panpf/sketch/decode/PlatformColorSpace;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getColorSpace ()Lorg/jetbrains/skia/ColorSpace;
+	public final fun getColorSpace ()Landroid/graphics/ColorSpace;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/github/panpf/sketch/decode/PlatformColorType {
-	public fun <init> (Lorg/jetbrains/skia/ColorType;)V
-	public final fun component1 ()Lorg/jetbrains/skia/ColorType;
-	public final fun copy (Lorg/jetbrains/skia/ColorType;)Lcom/github/panpf/sketch/decode/PlatformColorType;
-	public static synthetic fun copy$default (Lcom/github/panpf/sketch/decode/PlatformColorType;Lorg/jetbrains/skia/ColorType;ILjava/lang/Object;)Lcom/github/panpf/sketch/decode/PlatformColorType;
+	public fun <init> (Landroid/graphics/Bitmap$Config;)V
+	public final fun component1 ()Landroid/graphics/Bitmap$Config;
+	public final fun copy (Landroid/graphics/Bitmap$Config;)Lcom/github/panpf/sketch/decode/PlatformColorType;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/decode/PlatformColorType;Landroid/graphics/Bitmap$Config;ILjava/lang/Object;)Lcom/github/panpf/sketch/decode/PlatformColorType;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getColorType ()Lorg/jetbrains/skia/ColorType;
+	public final fun getColorType ()Landroid/graphics/Bitmap$Config;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/github/panpf/sketch/decode/SkiaDecoder : com/github/panpf/sketch/decode/internal/HelperDecoder {
-	public static final field Companion Lcom/github/panpf/sketch/decode/SkiaDecoder$Companion;
+public final class com/github/panpf/sketch/decode/internal/BitmapFactoryDecodeHelper : com/github/panpf/sketch/decode/internal/DecodeHelper {
+	public fun <init> (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/source/DataSource;)V
+	public fun close ()V
+	public fun decode (ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decodeRegion (Lcom/github/panpf/sketch/util/Rect;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getDataSource ()Lcom/github/panpf/sketch/source/DataSource;
+	public fun getImageInfo (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getRequest ()Lcom/github/panpf/sketch/request/ImageRequest;
+	public fun isSupportRegion (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public class com/github/panpf/sketch/decode/internal/BitmapFactoryDecoder : com/github/panpf/sketch/decode/internal/HelperDecoder {
+	public static final field Companion Lcom/github/panpf/sketch/decode/internal/BitmapFactoryDecoder$Companion;
 	public static final field SORT_WEIGHT I
 	public fun <init> (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/source/DataSource;)V
 }
 
-public final class com/github/panpf/sketch/decode/SkiaDecoder$Companion {
+public final class com/github/panpf/sketch/decode/internal/BitmapFactoryDecoder$Companion {
 }
 
-public final class com/github/panpf/sketch/decode/SkiaDecoder$Factory : com/github/panpf/sketch/decode/Decoder$Factory {
+public final class com/github/panpf/sketch/decode/internal/BitmapFactoryDecoder$Factory : com/github/panpf/sketch/decode/Decoder$Factory {
 	public fun <init> ()V
 	public synthetic fun create (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/fetch/FetchResult;)Lcom/github/panpf/sketch/decode/Decoder;
-	public fun create (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/fetch/FetchResult;)Lcom/github/panpf/sketch/decode/SkiaDecoder;
+	public fun create (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/fetch/FetchResult;)Lcom/github/panpf/sketch/decode/internal/BitmapFactoryDecoder;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getKey ()Ljava/lang/String;
 	public fun getSortWeight ()I
@@ -745,6 +781,23 @@ public final class com/github/panpf/sketch/decode/internal/DecoderInterceptor : 
 public final class com/github/panpf/sketch/decode/internal/DecoderInterceptor$Companion {
 }
 
+public final class com/github/panpf/sketch/decode/internal/Decodes_androidKt {
+	public static final fun calculateSampledBitmapSize (Lcom/github/panpf/sketch/util/Size;ILjava/lang/String;)Lcom/github/panpf/sketch/util/Size;
+	public static synthetic fun calculateSampledBitmapSize$default (Lcom/github/panpf/sketch/util/Size;ILjava/lang/String;ILjava/lang/Object;)Lcom/github/panpf/sketch/util/Size;
+	public static final fun calculateSampledBitmapSizeForRegion (Lcom/github/panpf/sketch/util/Size;ILjava/lang/String;Lcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/util/Size;
+	public static synthetic fun calculateSampledBitmapSizeForRegion$default (Lcom/github/panpf/sketch/util/Size;ILjava/lang/String;Lcom/github/panpf/sketch/util/Size;ILjava/lang/Object;)Lcom/github/panpf/sketch/util/Size;
+	public static final fun decode (Lcom/github/panpf/sketch/source/DataSource;Lcom/github/panpf/sketch/decode/DecodeConfig;Lcom/github/panpf/sketch/decode/internal/ExifOrientationHelper;)Landroid/graphics/Bitmap;
+	public static synthetic fun decode$default (Lcom/github/panpf/sketch/source/DataSource;Lcom/github/panpf/sketch/decode/DecodeConfig;Lcom/github/panpf/sketch/decode/internal/ExifOrientationHelper;ILjava/lang/Object;)Landroid/graphics/Bitmap;
+	public static final fun decodeRegion (Lcom/github/panpf/sketch/source/DataSource;Lcom/github/panpf/sketch/util/Rect;Lcom/github/panpf/sketch/decode/DecodeConfig;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/decode/internal/ExifOrientationHelper;)Landroid/graphics/Bitmap;
+	public static synthetic fun decodeRegion$default (Lcom/github/panpf/sketch/source/DataSource;Lcom/github/panpf/sketch/util/Rect;Lcom/github/panpf/sketch/decode/DecodeConfig;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/decode/internal/ExifOrientationHelper;ILjava/lang/Object;)Landroid/graphics/Bitmap;
+	public static final fun getMaxBitmapSize ()Lcom/github/panpf/sketch/util/Size;
+	public static final fun readImageInfo (Lcom/github/panpf/sketch/source/DataSource;)Lcom/github/panpf/sketch/decode/ImageInfo;
+	public static final fun readImageInfo (Lcom/github/panpf/sketch/source/DataSource;Lcom/github/panpf/sketch/decode/internal/ExifOrientationHelper;)Lcom/github/panpf/sketch/decode/ImageInfo;
+	public static final fun readImageInfoWithIgnoreExifOrientation (Lcom/github/panpf/sketch/source/DataSource;)Lcom/github/panpf/sketch/decode/ImageInfo;
+	public static final fun supportBitmapRegionDecoder (Ljava/lang/String;Z)Ljava/lang/Boolean;
+	public static synthetic fun supportBitmapRegionDecoder$default (Ljava/lang/String;ZILjava/lang/Object;)Ljava/lang/Boolean;
+}
+
 public final class com/github/panpf/sketch/decode/internal/Decodes_commonKt {
 	public static final fun calculateSampleSize (Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/Size;Ljava/lang/String;)I
 	public static final fun calculateSampleSize (Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/Size;ZLjava/lang/String;)I
@@ -762,17 +815,60 @@ public final class com/github/panpf/sketch/decode/internal/Decodes_commonKt {
 	public static final fun resize (Lcom/github/panpf/sketch/request/ImageData;Lcom/github/panpf/sketch/resize/Resize;)Lcom/github/panpf/sketch/request/ImageData;
 }
 
-public final class com/github/panpf/sketch/decode/internal/Decodes_nonAndroidKt {
-	public static final fun calculateSampledBitmapSize (Lcom/github/panpf/sketch/util/Size;ILjava/lang/String;)Lcom/github/panpf/sketch/util/Size;
-	public static synthetic fun calculateSampledBitmapSize$default (Lcom/github/panpf/sketch/util/Size;ILjava/lang/String;ILjava/lang/Object;)Lcom/github/panpf/sketch/util/Size;
-	public static final fun calculateSampledBitmapSizeForRegion (Lcom/github/panpf/sketch/util/Size;ILjava/lang/String;Lcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/util/Size;
-	public static synthetic fun calculateSampledBitmapSizeForRegion$default (Lcom/github/panpf/sketch/util/Size;ILjava/lang/String;Lcom/github/panpf/sketch/util/Size;ILjava/lang/Object;)Lcom/github/panpf/sketch/util/Size;
-	public static final fun getMaxBitmapSize ()Lcom/github/panpf/sketch/util/Size;
-	public static final fun readImageInfo (Lcom/github/panpf/sketch/source/DataSource;)Lcom/github/panpf/sketch/decode/ImageInfo;
-	public static final fun readImageInfo (Lorg/jetbrains/skia/Codec;Lorg/jetbrains/skia/Image;)Lcom/github/panpf/sketch/decode/ImageInfo;
-	public static final fun readImageInfoWithIgnoreExifOrientation (Lcom/github/panpf/sketch/source/DataSource;)Lcom/github/panpf/sketch/decode/ImageInfo;
-	public static final fun readImageInfoWithIgnoreExifOrientation (Lorg/jetbrains/skia/Codec;)Lcom/github/panpf/sketch/decode/ImageInfo;
-	public static final fun supportDecodeRegion (Ljava/lang/String;)Ljava/lang/Boolean;
+public class com/github/panpf/sketch/decode/internal/DrawableDecoder : com/github/panpf/sketch/decode/Decoder {
+	public static final field Companion Lcom/github/panpf/sketch/decode/internal/DrawableDecoder$Companion;
+	public static final field SORT_WEIGHT I
+	public fun <init> (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/source/DrawableDataSource;Ljava/lang/String;)V
+	public fun decode (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getImageInfo (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/github/panpf/sketch/decode/internal/DrawableDecoder$Companion {
+}
+
+public final class com/github/panpf/sketch/decode/internal/DrawableDecoder$Factory : com/github/panpf/sketch/decode/Decoder$Factory {
+	public fun <init> ()V
+	public synthetic fun create (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/fetch/FetchResult;)Lcom/github/panpf/sketch/decode/Decoder;
+	public fun create (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/fetch/FetchResult;)Lcom/github/panpf/sketch/decode/internal/DrawableDecoder;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKey ()Ljava/lang/String;
+	public fun getSortWeight ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/decode/internal/ExifOrientationHelper {
+	public static final field Companion Lcom/github/panpf/sketch/decode/internal/ExifOrientationHelper$Companion;
+	public static final field FLIP_HORIZONTAL I
+	public static final field FLIP_VERTICAL I
+	public static final field NORMAL I
+	public static final field ROTATE_180 I
+	public static final field ROTATE_270 I
+	public static final field ROTATE_90 I
+	public static final field TRANSPOSE I
+	public static final field TRANSVERSE I
+	public static final field UNDEFINED I
+	public fun <init> (I)V
+	public final fun applyToBitmap (Landroid/graphics/Bitmap;Z)Landroid/graphics/Bitmap;
+	public static synthetic fun applyToBitmap$default (Lcom/github/panpf/sketch/decode/internal/ExifOrientationHelper;Landroid/graphics/Bitmap;ZILjava/lang/Object;)Landroid/graphics/Bitmap;
+	public final fun applyToRect (Lcom/github/panpf/sketch/util/Rect;Lcom/github/panpf/sketch/util/Size;Z)Lcom/github/panpf/sketch/util/Rect;
+	public static synthetic fun applyToRect$default (Lcom/github/panpf/sketch/decode/internal/ExifOrientationHelper;Lcom/github/panpf/sketch/util/Rect;Lcom/github/panpf/sketch/util/Size;ZILjava/lang/Object;)Lcom/github/panpf/sketch/util/Rect;
+	public final fun applyToSize (Lcom/github/panpf/sketch/util/Size;Z)Lcom/github/panpf/sketch/util/Size;
+	public static synthetic fun applyToSize$default (Lcom/github/panpf/sketch/decode/internal/ExifOrientationHelper;Lcom/github/panpf/sketch/util/Size;ZILjava/lang/Object;)Lcom/github/panpf/sketch/util/Size;
+	public final fun getExifOrientation ()I
+	public final fun getRotationDegrees ()I
+	public final fun isFlipHorizontally ()Z
+}
+
+public final class com/github/panpf/sketch/decode/internal/ExifOrientationHelper$Companion {
+	public final fun getValues ()[I
+	public final fun name (I)Ljava/lang/String;
+	public final fun valueOf (Ljava/lang/String;)I
+}
+
+public final class com/github/panpf/sketch/decode/internal/ExifOrientationHelperKt {
+	public static final fun readExifOrientation (Lcom/github/panpf/sketch/source/DataSource;)I
+	public static final fun readExifOrientationWithMimeType (Lcom/github/panpf/sketch/source/DataSource;Ljava/lang/String;)I
 }
 
 public class com/github/panpf/sketch/decode/internal/HelperDecoder : com/github/panpf/sketch/decode/Decoder {
@@ -803,16 +899,23 @@ public final class com/github/panpf/sketch/decode/internal/ImageFormat$Companion
 	public final fun parseMimeType (Ljava/lang/String;)Lcom/github/panpf/sketch/decode/internal/ImageFormat;
 }
 
-public final class com/github/panpf/sketch/decode/internal/SkiaDecodeHelper : com/github/panpf/sketch/decode/internal/DecodeHelper {
-	public fun <init> (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/source/DataSource;)V
-	public fun close ()V
-	public fun decode (ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun decodeRegion (Lcom/github/panpf/sketch/util/Rect;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun getDataSource ()Lcom/github/panpf/sketch/source/DataSource;
-	public fun getImageInfo (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun getRequest ()Lcom/github/panpf/sketch/request/ImageRequest;
-	public fun isSupportRegion (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun toString ()Ljava/lang/String;
+public final class com/github/panpf/sketch/decode/internal/OpenGLTextureHelper {
+	public static final field INSTANCE Lcom/github/panpf/sketch/decode/internal/OpenGLTextureHelper;
+	public final fun getMaxSize ()Ljava/lang/Integer;
+}
+
+public abstract interface class com/github/panpf/sketch/decode/internal/OpenGLTextureHelper$Impl {
+	public abstract fun getMaxSize ()Ljava/lang/Integer;
+}
+
+public final class com/github/panpf/sketch/decode/internal/OpenGLTextureHelper$Impl16 : com/github/panpf/sketch/decode/internal/OpenGLTextureHelper$Impl {
+	public fun <init> ()V
+	public fun getMaxSize ()Ljava/lang/Integer;
+}
+
+public final class com/github/panpf/sketch/decode/internal/OpenGLTextureHelper$Impl17 : com/github/panpf/sketch/decode/internal/OpenGLTextureHelper$Impl {
+	public fun <init> ()V
+	public fun getMaxSize ()Ljava/lang/Integer;
 }
 
 public final class com/github/panpf/sketch/decode/internal/TransformedsKt {
@@ -828,6 +931,239 @@ public final class com/github/panpf/sketch/decode/internal/TransformedsKt {
 	public static final fun isResizeTransformed (Ljava/lang/String;)Z
 	public static final fun isScaledTransformed (Ljava/lang/String;)Z
 	public static final fun isSubsamplingTransformed (Ljava/lang/String;)Z
+}
+
+public final class com/github/panpf/sketch/drawable/AnimatableDrawable : androidx/appcompat/graphics/drawable/DrawableWrapperCompat, androidx/vectordrawable/graphics/drawable/Animatable2Compat, com/github/panpf/sketch/drawable/SketchDrawable {
+	public fun <init> (Landroid/graphics/drawable/Drawable;)V
+	public fun clearAnimationCallbacks ()V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun isRunning ()Z
+	public synthetic fun mutate ()Landroid/graphics/drawable/Drawable;
+	public fun mutate ()Lcom/github/panpf/sketch/drawable/AnimatableDrawable;
+	public fun registerAnimationCallback (Landroidx/vectordrawable/graphics/drawable/Animatable2Compat$AnimationCallback;)V
+	public fun setDrawable (Landroid/graphics/drawable/Drawable;)V
+	public fun start ()V
+	public fun stop ()V
+	public fun toString ()Ljava/lang/String;
+	public fun unregisterAnimationCallback (Landroidx/vectordrawable/graphics/drawable/Animatable2Compat$AnimationCallback;)Z
+}
+
+public final class com/github/panpf/sketch/drawable/ColorFetcherDrawableFetcher : com/github/panpf/sketch/drawable/DrawableFetcher {
+	public fun <init> (Lcom/github/panpf/sketch/util/ColorFetcher;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getColor ()Lcom/github/panpf/sketch/util/ColorFetcher;
+	public fun getDrawable (Landroid/content/Context;)Landroid/graphics/drawable/Drawable;
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/github/panpf/sketch/drawable/DrawableFetcher : com/github/panpf/sketch/util/Key {
+	public abstract fun equals (Ljava/lang/Object;)Z
+	public abstract fun getDrawable (Landroid/content/Context;)Landroid/graphics/drawable/Drawable;
+	public abstract fun hashCode ()I
+	public abstract fun toString ()Ljava/lang/String;
+}
+
+public class com/github/panpf/sketch/drawable/EquitableAnimatableDrawable : com/github/panpf/sketch/drawable/EquitableDrawable, androidx/vectordrawable/graphics/drawable/Animatable2Compat, com/github/panpf/sketch/util/Key {
+	public fun <init> (Landroid/graphics/drawable/Drawable;Ljava/lang/Object;)V
+	public fun clearAnimationCallbacks ()V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun isRunning ()Z
+	public synthetic fun mutate ()Landroid/graphics/drawable/Drawable;
+	public fun mutate ()Lcom/github/panpf/sketch/drawable/EquitableAnimatableDrawable;
+	public synthetic fun mutate ()Lcom/github/panpf/sketch/drawable/EquitableDrawable;
+	public fun registerAnimationCallback (Landroidx/vectordrawable/graphics/drawable/Animatable2Compat$AnimationCallback;)V
+	public fun setDrawable (Landroid/graphics/drawable/Drawable;)V
+	public fun start ()V
+	public fun stop ()V
+	public fun toString ()Ljava/lang/String;
+	public fun unregisterAnimationCallback (Landroidx/vectordrawable/graphics/drawable/Animatable2Compat$AnimationCallback;)Z
+}
+
+public class com/github/panpf/sketch/drawable/EquitableDrawable : androidx/appcompat/graphics/drawable/DrawableWrapperCompat, com/github/panpf/sketch/util/Key {
+	public fun <init> (Landroid/graphics/drawable/Drawable;Ljava/lang/Object;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDrawable ()Landroid/graphics/drawable/Drawable;
+	public final fun getEqualityKey ()Ljava/lang/Object;
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public synthetic fun mutate ()Landroid/graphics/drawable/Drawable;
+	public fun mutate ()Lcom/github/panpf/sketch/drawable/EquitableDrawable;
+	public fun setDrawable (Landroid/graphics/drawable/Drawable;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/drawable/EquitableDrawableKt {
+	public static final fun ColorEquitableDrawable (I)Lcom/github/panpf/sketch/drawable/EquitableDrawable;
+	public static final fun asEquitable (Landroid/graphics/drawable/ColorDrawable;)Lcom/github/panpf/sketch/drawable/EquitableDrawable;
+	public static final fun asEquitable (Landroid/graphics/drawable/Drawable;Ljava/lang/Object;)Lcom/github/panpf/sketch/drawable/EquitableDrawable;
+	public static final fun getEquitableDrawable (Landroid/content/Context;I)Lcom/github/panpf/sketch/drawable/EquitableDrawable;
+	public static final fun getEquitableDrawable (Landroid/content/res/Resources;I)Lcom/github/panpf/sketch/drawable/EquitableDrawable;
+	public static final fun getEquitableDrawable (Landroid/content/res/Resources;ILandroid/content/res/Resources$Theme;)Lcom/github/panpf/sketch/drawable/EquitableDrawable;
+	public static final fun getEquitableDrawableCompat (Landroid/content/Context;I)Lcom/github/panpf/sketch/drawable/EquitableDrawable;
+	public static final fun getEquitableDrawableCompat (Landroid/content/res/Resources;ILandroid/content/res/Resources$Theme;)Lcom/github/panpf/sketch/drawable/EquitableDrawable;
+	public static final fun getEquitableDrawableCompatForDensity (Landroid/content/res/Resources;IILandroid/content/res/Resources$Theme;)Lcom/github/panpf/sketch/drawable/EquitableDrawable;
+	public static final fun getEquitableDrawableForDensity (Landroid/content/res/Resources;II)Lcom/github/panpf/sketch/drawable/EquitableDrawable;
+	public static final fun getEquitableDrawableForDensity (Landroid/content/res/Resources;IILandroid/content/res/Resources$Theme;)Lcom/github/panpf/sketch/drawable/EquitableDrawable;
+}
+
+public final class com/github/panpf/sketch/drawable/IconAnimatableDrawable : com/github/panpf/sketch/drawable/IconDrawable, android/graphics/drawable/Drawable$Callback, androidx/vectordrawable/graphics/drawable/Animatable2Compat, com/github/panpf/sketch/drawable/SketchDrawable {
+	public fun <init> (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;)V
+	public synthetic fun <init> (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun clearAnimationCallbacks ()V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun isRunning ()Z
+	public synthetic fun mutate ()Landroid/graphics/drawable/Drawable;
+	public fun mutate ()Lcom/github/panpf/sketch/drawable/IconAnimatableDrawable;
+	public synthetic fun mutate ()Lcom/github/panpf/sketch/drawable/IconDrawable;
+	public fun registerAnimationCallback (Landroidx/vectordrawable/graphics/drawable/Animatable2Compat$AnimationCallback;)V
+	public fun start ()V
+	public fun stop ()V
+	public fun toString ()Ljava/lang/String;
+	public fun unregisterAnimationCallback (Landroidx/vectordrawable/graphics/drawable/Animatable2Compat$AnimationCallback;)Z
+}
+
+public class com/github/panpf/sketch/drawable/IconDrawable : android/graphics/drawable/Drawable, android/graphics/drawable/Drawable$Callback, com/github/panpf/sketch/drawable/SketchDrawable {
+	public fun <init> (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;)V
+	public synthetic fun <init> (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun draw (Landroid/graphics/Canvas;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getAlpha ()I
+	public final fun getBackground ()Landroid/graphics/drawable/Drawable;
+	public fun getChangingConfigurations ()I
+	public fun getColorFilter ()Landroid/graphics/ColorFilter;
+	public final fun getIcon ()Landroid/graphics/drawable/Drawable;
+	public final fun getIconSize ()Lcom/github/panpf/sketch/util/Size;
+	public final fun getIconTint ()Ljava/lang/Integer;
+	public fun getIntrinsicHeight ()I
+	public fun getIntrinsicWidth ()I
+	public fun getOpacity ()I
+	public fun getPadding (Landroid/graphics/Rect;)Z
+	public fun getState ()[I
+	public fun getTransparentRegion ()Landroid/graphics/Region;
+	public fun hashCode ()I
+	public fun invalidateDrawable (Landroid/graphics/drawable/Drawable;)V
+	public fun isAutoMirrored ()Z
+	public fun isFilterBitmap ()Z
+	public fun isStateful ()Z
+	public fun jumpToCurrentState ()V
+	public synthetic fun mutate ()Landroid/graphics/drawable/Drawable;
+	public fun mutate ()Lcom/github/panpf/sketch/drawable/IconDrawable;
+	protected fun onBoundsChange (Landroid/graphics/Rect;)V
+	protected fun onLevelChange (I)Z
+	public fun scheduleDrawable (Landroid/graphics/drawable/Drawable;Ljava/lang/Runnable;J)V
+	public fun setAlpha (I)V
+	public fun setAutoMirrored (Z)V
+	public fun setChangingConfigurations (I)V
+	public fun setColorFilter (ILandroid/graphics/PorterDuff$Mode;)V
+	public fun setColorFilter (Landroid/graphics/ColorFilter;)V
+	public fun setFilterBitmap (Z)V
+	public fun setHotspot (FF)V
+	public fun setHotspotBounds (IIII)V
+	public fun setState ([I)Z
+	public fun setTint (I)V
+	public fun setTintList (Landroid/content/res/ColorStateList;)V
+	public fun setTintMode (Landroid/graphics/PorterDuff$Mode;)V
+	public fun setVisible (ZZ)Z
+	public fun toString ()Ljava/lang/String;
+	public fun unscheduleDrawable (Landroid/graphics/drawable/Drawable;Ljava/lang/Runnable;)V
+}
+
+public final class com/github/panpf/sketch/drawable/RealColorDrawableFetcher : com/github/panpf/sketch/drawable/DrawableFetcher {
+	public fun <init> (I)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getColor ()I
+	public fun getDrawable (Landroid/content/Context;)Landroid/graphics/drawable/Drawable;
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/drawable/RealDrawableFetcher : com/github/panpf/sketch/drawable/DrawableFetcher {
+	public fun <init> (Lcom/github/panpf/sketch/drawable/EquitableDrawable;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDrawable ()Lcom/github/panpf/sketch/drawable/EquitableDrawable;
+	public fun getDrawable (Landroid/content/Context;)Landroid/graphics/drawable/Drawable;
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/drawable/ResColorDrawableFetcher : com/github/panpf/sketch/drawable/DrawableFetcher {
+	public fun <init> (I)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDrawable (Landroid/content/Context;)Landroid/graphics/drawable/Drawable;
+	public fun getKey ()Ljava/lang/String;
+	public final fun getResId ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/drawable/ResDrawableFetcher : com/github/panpf/sketch/drawable/DrawableFetcher {
+	public fun <init> (ILandroid/content/res/Resources;Ljava/lang/String;)V
+	public synthetic fun <init> (ILandroid/content/res/Resources;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDrawable (Landroid/content/Context;)Landroid/graphics/drawable/Drawable;
+	public fun getKey ()Ljava/lang/String;
+	public final fun getPackageName ()Ljava/lang/String;
+	public final fun getResId ()I
+	public final fun getResources ()Landroid/content/res/Resources;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/github/panpf/sketch/drawable/SketchDrawable {
+	public abstract fun equals (Ljava/lang/Object;)Z
+	public abstract fun hashCode ()I
+	public abstract fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/drawable/internal/AnimatableCallbackHelper {
+	public fun <init> (Landroid/graphics/drawable/Drawable;)V
+	public final fun clearAnimationCallbacks ()V
+	public final fun isRunning ()Z
+	public final fun registerAnimationCallback (Landroidx/vectordrawable/graphics/drawable/Animatable2Compat$AnimationCallback;)V
+	public final fun setDrawable (Landroid/graphics/drawable/Drawable;)V
+	public final fun start ()V
+	public final fun stop ()V
+	public final fun unregisterAnimationCallback (Landroidx/vectordrawable/graphics/drawable/Animatable2Compat$AnimationCallback;)Z
+}
+
+public final class com/github/panpf/sketch/fetch/AssetUriFetcher : com/github/panpf/sketch/fetch/Fetcher {
+	public static final field Companion Lcom/github/panpf/sketch/fetch/AssetUriFetcher$Companion;
+	public static final field PATH_ROOT Ljava/lang/String;
+	public static final field SCHEME Ljava/lang/String;
+	public static final field SORT_WEIGHT I
+	public fun <init> (Landroid/content/Context;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun fetch-IoAF18A (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getContext ()Landroid/content/Context;
+	public final fun getFileName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/fetch/AssetUriFetcher$Companion {
+}
+
+public final class com/github/panpf/sketch/fetch/AssetUriFetcher$Factory : com/github/panpf/sketch/fetch/Fetcher$Factory {
+	public fun <init> ()V
+	public fun create (Lcom/github/panpf/sketch/request/RequestContext;)Lcom/github/panpf/sketch/fetch/AssetUriFetcher;
+	public synthetic fun create (Lcom/github/panpf/sketch/request/RequestContext;)Lcom/github/panpf/sketch/fetch/Fetcher;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getSortWeight ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/fetch/AssetUriFetcherKt {
+	public static final fun isAssetUri (Lcom/github/panpf/sketch/util/Uri;)Z
+	public static final fun newAssetUri (Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class com/github/panpf/sketch/fetch/Base64Spec : java/lang/Enum {
@@ -877,6 +1213,36 @@ public final class com/github/panpf/sketch/fetch/Base64UriFetcherKt {
 	public static final fun isBase64Uri (Lcom/github/panpf/sketch/util/Uri;)Z
 	public static final fun newBase64Uri (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 	public static final fun newBase64Uri (Ljava/lang/String;[B)Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/fetch/ContentUriFetcher : com/github/panpf/sketch/fetch/Fetcher {
+	public static final field Companion Lcom/github/panpf/sketch/fetch/ContentUriFetcher$Companion;
+	public static final field SCHEME Ljava/lang/String;
+	public static final field SORT_WEIGHT I
+	public fun <init> (Landroid/content/Context;Landroid/net/Uri;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun fetch-IoAF18A (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getContentUri ()Landroid/net/Uri;
+	public final fun getContext ()Landroid/content/Context;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/fetch/ContentUriFetcher$Companion {
+}
+
+public final class com/github/panpf/sketch/fetch/ContentUriFetcher$Factory : com/github/panpf/sketch/fetch/Fetcher$Factory {
+	public fun <init> ()V
+	public fun create (Lcom/github/panpf/sketch/request/RequestContext;)Lcom/github/panpf/sketch/fetch/ContentUriFetcher;
+	public synthetic fun create (Lcom/github/panpf/sketch/request/RequestContext;)Lcom/github/panpf/sketch/fetch/Fetcher;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getSortWeight ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/fetch/ContentUriFetcherKt {
+	public static final fun isContentUri (Lcom/github/panpf/sketch/util/Uri;)Z
 }
 
 public final class com/github/panpf/sketch/fetch/FetchResult {
@@ -947,35 +1313,38 @@ public final class com/github/panpf/sketch/fetch/FileUriFetcher_jvmKt {
 	public static final fun newFileUri (Ljava/io/File;)Ljava/lang/String;
 }
 
-public final class com/github/panpf/sketch/fetch/KotlinResourceUriFetcher : com/github/panpf/sketch/fetch/Fetcher {
-	public static final field Companion Lcom/github/panpf/sketch/fetch/KotlinResourceUriFetcher$Companion;
-	public static final field PATH_ROOT Ljava/lang/String;
+public final class com/github/panpf/sketch/fetch/ResourceUriFetcher : com/github/panpf/sketch/fetch/Fetcher {
+	public static final field Companion Lcom/github/panpf/sketch/fetch/ResourceUriFetcher$Companion;
 	public static final field SCHEME Ljava/lang/String;
 	public static final field SORT_WEIGHT I
-	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Landroid/content/Context;Lcom/github/panpf/sketch/util/Uri;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public fun fetch-IoAF18A (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun getResourcePath ()Ljava/lang/String;
+	public final fun getContext ()Landroid/content/Context;
+	public final fun getResourceUri ()Lcom/github/panpf/sketch/util/Uri;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/github/panpf/sketch/fetch/KotlinResourceUriFetcher$Companion {
+public final class com/github/panpf/sketch/fetch/ResourceUriFetcher$Companion {
 }
 
-public final class com/github/panpf/sketch/fetch/KotlinResourceUriFetcher$Factory : com/github/panpf/sketch/fetch/Fetcher$Factory {
+public final class com/github/panpf/sketch/fetch/ResourceUriFetcher$Factory : com/github/panpf/sketch/fetch/Fetcher$Factory {
 	public fun <init> ()V
 	public synthetic fun create (Lcom/github/panpf/sketch/request/RequestContext;)Lcom/github/panpf/sketch/fetch/Fetcher;
-	public fun create (Lcom/github/panpf/sketch/request/RequestContext;)Lcom/github/panpf/sketch/fetch/KotlinResourceUriFetcher;
+	public fun create (Lcom/github/panpf/sketch/request/RequestContext;)Lcom/github/panpf/sketch/fetch/ResourceUriFetcher;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getSortWeight ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/github/panpf/sketch/fetch/KotlinResourceUriFetcherKt {
-	public static final fun isKotlinResourceUri (Lcom/github/panpf/sketch/util/Uri;)Z
-	public static final fun newKotlinResourceUri (Ljava/lang/String;)Ljava/lang/String;
+public final class com/github/panpf/sketch/fetch/ResourceUriFetcherKt {
+	public static final fun isResourceUri (Lcom/github/panpf/sketch/util/Uri;)Z
+	public static final fun newResourceUri (I)Ljava/lang/String;
+	public static final fun newResourceUri (Ljava/lang/String;I)Ljava/lang/String;
+	public static final fun newResourceUri (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public static final fun newResourceUri (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class com/github/panpf/sketch/fetch/internal/FetcherInterceptor : com/github/panpf/sketch/request/Interceptor {
@@ -1282,21 +1651,37 @@ public final class com/github/panpf/sketch/request/ImageOptionsProviderKt {
 	public static final fun updateImageOptions (Lcom/github/panpf/sketch/request/ImageOptionsProvider;Lkotlin/jvm/functions/Function1;)V
 }
 
+public final class com/github/panpf/sketch/request/ImageOptions_androidKt {
+	public static final fun colorSpace (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Landroid/graphics/ColorSpace$Named;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun colorType (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Landroid/graphics/Bitmap$Config;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun error (Lcom/github/panpf/sketch/request/ImageOptions$Builder;I)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun error (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Lcom/github/panpf/sketch/drawable/EquitableDrawable;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun error (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun error (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Lcom/github/panpf/sketch/util/ResColorFetcher;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun fallback (Lcom/github/panpf/sketch/request/ImageOptions$Builder;I)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun fallback (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Lcom/github/panpf/sketch/drawable/EquitableDrawable;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun fallback (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun fallback (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Lcom/github/panpf/sketch/util/ResColorFetcher;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun getPreferQualityOverSpeed (Lcom/github/panpf/sketch/request/ImageOptions;)Ljava/lang/Boolean;
+	public static final fun placeholder (Lcom/github/panpf/sketch/request/ImageOptions$Builder;I)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun placeholder (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Lcom/github/panpf/sketch/drawable/EquitableDrawable;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun placeholder (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun placeholder (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Lcom/github/panpf/sketch/util/ResColorFetcher;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun preferQualityOverSpeed (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Boolean;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static synthetic fun preferQualityOverSpeed$default (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun sizeWithDisplay (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Landroid/content/Context;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+}
+
 public final class com/github/panpf/sketch/request/ImageOptions_commonKt {
 	public static final fun ImageOptions (Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/request/ImageOptions;
 	public static synthetic fun ImageOptions$default (Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageOptions;
 	public static final fun isNotEmpty (Lcom/github/panpf/sketch/request/ImageOptions;)Z
 }
 
-public final class com/github/panpf/sketch/request/ImageOptions_nonAndroidKt {
-	public static final fun colorSpace (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Lorg/jetbrains/skia/ColorSpace;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
-	public static final fun colorType (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Lorg/jetbrains/skia/ColorType;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
-}
-
 public final class com/github/panpf/sketch/request/ImageRequest : com/github/panpf/sketch/util/Key {
-	public fun <init> (Lcom/github/panpf/sketch/PlatformContext;Lcom/github/panpf/sketch/util/Uri;Lcom/github/panpf/sketch/target/Target;Lcom/github/panpf/sketch/request/Listener;Lcom/github/panpf/sketch/request/ProgressListener;Lcom/github/panpf/sketch/request/LifecycleResolver;Lcom/github/panpf/sketch/request/internal/RequestOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/DepthHolder;Lcom/github/panpf/sketch/request/Extras;Lcom/github/panpf/sketch/cache/CachePolicy;Lcom/github/panpf/sketch/decode/BitmapColorType;Lcom/github/panpf/sketch/decode/BitmapColorSpace;Lcom/github/panpf/sketch/resize/SizeResolver;Ljava/lang/Float;Lcom/github/panpf/sketch/resize/PrecisionDecider;Lcom/github/panpf/sketch/resize/ScaleDecider;Ljava/util/List;Lcom/github/panpf/sketch/cache/CachePolicy;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/transition/Transition$Factory;Ljava/lang/Boolean;Ljava/lang/Boolean;Lcom/github/panpf/sketch/cache/CachePolicy;Lcom/github/panpf/sketch/ComponentRegistry;)V
-	public fun <init> (Lcom/github/panpf/sketch/PlatformContext;Lcom/github/panpf/sketch/util/Uri;Lcom/github/panpf/sketch/target/Target;Lcom/github/panpf/sketch/request/Listener;Lcom/github/panpf/sketch/request/ProgressListener;Lcom/github/panpf/sketch/request/LifecycleResolver;Lcom/github/panpf/sketch/request/internal/RequestOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/DepthHolder;Lcom/github/panpf/sketch/request/Extras;Lcom/github/panpf/sketch/cache/CachePolicy;Ljava/lang/String;Lcom/github/panpf/sketch/cache/CacheKeyMapper;Lcom/github/panpf/sketch/decode/BitmapColorType;Lcom/github/panpf/sketch/decode/BitmapColorSpace;Lcom/github/panpf/sketch/resize/SizeResolver;Ljava/lang/Float;Lcom/github/panpf/sketch/resize/PrecisionDecider;Lcom/github/panpf/sketch/resize/ScaleDecider;Ljava/util/List;Lcom/github/panpf/sketch/cache/CachePolicy;Ljava/lang/String;Lcom/github/panpf/sketch/cache/CacheKeyMapper;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/transition/Transition$Factory;Ljava/lang/Boolean;Ljava/lang/Boolean;Lcom/github/panpf/sketch/cache/CachePolicy;Ljava/lang/String;Lcom/github/panpf/sketch/cache/CacheKeyMapper;Lcom/github/panpf/sketch/ComponentRegistry;)V
-	public final fun component1 ()Lcom/github/panpf/sketch/PlatformContext;
+	public fun <init> (Landroid/content/Context;Lcom/github/panpf/sketch/util/Uri;Lcom/github/panpf/sketch/target/Target;Lcom/github/panpf/sketch/request/Listener;Lcom/github/panpf/sketch/request/ProgressListener;Lcom/github/panpf/sketch/request/LifecycleResolver;Lcom/github/panpf/sketch/request/internal/RequestOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/DepthHolder;Lcom/github/panpf/sketch/request/Extras;Lcom/github/panpf/sketch/cache/CachePolicy;Lcom/github/panpf/sketch/decode/BitmapColorType;Lcom/github/panpf/sketch/decode/BitmapColorSpace;Lcom/github/panpf/sketch/resize/SizeResolver;Ljava/lang/Float;Lcom/github/panpf/sketch/resize/PrecisionDecider;Lcom/github/panpf/sketch/resize/ScaleDecider;Ljava/util/List;Lcom/github/panpf/sketch/cache/CachePolicy;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/transition/Transition$Factory;Ljava/lang/Boolean;Ljava/lang/Boolean;Lcom/github/panpf/sketch/cache/CachePolicy;Lcom/github/panpf/sketch/ComponentRegistry;)V
+	public fun <init> (Landroid/content/Context;Lcom/github/panpf/sketch/util/Uri;Lcom/github/panpf/sketch/target/Target;Lcom/github/panpf/sketch/request/Listener;Lcom/github/panpf/sketch/request/ProgressListener;Lcom/github/panpf/sketch/request/LifecycleResolver;Lcom/github/panpf/sketch/request/internal/RequestOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/DepthHolder;Lcom/github/panpf/sketch/request/Extras;Lcom/github/panpf/sketch/cache/CachePolicy;Ljava/lang/String;Lcom/github/panpf/sketch/cache/CacheKeyMapper;Lcom/github/panpf/sketch/decode/BitmapColorType;Lcom/github/panpf/sketch/decode/BitmapColorSpace;Lcom/github/panpf/sketch/resize/SizeResolver;Ljava/lang/Float;Lcom/github/panpf/sketch/resize/PrecisionDecider;Lcom/github/panpf/sketch/resize/ScaleDecider;Ljava/util/List;Lcom/github/panpf/sketch/cache/CachePolicy;Ljava/lang/String;Lcom/github/panpf/sketch/cache/CacheKeyMapper;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/transition/Transition$Factory;Ljava/lang/Boolean;Ljava/lang/Boolean;Lcom/github/panpf/sketch/cache/CachePolicy;Ljava/lang/String;Lcom/github/panpf/sketch/cache/CacheKeyMapper;Lcom/github/panpf/sketch/ComponentRegistry;)V
+	public final fun component1 ()Landroid/content/Context;
 	public final fun component10 ()Lcom/github/panpf/sketch/request/DepthHolder;
 	public final fun component11 ()Lcom/github/panpf/sketch/request/Extras;
 	public final fun component12 ()Lcom/github/panpf/sketch/cache/CachePolicy;
@@ -1330,16 +1715,16 @@ public final class com/github/panpf/sketch/request/ImageRequest : com/github/pan
 	public final fun component7 ()Lcom/github/panpf/sketch/request/internal/RequestOptions;
 	public final fun component8 ()Lcom/github/panpf/sketch/request/ImageOptions;
 	public final fun component9 ()Lcom/github/panpf/sketch/request/ImageOptions;
-	public final fun copy (Lcom/github/panpf/sketch/PlatformContext;Lcom/github/panpf/sketch/util/Uri;Lcom/github/panpf/sketch/target/Target;Lcom/github/panpf/sketch/request/Listener;Lcom/github/panpf/sketch/request/ProgressListener;Lcom/github/panpf/sketch/request/LifecycleResolver;Lcom/github/panpf/sketch/request/internal/RequestOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/DepthHolder;Lcom/github/panpf/sketch/request/Extras;Lcom/github/panpf/sketch/cache/CachePolicy;Lcom/github/panpf/sketch/decode/BitmapColorType;Lcom/github/panpf/sketch/decode/BitmapColorSpace;Lcom/github/panpf/sketch/resize/SizeResolver;Ljava/lang/Float;Lcom/github/panpf/sketch/resize/PrecisionDecider;Lcom/github/panpf/sketch/resize/ScaleDecider;Ljava/util/List;Lcom/github/panpf/sketch/cache/CachePolicy;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/transition/Transition$Factory;Ljava/lang/Boolean;Ljava/lang/Boolean;Lcom/github/panpf/sketch/cache/CachePolicy;Lcom/github/panpf/sketch/ComponentRegistry;)Lcom/github/panpf/sketch/request/ImageRequest;
-	public final fun copy (Lcom/github/panpf/sketch/PlatformContext;Lcom/github/panpf/sketch/util/Uri;Lcom/github/panpf/sketch/target/Target;Lcom/github/panpf/sketch/request/Listener;Lcom/github/panpf/sketch/request/ProgressListener;Lcom/github/panpf/sketch/request/LifecycleResolver;Lcom/github/panpf/sketch/request/internal/RequestOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/DepthHolder;Lcom/github/panpf/sketch/request/Extras;Lcom/github/panpf/sketch/cache/CachePolicy;Ljava/lang/String;Lcom/github/panpf/sketch/cache/CacheKeyMapper;Lcom/github/panpf/sketch/decode/BitmapColorType;Lcom/github/panpf/sketch/decode/BitmapColorSpace;Lcom/github/panpf/sketch/resize/SizeResolver;Ljava/lang/Float;Lcom/github/panpf/sketch/resize/PrecisionDecider;Lcom/github/panpf/sketch/resize/ScaleDecider;Ljava/util/List;Lcom/github/panpf/sketch/cache/CachePolicy;Ljava/lang/String;Lcom/github/panpf/sketch/cache/CacheKeyMapper;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/transition/Transition$Factory;Ljava/lang/Boolean;Ljava/lang/Boolean;Lcom/github/panpf/sketch/cache/CachePolicy;Ljava/lang/String;Lcom/github/panpf/sketch/cache/CacheKeyMapper;Lcom/github/panpf/sketch/ComponentRegistry;)Lcom/github/panpf/sketch/request/ImageRequest;
-	public static synthetic fun copy$default (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/PlatformContext;Lcom/github/panpf/sketch/util/Uri;Lcom/github/panpf/sketch/target/Target;Lcom/github/panpf/sketch/request/Listener;Lcom/github/panpf/sketch/request/ProgressListener;Lcom/github/panpf/sketch/request/LifecycleResolver;Lcom/github/panpf/sketch/request/internal/RequestOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/DepthHolder;Lcom/github/panpf/sketch/request/Extras;Lcom/github/panpf/sketch/cache/CachePolicy;Lcom/github/panpf/sketch/decode/BitmapColorType;Lcom/github/panpf/sketch/decode/BitmapColorSpace;Lcom/github/panpf/sketch/resize/SizeResolver;Ljava/lang/Float;Lcom/github/panpf/sketch/resize/PrecisionDecider;Lcom/github/panpf/sketch/resize/ScaleDecider;Ljava/util/List;Lcom/github/panpf/sketch/cache/CachePolicy;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/transition/Transition$Factory;Ljava/lang/Boolean;Ljava/lang/Boolean;Lcom/github/panpf/sketch/cache/CachePolicy;Lcom/github/panpf/sketch/ComponentRegistry;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageRequest;
-	public static synthetic fun copy$default (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/PlatformContext;Lcom/github/panpf/sketch/util/Uri;Lcom/github/panpf/sketch/target/Target;Lcom/github/panpf/sketch/request/Listener;Lcom/github/panpf/sketch/request/ProgressListener;Lcom/github/panpf/sketch/request/LifecycleResolver;Lcom/github/panpf/sketch/request/internal/RequestOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/DepthHolder;Lcom/github/panpf/sketch/request/Extras;Lcom/github/panpf/sketch/cache/CachePolicy;Ljava/lang/String;Lcom/github/panpf/sketch/cache/CacheKeyMapper;Lcom/github/panpf/sketch/decode/BitmapColorType;Lcom/github/panpf/sketch/decode/BitmapColorSpace;Lcom/github/panpf/sketch/resize/SizeResolver;Ljava/lang/Float;Lcom/github/panpf/sketch/resize/PrecisionDecider;Lcom/github/panpf/sketch/resize/ScaleDecider;Ljava/util/List;Lcom/github/panpf/sketch/cache/CachePolicy;Ljava/lang/String;Lcom/github/panpf/sketch/cache/CacheKeyMapper;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/transition/Transition$Factory;Ljava/lang/Boolean;Ljava/lang/Boolean;Lcom/github/panpf/sketch/cache/CachePolicy;Ljava/lang/String;Lcom/github/panpf/sketch/cache/CacheKeyMapper;Lcom/github/panpf/sketch/ComponentRegistry;IILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageRequest;
+	public final fun copy (Landroid/content/Context;Lcom/github/panpf/sketch/util/Uri;Lcom/github/panpf/sketch/target/Target;Lcom/github/panpf/sketch/request/Listener;Lcom/github/panpf/sketch/request/ProgressListener;Lcom/github/panpf/sketch/request/LifecycleResolver;Lcom/github/panpf/sketch/request/internal/RequestOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/DepthHolder;Lcom/github/panpf/sketch/request/Extras;Lcom/github/panpf/sketch/cache/CachePolicy;Lcom/github/panpf/sketch/decode/BitmapColorType;Lcom/github/panpf/sketch/decode/BitmapColorSpace;Lcom/github/panpf/sketch/resize/SizeResolver;Ljava/lang/Float;Lcom/github/panpf/sketch/resize/PrecisionDecider;Lcom/github/panpf/sketch/resize/ScaleDecider;Ljava/util/List;Lcom/github/panpf/sketch/cache/CachePolicy;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/transition/Transition$Factory;Ljava/lang/Boolean;Ljava/lang/Boolean;Lcom/github/panpf/sketch/cache/CachePolicy;Lcom/github/panpf/sketch/ComponentRegistry;)Lcom/github/panpf/sketch/request/ImageRequest;
+	public final fun copy (Landroid/content/Context;Lcom/github/panpf/sketch/util/Uri;Lcom/github/panpf/sketch/target/Target;Lcom/github/panpf/sketch/request/Listener;Lcom/github/panpf/sketch/request/ProgressListener;Lcom/github/panpf/sketch/request/LifecycleResolver;Lcom/github/panpf/sketch/request/internal/RequestOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/DepthHolder;Lcom/github/panpf/sketch/request/Extras;Lcom/github/panpf/sketch/cache/CachePolicy;Ljava/lang/String;Lcom/github/panpf/sketch/cache/CacheKeyMapper;Lcom/github/panpf/sketch/decode/BitmapColorType;Lcom/github/panpf/sketch/decode/BitmapColorSpace;Lcom/github/panpf/sketch/resize/SizeResolver;Ljava/lang/Float;Lcom/github/panpf/sketch/resize/PrecisionDecider;Lcom/github/panpf/sketch/resize/ScaleDecider;Ljava/util/List;Lcom/github/panpf/sketch/cache/CachePolicy;Ljava/lang/String;Lcom/github/panpf/sketch/cache/CacheKeyMapper;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/transition/Transition$Factory;Ljava/lang/Boolean;Ljava/lang/Boolean;Lcom/github/panpf/sketch/cache/CachePolicy;Ljava/lang/String;Lcom/github/panpf/sketch/cache/CacheKeyMapper;Lcom/github/panpf/sketch/ComponentRegistry;)Lcom/github/panpf/sketch/request/ImageRequest;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/request/ImageRequest;Landroid/content/Context;Lcom/github/panpf/sketch/util/Uri;Lcom/github/panpf/sketch/target/Target;Lcom/github/panpf/sketch/request/Listener;Lcom/github/panpf/sketch/request/ProgressListener;Lcom/github/panpf/sketch/request/LifecycleResolver;Lcom/github/panpf/sketch/request/internal/RequestOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/DepthHolder;Lcom/github/panpf/sketch/request/Extras;Lcom/github/panpf/sketch/cache/CachePolicy;Lcom/github/panpf/sketch/decode/BitmapColorType;Lcom/github/panpf/sketch/decode/BitmapColorSpace;Lcom/github/panpf/sketch/resize/SizeResolver;Ljava/lang/Float;Lcom/github/panpf/sketch/resize/PrecisionDecider;Lcom/github/panpf/sketch/resize/ScaleDecider;Ljava/util/List;Lcom/github/panpf/sketch/cache/CachePolicy;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/transition/Transition$Factory;Ljava/lang/Boolean;Ljava/lang/Boolean;Lcom/github/panpf/sketch/cache/CachePolicy;Lcom/github/panpf/sketch/ComponentRegistry;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageRequest;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/request/ImageRequest;Landroid/content/Context;Lcom/github/panpf/sketch/util/Uri;Lcom/github/panpf/sketch/target/Target;Lcom/github/panpf/sketch/request/Listener;Lcom/github/panpf/sketch/request/ProgressListener;Lcom/github/panpf/sketch/request/LifecycleResolver;Lcom/github/panpf/sketch/request/internal/RequestOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/ImageOptions;Lcom/github/panpf/sketch/request/DepthHolder;Lcom/github/panpf/sketch/request/Extras;Lcom/github/panpf/sketch/cache/CachePolicy;Ljava/lang/String;Lcom/github/panpf/sketch/cache/CacheKeyMapper;Lcom/github/panpf/sketch/decode/BitmapColorType;Lcom/github/panpf/sketch/decode/BitmapColorSpace;Lcom/github/panpf/sketch/resize/SizeResolver;Ljava/lang/Float;Lcom/github/panpf/sketch/resize/PrecisionDecider;Lcom/github/panpf/sketch/resize/ScaleDecider;Ljava/util/List;Lcom/github/panpf/sketch/cache/CachePolicy;Ljava/lang/String;Lcom/github/panpf/sketch/cache/CacheKeyMapper;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/state/StateImage;Lcom/github/panpf/sketch/transition/Transition$Factory;Ljava/lang/Boolean;Ljava/lang/Boolean;Lcom/github/panpf/sketch/cache/CachePolicy;Ljava/lang/String;Lcom/github/panpf/sketch/cache/CacheKeyMapper;Lcom/github/panpf/sketch/ComponentRegistry;IILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageRequest;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAllowNullImage ()Ljava/lang/Boolean;
 	public final fun getColorSpace ()Lcom/github/panpf/sketch/decode/BitmapColorSpace;
 	public final fun getColorType ()Lcom/github/panpf/sketch/decode/BitmapColorType;
 	public final fun getComponentRegistry ()Lcom/github/panpf/sketch/ComponentRegistry;
-	public final fun getContext ()Lcom/github/panpf/sketch/PlatformContext;
+	public final fun getContext ()Landroid/content/Context;
 	public final fun getDefaultOptions ()Lcom/github/panpf/sketch/request/ImageOptions;
 	public final fun getDefinedOptions ()Lcom/github/panpf/sketch/request/ImageOptions;
 	public final fun getDefinedRequestOptions ()Lcom/github/panpf/sketch/request/internal/RequestOptions;
@@ -1379,7 +1764,7 @@ public final class com/github/panpf/sketch/request/ImageRequest : com/github/pan
 }
 
 public final class com/github/panpf/sketch/request/ImageRequest$Builder {
-	public fun <init> (Lcom/github/panpf/sketch/PlatformContext;Ljava/lang/String;)V
+	public fun <init> (Landroid/content/Context;Ljava/lang/String;)V
 	public fun <init> (Lcom/github/panpf/sketch/request/ImageRequest;Ljava/lang/String;)V
 	public synthetic fun <init> (Lcom/github/panpf/sketch/request/ImageRequest;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun addComponents (Lcom/github/panpf/sketch/ComponentRegistry;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
@@ -1454,14 +1839,31 @@ public final class com/github/panpf/sketch/request/ImageRequest$Builder {
 	public final fun transitionFactory (Lcom/github/panpf/sketch/transition/Transition$Factory;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
 }
 
-public final class com/github/panpf/sketch/request/ImageRequest_commonKt {
-	public static final fun ImageRequest (Lcom/github/panpf/sketch/PlatformContext;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/request/ImageRequest;
-	public static synthetic fun ImageRequest$default (Lcom/github/panpf/sketch/PlatformContext;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageRequest;
+public final class com/github/panpf/sketch/request/ImageRequest_androidKt {
+	public static final field PREFER_QUALITY_OVER_SPEED_KEY Ljava/lang/String;
+	public static final fun colorSpace (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Landroid/graphics/ColorSpace$Named;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun colorType (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Landroid/graphics/Bitmap$Config;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun error (Lcom/github/panpf/sketch/request/ImageRequest$Builder;I)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun error (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Lcom/github/panpf/sketch/drawable/EquitableDrawable;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun error (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun error (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Lcom/github/panpf/sketch/util/ResColorFetcher;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun fallback (Lcom/github/panpf/sketch/request/ImageRequest$Builder;I)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun fallback (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Lcom/github/panpf/sketch/drawable/EquitableDrawable;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun fallback (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun fallback (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Lcom/github/panpf/sketch/util/ResColorFetcher;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun getPreferQualityOverSpeed (Lcom/github/panpf/sketch/request/ImageRequest;)Z
+	public static final fun placeholder (Lcom/github/panpf/sketch/request/ImageRequest$Builder;I)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun placeholder (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Lcom/github/panpf/sketch/drawable/EquitableDrawable;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun placeholder (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun placeholder (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Lcom/github/panpf/sketch/util/ResColorFetcher;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun preferQualityOverSpeed (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Boolean;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static synthetic fun preferQualityOverSpeed$default (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun sizeWithDisplay (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Landroid/content/Context;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
 }
 
-public final class com/github/panpf/sketch/request/ImageRequest_nonAndroidKt {
-	public static final fun colorSpace (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Lorg/jetbrains/skia/ColorSpace;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
-	public static final fun colorType (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Lorg/jetbrains/skia/ColorType;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+public final class com/github/panpf/sketch/request/ImageRequest_commonKt {
+	public static final fun ImageRequest (Landroid/content/Context;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/request/ImageRequest;
+	public static synthetic fun ImageRequest$default (Landroid/content/Context;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageRequest;
 }
 
 public abstract interface class com/github/panpf/sketch/request/ImageResult {
@@ -2133,10 +2535,36 @@ public final class com/github/panpf/sketch/resize/SizeResolverKt {
 	public static final fun SizeResolver (Lcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/resize/SizeResolver;
 }
 
+public final class com/github/panpf/sketch/source/AssetDataSource : com/github/panpf/sketch/source/DataSource {
+	public fun <init> (Landroid/content/Context;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContext ()Landroid/content/Context;
+	public fun getDataFrom ()Lcom/github/panpf/sketch/source/DataFrom;
+	public fun getFile (Lcom/github/panpf/sketch/Sketch;)Lokio/Path;
+	public final fun getFileName ()Ljava/lang/String;
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun openSource ()Lokio/Source;
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/github/panpf/sketch/source/ByteArrayDataSource : com/github/panpf/sketch/source/DataSource {
 	public fun <init> ([BLcom/github/panpf/sketch/source/DataFrom;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getData ()[B
+	public fun getDataFrom ()Lcom/github/panpf/sketch/source/DataFrom;
+	public fun getFile (Lcom/github/panpf/sketch/Sketch;)Lokio/Path;
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun openSource ()Lokio/Source;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/source/ContentDataSource : com/github/panpf/sketch/source/DataSource {
+	public fun <init> (Landroid/content/Context;Landroid/net/Uri;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContentUri ()Landroid/net/Uri;
+	public final fun getContext ()Landroid/content/Context;
 	public fun getDataFrom ()Lcom/github/panpf/sketch/source/DataFrom;
 	public fun getFile (Lcom/github/panpf/sketch/Sketch;)Lokio/Path;
 	public fun getKey ()Ljava/lang/String;
@@ -2171,6 +2599,20 @@ public final class com/github/panpf/sketch/source/DataSourceKt {
 	public static final fun toByteArray (Lcom/github/panpf/sketch/source/DataSource;)[B
 }
 
+public final class com/github/panpf/sketch/source/DrawableDataSource : com/github/panpf/sketch/source/DataSource {
+	public fun <init> (Landroid/content/Context;Lcom/github/panpf/sketch/drawable/DrawableFetcher;Lcom/github/panpf/sketch/source/DataFrom;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContext ()Landroid/content/Context;
+	public fun getDataFrom ()Lcom/github/panpf/sketch/source/DataFrom;
+	public final fun getDrawable ()Landroid/graphics/drawable/Drawable;
+	public final fun getDrawableFetcher ()Lcom/github/panpf/sketch/drawable/DrawableFetcher;
+	public fun getFile (Lcom/github/panpf/sketch/Sketch;)Lokio/Path;
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun openSource ()Lokio/Source;
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class com/github/panpf/sketch/source/FileDataSource : com/github/panpf/sketch/source/DataSource {
 	public fun <init> (Lokio/Path;Lokio/FileSystem;Lcom/github/panpf/sketch/source/DataFrom;)V
 	public synthetic fun <init> (Lokio/Path;Lokio/FileSystem;Lcom/github/panpf/sketch/source/DataFrom;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -2185,16 +2627,38 @@ public final class com/github/panpf/sketch/source/FileDataSource : com/github/pa
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class com/github/panpf/sketch/source/KotlinResourceDataSource : com/github/panpf/sketch/source/DataSource {
-	public fun <init> (Ljava/lang/String;)V
+public final class com/github/panpf/sketch/source/ResourceDataSource : com/github/panpf/sketch/source/DataSource {
+	public fun <init> (Landroid/content/res/Resources;Ljava/lang/String;I)V
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getDataFrom ()Lcom/github/panpf/sketch/source/DataFrom;
 	public fun getFile (Lcom/github/panpf/sketch/Sketch;)Lokio/Path;
 	public fun getKey ()Ljava/lang/String;
-	public final fun getResourcePath ()Ljava/lang/String;
+	public final fun getPackageName ()Ljava/lang/String;
+	public final fun getResId ()I
+	public final fun getResources ()Landroid/content/res/Resources;
 	public fun hashCode ()I
 	public fun openSource ()Lokio/Source;
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/state/ColorDrawableStateImage : com/github/panpf/sketch/state/StateImage {
+	public fun <init> (Lcom/github/panpf/sketch/util/ColorFetcher;)V
+	public final fun component1 ()Lcom/github/panpf/sketch/util/ColorFetcher;
+	public final fun copy (Lcom/github/panpf/sketch/util/ColorFetcher;)Lcom/github/panpf/sketch/state/ColorDrawableStateImage;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/state/ColorDrawableStateImage;Lcom/github/panpf/sketch/util/ColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/ColorDrawableStateImage;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getColor ()Lcom/github/panpf/sketch/util/ColorFetcher;
+	public fun getImage (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Ljava/lang/Throwable;)Lcom/github/panpf/sketch/Image;
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/state/ColorDrawableStateImageKt {
+	public static final fun ColorDrawableStateImage (Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/ColorDrawableStateImage;
+	public static final fun ColorDrawableStateImage (Lcom/github/panpf/sketch/util/ResColorFetcher;)Lcom/github/panpf/sketch/state/ColorDrawableStateImage;
+	public static final fun IntColorDrawableStateImage (I)Lcom/github/panpf/sketch/state/ColorDrawableStateImage;
+	public static final fun ResColorDrawableStateImage (I)Lcom/github/panpf/sketch/state/ColorDrawableStateImage;
 }
 
 public final class com/github/panpf/sketch/state/ConditionStateImage : com/github/panpf/sketch/state/StateImage {
@@ -2232,6 +2696,17 @@ public final class com/github/panpf/sketch/state/ConditionStateImage$DefaultCond
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class com/github/panpf/sketch/state/ConditionStateImage_androidKt {
+	public static final fun ConditionStateImage (ILkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/state/ConditionStateImage;
+	public static final fun ConditionStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/state/ConditionStateImage;
+	public static final fun ConditionStateImage (Lcom/github/panpf/sketch/util/IntColorFetcher;Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/state/ConditionStateImage;
+	public static final fun ConditionStateImage (Lcom/github/panpf/sketch/util/ResColorFetcher;Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/state/ConditionStateImage;
+	public static final fun addState (Lcom/github/panpf/sketch/state/ConditionStateImage$Builder;Lcom/github/panpf/sketch/state/ConditionStateImage$Condition;I)Lcom/github/panpf/sketch/state/ConditionStateImage$Builder;
+	public static final fun addState (Lcom/github/panpf/sketch/state/ConditionStateImage$Builder;Lcom/github/panpf/sketch/state/ConditionStateImage$Condition;Lcom/github/panpf/sketch/drawable/EquitableDrawable;)Lcom/github/panpf/sketch/state/ConditionStateImage$Builder;
+	public static final fun addState (Lcom/github/panpf/sketch/state/ConditionStateImage$Builder;Lcom/github/panpf/sketch/state/ConditionStateImage$Condition;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/ConditionStateImage$Builder;
+	public static final fun addState (Lcom/github/panpf/sketch/state/ConditionStateImage$Builder;Lcom/github/panpf/sketch/state/ConditionStateImage$Condition;Lcom/github/panpf/sketch/util/ResColorFetcher;)Lcom/github/panpf/sketch/state/ConditionStateImage$Builder;
+}
+
 public final class com/github/panpf/sketch/state/ConditionStateImage_commonKt {
 	public static final fun ConditionStateImage (Lcom/github/panpf/sketch/state/StateImage;Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/state/ConditionStateImage;
 	public static synthetic fun ConditionStateImage$default (Lcom/github/panpf/sketch/state/StateImage;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/ConditionStateImage;
@@ -2250,6 +2725,202 @@ public final class com/github/panpf/sketch/state/CurrentStateImage : com/github/
 	public fun getKey ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/state/CurrentStateImage_androidKt {
+	public static final fun CurrentStateImage (I)Lcom/github/panpf/sketch/state/CurrentStateImage;
+	public static final fun CurrentStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;)Lcom/github/panpf/sketch/state/CurrentStateImage;
+}
+
+public final class com/github/panpf/sketch/state/DrawableStateImage : com/github/panpf/sketch/state/StateImage {
+	public fun <init> (Lcom/github/panpf/sketch/drawable/DrawableFetcher;)V
+	public final fun component1 ()Lcom/github/panpf/sketch/drawable/DrawableFetcher;
+	public final fun copy (Lcom/github/panpf/sketch/drawable/DrawableFetcher;)Lcom/github/panpf/sketch/state/DrawableStateImage;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/state/DrawableStateImage;Lcom/github/panpf/sketch/drawable/DrawableFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/DrawableStateImage;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDrawableFetcher ()Lcom/github/panpf/sketch/drawable/DrawableFetcher;
+	public fun getImage (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Ljava/lang/Throwable;)Lcom/github/panpf/sketch/Image;
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/state/DrawableStateImageKt {
+	public static final fun DrawableStateImage (I)Lcom/github/panpf/sketch/state/DrawableStateImage;
+	public static final fun DrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;)Lcom/github/panpf/sketch/state/DrawableStateImage;
+	public static final fun asStateImage (Landroid/graphics/drawable/ColorDrawable;)Lcom/github/panpf/sketch/state/DrawableStateImage;
+	public static final fun asStateImage (Landroid/graphics/drawable/Drawable;Ljava/lang/Object;)Lcom/github/panpf/sketch/state/DrawableStateImage;
+	public static final fun asStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;)Lcom/github/panpf/sketch/state/DrawableStateImage;
+}
+
+public final class com/github/panpf/sketch/state/IconAnimatableDrawableStateImage : com/github/panpf/sketch/state/StateImage {
+	public fun <init> (Lcom/github/panpf/sketch/drawable/DrawableFetcher;Lcom/github/panpf/sketch/drawable/DrawableFetcher;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/ColorFetcher;)V
+	public synthetic fun <init> (Lcom/github/panpf/sketch/drawable/DrawableFetcher;Lcom/github/panpf/sketch/drawable/DrawableFetcher;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/ColorFetcher;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/github/panpf/sketch/drawable/DrawableFetcher;
+	public final fun component2 ()Lcom/github/panpf/sketch/drawable/DrawableFetcher;
+	public final fun component3 ()Lcom/github/panpf/sketch/util/Size;
+	public final fun component4 ()Lcom/github/panpf/sketch/util/ColorFetcher;
+	public final fun copy (Lcom/github/panpf/sketch/drawable/DrawableFetcher;Lcom/github/panpf/sketch/drawable/DrawableFetcher;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/ColorFetcher;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;Lcom/github/panpf/sketch/drawable/DrawableFetcher;Lcom/github/panpf/sketch/drawable/DrawableFetcher;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/ColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBackground ()Lcom/github/panpf/sketch/drawable/DrawableFetcher;
+	public final fun getIcon ()Lcom/github/panpf/sketch/drawable/DrawableFetcher;
+	public final fun getIconSize ()Lcom/github/panpf/sketch/util/Size;
+	public final fun getIconTint ()Lcom/github/panpf/sketch/util/ColorFetcher;
+	public fun getImage (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Ljava/lang/Throwable;)Lcom/github/panpf/sketch/Image;
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/state/IconAnimatableDrawableStateImageKt {
+	public static final fun IconAnimatableDrawableStateImage (I)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (ILcom/github/panpf/sketch/drawable/EquitableDrawable;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (ILcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (ILcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (ILcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (ILcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (ILcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (ILcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (ILcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (ILcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (ILcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (ILcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (ILjava/lang/Integer;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (ILjava/lang/Integer;Lcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (ILjava/lang/Integer;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (ILjava/lang/Integer;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/drawable/EquitableDrawable;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Ljava/lang/Integer;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Ljava/lang/Integer;Lcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Ljava/lang/Integer;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static final fun IconAnimatableDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Ljava/lang/Integer;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (ILcom/github/panpf/sketch/drawable/EquitableDrawable;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (ILcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (ILcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (ILcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (ILcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (ILcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (ILcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (ILcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (ILcom/github/panpf/sketch/util/Size;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (ILcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (ILcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (ILjava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (ILjava/lang/Integer;Lcom/github/panpf/sketch/util/Size;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (ILjava/lang/Integer;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (ILjava/lang/Integer;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/drawable/EquitableDrawable;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Ljava/lang/Integer;Lcom/github/panpf/sketch/util/Size;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Ljava/lang/Integer;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+	public static synthetic fun IconAnimatableDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Ljava/lang/Integer;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconAnimatableDrawableStateImage;
+}
+
+public final class com/github/panpf/sketch/state/IconDrawableStateImage : com/github/panpf/sketch/state/StateImage {
+	public fun <init> (Lcom/github/panpf/sketch/drawable/DrawableFetcher;Lcom/github/panpf/sketch/drawable/DrawableFetcher;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/ColorFetcher;)V
+	public synthetic fun <init> (Lcom/github/panpf/sketch/drawable/DrawableFetcher;Lcom/github/panpf/sketch/drawable/DrawableFetcher;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/ColorFetcher;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lcom/github/panpf/sketch/drawable/DrawableFetcher;
+	public final fun component2 ()Lcom/github/panpf/sketch/drawable/DrawableFetcher;
+	public final fun component3 ()Lcom/github/panpf/sketch/util/Size;
+	public final fun component4 ()Lcom/github/panpf/sketch/util/ColorFetcher;
+	public final fun copy (Lcom/github/panpf/sketch/drawable/DrawableFetcher;Lcom/github/panpf/sketch/drawable/DrawableFetcher;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/ColorFetcher;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun copy$default (Lcom/github/panpf/sketch/state/IconDrawableStateImage;Lcom/github/panpf/sketch/drawable/DrawableFetcher;Lcom/github/panpf/sketch/drawable/DrawableFetcher;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/ColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBackground ()Lcom/github/panpf/sketch/drawable/DrawableFetcher;
+	public final fun getIcon ()Lcom/github/panpf/sketch/drawable/DrawableFetcher;
+	public final fun getIconSize ()Lcom/github/panpf/sketch/util/Size;
+	public final fun getIconTint ()Lcom/github/panpf/sketch/util/ColorFetcher;
+	public fun getImage (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Ljava/lang/Throwable;)Lcom/github/panpf/sketch/Image;
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/state/IconDrawableStateImageKt {
+	public static final fun IconDrawableStateImage (I)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (ILcom/github/panpf/sketch/drawable/EquitableDrawable;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (ILcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (ILcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (ILcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (ILcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (ILcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (ILcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (ILcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (ILcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (ILcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (ILcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (ILjava/lang/Integer;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (ILjava/lang/Integer;Lcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (ILjava/lang/Integer;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (ILjava/lang/Integer;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/drawable/EquitableDrawable;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Ljava/lang/Integer;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Ljava/lang/Integer;Lcom/github/panpf/sketch/util/Size;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Ljava/lang/Integer;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static final fun IconDrawableStateImage (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Ljava/lang/Integer;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (ILcom/github/panpf/sketch/drawable/EquitableDrawable;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (ILcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (ILcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (ILcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (ILcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (ILcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (ILcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (ILcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (ILcom/github/panpf/sketch/util/Size;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (ILcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (ILcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (ILjava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (ILjava/lang/Integer;Lcom/github/panpf/sketch/util/Size;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (ILjava/lang/Integer;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (ILjava/lang/Integer;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/drawable/EquitableDrawable;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/IntColorFetcher;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Ljava/lang/Integer;Lcom/github/panpf/sketch/util/Size;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Ljava/lang/Integer;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/IntColorFetcher;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
+	public static synthetic fun IconDrawableStateImage$default (Lcom/github/panpf/sketch/drawable/EquitableDrawable;Ljava/lang/Integer;Lcom/github/panpf/sketch/util/Size;Ljava/lang/Integer;ILjava/lang/Object;)Lcom/github/panpf/sketch/state/IconDrawableStateImage;
 }
 
 public final class com/github/panpf/sketch/state/MemoryCacheStateImage : com/github/panpf/sketch/state/StateImage {
@@ -2540,41 +3211,71 @@ public final class com/github/panpf/sketch/transition/TransitionTarget$DefaultIm
 	public static fun onSuccess (Lcom/github/panpf/sketch/transition/TransitionTarget;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Success;Lcom/github/panpf/sketch/Image;)V
 }
 
-public final class com/github/panpf/sketch/util/Bitmaps_nonAndroidKt {
-	public static final fun background (Lorg/jetbrains/skia/Bitmap;I)Lorg/jetbrains/skia/Bitmap;
-	public static final fun blur (Lorg/jetbrains/skia/Bitmap;IZ)Lorg/jetbrains/skia/Bitmap;
-	public static synthetic fun blur$default (Lorg/jetbrains/skia/Bitmap;IZILjava/lang/Object;)Lorg/jetbrains/skia/Bitmap;
-	public static final fun circleCrop (Lorg/jetbrains/skia/Bitmap;Lcom/github/panpf/sketch/resize/Scale;)Lorg/jetbrains/skia/Bitmap;
-	public static final fun copyPixelsFrom (Lorg/jetbrains/skia/Bitmap;Lorg/jetbrains/skia/Bitmap;)V
-	public static final fun copyWith (Lorg/jetbrains/skia/Bitmap;Lorg/jetbrains/skia/ColorInfo;)Lorg/jetbrains/skia/Bitmap;
-	public static synthetic fun copyWith$default (Lorg/jetbrains/skia/Bitmap;Lorg/jetbrains/skia/ColorInfo;ILjava/lang/Object;)Lorg/jetbrains/skia/Bitmap;
-	public static final fun erase (Lorg/jetbrains/skia/Bitmap;I)V
-	public static final fun flip (Lorg/jetbrains/skia/Bitmap;Z)Lorg/jetbrains/skia/Bitmap;
-	public static final fun hasAlphaPixels (Lorg/jetbrains/skia/Bitmap;)Z
-	public static final fun installIntPixels (Lorg/jetbrains/skia/Bitmap;[I)V
-	public static final fun installPixels (Lorg/jetbrains/skia/Bitmap;[B)V
-	public static final fun mapping (Lorg/jetbrains/skia/Bitmap;Lcom/github/panpf/sketch/resize/ResizeMapping;)Lorg/jetbrains/skia/Bitmap;
-	public static final fun mask (Lorg/jetbrains/skia/Bitmap;IZ)Lorg/jetbrains/skia/Bitmap;
-	public static synthetic fun mask$default (Lorg/jetbrains/skia/Bitmap;IZILjava/lang/Object;)Lorg/jetbrains/skia/Bitmap;
-	public static final fun mutableCopy (Lorg/jetbrains/skia/Bitmap;)Lorg/jetbrains/skia/Bitmap;
-	public static final fun mutableCopyOrSelf (Lorg/jetbrains/skia/Bitmap;)Lorg/jetbrains/skia/Bitmap;
-	public static final fun readIntPixel (Lorg/jetbrains/skia/Bitmap;II)I
-	public static final fun readIntPixels (Lorg/jetbrains/skia/Bitmap;IIII)[I
-	public static synthetic fun readIntPixels$default (Lorg/jetbrains/skia/Bitmap;IIIIILjava/lang/Object;)[I
-	public static final fun readPixels (Lorg/jetbrains/skia/Bitmap;)[B
-	public static final fun rotate (Lorg/jetbrains/skia/Bitmap;I)Lorg/jetbrains/skia/Bitmap;
-	public static final fun roundedCorners (Lorg/jetbrains/skia/Bitmap;[F)Lorg/jetbrains/skia/Bitmap;
-	public static final fun scale (Lorg/jetbrains/skia/Bitmap;F)Lorg/jetbrains/skia/Bitmap;
-	public static final fun thumbnail (Lorg/jetbrains/skia/Bitmap;II)Lorg/jetbrains/skia/Bitmap;
-	public static final fun toInfoString (Lorg/jetbrains/skia/Bitmap;)Ljava/lang/String;
-	public static final fun toLogString (Lorg/jetbrains/skia/Bitmap;)Ljava/lang/String;
-	public static final fun toShortInfoString (Lorg/jetbrains/skia/Bitmap;)Ljava/lang/String;
+public final class com/github/panpf/sketch/util/AndroidLogPipeline : com/github/panpf/sketch/util/Logger$Pipeline {
+	public static final field INSTANCE Lcom/github/panpf/sketch/util/AndroidLogPipeline;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun flush ()V
+	public fun hashCode ()I
+	public fun log (Lcom/github/panpf/sketch/util/Logger$Level;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/util/AndroidSystemCallbacks : com/github/panpf/sketch/util/SystemCallbacks {
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;)V
+	public fun isCellularNetworkConnected ()Z
+	public fun isShutdown ()Z
+	public fun register ()V
+	public fun shutdown ()V
+}
+
+public final class com/github/panpf/sketch/util/Bitmaps_androidKt {
+	public static final fun background (Landroid/graphics/Bitmap;I)Landroid/graphics/Bitmap;
+	public static final fun blur (Landroid/graphics/Bitmap;IZ)Landroid/graphics/Bitmap;
+	public static synthetic fun blur$default (Landroid/graphics/Bitmap;IZILjava/lang/Object;)Landroid/graphics/Bitmap;
+	public static final fun circleCrop (Landroid/graphics/Bitmap;Lcom/github/panpf/sketch/resize/Scale;)Landroid/graphics/Bitmap;
+	public static final fun copyPixelsFrom (Landroid/graphics/Bitmap;Landroid/graphics/Bitmap;)V
+	public static final fun copyWith (Landroid/graphics/Bitmap;Landroid/graphics/Bitmap$Config;Z)Landroid/graphics/Bitmap;
+	public static synthetic fun copyWith$default (Landroid/graphics/Bitmap;Landroid/graphics/Bitmap$Config;ZILjava/lang/Object;)Landroid/graphics/Bitmap;
+	public static final fun erase (Landroid/graphics/Bitmap;I)V
+	public static final fun flip (Landroid/graphics/Bitmap;Z)Landroid/graphics/Bitmap;
+	public static final fun getBytesPerPixel (Landroid/graphics/Bitmap$Config;)I
+	public static final fun getConfigOrNull (Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap$Config;
+	public static final fun getSafeConfig (Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap$Config;
+	public static final fun getSimpleName (Landroid/graphics/ColorSpace;)Ljava/lang/String;
+	public static final fun hasAlphaPixels (Landroid/graphics/Bitmap;)Z
+	public static final fun installIntPixels (Landroid/graphics/Bitmap;[I)V
+	public static final fun installPixels (Landroid/graphics/Bitmap;[B)V
+	public static final fun isHardware (Landroid/graphics/Bitmap$Config;)Z
+	public static final fun mapping (Landroid/graphics/Bitmap;Lcom/github/panpf/sketch/resize/ResizeMapping;)Landroid/graphics/Bitmap;
+	public static final fun mask (Landroid/graphics/Bitmap;IZ)Landroid/graphics/Bitmap;
+	public static synthetic fun mask$default (Landroid/graphics/Bitmap;IZILjava/lang/Object;)Landroid/graphics/Bitmap;
+	public static final fun mutableCopy (Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;
+	public static final fun mutableCopyOrSelf (Landroid/graphics/Bitmap;)Landroid/graphics/Bitmap;
+	public static final fun readIntPixel (Landroid/graphics/Bitmap;II)I
+	public static final fun readIntPixels (Landroid/graphics/Bitmap;IIII)[I
+	public static synthetic fun readIntPixels$default (Landroid/graphics/Bitmap;IIIIILjava/lang/Object;)[I
+	public static final fun readPixels (Landroid/graphics/Bitmap;)[B
+	public static final fun rotate (Landroid/graphics/Bitmap;I)Landroid/graphics/Bitmap;
+	public static final fun roundedCorners (Landroid/graphics/Bitmap;[F)Landroid/graphics/Bitmap;
+	public static final fun safeToSoftware (Landroid/graphics/Bitmap$Config;)Landroid/graphics/Bitmap$Config;
+	public static final fun scale (Landroid/graphics/Bitmap;F)Landroid/graphics/Bitmap;
+	public static final fun thumbnail (Landroid/graphics/Bitmap;II)Landroid/graphics/Bitmap;
+	public static final fun toInfoString (Landroid/graphics/Bitmap;)Ljava/lang/String;
+	public static final fun toLogString (Landroid/graphics/Bitmap;)Ljava/lang/String;
+	public static final fun toShortInfoString (Landroid/graphics/Bitmap;)Ljava/lang/String;
 }
 
 public final class com/github/panpf/sketch/util/Byte_arraysKt {
 	public static final fun indexOf ([BBII)I
 	public static final fun indexOf ([B[BII)I
 	public static final fun rangeEquals ([BI[B)Z
+}
+
+public abstract interface class com/github/panpf/sketch/util/ColorFetcher : com/github/panpf/sketch/util/Key {
+	public abstract fun equals (Ljava/lang/Object;)Z
+	public abstract fun getColor (Landroid/content/Context;)I
+	public abstract fun hashCode ()I
+	public abstract fun toString ()Ljava/lang/String;
 }
 
 public final class com/github/panpf/sketch/util/ComponentLoader {
@@ -2584,17 +3285,21 @@ public final class com/github/panpf/sketch/util/ComponentLoader {
 }
 
 public final class com/github/panpf/sketch/util/ComponentLoaderKt {
-	public static final fun toComponentRegistry (Lcom/github/panpf/sketch/util/ComponentLoader;Lcom/github/panpf/sketch/PlatformContext;Ljava/util/List;)Lcom/github/panpf/sketch/ComponentRegistry;
-	public static synthetic fun toComponentRegistry$default (Lcom/github/panpf/sketch/util/ComponentLoader;Lcom/github/panpf/sketch/PlatformContext;Ljava/util/List;ILjava/lang/Object;)Lcom/github/panpf/sketch/ComponentRegistry;
+	public static final fun toComponentRegistry (Lcom/github/panpf/sketch/util/ComponentLoader;Landroid/content/Context;Ljava/util/List;)Lcom/github/panpf/sketch/ComponentRegistry;
+	public static synthetic fun toComponentRegistry$default (Lcom/github/panpf/sketch/util/ComponentLoader;Landroid/content/Context;Ljava/util/List;ILjava/lang/Object;)Lcom/github/panpf/sketch/ComponentRegistry;
 }
 
 public abstract interface class com/github/panpf/sketch/util/ComponentProvider {
-	public abstract fun addDecoders (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
-	public abstract fun addFetchers (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
-	public abstract fun addInterceptors (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
-	public abstract fun disabledDecoders (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
-	public abstract fun disabledFetchers (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
-	public abstract fun disabledInterceptors (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public abstract fun addDecoders (Landroid/content/Context;)Ljava/util/List;
+	public abstract fun addFetchers (Landroid/content/Context;)Ljava/util/List;
+	public abstract fun addInterceptors (Landroid/content/Context;)Ljava/util/List;
+	public abstract fun disabledDecoders (Landroid/content/Context;)Ljava/util/List;
+	public abstract fun disabledFetchers (Landroid/content/Context;)Ljava/util/List;
+	public abstract fun disabledInterceptors (Landroid/content/Context;)Ljava/util/List;
+}
+
+public final class com/github/panpf/sketch/util/Core_utils_androidKt {
+	public static final fun requiredWorkThread ()V
 }
 
 public final class com/github/panpf/sketch/util/Core_utils_commonKt {
@@ -2613,10 +3318,6 @@ public final class com/github/panpf/sketch/util/Core_utils_commonKt {
 	public static synthetic fun isThumbnailWithSize$default (Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/Size;FILjava/lang/Object;)Z
 }
 
-public final class com/github/panpf/sketch/util/Core_utils_desktopKt {
-	public static final fun requiredWorkThread ()V
-}
-
 public final class com/github/panpf/sketch/util/Coroutines_nonJsCommonKt {
 	public static final fun ioCoroutineDispatcher ()Lkotlinx/coroutines/CoroutineDispatcher;
 }
@@ -2633,6 +3334,12 @@ public final class com/github/panpf/sketch/util/DownloadData$Cache : com/github/
 	public fun <init> (Lokio/FileSystem;Lokio/Path;)V
 	public final fun getFileSystem ()Lokio/FileSystem;
 	public final fun getPath ()Lokio/Path;
+}
+
+public final class com/github/panpf/sketch/util/DrawablesKt {
+	public static final fun key (Landroid/graphics/drawable/Drawable;Ljava/lang/Object;)Ljava/lang/String;
+	public static synthetic fun key$default (Landroid/graphics/drawable/Drawable;Ljava/lang/Object;ILjava/lang/Object;)Ljava/lang/String;
+	public static final fun toLogString (Landroid/graphics/drawable/Drawable;)Ljava/lang/String;
 }
 
 public final class com/github/panpf/sketch/util/File_typesKt {
@@ -2655,6 +3362,16 @@ public final class com/github/panpf/sketch/util/File_typesKt {
 public final class com/github/panpf/sketch/util/GraphicsKt {
 	public static final fun calculateRotatedSize (Lcom/github/panpf/sketch/util/Size;D)Lcom/github/panpf/sketch/util/Size;
 	public static final fun fastGaussianBlur ([IIII)V
+}
+
+public final class com/github/panpf/sketch/util/IntColorFetcher : com/github/panpf/sketch/util/ColorFetcher {
+	public fun <init> (I)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getColor ()I
+	public fun getColor (Landroid/content/Context;)I
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/github/panpf/sketch/util/IosKt {
@@ -2745,27 +3462,21 @@ public final class com/github/panpf/sketch/util/MimeTypeMap {
 	public final fun getMimeTypeFromUrl (Ljava/lang/String;)Ljava/lang/String;
 }
 
+public final class com/github/panpf/sketch/util/NetworkObserver {
+	public fun <init> (Landroid/content/Context;)V
+	public final fun isCellularNetworkConnected ()Z
+	public final fun shutdown ()V
+}
+
 public abstract interface class com/github/panpf/sketch/util/NullableKey {
 	public abstract fun getKey ()Ljava/lang/String;
 }
 
-public final class com/github/panpf/sketch/util/Platform_contexts_desktopKt {
-	public static final fun appCacheDirectory (Lcom/github/panpf/sketch/PlatformContext;)Lokio/Path;
-	public static final fun maxMemory (Lcom/github/panpf/sketch/PlatformContext;)J
-	public static final fun screenSize (Lcom/github/panpf/sketch/PlatformContext;)Lcom/github/panpf/sketch/util/Size;
-}
-
-public final class com/github/panpf/sketch/util/Platform_contexts_nonAndroidKt {
-	public static final fun getApplication (Lcom/github/panpf/sketch/PlatformContext;)Lcom/github/panpf/sketch/PlatformContext;
-}
-
-public final class com/github/panpf/sketch/util/PrintLogPipeline : com/github/panpf/sketch/util/Logger$Pipeline {
-	public static final field INSTANCE Lcom/github/panpf/sketch/util/PrintLogPipeline;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun flush ()V
-	public fun hashCode ()I
-	public fun log (Lcom/github/panpf/sketch/util/Logger$Level;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
-	public fun toString ()Ljava/lang/String;
+public final class com/github/panpf/sketch/util/Platform_contexts_androidKt {
+	public static final fun appCacheDirectory (Landroid/content/Context;)Lokio/Path;
+	public static final fun getApplication (Landroid/content/Context;)Landroid/content/Context;
+	public static final fun maxMemory (Landroid/content/Context;)J
+	public static final fun screenSize (Landroid/content/Context;)Lcom/github/panpf/sketch/util/Size;
 }
 
 public final class com/github/panpf/sketch/util/Rect {
@@ -2830,8 +3541,19 @@ public final class com/github/panpf/sketch/util/RectKt {
 	public static final fun rotateInSpace (Lcom/github/panpf/sketch/util/Rect;Lcom/github/panpf/sketch/util/Size;I)Lcom/github/panpf/sketch/util/Rect;
 }
 
-public final class com/github/panpf/sketch/util/Rect_nonAndroidKt {
-	public static final fun toSkiaRect (Lcom/github/panpf/sketch/util/Rect;)Lorg/jetbrains/skia/Rect;
+public final class com/github/panpf/sketch/util/Rect_androidKt {
+	public static final fun toAndroidRect (Lcom/github/panpf/sketch/util/Rect;)Landroid/graphics/Rect;
+	public static final fun toSketchRect (Landroid/graphics/Rect;)Lcom/github/panpf/sketch/util/Rect;
+}
+
+public final class com/github/panpf/sketch/util/ResColorFetcher : com/github/panpf/sketch/util/ColorFetcher {
+	public fun <init> (I)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getColor (Landroid/content/Context;)I
+	public fun getKey ()Ljava/lang/String;
+	public final fun getResId ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class com/github/panpf/sketch/util/ResetLazy : kotlin/Lazy {
@@ -2883,10 +3605,6 @@ public final class com/github/panpf/sketch/util/SizeKt {
 public abstract class com/github/panpf/sketch/util/SketchException : java/lang/Exception {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-}
-
-public final class com/github/panpf/sketch/util/SkiasKt {
-	public static final fun toLogString (Lorg/jetbrains/skia/ColorInfo;)Ljava/lang/String;
 }
 
 public abstract interface class com/github/panpf/sketch/util/SystemCallbacks {

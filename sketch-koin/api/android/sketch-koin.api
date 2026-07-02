@@ -1,0 +1,7 @@
+public final class com/github/panpf/sketch/request/ImageRequest_koinKt {
+	public static final fun enqueue (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Sketch;)Lcom/github/panpf/sketch/request/Disposable;
+	public static synthetic fun enqueue$default (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Sketch;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/Disposable;
+	public static final fun execute (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Sketch;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun execute$default (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Sketch;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+

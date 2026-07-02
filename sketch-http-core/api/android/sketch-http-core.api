@@ -1,0 +1,93 @@
+public class com/github/panpf/sketch/fetch/HttpUriFetcher : com/github/panpf/sketch/fetch/Fetcher {
+	public static final field Companion Lcom/github/panpf/sketch/fetch/HttpUriFetcher$Companion;
+	public static final field MIME_TYPE_TEXT_PLAIN Ljava/lang/String;
+	public static final field SCHEME_HTTP Ljava/lang/String;
+	public static final field SCHEME_HTTPS Ljava/lang/String;
+	public static final field SORT_WEIGHT I
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/http/HttpStack;Lcom/github/panpf/sketch/request/ImageRequest;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun fetch-IoAF18A (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getDownloadCacheKey ()Ljava/lang/String;
+	public final fun getHttpStack ()Lcom/github/panpf/sketch/http/HttpStack;
+	public final fun getRequest ()Lcom/github/panpf/sketch/request/ImageRequest;
+	public final fun getSketch ()Lcom/github/panpf/sketch/Sketch;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/fetch/HttpUriFetcher$Companion {
+}
+
+public final class com/github/panpf/sketch/fetch/HttpUriFetcherKt {
+	public static final fun isHttpUri (Lcom/github/panpf/sketch/util/Uri;)Z
+}
+
+public final class com/github/panpf/sketch/http/HttpHeaders : com/github/panpf/sketch/util/Mergeable {
+	public fun <init> ()V
+	public fun <init> (Ljava/util/List;Ljava/util/List;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAdd (Ljava/lang/String;)Ljava/util/List;
+	public final fun getAddList ()Ljava/util/List;
+	public final fun getAddSize ()I
+	public final fun getSet (Ljava/lang/String;)Ljava/lang/String;
+	public final fun getSetList ()Ljava/util/List;
+	public final fun getSetSize ()I
+	public final fun getSize ()I
+	public fun hashCode ()I
+	public final fun isEmpty ()Z
+	public fun merge (Lcom/github/panpf/sketch/util/Mergeable;)Lcom/github/panpf/sketch/util/Mergeable;
+	public final fun newBuilder (Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/http/HttpHeaders$Builder;
+	public static synthetic fun newBuilder$default (Lcom/github/panpf/sketch/http/HttpHeaders;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/github/panpf/sketch/http/HttpHeaders$Builder;
+	public final fun newHttpHeaders (Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/http/HttpHeaders;
+	public static synthetic fun newHttpHeaders$default (Lcom/github/panpf/sketch/http/HttpHeaders;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/github/panpf/sketch/http/HttpHeaders;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/http/HttpHeaders$Builder {
+	public fun <init> ()V
+	public fun <init> (Lcom/github/panpf/sketch/http/HttpHeaders;)V
+	public final fun add (Ljava/lang/String;Ljava/lang/String;)Lcom/github/panpf/sketch/http/HttpHeaders$Builder;
+	public final fun build ()Lcom/github/panpf/sketch/http/HttpHeaders;
+	public final fun removeAll (Ljava/lang/String;)Lcom/github/panpf/sketch/http/HttpHeaders$Builder;
+	public final fun set (Ljava/lang/String;Ljava/lang/String;)Lcom/github/panpf/sketch/http/HttpHeaders$Builder;
+}
+
+public final class com/github/panpf/sketch/http/HttpHeadersKt {
+	public static final fun HttpHeaders (Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/http/HttpHeaders;
+	public static final fun isNotEmpty (Lcom/github/panpf/sketch/http/HttpHeaders;)Z
+	public static final fun merged (Lcom/github/panpf/sketch/http/HttpHeaders;Lcom/github/panpf/sketch/http/HttpHeaders;)Lcom/github/panpf/sketch/http/HttpHeaders;
+}
+
+public abstract interface class com/github/panpf/sketch/http/HttpStack {
+	public fun getResponse (Ljava/lang/String;Lcom/github/panpf/sketch/http/HttpHeaders;Lcom/github/panpf/sketch/request/Extras;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun request (Ljava/lang/String;Lcom/github/panpf/sketch/http/HttpHeaders;Lcom/github/panpf/sketch/request/Extras;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class com/github/panpf/sketch/http/HttpStack$Content : java/io/Closeable {
+	public abstract fun read ([BLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/github/panpf/sketch/http/HttpStack$DefaultImpls {
+	public static fun getResponse (Lcom/github/panpf/sketch/http/HttpStack;Ljava/lang/String;Lcom/github/panpf/sketch/http/HttpHeaders;Lcom/github/panpf/sketch/request/Extras;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class com/github/panpf/sketch/http/HttpStack$Response {
+	public abstract fun content (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getCode ()I
+	public abstract fun getContentLength ()J
+	public abstract fun getContentType ()Ljava/lang/String;
+	public abstract fun getHeaderField (Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun getMessage ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/request/Image_options_http_extensionsKt {
+	public static final field HTTP_HEADERS_KEY Ljava/lang/String;
+	public static final fun getHttpHeaders (Lcom/github/panpf/sketch/request/ImageOptions;)Lcom/github/panpf/sketch/http/HttpHeaders;
+	public static final fun httpHeaders (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Lcom/github/panpf/sketch/http/HttpHeaders;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+}
+
+public final class com/github/panpf/sketch/request/Image_request_http_extensionsKt {
+	public static final fun getHttpHeaders (Lcom/github/panpf/sketch/request/ImageRequest;)Lcom/github/panpf/sketch/http/HttpHeaders;
+	public static final fun httpHeaders (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Lcom/github/panpf/sketch/http/HttpHeaders;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+}
+

@@ -125,12 +125,12 @@ public final class com/github/panpf/sketch/http/internal/TlsCompatSocketFactory 
 
 public final class com/github/panpf/sketch/util/HurlHttpComponentProvider : com/github/panpf/sketch/util/ComponentProvider {
 	public fun <init> ()V
-	public fun addDecoders (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
-	public fun addFetchers (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
-	public fun addInterceptors (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
-	public fun disabledDecoders (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
-	public fun disabledFetchers (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
-	public fun disabledInterceptors (Lcom/github/panpf/sketch/PlatformContext;)Ljava/util/List;
+	public fun addDecoders (Landroid/content/Context;)Ljava/util/List;
+	public fun addFetchers (Landroid/content/Context;)Ljava/util/List;
+	public fun addInterceptors (Landroid/content/Context;)Ljava/util/List;
+	public fun disabledDecoders (Landroid/content/Context;)Ljava/util/List;
+	public fun disabledFetchers (Landroid/content/Context;)Ljava/util/List;
+	public fun disabledInterceptors (Landroid/content/Context;)Ljava/util/List;
 	public fun toString ()Ljava/lang/String;
 }
 

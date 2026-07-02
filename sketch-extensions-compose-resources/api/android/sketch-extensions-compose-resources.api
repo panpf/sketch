@@ -1,0 +1,4 @@
+public final class com/github/panpf/sketch/state/Save_cellular_traffic_extensions_composeResourcesKt {
+	public static final fun saveCellularTrafficError (Lcom/github/panpf/sketch/state/ConditionStateImage$Builder;Lorg/jetbrains/compose/resources/DrawableResource;Landroidx/compose/runtime/Composer;I)Lcom/github/panpf/sketch/state/ConditionStateImage$Builder;
+}
+

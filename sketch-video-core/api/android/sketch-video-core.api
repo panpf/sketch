@@ -1,0 +1,34 @@
+public final class com/github/panpf/sketch/request/VideoFrameExtensionsKt {
+	public static final field PREFER_VIDEO_COVER_KEY Ljava/lang/String;
+	public static final field VIDEO_FRAME_MICROS_KEY Ljava/lang/String;
+	public static final field VIDEO_FRAME_PERCENT_KEY Ljava/lang/String;
+	public static final fun getPreferVideoCover (Lcom/github/panpf/sketch/request/ImageOptions;)Ljava/lang/Boolean;
+	public static final fun getPreferVideoCover (Lcom/github/panpf/sketch/request/ImageRequest;)Ljava/lang/Boolean;
+	public static final fun getVideoFrameMicros (Lcom/github/panpf/sketch/request/ImageOptions;)Ljava/lang/Long;
+	public static final fun getVideoFrameMicros (Lcom/github/panpf/sketch/request/ImageRequest;)Ljava/lang/Long;
+	public static final fun getVideoFramePercent (Lcom/github/panpf/sketch/request/ImageOptions;)Ljava/lang/Float;
+	public static final fun getVideoFramePercent (Lcom/github/panpf/sketch/request/ImageRequest;)Ljava/lang/Float;
+	public static final fun preferVideoCover (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Boolean;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun preferVideoCover (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Boolean;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static synthetic fun preferVideoCover$default (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static synthetic fun preferVideoCover$default (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Boolean;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun videoFrameMicros (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Long;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun videoFrameMicros (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Long;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun videoFrameMillis (Lcom/github/panpf/sketch/request/ImageOptions$Builder;J)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun videoFrameMillis (Lcom/github/panpf/sketch/request/ImageRequest$Builder;J)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun videoFramePercent (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Float;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun videoFramePercent (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Float;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+}
+
+public final class com/github/panpf/sketch/request/VideoFrameExtensions_androidKt {
+	public static final field VIDEO_FRAME_OPTION_KEY Ljava/lang/String;
+	public static final fun getVideoFrameOption (Lcom/github/panpf/sketch/request/ImageOptions;)Ljava/lang/Integer;
+	public static final fun getVideoFrameOption (Lcom/github/panpf/sketch/request/ImageRequest;)Ljava/lang/Integer;
+	public static final fun videoFrameOption (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Ljava/lang/Integer;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static final fun videoFrameOption (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Ljava/lang/Integer;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+}
+
+public final class com/github/panpf/sketch/util/Video_core_utilsKt {
+	public static final fun resolveRequestVideoFrameMicros (Ljava/lang/Long;Ljava/lang/Long;Ljava/lang/Float;)J
+}
+

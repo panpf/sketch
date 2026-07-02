@@ -1,0 +1,124 @@
+public class com/github/panpf/sketch/SketchImageView : com/github/panpf/sketch/ability/AbsAbilityImageView, com/github/panpf/sketch/request/ImageOptionsProvider {
+	public fun <init> (Landroid/content/Context;)V
+	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;)V
+	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;I)V
+	public synthetic fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun addListener (Lcom/github/panpf/sketch/request/Listener;)V
+	public final fun addProgressListener (Lcom/github/panpf/sketch/request/ProgressListener;)V
+	public fun getImageOptions ()Lcom/github/panpf/sketch/request/ImageOptions;
+	public fun getListener ()Lcom/github/panpf/sketch/request/Listener;
+	public fun getProgressListener ()Lcom/github/panpf/sketch/request/ProgressListener;
+	public fun getRequestState ()Lcom/github/panpf/sketch/request/RequestState;
+	public final fun removeListener (Lcom/github/panpf/sketch/request/Listener;)V
+	public final fun removeProgressListener (Lcom/github/panpf/sketch/request/ProgressListener;)V
+	public fun setImageOptions (Lcom/github/panpf/sketch/request/ImageOptions;)V
+}
+
+public final class com/github/panpf/sketch/ability/ClickIgnoreSaveCellularTrafficAbility : com/github/panpf/sketch/ability/ClickObserver, com/github/panpf/sketch/ability/RequestListenerObserver, com/github/panpf/sketch/ability/ViewAbility {
+	public fun <init> ()V
+	public fun getCanIntercept ()Z
+	public fun getHost ()Lcom/github/panpf/sketch/ability/Host;
+	public fun onClick (Landroid/view/View;)Z
+	public fun onRequestError (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Error;)V
+	public fun onRequestStart (Lcom/github/panpf/sketch/request/ImageRequest;)V
+	public fun onRequestSuccess (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Success;)V
+	public fun setHost (Lcom/github/panpf/sketch/ability/Host;)V
+}
+
+public final class com/github/panpf/sketch/ability/ClickIgnoreSaveCellularTrafficAbilityKt {
+	public static final fun isClickIgnoreSaveCellularTrafficEnabled (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;)Z
+	public static final fun setClickIgnoreSaveCellularTrafficEnabled (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;Z)V
+	public static synthetic fun setClickIgnoreSaveCellularTrafficEnabled$default (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;ZILjava/lang/Object;)V
+}
+
+public final class com/github/panpf/sketch/ability/DataFromLogoAbility : com/github/panpf/sketch/ability/AttachObserver, com/github/panpf/sketch/ability/DrawObserver, com/github/panpf/sketch/ability/DrawableObserver, com/github/panpf/sketch/ability/LayoutObserver, com/github/panpf/sketch/ability/ViewAbility {
+	public fun <init> ()V
+	public fun <init> (F)V
+	public synthetic fun <init> (FILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getHost ()Lcom/github/panpf/sketch/ability/Host;
+	public fun onAttachedToWindow ()V
+	public fun onDetachedFromWindow ()V
+	public fun onDraw (Landroid/graphics/Canvas;)V
+	public fun onDrawBefore (Landroid/graphics/Canvas;)V
+	public fun onDrawableChanged (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;)V
+	public fun onLayout (ZIIII)V
+	public fun setHost (Lcom/github/panpf/sketch/ability/Host;)V
+}
+
+public final class com/github/panpf/sketch/ability/DataFromLogoAbilityKt {
+	public static final fun isShowDataFromLogo (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;)Z
+	public static final fun removeDataFromLogo (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;)V
+	public static final fun showDataFromLogo (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;F)V
+	public static synthetic fun showDataFromLogo$default (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;FILjava/lang/Object;)V
+}
+
+public final class com/github/panpf/sketch/ability/MimeTypeLogoAbility : com/github/panpf/sketch/ability/AttachObserver, com/github/panpf/sketch/ability/DrawObserver, com/github/panpf/sketch/ability/DrawableObserver, com/github/panpf/sketch/ability/LayoutObserver, com/github/panpf/sketch/ability/ViewAbility {
+	public fun <init> (Ljava/util/Map;I)V
+	public synthetic fun <init> (Ljava/util/Map;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getHost ()Lcom/github/panpf/sketch/ability/Host;
+	public fun onAttachedToWindow ()V
+	public fun onDetachedFromWindow ()V
+	public fun onDraw (Landroid/graphics/Canvas;)V
+	public fun onDrawBefore (Landroid/graphics/Canvas;)V
+	public fun onDrawableChanged (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;)V
+	public fun onLayout (ZIIII)V
+	public fun setHost (Lcom/github/panpf/sketch/ability/Host;)V
+}
+
+public final class com/github/panpf/sketch/ability/MimeTypeLogoAbilityKt {
+	public static final fun isShowMimeTypeLogo (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;)Z
+	public static final fun removeMimeTypeLogo (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;)V
+	public static final fun showMimeTypeLogoWithDrawable (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;Ljava/util/Map;I)V
+	public static synthetic fun showMimeTypeLogoWithDrawable$default (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;Ljava/util/Map;IILjava/lang/Object;)V
+	public static final fun showMimeTypeLogoWithRes (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;Ljava/util/Map;I)V
+	public static synthetic fun showMimeTypeLogoWithRes$default (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;Ljava/util/Map;IILjava/lang/Object;)V
+}
+
+public final class com/github/panpf/sketch/ability/ProgressIndicatorAbility : android/graphics/drawable/Drawable$Callback, com/github/panpf/sketch/ability/AttachObserver, com/github/panpf/sketch/ability/DrawObserver, com/github/panpf/sketch/ability/LayoutObserver, com/github/panpf/sketch/ability/RequestListenerObserver, com/github/panpf/sketch/ability/RequestProgressListenerObserver, com/github/panpf/sketch/ability/ViewAbility, com/github/panpf/sketch/ability/VisibilityChangedObserver {
+	public fun <init> (Lcom/github/panpf/sketch/drawable/ProgressDrawable;)V
+	public fun getHost ()Lcom/github/panpf/sketch/ability/Host;
+	public final fun getProgressDrawable ()Lcom/github/panpf/sketch/drawable/ProgressDrawable;
+	public fun invalidateDrawable (Landroid/graphics/drawable/Drawable;)V
+	public fun onAttachedToWindow ()V
+	public fun onDetachedFromWindow ()V
+	public fun onDraw (Landroid/graphics/Canvas;)V
+	public fun onDrawBefore (Landroid/graphics/Canvas;)V
+	public fun onLayout (ZIIII)V
+	public fun onRequestError (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Error;)V
+	public fun onRequestStart (Lcom/github/panpf/sketch/request/ImageRequest;)V
+	public fun onRequestSuccess (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Success;)V
+	public fun onUpdateRequestProgress (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/Progress;)V
+	public fun onVisibilityChanged (Landroid/view/View;I)V
+	public fun scheduleDrawable (Landroid/graphics/drawable/Drawable;Ljava/lang/Runnable;J)V
+	public fun setHost (Lcom/github/panpf/sketch/ability/Host;)V
+	public fun unscheduleDrawable (Landroid/graphics/drawable/Drawable;Ljava/lang/Runnable;)V
+}
+
+public final class com/github/panpf/sketch/ability/ProgressIndicatorAbilityKt {
+	public static final fun isShowProgressIndicator (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;)Z
+	public static final fun removeProgressIndicator (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;)V
+	public static final fun showMaskProgressIndicator (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;IZZI)V
+	public static synthetic fun showMaskProgressIndicator$default (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;IZZIILjava/lang/Object;)V
+	public static final fun showProgressIndicator (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;Lcom/github/panpf/sketch/drawable/ProgressDrawable;)V
+	public static final fun showRingProgressIndicator (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;IFIZZI)V
+	public static synthetic fun showRingProgressIndicator$default (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;IFIZZIILjava/lang/Object;)V
+	public static final fun showSectorProgressIndicator (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;IIIZZI)V
+	public static synthetic fun showSectorProgressIndicator$default (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;IIIZZIILjava/lang/Object;)V
+}
+
+public final class com/github/panpf/sketch/internal/ImageXmlAttributesKt {
+	public static final fun parseSketchImageViewXmlAttributes (Landroid/content/Context;Landroid/util/AttributeSet;)Lcom/github/panpf/sketch/request/ImageOptions;
+	public static synthetic fun parseSketchImageViewXmlAttributes$default (Landroid/content/Context;Landroid/util/AttributeSet;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageOptions;
+}
+
+public final class com/github/panpf/sketch/util/PauseLoadWhenScrollingMixedScrollListener : androidx/recyclerview/widget/RecyclerView$OnScrollListener, android/widget/AbsListView$OnScrollListener {
+	public fun <init> ()V
+	public fun <init> (Landroid/widget/AbsListView$OnScrollListener;)V
+	public synthetic fun <init> (Landroid/widget/AbsListView$OnScrollListener;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAbsListScrollListenerWrapper ()Landroid/widget/AbsListView$OnScrollListener;
+	public fun onScroll (Landroid/widget/AbsListView;III)V
+	public fun onScrollStateChanged (Landroid/widget/AbsListView;I)V
+	public fun onScrollStateChanged (Landroidx/recyclerview/widget/RecyclerView;I)V
+	public final fun setAbsListScrollListenerWrapper (Landroid/widget/AbsListView$OnScrollListener;)V
+}
+

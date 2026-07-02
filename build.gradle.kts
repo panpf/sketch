@@ -2,8 +2,7 @@ import org.jetbrains.kotlin.compose.compiler.gradle.ComposeCompilerGradlePluginE
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
-import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationExtension
-import org.jetbrains.kotlin.gradle.dsl.abi.AbiValidationMultiplatformExtension
+import org.jetbrains.kotlin.gradle.dsl.abi.BinariesSource
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.TestExecutable
@@ -38,6 +37,7 @@ plugins {
 }
 
 tasks.register("cleanRootBuild", Delete::class) {
+    description = "Clean the root build directory."
     delete(rootProject.project.layout.buildDirectory.get().asFile.absolutePath)
 }
 
@@ -169,9 +169,9 @@ allprojects {
                 signAllPublications()
             } else if (
                 System.getenv("ORG_GRADLE_PROJECT_signingInMemoryKey").orEmpty()
-                    .isNotEmpty()    // configured in the github workflow env
+                    .isNotEmpty()    // configured in the GitHub workflow env
                 && System.getenv("ORG_GRADLE_PROJECT_signingInMemoryKeyPassword").orEmpty()
-                    .isNotEmpty()    // configured in the github workflow env
+                    .isNotEmpty()    // configured in the GitHub workflow env
             ) {
                 signAllPublications()
             }
@@ -186,6 +186,7 @@ allprojects {
     // Enable ABI validation for all publishable library modules.
     if (isPublishableModule) {
         configureAbiValidation()
+        configureAndroidAbiValidation()
     }
 }
 
@@ -196,12 +197,92 @@ fun Project.configureAbiValidation() {
         val kotlinExtension =
             extensions.findByType<KotlinProjectExtension>() ?: return@afterEvaluate
 
-        // Unfortunately the 'enabled' property doesn't share a common interface.
-        kotlinExtension.extensions.findByType<AbiValidationExtension>()?.apply {
-            enabled.set(true)
-        }
-        kotlinExtension.extensions.findByType<AbiValidationMultiplatformExtension>()?.apply {
-            enabled.set(true)
+        kotlinExtension.abiValidation {
+            referenceDumpDir.set(layout.projectDirectory.dir("api"))
+            binariesSource.set(BinariesSource.MAIN_COMPILATION)
         }
     }
+}
+
+fun Project.configureAndroidAbiValidation() {
+    plugins.withId("com.android.library") {
+        afterEvaluate {
+            configureAndroidAbiValidation(
+                subdirectoryName = "",
+                dependencyTaskNames = listOf(
+                    "compileReleaseKotlin",
+                    "compileReleaseJavaWithJavac",
+                ),
+                classfiles = files(
+                    layout.buildDirectory.dir("intermediates/built_in_kotlinc/release/compileReleaseKotlin/classes"),
+                    layout.buildDirectory.dir("intermediates/javac/release/compileReleaseJavaWithJavac/classes"),
+                ),
+            )
+        }
+    }
+
+    plugins.withId("com.android.kotlin.multiplatform.library") {
+        afterEvaluate {
+            configureAndroidAbiValidation(
+                subdirectoryName = "android",
+                dependencyTaskNames = listOf(
+                    "compileAndroidMain",
+                    "compileAndroidMainJavaWithJavac",
+                ),
+                classfiles = files(
+                    layout.buildDirectory.dir("classes/kotlin/android/main"),
+                    layout.buildDirectory.dir("classes/java/android/main"),
+                    layout.buildDirectory.dir("intermediates/javac/androidMain/classes"),
+                ),
+            )
+        }
+    }
+}
+
+private fun Project.configureAndroidAbiValidation(
+    subdirectoryName: String,
+    dependencyTaskNames: List<String>,
+    classfiles: FileCollection,
+) {
+    val dependencyTasks = tasks.matching { it.name in dependencyTaskNames }
+    tasks.matching { it.name == "internalDumpKotlinAbi" }.configureEach {
+        dependsOn(dependencyTasks)
+        configureKotlinAbiDumpInput(subdirectoryName, classfiles)
+    }
+}
+
+private fun Task.configureKotlinAbiDumpInput(
+    subdirectoryName: String,
+    classfiles: FileCollection,
+) {
+    val dumpTaskClass = javaClass
+    val getJvm = runCatching { dumpTaskClass.getMethod("getJvm") }.getOrNull() ?: return
+    val jvmProperty = getJvm.invoke(this)
+
+    val propertyClass = jvmProperty.javaClass
+    val get = propertyClass.getMethod("get")
+    val set = propertyClass.getMethod("set", Iterable::class.java)
+
+    val existingEntries = mutableListOf<Any>()
+    val currentEntries = get.invoke(jvmProperty)
+    if (currentEntries is Iterable<*>) {
+        currentEntries.filterNotNullTo(existingEntries)
+    } else {
+        return
+    }
+
+    val entryClass = existingEntries.firstOrNull()?.javaClass
+        ?: runCatching {
+            dumpTaskClass.classLoader.loadClass(
+                $$"org.jetbrains.kotlin.gradle.tasks.abi.KotlinAbiDumpTaskImpl$JvmTargetInfo",
+            )
+        }.getOrNull()
+        ?: return
+
+    val getSubdirectoryName = entryClass.getMethod("getSubdirectoryName")
+    if (existingEntries.any { getSubdirectoryName.invoke(it) == subdirectoryName }) return
+
+    val constructor = entryClass.getConstructor(String::class.java, FileCollection::class.java)
+    existingEntries.add(constructor.newInstance(subdirectoryName, classfiles))
+    set.invoke(jvmProperty, existingEntries)
 }

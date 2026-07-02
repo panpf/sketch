@@ -1,0 +1,90 @@
+public final class com/github/panpf/sketch/decode/GifDecoder_androidKt {
+	public static final fun supportGif (Lcom/github/panpf/sketch/ComponentRegistry$Builder;)Lcom/github/panpf/sketch/ComponentRegistry$Builder;
+}
+
+public final class com/github/panpf/sketch/decode/ImageDecoderGifDecoder : com/github/panpf/sketch/decode/internal/ImageDecoderAnimatedDecoder {
+	public static final field Companion Lcom/github/panpf/sketch/decode/ImageDecoderGifDecoder$Companion;
+	public static final field SORT_WEIGHT I
+	public fun <init> (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/source/DataSource;)V
+}
+
+public final class com/github/panpf/sketch/decode/ImageDecoderGifDecoder$Companion {
+}
+
+public final class com/github/panpf/sketch/decode/ImageDecoderGifDecoder$Factory : com/github/panpf/sketch/decode/Decoder$Factory {
+	public fun <init> ()V
+	public synthetic fun create (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/fetch/FetchResult;)Lcom/github/panpf/sketch/decode/Decoder;
+	public fun create (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/fetch/FetchResult;)Lcom/github/panpf/sketch/decode/ImageDecoderGifDecoder;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKey ()Ljava/lang/String;
+	public fun getSortWeight ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/decode/ImageDecoderGifDecoderKt {
+	public static final fun supportImageDecoderGif (Lcom/github/panpf/sketch/ComponentRegistry$Builder;)Lcom/github/panpf/sketch/ComponentRegistry$Builder;
+}
+
+public final class com/github/panpf/sketch/decode/MovieGifDecoder : com/github/panpf/sketch/decode/Decoder {
+	public static final field Companion Lcom/github/panpf/sketch/decode/MovieGifDecoder$Companion;
+	public static final field SORT_WEIGHT I
+	public fun <init> (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/source/DataSource;)V
+	public fun decode (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getImageInfo (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/github/panpf/sketch/decode/MovieGifDecoder$Companion {
+}
+
+public final class com/github/panpf/sketch/decode/MovieGifDecoder$Factory : com/github/panpf/sketch/decode/Decoder$Factory {
+	public fun <init> ()V
+	public synthetic fun create (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/fetch/FetchResult;)Lcom/github/panpf/sketch/decode/Decoder;
+	public fun create (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/fetch/FetchResult;)Lcom/github/panpf/sketch/decode/MovieGifDecoder;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKey ()Ljava/lang/String;
+	public fun getSortWeight ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/decode/MovieGifDecoderKt {
+	public static final fun supportMovieGif (Lcom/github/panpf/sketch/ComponentRegistry$Builder;)Lcom/github/panpf/sketch/ComponentRegistry$Builder;
+}
+
+public final class com/github/panpf/sketch/drawable/MovieDrawable : android/graphics/drawable/Drawable, androidx/vectordrawable/graphics/drawable/Animatable2Compat, com/github/panpf/sketch/drawable/SketchDrawable {
+	public fun <init> (Landroid/graphics/Movie;Landroid/graphics/Bitmap$Config;)V
+	public synthetic fun <init> (Landroid/graphics/Movie;Landroid/graphics/Bitmap$Config;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun clearAnimationCallbacks ()V
+	public fun draw (Landroid/graphics/Canvas;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAnimatedTransformation ()Lcom/github/panpf/sketch/transform/AnimatedTransformation;
+	public final fun getConfig ()Landroid/graphics/Bitmap$Config;
+	public fun getIntrinsicHeight ()I
+	public fun getIntrinsicWidth ()I
+	public fun getOpacity ()I
+	public final fun getRepeatCount ()I
+	public fun hashCode ()I
+	public fun isRunning ()Z
+	public fun registerAnimationCallback (Landroidx/vectordrawable/graphics/drawable/Animatable2Compat$AnimationCallback;)V
+	public fun setAlpha (I)V
+	public final fun setAnimatedTransformation (Lcom/github/panpf/sketch/transform/AnimatedTransformation;)V
+	public fun setColorFilter (Landroid/graphics/ColorFilter;)V
+	public final fun setRepeatCount (I)V
+	public fun start ()V
+	public fun stop ()V
+	public fun toString ()Ljava/lang/String;
+	public fun unregisterAnimationCallback (Landroidx/vectordrawable/graphics/drawable/Animatable2Compat$AnimationCallback;)Z
+}
+
+public final class com/github/panpf/sketch/util/GifComponentProvider : com/github/panpf/sketch/util/ComponentProvider {
+	public fun <init> ()V
+	public fun addDecoders (Landroid/content/Context;)Ljava/util/List;
+	public fun addFetchers (Landroid/content/Context;)Ljava/util/List;
+	public fun addInterceptors (Landroid/content/Context;)Ljava/util/List;
+	public fun disabledDecoders (Landroid/content/Context;)Ljava/util/List;
+	public fun disabledFetchers (Landroid/content/Context;)Ljava/util/List;
+	public fun disabledInterceptors (Landroid/content/Context;)Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+

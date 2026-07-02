@@ -1,0 +1,346 @@
+public final class com/github/panpf/sketch/Image_view_extensionsKt {
+	public static final fun disposeLoad (Landroid/widget/ImageView;)V
+	public static final fun getImageResult (Landroid/widget/ImageView;)Lcom/github/panpf/sketch/request/ImageResult;
+}
+
+public final class com/github/panpf/sketch/drawable/AnimatablesKt {
+	public static final fun startWithLifecycle (Landroid/graphics/drawable/Animatable;Landroidx/lifecycle/Lifecycle;)V
+}
+
+public final class com/github/panpf/sketch/drawable/CrossfadeDrawable : android/graphics/drawable/Drawable, android/graphics/drawable/Drawable$Callback, androidx/vectordrawable/graphics/drawable/Animatable2Compat, com/github/panpf/sketch/drawable/SketchDrawable, com/github/panpf/sketch/transition/TransitionDrawable {
+	public static final field Companion Lcom/github/panpf/sketch/drawable/CrossfadeDrawable$Companion;
+	public fun <init> (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;)V
+	public fun <init> (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;Landroid/widget/ImageView$ScaleType;)V
+	public fun <init> (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;Landroid/widget/ImageView$ScaleType;I)V
+	public fun <init> (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;Landroid/widget/ImageView$ScaleType;IZ)V
+	public fun <init> (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;Landroid/widget/ImageView$ScaleType;IZZ)V
+	public synthetic fun <init> (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;Landroid/widget/ImageView$ScaleType;IZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;Z)V
+	public fun <init> (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;ZI)V
+	public fun <init> (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;ZIZ)V
+	public fun <init> (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;ZIZZ)V
+	public synthetic fun <init> (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;ZIZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun clearAnimationCallbacks ()V
+	public fun draw (Landroid/graphics/Canvas;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getAlpha ()I
+	public fun getColorFilter ()Landroid/graphics/ColorFilter;
+	public final fun getDurationMillis ()I
+	public final fun getEnd ()Landroid/graphics/drawable/Drawable;
+	public final fun getFadeStart ()Z
+	public final fun getFitScale ()Z
+	public fun getIntrinsicHeight ()I
+	public fun getIntrinsicWidth ()I
+	public fun getOpacity ()I
+	public final fun getPreferExactIntrinsicSize ()Z
+	public final fun getScaleType ()Landroid/widget/ImageView$ScaleType;
+	public final fun getStart ()Landroid/graphics/drawable/Drawable;
+	public fun hashCode ()I
+	public fun invalidateDrawable (Landroid/graphics/drawable/Drawable;)V
+	public fun isRunning ()Z
+	public synthetic fun mutate ()Landroid/graphics/drawable/Drawable;
+	public fun mutate ()Lcom/github/panpf/sketch/drawable/CrossfadeDrawable;
+	public fun registerAnimationCallback (Landroidx/vectordrawable/graphics/drawable/Animatable2Compat$AnimationCallback;)V
+	public fun scheduleDrawable (Landroid/graphics/drawable/Drawable;Ljava/lang/Runnable;J)V
+	public fun setAlpha (I)V
+	public fun setColorFilter (Landroid/graphics/ColorFilter;)V
+	public fun setTint (I)V
+	public fun setTintBlendMode (Landroid/graphics/BlendMode;)V
+	public fun setTintList (Landroid/content/res/ColorStateList;)V
+	public fun setTintMode (Landroid/graphics/PorterDuff$Mode;)V
+	public fun start ()V
+	public fun stop ()V
+	public fun toString ()Ljava/lang/String;
+	public fun unregisterAnimationCallback (Landroidx/vectordrawable/graphics/drawable/Animatable2Compat$AnimationCallback;)Z
+	public fun unscheduleDrawable (Landroid/graphics/drawable/Drawable;Ljava/lang/Runnable;)V
+}
+
+public final class com/github/panpf/sketch/drawable/CrossfadeDrawable$Companion {
+}
+
+public class com/github/panpf/sketch/drawable/ResizeAnimatableDrawable : com/github/panpf/sketch/drawable/ResizeDrawable, androidx/vectordrawable/graphics/drawable/Animatable2Compat, com/github/panpf/sketch/drawable/SketchDrawable {
+	public fun <init> (Landroid/graphics/drawable/Drawable;Lcom/github/panpf/sketch/util/Size;Landroid/widget/ImageView$ScaleType;)V
+	public synthetic fun <init> (Landroid/graphics/drawable/Drawable;Lcom/github/panpf/sketch/util/Size;Landroid/widget/ImageView$ScaleType;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Landroid/graphics/drawable/Drawable;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/resize/Scale;)V
+	public fun clearAnimationCallbacks ()V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun isRunning ()Z
+	public synthetic fun mutate ()Landroid/graphics/drawable/Drawable;
+	public fun mutate ()Lcom/github/panpf/sketch/drawable/ResizeAnimatableDrawable;
+	public synthetic fun mutate ()Lcom/github/panpf/sketch/drawable/ResizeDrawable;
+	public fun registerAnimationCallback (Landroidx/vectordrawable/graphics/drawable/Animatable2Compat$AnimationCallback;)V
+	public fun setDrawable (Landroid/graphics/drawable/Drawable;)V
+	public fun start ()V
+	public fun stop ()V
+	public fun toString ()Ljava/lang/String;
+	public fun unregisterAnimationCallback (Landroidx/vectordrawable/graphics/drawable/Animatable2Compat$AnimationCallback;)Z
+}
+
+public class com/github/panpf/sketch/drawable/ResizeDrawable : androidx/appcompat/graphics/drawable/DrawableWrapperCompat, com/github/panpf/sketch/drawable/SketchDrawable {
+	public fun <init> (Landroid/graphics/drawable/Drawable;Lcom/github/panpf/sketch/util/Size;Landroid/widget/ImageView$ScaleType;)V
+	public synthetic fun <init> (Landroid/graphics/drawable/Drawable;Lcom/github/panpf/sketch/util/Size;Landroid/widget/ImageView$ScaleType;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Landroid/graphics/drawable/Drawable;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/resize/Scale;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getIntrinsicHeight ()I
+	public fun getIntrinsicWidth ()I
+	public final fun getScale ()Lcom/github/panpf/sketch/resize/Scale;
+	public final fun getScaleType ()Landroid/widget/ImageView$ScaleType;
+	public final fun getSize ()Lcom/github/panpf/sketch/util/Size;
+	public fun hashCode ()I
+	public synthetic fun mutate ()Landroid/graphics/drawable/Drawable;
+	public fun mutate ()Lcom/github/panpf/sketch/drawable/ResizeDrawable;
+	public fun setBounds (IIII)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/drawable/ResizeDrawableKt {
+	public static final fun resize (Landroid/graphics/drawable/Drawable;Lcom/github/panpf/sketch/util/Size;Landroid/widget/ImageView$ScaleType;)Lcom/github/panpf/sketch/drawable/ResizeDrawable;
+	public static final fun resize (Landroid/graphics/drawable/Drawable;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/resize/Scale;)Lcom/github/panpf/sketch/drawable/ResizeDrawable;
+	public static synthetic fun resize$default (Landroid/graphics/drawable/Drawable;Lcom/github/panpf/sketch/util/Size;Landroid/widget/ImageView$ScaleType;ILjava/lang/Object;)Lcom/github/panpf/sketch/drawable/ResizeDrawable;
+}
+
+public final class com/github/panpf/sketch/request/ImageOptions_viewKt {
+	public static final fun sizeWithView (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Landroid/view/View;Z)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+	public static synthetic fun sizeWithView$default (Lcom/github/panpf/sketch/request/ImageOptions$Builder;Landroid/view/View;ZILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageOptions$Builder;
+}
+
+public final class com/github/panpf/sketch/request/ImageRequest_viewKt {
+	public static final fun ImageRequest (Landroid/widget/ImageView;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/request/ImageRequest;
+	public static synthetic fun ImageRequest$default (Landroid/widget/ImageView;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageRequest;
+	public static final fun sizeWithView (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Landroid/view/View;Z)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static synthetic fun sizeWithView$default (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Landroid/view/View;ZILjava/lang/Object;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+	public static final fun target (Lcom/github/panpf/sketch/request/ImageRequest$Builder;Landroid/widget/ImageView;)Lcom/github/panpf/sketch/request/ImageRequest$Builder;
+}
+
+public final class com/github/panpf/sketch/request/ViewLifecycleResolver : com/github/panpf/sketch/request/LifecycleResolver {
+	public fun <init> (Landroid/view/View;)V
+	public fun <init> (Ljava/lang/ref/WeakReference;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getViewReference ()Ljava/lang/ref/WeakReference;
+	public fun hashCode ()I
+	public fun lifecycle (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/request/internal/RemoteViewsDelegate : com/github/panpf/sketch/request/internal/BaseRequestDelegate {
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/RemoteViewsTarget;Lkotlinx/coroutines/Job;)V
+	public fun assertActive ()V
+	public fun finish ()V
+}
+
+public final class com/github/panpf/sketch/request/internal/ViewRequestDelegate : com/github/panpf/sketch/request/internal/BaseRequestDelegate {
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/ViewTarget;Lkotlinx/coroutines/Job;)V
+	public fun assertActive ()V
+	public fun finish ()V
+}
+
+public final class com/github/panpf/sketch/request/internal/ViewRequestManager : com/github/panpf/sketch/request/internal/BaseRequestManager, android/view/View$OnAttachStateChangeListener {
+	public fun <init> (Landroid/view/View;)V
+	public fun isAttached ()Z
+	public fun onViewAttachedToWindow (Landroid/view/View;)V
+	public fun onViewDetachedFromWindow (Landroid/view/View;)V
+}
+
+public final class com/github/panpf/sketch/resize/ViewResizeOnDrawHelper : com/github/panpf/sketch/resize/ResizeOnDrawHelper {
+	public static final field INSTANCE Lcom/github/panpf/sketch/resize/ViewResizeOnDrawHelper;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun resize (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/Image;)Lcom/github/panpf/sketch/Image;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/github/panpf/sketch/resize/internal/ViewSizeResolver : com/github/panpf/sketch/resize/SizeResolver {
+	public abstract fun getDisplayMetrics ()Landroid/util/DisplayMetrics;
+	public abstract fun getSubtractPadding ()Z
+	public abstract fun getView ()Landroid/view/View;
+	public fun size (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/github/panpf/sketch/resize/internal/ViewSizeResolver$DefaultImpls {
+	public static fun size (Lcom/github/panpf/sketch/resize/internal/ViewSizeResolver;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class com/github/panpf/sketch/resize/internal/ViewSizeResolvers {
+	public static final fun create (Landroid/view/View;)Lcom/github/panpf/sketch/resize/internal/ViewSizeResolver;
+	public static final fun create (Landroid/view/View;Z)Lcom/github/panpf/sketch/resize/internal/ViewSizeResolver;
+	public static synthetic fun create$default (Landroid/view/View;ZILjava/lang/Object;)Lcom/github/panpf/sketch/resize/internal/ViewSizeResolver;
+}
+
+public abstract class com/github/panpf/sketch/target/GenericViewTarget : androidx/lifecycle/LifecycleEventObserver, com/github/panpf/sketch/request/internal/AttachObserver, com/github/panpf/sketch/target/TransitionViewTarget, com/github/panpf/sketch/target/ViewTarget {
+	public fun <init> (Landroid/view/View;)V
+	public fun convertTransition (Lcom/github/panpf/sketch/transition/Transition$Factory;)Lcom/github/panpf/sketch/transition/Transition$Factory;
+	public fun getComponents ()Lcom/github/panpf/sketch/ComponentRegistry;
+	public fun getCurrentImage ()Lcom/github/panpf/sketch/Image;
+	public fun getFitScale ()Z
+	public fun getImageOptions ()Lcom/github/panpf/sketch/request/ImageOptions;
+	public fun getLifecycleResolver ()Lcom/github/panpf/sketch/request/LifecycleResolver;
+	public fun getListener ()Lcom/github/panpf/sketch/request/Listener;
+	public fun getProgressListener ()Lcom/github/panpf/sketch/request/ProgressListener;
+	public fun getRequestManager ()Lcom/github/panpf/sketch/request/internal/RequestManager;
+	public fun getResizeOnDrawHelper ()Lcom/github/panpf/sketch/resize/ResizeOnDrawHelper;
+	public fun getScaleDecider ()Lcom/github/panpf/sketch/resize/ScaleDecider;
+	public fun getSizeResolver ()Lcom/github/panpf/sketch/resize/SizeResolver;
+	public fun newRequestDelegate (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lkotlinx/coroutines/Job;)Lcom/github/panpf/sketch/request/internal/RequestDelegate;
+	public fun onAttachedChanged (Z)V
+	public fun onError (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Error;Lcom/github/panpf/sketch/Image;)V
+	public fun onStart (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Image;)V
+	public fun onStateChanged (Landroidx/lifecycle/LifecycleOwner;Landroidx/lifecycle/Lifecycle$Event;)V
+	public fun onSuccess (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Success;Lcom/github/panpf/sketch/Image;)V
+	protected abstract fun setDrawable (Landroid/graphics/drawable/Drawable;)V
+	protected final fun updateAnimation ()V
+}
+
+public class com/github/panpf/sketch/target/ImageViewTarget : com/github/panpf/sketch/target/GenericViewTarget {
+	public fun <init> (Landroid/widget/ImageView;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDrawable ()Landroid/graphics/drawable/Drawable;
+	public fun getScaleType ()Landroid/widget/ImageView$ScaleType;
+	public synthetic fun getView ()Landroid/view/View;
+	public fun getView ()Landroid/widget/ImageView;
+	public fun hashCode ()I
+	protected fun setDrawable (Landroid/graphics/drawable/Drawable;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/target/RemoteViewsTarget : com/github/panpf/sketch/target/Target {
+	public fun <init> (Landroid/widget/RemoteViews;ILkotlin/jvm/functions/Function0;)V
+	public fun convertTransition (Lcom/github/panpf/sketch/transition/Transition$Factory;)Lcom/github/panpf/sketch/transition/Transition$Factory;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getComponents ()Lcom/github/panpf/sketch/ComponentRegistry;
+	public fun getCurrentImage ()Lcom/github/panpf/sketch/Image;
+	public fun getImageOptions ()Lcom/github/panpf/sketch/request/ImageOptions;
+	public fun getLifecycleResolver ()Lcom/github/panpf/sketch/request/LifecycleResolver;
+	public fun getListener ()Lcom/github/panpf/sketch/request/Listener;
+	public fun getProgressListener ()Lcom/github/panpf/sketch/request/ProgressListener;
+	public fun getRequestManager ()Lcom/github/panpf/sketch/request/internal/RequestManager;
+	public fun getResizeOnDrawHelper ()Lcom/github/panpf/sketch/resize/ResizeOnDrawHelper;
+	public fun getScaleDecider ()Lcom/github/panpf/sketch/resize/ScaleDecider;
+	public fun getSizeResolver ()Lcom/github/panpf/sketch/resize/SizeResolver;
+	public fun hashCode ()I
+	public fun newRequestDelegate (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lkotlinx/coroutines/Job;)Lcom/github/panpf/sketch/request/internal/RequestDelegate;
+	public fun onError (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Error;Lcom/github/panpf/sketch/Image;)V
+	public fun onStart (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Image;)V
+	public fun onSuccess (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Success;Lcom/github/panpf/sketch/Image;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class com/github/panpf/sketch/target/TransitionViewTarget : com/github/panpf/sketch/transition/TransitionTarget {
+	public abstract fun getDrawable ()Landroid/graphics/drawable/Drawable;
+}
+
+public final class com/github/panpf/sketch/target/TransitionViewTarget$DefaultImpls {
+	public static fun convertTransition (Lcom/github/panpf/sketch/target/TransitionViewTarget;Lcom/github/panpf/sketch/transition/Transition$Factory;)Lcom/github/panpf/sketch/transition/Transition$Factory;
+	public static fun getComponents (Lcom/github/panpf/sketch/target/TransitionViewTarget;)Lcom/github/panpf/sketch/ComponentRegistry;
+	public static fun getCurrentImage (Lcom/github/panpf/sketch/target/TransitionViewTarget;)Lcom/github/panpf/sketch/Image;
+	public static fun getImageOptions (Lcom/github/panpf/sketch/target/TransitionViewTarget;)Lcom/github/panpf/sketch/request/ImageOptions;
+	public static fun getLifecycleResolver (Lcom/github/panpf/sketch/target/TransitionViewTarget;)Lcom/github/panpf/sketch/request/LifecycleResolver;
+	public static fun getListener (Lcom/github/panpf/sketch/target/TransitionViewTarget;)Lcom/github/panpf/sketch/request/Listener;
+	public static fun getProgressListener (Lcom/github/panpf/sketch/target/TransitionViewTarget;)Lcom/github/panpf/sketch/request/ProgressListener;
+	public static fun getRequestManager (Lcom/github/panpf/sketch/target/TransitionViewTarget;)Lcom/github/panpf/sketch/request/internal/RequestManager;
+	public static fun getResizeOnDrawHelper (Lcom/github/panpf/sketch/target/TransitionViewTarget;)Lcom/github/panpf/sketch/resize/ResizeOnDrawHelper;
+	public static fun getScaleDecider (Lcom/github/panpf/sketch/target/TransitionViewTarget;)Lcom/github/panpf/sketch/resize/ScaleDecider;
+	public static fun getSizeResolver (Lcom/github/panpf/sketch/target/TransitionViewTarget;)Lcom/github/panpf/sketch/resize/SizeResolver;
+	public static fun newRequestDelegate (Lcom/github/panpf/sketch/target/TransitionViewTarget;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lkotlinx/coroutines/Job;)Lcom/github/panpf/sketch/request/internal/RequestDelegate;
+	public static fun onError (Lcom/github/panpf/sketch/target/TransitionViewTarget;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Error;Lcom/github/panpf/sketch/Image;)V
+	public static fun onStart (Lcom/github/panpf/sketch/target/TransitionViewTarget;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Image;)V
+	public static fun onSuccess (Lcom/github/panpf/sketch/target/TransitionViewTarget;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Success;Lcom/github/panpf/sketch/Image;)V
+}
+
+public abstract interface class com/github/panpf/sketch/target/ViewTarget : com/github/panpf/sketch/target/Target {
+	public fun convertTransition (Lcom/github/panpf/sketch/transition/Transition$Factory;)Lcom/github/panpf/sketch/transition/Transition$Factory;
+	public fun getCurrentImage ()Lcom/github/panpf/sketch/Image;
+	public abstract fun getDrawable ()Landroid/graphics/drawable/Drawable;
+	public fun getImageOptions ()Lcom/github/panpf/sketch/request/ImageOptions;
+	public fun getLifecycleResolver ()Lcom/github/panpf/sketch/request/LifecycleResolver;
+	public fun getListener ()Lcom/github/panpf/sketch/request/Listener;
+	public fun getProgressListener ()Lcom/github/panpf/sketch/request/ProgressListener;
+	public fun getResizeOnDrawHelper ()Lcom/github/panpf/sketch/resize/ResizeOnDrawHelper;
+	public fun getScaleDecider ()Lcom/github/panpf/sketch/resize/ScaleDecider;
+	public abstract fun getScaleType ()Landroid/widget/ImageView$ScaleType;
+	public fun getSizeResolver ()Lcom/github/panpf/sketch/resize/SizeResolver;
+	public abstract fun getView ()Landroid/view/View;
+	public fun newRequestDelegate (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lkotlinx/coroutines/Job;)Lcom/github/panpf/sketch/request/internal/RequestDelegate;
+}
+
+public final class com/github/panpf/sketch/target/ViewTarget$DefaultImpls {
+	public static fun convertTransition (Lcom/github/panpf/sketch/target/ViewTarget;Lcom/github/panpf/sketch/transition/Transition$Factory;)Lcom/github/panpf/sketch/transition/Transition$Factory;
+	public static fun getComponents (Lcom/github/panpf/sketch/target/ViewTarget;)Lcom/github/panpf/sketch/ComponentRegistry;
+	public static fun getCurrentImage (Lcom/github/panpf/sketch/target/ViewTarget;)Lcom/github/panpf/sketch/Image;
+	public static fun getImageOptions (Lcom/github/panpf/sketch/target/ViewTarget;)Lcom/github/panpf/sketch/request/ImageOptions;
+	public static fun getLifecycleResolver (Lcom/github/panpf/sketch/target/ViewTarget;)Lcom/github/panpf/sketch/request/LifecycleResolver;
+	public static fun getListener (Lcom/github/panpf/sketch/target/ViewTarget;)Lcom/github/panpf/sketch/request/Listener;
+	public static fun getProgressListener (Lcom/github/panpf/sketch/target/ViewTarget;)Lcom/github/panpf/sketch/request/ProgressListener;
+	public static fun getRequestManager (Lcom/github/panpf/sketch/target/ViewTarget;)Lcom/github/panpf/sketch/request/internal/RequestManager;
+	public static fun getResizeOnDrawHelper (Lcom/github/panpf/sketch/target/ViewTarget;)Lcom/github/panpf/sketch/resize/ResizeOnDrawHelper;
+	public static fun getScaleDecider (Lcom/github/panpf/sketch/target/ViewTarget;)Lcom/github/panpf/sketch/resize/ScaleDecider;
+	public static fun getSizeResolver (Lcom/github/panpf/sketch/target/ViewTarget;)Lcom/github/panpf/sketch/resize/SizeResolver;
+	public static fun newRequestDelegate (Lcom/github/panpf/sketch/target/ViewTarget;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lkotlinx/coroutines/Job;)Lcom/github/panpf/sketch/request/internal/RequestDelegate;
+	public static fun onError (Lcom/github/panpf/sketch/target/ViewTarget;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Error;Lcom/github/panpf/sketch/Image;)V
+	public static fun onStart (Lcom/github/panpf/sketch/target/ViewTarget;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/Image;)V
+	public static fun onSuccess (Lcom/github/panpf/sketch/target/ViewTarget;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Success;Lcom/github/panpf/sketch/Image;)V
+}
+
+public abstract interface class com/github/panpf/sketch/transition/TransitionDrawable {
+}
+
+public final class com/github/panpf/sketch/transition/ViewCrossfadeTransition : com/github/panpf/sketch/transition/Transition {
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/ViewTarget;Lcom/github/panpf/sketch/request/ImageResult;)V
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/ViewTarget;Lcom/github/panpf/sketch/request/ImageResult;IZ)V
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/ViewTarget;Lcom/github/panpf/sketch/request/ImageResult;IZZ)V
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/ViewTarget;Lcom/github/panpf/sketch/request/ImageResult;IZZZ)V
+	public synthetic fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/ViewTarget;Lcom/github/panpf/sketch/request/ImageResult;IZZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/ViewTarget;Lcom/github/panpf/sketch/request/ImageResult;Landroid/widget/ImageView$ScaleType;)V
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/ViewTarget;Lcom/github/panpf/sketch/request/ImageResult;Landroid/widget/ImageView$ScaleType;I)V
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/ViewTarget;Lcom/github/panpf/sketch/request/ImageResult;Landroid/widget/ImageView$ScaleType;IZ)V
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/ViewTarget;Lcom/github/panpf/sketch/request/ImageResult;Landroid/widget/ImageView$ScaleType;IZZ)V
+	public synthetic fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/ViewTarget;Lcom/github/panpf/sketch/request/ImageResult;Landroid/widget/ImageView$ScaleType;IZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/ViewTarget;Lcom/github/panpf/sketch/request/ImageResult;Z)V
+	public final fun getDurationMillis ()I
+	public final fun getFadeStart ()Z
+	public final fun getFitScale ()Z
+	public final fun getPreferExactIntrinsicSize ()Z
+	public final fun getScaleType ()Landroid/widget/ImageView$ScaleType;
+	public fun transition ()V
+}
+
+public final class com/github/panpf/sketch/transition/ViewCrossfadeTransition$Factory : com/github/panpf/sketch/transition/Transition$Factory {
+	public fun <init> ()V
+	public fun <init> (I)V
+	public fun <init> (IZ)V
+	public fun <init> (IZZ)V
+	public fun <init> (IZZZ)V
+	public synthetic fun <init> (IZZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun create (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/target/Target;Lcom/github/panpf/sketch/request/ImageResult;)Lcom/github/panpf/sketch/transition/Transition;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAlwaysUse ()Z
+	public final fun getDurationMillis ()I
+	public final fun getFadeStart ()Z
+	public fun getKey ()Ljava/lang/String;
+	public final fun getPreferExactIntrinsicSize ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/util/SketchUtils {
+	public static final field Companion Lcom/github/panpf/sketch/util/SketchUtils$Companion;
+}
+
+public final class com/github/panpf/sketch/util/SketchUtils$Companion {
+	public final fun dispose (Landroid/view/View;)Lkotlin/Unit;
+	public final fun getRequest (Landroid/view/View;)Lcom/github/panpf/sketch/request/ImageRequest;
+	public final fun getResult (Landroid/view/View;)Lcom/github/panpf/sketch/request/ImageResult;
+	public final fun getSketch (Landroid/view/View;)Lcom/github/panpf/sketch/Sketch;
+	public final fun restart (Landroid/view/View;)Lkotlin/Unit;
+}
+
+public final class com/github/panpf/sketch/util/View_core_utilsKt {
+	public static final fun calculateBoundsWithScaleAndAlignment (Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/Size;Landroid/graphics/PointF;I)Lcom/github/panpf/sketch/util/Rect;
+	public static final fun findDeepestDrawable (Landroid/graphics/drawable/Drawable;)Landroid/graphics/drawable/Drawable;
+	public static final fun findLeafDrawable (Landroid/graphics/drawable/Drawable;)Landroid/graphics/drawable/Drawable;
+	public static final fun getFitScale (Landroid/widget/ImageView$ScaleType;)Z
+	public static final fun toScale (Landroid/widget/ImageView$ScaleType;)Lcom/github/panpf/sketch/resize/Scale;
+	public static final fun toScaleType (Lcom/github/panpf/sketch/resize/Scale;)Landroid/widget/ImageView$ScaleType;
+}
+

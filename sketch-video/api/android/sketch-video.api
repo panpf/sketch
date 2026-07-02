@@ -1,0 +1,49 @@
+public final class com/github/panpf/sketch/decode/VideoFrameDecoder : com/github/panpf/sketch/decode/internal/HelperDecoder {
+	public static final field Companion Lcom/github/panpf/sketch/decode/VideoFrameDecoder$Companion;
+	public static final field SORT_WEIGHT I
+	public fun <init> (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/source/DataSource;Ljava/lang/String;)V
+}
+
+public final class com/github/panpf/sketch/decode/VideoFrameDecoder$Companion {
+}
+
+public final class com/github/panpf/sketch/decode/VideoFrameDecoder$Factory : com/github/panpf/sketch/decode/Decoder$Factory {
+	public fun <init> ()V
+	public synthetic fun create (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/fetch/FetchResult;)Lcom/github/panpf/sketch/decode/Decoder;
+	public fun create (Lcom/github/panpf/sketch/request/RequestContext;Lcom/github/panpf/sketch/fetch/FetchResult;)Lcom/github/panpf/sketch/decode/VideoFrameDecoder;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getKey ()Ljava/lang/String;
+	public fun getSortWeight ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/decode/VideoFrameDecoderKt {
+	public static final fun supportVideoFrame (Lcom/github/panpf/sketch/ComponentRegistry$Builder;)Lcom/github/panpf/sketch/ComponentRegistry$Builder;
+}
+
+public final class com/github/panpf/sketch/decode/internal/VideoFrameDecodeHelper : com/github/panpf/sketch/decode/internal/DecodeHelper {
+	public fun <init> (Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/source/DataSource;Ljava/lang/String;)V
+	public fun close ()V
+	public fun decode (ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun decodeRegion (Lcom/github/panpf/sketch/util/Rect;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getDataSource ()Lcom/github/panpf/sketch/source/DataSource;
+	public fun getImageInfo (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getMimeType ()Ljava/lang/String;
+	public final fun getRequest ()Lcom/github/panpf/sketch/request/ImageRequest;
+	public final fun getSketch ()Lcom/github/panpf/sketch/Sketch;
+	public fun isSupportRegion (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/util/VideoComponentProvider : com/github/panpf/sketch/util/ComponentProvider {
+	public fun <init> ()V
+	public fun addDecoders (Landroid/content/Context;)Ljava/util/List;
+	public fun addFetchers (Landroid/content/Context;)Ljava/util/List;
+	public fun addInterceptors (Landroid/content/Context;)Ljava/util/List;
+	public fun disabledDecoders (Landroid/content/Context;)Ljava/util/List;
+	public fun disabledFetchers (Landroid/content/Context;)Ljava/util/List;
+	public fun disabledInterceptors (Landroid/content/Context;)Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+

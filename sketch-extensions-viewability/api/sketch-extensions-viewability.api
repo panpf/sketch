@@ -1,0 +1,203 @@
+public abstract class com/github/panpf/sketch/ability/AbsAbilityImageView : androidx/appcompat/widget/AppCompatImageView, com/github/panpf/sketch/ability/ViewAbilityContainer {
+	public fun <init> (Landroid/content/Context;)V
+	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;)V
+	public fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;I)V
+	public synthetic fun <init> (Landroid/content/Context;Landroid/util/AttributeSet;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun addViewAbility (Lcom/github/panpf/sketch/ability/ViewAbility;)V
+	public final fun getImageMatrix ()Landroid/graphics/Matrix;
+	public fun getListener ()Lcom/github/panpf/sketch/request/Listener;
+	public fun getProgressListener ()Lcom/github/panpf/sketch/request/ProgressListener;
+	public final fun getScaleType ()Landroid/widget/ImageView$ScaleType;
+	public fun getViewAbilityList ()Ljava/util/List;
+	protected fun onAttachedToWindow ()V
+	protected fun onDetachedFromWindow ()V
+	protected fun onDraw (Landroid/graphics/Canvas;)V
+	public fun onDrawForeground (Landroid/graphics/Canvas;)V
+	protected fun onLayout (ZIIII)V
+	protected fun onRestoreInstanceState (Landroid/os/Parcelable;)V
+	protected fun onSaveInstanceState ()Landroid/os/Parcelable;
+	protected fun onSizeChanged (IIII)V
+	public fun onTouchEvent (Landroid/view/MotionEvent;)Z
+	protected fun onVisibilityChanged (Landroid/view/View;I)V
+	public fun removeViewAbility (Lcom/github/panpf/sketch/ability/ViewAbility;)V
+	public fun setImageDrawable (Landroid/graphics/drawable/Drawable;)V
+	public final fun setImageMatrix (Landroid/graphics/Matrix;)V
+	public fun setImageURI (Landroid/net/Uri;)V
+	public final fun setOnClickListener (Landroid/view/View$OnClickListener;)V
+	public final fun setOnLongClickListener (Landroid/view/View$OnLongClickListener;)V
+	public final fun setScaleType (Landroid/widget/ImageView$ScaleType;)V
+	public final fun superGetImageMatrix ()Landroid/graphics/Matrix;
+	public final fun superGetScaleType ()Landroid/widget/ImageView$ScaleType;
+	public final fun superSetImageMatrix (Landroid/graphics/Matrix;)V
+	public final fun superSetOnClickListener (Landroid/view/View$OnClickListener;)V
+	public final fun superSetOnLongClickListener (Landroid/view/View$OnLongClickListener;)V
+	public final fun superSetScaleType (Landroid/widget/ImageView$ScaleType;)V
+}
+
+public final class com/github/panpf/sketch/ability/AbsAbilityImageView$SavedState : android/view/View$BaseSavedState {
+	public static final field CREATOR Landroid/os/Parcelable$Creator;
+	public static final field Companion Lcom/github/panpf/sketch/ability/AbsAbilityImageView$SavedState$Companion;
+	public final fun getAbilityListStateBundle ()Landroid/os/Bundle;
+	public final fun setAbilityListStateBundle (Landroid/os/Bundle;)V
+	public fun toString ()Ljava/lang/String;
+	public fun writeToParcel (Landroid/os/Parcel;I)V
+}
+
+public final class com/github/panpf/sketch/ability/AbsAbilityImageView$SavedState$Companion {
+}
+
+public abstract interface class com/github/panpf/sketch/ability/AttachObserver : com/github/panpf/sketch/ability/ViewObserver {
+	public abstract fun onAttachedToWindow ()V
+	public abstract fun onDetachedFromWindow ()V
+}
+
+public abstract interface class com/github/panpf/sketch/ability/ClickObserver : com/github/panpf/sketch/ability/ViewObserver {
+	public abstract fun getCanIntercept ()Z
+	public abstract fun onClick (Landroid/view/View;)Z
+}
+
+public abstract interface class com/github/panpf/sketch/ability/DrawForegroundObserver : com/github/panpf/sketch/ability/ViewObserver {
+	public abstract fun onDrawForeground (Landroid/graphics/Canvas;)V
+	public abstract fun onDrawForegroundBefore (Landroid/graphics/Canvas;)V
+}
+
+public abstract interface class com/github/panpf/sketch/ability/DrawObserver : com/github/panpf/sketch/ability/ViewObserver {
+	public abstract fun onDraw (Landroid/graphics/Canvas;)V
+	public abstract fun onDrawBefore (Landroid/graphics/Canvas;)V
+}
+
+public abstract interface class com/github/panpf/sketch/ability/DrawableObserver : com/github/panpf/sketch/ability/ViewObserver {
+	public abstract fun onDrawableChanged (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;)V
+}
+
+public final class com/github/panpf/sketch/ability/Host {
+	public fun <init> (Landroid/view/View;Lcom/github/panpf/sketch/ability/ViewAbilityContainer;)V
+	public final fun getContainer ()Lcom/github/panpf/sketch/ability/ViewAbilityContainer;
+	public final fun getContext ()Landroid/content/Context;
+	public final fun getView ()Landroid/view/View;
+}
+
+public abstract interface class com/github/panpf/sketch/ability/ImageMatrixObserver : com/github/panpf/sketch/ability/ViewObserver {
+	public abstract fun getImageMatrix ()Landroid/graphics/Matrix;
+	public abstract fun setImageMatrix (Landroid/graphics/Matrix;)Z
+}
+
+public abstract interface class com/github/panpf/sketch/ability/InstanceStateObserver : com/github/panpf/sketch/ability/ViewObserver {
+	public abstract fun onRestoreInstanceState (Landroid/os/Bundle;)V
+	public abstract fun onSaveInstanceState ()Landroid/os/Bundle;
+}
+
+public abstract interface class com/github/panpf/sketch/ability/LayoutObserver : com/github/panpf/sketch/ability/ViewObserver {
+	public abstract fun onLayout (ZIIII)V
+}
+
+public abstract interface class com/github/panpf/sketch/ability/LongClickObserver : com/github/panpf/sketch/ability/ViewObserver {
+	public abstract fun getCanIntercept ()Z
+	public abstract fun onLongClick (Landroid/view/View;)Z
+}
+
+public abstract interface class com/github/panpf/sketch/ability/RequestListenerObserver : com/github/panpf/sketch/ability/ViewObserver {
+	public abstract fun onRequestError (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Error;)V
+	public abstract fun onRequestStart (Lcom/github/panpf/sketch/request/ImageRequest;)V
+	public abstract fun onRequestSuccess (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Success;)V
+}
+
+public abstract interface class com/github/panpf/sketch/ability/RequestProgressListenerObserver : com/github/panpf/sketch/ability/ViewObserver {
+	public abstract fun onUpdateRequestProgress (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/Progress;)V
+}
+
+public abstract interface class com/github/panpf/sketch/ability/ScaleTypeObserver : com/github/panpf/sketch/ability/ViewObserver {
+	public abstract fun getScaleType ()Landroid/widget/ImageView$ScaleType;
+	public abstract fun setScaleType (Landroid/widget/ImageView$ScaleType;)Z
+}
+
+public abstract interface class com/github/panpf/sketch/ability/SizeChangedObserver : com/github/panpf/sketch/ability/ViewObserver {
+	public abstract fun onSizeChanged (IIII)V
+}
+
+public abstract interface class com/github/panpf/sketch/ability/TouchEventObserver : com/github/panpf/sketch/ability/ViewObserver {
+	public abstract fun onTouchEvent (Landroid/view/MotionEvent;)Z
+}
+
+public abstract interface class com/github/panpf/sketch/ability/ViewAbility {
+	public abstract fun getHost ()Lcom/github/panpf/sketch/ability/Host;
+	public abstract fun setHost (Lcom/github/panpf/sketch/ability/Host;)V
+}
+
+public abstract interface class com/github/panpf/sketch/ability/ViewAbilityContainer : com/github/panpf/sketch/request/ListenerProvider {
+	public abstract fun addViewAbility (Lcom/github/panpf/sketch/ability/ViewAbility;)V
+	public abstract fun getContext ()Landroid/content/Context;
+	public abstract fun getDrawable ()Landroid/graphics/drawable/Drawable;
+	public abstract fun getRequestState ()Lcom/github/panpf/sketch/request/RequestState;
+	public abstract fun getViewAbilityList ()Ljava/util/List;
+	public abstract fun removeViewAbility (Lcom/github/panpf/sketch/ability/ViewAbility;)V
+	public abstract fun superGetImageMatrix ()Landroid/graphics/Matrix;
+	public abstract fun superGetScaleType ()Landroid/widget/ImageView$ScaleType;
+	public abstract fun superSetImageMatrix (Landroid/graphics/Matrix;)V
+	public abstract fun superSetOnClickListener (Landroid/view/View$OnClickListener;)V
+	public abstract fun superSetOnLongClickListener (Landroid/view/View$OnLongClickListener;)V
+	public abstract fun superSetScaleType (Landroid/widget/ImageView$ScaleType;)V
+}
+
+public abstract interface class com/github/panpf/sketch/ability/ViewAbilityManager {
+	public abstract fun addViewAbility (Lcom/github/panpf/sketch/ability/ViewAbility;)Lcom/github/panpf/sketch/ability/ViewAbilityManager;
+	public abstract fun getImageMatrix ()Landroid/graphics/Matrix;
+	public abstract fun getRequestListener ()Lcom/github/panpf/sketch/request/Listener;
+	public abstract fun getRequestProgressListener ()Lcom/github/panpf/sketch/request/ProgressListener;
+	public abstract fun getScaleType ()Landroid/widget/ImageView$ScaleType;
+	public abstract fun getViewAbilityList ()Ljava/util/List;
+	public abstract fun onAttachedToWindow ()V
+	public abstract fun onDetachedFromWindow ()V
+	public abstract fun onDraw (Landroid/graphics/Canvas;)V
+	public abstract fun onDrawBefore (Landroid/graphics/Canvas;)V
+	public abstract fun onDrawForeground (Landroid/graphics/Canvas;)V
+	public abstract fun onDrawForegroundBefore (Landroid/graphics/Canvas;)V
+	public abstract fun onDrawableChanged (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;)V
+	public abstract fun onLayout (ZIIII)V
+	public abstract fun onRestoreInstanceState (Landroid/os/Bundle;)V
+	public abstract fun onSaveInstanceState ()Landroid/os/Bundle;
+	public abstract fun onSizeChanged (IIII)V
+	public abstract fun onTouchEvent (Landroid/view/MotionEvent;)Z
+	public abstract fun onVisibilityChanged (Landroid/view/View;I)V
+	public abstract fun removeViewAbility (Lcom/github/panpf/sketch/ability/ViewAbility;)Lcom/github/panpf/sketch/ability/ViewAbilityManager;
+	public abstract fun setImageMatrix (Landroid/graphics/Matrix;)Z
+	public abstract fun setOnClickListener (Landroid/view/View$OnClickListener;)V
+	public abstract fun setOnLongClickListener (Landroid/view/View$OnLongClickListener;)V
+	public abstract fun setScaleType (Landroid/widget/ImageView$ScaleType;)Z
+}
+
+public abstract interface class com/github/panpf/sketch/ability/ViewObserver {
+}
+
+public abstract interface class com/github/panpf/sketch/ability/VisibilityChangedObserver : com/github/panpf/sketch/ability/ViewObserver {
+	public abstract fun onVisibilityChanged (Landroid/view/View;I)V
+}
+
+public final class com/github/panpf/sketch/ability/internal/RealViewAbilityManager : com/github/panpf/sketch/ability/ViewAbilityManager {
+	public fun <init> (Lcom/github/panpf/sketch/ability/ViewAbilityContainer;Landroid/view/View;)V
+	public fun addViewAbility (Lcom/github/panpf/sketch/ability/ViewAbility;)Lcom/github/panpf/sketch/ability/ViewAbilityManager;
+	public fun getImageMatrix ()Landroid/graphics/Matrix;
+	public fun getRequestListener ()Lcom/github/panpf/sketch/request/Listener;
+	public fun getRequestProgressListener ()Lcom/github/panpf/sketch/request/ProgressListener;
+	public fun getScaleType ()Landroid/widget/ImageView$ScaleType;
+	public fun getViewAbilityList ()Ljava/util/List;
+	public fun onAttachedToWindow ()V
+	public fun onDetachedFromWindow ()V
+	public fun onDraw (Landroid/graphics/Canvas;)V
+	public fun onDrawBefore (Landroid/graphics/Canvas;)V
+	public fun onDrawForeground (Landroid/graphics/Canvas;)V
+	public fun onDrawForegroundBefore (Landroid/graphics/Canvas;)V
+	public fun onDrawableChanged (Landroid/graphics/drawable/Drawable;Landroid/graphics/drawable/Drawable;)V
+	public fun onLayout (ZIIII)V
+	public fun onRestoreInstanceState (Landroid/os/Bundle;)V
+	public fun onSaveInstanceState ()Landroid/os/Bundle;
+	public fun onSizeChanged (IIII)V
+	public fun onTouchEvent (Landroid/view/MotionEvent;)Z
+	public fun onVisibilityChanged (Landroid/view/View;I)V
+	public fun removeViewAbility (Lcom/github/panpf/sketch/ability/ViewAbility;)Lcom/github/panpf/sketch/ability/ViewAbilityManager;
+	public fun setImageMatrix (Landroid/graphics/Matrix;)Z
+	public fun setOnClickListener (Landroid/view/View$OnClickListener;)V
+	public fun setOnLongClickListener (Landroid/view/View$OnLongClickListener;)V
+	public fun setScaleType (Landroid/widget/ImageView$ScaleType;)Z
+}
+

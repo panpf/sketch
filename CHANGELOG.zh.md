@@ -7,6 +7,15 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
+# new
+
+## Dependencies
+
+* depend: 升级 jetbrains compose 1.11.1
+* depend: 升级 jetbrains lifecycle 2.11.0-beta01
+* depend: 升级 kotlin 2.4.0
+* depend: 升级 skiko 0.144.6
+
 # 4.5.0 Stable
 
 4.5.0-rc01 以来的改变：

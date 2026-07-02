@@ -1,0 +1,17 @@
+public final class com/github/panpf/sketch/Image_view_koin_extensionsKt {
+	public static final fun loadAssetImage (Landroid/widget/ImageView;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/request/Disposable;
+	public static synthetic fun loadAssetImage$default (Landroid/widget/ImageView;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/Disposable;
+	public static final fun loadImage (Landroid/widget/ImageView;Landroid/net/Uri;Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/request/Disposable;
+	public static final fun loadImage (Landroid/widget/ImageView;Ljava/io/File;Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/request/Disposable;
+	public static final fun loadImage (Landroid/widget/ImageView;Ljava/lang/Integer;Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/request/Disposable;
+	public static final fun loadImage (Landroid/widget/ImageView;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/request/Disposable;
+	public static synthetic fun loadImage$default (Landroid/widget/ImageView;Landroid/net/Uri;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/Disposable;
+	public static synthetic fun loadImage$default (Landroid/widget/ImageView;Ljava/io/File;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/Disposable;
+	public static synthetic fun loadImage$default (Landroid/widget/ImageView;Ljava/lang/Integer;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/Disposable;
+	public static synthetic fun loadImage$default (Landroid/widget/ImageView;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/Disposable;
+	public static final fun loadResourceImage (Landroid/widget/ImageView;Ljava/lang/Integer;Lkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/request/Disposable;
+	public static final fun loadResourceImage (Landroid/widget/ImageView;Ljava/lang/String;ILkotlin/jvm/functions/Function1;)Lcom/github/panpf/sketch/request/Disposable;
+	public static synthetic fun loadResourceImage$default (Landroid/widget/ImageView;Ljava/lang/Integer;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/Disposable;
+	public static synthetic fun loadResourceImage$default (Landroid/widget/ImageView;Ljava/lang/String;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lcom/github/panpf/sketch/request/Disposable;
+}
+

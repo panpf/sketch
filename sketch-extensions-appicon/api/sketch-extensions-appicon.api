@@ -1,0 +1,54 @@
+public final class com/github/panpf/sketch/drawable/AppIconDrawableFetcher : com/github/panpf/sketch/drawable/DrawableFetcher {
+	public fun <init> (Ljava/lang/String;I)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDrawable (Landroid/content/Context;)Landroid/graphics/drawable/Drawable;
+	public fun getKey ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/fetch/AppIconUriFetcher : com/github/panpf/sketch/fetch/Fetcher {
+	public static final field Companion Lcom/github/panpf/sketch/fetch/AppIconUriFetcher$Companion;
+	public static final field IMAGE_MIME_TYPE Ljava/lang/String;
+	public static final field SCHEME Ljava/lang/String;
+	public static final field SORT_WEIGHT I
+	public fun <init> (Landroid/content/Context;Ljava/lang/String;I)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun fetch-IoAF18A (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getContext ()Landroid/content/Context;
+	public final fun getPackageName ()Ljava/lang/String;
+	public final fun getVersionCode ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/fetch/AppIconUriFetcher$Companion {
+}
+
+public final class com/github/panpf/sketch/fetch/AppIconUriFetcher$Factory : com/github/panpf/sketch/fetch/Fetcher$Factory {
+	public fun <init> ()V
+	public fun create (Lcom/github/panpf/sketch/request/RequestContext;)Lcom/github/panpf/sketch/fetch/AppIconUriFetcher;
+	public synthetic fun create (Lcom/github/panpf/sketch/request/RequestContext;)Lcom/github/panpf/sketch/fetch/Fetcher;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getSortWeight ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class com/github/panpf/sketch/fetch/AppIconUriFetcherKt {
+	public static final fun isAppIconUri (Lcom/github/panpf/sketch/util/Uri;)Z
+	public static final fun newAppIconUri (Ljava/lang/String;I)Ljava/lang/String;
+	public static final fun supportAppIcon (Lcom/github/panpf/sketch/ComponentRegistry$Builder;)Lcom/github/panpf/sketch/ComponentRegistry$Builder;
+}
+
+public final class com/github/panpf/sketch/util/AppIconComponentProvider : com/github/panpf/sketch/util/ComponentProvider {
+	public fun <init> ()V
+	public fun addDecoders (Landroid/content/Context;)Ljava/util/List;
+	public fun addFetchers (Landroid/content/Context;)Ljava/util/List;
+	public fun addInterceptors (Landroid/content/Context;)Ljava/util/List;
+	public fun disabledDecoders (Landroid/content/Context;)Ljava/util/List;
+	public fun disabledFetchers (Landroid/content/Context;)Ljava/util/List;
+	public fun disabledInterceptors (Landroid/content/Context;)Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+}
+
