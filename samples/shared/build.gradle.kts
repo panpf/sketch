@@ -54,7 +54,6 @@ kotlin {
             api(projects.sketchSvg)
             api(libs.androidx.paging.compose)
             api(libs.jetbrains.compose.components.resources)
-            api(libs.jetbrains.compose.material)    // pull refresh
             api(libs.jetbrains.compose.material.icons.core)
             api(libs.jetbrains.compose.material3)
             api(libs.jetbrains.compose.material3.adaptiveNavigation3)

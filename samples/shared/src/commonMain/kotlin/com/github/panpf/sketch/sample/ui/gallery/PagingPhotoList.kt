@@ -14,10 +14,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -41,11 +38,9 @@ import kotlinx.coroutines.flow.Flow
 import org.koin.compose.koinInject
 
 @Composable
-@OptIn(ExperimentalMaterialApi::class)
 fun PagingPhotoList(
     photoPagingFlow: Flow<PagingData<Photo>>,
     animatedPlaceholder: Boolean,
-    modifier: Modifier = Modifier,
     gridCellsMinSize: Dp = 100.dp,
     refreshWhen: Flow<Any>? = null,
     onClick: (items: List<Photo>, photo: Photo, index: Int) -> Unit,
@@ -61,14 +56,10 @@ fun PagingPhotoList(
         }
     }
 
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = pagingItems.loadState.refresh is Loading,
-        onRefresh = { pagingItems.refresh() }
-    )
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .pullRefresh(pullRefreshState)
+    PullToRefreshBox(
+        isRefreshing = pagingItems.loadState.refresh is Loading,
+        onRefresh = { pagingItems.refresh() },
+        modifier = Modifier.fillMaxSize()
     ) {
         val staggeredGridMode by appSettings.staggeredGridMode.collectAsState()
         if (staggeredGridMode) {
@@ -86,12 +77,6 @@ fun PagingPhotoList(
                 onClick = onClick,
             )
         }
-
-        PullRefreshIndicator(
-            refreshing = pagingItems.loadState.refresh is Loading,
-            state = pullRefreshState,
-            modifier = Modifier.align(Alignment.TopCenter)
-        )
 
         PagingListRefreshState(pagingItems)
 
