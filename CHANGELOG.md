@@ -9,7 +9,9 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
-# new
+# 4.6.0-beta01
+
+## Dependencies
 
 * depend: Upgrade to androidgifdrawable 1.2.32
 * depend: Upgrade to ffmpegMediaMetadataRetriever 1.0.23
