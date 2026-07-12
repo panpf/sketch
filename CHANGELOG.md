@@ -9,6 +9,20 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
+# 4.6.0 Stable
+
+No changes since 4.6.0-beta01.
+
+## Dependencies
+
+* depend: Upgrade to jetbrains compose 1.11.1
+* depend: Upgrade to jetbrains lifecycle 2.11.0-beta01
+* depend: Upgrade to koin 4.2.1
+* depend: Upgrade to kotlin 2.4.0
+* depend: Upgrade to skiko 0.144.6
+* depend: Upgrade to androidgifdrawable 1.2.32
+* depend: Upgrade to ffmpegMediaMetadataRetriever 1.0.23
+
 # 4.6.0-beta01
 
 ## Dependencies
