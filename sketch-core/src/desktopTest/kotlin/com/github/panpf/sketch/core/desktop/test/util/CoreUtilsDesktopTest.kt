@@ -3,6 +3,7 @@ package com.github.panpf.sketch.core.desktop.test.util
 import com.github.panpf.sketch.util.isMainThread
 import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.util.requiredWorkThread
+import com.github.panpf.sketch.util.setMainThreadChecker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
@@ -44,6 +45,22 @@ class CoreUtilsDesktopTest {
             assertFailsWith(IllegalStateException::class) {
                 requiredWorkThread()
             }
+        }
+    }
+
+    @Test
+    fun testCustomMainThreadChecker() = runTest {
+        try {
+            setMainThreadChecker { true }
+            withContext(Dispatchers.IO) {
+                assertTrue(isMainThread())
+                requiredMainThread()
+                assertFailsWith(IllegalStateException::class) {
+                    requiredWorkThread()
+                }
+            }
+        } finally {
+            setMainThreadChecker(null)
         }
     }
 }

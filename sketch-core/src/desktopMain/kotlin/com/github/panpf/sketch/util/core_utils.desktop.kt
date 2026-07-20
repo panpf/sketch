@@ -24,7 +24,7 @@ import javax.swing.SwingUtilities
  *
  * @see com.github.panpf.sketch.core.desktop.test.util.CoreUtilsDesktopTest.testIsMainThread
  */
-internal actual fun isMainThread() = SwingUtilities.isEventDispatchThread()
+internal actual fun platformIsMainThread() = SwingUtilities.isEventDispatchThread()
 
 /**
  * Throws an exception if not currently on the main thread

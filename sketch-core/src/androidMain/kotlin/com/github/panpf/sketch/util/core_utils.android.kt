@@ -31,7 +31,7 @@ import java.io.File
  *
  * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testIsMainThread
  */
-internal actual fun isMainThread() = Looper.myLooper() == Looper.getMainLooper()
+internal actual fun platformIsMainThread() = Looper.myLooper() == Looper.getMainLooper()
 
 /**
  * Throws an exception if not currently on the main thread

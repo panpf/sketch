@@ -54,6 +54,7 @@ import com.github.panpf.sketch.util.defaultFileSystem
 import com.github.panpf.sketch.util.defaultLogPipeline
 import com.github.panpf.sketch.util.ioCoroutineDispatcher
 import com.github.panpf.sketch.util.isMainThread
+import com.github.panpf.sketch.util.setMainThreadChecker
 import com.github.panpf.sketch.util.toComponentRegistry
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineDispatcher
@@ -279,6 +280,7 @@ class Sketch private constructor(
         private var globalImageOptions: ImageOptions? = null
         private var networkParallelismLimited: Int? = null
         private var decodeParallelismLimited: Int? = null
+        private var mainThreadChecker: (() -> Boolean)? = null
 
         init {
             checkPlatformContext(this.context)
@@ -449,7 +451,21 @@ class Sketch private constructor(
             this.decodeParallelismLimited = parallelism
         }
 
+        /**
+         * Set the function used to determine whether the current thread is the UI thread.
+         *
+         * By default, Sketch uses the platform's UI-thread detector.
+         *
+         * The configured checker is process-wide because Sketch's memory cache and request
+         * managers also rely on the UI-thread invariant. Configure it before creating or using
+         * any [Sketch] instance.
+         */
+        fun mainThreadChecker(checker: () -> Boolean): Builder = apply {
+            this.mainThreadChecker = checker
+        }
+
         fun build(): Sketch {
+            mainThreadChecker?.let(::setMainThreadChecker)
             val context = context.application
             val logger = this.logger ?: Logger()
             val finalFileSystem = fileSystem ?: defaultFileSystem()

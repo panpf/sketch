@@ -6,6 +6,11 @@ import com.github.panpf.sketch.decode.SkiaDecoder
 import com.github.panpf.sketch.fetch.KotlinResourceUriFetcher
 import com.github.panpf.sketch.platformComponents
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.util.isMainThread
+import com.github.panpf.sketch.util.setMainThreadChecker
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -59,6 +64,18 @@ class SketchDesktopTest {
                 expected = "Dispatchers.IO.limitedParallelism(8)",
                 actual = decodeTaskDispatcher.toString()
             )
+        }
+    }
+
+    @Test
+    fun testMainThreadChecker() = runTest {
+        try {
+            Sketch.Builder(getTestContext()).mainThreadChecker { true }.build()
+            withContext(Dispatchers.IO) {
+                assertEquals(expected = true, actual = isMainThread())
+            }
+        } finally {
+            setMainThreadChecker(null)
         }
     }
 }

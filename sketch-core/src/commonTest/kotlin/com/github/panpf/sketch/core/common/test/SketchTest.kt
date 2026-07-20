@@ -36,6 +36,8 @@ import com.github.panpf.sketch.transform.internal.TransformationInterceptor
 import com.github.panpf.sketch.util.ComponentLoader
 import com.github.panpf.sketch.util.Logger
 import com.github.panpf.sketch.util.defaultFileSystem
+import com.github.panpf.sketch.util.isMainThread
+import com.github.panpf.sketch.util.setMainThreadChecker
 import com.github.panpf.sketch.util.toComponentRegistry
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -426,6 +428,16 @@ class SketchTest {
     fun testSystemCallbacks() {
         val sketch = getTestContextAndSketch().second
         assertNotNull(sketch.systemCallbacks)
+    }
+
+    @Test
+    fun testMainThreadChecker() {
+        try {
+            Sketch.Builder(getTestContext()).mainThreadChecker { true }.build()
+            assertTrue(isMainThread())
+        } finally {
+            setMainThreadChecker(null)
+        }
     }
 
     @Test

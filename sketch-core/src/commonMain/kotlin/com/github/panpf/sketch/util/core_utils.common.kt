@@ -18,6 +18,7 @@ package com.github.panpf.sketch.util
 
 import com.github.panpf.sketch.request.ImageOptions
 import com.github.panpf.sketch.request.ImageRequest
+import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okio.ByteString.Companion.encodeUtf8
@@ -83,7 +84,16 @@ internal fun <R> Any.asOrThrow(): R {
  * @see com.github.panpf.sketch.core.desktop.test.util.CoreUtilsDesktopTest.testIsMainThread
  * @see com.github.panpf.sketch.core.jscommon.test.util.CoreUtilsJsCommonTest.testIsMainThread
  */
-internal expect fun isMainThread(): Boolean
+private val mainThreadChecker = atomic<(() -> Boolean)?>(null)
+
+internal fun isMainThread(): Boolean =
+    mainThreadChecker.value?.invoke() ?: platformIsMainThread()
+
+internal fun setMainThreadChecker(checker: (() -> Boolean)?) {
+    mainThreadChecker.value = checker
+}
+
+internal expect fun platformIsMainThread(): Boolean
 
 /**
  * Throws an exception if not currently on the main thread
