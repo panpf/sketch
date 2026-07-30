@@ -30,7 +30,7 @@ kotlin {
             api(projects.sketchVideo)
             api(projects.sketchVideoFfmpeg)
         }
-        iosMain.dependencies {
+        appleMain.dependencies {
             api(projects.sketchVideo)
         }
     }

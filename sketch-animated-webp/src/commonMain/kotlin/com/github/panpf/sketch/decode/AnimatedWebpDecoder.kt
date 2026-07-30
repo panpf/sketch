@@ -22,7 +22,7 @@ import com.github.panpf.sketch.ComponentRegistry
  * Adds webp animated image support
  *
  * @see com.github.panpf.sketch.animated.webp.android.test.decode.AnimatedWebpDecoderAndroidTest.testSupportAnimatedWebp
- * @see com.github.panpf.sketch.animated.webp.ios.test.decode.AnimatedWebpDecoderIosTest.testSupportAnimatedWebp
+ * @see com.github.panpf.sketch.animated.webp.apple.test.decode.AnimatedWebpDecoderAppleTest.testSupportAnimatedWebp
  * @see com.github.panpf.sketch.animated.webp.desktop.test.decode.AnimatedWebpDecoderDesktopTest.testSupportAnimatedWebp
  * @see com.github.panpf.sketch.animated.webp.jscommon.test.decode.AnimatedWebpDecoderJsCommonTest.testSupportAnimatedWebp
  */

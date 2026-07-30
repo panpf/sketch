@@ -1,5 +1,6 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64, js, wasmJs]
+// Targets: [iosArm64, iosSimulatorArm64, js, macosArm64, wasmJs]
+// Alias: apple => [iosArm64, iosSimulatorArm64, macosArm64]
 // Alias: ios => [iosArm64, iosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
@@ -3154,6 +3155,77 @@ final fun com.github.panpf.sketch/createBitmap(org.jetbrains.skia/ImageInfo): or
 final suspend fun com.github.panpf.sketch.request/RequestContext(com.github.panpf.sketch/Sketch, com.github.panpf.sketch.request/ImageRequest): com.github.panpf.sketch.request/RequestContext // com.github.panpf.sketch.request/RequestContext|RequestContext(com.github.panpf.sketch.Sketch;com.github.panpf.sketch.request.ImageRequest){}[0]
 final suspend fun com.github.panpf.sketch.request/resolveSize(com.github.panpf.sketch.request/ImageRequest): com.github.panpf.sketch.util/Size // com.github.panpf.sketch.request/resolveSize|resolveSize(com.github.panpf.sketch.request.ImageRequest){}[0]
 
+// Targets: [apple]
+final class com.github.panpf.sketch.fetch/KotlinResourceUriFetcher : com.github.panpf.sketch.fetch/Fetcher { // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher|null[0]
+    constructor <init>(kotlin/String, okio/FileSystem = ...) // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.<init>|<init>(kotlin.String;okio.FileSystem){}[0]
+
+    final val fileSystem // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.fileSystem|{}fileSystem[0]
+        final fun <get-fileSystem>(): okio/FileSystem // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.fileSystem.<get-fileSystem>|<get-fileSystem>(){}[0]
+    final val resourcePath // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.resourcePath|{}resourcePath[0]
+        final fun <get-resourcePath>(): kotlin/String // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.resourcePath.<get-resourcePath>|<get-resourcePath>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.toString|toString(){}[0]
+    final suspend fun fetch(): kotlin/Result<com.github.panpf.sketch.fetch/FetchResult> // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.fetch|fetch(){}[0]
+
+    final class Factory : com.github.panpf.sketch.fetch/Fetcher.Factory { // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory|null[0]
+        constructor <init>() // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory.<init>|<init>(){}[0]
+
+        final val sortWeight // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory.sortWeight|{}sortWeight[0]
+            final fun <get-sortWeight>(): kotlin/Int // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory.sortWeight.<get-sortWeight>|<get-sortWeight>(){}[0]
+
+        final fun create(com.github.panpf.sketch.request/RequestContext): com.github.panpf.sketch.fetch/KotlinResourceUriFetcher? // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory.create|create(com.github.panpf.sketch.request.RequestContext){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory.toString|toString(){}[0]
+    }
+
+    final object Companion { // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion|null[0]
+        final const val PATH_ROOT // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion.PATH_ROOT|{}PATH_ROOT[0]
+            final fun <get-PATH_ROOT>(): kotlin/String // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion.PATH_ROOT.<get-PATH_ROOT>|<get-PATH_ROOT>(){}[0]
+        final const val SCHEME // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion.SCHEME|{}SCHEME[0]
+            final fun <get-SCHEME>(): kotlin/String // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion.SCHEME.<get-SCHEME>|<get-SCHEME>(){}[0]
+        final const val SORT_WEIGHT // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion.SORT_WEIGHT|{}SORT_WEIGHT[0]
+            final fun <get-SORT_WEIGHT>(): kotlin/Int // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion.SORT_WEIGHT.<get-SORT_WEIGHT>|<get-SORT_WEIGHT>(){}[0]
+    }
+}
+
+// Targets: [apple]
+final class com.github.panpf.sketch.source/KotlinResourceDataSource : com.github.panpf.sketch.source/DataSource { // com.github.panpf.sketch.source/KotlinResourceDataSource|null[0]
+    constructor <init>(kotlin/String, okio/FileSystem = ...) // com.github.panpf.sketch.source/KotlinResourceDataSource.<init>|<init>(kotlin.String;okio.FileSystem){}[0]
+
+    final val dataFrom // com.github.panpf.sketch.source/KotlinResourceDataSource.dataFrom|{}dataFrom[0]
+        final fun <get-dataFrom>(): com.github.panpf.sketch.source/DataFrom // com.github.panpf.sketch.source/KotlinResourceDataSource.dataFrom.<get-dataFrom>|<get-dataFrom>(){}[0]
+    final val fileSystem // com.github.panpf.sketch.source/KotlinResourceDataSource.fileSystem|{}fileSystem[0]
+        final fun <get-fileSystem>(): okio/FileSystem // com.github.panpf.sketch.source/KotlinResourceDataSource.fileSystem.<get-fileSystem>|<get-fileSystem>(){}[0]
+    final val key // com.github.panpf.sketch.source/KotlinResourceDataSource.key|{}key[0]
+        final fun <get-key>(): kotlin/String // com.github.panpf.sketch.source/KotlinResourceDataSource.key.<get-key>|<get-key>(){}[0]
+    final val resourcePath // com.github.panpf.sketch.source/KotlinResourceDataSource.resourcePath|{}resourcePath[0]
+        final fun <get-resourcePath>(): kotlin/String // com.github.panpf.sketch.source/KotlinResourceDataSource.resourcePath.<get-resourcePath>|<get-resourcePath>(){}[0]
+
+    final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.source/KotlinResourceDataSource.equals|equals(kotlin.Any?){}[0]
+    final fun getFile(com.github.panpf.sketch/Sketch): okio/Path // com.github.panpf.sketch.source/KotlinResourceDataSource.getFile|getFile(com.github.panpf.sketch.Sketch){}[0]
+    final fun hashCode(): kotlin/Int // com.github.panpf.sketch.source/KotlinResourceDataSource.hashCode|hashCode(){}[0]
+    final fun openSource(): okio/Source // com.github.panpf.sketch.source/KotlinResourceDataSource.openSource|openSource(){}[0]
+    final fun toString(): kotlin/String // com.github.panpf.sketch.source/KotlinResourceDataSource.toString|toString(){}[0]
+}
+
+// Targets: [apple]
+final fun (kotlin/ByteArray).com.github.panpf.sketch.util/toNSData(): platform.Foundation/NSData // com.github.panpf.sketch.util/toNSData|toNSData@kotlin.ByteArray(){}[0]
+
+// Targets: [apple]
+final fun (kotlinx.cinterop/CPointer<cnames.structs/CGImage>).com.github.panpf.sketch.util/toBitmap(kotlin/Int = ..., com.github.panpf.sketch.util/Rect? = ...): org.jetbrains.skia/Bitmap // com.github.panpf.sketch.util/toBitmap|toBitmap@kotlinx.cinterop.CPointer<cnames.structs.CGImage>(kotlin.Int;com.github.panpf.sketch.util.Rect?){}[0]
+
+// Targets: [apple]
+final fun (platform.Foundation/NSData).com.github.panpf.sketch.util/toByteArray(): kotlin/ByteArray // com.github.panpf.sketch.util/toByteArray|toByteArray@platform.Foundation.NSData(){}[0]
+
+// Targets: [apple]
+final fun com.github.panpf.sketch.fetch/isKotlinResourceUri(com.github.panpf.sketch.util/Uri): kotlin/Boolean // com.github.panpf.sketch.fetch/isKotlinResourceUri|isKotlinResourceUri(com.github.panpf.sketch.util.Uri){}[0]
+
+// Targets: [apple]
+final fun com.github.panpf.sketch.fetch/newKotlinResourceUri(kotlin/String): kotlin/String // com.github.panpf.sketch.fetch/newKotlinResourceUri|newKotlinResourceUri(kotlin.String){}[0]
+
 // Targets: [ios]
 final class com.github.panpf.sketch.decode.internal/PhotosAssetDecodeHelper : com.github.panpf.sketch.decode.internal/DecodeHelper { // com.github.panpf.sketch.decode.internal/PhotosAssetDecodeHelper|null[0]
     constructor <init>(com.github.panpf.sketch.source/PhotosAssetDataSource, kotlin/String) // com.github.panpf.sketch.decode.internal/PhotosAssetDecodeHelper.<init>|<init>(com.github.panpf.sketch.source.PhotosAssetDataSource;kotlin.String){}[0]
@@ -3247,42 +3319,6 @@ final class com.github.panpf.sketch.decode/UIImageDecoder : com.github.panpf.ske
 }
 
 // Targets: [ios]
-final class com.github.panpf.sketch.fetch/KotlinResourceUriFetcher : com.github.panpf.sketch.fetch/Fetcher { // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher|null[0]
-    constructor <init>(kotlin/String, okio/FileSystem = ...) // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.<init>|<init>(kotlin.String;okio.FileSystem){}[0]
-
-    final val fileSystem // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.fileSystem|{}fileSystem[0]
-        final fun <get-fileSystem>(): okio/FileSystem // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.fileSystem.<get-fileSystem>|<get-fileSystem>(){}[0]
-    final val resourcePath // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.resourcePath|{}resourcePath[0]
-        final fun <get-resourcePath>(): kotlin/String // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.resourcePath.<get-resourcePath>|<get-resourcePath>(){}[0]
-
-    final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.hashCode|hashCode(){}[0]
-    final fun toString(): kotlin/String // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.toString|toString(){}[0]
-    final suspend fun fetch(): kotlin/Result<com.github.panpf.sketch.fetch/FetchResult> // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.fetch|fetch(){}[0]
-
-    final class Factory : com.github.panpf.sketch.fetch/Fetcher.Factory { // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory|null[0]
-        constructor <init>() // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory.<init>|<init>(){}[0]
-
-        final val sortWeight // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory.sortWeight|{}sortWeight[0]
-            final fun <get-sortWeight>(): kotlin/Int // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory.sortWeight.<get-sortWeight>|<get-sortWeight>(){}[0]
-
-        final fun create(com.github.panpf.sketch.request/RequestContext): com.github.panpf.sketch.fetch/KotlinResourceUriFetcher? // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory.create|create(com.github.panpf.sketch.request.RequestContext){}[0]
-        final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory.equals|equals(kotlin.Any?){}[0]
-        final fun hashCode(): kotlin/Int // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory.hashCode|hashCode(){}[0]
-        final fun toString(): kotlin/String // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Factory.toString|toString(){}[0]
-    }
-
-    final object Companion { // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion|null[0]
-        final const val PATH_ROOT // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion.PATH_ROOT|{}PATH_ROOT[0]
-            final fun <get-PATH_ROOT>(): kotlin/String // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion.PATH_ROOT.<get-PATH_ROOT>|<get-PATH_ROOT>(){}[0]
-        final const val SCHEME // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion.SCHEME|{}SCHEME[0]
-            final fun <get-SCHEME>(): kotlin/String // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion.SCHEME.<get-SCHEME>|<get-SCHEME>(){}[0]
-        final const val SORT_WEIGHT // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion.SORT_WEIGHT|{}SORT_WEIGHT[0]
-            final fun <get-SORT_WEIGHT>(): kotlin/Int // com.github.panpf.sketch.fetch/KotlinResourceUriFetcher.Companion.SORT_WEIGHT.<get-SORT_WEIGHT>|<get-SORT_WEIGHT>(){}[0]
-    }
-}
-
-// Targets: [ios]
 final class com.github.panpf.sketch.fetch/PhotosAssetUriFetcher : com.github.panpf.sketch.fetch/Fetcher { // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher|null[0]
     constructor <init>(kotlin/String, kotlin/Boolean, kotlin/Boolean, kotlin/Boolean, kotlin/Boolean, com.github.panpf.sketch.cache/DiskCache, com.github.panpf.sketch.cache/CachePolicy) // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.<init>|<init>(kotlin.String;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;com.github.panpf.sketch.cache.DiskCache;com.github.panpf.sketch.cache.CachePolicy){}[0]
 
@@ -3326,26 +3362,6 @@ final class com.github.panpf.sketch.fetch/PhotosAssetUriFetcher : com.github.pan
         final const val SORT_WEIGHT // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.Companion.SORT_WEIGHT|{}SORT_WEIGHT[0]
             final fun <get-SORT_WEIGHT>(): kotlin/Int // com.github.panpf.sketch.fetch/PhotosAssetUriFetcher.Companion.SORT_WEIGHT.<get-SORT_WEIGHT>|<get-SORT_WEIGHT>(){}[0]
     }
-}
-
-// Targets: [ios]
-final class com.github.panpf.sketch.source/KotlinResourceDataSource : com.github.panpf.sketch.source/DataSource { // com.github.panpf.sketch.source/KotlinResourceDataSource|null[0]
-    constructor <init>(kotlin/String, okio/FileSystem = ...) // com.github.panpf.sketch.source/KotlinResourceDataSource.<init>|<init>(kotlin.String;okio.FileSystem){}[0]
-
-    final val dataFrom // com.github.panpf.sketch.source/KotlinResourceDataSource.dataFrom|{}dataFrom[0]
-        final fun <get-dataFrom>(): com.github.panpf.sketch.source/DataFrom // com.github.panpf.sketch.source/KotlinResourceDataSource.dataFrom.<get-dataFrom>|<get-dataFrom>(){}[0]
-    final val fileSystem // com.github.panpf.sketch.source/KotlinResourceDataSource.fileSystem|{}fileSystem[0]
-        final fun <get-fileSystem>(): okio/FileSystem // com.github.panpf.sketch.source/KotlinResourceDataSource.fileSystem.<get-fileSystem>|<get-fileSystem>(){}[0]
-    final val key // com.github.panpf.sketch.source/KotlinResourceDataSource.key|{}key[0]
-        final fun <get-key>(): kotlin/String // com.github.panpf.sketch.source/KotlinResourceDataSource.key.<get-key>|<get-key>(){}[0]
-    final val resourcePath // com.github.panpf.sketch.source/KotlinResourceDataSource.resourcePath|{}resourcePath[0]
-        final fun <get-resourcePath>(): kotlin/String // com.github.panpf.sketch.source/KotlinResourceDataSource.resourcePath.<get-resourcePath>|<get-resourcePath>(){}[0]
-
-    final fun equals(kotlin/Any?): kotlin/Boolean // com.github.panpf.sketch.source/KotlinResourceDataSource.equals|equals(kotlin.Any?){}[0]
-    final fun getFile(com.github.panpf.sketch/Sketch): okio/Path // com.github.panpf.sketch.source/KotlinResourceDataSource.getFile|getFile(com.github.panpf.sketch.Sketch){}[0]
-    final fun hashCode(): kotlin/Int // com.github.panpf.sketch.source/KotlinResourceDataSource.hashCode|hashCode(){}[0]
-    final fun openSource(): okio/Source // com.github.panpf.sketch.source/KotlinResourceDataSource.openSource|openSource(){}[0]
-    final fun toString(): kotlin/String // com.github.panpf.sketch.source/KotlinResourceDataSource.toString|toString(){}[0]
 }
 
 // Targets: [ios]
@@ -3431,12 +3447,6 @@ final fun (com.github.panpf.sketch.request/ImageRequest.Builder).com.github.panp
 final fun (com.github.panpf.sketch.request/ImageRequest.Builder).com.github.panpf.sketch.request/useSkiaForImagePhotosAsset(kotlin/Boolean? = ...): com.github.panpf.sketch.request/ImageRequest.Builder // com.github.panpf.sketch.request/useSkiaForImagePhotosAsset|useSkiaForImagePhotosAsset@com.github.panpf.sketch.request.ImageRequest.Builder(kotlin.Boolean?){}[0]
 
 // Targets: [ios]
-final fun (kotlin/ByteArray).com.github.panpf.sketch.util/toNSData(): platform.Foundation/NSData // com.github.panpf.sketch.util/toNSData|toNSData@kotlin.ByteArray(){}[0]
-
-// Targets: [ios]
-final fun (platform.Foundation/NSData).com.github.panpf.sketch.util/toByteArray(): kotlin/ByteArray // com.github.panpf.sketch.util/toByteArray|toByteArray@platform.Foundation.NSData(){}[0]
-
-// Targets: [ios]
 final fun (platform.Photos/PHAsset).com.github.panpf.sketch.util/pixelSize(): com.github.panpf.sketch.util/Size // com.github.panpf.sketch.util/pixelSize|pixelSize@platform.Photos.PHAsset(){}[0]
 
 // Targets: [ios]
@@ -3452,13 +3462,7 @@ final fun (platform.UIKit/UIImage).com.github.panpf.sketch.util/toBitmap(): org.
 final fun (platform.UIKit/UIImage).com.github.panpf.sketch.util/toBitmap(kotlin/Int = ..., com.github.panpf.sketch.util/Rect? = ...): org.jetbrains.skia/Bitmap // com.github.panpf.sketch.util/toBitmap|toBitmap@platform.UIKit.UIImage(kotlin.Int;com.github.panpf.sketch.util.Rect?){}[0]
 
 // Targets: [ios]
-final fun com.github.panpf.sketch.fetch/isKotlinResourceUri(com.github.panpf.sketch.util/Uri): kotlin/Boolean // com.github.panpf.sketch.fetch/isKotlinResourceUri|isKotlinResourceUri(com.github.panpf.sketch.util.Uri){}[0]
-
-// Targets: [ios]
 final fun com.github.panpf.sketch.fetch/isPhotosAssetUri(com.github.panpf.sketch.util/Uri): kotlin/Boolean // com.github.panpf.sketch.fetch/isPhotosAssetUri|isPhotosAssetUri(com.github.panpf.sketch.util.Uri){}[0]
-
-// Targets: [ios]
-final fun com.github.panpf.sketch.fetch/newKotlinResourceUri(kotlin/String): kotlin/String // com.github.panpf.sketch.fetch/newKotlinResourceUri|newKotlinResourceUri(kotlin.String){}[0]
 
 // Targets: [ios]
 final fun com.github.panpf.sketch.fetch/newPhotosAssetUri(kotlin/String): kotlin/String // com.github.panpf.sketch.fetch/newPhotosAssetUri|newPhotosAssetUri(kotlin.String){}[0]

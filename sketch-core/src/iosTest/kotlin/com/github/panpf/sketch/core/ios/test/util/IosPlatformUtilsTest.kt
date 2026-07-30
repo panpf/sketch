@@ -1,6 +1,5 @@
 package com.github.panpf.sketch.core.ios.test.util
 
-import androidx.compose.ui.graphics.decodeToImageBitmap
 import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.size
@@ -20,7 +19,6 @@ import com.github.panpf.sketch.util.selectPrimaryResource
 import com.github.panpf.sketch.util.size
 import com.github.panpf.sketch.util.sketchSize
 import com.github.panpf.sketch.util.toBitmap
-import com.github.panpf.sketch.util.toByteArray
 import com.github.panpf.sketch.util.toNSData
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.test.runTest
@@ -478,29 +476,6 @@ class IosPlatformUtilsTest {
         val data = imageFile.toDataSource(context).toByteArray()
         val uiImage = UIImage.imageWithData(data.toNSData())!!
         assertEquals(imageFile.size, uiImage.sketchSize())
-    }
-
-    @Test
-    fun testByteArrayToNSData() = runTest {
-        val context = getTestContext()
-        val imageFile = ComposeResImageFiles.jpeg
-        val data = imageFile.toDataSource(context).toByteArray()
-        val uiImage = UIImage.imageWithData(data.toNSData())!!
-        assertEquals(imageFile.size, uiImage.sketchSize())
-    }
-
-    @Test
-    fun testNSDataToByteArray() = runTest {
-        val context = getTestContext()
-        val imageFile = ComposeResImageFiles.jpeg
-        val data = imageFile.toDataSource(context).toByteArray()
-        val nsData = data.toNSData()
-        val uiImage = UIImage.imageWithData(nsData)!!
-        assertEquals(imageFile.size, uiImage.sketchSize())
-
-        val newBitmap = nsData.toByteArray().decodeToImageBitmap()
-        assertEquals(imageFile.size.width, newBitmap.width)
-        assertEquals(imageFile.size.height, newBitmap.height)
     }
 
     @Test

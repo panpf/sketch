@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
  * Cooperate with [ComponentLoader] to achieve automatic registration AnimatedWebpDecoder
  *
  * @see com.github.panpf.sketch.animated.webp.android.test.util.AnimatedWebpComponentProviderAndroidTest
- * @see com.github.panpf.sketch.animated.webp.ios.test.util.AnimatedWebpComponentProviderIosTest
+ * @see com.github.panpf.sketch.animated.webp.apple.test.util.AnimatedWebpComponentProviderAppleTest
  * @see com.github.panpf.sketch.animated.webp.desktop.test.util.AnimatedWebpComponentProviderDesktopTest
  * @see com.github.panpf.sketch.animated.webp.jscommon.test.util.AnimatedWebpComponentProviderJsCommonTest
  */

@@ -109,7 +109,7 @@ implementation("io.github.panpf.sketch4:sketch-view-koin:${LAST_VERSION}")
 // 支持 SVG 图片
 implementation("io.github.panpf.sketch4:sketch-svg:${LAST_VERSION}")
 
-// [仅 Android] 使用 Android 内置的 MediaMetadataRetriever 类实现解码视频帧
+// Android 使用 MediaMetadataRetriever，iOS/macOS Native 使用 AVFoundation 解码视频帧
 implementation("io.github.panpf.sketch4:sketch-video:${LAST_VERSION}")
 
 // [仅 Android] 使用 wseemann 的 FFmpegMediaMetadataRetriever 库实现解码视频帧
@@ -267,7 +267,8 @@ context.sketch.enqueue(request)
 
 * Android: Emulator; Arm64; API 21-34
 * Desktop: macOS; 14.6.1; JDK 17
-* iOS: iphone 16 simulator; iOS 18.1
+* iOS: iPhone 16 Simulator; iOS 18.1
+* macOS Native: Mac mini M4; macOS 27 beta 4
 * Web: Chrome; 130
 
 ## 运行示例 App

@@ -141,27 +141,27 @@ Each URI has its own Fetcher to support it, [Learn more about Fetcher][fetcher]
 Due to limitations of platform characteristics, the functions on different platforms are also
 different, as follows:
 
-| Feature                                                                                      | Android       | iOS                     | Desktop                 | Web                     |
-|:---------------------------------------------------------------------------------------------|:--------------|:------------------------|:------------------------|:------------------------|
-| jpeg<br/>png<br/>webp<br/>bmp                                                                | ✅             | ✅                       | ✅                       | ✅                       |
-| heif                                                                                         | ✅ (API 24)    | ✅                       | ❌                       | ❌                       |
-| avif                                                                                         | ✅ (API 24)    | ✅                       | ❌                       | ❌                       |
-| svg                                                                                          | ✅             | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) |
-| gif                                                                                          | ✅             | ✅                       | ✅                       | ✅                       |
-| Animated webp                                                                                | ✅ (API 28)    | ✅                       | ✅                       | ✅                       |
-| Animated heif                                                                                | ✅ (API 30)    | ❌                       | ❌                       | ❌                       |
-| Video frames                                                                                 | ✅             | ❌                       | ❌                       | ❌                       |
-| BlurHash                                                                                     | ✅             | ✅                       | ✅                       | ✅                       |
-| http://<br/>https://<br/>file://, /<br/>file:///compose_resource/<br/>data:image/jpeg;base64 | ✅             | ✅                       | ✅                       | ✅                       |
-| file:///android_asset/<br/>content://<br/>android.resource://                                | ✅             | ❌                       | ❌                       | ❌                       |
-| file:///kotlin_resource/                                                                     | ❌             | ✅                       | ✅                       | ❌                       |
-| file:///photos_asset/                                                                        | ❌             | ✅                       | ❌                       | ❌                       |
-| Exif Orientation                                                                             | ✅             | ✅                       | ✅                       | ✅                       |
-| Memory Cache                                                                                 | ✅             | ✅                       | ✅                       | ✅                       |
-| Result Cache                                                                                 | ✅             | ✅                       | ✅                       | ❌                       |
-| Download Cache                                                                               | ✅             | ✅                       | ✅                       | ❌                       |
-| Default image decoder                                                                        | BitmapFactory | Skia Image              | Skia Image              | Skia Image              |
-| Minimum API                                                                                  | API 21        | -                       | JDK 1.8                 | -                       |
+| Feature                                                                                      | Android       | iOS                     | macOS Native            | Desktop                 | Web                     |
+|:---------------------------------------------------------------------------------------------|:--------------|:------------------------|:------------------------|:------------------------|:------------------------|
+| jpeg<br/>png<br/>webp<br/>bmp                                                                | ✅             | ✅                       | ✅                       | ✅                       | ✅                       |
+| heif                                                                                         | ✅ (API 24)    | ✅                       | ❌                       | ❌                       | ❌                       |
+| avif                                                                                         | ✅ (API 24)    | ✅                       | ❌                       | ❌                       | ❌                       |
+| svg                                                                                          | ✅             | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) | ✅<br/>(Not Support CSS) |
+| gif                                                                                          | ✅             | ✅                       | ✅                       | ✅                       | ✅                       |
+| Animated webp                                                                                | ✅ (API 28)    | ✅                       | ✅                       | ✅                       | ✅                       |
+| Animated heif                                                                                | ✅ (API 30)    | ❌                       | ❌                       | ❌                       | ❌                       |
+| Video frames                                                                                 | ✅             | ✅                       | ✅                       | ❌                       | ❌                       |
+| BlurHash                                                                                     | ✅             | ✅                       | ✅                       | ✅                       | ✅                       |
+| http://<br/>https://<br/>file://, /<br/>file:///compose_resource/<br/>data:image/jpeg;base64 | ✅             | ✅                       | ✅                       | ✅                       | ✅                       |
+| file:///android_asset/<br/>content://<br/>android.resource://                                | ✅             | ❌                       | ❌                       | ❌                       | ❌                       |
+| file:///kotlin_resource/                                                                     | ❌             | ✅                       | ✅                       | ✅                       | ❌                       |
+| file:///photos_asset/                                                                        | ❌             | ✅                       | ❌                       | ❌                       | ❌                       |
+| Exif Orientation                                                                             | ✅             | ✅                       | ✅                       | ✅                       | ✅                       |
+| Memory Cache                                                                                 | ✅             | ✅                       | ✅                       | ✅                       | ✅                       |
+| Result Cache                                                                                 | ✅             | ✅                       | ✅                       | ✅                       | ❌                       |
+| Download Cache                                                                               | ✅             | ✅                       | ✅                       | ✅                       | ❌                       |
+| Default image decoder                                                                        | BitmapFactory | Skia Image              | Skia Image              | Skia Image              | Skia Image              |
+| Minimum API                                                                                  | API 21        | -                       | -                       | JDK 1.8                 | -                       |
 
 > The minimum API is '-' to synchronize with Compose Multiplatform
 

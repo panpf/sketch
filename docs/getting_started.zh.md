@@ -134,27 +134,27 @@ context.sketch.enqueue(request)
 
 由于受平台特性所限，在不同平台上的功能也有所不同，如下：
 
-| 功能                                                                                        | Android       | iOS             | Desktop         | Web             |
-|:------------------------------------------------------------------------------------------|---------------|:----------------|:----------------|:----------------|
-| jpeg<br/>png<br/>webp<br/>bmp                                                             | ✅             | ✅               | ✅               | ✅               |
-| heif                                                                                      | ✅ (API 24)    | ✅               | ❌               | ❌               |
-| avif                                                                                      | ✅ (API 24)    | ✅               | ❌               | ❌               |
-| svg                                                                                       | ✅             | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) |
-| gif                                                                                       | ✅             | ✅               | ✅               | ✅               |
-| webp 动图                                                                                   | ✅ (API 28)    | ✅               | ✅               | ✅               |
-| heif 动图                                                                                   | ✅ (API 30)    | ❌               | ❌               | ❌               |
-| 视频帧                                                                                       | ✅             | ❌               | ❌               | ❌               |
-| BlurHash                                                                                  | ✅             | ✅               | ✅               | ✅               |
-| http://, https://<br/>file://, /<br/>file:///compose_resource/<br/>data:image/, data:img/ | ✅             | ✅               | ✅               | ✅               |
-| file:///android_asset/<br/>content://<br/>android.resource://                             | ✅             | ❌               | ❌               | ❌               |
-| file:///kotlin_resource/                                                                  | ❌             | ✅               | ✅               | ❌               |
-| file:///photos_asset/                                                                     | ❌             | ✅               | ❌               | ❌               |
-| Exif Orientation                                                                          | ✅             | ✅               | ✅               | ✅               |
-| 内存缓存                                                                                      | ✅             | ✅               | ✅               | ✅               |
-| 结果缓存                                                                                      | ✅             | ✅               | ✅               | ❌               |
-| 下载缓存                                                                                      | ✅             | ✅               | ✅               | ❌               |
-| 默认图片解码器                                                                                   | BitmapFactory | Skia Image      | Skia Image      | Skia Image      |
-| 最低 API                                                                                    | API 21        | -               | JDK 1.8         | -               |
+| 功能                                                                                        | Android       | iOS             | macOS Native    | Desktop         | Web             |
+|:------------------------------------------------------------------------------------------|---------------|:----------------|:----------------|:----------------|:----------------|
+| jpeg<br/>png<br/>webp<br/>bmp                                                             | ✅             | ✅               | ✅               | ✅               | ✅               |
+| heif                                                                                      | ✅ (API 24)    | ✅               | ❌               | ❌               | ❌               |
+| avif                                                                                      | ✅ (API 24)    | ✅               | ❌               | ❌               | ❌               |
+| svg                                                                                       | ✅             | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) | ✅<br/>(不支持 CSS) |
+| gif                                                                                       | ✅             | ✅               | ✅               | ✅               | ✅               |
+| webp 动图                                                                                   | ✅ (API 28)    | ✅               | ✅               | ✅               | ✅               |
+| heif 动图                                                                                   | ✅ (API 30)    | ❌               | ❌               | ❌               | ❌               |
+| 视频帧                                                                                       | ✅             | ✅               | ✅               | ❌               | ❌               |
+| BlurHash                                                                                  | ✅             | ✅               | ✅               | ✅               | ✅               |
+| http://, https://<br/>file://, /<br/>file:///compose_resource/<br/>data:image/, data:img/ | ✅             | ✅               | ✅               | ✅               | ✅               |
+| file:///android_asset/<br/>content://<br/>android.resource://                             | ✅             | ❌               | ❌               | ❌               | ❌               |
+| file:///kotlin_resource/                                                                  | ❌             | ✅               | ✅               | ✅               | ❌               |
+| file:///photos_asset/                                                                     | ❌             | ✅               | ❌               | ❌               | ❌               |
+| Exif Orientation                                                                          | ✅             | ✅               | ✅               | ✅               | ✅               |
+| 内存缓存                                                                                      | ✅             | ✅               | ✅               | ✅               | ✅               |
+| 结果缓存                                                                                      | ✅             | ✅               | ✅               | ✅               | ❌               |
+| 下载缓存                                                                                      | ✅             | ✅               | ✅               | ✅               | ❌               |
+| 默认图片解码器                                                                                   | BitmapFactory | Skia Image      | Skia Image      | Skia Image      | Skia Image      |
+| 最低 API                                                                                    | API 21        | -               | -               | JDK 1.8         | -               |
 
 > 最低 API 是 '-' 表示和 Compose Multiplatform 同步
 

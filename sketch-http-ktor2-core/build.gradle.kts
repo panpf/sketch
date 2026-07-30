@@ -32,7 +32,7 @@ kotlin {
         desktopTest.dependencies {
             implementation(libs.ktor2.client.java)
         }
-        iosTest.dependencies {
+        appleTest.dependencies {
             implementation(libs.ktor2.client.darwin)
         }
         jsTest.dependencies {

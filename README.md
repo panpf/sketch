@@ -121,7 +121,7 @@ implementation("io.github.panpf.sketch4:sketch-view-koin:${LAST_VERSION}")
 // Support SVG images
 implementation("io.github.panpf.sketch4:sketch-svg:${LAST_VERSION}")
 
-// [Android only] Use Android's built-in MediaMetadataRetriever class to decode video frames
+// Decode video frames with MediaMetadataRetriever on Android or AVFoundation on iOS/macOS Native
 implementation("io.github.panpf.sketch4:sketch-video:${LAST_VERSION}")
 
 // [Android only] Decoding video frames using wseemann's FFmpegMediaMetadataRetriever library
@@ -285,7 +285,8 @@ Please review the [CHANGELOG.md] file
 
 * Android: Emulator; Arm64; API 21-34
 * Desktop: macOS; 14.6.1; JDK 17
-* iOS: iphone 16 simulator; iOS 18.1
+* iOS: iPhone 16 Simulator; iOS 18.1
+* macOS Native: Mac mini M4; macOS 27 beta 4
 * Web: Chrome; 130
 
 ## Run Sample App

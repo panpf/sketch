@@ -25,7 +25,7 @@ import okio.Path
  * Get the default file system
  *
  * @see com.github.panpf.sketch.core.desktop.test.util.FileSystemsDesktopTest.testDefaultFileSystem
- * @see com.github.panpf.sketch.core.ios.test.util.FileSystemsIosTest.testDefaultFileSystem
+ * @see com.github.panpf.sketch.core.apple.test.util.FileSystemsAppleTest.testDefaultFileSystem
  * @see com.github.panpf.sketch.core.jscommon.test.util.FileSystemsJsCommonTest.testDefaultFileSystem
  * @see com.github.panpf.sketch.core.android.test.util.FileSystemsAndroidTest.testDefaultFileSystem
  */

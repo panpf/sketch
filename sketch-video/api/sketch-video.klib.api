@@ -1,5 +1,6 @@
 // Klib ABI Dump
-// Targets: [iosArm64, iosSimulatorArm64]
+// Targets: [iosArm64, iosSimulatorArm64, macosArm64]
+// Alias: ios => [iosArm64, iosSimulatorArm64]
 // Rendering settings:
 // - Signature version: 2
 // - Show manifest properties: true
@@ -36,16 +37,6 @@ final class com.github.panpf.sketch.decode.internal/FileVideoFrameDecodeHelper :
     final fun requestVideoAsset(): platform.AVFoundation/AVAsset // com.github.panpf.sketch.decode.internal/FileVideoFrameDecodeHelper.requestVideoAsset|requestVideoAsset(){}[0]
 }
 
-final class com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper : com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper { // com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper|null[0]
-    constructor <init>(com.github.panpf.sketch.request/ImageRequest, com.github.panpf.sketch.source/PhotosAssetDataSource, kotlin/String) // com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper.<init>|<init>(com.github.panpf.sketch.request.ImageRequest;com.github.panpf.sketch.source.PhotosAssetDataSource;kotlin.String){}[0]
-
-    final val dataSource // com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper.dataSource|{}dataSource[0]
-        final fun <get-dataSource>(): com.github.panpf.sketch.source/PhotosAssetDataSource // com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper.dataSource.<get-dataSource>|<get-dataSource>(){}[0]
-
-    final fun readImageInfo(): com.github.panpf.sketch.decode/ImageInfo // com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper.readImageInfo|readImageInfo(){}[0]
-    final fun requestVideoAsset(): platform.AVFoundation/AVAsset // com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper.requestVideoAsset|requestVideoAsset(){}[0]
-}
-
 final class com.github.panpf.sketch.decode/FileVideoFrameDecoder : com.github.panpf.sketch.decode.internal/HelperDecoder { // com.github.panpf.sketch.decode/FileVideoFrameDecoder|null[0]
     constructor <init>(com.github.panpf.sketch.request/RequestContext, com.github.panpf.sketch.source/FileDataSource, kotlin/String) // com.github.panpf.sketch.decode/FileVideoFrameDecoder.<init>|<init>(com.github.panpf.sketch.request.RequestContext;com.github.panpf.sketch.source.FileDataSource;kotlin.String){}[0]
 
@@ -69,6 +60,35 @@ final class com.github.panpf.sketch.decode/FileVideoFrameDecoder : com.github.pa
     }
 }
 
+final class com.github.panpf.sketch.util/VideoComponentProvider : com.github.panpf.sketch.util/ComponentProvider { // com.github.panpf.sketch.util/VideoComponentProvider|null[0]
+    constructor <init>() // com.github.panpf.sketch.util/VideoComponentProvider.<init>|<init>(){}[0]
+
+    final fun addDecoders(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<com.github.panpf.sketch.decode/Decoder.Factory> // com.github.panpf.sketch.util/VideoComponentProvider.addDecoders|addDecoders(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun addFetchers(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<com.github.panpf.sketch.fetch/Fetcher.Factory>? // com.github.panpf.sketch.util/VideoComponentProvider.addFetchers|addFetchers(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun addInterceptors(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<com.github.panpf.sketch.request/Interceptor>? // com.github.panpf.sketch.util/VideoComponentProvider.addInterceptors|addInterceptors(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun disabledDecoders(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<kotlin.reflect/KClass<out com.github.panpf.sketch.decode/Decoder.Factory>>? // com.github.panpf.sketch.util/VideoComponentProvider.disabledDecoders|disabledDecoders(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun disabledFetchers(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<kotlin.reflect/KClass<out com.github.panpf.sketch.fetch/Fetcher.Factory>>? // com.github.panpf.sketch.util/VideoComponentProvider.disabledFetchers|disabledFetchers(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun disabledInterceptors(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<kotlin.reflect/KClass<out com.github.panpf.sketch.request/Interceptor>>? // com.github.panpf.sketch.util/VideoComponentProvider.disabledInterceptors|disabledInterceptors(com.github.panpf.sketch.PlatformContext){}[0]
+    final fun toString(): kotlin/String // com.github.panpf.sketch.util/VideoComponentProvider.toString|toString(){}[0]
+}
+
+final val com.github.panpf.sketch.util/videoComponentProviderInitHook // com.github.panpf.sketch.util/videoComponentProviderInitHook|{}videoComponentProviderInitHook[0]
+    final fun <get-videoComponentProviderInitHook>(): kotlin/Any // com.github.panpf.sketch.util/videoComponentProviderInitHook.<get-videoComponentProviderInitHook>|<get-videoComponentProviderInitHook>(){}[0]
+
+final fun (com.github.panpf.sketch/ComponentRegistry.Builder).com.github.panpf.sketch.decode/supportFileVideoFrame(): com.github.panpf.sketch/ComponentRegistry.Builder // com.github.panpf.sketch.decode/supportFileVideoFrame|supportFileVideoFrame@com.github.panpf.sketch.ComponentRegistry.Builder(){}[0]
+
+// Targets: [ios]
+final class com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper : com.github.panpf.sketch.decode.internal/BaseAvAssetVideoFrameDecodeHelper { // com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper|null[0]
+    constructor <init>(com.github.panpf.sketch.request/ImageRequest, com.github.panpf.sketch.source/PhotosAssetDataSource, kotlin/String) // com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper.<init>|<init>(com.github.panpf.sketch.request.ImageRequest;com.github.panpf.sketch.source.PhotosAssetDataSource;kotlin.String){}[0]
+
+    final val dataSource // com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper.dataSource|{}dataSource[0]
+        final fun <get-dataSource>(): com.github.panpf.sketch.source/PhotosAssetDataSource // com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper.dataSource.<get-dataSource>|<get-dataSource>(){}[0]
+
+    final fun readImageInfo(): com.github.panpf.sketch.decode/ImageInfo // com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper.readImageInfo|readImageInfo(){}[0]
+    final fun requestVideoAsset(): platform.AVFoundation/AVAsset // com.github.panpf.sketch.decode.internal/PhotosAssetVideoFrameDecodeHelper.requestVideoAsset|requestVideoAsset(){}[0]
+}
+
+// Targets: [ios]
 final class com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder : com.github.panpf.sketch.decode.internal/HelperDecoder { // com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder|null[0]
     constructor <init>(com.github.panpf.sketch.request/RequestContext, com.github.panpf.sketch.source/PhotosAssetDataSource, kotlin/String) // com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder.<init>|<init>(com.github.panpf.sketch.request.RequestContext;com.github.panpf.sketch.source.PhotosAssetDataSource;kotlin.String){}[0]
 
@@ -92,20 +112,5 @@ final class com.github.panpf.sketch.decode/PhotosAssetVideoFrameDecoder : com.gi
     }
 }
 
-final class com.github.panpf.sketch.util/VideoComponentProvider : com.github.panpf.sketch.util/ComponentProvider { // com.github.panpf.sketch.util/VideoComponentProvider|null[0]
-    constructor <init>() // com.github.panpf.sketch.util/VideoComponentProvider.<init>|<init>(){}[0]
-
-    final fun addDecoders(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<com.github.panpf.sketch.decode/Decoder.Factory> // com.github.panpf.sketch.util/VideoComponentProvider.addDecoders|addDecoders(com.github.panpf.sketch.PlatformContext){}[0]
-    final fun addFetchers(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<com.github.panpf.sketch.fetch/Fetcher.Factory>? // com.github.panpf.sketch.util/VideoComponentProvider.addFetchers|addFetchers(com.github.panpf.sketch.PlatformContext){}[0]
-    final fun addInterceptors(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<com.github.panpf.sketch.request/Interceptor>? // com.github.panpf.sketch.util/VideoComponentProvider.addInterceptors|addInterceptors(com.github.panpf.sketch.PlatformContext){}[0]
-    final fun disabledDecoders(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<kotlin.reflect/KClass<out com.github.panpf.sketch.decode/Decoder.Factory>>? // com.github.panpf.sketch.util/VideoComponentProvider.disabledDecoders|disabledDecoders(com.github.panpf.sketch.PlatformContext){}[0]
-    final fun disabledFetchers(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<kotlin.reflect/KClass<out com.github.panpf.sketch.fetch/Fetcher.Factory>>? // com.github.panpf.sketch.util/VideoComponentProvider.disabledFetchers|disabledFetchers(com.github.panpf.sketch.PlatformContext){}[0]
-    final fun disabledInterceptors(com.github.panpf.sketch/PlatformContext): kotlin.collections/List<kotlin.reflect/KClass<out com.github.panpf.sketch.request/Interceptor>>? // com.github.panpf.sketch.util/VideoComponentProvider.disabledInterceptors|disabledInterceptors(com.github.panpf.sketch.PlatformContext){}[0]
-    final fun toString(): kotlin/String // com.github.panpf.sketch.util/VideoComponentProvider.toString|toString(){}[0]
-}
-
-final val com.github.panpf.sketch.util/videoComponentProviderInitHook // com.github.panpf.sketch.util/videoComponentProviderInitHook|{}videoComponentProviderInitHook[0]
-    final fun <get-videoComponentProviderInitHook>(): kotlin/Any // com.github.panpf.sketch.util/videoComponentProviderInitHook.<get-videoComponentProviderInitHook>|<get-videoComponentProviderInitHook>(){}[0]
-
-final fun (com.github.panpf.sketch/ComponentRegistry.Builder).com.github.panpf.sketch.decode/supportFileVideoFrame(): com.github.panpf.sketch/ComponentRegistry.Builder // com.github.panpf.sketch.decode/supportFileVideoFrame|supportFileVideoFrame@com.github.panpf.sketch.ComponentRegistry.Builder(){}[0]
+// Targets: [ios]
 final fun (com.github.panpf.sketch/ComponentRegistry.Builder).com.github.panpf.sketch.decode/supportPhotosAssetVideoFrame(): com.github.panpf.sketch/ComponentRegistry.Builder // com.github.panpf.sketch.decode/supportPhotosAssetVideoFrame|supportPhotosAssetVideoFrame@com.github.panpf.sketch.ComponentRegistry.Builder(){}[0]

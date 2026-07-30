@@ -20,7 +20,7 @@ import com.github.panpf.sketch.request.Extras
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
-import java.net.URL
+import java.net.URI
 
 /**
  * Use [HttpURLConnection] to request HTTP
@@ -41,7 +41,7 @@ class HurlStack private constructor(
         while (newUri.isNotEmpty()) {
             // Currently running on a limited number of IO contexts, so this warning can be ignored
             @Suppress("BlockingMethodInNonBlockingContext")
-            val connection = (URL(newUri).openConnection() as HttpURLConnection).apply {
+            val connection = (URI.create(newUri).toURL().openConnection() as HttpURLConnection).apply {
                 doInput = true
             }
 
@@ -76,7 +76,7 @@ class HurlStack private constructor(
         while (newUri.isNotEmpty()) {
             // Currently running on a limited number of IO contexts, so this warning can be ignored
             @Suppress("BlockingMethodInNonBlockingContext")
-            val connection = (URL(newUri).openConnection() as HttpURLConnection).apply {
+            val connection = (URI.create(newUri).toURL().openConnection() as HttpURLConnection).apply {
                 doInput = true
             }
 
