@@ -192,6 +192,7 @@ public final class com/github/panpf/sketch/Sketch$Builder {
 	public final fun logger (Lcom/github/panpf/sketch/util/Logger$Level;Lcom/github/panpf/sketch/util/Logger$Pipeline;)Lcom/github/panpf/sketch/Sketch$Builder;
 	public final fun logger (Lcom/github/panpf/sketch/util/Logger;)Lcom/github/panpf/sketch/Sketch$Builder;
 	public static synthetic fun logger$default (Lcom/github/panpf/sketch/Sketch$Builder;Lcom/github/panpf/sketch/util/Logger$Level;Lcom/github/panpf/sketch/util/Logger$Pipeline;ILjava/lang/Object;)Lcom/github/panpf/sketch/Sketch$Builder;
+	public final fun mainThreadChecker (Lkotlin/jvm/functions/Function0;)Lcom/github/panpf/sketch/Sketch$Builder;
 	public final fun memoryCache (Lcom/github/panpf/sketch/cache/MemoryCache;)Lcom/github/panpf/sketch/Sketch$Builder;
 	public final fun memoryCache (Lkotlin/jvm/functions/Function0;)Lcom/github/panpf/sketch/Sketch$Builder;
 	public final fun networkParallelismLimited (Ljava/lang/Integer;)Lcom/github/panpf/sketch/Sketch$Builder;
