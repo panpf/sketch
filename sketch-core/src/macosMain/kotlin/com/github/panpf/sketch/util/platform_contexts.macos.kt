@@ -29,7 +29,11 @@ import platform.Foundation.NSSearchPathForDirectoriesInDomains
 import platform.Foundation.NSUserDomainMask
 import kotlin.math.roundToInt
 
-/** Return the machine's physical memory in bytes. */
+/**
+ * Return the machine's physical memory in bytes.
+ *
+ * @see com.github.panpf.sketch.core.macos.test.util.PlatformContextsMacosTest.testMaxMemory
+ */
 actual fun PlatformContext.maxMemory(): Long {
     return runCatching { NSProcessInfo.processInfo.physicalMemory.toLong() }
         .getOrDefault(0L)
@@ -37,7 +41,11 @@ actual fun PlatformContext.maxMemory(): Long {
         ?: (2L * 1024 * 1024 * 1024)
 }
 
-/** Return the application's user cache directory. */
+/**
+ * Return the application's user cache directory.
+ *
+ * @see com.github.panpf.sketch.core.macos.test.util.PlatformContextsMacosTest.testAppCacheDirectory
+ */
 actual fun PlatformContext.appCacheDirectory(): Path? {
     val paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, true)
     val cachesDirectory = (paths.firstOrNull() as? String)?.toPath() ?: return null
@@ -48,7 +56,11 @@ actual fun PlatformContext.appCacheDirectory(): Path? {
     return cachesDirectory.resolve(applicationId)
 }
 
-/** Return the main screen's pixel dimensions. */
+/**
+ * Return the main screen's pixel dimensions.
+ *
+ * @see com.github.panpf.sketch.core.macos.test.util.PlatformContextsMacosTest.testScreenSize
+ */
 @OptIn(ExperimentalForeignApi::class)
 actual fun PlatformContext.screenSize(): Size {
     val screen = NSScreen.mainScreen ?: return Size(1920, 1080)

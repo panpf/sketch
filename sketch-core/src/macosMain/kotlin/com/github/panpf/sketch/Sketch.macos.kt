@@ -19,7 +19,11 @@ package com.github.panpf.sketch
 import com.github.panpf.sketch.decode.SkiaDecoder
 import com.github.panpf.sketch.fetch.KotlinResourceUriFetcher
 
-/** macOS platform related components. */
+/**
+ * macOS platform related components.
+ *
+ * @see com.github.panpf.sketch.core.macos.test.SketchMacosTest.testPlatformComponents
+ */
 internal actual fun platformComponents(context: PlatformContext): ComponentRegistry {
     return ComponentRegistry {
         add(KotlinResourceUriFetcher.Factory())

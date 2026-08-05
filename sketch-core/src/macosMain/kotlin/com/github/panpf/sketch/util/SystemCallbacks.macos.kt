@@ -19,7 +19,11 @@ package com.github.panpf.sketch.util
 import com.github.panpf.sketch.Sketch
 import kotlinx.atomicfu.atomic
 
-/** Create an instance of [SystemCallbacks] for macOS. */
+/**
+ * Create an instance of [SystemCallbacks] for macOS.
+ *
+ * @see com.github.panpf.sketch.core.macos.test.util.SystemCallbacksMacosTest.testSystemCallbacks
+ */
 internal actual fun SystemCallbacks(sketch: Sketch): SystemCallbacks =
     MacosSystemCallbacks(sketch)
 

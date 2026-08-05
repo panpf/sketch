@@ -28,7 +28,8 @@ import kotlin.reflect.KClass
  *
  * @see com.github.panpf.sketch.componentloadertest.android.test.ComponentLoaderTest
  * @see com.github.panpf.sketch.componentloadertest.desktop.test.ComponentLoaderTest
- * @see com.github.panpf.sketch.componentloadertest.apple.test.ComponentLoaderTest
+ * @see com.github.panpf.sketch.componentloadertest.ios.test.ComponentLoaderTest
+ * @see com.github.panpf.sketch.componentloadertest.macos.test.ComponentLoaderTest
  * @see com.github.panpf.sketch.componentloadertest.js.test.ComponentLoaderTest
  * @see com.github.panpf.sketch.componentloadertest.wasmjs.test.ComponentLoaderTest
  */
@@ -57,7 +58,8 @@ expect interface ComponentProvider {
  *
  * @see com.github.panpf.sketch.componentloadertest.android.test.ComponentLoaderTest.testToComponentRegistry
  * @see com.github.panpf.sketch.componentloadertest.desktop.test.ComponentLoaderTest.testToComponentRegistry
- * @see com.github.panpf.sketch.componentloadertest.apple.test.ComponentLoaderTest.testToComponentRegistry
+ * @see com.github.panpf.sketch.componentloadertest.ios.test.ComponentLoaderTest.testToComponentRegistry
+ * @see com.github.panpf.sketch.componentloadertest.macos.test.ComponentLoaderTest.testToComponentRegistry
  * @see com.github.panpf.sketch.componentloadertest.js.test.ComponentLoaderTest.testToComponentRegistry
  * @see com.github.panpf.sketch.componentloadertest.wasmjs.test.ComponentLoaderTest.testToComponentRegistry
  */

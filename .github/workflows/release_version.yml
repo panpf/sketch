@@ -140,6 +140,24 @@ jobs:
       - name: Run ios test
         run: internal/test_ios.sh
 
+  test-macos-native:
+    name: macOS Native Unit tests
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: gradle/actions/setup-gradle@v6
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          cache-overwrite-existing: true
+
+      - name: Run macOS Native tests
+        run: internal/test_macos_native.sh
+
   test-desktop:
     name: Desktop Unit tests
     runs-on: macos-26
@@ -365,7 +383,7 @@ jobs:
 
   deploy-api-docs:
     name: Deploy API docs
-    needs: [ check-abi, test-android-23, test-android-24p, test-ios, test-desktop, package-android, package-ios, package-linux, package-macos, package-windows, package-js, package-wasm-js ]
+    needs: [ check-abi, test-android-23, test-android-24p, test-ios, test-macos-native, test-desktop, package-android, package-ios, package-linux, package-macos, package-windows, package-js, package-wasm-js ]
     runs-on: ubuntu-latest
     permissions:
       contents: write

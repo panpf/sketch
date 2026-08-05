@@ -23,7 +23,11 @@ import com.github.panpf.sketch.fetch.Fetcher
 import com.github.panpf.sketch.request.Interceptor
 import kotlin.reflect.KClass
 
-/** Register the AVFoundation file-video decoder on macOS. */
+/**
+ * Register the AVFoundation file-video decoder on macOS.
+ *
+ * @see com.github.panpf.sketch.video.macos.test.util.VideoComponentProviderTest
+ */
 class VideoComponentProvider : ComponentProvider {
 
     override fun addFetchers(context: PlatformContext): List<Fetcher.Factory>? = null

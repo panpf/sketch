@@ -1,7 +1,8 @@
 package com.github.panpf.sketch.componentloadertest.apple.test
 
 import com.github.panpf.sketch.decode.BlurHashDecoder
-import com.github.panpf.sketch.decode.Decoder
+import com.github.panpf.sketch.decode.FileVideoFrameDecoder
+import com.github.panpf.sketch.decode.PhotosAssetVideoFrameDecoder
 import com.github.panpf.sketch.decode.SkiaAnimatedWebpDecoder
 import com.github.panpf.sketch.decode.SkiaGifDecoder
 import com.github.panpf.sketch.decode.SvgDecoder
@@ -16,13 +17,12 @@ import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.AnimatedWebpComponentProvider
 import com.github.panpf.sketch.util.BlurHashComponentProvider
 import com.github.panpf.sketch.util.ComponentLoader
-import com.github.panpf.sketch.util.ComponentProvider
 import com.github.panpf.sketch.util.ComposeResourceComponentProvider
 import com.github.panpf.sketch.util.GifComponentProvider
 import com.github.panpf.sketch.util.KtorHttpComponentProvider
 import com.github.panpf.sketch.util.SvgComponentProvider
+import com.github.panpf.sketch.util.VideoComponentProvider
 import com.github.panpf.sketch.util.toComponentRegistry
-import kotlin.reflect.KClass
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -40,7 +40,7 @@ class ComponentLoaderTest {
         assertNotNull(componentProviders.find { it is AnimatedWebpComponentProvider })
         assertNotNull(componentProviders.find { it is SvgComponentProvider })
         assertNotNull(componentProviders.find { it is BlurHashComponentProvider })
-        assertNotNull(componentProviders.find { it::class == videoComponentProviderClass })
+        assertNotNull(componentProviders.find { it is VideoComponentProvider })
         assertNotNull(componentProviders.find { it is DoNothingComponentProvider })
     }
 
@@ -54,16 +54,14 @@ class ComponentLoaderTest {
             assertNotNull(fetchers.find { it is BlurHashUriFetcher.Factory })
             assertNotNull(fetchers.find { it is DoNothingFetcher.Factory })
 
-            val expectedDecoders = listOf(
-                SkiaGifDecoder.Factory(),
-                SkiaAnimatedWebpDecoder.Factory(),
-                SvgDecoder.Factory(),
-                BlurHashDecoder.Factory(),
-            ) + platformVideoDecoderFactories + DoNothingDecoder.Factory()
-            assertEquals(expectedDecoders.size, decoders.size)
-            expectedDecoders.forEach { expected ->
-                assertNotNull(decoders.find { it == expected })
-            }
+            assertEquals(7, decoders.size)
+            assertNotNull(decoders.find { it is SkiaGifDecoder.Factory })
+            assertNotNull(decoders.find { it is SkiaAnimatedWebpDecoder.Factory })
+            assertNotNull(decoders.find { it is SvgDecoder.Factory })
+            assertNotNull(decoders.find { it is BlurHashDecoder.Factory })
+            assertNotNull(decoders.find { it is FileVideoFrameDecoder.Factory })
+            assertNotNull(decoders.find { it is PhotosAssetVideoFrameDecoder.Factory })
+            assertNotNull(decoders.find { it is DoNothingDecoder.Factory })
 
             assertEquals(1, interceptors.size)
             assertNotNull(interceptors.find { it is DoNothingInterceptor })
@@ -80,16 +78,13 @@ class ComponentLoaderTest {
             assertNotNull(fetchers.find { it is BlurHashUriFetcher.Factory })
             assertNull(fetchers.find { it is DoNothingFetcher.Factory })
 
-            val expectedDecoders = listOf(
-                SkiaGifDecoder.Factory(),
-                SkiaAnimatedWebpDecoder.Factory(),
-                SvgDecoder.Factory(),
-                BlurHashDecoder.Factory(),
-            ) + platformVideoDecoderFactories
-            assertEquals(expectedDecoders.size, decoders.size)
-            expectedDecoders.forEach { expected ->
-                assertNotNull(decoders.find { it == expected })
-            }
+            assertEquals(6, decoders.size)
+            assertNotNull(decoders.find { it is SkiaGifDecoder.Factory })
+            assertNotNull(decoders.find { it is SkiaAnimatedWebpDecoder.Factory })
+            assertNotNull(decoders.find { it is SvgDecoder.Factory })
+            assertNotNull(decoders.find { it is BlurHashDecoder.Factory })
+            assertNotNull(decoders.find { it is FileVideoFrameDecoder.Factory })
+            assertNotNull(decoders.find { it is PhotosAssetVideoFrameDecoder.Factory })
             assertNull(decoders.find { it is DoNothingDecoder.Factory })
 
             assertEquals(0, interceptors.size)
@@ -97,7 +92,3 @@ class ComponentLoaderTest {
         }
     }
 }
-
-internal expect val videoComponentProviderClass: KClass<out ComponentProvider>
-
-internal expect val platformVideoDecoderFactories: List<Decoder.Factory>
