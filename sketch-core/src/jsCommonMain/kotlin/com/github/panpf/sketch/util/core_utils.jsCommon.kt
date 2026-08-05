@@ -21,7 +21,7 @@ package com.github.panpf.sketch.util
  *
  * @see com.github.panpf.sketch.core.jscommon.test.util.CoreUtilsJsCommonTest.testIsMainThread
  */
-internal actual fun isMainThread() = true
+internal actual fun platformIsMainThread() = true
 
 /**
  * Throws an exception if not currently on the main thread
