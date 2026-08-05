@@ -7,6 +7,13 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
+# 4.7.0-alpha01
+
+## 新特性
+
+* 增加对 macosArm64 平台的支持
+* Sketch.Builder 新增 `mainThreadChecker()` 函数，可以自定义检查主线程的逻辑
+
 # 4.6.0 Stable
 
 自 4.6.0-beta01 以来无任何更改
