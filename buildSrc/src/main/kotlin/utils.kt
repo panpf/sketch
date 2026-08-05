@@ -81,17 +81,17 @@ val Project.versionCode: Int
 private fun Project.intProperty(
     name: String,
     default: () -> Int = { error("unknown property: $name") },
-): Int = (properties[name] as String?)?.toInt() ?: default()
+): Int = (findProperty(name) as String?)?.toInt() ?: default()
 
 private fun Project.stringProperty(
     name: String,
     default: () -> String = { error("unknown property: $name") },
-): String = (properties[name] as String?) ?: default()
+): String = (findProperty(name) as String?) ?: default()
 
 private fun Project.booleanProperty(
     name: String,
     default: () -> Boolean = { error("unknown property: $name") },
-): Boolean = (properties[name] as String?)?.toBooleanStrict() ?: default()
+): Boolean = (findProperty(name) as String?)?.toBooleanStrict() ?: default()
 
 /**
  * '1.2.0' -> '1.2.0099'

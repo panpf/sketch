@@ -1,0 +1,311 @@
+package com.github.panpf.sketch.video.apple.test.decode
+
+import com.github.panpf.sketch.ComponentRegistry
+import com.github.panpf.sketch.decode.FileVideoFrameDecoder
+import com.github.panpf.sketch.decode.supportFileVideoFrame
+import com.github.panpf.sketch.fetch.FetchResult
+import com.github.panpf.sketch.images.ComposeResImageFiles
+import com.github.panpf.sketch.images.getOnlyTempFile
+import com.github.panpf.sketch.request.ImageRequest
+import com.github.panpf.sketch.request.preferVideoCover
+import com.github.panpf.sketch.source.ByteArrayDataSource
+import com.github.panpf.sketch.source.DataFrom
+import com.github.panpf.sketch.source.FileDataSource
+import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.toRequestContext
+import kotlinx.coroutines.test.runTest
+import okio.Path.Companion.toPath
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+
+class FileVideoFrameDecoderTest {
+
+    @Test
+    fun testSupportPhotosAssetVideoFrame() {
+        ComponentRegistry().apply {
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetchers=[]," +
+                        "decoders=[]," +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
+                        ")",
+                actual = toString()
+            )
+        }
+
+        ComponentRegistry {
+            supportFileVideoFrame()
+        }.apply {
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetchers=[]," +
+                        "decoders=[FileVideoFrameDecoder]," +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
+                        ")",
+                actual = toString()
+            )
+        }
+
+        ComponentRegistry {
+            supportFileVideoFrame()
+            supportFileVideoFrame()
+        }.apply {
+            assertEquals(
+                expected = "ComponentRegistry(" +
+                        "fetchers=[]," +
+                        "decoders=[FileVideoFrameDecoder]," +
+                        "interceptors=[]," +
+                        "disabledFetchers=[]," +
+                        "disabledDecoders=[]," +
+                        "disabledInterceptors=[]" +
+                        ")",
+                actual = toString()
+            )
+        }
+    }
+
+    @Test
+    fun testCompanion() {
+        assertEquals(
+            expected = 30,
+            actual = FileVideoFrameDecoder.SORT_WEIGHT
+        )
+    }
+
+    @Test
+    fun testConstructor() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val request = ImageRequest(context, ComposeResImageFiles.svg.uri)
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = FileDataSource(
+            path = "/sdcard/sample_rotation.mp4".toPath(),
+            fileSystem = sketch.fileSystem,
+        )
+
+        FileVideoFrameDecoder(requestContext, dataSource, "video/mp4")
+        FileVideoFrameDecoder(
+            requestContext = requestContext,
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
+    }
+
+    @Test
+    fun testImageInfo() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val imageFile = ComposeResImageFiles.rotationMp4
+        val tempFile = imageFile.getOnlyTempFile(context, sketch.fileSystem)
+        val request = ImageRequest(context, tempFile.toString())
+        val dataSource = FileDataSource(tempFile)
+        try {
+            FileVideoFrameDecoder(
+                requestContext = request.toRequestContext(sketch),
+                dataSource = dataSource,
+                mimeType = imageFile.mimeType
+            ).getImageInfo().apply {
+                assertEquals(
+                    expected = "ImageInfo(size=1080x1920, mimeType='video/mp4')",
+                    actual = this.toString()
+                )
+            }
+
+            FileVideoFrameDecoder(
+                requestContext = request.newRequest { preferVideoCover() }
+                    .toRequestContext(sketch),
+                dataSource = dataSource,
+                mimeType = imageFile.mimeType
+            ).getImageInfo().apply {
+                assertEquals(
+                    expected = "ImageInfo(size=1600x1200, mimeType='image/jpeg')",
+                    actual = this.toString()
+                )
+            }
+        } finally {
+            sketch.fileSystem.delete(tempFile)
+        }
+    }
+
+    @Test
+    fun testDecode() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val imageFile = ComposeResImageFiles.rotationMp4
+        val tempFile = imageFile.getOnlyTempFile(context, sketch.fileSystem)
+        val request = ImageRequest(context, tempFile.toString())
+        val dataSource = FileDataSource(tempFile)
+        try {
+            FileVideoFrameDecoder(
+                requestContext = request.toRequestContext(sketch),
+                dataSource = dataSource,
+                mimeType = imageFile.mimeType
+            ).decode().apply {
+                assertEquals(
+                    expected = "ImageInfo(size=1080x1920, mimeType='video/mp4')",
+                    actual = this.imageInfo.toString()
+                )
+            }
+
+            FileVideoFrameDecoder(
+                requestContext = request.newRequest { preferVideoCover() }
+                    .toRequestContext(sketch),
+                dataSource = dataSource,
+                mimeType = imageFile.mimeType
+            ).decode().apply {
+                assertEquals(
+                    expected = "ImageInfo(size=1600x1200, mimeType='image/jpeg')",
+                    actual = this.imageInfo.toString()
+                )
+            }
+        } finally {
+            sketch.fileSystem.delete(tempFile)
+        }
+    }
+
+    @Test
+    fun testEqualsAndHashCode() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val request = ImageRequest(context, "/sdcard/sample_rotation.mp4")
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = FileDataSource(
+            path = "/sdcard/sample_rotation.mp4".toPath(),
+            fileSystem = sketch.fileSystem,
+        )
+        val element1 = FileVideoFrameDecoder(
+            requestContext = requestContext,
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
+        val element11 = FileVideoFrameDecoder(
+            requestContext = requestContext,
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
+
+        assertNotEquals(illegal = element1, actual = element11)
+        assertNotEquals(illegal = element1, actual = null as Any?)
+        assertNotEquals(illegal = element1, actual = Any())
+        assertNotEquals(illegal = element1.hashCode(), actual = element11.hashCode())
+    }
+
+    @Test
+    fun testToString() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+
+        val request = ImageRequest(context, "/sdcard/sample_rotation.mp4")
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = FileDataSource(
+            path = "/sdcard/sample_rotation.mp4".toPath(),
+            fileSystem = sketch.fileSystem,
+        )
+        val decoder = FileVideoFrameDecoder(
+            requestContext = requestContext,
+            dataSource = dataSource,
+            mimeType = "video/mp4"
+        )
+        assertTrue(
+            actual = decoder.toString().contains("FileVideoFrameDecoder"),
+            message = decoder.toString()
+        )
+        assertTrue(actual = decoder.toString().contains("@"), message = decoder.toString())
+    }
+
+    @Test
+    fun testFactoryConstructor() {
+        FileVideoFrameDecoder.Factory()
+    }
+
+    @Test
+    fun testFactoryKey() {
+        assertEquals(
+            expected = "FileVideoFrameDecoder",
+            actual = FileVideoFrameDecoder.Factory().key
+        )
+    }
+
+    @Test
+    fun testFactorySortWeight() {
+        assertEquals(
+            expected = 30,
+            actual = FileVideoFrameDecoder.Factory().sortWeight
+        )
+    }
+
+    @Test
+    fun testFactoryCreate() = runTest {
+        val (context, sketch) = getTestContextAndSketch()
+        val factory = FileVideoFrameDecoder.Factory()
+
+        val request = ImageRequest(context, "/sdcard/sample_rotation.mp4")
+        val requestContext = request.toRequestContext(sketch)
+        val dataSource = FileDataSource(
+            path = "/sdcard/sample_rotation.mp4".toPath(),
+            fileSystem = sketch.fileSystem,
+        )
+
+        assertNull(
+            actual = factory.create(
+                requestContext = requestContext,
+                fetchResult = FetchResult(
+                    dataSource = ByteArrayDataSource(
+                        data = byteArrayOf(),
+                        dataFrom = DataFrom.LOCAL
+                    ),
+                    mimeType = "video/mp4"
+                )
+            )
+        )
+
+        assertNull(
+            actual = factory.create(
+                requestContext = requestContext,
+                fetchResult = FetchResult(
+                    dataSource = dataSource,
+                    mimeType = null
+                )
+            )
+        )
+
+        assertNotNull(
+            actual = factory.create(
+                requestContext = requestContext,
+                fetchResult = FetchResult(
+                    dataSource = dataSource,
+                    mimeType = "video/mp4"
+                )
+            )
+        )
+    }
+
+    @Test
+    fun testFactoryEqualsAndHashCode() {
+        val element1 = FileVideoFrameDecoder.Factory()
+        val element11 = FileVideoFrameDecoder.Factory()
+
+        assertEquals(expected = element1, actual = element11)
+        assertNotEquals(illegal = element1, actual = null as Any?)
+        assertNotEquals(illegal = element1, actual = Any())
+
+        assertEquals(expected = element1.hashCode(), actual = element11.hashCode())
+    }
+
+    @Test
+    fun testFactoryToString() = runTest {
+        assertEquals(
+            expected = "FileVideoFrameDecoder",
+            actual = FileVideoFrameDecoder.Factory().toString()
+        )
+    }
+}

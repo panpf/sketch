@@ -80,7 +80,7 @@ internal fun <R> Any.asOrThrow(): R {
  * Returns true if currently on the main thread
  *
  * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testIsMainThread
- * @see com.github.panpf.sketch.core.ios.test.util.CoreUtilsIosTest.testIsMainThread
+ * @see com.github.panpf.sketch.core.apple.test.util.CoreUtilsAppleTest.testIsMainThread
  * @see com.github.panpf.sketch.core.desktop.test.util.CoreUtilsDesktopTest.testIsMainThread
  * @see com.github.panpf.sketch.core.jscommon.test.util.CoreUtilsJsCommonTest.testIsMainThread
  */
@@ -99,7 +99,7 @@ internal expect fun platformIsMainThread(): Boolean
  * Throws an exception if not currently on the main thread
  *
  * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testRequiredMainThread
- * @see com.github.panpf.sketch.core.ios.test.util.CoreUtilsIosTest.testRequiredMainThread
+ * @see com.github.panpf.sketch.core.apple.test.util.CoreUtilsAppleTest.testRequiredMainThread
  * @see com.github.panpf.sketch.core.desktop.test.util.CoreUtilsDesktopTest.testRequiredMainThread
  * @see com.github.panpf.sketch.core.jscommon.test.util.CoreUtilsJsCommonTest.testRequiredMainThread
  */
@@ -109,7 +109,7 @@ internal expect fun requiredMainThread()
  * Throws an exception if not currently on the work thread
  *
  * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testRequiredWorkThread
- * @see com.github.panpf.sketch.core.ios.test.util.CoreUtilsIosTest.testRequiredWorkThread
+ * @see com.github.panpf.sketch.core.apple.test.util.CoreUtilsAppleTest.testRequiredWorkThread
  * @see com.github.panpf.sketch.core.desktop.test.util.CoreUtilsDesktopTest.testRequiredWorkThread
  * @see com.github.panpf.sketch.core.jscommon.test.util.CoreUtilsJsCommonTest.testRequiredWorkThread
  */

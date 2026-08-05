@@ -5,28 +5,28 @@
 [Decoder] 用于从 [DataSource] 读取数据并解码图像，Sketch 支持的每一种图片类型都有对应的 [Decoder]
 为提供支持，如下表所示：
 
-| Decoder                           | Format                                             | Dependent modules         | Android | iOS | Desktop | Web |
-|-----------------------------------|:---------------------------------------------------|---------------------------|---------|:----|:--------|:----|
-| [SkiaDecoder]                     | jpeg, png, webp, bmp                               | -                         | ❌       | ✅   | ✅       | ✅   |
-| [BitmapFactoryDecoder]            | jpeg, png, webp, bmp, heif (API 27), avif (API 31) | -                         | ✅       | ❌   | ❌       | ❌   |
-| [AwxkeeAvifDecoder]               | heif (API 24), avif (API 24)                       | sketch-avif-awxkee        | ✅       | ❌   | ❌       | ❌   |
-| [PhotosAssetDecoder]              | jpeg, png, webp, bmp, heif (ios 11), avif (ios 16) | -                         | ❌       | ✅   | ❌       | ❌   |
-| [UIImageDecoder]                  | heif (ios 11), avif (ios 16)                       | -                         | ❌       | ✅   | ❌       | ❌   |
-| [SkiaGifDecoder]                  | gif (不支持 resize)                                   | sketch-animated-gif       | ❌       | ✅   | ✅       | ✅   |
-| [MovieGifDecoder]                 | gif (不支持 resize)                                   | sketch-animated-gif       | ✅       | ❌   | ❌       | ❌   |
-| [ImageDecoderGifDecoder]          | gif (API 28)                                       | sketch-animated-gif       | ✅       | ❌   | ❌       | ❌   |
-| [KoralGifDecoder]                 | gif                                                | sketch-animated-gif-koral | ✅       | ❌   | ❌       | ❌   |
-| [ImageDecoderAnimatedWebpDecoder] | webp 动图 (API 28)                                   | sketch-animated-webp      | ✅       | ❌   | ❌       | ❌   |
-| [SkiaAnimatedWebpDecoder]         | webp 动图 (不支持 resize)                               | sketch-animated-webp      | ❌       | ✅   | ✅       | ✅   |
-| [ImageDecoderAnimatedHeifDecoder] | heif 动图 (API 30)                                   | sketch-animated-heif      | ✅       | ❌   | ❌       | ❌   |
-| [SvgDecoder]                      | svg (非 Android 不支持 CSS)                            | sketch-svg                | ✅       | ✅   | ✅       | ✅   |
-| [VideoFrameDecoder]               | 视频帧                                                | sketch-video              | ✅       | ❌   | ❌       | ❌   |
-| [FFmpegVideoFrameDecoder]         | 视频帧                                                | sketch-video-ffmpeg       | ✅       | ❌   | ❌       | ❌   |
-| [PhotosAssetVideoFrameDecoder]    | 视频帧                                                | sketch-video              | ❌       | ✅   | ❌       | ❌   |
-| [FileVideoFrameDecoder]           | 视频帧                                                | sketch-video              | ❌       | ✅   | ❌       | ❌   |
-| [BlurHashDecoder]                 | BlurHash                                           | sketch-blurhash           | ✅       | ✅   | ✅       | ✅   |
-| [ApkIconDecoder]                  | Apk Icon                                           | sketch-extensions-core    | ✅       | ❌   | ❌       | ❌   |
-| [DrawableDecoder]                 | Andoid res drawable                                | -                         | ✅       | ❌   | ❌       | ❌   |
+| Decoder                           | Format                                             | Dependent modules         | Android | iOS | macOS Native | Desktop | Web |
+|-----------------------------------|:---------------------------------------------------|---------------------------|---------|:----|:-------------|:--------|:----|
+| [SkiaDecoder]                     | jpeg, png, webp, bmp                               | -                         | ❌       | ✅   | ✅            | ✅       | ✅   |
+| [BitmapFactoryDecoder]            | jpeg, png, webp, bmp, heif (API 27), avif (API 31) | -                         | ✅       | ❌   | ❌            | ❌       | ❌   |
+| [AwxkeeAvifDecoder]               | heif (API 24), avif (API 24)                       | sketch-avif-awxkee        | ✅       | ❌   | ❌            | ❌       | ❌   |
+| [PhotosAssetDecoder]              | jpeg, png, webp, bmp, heif (ios 11), avif (ios 16) | -                         | ❌       | ✅   | ❌            | ❌       | ❌   |
+| [UIImageDecoder]                  | heif (ios 11), avif (ios 16)                       | -                         | ❌       | ✅   | ❌            | ❌       | ❌   |
+| [SkiaGifDecoder]                  | gif (不支持 resize)                                   | sketch-animated-gif       | ❌       | ✅   | ✅            | ✅       | ✅   |
+| [MovieGifDecoder]                 | gif (不支持 resize)                                   | sketch-animated-gif       | ✅       | ❌   | ❌            | ❌       | ❌   |
+| [ImageDecoderGifDecoder]          | gif (API 28)                                       | sketch-animated-gif       | ✅       | ❌   | ❌            | ❌       | ❌   |
+| [KoralGifDecoder]                 | gif                                                | sketch-animated-gif-koral | ✅       | ❌   | ❌            | ❌       | ❌   |
+| [ImageDecoderAnimatedWebpDecoder] | webp 动图 (API 28)                                   | sketch-animated-webp      | ✅       | ❌   | ❌            | ❌       | ❌   |
+| [SkiaAnimatedWebpDecoder]         | webp 动图 (不支持 resize)                               | sketch-animated-webp      | ❌       | ✅   | ✅            | ✅       | ✅   |
+| [ImageDecoderAnimatedHeifDecoder] | heif 动图 (API 30)                                   | sketch-animated-heif      | ✅       | ❌   | ❌            | ❌       | ❌   |
+| [SvgDecoder]                      | svg (非 Android 不支持 CSS)                            | sketch-svg                | ✅       | ✅   | ✅            | ✅       | ✅   |
+| [VideoFrameDecoder]               | 视频帧                                                | sketch-video              | ✅       | ❌   | ❌            | ❌       | ❌   |
+| [FFmpegVideoFrameDecoder]         | 视频帧                                                | sketch-video-ffmpeg       | ✅       | ❌   | ❌            | ❌       | ❌   |
+| [PhotosAssetVideoFrameDecoder]    | 视频帧                                                | sketch-video              | ❌       | ✅   | ❌            | ❌       | ❌   |
+| [FileVideoFrameDecoder]           | 视频帧                                                | sketch-video              | ❌       | ✅   | ✅            | ❌       | ❌   |
+| [BlurHashDecoder]                 | BlurHash                                           | sketch-blurhash           | ✅       | ✅   | ✅            | ✅       | ✅   |
+| [ApkIconDecoder]                  | Apk Icon                                           | sketch-extensions-core    | ✅       | ❌   | ❌            | ❌       | ❌   |
+| [DrawableDecoder]                 | Andoid res drawable                                | -                         | ✅       | ❌   | ❌            | ❌       | ❌   |
 
 每种 [Decoder] 的用途如下：
 
@@ -57,7 +57,7 @@
 * [FFmpegVideoFrameDecoder]：在 Android 平台上使用 wseemann 的 [FFmpegMediaMetadataRetriever]
   库解码视频帧（[了解更多](video_frame.zh.md)）
 * [PhotosAssetVideoFrameDecoder]：在 iOS 平台上解码来自 Photos Library 视频文件的帧
-* [FileVideoFrameDecoder]：在 iOS 平台上解码来自本地视频文件的帧
+* [FileVideoFrameDecoder]：在 iOS 和 macOS Native 平台上解码来自本地视频文件的帧
 * [BlurHashDecoder]：从 BlurHash 字符串解码模糊图像 （[了解更多](blurhash.zh.md)）
 * [ApkIconDecoder]：在 Android 平台上解码 Apk
   文件的图标（[了解更多](apk_app_icon.zh.md#加载-apk-图标)）
@@ -291,7 +291,7 @@ ImageRequest(context, "https://example.com/image.jpg") {
 
 [PhotosAssetVideoFrameDecoder]: ../sketch-video/src/iosMain/kotlin/com/github/panpf/sketch/decode/PhotosAssetVideoFrameDecoder.kt
 
-[FileVideoFrameDecoder]: ../sketch-video/src/iosMain/kotlin/com/github/panpf/sketch/decode/FileVideoFrameDecoder.kt
+[FileVideoFrameDecoder]: ../sketch-video/src/appleMain/kotlin/com/github/panpf/sketch/decode/FileVideoFrameDecoder.kt
 
 [UIImageDecoder]: ../sketch-core/src/iosMain/kotlin/com/github/panpf/sketch/decode/UIImageDecoder.kt
 

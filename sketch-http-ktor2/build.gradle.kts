@@ -22,7 +22,7 @@ kotlin {
         desktopMain.dependencies {
             api(libs.ktor2.client.java)
         }
-        iosMain.dependencies {
+        appleMain.dependencies {
             api(libs.ktor2.client.darwin)
         }
         jsMain.dependencies {

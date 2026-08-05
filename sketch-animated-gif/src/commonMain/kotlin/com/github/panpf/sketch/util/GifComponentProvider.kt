@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
  *
  * @see com.github.panpf.sketch.animated.gif.android.test.util.GifComponentProviderAndroidTest
  * @see com.github.panpf.sketch.animated.gif.desktop.test.util.GifComponentProviderDesktopTest
- * @see com.github.panpf.sketch.animated.gif.ios.test.util.GifComponentProviderIosTest
+ * @see com.github.panpf.sketch.animated.gif.apple.test.util.GifComponentProviderAppleTest
  * @see com.github.panpf.sketch.animated.gif.jscommon.test.util.GifComponentProviderJsCommonTest
  */
 expect class GifComponentProvider : ComponentProvider {

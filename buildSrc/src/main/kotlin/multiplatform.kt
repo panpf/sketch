@@ -33,6 +33,7 @@ enum class KmpTarget {
     Js,
     WasmJs,
     Ios,
+    Macos,
 }
 
 fun Project.addMultiplatformTargets(kmpTargets: Array<KmpTarget>) {
@@ -81,10 +82,17 @@ fun Project.addMultiplatformTargets(kmpTargets: Array<KmpTarget>) {
                 iosArm64()
                 iosSimulatorArm64()
             }
+
+            if (kmpTargets.contains(KmpTarget.Macos)) {
+                macosArm64()
+            }
         }
 
         if (kmpTargets.contains(KmpTarget.Ios)) {
-            copyResourcesToIosTestBin()
+            copyResourcesToAppleTestBin(targetName = "iosSimulatorArm64")
+        }
+        if (kmpTargets.contains(KmpTarget.Macos)) {
+            copyResourcesToAppleTestBin(targetName = "macosArm64")
         }
 
         if (kmpTargets.contains(KmpTarget.Js)) {
@@ -102,17 +110,18 @@ fun Project.addMultiplatformTargets(kmpTargets: Array<KmpTarget>) {
 }
 
 /**
- * Although the iosTest environment is configured with a dependency on the images module,
+ * Although Apple native tests are configured with a dependency on the images module,
  * it still cannot access the resource files in the images module.
- * The temporary solution is to copy the resource files to the bin directory of iosTest before executing the test task.
+ * The temporary solution is to copy the resource files to the test binary directory before executing the test task.
  */
-fun Project.copyResourcesToIosTestBin() {
+fun Project.copyResourcesToAppleTestBin(targetName: String) {
+    val targetTaskName = targetName.replaceFirstChar { it.uppercase() }
     val copyComposeResourcesTask = tasks.register(
-        /* name = */ "copyComposeResourcesToIosTestBin",
+        /* name = */ "copyComposeResourcesTo${targetTaskName}TestBin",
         /* type = */ Copy::class.java
     ) {
         group = LifecycleBasePlugin.VERIFICATION_GROUP
-        description = "Copy compose resources to iOS simulator build bin directory for tests"
+        description = "Copy Compose resources to the $targetName test binary directory"
         duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.INCLUDE
 
         val fromDir = file("${project.rootDir}/internal/images/src/commonMain/composeResources")
@@ -122,39 +131,39 @@ fun Project.copyResourcesToIosTestBin() {
         from(fromDir)
 
         val destDir =
-            layout.buildDirectory.dir("bin/iosSimulatorArm64/debugTest/compose-resources/composeResources/com.github.panpf.sketch.images")
+            layout.buildDirectory.dir("bin/$targetName/debugTest/compose-resources/composeResources/com.github.panpf.sketch.images")
         into(destDir)
 
         doLast {
-            println("Copyed compose resources from '$fromDir' to '${destDir.get()}'")
+            println("Copied Compose resources from '$fromDir' to '${destDir.get()}'")
         }
     }
 
     val copyKotlinResourcesTask = tasks.register(
-        /* name = */ "copyKotlinResourcesToIosTestBin",
+        /* name = */ "copyKotlinResourcesTo${targetTaskName}TestBin",
         /* type = */ Copy::class.java
     ) {
         group = LifecycleBasePlugin.VERIFICATION_GROUP
-        description = "Copy kotlin resources to iOS simulator build bin directory for tests"
+        description = "Copy Kotlin resources to the $targetName test binary directory"
         duplicatesStrategy = org.gradle.api.file.DuplicatesStrategy.INCLUDE
 
-        val fromDir = file("${project.rootDir}/internal/images/src/iosMain/resources")
+        val fromDir = file("${project.rootDir}/internal/images/src/appleMain/resources")
         if (!fromDir.exists()) {
             throw IllegalStateException("Source directory '$fromDir' does not exist. Please check the path.")
         }
         from(fromDir)
 
         val destDir =
-            layout.buildDirectory.dir("bin/iosSimulatorArm64/debugTest/compose-resources")
+            layout.buildDirectory.dir("bin/$targetName/debugTest/compose-resources")
         into(destDir)
 
         doLast {
-            println("Copyed kotlin resources from '$fromDir' to '${destDir.get()}'")
+            println("Copied Kotlin resources from '$fromDir' to '${destDir.get()}'")
         }
     }
 
     afterEvaluate {
-        val testTaskName = "iosSimulatorArm64Test"
+        val testTaskName = "${targetName}Test"
         tasks.findByName(testTaskName)?.let { testTask ->
             testTask.dependsOn(copyComposeResourcesTask)
             testTask.dependsOn(copyKotlinResourcesTask)
@@ -224,6 +233,18 @@ val NamedDomainObjectContainer<KotlinSourceSet>.nonAndroidMain: NamedDomainObjec
 
 val NamedDomainObjectContainer<KotlinSourceSet>.nonAndroidTest: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("nonAndroidTest")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.appleMain: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("appleMain")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.appleTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("appleTest")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.macosMain: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("macosMain")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.macosTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("macosTest")
 
 val NamedDomainObjectContainer<KotlinSourceSet>.jvmCommonMain: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("jvmCommonMain")

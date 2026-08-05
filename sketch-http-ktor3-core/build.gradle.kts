@@ -28,7 +28,7 @@ kotlin {
         desktopTest.dependencies {
             implementation(libs.ktor3.client.java)
         }
-        iosTest.dependencies {
+        appleTest.dependencies {
             implementation(libs.ktor3.client.darwin)
         }
         jsTest.dependencies {

@@ -23,7 +23,7 @@ import com.github.panpf.sketch.ComponentRegistry
  *
  * @see com.github.panpf.sketch.animated.gif.android.test.decode.GifDecoderAndroidTest.testSupportGif
  * @see com.github.panpf.sketch.animated.gif.desktop.test.decode.GifDecoderDesktopTest.testSupportGif
- * @see com.github.panpf.sketch.animated.gif.ios.test.decode.GifDecoderIosTest.testSupportGif
+ * @see com.github.panpf.sketch.animated.gif.apple.test.decode.GifDecoderAppleTest.testSupportGif
  * @see com.github.panpf.sketch.animated.gif.jscommon.test.decode.GifDecoderJsCommonTest.testSupportGif
  */
 expect fun ComponentRegistry.Builder.supportGif(): ComponentRegistry.Builder

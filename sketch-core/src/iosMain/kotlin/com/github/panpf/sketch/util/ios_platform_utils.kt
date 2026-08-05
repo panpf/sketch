@@ -20,33 +20,13 @@
 package com.github.panpf.sketch.util
 
 import com.github.panpf.sketch.Bitmap
-import com.github.panpf.sketch.decode.internal.calculateSampledBitmapSize
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.cValue
-import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.useContents
-import kotlinx.cinterop.usePinned
-import org.jetbrains.skia.ColorAlphaType
-import org.jetbrains.skia.ColorSpace
-import org.jetbrains.skia.ColorType
-import platform.CoreGraphics.CGBitmapContextCreate
-import platform.CoreGraphics.CGColorSpaceCreateDeviceRGB
-import platform.CoreGraphics.CGColorSpaceRelease
-import platform.CoreGraphics.CGContextDrawImage
-import platform.CoreGraphics.CGContextRelease
-import platform.CoreGraphics.CGImageAlphaInfo
-import platform.CoreGraphics.CGImageCreateWithImageInRect
-import platform.CoreGraphics.CGImageGetHeight
-import platform.CoreGraphics.CGImageGetWidth
-import platform.CoreGraphics.CGImageRelease
 import platform.CoreGraphics.CGRectMake
-import platform.CoreGraphics.kCGBitmapByteOrder32Big
-import platform.Foundation.NSData
 import platform.Foundation.NSOperatingSystemVersion
 import platform.Foundation.NSProcessInfo
-import platform.Foundation.create
 import platform.Photos.PHAsset
 import platform.Photos.PHAssetMediaType
 import platform.Photos.PHAssetMediaTypeAudio
@@ -56,8 +36,6 @@ import platform.Photos.PHAssetResource
 import platform.UIKit.UIImage
 import platform.UIKit.UIImageOrientation
 import platform.UniformTypeIdentifiers.UTType
-import platform.darwin.ByteVar
-import platform.posix.memcpy
 
 private const val RESOURCE_TYPE_PHOTO = 1L
 private const val RESOURCE_TYPE_VIDEO = 2L
@@ -321,98 +299,8 @@ fun UIImage.correctExifOrientation(): UIImage {
  * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testUIImageToBitmap
  */
 fun UIImage.toBitmap(sampleSize: Int = 1, region: Rect? = null): Bitmap {
-    require((sampleSize > 0) && ((sampleSize == 1) || ((sampleSize % 2) == 0))) {
-        "sampleSize must be 1 or a power of 2, but was $sampleSize"
-    }
     val cgImage = this.CGImage ?: throw Exception("UIImage has no CGImage")
-    val originalWidth = CGImageGetWidth(cgImage).toInt()
-    val originalHeight = CGImageGetHeight(cgImage).toInt()
-    val fullRect = Rect(left = 0, top = 0, right = originalWidth, bottom = originalHeight)
-    if (region != null) {
-        require(value = !region.isEmpty) {
-            "cropRect invalid: ${region.toShortString()}"
-        }
-        require(value = fullRect.contains(region)) {
-            "cropRect out of bounds: ${region.toShortString()}, originalSize=${originalWidth}x${originalHeight}"
-        }
-    }
-
-    // Crop CGImage
-    val finalRegion = region ?: fullRect
-    val croppedCGImage = if (finalRegion != fullRect) {
-        CGImageCreateWithImageInRect(
-            image = cgImage,
-            rect = CGRectMake(
-                x = finalRegion.left.toDouble(),
-                y = finalRegion.top.toDouble(),
-                width = finalRegion.width().toDouble(),
-                height = finalRegion.height().toDouble()
-            )
-        ) ?: throw Exception("Failed to create cropped CGImage")
-    } else {
-        cgImage
-    }
-
-    try {
-        val sampledBitmapSize = calculateSampledBitmapSize(
-            imageSize = Size(
-                width = finalRegion.width(),
-                height = finalRegion.height()
-            ),
-            sampleSize = sampleSize
-        )
-        val bytesPerRow = sampledBitmapSize.width * 4
-        val pixels = ByteArray(bytesPerRow * sampledBitmapSize.height)
-        val colorSpace = CGColorSpaceCreateDeviceRGB()
-            ?: throw Exception("Failed to create RGB color space")
-        try {
-            pixels.usePinned { pinned ->
-                val context = CGBitmapContextCreate(
-                    data = pinned.addressOf(0),
-                    width = sampledBitmapSize.width.toULong(),
-                    height = sampledBitmapSize.height.toULong(),
-                    bitsPerComponent = 8u,
-                    bytesPerRow = bytesPerRow.toULong(),
-                    space = colorSpace,
-                    bitmapInfo = CGImageAlphaInfo.kCGImageAlphaPremultipliedLast.value or kCGBitmapByteOrder32Big,
-                ) ?: throw Exception("Failed to create bitmap context")
-                try {
-                    CGContextDrawImage(
-                        c = context,
-                        rect = CGRectMake(
-                            x = 0.0,
-                            y = 0.0,
-                            width = sampledBitmapSize.width.toDouble(),
-                            height = sampledBitmapSize.height.toDouble()
-                        ),
-                        image = croppedCGImage,
-                    )
-                } finally {
-                    CGContextRelease(context)
-                }
-            }
-        } finally {
-            CGColorSpaceRelease(colorSpace)
-        }
-
-        val imageInfo = org.jetbrains.skia.ImageInfo(
-            width = sampledBitmapSize.width,
-            height = sampledBitmapSize.height,
-            colorType = ColorType.RGBA_8888,
-            alphaType = ColorAlphaType.PREMUL,
-            colorSpace = ColorSpace.sRGB,
-        )
-        val bitmap = Bitmap()
-        if (!bitmap.installPixels(imageInfo, pixels, bytesPerRow)) {
-            throw Exception("Failed to install RGBA pixels into bitmap")
-        }
-        bitmap.setImmutable()
-        return bitmap
-    } finally {
-        if (finalRegion != fullRect) {
-            CGImageRelease(croppedCGImage)
-        }
-    }
+    return cgImage.toBitmap(sampleSize = sampleSize, region = region)
 }
 
 /**
@@ -433,33 +321,6 @@ fun UIImage.sketchSize(): Size {
     return size().useContents {
         Size(this.width.toInt(), this.height.toInt())
     }
-}
-
-/**
- * Convert a ByteArray to NSData by pinning the byte array and creating an NSData object that references the pinned memory.
- *
- * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testByteArrayToNSData
- */
-fun ByteArray.toNSData(): NSData {
-    return usePinned { pinned ->
-        NSData.create(bytes = pinned.addressOf(0), length = size.toULong())
-    }
-}
-
-/**
- * Convert an NSData to ByteArray by creating a new ByteArray of the appropriate size and copying the bytes from the NSData into it using memcpy.
- *
- * @see com.github.panpf.sketch.core.ios.test.util.IosPlatformUtilsTest.testNSDataToByteArray
- */
-fun NSData.toByteArray(): ByteArray {
-    val byteArray = ByteArray(length.toInt())
-    val byteVars = this.bytes?.reinterpret<ByteVar>()
-    if (byteVars != null) {
-        byteArray.usePinned { pinned ->
-            memcpy(pinned.addressOf(0), byteVars, this@toByteArray.length)
-        }
-    }
-    return byteArray
 }
 
 /**

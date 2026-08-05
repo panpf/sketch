@@ -16,7 +16,7 @@ kotlin {
             api(projects.sketchHttpKtor3)
         }
 
-        iosMain.dependencies {
+        appleMain.dependencies {
             api(libs.ktor3.client.darwin)
         }
         jsMain.dependencies {

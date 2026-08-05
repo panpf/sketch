@@ -4,10 +4,10 @@
 
 Sketch 提供了 `sketch-video-*` 系列模块以支持解码视频帧
 
-| Module              | Decoder                                                                          | Android   | iOS | Desktop | Web |
-|:--------------------|:---------------------------------------------------------------------------------|:----------|:----|:--------|:----|
-| sketch-video        | [VideoFrameDecoder]<br>[PhotosAssetVideoFrameDecoder]<br>[FileVideoFrameDecoder] | ✅(API 27) | ✅   | ❌       | ❌   |
-| sketch-video-ffmpeg | [FFmpegVideoFrameDecoder]                                                        | ✅         | ❌   | ❌       | ❌   |
+| Module              | Decoder                                                                          | Android   | iOS | macOS Native | Desktop | Web |
+|:--------------------|:---------------------------------------------------------------------------------|:----------|:----|:-------------|:--------|:----|
+| sketch-video        | [VideoFrameDecoder]<br>[PhotosAssetVideoFrameDecoder]<br>[FileVideoFrameDecoder] | ✅(API 27) | ✅   | ✅            | ❌       | ❌   |
+| sketch-video-ffmpeg | [FFmpegVideoFrameDecoder]                                                        | ✅         | ❌   | ❌            | ❌       | ❌   |
 
 * [VideoFrameDecoder]：
     * 使用 Android 内置的 MediaMetadataRetriever 类解码视频帧
@@ -26,7 +26,7 @@ Sketch 提供了 `sketch-video-*` 系列模块以支持解码视频帧
 * [FileVideoFrameDecoder]：
   * 使用 AVAssetImageGenerator 类解码视频帧
   * 仅支持本地 path uri
-  * 仅支持 ios 平台
+  * 支持 iOS 和 macOS Native 平台
 
 ### 安装组件
 
@@ -83,4 +83,4 @@ ImageRequest(context, "file:///sdcard/sample.mp4") {
 
 [PhotosAssetVideoFrameDecoder]: ../sketch-video/src/iosMain/kotlin/com/github/panpf/sketch/decode/PhotosAssetVideoFrameDecoder.kt
 
-[FileVideoFrameDecoder]: ../sketch-video/src/iosMain/kotlin/com/github/panpf/sketch/decode/FileVideoFrameDecoder.kt
+[FileVideoFrameDecoder]: ../sketch-video/src/appleMain/kotlin/com/github/panpf/sketch/decode/FileVideoFrameDecoder.kt

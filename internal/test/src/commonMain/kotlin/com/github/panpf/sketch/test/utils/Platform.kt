@@ -3,6 +3,7 @@ package com.github.panpf.sketch.test.utils
 enum class Platform {
     Android,
     iOS,
+    macOS,
     Desktop,
     Web, ;
 

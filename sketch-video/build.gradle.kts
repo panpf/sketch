@@ -4,7 +4,9 @@ plugins {
     id("org.jetbrains.kotlinx.kover")
 }
 
-addMultiplatformTargets(kmpTargets = arrayOf(KmpTarget.Android, KmpTarget.Ios))
+addMultiplatformTargets(
+    kmpTargets = arrayOf(KmpTarget.Android, KmpTarget.Ios, KmpTarget.Macos)
+)
 kmpAndroidLibrary(nameSpace = "com.github.panpf.sketch.video")
 
 kotlin {

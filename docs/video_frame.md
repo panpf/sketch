@@ -4,17 +4,17 @@ Translations: [简体中文](video_frame.zh.md)
 
 Sketch provides the `sketch-video-*` series of modules to support decoding video frames
 
-| Module              | Decoder                                                                          | Android   | iOS | Desktop | Web |
-|:--------------------|:---------------------------------------------------------------------------------|:----------|:----|:--------|:----|
-| sketch-video        | [VideoFrameDecoder]<br>[PhotosAssetVideoFrameDecoder]<br>[FileVideoFrameDecoder] | ✅(API 27) | ✅   | ❌       | ❌   |
-| sketch-video-ffmpeg | [FFmpegVideoFrameDecoder]                                                        | ✅         | ❌   | ❌       | ❌   |
+| Module              | Decoder                                                                          | Android   | iOS | macOS Native | Desktop | Web |
+|:--------------------|:---------------------------------------------------------------------------------|:----------|:----|:-------------|:--------|:----|
+| sketch-video        | [VideoFrameDecoder]<br>[PhotosAssetVideoFrameDecoder]<br>[FileVideoFrameDecoder] | ✅(API 27) | ✅   | ✅            | ❌       | ❌   |
+| sketch-video-ffmpeg | [FFmpegVideoFrameDecoder]                                                        | ✅         | ❌   | ❌            | ❌       | ❌   |
 
 * [VideoFrameDecoder]:
     * Decode video frames using Android's built-in MediaMetadataRetriever class
     * It is recommended to use Android 8.1 and above, because versions 8.0 and below do not support
       reading frame thumbnails, which will consume a lot of memory when decoding larger videos such
       as 4k.
-  * Decoding video frames using AVAssetImageGenerator class on ios
+    * Only supports Android
 * [FFmpegVideoFrameDecoder]:
     * Decode video frames using the [FFmpegMediaMetadataRetriever] class of
       the [wseemann/FFmpegMediaMetadataRetriever-project][FFmpegMediaMetadataRetriever-project]
@@ -27,7 +27,7 @@ Sketch provides the `sketch-video-*` series of modules to support decoding video
 * [FileVideoFrameDecoder]：
     * Use the AVAssetImageGenerator class to decode video frames
     * Only local path uri is supported
-    * Only supports the iOS platform
+    * Supports iOS and macOS Native
 
 ## Install component
 
@@ -85,4 +85,4 @@ ImageRequest(context, "file:///sdcard/sample.mp4") {
 
 [PhotosAssetVideoFrameDecoder]: ../sketch-video/src/iosMain/kotlin/com/github/panpf/sketch/decode/PhotosAssetVideoFrameDecoder.kt
 
-[FileVideoFrameDecoder]: ../sketch-video/src/iosMain/kotlin/com/github/panpf/sketch/decode/FileVideoFrameDecoder.kt
+[FileVideoFrameDecoder]: ../sketch-video/src/appleMain/kotlin/com/github/panpf/sketch/decode/FileVideoFrameDecoder.kt
