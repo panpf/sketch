@@ -81,21 +81,21 @@ tasks.configureEach {
                         // deb or rpm packages will convert all uppercase letters to lowercase by default, so case sensitivity must be ignored here.
                         val lowercaseAppName = appName.lowercase()
                         if (newFileName.contains(lowercaseAppName, ignoreCase = false)) {
-                            newFileName = newFileName.replace(lowercaseAppName, "sketch-sample")
+                            newFileName = newFileName.replace(lowercaseAppName, "sketch-sample-jvm")
                         }
 
                         // sketch-sample_1.5.0001_amd64.deb -> sketch-sample-1.5.0001-amd64.deb
                         newFileName = newFileName.replace("_", "-")
                     } else {
                         if (newFileName.contains(appName, ignoreCase = false)) {
-                            newFileName = newFileName.replace(appName, "sketch-sample")
+                            newFileName = newFileName.replace(appName, "sketch-sample-jvm")
                         }
                     }
 
                     if (newFileName != fileName) {
                         val newFile = file.parentFile.resolve(newFileName)
                         if (file.renameTo(newFile)) {
-                            logger.lifecycle("Rename succedd. '$file' -> '${newFile.name}'")
+                            logger.lifecycle("Rename successful. '$file' -> '${newFile.name}'")
                         } else {
                             logger.error("Rename failed. '$file'")
                         }
