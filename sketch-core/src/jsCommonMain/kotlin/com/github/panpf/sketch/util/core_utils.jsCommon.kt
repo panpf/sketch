@@ -19,7 +19,7 @@ package com.github.panpf.sketch.util
 /**
  * Returns true if currently on the main thread
  *
- * @see com.github.panpf.sketch.core.jscommon.test.util.CoreUtilsJsCommonTest.testIsMainThread
+ * @see com.github.panpf.sketch.core.jscommon.test.util.CoreUtilsJsCommonTest.testPlatformIsMainThread
  */
 internal actual fun platformIsMainThread() = true
 
@@ -28,7 +28,7 @@ internal actual fun platformIsMainThread() = true
  *
  * @see com.github.panpf.sketch.core.jscommon.test.util.CoreUtilsJsCommonTest.testRequiredMainThread
  */
-internal actual fun requiredMainThread() {
+actual fun requiredMainThread() {
 
 }
 

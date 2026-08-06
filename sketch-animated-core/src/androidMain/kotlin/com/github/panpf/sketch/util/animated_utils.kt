@@ -17,19 +17,7 @@
 package com.github.panpf.sketch.util
 
 import android.graphics.drawable.Drawable
-import android.os.Looper
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
-
-/**
- * Check if the current thread is the UI thread
- *
- * @see com.github.panpf.sketch.animated.core.android.test.util.AnimatedUtilsTest.testRequiredMainThread
- */
-internal fun requiredMainThread() {
-    check(Looper.myLooper() == Looper.getMainLooper()) {
-        "This method must be executed in the UI thread"
-    }
-}
 
 /**
  * Wrap onStart and onEnd into [Animatable2Compat.AnimationCallback]

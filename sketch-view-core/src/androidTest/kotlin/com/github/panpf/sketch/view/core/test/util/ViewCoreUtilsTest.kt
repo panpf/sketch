@@ -21,13 +21,9 @@ import com.github.panpf.sketch.util.calculateBoundsWithScaleType
 import com.github.panpf.sketch.util.findDeepestDrawable
 import com.github.panpf.sketch.util.findLeafDrawable
 import com.github.panpf.sketch.util.fitScale
-import com.github.panpf.sketch.util.requiredMainThread
 import com.github.panpf.sketch.util.toHexString
 import com.github.panpf.sketch.util.toScale
 import com.github.panpf.sketch.util.toScaleType
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.withContext
 import okio.IOException
 import org.junit.runner.RunWith
 import kotlin.test.Test
@@ -60,16 +56,6 @@ class ViewCoreUtilsTest {
             expected = any.hashCode().toString(16),
             actual = any.toHexString()
         )
-    }
-
-    @Test
-    fun testRequiredMainThread() = runTest {
-        assertFailsWith(IllegalStateException::class) {
-            requiredMainThread()
-        }
-        withContext(Dispatchers.Main) {
-            requiredMainThread()
-        }
     }
 
     @Test

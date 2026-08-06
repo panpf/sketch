@@ -21,7 +21,6 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.DrawableWrapper
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
-import android.os.Looper
 import android.widget.ImageView.ScaleType
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import com.github.panpf.sketch.drawable.CrossfadeDrawable
@@ -47,17 +46,6 @@ internal inline fun <reified R> Any?.asOrNull(): R? {
  * @see com.github.panpf.sketch.view.core.test.util.ViewCoreUtilsTest.testAnyToHexString
  */
 internal fun Any.toHexString(): String = this.hashCode().toString(16)
-
-/**
- * Check if the current thread is the UI thread
- *
- * @see com.github.panpf.sketch.view.core.test.util.ViewCoreUtilsTest.testRequiredMainThread
- */
-internal fun requiredMainThread() {
-    check(Looper.myLooper() == Looper.getMainLooper()) {
-        "This method must be executed in the UI thread"
-    }
-}
 
 /**
  * Whether the ScaleType is a fit scale type

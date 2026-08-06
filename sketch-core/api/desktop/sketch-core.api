@@ -2612,9 +2612,11 @@ public final class com/github/panpf/sketch/util/Core_utils_commonKt {
 	public static final fun difference (Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageRequest;)Ljava/lang/String;
 	public static final fun isThumbnailWithSize (Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/Size;F)Z
 	public static synthetic fun isThumbnailWithSize$default (Lcom/github/panpf/sketch/util/Size;Lcom/github/panpf/sketch/util/Size;FILjava/lang/Object;)Z
+	public static final fun setMainThreadChecker (Lkotlin/jvm/functions/Function0;)V
 }
 
 public final class com/github/panpf/sketch/util/Core_utils_desktopKt {
+	public static final fun requiredMainThread ()V
 	public static final fun requiredWorkThread ()V
 }
 

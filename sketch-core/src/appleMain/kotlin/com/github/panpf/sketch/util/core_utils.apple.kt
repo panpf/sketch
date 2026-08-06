@@ -19,7 +19,7 @@ package com.github.panpf.sketch.util
 /**
  * Returns true if currently on the main thread
  *
- * @see com.github.panpf.sketch.core.apple.test.util.CoreUtilsAppleTest.testIsMainThread
+ * @see com.github.panpf.sketch.core.apple.test.util.CoreUtilsAppleTest.testPlatformIsMainThread
  */
 internal actual fun platformIsMainThread() = platform.Foundation.NSThread.isMainThread
 
@@ -28,7 +28,7 @@ internal actual fun platformIsMainThread() = platform.Foundation.NSThread.isMain
  *
  * @see com.github.panpf.sketch.core.apple.test.util.CoreUtilsAppleTest.testRequiredMainThread
  */
-internal actual fun requiredMainThread() {
+actual fun requiredMainThread() {
     check(isMainThread()) {
         "This method must be executed in the UI thread"
     }

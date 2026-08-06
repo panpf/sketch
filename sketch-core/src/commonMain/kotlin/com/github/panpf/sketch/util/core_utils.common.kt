@@ -76,23 +76,42 @@ internal fun <R> Any.asOrThrow(): R {
     return this as R
 }
 
+private val mainThreadChecker = atomic<(() -> Boolean)?>(null)
+
 /**
- * Returns true if currently on the main thread
+ * Returns true if currently on the main thread, if the [mainThreadChecker] is set,
+ * it will be used to determine whether it is the main thread,
+ * otherwise it will use the platform's default method to determine whether it is the main thread
  *
  * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testIsMainThread
- * @see com.github.panpf.sketch.core.apple.test.util.CoreUtilsAppleTest.testIsMainThread
+ * @see com.github.panpf.sketch.core.ios.test.util.CoreUtilsIosTest.testIsMainThread
  * @see com.github.panpf.sketch.core.desktop.test.util.CoreUtilsDesktopTest.testIsMainThread
  * @see com.github.panpf.sketch.core.jscommon.test.util.CoreUtilsJsCommonTest.testIsMainThread
  */
-private val mainThreadChecker = atomic<(() -> Boolean)?>(null)
-
 internal fun isMainThread(): Boolean =
     mainThreadChecker.value?.invoke() ?: platformIsMainThread()
 
-internal fun setMainThreadChecker(checker: (() -> Boolean)?) {
+/**
+ * Set the main thread checker, if set, it will be used to determine whether it is the main thread,
+ * otherwise it will use the platform's default method to determine whether it is the main thread
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testIsMainThread
+ * @see com.github.panpf.sketch.core.ios.test.util.CoreUtilsAppleTest.testIsMainThread
+ * @see com.github.panpf.sketch.core.desktop.test.util.CoreUtilsDesktopTest.testIsMainThread
+ * @see com.github.panpf.sketch.core.jscommon.test.util.CoreUtilsJsCommonTest.testIsMainThread
+ */
+fun setMainThreadChecker(checker: (() -> Boolean)?) {
     mainThreadChecker.value = checker
 }
 
+/**
+ * Returns true if currently on the main thread, using the platform's default method
+ *
+ * @see com.github.panpf.sketch.core.android.test.util.CoreUtilsAndroidTest.testPlatformIsMainThread
+ * @see com.github.panpf.sketch.core.ios.test.util.CoreUtilsAppleTest.testPlatformIsMainThread
+ * @see com.github.panpf.sketch.core.desktop.test.util.CoreUtilsDesktopTest.testPlatformIsMainThread
+ * @see com.github.panpf.sketch.core.jscommon.test.util.CoreUtilsJsCommonTest.testPlatformIsMainThread
+ */
 internal expect fun platformIsMainThread(): Boolean
 
 /**
@@ -103,7 +122,7 @@ internal expect fun platformIsMainThread(): Boolean
  * @see com.github.panpf.sketch.core.desktop.test.util.CoreUtilsDesktopTest.testRequiredMainThread
  * @see com.github.panpf.sketch.core.jscommon.test.util.CoreUtilsJsCommonTest.testRequiredMainThread
  */
-internal expect fun requiredMainThread()
+expect fun requiredMainThread()
 
 /**
  * Throws an exception if not currently on the work thread

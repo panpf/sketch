@@ -48,7 +48,9 @@ import platform.Foundation.create
 import platform.darwin.ByteVar
 import platform.posix.memcpy
 
-/** Convert a Core Graphics image to an immutable Skia bitmap. */
+/**
+ * Convert a Core Graphics image to an immutable Skia bitmap.
+ */
 fun CGImageRef.toBitmap(sampleSize: Int = 1, region: Rect? = null): Bitmap {
     require((sampleSize > 0) && ((sampleSize == 1) || ((sampleSize % 2) == 0))) {
         "sampleSize must be 1 or a power of 2, but was $sampleSize"
@@ -57,10 +59,11 @@ fun CGImageRef.toBitmap(sampleSize: Int = 1, region: Rect? = null): Bitmap {
     val originalHeight = CGImageGetHeight(this).toInt()
     val fullRect = Rect(left = 0, top = 0, right = originalWidth, bottom = originalHeight)
     if (region != null) {
-        require(!region.isEmpty) { "cropRect invalid: ${region.toShortString()}" }
+        require(!region.isEmpty) {
+            "cropRect invalid: ${region.toShortString()}"
+        }
         require(fullRect.contains(region)) {
-            "cropRect out of bounds: ${region.toShortString()}, " +
-                    "originalSize=${originalWidth}x${originalHeight}"
+            "cropRect out of bounds: ${region.toShortString()}, originalSize=${originalWidth}x${originalHeight}"
         }
     }
 
@@ -74,40 +77,39 @@ fun CGImageRef.toBitmap(sampleSize: Int = 1, region: Rect? = null): Bitmap {
                 width = finalRegion.width().toDouble(),
                 height = finalRegion.height().toDouble(),
             ),
-        ) ?: error("Failed to create cropped CGImage")
+        ) ?: throw Exception("Failed to create cropped CGImage")
     } else {
         this
     }
 
     try {
-        val sampledSize = calculateSampledBitmapSize(
+        val sampledBitmapSize = calculateSampledBitmapSize(
             imageSize = Size(finalRegion.width(), finalRegion.height()),
             sampleSize = sampleSize,
         )
-        val bytesPerRow = sampledSize.width * 4
-        val pixels = ByteArray(bytesPerRow * sampledSize.height)
+        val bytesPerRow = sampledBitmapSize.width * 4
+        val pixels = ByteArray(bytesPerRow * sampledBitmapSize.height)
         val colorSpace = CGColorSpaceCreateDeviceRGB()
-            ?: error("Failed to create RGB color space")
+            ?: throw Exception("Failed to create RGB color space")
         try {
             pixels.usePinned { pinned ->
                 val context = CGBitmapContextCreate(
                     data = pinned.addressOf(0),
-                    width = sampledSize.width.toULong(),
-                    height = sampledSize.height.toULong(),
+                    width = sampledBitmapSize.width.toULong(),
+                    height = sampledBitmapSize.height.toULong(),
                     bitsPerComponent = 8u,
                     bytesPerRow = bytesPerRow.toULong(),
                     space = colorSpace,
-                    bitmapInfo = CGImageAlphaInfo.kCGImageAlphaPremultipliedLast.value or
-                            kCGBitmapByteOrder32Big,
-                ) ?: error("Failed to create bitmap context")
+                    bitmapInfo = CGImageAlphaInfo.kCGImageAlphaPremultipliedLast.value or kCGBitmapByteOrder32Big,
+                ) ?: throw Exception("Failed to create bitmap context")
                 try {
                     CGContextDrawImage(
                         c = context,
                         rect = CGRectMake(
                             x = 0.0,
                             y = 0.0,
-                            width = sampledSize.width.toDouble(),
-                            height = sampledSize.height.toDouble(),
+                            width = sampledBitmapSize.width.toDouble(),
+                            height = sampledBitmapSize.height.toDouble(),
                         ),
                         image = croppedImage,
                     )
@@ -120,8 +122,8 @@ fun CGImageRef.toBitmap(sampleSize: Int = 1, region: Rect? = null): Bitmap {
         }
 
         val imageInfo = org.jetbrains.skia.ImageInfo(
-            width = sampledSize.width,
-            height = sampledSize.height,
+            width = sampledBitmapSize.width,
+            height = sampledBitmapSize.height,
             colorType = ColorType.RGBA_8888,
             alphaType = ColorAlphaType.PREMUL,
             colorSpace = ColorSpace.sRGB,

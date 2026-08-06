@@ -22,7 +22,7 @@ import javax.swing.SwingUtilities
 /**
  * Returns true if currently on the main thread
  *
- * @see com.github.panpf.sketch.core.desktop.test.util.CoreUtilsDesktopTest.testIsMainThread
+ * @see com.github.panpf.sketch.core.desktop.test.util.CoreUtilsDesktopTest.testPlatformIsMainThread
  */
 internal actual fun platformIsMainThread() = SwingUtilities.isEventDispatchThread()
 
@@ -31,7 +31,7 @@ internal actual fun platformIsMainThread() = SwingUtilities.isEventDispatchThrea
  *
  * @see com.github.panpf.sketch.core.desktop.test.util.CoreUtilsDesktopTest.testRequiredMainThread
  */
-internal actual fun requiredMainThread() {
+actual fun requiredMainThread() {
     check(isMainThread()) {
         "This method must be executed in the UI thread"
     }
