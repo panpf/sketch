@@ -58,6 +58,8 @@ val appName = (getComposeResourcesPath() ?: getJarPath(Sketch::class.java)).md5(
 "/home/[user]/.cache/SketchImageLoader/${appName}/sketch4/result"
 ```
 
+[//]: # (TODO Add macos )
+
 ### Web
 
 The web platform does not yet support result caching
