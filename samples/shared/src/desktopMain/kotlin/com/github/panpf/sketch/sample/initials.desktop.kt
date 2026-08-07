@@ -5,7 +5,7 @@ import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.fetch.supportHurlHttpUri
 import com.github.panpf.sketch.fetch.supportKtorHttpUri
 import com.github.panpf.sketch.fetch.supportOkHttpHttpUri
-import com.github.panpf.sketch.sample.ui.util.PexelsCompatibleInterceptor
+import com.github.panpf.sketch.sample.util.PexelsCompatibleInterceptor
 import com.github.panpf.sketch.util.HurlHttpComponentProvider
 import com.github.panpf.sketch.util.KtorHttpComponentProvider
 import com.github.panpf.sketch.util.OkHttpHttpComponentProvider

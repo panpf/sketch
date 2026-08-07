@@ -1,4 +1,4 @@
-package com.github.panpf.sketch.sample.ui.util
+package com.github.panpf.sketch.sample.util
 
 import com.github.panpf.sketch.http.HttpHeaders
 import com.github.panpf.sketch.http.merged

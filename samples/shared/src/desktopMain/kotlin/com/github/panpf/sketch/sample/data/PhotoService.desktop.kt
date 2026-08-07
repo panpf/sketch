@@ -113,6 +113,6 @@ actual class PhotoService actual constructor(val sketch: Sketch) {
     }
 
     actual suspend fun share(imageUri: String): Result<String?> {
-        return Result.failure(Exception("Desktop platform does not support"))
+        return Result.failure(Exception("Desktop platform does not support sharing"))
     }
 }
