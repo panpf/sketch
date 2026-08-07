@@ -7,7 +7,8 @@ enum class Platform {
     Desktop,
     Js,
     WasmJs,
-    Ios, ;
+    Ios,
+    Macos, ;
 
     companion object
 }
@@ -15,6 +16,8 @@ enum class Platform {
 fun Platform.isAndroid(): Boolean = this == Platform.Android
 
 fun Platform.isIos(): Boolean = this == Platform.Ios
+
+fun Platform.isMacos(): Boolean = this == Platform.Macos
 
 fun Platform.isDesktop(): Boolean = this == Platform.Desktop
 

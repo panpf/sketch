@@ -68,8 +68,8 @@ jobs:
           name: ios-files
           path: samples/shared/build/ios/outputs/Build/Products/Debug-iphonesimulator/*.app.zip
 
-  package-linux:
-    name: Package linux desktop
+  package-jvm-linux:
+    name: Package jvm linux
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -86,14 +86,14 @@ jobs:
       - name: Run package
         run: internal/package_desktop.sh
 
-      - name: Upload linux artifacts
+      - name: Upload jvm linux artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: linux-files
+          name: jvm-linux-files
           path: samples/desktopApp/build/compose/binaries/main-release/deb/*.deb
 
-  package-macos:
-    name: Package macOS desktop
+  package-jvm-macos:
+    name: Package jvm macOS
     runs-on: macos-26
     steps:
       - uses: actions/checkout@v6
@@ -110,14 +110,14 @@ jobs:
       - name: Run package
         run: internal/package_desktop.sh
 
-      - name: Upload macOS artifacts
+      - name: Upload jvm macOS artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: macos-files
+          name: jvm-macos-files
           path: samples/desktopApp/build/compose/binaries/main-release/dmg/*.dmg
 
-  package-windows:
-    name: Package windows desktop
+  package-jvm-windows:
+    name: Package jvm windows
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v6
@@ -134,11 +134,35 @@ jobs:
       - name: Run package
         run: ./gradlew samples:desktopApp:packageReleaseDistributionForCurrentOS
 
-      - name: Upload windows artifacts
+      - name: Upload jvm windows artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: windows-files
+          name: jvm-windows-files
           path: samples/desktopApp/build/compose/binaries/main-release/msi/*.msi
+
+  package-macos:
+    name: Package macOS
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v5
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: gradle/actions/setup-gradle@v6
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          cache-overwrite-existing: true
+
+      - name: Run package
+        run: internal/package_macos.sh
+
+      - name: Upload macOS artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: macos-files
+          path: samples/macosApp/build/compose/binaries/main/native-macosArm64-release-dmg/*.dmg
 
   package-js:
     name: Package js browser
