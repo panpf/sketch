@@ -57,6 +57,7 @@ class ContentDataSourceTest {
 
     @Test
     fun testOpenSource() = runTest {
+        // TODO Replace ComposeResImageFiles to ContentImageFiles
         val (context, sketch) = getTestContextAndSketch()
         val contentUri = ComposeResImageFiles.jpeg
             .toDataSource(context)

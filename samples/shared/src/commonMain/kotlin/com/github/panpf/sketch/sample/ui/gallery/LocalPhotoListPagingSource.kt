@@ -36,7 +36,7 @@ class LocalPhotoListPagingSource(val sketch: Sketch) : PagingSource<Int, Photo>(
 
         val builtinPhotos = builtinPhotoListRepo.loadPhotoList(pageStart, pageSize)
         val galleryPhotos = if (builtinPhotos.size < pageSize) {
-            val builtinPhotoListSize = builtinPhotoListRepo.size
+            val builtinPhotoListSize = builtinPhotoListRepo.getSize()
             val galleryPageStart = if (pageStart < builtinPhotoListSize)
                 0 else pageStart - builtinPhotoListSize
             val galleryPageSize = pageSize - builtinPhotos.size

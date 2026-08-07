@@ -11,9 +11,12 @@ actual suspend fun buildFetcherTestItems(
     context: PlatformContext,
     fromCompose: Boolean
 ): List<PhotoTestItem> {
+    val httpsUri = getOnePexelsPhoto()
+    val composeResourceUri = ComposeResImageFiles.png.uri
+    val base64Uri = Base64Images.KOTLIN_ICON
     return buildList {
-        add(PhotoTestItem(title = "HTTPS", photoUri = getOnePexelsPhoto()))
-        add(PhotoTestItem(title = "RES_COMPOSE", photoUri = ComposeResImageFiles.jpeg.uri))
-        add(PhotoTestItem(title = "BASE64", photoUri = Base64Images.KOTLIN_ICON))
+        add(PhotoTestItem(title = "HTTPS", photoUri = httpsUri))
+        add(PhotoTestItem(title = "RES_COMPOSE", photoUri = composeResourceUri))
+        add(PhotoTestItem(title = "BASE64", photoUri = base64Uri))
     }
 }

@@ -1,36 +1,37 @@
 package com.github.panpf.sketch.sample.data
 
 import com.github.panpf.sketch.Sketch
-import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.sample.image.photoUri2PhotoInfo
 import com.github.panpf.sketch.sample.ui.model.Photo
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
-expect fun buildPlatformBuiltinPhotoList(sketch: Sketch): List<String>
+expect suspend fun buildPlatformBuiltinPhotoList(sketch: Sketch): List<String>
 
 class BuiltinPhotoListRepo(val sketch: Sketch) {
 
-    private val list: List<String> by lazy {
-        ComposeResImageFiles.statics
-            .asSequence()
-            .plus(ComposeResImageFiles.anims)
-            .plus(ComposeResImageFiles.numbersGif)
-            .plus(ComposeResImageFiles.longQMSHT)
-            .plus(ComposeResImageFiles.longCOMIC)
-            .plus(ComposeResImageFiles.clockExifs)
-            .plus(ComposeResImageFiles.videos)
-            .map { it.uri }
-            .plus(buildPlatformBuiltinPhotoList(sketch))
-            .toList()
+    private var _list: List<String>? = null
+    private val mutex = Mutex()
+
+    private suspend fun preparePhotoList(): List<String> {
+        return _list
+            ?: mutex.withLock {
+                _list ?: buildPlatformBuiltinPhotoList(sketch).apply { _list = this }
+            }
     }
 
-    val size: Int
-        get() = list.size
+    suspend fun getSize(): Int {
+        val list = preparePhotoList()
+        return list.size
+    }
 
     suspend fun loadPhotoList(pageStart: Int, pageSize: Int): List<Photo> {
-        return if (pageStart < size) {
+        val list = preparePhotoList()
+        val listSize = list.size
+        return if (pageStart < listSize) {
             list.subList(
                 fromIndex = pageStart,
-                toIndex = minOf(pageStart + pageSize, size)
+                toIndex = minOf(pageStart + pageSize, listSize)
             )
         } else {
             emptyList()
