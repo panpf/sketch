@@ -17,7 +17,6 @@
 package com.github.panpf.sketch.util
 
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.Sketch
 import net.harawata.appdirs.AppDirsFactory
 import okio.Path
 import okio.Path.Companion.toPath
@@ -38,7 +37,8 @@ actual fun PlatformContext.maxMemory(): Long {
  * @see com.github.panpf.sketch.core.desktop.test.util.PlatformContextsDesktopTest.testAppCacheDirectory
  */
 actual fun PlatformContext.appCacheDirectory(): Path? {
-    val appFlag = (getComposeResourcesPath() ?: getJarPath(Sketch::class.java))
+    // TODO Refactor it. The current solution is not ideal and has changed too much.
+    val appFlag = (getComposeResourcesPath() ?: getJarPath(PlatformContext::class.java))
         ?.md5()
         ?: throw UnsupportedOperationException(
             "Unable to generate application aliases to automatically initialize downloadCache and resultCache, " +

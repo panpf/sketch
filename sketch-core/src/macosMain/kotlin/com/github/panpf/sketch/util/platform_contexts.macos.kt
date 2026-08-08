@@ -47,6 +47,7 @@ actual fun PlatformContext.maxMemory(): Long {
  * @see com.github.panpf.sketch.core.macos.test.util.PlatformContextsMacosTest.testAppCacheDirectory
  */
 actual fun PlatformContext.appCacheDirectory(): Path? {
+    // TODO Refactor it. The current solution is not ideal and has changed too much.
     val paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, true)
     val cachesDirectory = (paths.firstOrNull() as? String)?.toPath() ?: return null
     val applicationId = NSBundle.mainBundle.bundleIdentifier
