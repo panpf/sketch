@@ -6,6 +6,7 @@ import com.github.panpf.sketch.sample.ui.AnimatedImageTestRoute
 import com.github.panpf.sketch.sample.ui.BlurHashTestRoute
 import com.github.panpf.sketch.sample.ui.CrossfadePainterTestRoute
 import com.github.panpf.sketch.sample.ui.DecoderTestRoute
+import com.github.panpf.sketch.sample.ui.DirectoriesTestRoute
 import com.github.panpf.sketch.sample.ui.DisplayInsanityTestRoute
 import com.github.panpf.sketch.sample.ui.ExifOrientationTestRoute
 import com.github.panpf.sketch.sample.ui.FetcherTestRoute
@@ -43,6 +44,7 @@ actual fun platformTestScreens(): List<Any> = listOf(
     TestItem("BlurHash", BlurHashTestRoute),
 
     TestGroup("Other"),
+    TestItem("Directories Test", DirectoriesTestRoute),
     TestItem("Temp (Common)", TempTestRoute),
     TestItem("Temp (Android)", AndroidTempTestRoute),
 

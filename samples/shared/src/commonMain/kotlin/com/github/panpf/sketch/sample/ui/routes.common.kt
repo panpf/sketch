@@ -14,6 +14,7 @@ import com.github.panpf.sketch.sample.ui.test.AnimatedImageTestScreen
 import com.github.panpf.sketch.sample.ui.test.BlurHashTestScreen
 import com.github.panpf.sketch.sample.ui.test.CrossfadePainterTestScreen
 import com.github.panpf.sketch.sample.ui.test.DecoderTestScreen
+import com.github.panpf.sketch.sample.ui.test.DirectoriesTestScreen
 import com.github.panpf.sketch.sample.ui.test.DisplayInsanityTestScreen
 import com.github.panpf.sketch.sample.ui.test.ExifOrientationTestScreen
 import com.github.panpf.sketch.sample.ui.test.FetcherTestScreen
@@ -98,6 +99,9 @@ data object DisplayInsanityTestRoute : Route
 @Serializable
 data object TempTestRoute : Route
 
+@Serializable
+data object DirectoriesTestRoute : Route
+
 val navSavedStateConfig = SavedStateConfiguration {
     serializersModule = SerializersModule {
         polymorphic(NavKey::class) {
@@ -124,6 +128,7 @@ val navSavedStateConfig = SavedStateConfiguration {
             subclass(BlurHashTestRoute::class, BlurHashTestRoute.serializer())
             subclass(DisplayInsanityTestRoute::class, DisplayInsanityTestRoute.serializer())
             subclass(TempTestRoute::class, TempTestRoute.serializer())
+            subclass(DirectoriesTestRoute::class, DirectoriesTestRoute.serializer())
 
             platformSerializersModule()
         }
@@ -153,6 +158,7 @@ val navEntryProvider = entryProvider<NavKey> {
     entry<BlurHashTestRoute> { BlurHashTestScreen() }
     entry<DisplayInsanityTestRoute> { DisplayInsanityTestScreen() }
     entry<TempTestRoute> { TempTestScreen() }
+    entry<DirectoriesTestRoute> { DirectoriesTestScreen() }
 
     platformEntryProvider()
 }

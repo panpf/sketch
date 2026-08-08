@@ -11,6 +11,7 @@ import com.github.panpf.sketch.sample.ui.gallery.LocalPhotoListViewModel
 import com.github.panpf.sketch.sample.ui.gallery.PexelsPhotoListViewModel
 import com.github.panpf.sketch.sample.ui.gallery.PhotoViewerViewModel
 import com.github.panpf.sketch.sample.ui.test.DecoderTestViewModel
+import com.github.panpf.sketch.sample.ui.test.DirectoriesTestViewModel
 import com.github.panpf.sketch.sample.ui.test.DisplayInsanityTestViewModel
 import com.github.panpf.sketch.sample.ui.test.ExifOrientationTestViewModel
 import com.github.panpf.sketch.sample.ui.test.FetcherTestViewModel
@@ -50,6 +51,7 @@ fun commonModule(context: PlatformContext): Module = module {
     viewModel { ExifOrientationTestViewModel() }
     viewModel { ProgressIndicatorTestViewModel() }
     viewModel { DisplayInsanityTestViewModel() }
+    viewModel { DirectoriesTestViewModel(context) }
 }
 
 expect fun platformModule(context: PlatformContext): Module

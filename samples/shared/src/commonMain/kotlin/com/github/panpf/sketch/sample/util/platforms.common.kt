@@ -1,5 +1,6 @@
 package com.github.panpf.sketch.sample.util
 
+import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.Decoder
 import okio.ByteString.Companion.encodeUtf8
 import kotlin.contracts.ExperimentalContracts
@@ -71,3 +72,5 @@ inline fun <T> T.ifLet(predicate: Boolean, block: (T) -> T): T {
 }
 
 expect fun platformGifDecoders(): List<Decoder.Factory>
+
+expect fun copyToClipboard(context: PlatformContext, text: String)

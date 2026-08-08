@@ -18,6 +18,7 @@ package com.github.panpf.sketch.sample.util
 
 import android.content.pm.PackageInfo
 import android.os.Build
+import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.decode.Decoder
 import com.github.panpf.sketch.decode.ImageDecoderGifDecoder
 import com.github.panpf.sketch.decode.KoralGifDecoder
@@ -36,3 +37,10 @@ actual fun platformGifDecoders(): List<Decoder.Factory> = listOfNotNull(
     KoralGifDecoder.Factory(),
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) ImageDecoderGifDecoder.Factory() else null
 )
+
+actual fun copyToClipboard(context: PlatformContext, text: String) {
+    val clipboard =
+        context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+    val clip = android.content.ClipData.newPlainText("text", text)
+    clipboard.setPrimaryClip(clip)
+}
