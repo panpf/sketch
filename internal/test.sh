@@ -10,6 +10,7 @@ cd "$rootDir"
   connectedAndroidTest \
   iosSimulatorArm64Test \
   desktopTest \
+  macosArm64Test \
   jsBrowserTest \
   wasmJsBrowserTest \
   --continue

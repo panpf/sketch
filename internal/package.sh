@@ -11,6 +11,7 @@ cd "$rootDir"
 ./gradlew \
   samples:androidApp:assembleRelease \
   samples:desktopApp:packageReleaseDistributionForCurrentOS \
+  samples:macosApp:packageDmgNativeReleaseMacosArm64 \
   samples:jsApp:jsBrowserDistribution \
   samples:wasmJsApp:wasmJsBrowserDistribution \
   --continue
@@ -25,6 +26,7 @@ echo ""
 echo "Android distribution is written to $(pwd)/samples/androidApp/build/outputs/apk/release/"
 echo "iOS distribution is written to $(pwd)/samples/shared/build/ios/outputs/Build/Products/Debug-iphonesimulator/"
 echo "Desktop distribution is written to $(pwd)/samples/desktopApp/build/compose/binaries/main/"
+echo "macOS Native distribution is written to $(pwd)/samples/macosApp/build/compose/binaries/main/native-macosArm64-release-dmg/"
 echo "JS distribution is written to $(pwd)/samples/jsApp/build/dist/js/productionExecutable/"
 echo "WasmJs distribution is written to $(pwd)/samples/wasmJsApp/build/dist/wasmJs/productionExecutable/"
 echo "✅  All packages are created successfully."
