@@ -67,6 +67,11 @@
 -dontobfuscate
 
 
+# ----------------------------------------- navigation3 ------------------------------------------------- #
+-keep class androidx.navigation3.** { *; }
+-keep class androidx.navigationevent.** { *; }
+
+
 # ----------------------------------------- App Ruls --------------------------------------------- #
 # Change here com.github.panpf.sketch.sample
 -keepclassmembers @kotlinx.serialization.Serializable class com.github.panpf.sketch.sample.** {
