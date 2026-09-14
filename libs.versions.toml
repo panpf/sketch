@@ -25,7 +25,7 @@ avifcoder = "2.2.1"
 
 buildkonfig = "0.22.0"
 
-dokka = "2.2.0"
+dokka = "2.2.0" # TODO Sync Wraning: sourceSets collection in Kotlin Android is deprecated. Kotlin Source Sets collection in Android extension should not be used and is deprecated now.
 
 ffmpegMediaMetadataRetriever = "1.0.23"
 
