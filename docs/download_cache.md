@@ -46,19 +46,34 @@ val downloadCacheDir = "$appCacheDirectory/sketch4/download"
 The default download cache directory on desktop platforms is:
 
 ```kotlin
-val appName = (getComposeResourcesPath() ?: getJarPath(Sketch::class.java)).md5()
+val appId = getJarPath(PlatformContext::class.java)
+     ?.substringBefore("${File.separator}build${File.separator}")    // Debug
+     ?.substringBefore("${File.separator}app${File.separator}")  // Release
+     ?.md5()
+     ?.let { "SketchImageLoader${File.separator}${it}" }
+     ?: return null
 
 // macOS
-"/Users/[user]/Library/Caches/SketchImageLoader/${appName}/sketch4/download"
+"/Users/[user]/Library/Caches/${appId}/sketch4/download"
 
 // Windows
-"C:\\Users\\[user]\\AppData\\Local\\SketchImageLoader\\${appName}\\sketch4/download\\Cache"
+"C:\\Users\\[user]\\AppData\\Local\\${appId}\\Cache\\sketch4\\download"
 
 // Linux
-"/home/[user]/.cache/SketchImageLoader/${appName}/sketch4/download"
+"/home/[user]/.cache/${appId}/sketch4/download"
 ```
 
-[//]: # (TODO Add macos )
+### macOS
+
+```kotlin
+val appId = NSBundle.mainBundle.bundleIdentifier?.takeIf { it.isNotEmpty() }
+     ?: NSBundle.mainBundle.bundlePath.takeIf { it.isNotEmpty() }
+          ?.substringBefore("/build/")
+          ?.md5()
+          ?.let { "SketchImageLoader/${it}" }
+     ?: return null
+val downloadCacheDir = "/Users/[user]/Library/Caches/${appId}/sketch4/download"
+```
 
 ### Web
 
@@ -66,8 +81,14 @@ The web platform does not yet support download caching
 
 ## Customize
 
-You can pass [Sketch].Builder's downloadCache() or downloadCacheOptions() when initializing [Sketch]
-Method to customize the implementation or configuration of download cache, as follows:
+> [!WARNING]
+> Since Sketch on JVM and macOS platforms defaults to using the program's runtime path to build the
+> download cache directory, any change to the runtime path will cause the download cache to become
+> invalid. Therefore, please configure a stable download cache directory when initializing Sketch.
+
+When initializing [Sketch], you can customize the download cache implementation or various
+configurations using the downloadCache() or downloadCacheOptions() methods of [Sketch].Builder, as
+follows:
 
 ```kotlin
 // Use the default LruDiskCache implementation and configure its parameters

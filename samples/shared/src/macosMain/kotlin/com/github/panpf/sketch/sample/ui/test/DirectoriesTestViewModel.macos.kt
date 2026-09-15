@@ -5,7 +5,6 @@ import com.github.panpf.sketch.util.appCacheDirectory
 import platform.Foundation.NSBundle
 import platform.Foundation.NSCachesDirectory
 import platform.Foundation.NSPicturesDirectory
-import platform.Foundation.NSProcessInfo
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
 import platform.Foundation.NSUserDomainMask
 
@@ -41,12 +40,7 @@ actual fun buildPlatformDirectoryItemList(context: PlatformContext): List<Direct
         val bundlePath = mainBundle.bundlePath
         add(DirectoryItem("bundlePath", bundlePath))
 
-        // Debug: 'macosApp.kexe'
-        // Release: 'Sketch4'
-        val processName = NSProcessInfo.processInfo.processName
-        add(DirectoryItem("processName", processName))
-
-        // Debug: '/Users/panpf/Library/Caches/macosApp.kexe'
+        // Debug: '/Users/panpf/Library/Caches/SketchImageLoader/1bf4ceab56351085f7f623ebf83041fc'
         // Release: '/Users/panpf/Library/Caches/com.github.panpf.sketch.sample'
         val appCacheDirectory = context.appCacheDirectory()?.toString()
         add(DirectoryItem("appCacheDirectory", appCacheDirectory))

@@ -46,19 +46,34 @@ val resultCacheDir = "$appCacheDirectory/sketch4/result"
 The default results cache directory on desktop platforms is:
 
 ```kotlin
-val appName = (getComposeResourcesPath() ?: getJarPath(Sketch::class.java)).md5()
+val appId = getJarPath(PlatformContext::class.java)
+     ?.substringBefore("${File.separator}build${File.separator}")    // Debug
+     ?.substringBefore("${File.separator}app${File.separator}")  // Release
+     ?.md5()
+     ?.let { "SketchImageLoader${File.separator}${it}" }
+     ?: return null
 
 // macOS
-"/Users/[user]/Library/Caches/SketchImageLoader/${appName}/sketch4/result"
+"/Users/[user]/Library/Caches/${appId}/sketch4/result"
 
 // Windows
-"C:\\Users\\[user]\\AppData\\Local\\SketchImageLoader\\${appName}\\sketch4/result\\Cache"
+"C:\\Users\\[user]\\AppData\\Local\\${appId}\\Cache\\sketch4\\result"
 
 // Linux
-"/home/[user]/.cache/SketchImageLoader/${appName}/sketch4/result"
+"/home/[user]/.cache/${appId}/sketch4/result"
 ```
 
-[//]: # (TODO Add macos )
+### macOS
+
+```kotlin
+val appId = NSBundle.mainBundle.bundleIdentifier?.takeIf { it.isNotEmpty() }
+     ?: NSBundle.mainBundle.bundlePath.takeIf { it.isNotEmpty() }
+          ?.substringBefore("/build/")
+          ?.md5()
+          ?.let { "SketchImageLoader/${it}" }
+     ?: return null
+val resultCacheDir = "/Users/[user]/Library/Caches/${appId}/sketch4/result"
+```
 
 ### Web
 
@@ -66,8 +81,14 @@ The web platform does not yet support result caching
 
 ## Customize
 
-You can pass resultCache() or resultCacheOptions() of [Sketch].Builder when initializing [Sketch]
-Method to customize the implementation or configuration of result cache, as follows:
+> [!WARNING]
+> Since Sketch on JVM and macOS platforms defaults to using the program's runtime path to build the
+> result cache directory, any change to the runtime path will cause the result cache to become
+> invalid. Therefore, please configure a stable result cache directory when initializing Sketch.
+
+When initializing [Sketch], you can customize the implementation or various configurations of the
+result cache using the resultCache() or resultCacheOptions() methods of [Sketch].Builder, as
+follows:
 
 ```kotlin
 // Use the default LruDiskCache implementation and configure its parameters

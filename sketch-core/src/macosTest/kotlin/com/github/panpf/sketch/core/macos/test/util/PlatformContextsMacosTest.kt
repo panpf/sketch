@@ -4,11 +4,15 @@ import com.github.panpf.sketch.PlatformContext
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.appCacheDirectory
 import com.github.panpf.sketch.util.maxMemory
+import com.github.panpf.sketch.util.md5
 import com.github.panpf.sketch.util.screenSize
+import okio.Path.Companion.toPath
 import platform.Foundation.NSBundle
-import platform.Foundation.NSProcessInfo
+import platform.Foundation.NSCachesDirectory
+import platform.Foundation.NSSearchPathForDirectoriesInDomains
+import platform.Foundation.NSUserDomainMask
 import kotlin.test.Test
-import kotlin.test.assertNotNull
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class PlatformContextsMacosTest {
@@ -20,12 +24,22 @@ class PlatformContextsMacosTest {
 
     @Test
     fun testAppCacheDirectory() {
-        val cacheDirectory = PlatformContext.INSTANCE.appCacheDirectory()
-        assertNotNull(cacheDirectory)
-        val applicationId = NSBundle.mainBundle.bundleIdentifier
-            ?.takeIf { it.isNotBlank() }
-            ?: NSProcessInfo.processInfo.processName
-        assertTrue(cacheDirectory.toString().endsWith("Library/Caches/$applicationId"))
+        val appId = NSBundle.mainBundle.bundleIdentifier?.takeIf { it.isNotEmpty() }
+            ?: NSBundle.mainBundle.bundlePath.takeIf { it.isNotEmpty() }
+                ?.substringBefore("/build/")
+                ?.md5()
+                ?.let { "SketchImageLoader/${it}" }
+        val paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, true)
+        val cachesDirectory = (paths.firstOrNull() as? String)?.toPath()
+        val currentCacheDirectory = if (appId != null && cachesDirectory != null)
+            cachesDirectory.resolve(appId).toString() else null
+
+        val cacheDirectory = PlatformContext.INSTANCE.appCacheDirectory()?.toString()
+        assertEquals(expected = currentCacheDirectory, actual = cacheDirectory)
+        assertTrue(
+            actual = cacheDirectory.orEmpty().endsWith("/Library/Caches/${appId}"),
+            message = cacheDirectory
+        )
     }
 
     @Test

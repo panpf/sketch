@@ -47,14 +47,19 @@ actual fun PlatformContext.maxMemory(): Long {
  * @see com.github.panpf.sketch.core.macos.test.util.PlatformContextsMacosTest.testAppCacheDirectory
  */
 actual fun PlatformContext.appCacheDirectory(): Path? {
-    // TODO Refactor it. The current solution is not ideal and has changed too much.
+    // bundleIdentifier: Debug: ''
+    // bundleIdentifier: Release: 'com.github.panpf.sketch.sample'
+    // bundlePath: Debug: '/Users/panpf/Workspace/sketch/samples/macosApp/build/bin/macosArm64/debugExecutable'
+    // bundlePath: Release: '/Users/panpf/Downloads/Sketch4.app'
+    val appId = NSBundle.mainBundle.bundleIdentifier?.takeIf { it.isNotEmpty() }
+        ?: NSBundle.mainBundle.bundlePath.takeIf { it.isNotEmpty() }
+            ?.substringBefore("/build/")
+            ?.md5()
+            ?.let { "SketchImageLoader/${it}" }
+        ?: return null
     val paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, true)
-    val cachesDirectory = (paths.firstOrNull() as? String)?.toPath() ?: return null
-    val applicationId = NSBundle.mainBundle.bundleIdentifier
-        ?.takeIf { it.isNotBlank() }
-        ?: NSProcessInfo.processInfo.processName.takeIf { it.isNotBlank() }
-        ?: "com.github.panpf.sketch"
-    return cachesDirectory.resolve(applicationId)
+    val cachesDirectory = (paths.firstOrNull() as? String)?.toPath()
+    return cachesDirectory?.resolve(appId)
 }
 
 /**

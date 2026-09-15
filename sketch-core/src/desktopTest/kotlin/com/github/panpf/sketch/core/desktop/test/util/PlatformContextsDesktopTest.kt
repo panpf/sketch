@@ -1,21 +1,23 @@
 package com.github.panpf.sketch.core.desktop.test.util
 
 import com.github.panpf.sketch.PlatformContext
-import com.github.panpf.sketch.Sketch
 import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.current
+import com.github.panpf.sketch.test.utils.isLinux
+import com.github.panpf.sketch.test.utils.isMacOS
 import com.github.panpf.sketch.test.utils.isWindows
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.appCacheDirectory
-import com.github.panpf.sketch.util.getComposeResourcesPath
 import com.github.panpf.sketch.util.getJarPath
 import com.github.panpf.sketch.util.maxMemory
 import com.github.panpf.sketch.util.md5
 import com.github.panpf.sketch.util.screenSize
+import net.harawata.appdirs.AppDirsFactory
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
 
 class PlatformContextsDesktopTest {
 
@@ -29,21 +31,31 @@ class PlatformContextsDesktopTest {
 
     @Test
     fun testAppCacheDirectory() {
-        val appFlag = (getComposeResourcesPath() ?: getJarPath(Sketch::class.java))
+        val appId = getJarPath(PlatformContext::class.java)
+            ?.substringBefore("${File.separator}build${File.separator}")    // Debug
+            ?.substringBefore("${File.separator}app${File.separator}")  // Release
             ?.md5()
-        val fakeAppName = "SketchImageLoader${File.separator}${appFlag}"
-        val appCacheDir = PlatformContext.INSTANCE.appCacheDirectory().toString()
-        if (!Platform.current.isWindows) {
-            assertEquals(
-                message = "appCacheDir: $appCacheDir, fakeAppName: $fakeAppName",
-                expected = true,
-                actual = appCacheDir.endsWith(fakeAppName),
+            ?.let { "SketchImageLoader${File.separator}${it}" }
+        val currentAppCacheDir = if (appId != null)
+            AppDirsFactory.getInstance()
+                .getUserCacheDir(appId, /* appVersion = */ null,/* appAuthor = */ null) else null
+
+        val appCacheDir = PlatformContext.INSTANCE.appCacheDirectory()?.toString()
+        assertEquals(currentAppCacheDir, appCacheDir)
+        if (Platform.current.isMacOS) {
+            assertTrue(
+                actual = appCacheDir.orEmpty().endsWith("Library/Caches/$appId"),
+                message = "appCacheDir: $appCacheDir"
             )
-        } else {
-            assertEquals(
-                message = "appCacheDir: $appCacheDir, fakeAppName: $fakeAppName",
-                expected = true,
-                actual = appCacheDir.endsWith("$fakeAppName\\Cache"),
+        } else if (Platform.current.isWindows) {
+            assertTrue(
+                actual = appCacheDir.orEmpty().endsWith("AppData\\Local\\$appId\\Cache"),
+                message = "appCacheDir: $appCacheDir"
+            )
+        } else if (Platform.current.isLinux) {
+            assertTrue(
+                actual = appCacheDir.orEmpty().endsWith(".cache/$appId"),
+                message = "appCacheDir: $appCacheDir"
             )
         }
     }

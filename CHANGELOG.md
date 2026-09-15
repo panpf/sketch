@@ -9,6 +9,11 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
+# new
+
+* improve: The default cache directory for JVM and macOS platforms is now more stable and will not
+  change due to version variations.
+
 # 4.7.0-alpha01
 
 ## New Features

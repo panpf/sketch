@@ -7,6 +7,10 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
+# new
+
+* improve: jvm 和 macos 平台现在默认缓存目录更稳定了，不会因为版本变化而导致缓存目录变化
+
 # 4.7.0-alpha01
 
 ## 新特性

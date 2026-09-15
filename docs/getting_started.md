@@ -193,6 +193,15 @@ sketch.enqueue(request)
 For more convenience, Sketch provides singleton mode and Koin mode, which allows you to directly use
 the shared [Sketch] instance when loading pictures.
 
+> [!WARNING]
+> * Since Sketch on JVM and macOS platforms defaults to using the program's runtime path to build
+    the download and result cache directories, any change to the runtime path will cause the
+    download and result caches to become invalid. Therefore, please configure a stable download and
+    result cache directory when initializing Sketch.
+> * Please refer to the documentation for [Download Cache][download_cache]
+    and [Result Cache][result_cache] to learn how to configure the download cache and result cache
+    directories.
+
 ### Singleton mode
 
 You can directly rely on the `sketch-compose` or `sketch-view` module to use singleton mode, and

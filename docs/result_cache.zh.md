@@ -40,16 +40,33 @@ val resultCacheDir = "$appCacheDirectory/sketch4/result"
 在桌面平台上默认的结果缓存目录是：
 
 ```kotlin
-val appName = (getComposeResourcesPath() ?: getJarPath(Sketch::class.java)).md5()
+val appId = getJarPath(PlatformContext::class.java)
+     ?.substringBefore("${File.separator}build${File.separator}")    // Debug
+     ?.substringBefore("${File.separator}app${File.separator}")  // Release
+     ?.md5()
+     ?.let { "SketchImageLoader${File.separator}${it}" }
+     ?: return null
 
 // macOS
-"/Users/[user]/Library/Caches/SketchImageLoader/${appName}/sketch4/result"
+"/Users/[user]/Library/Caches/${appId}/sketch4/result"
 
 // Windows
-"C:\\Users\\[user]\\AppData\\Local\\SketchImageLoader\\${appName}\\sketch4/result\\Cache"
+"C:\\Users\\[user]\\AppData\\Local\\${appId}\\Cache\\sketch4\\result"
 
 // Linux
-"/home/[user]/.cache/SketchImageLoader/${appName}/sketch4/result"
+"/home/[user]/.cache/${appId}/sketch4/result"
+```
+
+### macOS
+
+```kotlin
+val appId = NSBundle.mainBundle.bundleIdentifier?.takeIf { it.isNotEmpty() }
+     ?: NSBundle.mainBundle.bundlePath.takeIf { it.isNotEmpty() }
+          ?.substringBefore("/build/")
+          ?.md5()
+          ?.let { "SketchImageLoader/${it}" }
+     ?: return null
+val resultCacheDir = "/Users/[user]/Library/Caches/${appId}/sketch4/result"
 ```
 
 ### Web
@@ -58,8 +75,12 @@ Web 平台尚不支持结果缓存
 
 ## 自定义
 
-你可以在初始化 [Sketch] 时通过 [Sketch].Builder 的 resultCache() 或 resultCacheOptions()
-方法自定义结果缓存的实现或配置，如下：
+> [!WARNING]
+> 由于在 jvm 和 macos 平台 Sketch 默认依赖程序的运行路径来构建结果缓存目录，运行路径一旦发生变化时就会导致结果缓存失效，所以请主动在初始化
+> Sketch 时配置一个稳定的结果缓存目录。
+
+初始化 [Sketch] 时通过 [Sketch].Builder 的 resultCache() 或 resultCacheOptions()
+方法可以自定义结果缓存的实现或各种配置，如下：
 
 ```kotlin
 // 使用默认的 LruDiskCache 实现并配置其参数
