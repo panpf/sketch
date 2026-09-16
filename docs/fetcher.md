@@ -6,21 +6,21 @@ Translations: [简体中文](fetcher.zh.md)
 Uri supported by Sketch
 There are corresponding [Fetcher] to provide support for it, as shown in the following table:
 
-| Fetcher                     | URI                            | Create                  | Dependent modules                   | Android | iOS | Desktop | Web |
-|-----------------------------|:-------------------------------|-------------------------|-------------------------------------|---------|:----|:--------|:----|
-| [KtorHttpUriFetcher]        | http://, https://              | -                       | sketch-http-ktor2,sketch-http-ktor3 | ✅       | ✅   | ✅       | ✅   |
-| [HurlHttpUriFetcher]        | http://, https://              | -                       | sketch-http-hurl                    | ✅       | ❌   | ✅       | ❌   |
-| [OkHttpHttpUriFetcher]      | http://, https://              | -                       | sketch-http-okhttp                  | ✅       | ❌   | ✅       | ❌   |
-| [FileUriFetcher]            | file://, file:/, /, D:\\, \\\\ | newFileUri()            | -                                   | ✅       | ✅   | ✅       | ✅   |
-| [ComposeResourceUriFetcher] | file:///compose_resource/      | newComposeResourceUri() | sketch-compose-resources            | ✅       | ✅   | ✅       | ✅   |
-| [ContentUriFetcher]         | content://                     | -                       | -                                   | ✅       | ❌   | ❌       | ❌   |
-| [AssetUriFetcher]           | file:///android_asset/         | newAssetUri()           | -                                   | ✅       | ❌   | ❌       | ❌   |
-| [ResourceUriFetcher]        | android.resource://            | newResourceUri()        | -                                   | ✅       | ❌   | ❌       | ❌   |
-| [AppIconUriFetcher]         | app.icon://                    | newAppIconUri()         | sketch-extensions-appicon           | ✅       | ❌   | ❌       | ❌   |
-| [PhotosAssetUriFetcher]     | file:///photos_asset/          | newPhotosAssetUri()     | -                                   | ❌       | ✅   | ❌       | ❌   |
-| [KotlinResourceUriFetcher]  | file:///kotlin_resource/       | newKotlinResourceUri()  | -                                   | ❌       | ✅   | ✅       | ❌   |
-| [Base64UriFetcher]          | data:image/jpeg;base64         | newBase64Uri()          | -                                   | ✅       | ✅   | ✅       | ✅   |
-| [BlurHashUriFetcher]        | blurhash://                    | newBlurHashUri()        | sketch-blurhash                     | ✅       | ✅   | ✅       | ✅   |
+| Fetcher                     | URI                            | Create                  | Dependent modules                   | Android | iOS | jvm | macOS | Web |
+|-----------------------------|:-------------------------------|-------------------------|-------------------------------------|---------|:----|:----|:------|:----|
+| [KtorHttpUriFetcher]        | http://, https://              | -                       | sketch-http-ktor2,sketch-http-ktor3 | ✅       | ✅   | ✅   | ✅     | ✅   |
+| [HurlHttpUriFetcher]        | http://, https://              | -                       | sketch-http-hurl                    | ✅       | ❌   | ✅   | ✅     | ❌   |
+| [OkHttpHttpUriFetcher]      | http://, https://              | -                       | sketch-http-okhttp                  | ✅       | ❌   | ✅   | ✅     | ❌   |
+| [FileUriFetcher]            | file://, file:/, /, D:\\, \\\\ | newFileUri()            | -                                   | ✅       | ✅   | ✅   | ✅     | ✅   |
+| [ComposeResourceUriFetcher] | file:///compose_resource/      | newComposeResourceUri() | sketch-compose-resources            | ✅       | ✅   | ✅   | ✅     | ✅   |
+| [ContentUriFetcher]         | content://                     | -                       | -                                   | ✅       | ❌   | ❌   | ❌     | ❌   |
+| [AssetUriFetcher]           | file:///android_asset/         | newAssetUri()           | -                                   | ✅       | ❌   | ❌   | ❌     | ❌   |
+| [ResourceUriFetcher]        | android.resource://            | newResourceUri()        | -                                   | ✅       | ❌   | ❌   | ❌     | ❌   |
+| [AppIconUriFetcher]         | app.icon://                    | newAppIconUri()         | sketch-extensions-appicon           | ✅       | ❌   | ❌   | ❌     | ❌   |
+| [PhotosAssetUriFetcher]     | file:///photos_asset/          | newPhotosAssetUri()     | -                                   | ❌       | ✅   | ❌   | ❌     | ❌   |
+| [KotlinResourceUriFetcher]  | file:///kotlin_resource/       | newKotlinResourceUri()  | -                                   | ❌       | ✅   | ✅   | ✅     | ❌   |
+| [Base64UriFetcher]          | data:image/jpeg;base64         | newBase64Uri()          | -                                   | ✅       | ✅   | ✅   | ✅     | ✅   |
+| [BlurHashUriFetcher]        | blurhash://                    | newBlurHashUri()        | sketch-blurhash                     | ✅       | ✅   | ✅   | ✅     | ✅   |
 
 The uses of each [Fetcher] are as follows:
 
@@ -162,7 +162,7 @@ AsyncImage(
 ### Load images from kotlin's resources directory
 
 > [!IMPORTANT]
-> Only supports iOS and Desktop platforms
+> Only supports iOS and jvm platforms
 
 Loading images from the kotlin resources directory does not require additional modules. You can
 directly use the newKotlinResourceUri() function to create the uri, as follows:

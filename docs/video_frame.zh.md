@@ -4,10 +4,10 @@
 
 Sketch 提供了 `sketch-video-*` 系列模块以支持解码视频帧
 
-| Module              | Decoder                                                                          | Android   | iOS | macOS Native | Desktop | Web |
-|:--------------------|:---------------------------------------------------------------------------------|:----------|:----|:-------------|:--------|:----|
-| sketch-video        | [VideoFrameDecoder]<br>[PhotosAssetVideoFrameDecoder]<br>[FileVideoFrameDecoder] | ✅(API 27) | ✅   | ✅            | ❌       | ❌   |
-| sketch-video-ffmpeg | [FFmpegVideoFrameDecoder]                                                        | ✅         | ❌   | ❌            | ❌       | ❌   |
+| Module              | Decoder                                                                          | Android   | iOS | macOS | jvm | Web |
+|:--------------------|:---------------------------------------------------------------------------------|:----------|:----|:------|:----|:----|
+| sketch-video        | [VideoFrameDecoder]<br>[PhotosAssetVideoFrameDecoder]<br>[FileVideoFrameDecoder] | ✅(API 27) | ✅   | ✅     | ❌   | ❌   |
+| sketch-video-ffmpeg | [FFmpegVideoFrameDecoder]                                                        | ✅         | ❌   | ❌     | ❌   | ❌   |
 
 * [VideoFrameDecoder]：
     * 使用 Android 内置的 MediaMetadataRetriever 类解码视频帧
@@ -18,15 +18,15 @@ Sketch 提供了 `sketch-video-*` 系列模块以支持解码视频帧
     * 使用 [wseemann/FFmpegMediaMetadataRetriever-project][FFmpegMediaMetadataRetriever-project]
       库的 [FFmpegMediaMetadataRetriever] 类解码视频帧
   * 仅支持 Android 平台
-    * 库体积大概 23MB
+      * 库体积大概 23MB
 * [PhotosAssetVideoFrameDecoder]：
-  * 使用 AVAssetImageGenerator 类解码视频帧
-  * 仅支持 file:///photos_asset/ 开头的 uri
-  * 仅支持 ios 平台
+    * 使用 AVAssetImageGenerator 类解码视频帧
+    * 仅支持 file:///photos_asset/ 开头的 uri
+    * 仅支持 ios 平台
 * [FileVideoFrameDecoder]：
-  * 使用 AVAssetImageGenerator 类解码视频帧
-  * 仅支持本地 path uri
-  * 支持 iOS 和 macOS Native 平台
+    * 使用 AVAssetImageGenerator 类解码视频帧
+    * 仅支持本地 path uri
+    * 支持 iOS 和 macOS Native 平台
 
 ### 安装组件
 
@@ -56,7 +56,7 @@ ImageRequest(context, "file:///sdcard/sample.mp4") {
 
     // 或获取提取中间的帧
     videoFramePercent(0.5f)
-  
+
     // 优先获取内嵌的封面
     preferVideoCover(true)
 

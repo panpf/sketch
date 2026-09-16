@@ -41,9 +41,9 @@ val appCacheDirectory =
 val resultCacheDir = "$appCacheDirectory/sketch4/result"
 ```
 
-### Desktop
+### jvm
 
-The default results cache directory on desktop platforms is:
+The default results cache directory on jvm platforms is:
 
 ```kotlin
 val appId = getJarPath(PlatformContext::class.java)

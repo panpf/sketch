@@ -5,12 +5,12 @@ Translations: [简体中文](animated_image.zh.md)
 Sketch provides the `sketch-animated-*` series of modules to support animated graphics. The
 supported platforms and differences are as follows:
 
-| Module                    | ComponentProvider                           | Decoder                                                                                                                          | Android   | iOS | Desktop | Web |
-|:--------------------------|:--------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------|:----------|:----|:--------|:----|
-| sketch-animated-gif       | [GifComponentProvider]                      | android api 28+: [ImageDecoderGifDecoder]</br>android api 27-: [MovieGifDecoder]</br>non android: [SkiaGifDecoder]               | ✅         | ✅   | ✅       | ✅   |
-| sketch-animated-gif-koral | [KoralGifComponentProvider]                 | [KoralGifDecoder]                                                                                                                | ✅         | ❌   | ❌       | ❌   |
-| sketch-animated-webp      | [AnimatedWebpComponentProvider]             | android api 28+: [ImageDecoderAnimatedWebpDecoder]</br>android api 27-: Not supported</br>non android: [SkiaAnimatedWebpDecoder] | ✅(API 28) | ✅   | ✅       | ✅   |
-| sketch-animated-heif      | [ImageDecoderAnimatedHeifComponentProvider] | [ImageDecoderAnimatedHeifDecoder]                                                                                                | ✅(API 30) | ❌   | ❌       | ❌   |
+| Module                    | ComponentProvider                           | Decoder                                                                                                                          | Android   | iOS | macOS | jvm | Web |
+|:--------------------------|:--------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------|:----------|:----|:------|:----|:----|
+| sketch-animated-gif       | [GifComponentProvider]                      | android api 28+: [ImageDecoderGifDecoder]</br>android api 27-: [MovieGifDecoder]</br>non android: [SkiaGifDecoder]               | ✅         | ✅   | ✅     | ✅   | ✅   |
+| sketch-animated-gif-koral | [KoralGifComponentProvider]                 | [KoralGifDecoder]                                                                                                                | ✅         | ❌   | ❌     | ❌   | ❌   |
+| sketch-animated-webp      | [AnimatedWebpComponentProvider]             | android api 28+: [ImageDecoderAnimatedWebpDecoder]</br>android api 27-: Not supported</br>non android: [SkiaAnimatedWebpDecoder] | ✅(API 28) | ✅   | ✅     | ✅   | ✅   |
+| sketch-animated-heif      | [ImageDecoderAnimatedHeifComponentProvider] | [ImageDecoderAnimatedHeifDecoder]                                                                                                | ✅(API 30) | ❌   | ❌     | ❌   | ❌   |
 
 > [!TIP]
 > The webp animation decoder that comes with the sketch-animated-webp module does not support

@@ -78,7 +78,7 @@ ImageRequest(context, "http://sample.com/sample.jpeg") {
 2. jvm 平台：
     1. 在 jvmCommonMain 目录下创建 actual 版本的 [ComponentProvider] 的实现类，注意要为
        实现类添加 @Keep 注解，因为 ServiceLoader 是通过反射来创建它的实例的
-    2. 在 androidMain 和 desktopMain 目录下创建 'resources/META-INF/services' 目录
+   2. 在 androidMain 和 jvmMain 目录下创建 'resources/META-INF/services' 目录
     3. 在 services 目录下创建 一个名为 'com.github.panpf.sketch.util.ComponentProvider' 的文件
     4. 在文件中一行一个填写你的 [ComponentProvider] 实现类的全名
 3. 非 jvm 平台：

@@ -36,9 +36,9 @@ val appCacheDirectory =
 val downloadCacheDir = "$appCacheDirectory/sketch4/download"
 ```
 
-### Desktop
+### jvm
 
-在桌面平台上默认的下载缓存目录是：
+在 jvm 平台上默认的下载缓存目录是：
 
 ```kotlin
 val appId = getJarPath(PlatformContext::class.java)

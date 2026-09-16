@@ -41,9 +41,9 @@ val appCacheDirectory =
 val downloadCacheDir = "$appCacheDirectory/sketch4/download"
 ```
 
-### Desktop
+### jvm
 
-The default download cache directory on desktop platforms is:
+The default download cache directory on jvm platforms is:
 
 ```kotlin
 val appId = getJarPath(PlatformContext::class.java)

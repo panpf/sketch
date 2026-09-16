@@ -93,7 +93,7 @@ following steps (taking full-platform components as an example):
     1. Create the actual version of the [ComponentProvider] implementation class in the
        jvmCommonMain directory. Be careful to add the @Keep annotation to the implementation class,
        because ServiceLoader creates its instance through reflection.
-    2. Create 'resources/META-INF/services' directory under androidMain and desktopMain directories
+   2. Create 'resources/META-INF/services' directory under androidMain and jvmMain directories
     3. Create a file named 'com.github.panpf.sketch.util.ComponentProvider' in the services
        directory
     4. Fill in the full name of your [ComponentProvider] implementation class one line at a time in

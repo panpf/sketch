@@ -141,7 +141,7 @@ Each URI has its own Fetcher to support it, [Learn more about Fetcher][fetcher]
 Due to limitations of platform characteristics, the functions on different platforms are also
 different, as follows:
 
-| Feature                                                                                      | Android       | iOS                     | macOS Native            | Desktop                 | Web                     |
+| Feature                                                                                      | Android       | iOS                     | macOS                   | jvm                     | Web                     |
 |:---------------------------------------------------------------------------------------------|:--------------|:------------------------|:------------------------|:------------------------|:------------------------|
 | jpeg<br/>png<br/>webp<br/>bmp                                                                | ✅             | ✅                       | ✅                       | ✅                       | ✅                       |
 | heif                                                                                         | ✅ (API 24)    | ✅                       | ❌                       | ❌                       | ❌                       |

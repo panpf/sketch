@@ -6,13 +6,13 @@
 
 Sketch 提供了 `sketch-http-*` 系列模块以支持 Http 网络图片，所支持的平台以及差异如下：
 
-| Module             | ComponentProvider                                                                                    | Fetcher                                                                         | Android | iOS | Desktop | Js | WasmJs |
-|:-------------------|:-----------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------|:--------|:----|:--------|:---|--------|
-| sketch-http        | jvm: [HurlHttpComponentProvider]<br/>nonJvm: [KtorHttpComponentProvider][Ktor3HttpComponentProvider] | jvm: [HurlHttpUriFetcher]<br/>nonJvm: [KtorHttpUriFetcher][Ktor3HttpUriFetcher] | ✅       | ✅   | ✅       | ✅  | ✅      |
-| sketch-http-hurl   | [HurlHttpComponentProvider]                                                                          | [HurlHttpUriFetcher]                                                            | ✅       | ❌   | ✅       | ❌  | ❌      |
-| sketch-http-okhttp | [OkHttpHttpComponentProvider]                                                                        | [OkHttpHttpUriFetcher]                                                          | ✅       | ❌   | ✅       | ❌  | ❌      |
-| sketch-http-ktor2  | [KtorHttpComponentProvider][Ktor2HttpComponentProvider]                                              | [KtorHttpUriFetcher][Ktor2HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅  | ❌      |
-| sketch-http-ktor3  | [KtorHttpComponentProvider][Ktor3HttpComponentProvider]                                              | [KtorHttpUriFetcher][Ktor3HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅  | ✅      |
+| Module             | ComponentProvider                                                                                    | Fetcher                                                                         | Android | iOS | jvm | macOS | Js | WasmJs |
+|:-------------------|:-----------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------|:--------|:----|:----|:------|:---|--------|
+| sketch-http        | jvm: [HurlHttpComponentProvider]<br/>nonJvm: [KtorHttpComponentProvider][Ktor3HttpComponentProvider] | jvm: [HurlHttpUriFetcher]<br/>nonJvm: [KtorHttpUriFetcher][Ktor3HttpUriFetcher] | ✅       | ✅   | ✅   | ✅     | ✅  | ✅      |
+| sketch-http-hurl   | [HurlHttpComponentProvider]                                                                          | [HurlHttpUriFetcher]                                                            | ✅       | ❌   | ✅   | ✅     | ❌  | ❌      |
+| sketch-http-okhttp | [OkHttpHttpComponentProvider]                                                                        | [OkHttpHttpUriFetcher]                                                          | ✅       | ❌   | ✅   | ✅     | ❌  | ❌      |
+| sketch-http-ktor2  | [KtorHttpComponentProvider][Ktor2HttpComponentProvider]                                              | [KtorHttpUriFetcher][Ktor2HttpUriFetcher]                                       | ✅       | ✅   | ✅   | ✅     | ✅  | ❌      |
+| sketch-http-ktor3  | [KtorHttpComponentProvider][Ktor3HttpComponentProvider]                                              | [KtorHttpUriFetcher][Ktor3HttpUriFetcher]                                       | ✅       | ✅   | ✅   | ✅     | ✅  | ✅      |
 
 > [!IMPORTANT]
 > * HurlHttpUriFetcher 使用 jvm 自带的 HttpURLConnection 实现，不需要额外的依赖

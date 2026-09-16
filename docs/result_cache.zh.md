@@ -35,9 +35,9 @@ val appCacheDirectory =
 val resultCacheDir = "$appCacheDirectory/sketch4/result"
 ```
 
-### Desktop
+### jvm
 
-在桌面平台上默认的结果缓存目录是：
+在 jvm 平台上默认的结果缓存目录是：
 
 ```kotlin
 val appId = getJarPath(PlatformContext::class.java)

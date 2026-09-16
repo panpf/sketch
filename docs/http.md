@@ -7,13 +7,13 @@ Translations: [简体中文](http.zh.md)
 Sketch provides the `sketch-http-*` series of modules to support Http network images, the
 supported platforms and differences are as follows:
 
-| Module             | ComponentProvider                                                                                    | Fetcher                                                                         | Android | iOS | Desktop | Js | WasmJs |
-|:-------------------|:-----------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------|:--------|:----|:--------|:---|--------|
-| sketch-http        | jvm: [HurlHttpComponentProvider]<br/>nonJvm: [KtorHttpComponentProvider][Ktor3HttpComponentProvider] | jvm: [HurlHttpUriFetcher]<br/>nonJvm: [KtorHttpUriFetcher][Ktor3HttpUriFetcher] | ✅       | ✅   | ✅       | ✅  | ✅      |
-| sketch-http-hurl   | [HurlHttpComponentProvider]                                                                          | [HurlHttpUriFetcher]                                                            | ✅       | ❌   | ✅       | ❌  | ❌      |
-| sketch-http-okhttp | [OkHttpHttpComponentProvider]                                                                        | [OkHttpHttpUriFetcher]                                                          | ✅       | ❌   | ✅       | ❌  | ❌      |
-| sketch-http-ktor2  | [KtorHttpComponentProvider][Ktor2HttpComponentProvider]                                              | [KtorHttpUriFetcher][Ktor2HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅  | ❌      |
-| sketch-http-ktor3  | [KtorHttpComponentProvider][Ktor3HttpComponentProvider]                                              | [KtorHttpUriFetcher][Ktor3HttpUriFetcher]                                       | ✅       | ✅   | ✅       | ✅  | ✅      |
+| Module             | ComponentProvider                                                                                    | Fetcher                                                                         | Android | iOS | jvm | macOS | Js | WasmJs |
+|:-------------------|:-----------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------|:--------|:----|:----|:------|:---|--------|
+| sketch-http        | jvm: [HurlHttpComponentProvider]<br/>nonJvm: [KtorHttpComponentProvider][Ktor3HttpComponentProvider] | jvm: [HurlHttpUriFetcher]<br/>nonJvm: [KtorHttpUriFetcher][Ktor3HttpUriFetcher] | ✅       | ✅   | ✅   | ✅     | ✅  | ✅      |
+| sketch-http-hurl   | [HurlHttpComponentProvider]                                                                          | [HurlHttpUriFetcher]                                                            | ✅       | ❌   | ✅   | ✅     | ❌  | ❌      |
+| sketch-http-okhttp | [OkHttpHttpComponentProvider]                                                                        | [OkHttpHttpUriFetcher]                                                          | ✅       | ❌   | ✅   | ✅     | ❌  | ❌      |
+| sketch-http-ktor2  | [KtorHttpComponentProvider][Ktor2HttpComponentProvider]                                              | [KtorHttpUriFetcher][Ktor2HttpUriFetcher]                                       | ✅       | ✅   | ✅   | ✅     | ✅  | ❌      |
+| sketch-http-ktor3  | [KtorHttpComponentProvider][Ktor3HttpComponentProvider]                                              | [KtorHttpUriFetcher][Ktor3HttpUriFetcher]                                       | ✅       | ✅   | ✅   | ✅     | ✅  | ✅      |
 
 > [!IMPORTANT]
 > * HurlHttpUriFetcher is implemented using jvm’s own HttpURLConnection and does not require

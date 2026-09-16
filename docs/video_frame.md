@@ -4,10 +4,10 @@ Translations: [简体中文](video_frame.zh.md)
 
 Sketch provides the `sketch-video-*` series of modules to support decoding video frames
 
-| Module              | Decoder                                                                          | Android   | iOS | macOS Native | Desktop | Web |
-|:--------------------|:---------------------------------------------------------------------------------|:----------|:----|:-------------|:--------|:----|
-| sketch-video        | [VideoFrameDecoder]<br>[PhotosAssetVideoFrameDecoder]<br>[FileVideoFrameDecoder] | ✅(API 27) | ✅   | ✅            | ❌       | ❌   |
-| sketch-video-ffmpeg | [FFmpegVideoFrameDecoder]                                                        | ✅         | ❌   | ❌            | ❌       | ❌   |
+| Module              | Decoder                                                                          | Android   | iOS | macOS | jvm | Web |
+|:--------------------|:---------------------------------------------------------------------------------|:----------|:----|:------|:----|:----|
+| sketch-video        | [VideoFrameDecoder]<br>[PhotosAssetVideoFrameDecoder]<br>[FileVideoFrameDecoder] | ✅(API 27) | ✅   | ✅     | ❌   | ❌   |
+| sketch-video-ffmpeg | [FFmpegVideoFrameDecoder]                                                        | ✅         | ❌   | ❌     | ❌   | ❌   |
 
 * [VideoFrameDecoder]:
     * Decode video frames using Android's built-in MediaMetadataRetriever class

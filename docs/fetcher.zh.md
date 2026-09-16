@@ -5,21 +5,21 @@
 [Fetcher] 用于从 Uri 获取数据返回 [DataSource] 供 [Decoder] 解码图像使用，Sketch 支持的每一种 Uri
 都有对应的 [Fetcher] 为其提供支持，如下表所示：
 
-| Fetcher                     | URI                            | Create                  | Dependent modules                   | Android | iOS | Desktop | Web |
-|-----------------------------|:-------------------------------|-------------------------|-------------------------------------|---------|:----|:--------|:----|
-| [KtorHttpUriFetcher]        | http://, https://              | -                       | sketch-http-ktor2,sketch-http-ktor3 | ✅       | ✅   | ✅       | ✅   |
-| [HurlHttpUriFetcher]        | http://, https://              | -                       | sketch-http-hurl                    | ✅       | ❌   | ✅       | ❌   |
-| [OkHttpHttpUriFetcher]      | http://, https://              | -                       | sketch-http-okhttp                  | ✅       | ❌   | ✅       | ❌   |
-| [FileUriFetcher]            | file://, file:/, /, D:\\, \\\\ | newFileUri()            | -                                   | ✅       | ✅   | ✅       | ✅   |
-| [ComposeResourceUriFetcher] | file:///compose_resource/      | newComposeResourceUri() | sketch-compose-resources            | ✅       | ✅   | ✅       | ✅   |
-| [ContentUriFetcher]         | content://                     | -                       | -                                   | ✅       | ❌   | ❌       | ❌   |
-| [AssetUriFetcher]           | file:///android_asset/         | newAssetUri()           | -                                   | ✅       | ❌   | ❌       | ❌   |
-| [ResourceUriFetcher]        | android.resource://            | newResourceUri()        | -                                   | ✅       | ❌   | ❌       | ❌   |
-| [AppIconUriFetcher]         | app.icon://                    | newAppIconUri()         | sketch-extensions-appicon           | ✅       | ❌   | ❌       | ❌   |
-| [PhotosAssetUriFetcher]     | file:///photos_asset/          | newPhotosAssetUri()     | -                                   | ❌       | ✅   | ❌       | ❌   |
-| [KotlinResourceUriFetcher]  | file:///kotlin_resource/       | newKotlinResourceUri()  | -                                   | ❌       | ✅   | ✅       | ❌   |
-| [Base64UriFetcher]          | data:image/jpeg;base64         | newBase64Uri()          | -                                   | ✅       | ✅   | ✅       | ✅   |
-| [BlurHashUriFetcher]        | blurhash://                    | newBlurHashUri()        | sketch-blurhash                     | ✅       | ✅   | ✅       | ✅   |
+| Fetcher                     | URI                            | Create                  | Dependent modules                   | Android | iOS | jvm | macOS | Web |
+|-----------------------------|:-------------------------------|-------------------------|-------------------------------------|---------|:----|:----|:------|:----|
+| [KtorHttpUriFetcher]        | http://, https://              | -                       | sketch-http-ktor2,sketch-http-ktor3 | ✅       | ✅   | ✅   | ✅     | ✅   |
+| [HurlHttpUriFetcher]        | http://, https://              | -                       | sketch-http-hurl                    | ✅       | ❌   | ✅   | ✅     | ❌   |
+| [OkHttpHttpUriFetcher]      | http://, https://              | -                       | sketch-http-okhttp                  | ✅       | ❌   | ✅   | ✅     | ❌   |
+| [FileUriFetcher]            | file://, file:/, /, D:\\, \\\\ | newFileUri()            | -                                   | ✅       | ✅   | ✅   | ✅     | ✅   |
+| [ComposeResourceUriFetcher] | file:///compose_resource/      | newComposeResourceUri() | sketch-compose-resources            | ✅       | ✅   | ✅   | ✅     | ✅   |
+| [ContentUriFetcher]         | content://                     | -                       | -                                   | ✅       | ❌   | ❌   | ❌     | ❌   |
+| [AssetUriFetcher]           | file:///android_asset/         | newAssetUri()           | -                                   | ✅       | ❌   | ❌   | ❌     | ❌   |
+| [ResourceUriFetcher]        | android.resource://            | newResourceUri()        | -                                   | ✅       | ❌   | ❌   | ❌     | ❌   |
+| [AppIconUriFetcher]         | app.icon://                    | newAppIconUri()         | sketch-extensions-appicon           | ✅       | ❌   | ❌   | ❌     | ❌   |
+| [PhotosAssetUriFetcher]     | file:///photos_asset/          | newPhotosAssetUri()     | -                                   | ❌       | ✅   | ❌   | ❌     | ❌   |
+| [KotlinResourceUriFetcher]  | file:///kotlin_resource/       | newKotlinResourceUri()  | -                                   | ❌       | ✅   | ✅   | ✅     | ❌   |
+| [Base64UriFetcher]          | data:image/jpeg;base64         | newBase64Uri()          | -                                   | ✅       | ✅   | ✅   | ✅     | ✅   |
+| [BlurHashUriFetcher]        | blurhash://                    | newBlurHashUri()        | sketch-blurhash                     | ✅       | ✅   | ✅   | ✅     | ✅   |
 
 每种 [Fetcher] 的用途如下：
 
@@ -151,7 +151,7 @@ AsyncImage(
 ### 从 kotlin 的 resources 目录加载图片
 
 > [!IMPORTANT]
-> 仅支持 Ios 和 Desktop 平台
+> 仅支持 iOS 和 jvm 平台
 
 从 kotlin resources 目录加载图片不需要依赖额外的模块，直接使用 newKotlinResourceUri() 函数创建 uri
 即可，如下：
