@@ -100,11 +100,11 @@ tasks.configureEach {
                 .filter { it.isFile && it.extension in targetExtensions }
                 .forEach { file ->
                     val fileName = file.name
-                    var newFileName = fileName
-                    if (newFileName.contains(appName, ignoreCase = false)) {
-                        newFileName = newFileName.replace(appName, "sketch-sample-native")
-                    }
-
+                    val newFileName = fileName.replace(
+                        oldValue = appName,
+                        newValue = "sketch-sample-macos-native",
+                        ignoreCase = true
+                    )
                     if (newFileName != fileName) {
                         val newFile = file.parentFile.resolve(newFileName)
                         if (file.renameTo(newFile)) {

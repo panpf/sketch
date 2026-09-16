@@ -53,7 +53,7 @@ androidApplication(
 androidComponents {
     onVariants { variant ->
         variant.outputs.forEach { output ->
-            val name = "sketch-sample-${variant.name}-${output.versionName.get()}.apk"
+            val name = "sketch-sample-android-${output.versionName.get()}.apk"
             output as com.android.build.api.variant.impl.VariantOutputImpl
             output.outputFileName = name
         }

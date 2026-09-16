@@ -79,20 +79,22 @@ tasks.configureEach {
                 .forEach { file ->
                     val fileName = file.name
                     var newFileName = fileName
-                    if (fileName.endsWith("deb") || fileName.endsWith("rpm")) {
-                        // deb or rpm packages will convert all uppercase letters to lowercase by default, so case sensitivity must be ignored here.
-                        val lowercaseAppName = appName.lowercase()
-                        if (newFileName.contains(lowercaseAppName, ignoreCase = false)) {
-                            newFileName = newFileName.replace(lowercaseAppName, "sketch-sample-jvm")
-                        }
-
-                        // sketch-sample_1.5.0001_amd64.deb -> sketch-sample-1.5.0001-amd64.deb
-                        newFileName = newFileName.replace("_", "-")
-                    } else {
-                        if (newFileName.contains(appName, ignoreCase = false)) {
-                            newFileName = newFileName.replace(appName, "sketch-sample-jvm")
-                        }
+                    val platformType = when (file.extension) {
+                        "deb", "rpm" -> "-linux"
+                        "dmg", "pkg" -> "-macos"
+                        "msi", "exe" -> "-windows"
+                        else -> ""
                     }
+
+                    // deb or rpm packages will convert all uppercase letters to lowercase by default, so case sensitivity must be ignored here.
+                    newFileName = newFileName.replace(
+                        oldValue = appName,
+                        newValue = "sketch-sample-jvm${platformType}",
+                        ignoreCase = true
+                    )
+
+                    // sketch-sample_1.5.0001_amd64.deb -> sketch-sample-1.5.0001-amd64.deb
+                    newFileName = newFileName.replace(oldValue = "_", newValue = "-")
 
                     if (newFileName != fileName) {
                         val newFile = file.parentFile.resolve(newFileName)
