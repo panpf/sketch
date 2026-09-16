@@ -1,42 +1,24 @@
 package com.github.panpf.sketch.sample.ui.test
 
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.util.AppDirs
 import com.github.panpf.sketch.util.appCacheDirectory
-import net.harawata.appdirs.AppDirsFactory
 import java.net.URI
 import java.nio.file.Paths
 
 actual fun buildPlatformDirectoryItemList(context: PlatformContext): List<DirectoryItem> =
     buildList {
-        // windows: 'C:\Users\panpf\AppData\Local\Cache'
-        // macOS: '/Users/panpf/Library/Caches'
-        // linux: '/Users/panpf/.cache'
-        val userCacheDirectory = AppDirsFactory.getInstance()
-            .getUserCacheDir(/* appName = */ null,/* appVersion = */ null,/* appAuthor = */ null)
-        add(DirectoryItem("userCacheDirectory", userCacheDirectory))
-
-        // windows: 'C:\Users\panpf\AppData\Local'
-        // macOS: '/Users/panpf/Library/Application Support'
-        // linux: '/Users/panpf/.local/share'
-        val userDataDirectory = AppDirsFactory.getInstance()
-            .getUserDataDir(/* appName = */ null,/* appVersion = */ null,/* appAuthor = */ null)
-        add(DirectoryItem("userDataDirectory", userDataDirectory))
-
-        // windows: 'C:\Users\panpf\AppData\Roaming'
-        // macOS: '/Users/panpf/Library/Preferences'
-        // linux: '/Users/panpf/.config'
-        val userConfigDirectory = AppDirsFactory.getInstance()
-            .getUserConfigDir(/* appName = */ null,/* appVersion = */ null,/* appAuthor = */ null)
-        add(DirectoryItem("userConfigDirectory", userConfigDirectory))
-
-        // windows: Debug (normal): ''
-        // windows: Debug (hotReload): ''
-        // windows: Release: 'C:\Program Files\Sketch4\app\resources'
-        // macOS: Debug (normal): '/Users/panpf/Workspace/sketch/samples/desktopApp/build/compose/tmp/prepareAppResources'
-        // macOS: Debug (hotReload): ''
-        // macOS: Release: '/Users/panpf/Downloads/Sketch4.app/Contents/app/resources'
-        val composeResourcesPath = getComposeResourcesPath()
-        add(DirectoryItem("composeResourcesPath", composeResourcesPath))
+        // windows: Debug (normal): 'C:\Users\panpf\AppData\Local\SketchImageLoader\a519cef9835e9be1cddb14770a1b6ff9\Cache'
+        // windows: Debug (hotReload): 'C:\Users\panpf\AppData\Local\SketchImageLoader\cb7785e11486b2233bb9f35f7bec2c77\Cache'
+        // windows: Release: 'C:\Users\panpf\AppData\Local\SketchImageLoader\e26c0c487c4bb4e45663c35c4400cae1\Cache'
+        // macOS: Debug (normal): '/Users/panpf/Library/Caches/SketchImageLoader/f99742e39ecdb5444589ad6aa2eff27a'
+        // macOS: Debug (hotReload): '/Users/panpf/Library/Caches/SketchImageLoader/3120c807db80a0e963f8c0073ec54f37'
+        // macOS: Release: '/Users/panpf/Library/Caches/SketchImageLoader/3a852cc448c41fefdf3b19c26497f70b'
+        // linux: Debug (normal): '/Users/panpf/.cache/SketchImageLoader/f99742e39ecdb5444589ad6aa2eff27a'
+        // linux: Debug (hotReload): '/Users/.cache/SketchImageLoader/3120c807db80a0e963f8c0073ec54f37'
+        // linux: Release: '/Users/panpf/.cache/SketchImageLoader/3a852cc448c41fefdf3b19c26497f70b'
+        val appCacheDirectory = context.appCacheDirectory()?.toString()
+        add(DirectoryItem("appCacheDirectory", appCacheDirectory))
 
         // windows: Debug (normal): 'D:\Developer\Workspace\sketch\sketch-core\build\libs\sketch-core-desktop-4.7.0-alpha01.jar'
         // windows: Debug (hotReload): 'D:\Developer\Workspace\sketch\samples\desktopApp\build\run\desktopMain\classpath\libs\sketch-core\9d92mnc\sketch-core-desktop-4.7.0-alpha01.jar'
@@ -50,17 +32,41 @@ actual fun buildPlatformDirectoryItemList(context: PlatformContext): List<Direct
         val jarPath = getJarPath(PlatformContext::class.java)
         add(DirectoryItem("jarPath", jarPath))
 
-        // windows: Debug (normal): 'C:\Users\panpf\AppData\Local\SketchImageLoader\a519cef9835e9be1cddb14770a1b6ff9\Cache'
-        // windows: Debug (hotReload): 'C:\Users\panpf\AppData\Local\SketchImageLoader\cb7785e11486b2233bb9f35f7bec2c77\Cache'
-        // windows: Release: 'C:\Users\panpf\AppData\Local\SketchImageLoader\e26c0c487c4bb4e45663c35c4400cae1\Cache'
-        // macOS: Debug (normal): '/Users/panpf/Library/Caches/SketchImageLoader/f99742e39ecdb5444589ad6aa2eff27a'
-        // macOS: Debug (hotReload): '/Users/panpf/Library/Caches/SketchImageLoader/3120c807db80a0e963f8c0073ec54f37'
-        // macOS: Release: '/Users/panpf/Library/Caches/SketchImageLoader/3a852cc448c41fefdf3b19c26497f70b'
-        // linux: Debug (normal): '/Users/panpf/.cache/SketchImageLoader/f99742e39ecdb5444589ad6aa2eff27a'
-        // linux: Debug (hotReload): '/Users/.cache/SketchImageLoader/3120c807db80a0e963f8c0073ec54f37'
-        // linux: Release: '/Users/panpf/.cache/SketchImageLoader/3a852cc448c41fefdf3b19c26497f70b'
-        val appCacheDirectory = context.appCacheDirectory()?.toString()
-        add(DirectoryItem("appCacheDirectory", appCacheDirectory))
+        // windows: Debug (normal): ''
+        // windows: Debug (hotReload): ''
+        // windows: Release: 'C:\Program Files\Sketch4\app\resources'
+        // macOS: Debug (normal): '/Users/panpf/Workspace/sketch/samples/desktopApp/build/compose/tmp/prepareAppResources'
+        // macOS: Debug (hotReload): ''
+        // macOS: Release: '/Users/panpf/Downloads/Sketch4.app/Contents/app/resources'
+        val composeResourcesPath = getComposeResourcesPath()
+        add(DirectoryItem("composeResourcesPath", composeResourcesPath))
+
+        val userCacheDirectory = AppDirs.getCacheDir(appName = null)
+        add(DirectoryItem("userCacheDirectory", userCacheDirectory.toString()))
+
+        val userDataDirectory = AppDirs.getDataDir(appName = null)
+        add(DirectoryItem("userDataDirectory", userDataDirectory.toString()))
+
+        val userConfigDirectory = AppDirs.getConfigDir(appName = null)
+        add(DirectoryItem("userConfigDirectory", userConfigDirectory.toString()))
+
+        val userDesktopDirectory = AppDirs.getDesktopDir(appName = null)
+        add(DirectoryItem("userDesktopDirectory", userDesktopDirectory.toString()))
+
+        val userDocumentsDirectory = AppDirs.getDocumentsDir(appName = null)
+        add(DirectoryItem("userDocumentsDirectory", userDocumentsDirectory.toString()))
+
+        val userDownloadsDirectory = AppDirs.getDownloadsDir(appName = null)
+        add(DirectoryItem("userDownloadsDirectory", userDownloadsDirectory.toString()))
+
+        val userPicturesDirectory = AppDirs.getPicturesDir(appName = null)
+        add(DirectoryItem("userPicturesDirectory", userPicturesDirectory.toString()))
+
+        val userMusicDirectory = AppDirs.getMusicDir(appName = null)
+        add(DirectoryItem("userMusicDirectory", userMusicDirectory.toString()))
+
+        val userVideosDirectory = AppDirs.getVideosDir(appName = null)
+        add(DirectoryItem("userVideosDirectory", userVideosDirectory.toString()))
     }
 
 /**

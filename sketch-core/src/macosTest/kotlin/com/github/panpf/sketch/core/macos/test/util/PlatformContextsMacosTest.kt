@@ -29,6 +29,12 @@ class PlatformContextsMacosTest {
                 ?.substringBefore("/build/")
                 ?.md5()
                 ?.let { "SketchImageLoader/${it}" }
+        if (appId != null) {
+            assertTrue(
+                actual = !appId.contains("/build/"),
+                message = "appId: $appId"
+            )
+        }
         val paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, true)
         val cachesDirectory = (paths.firstOrNull() as? String)?.toPath()
         val currentCacheDirectory = if (appId != null && cachesDirectory != null)

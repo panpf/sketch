@@ -6,13 +6,13 @@ import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.isLinux
 import com.github.panpf.sketch.test.utils.isMacOS
 import com.github.panpf.sketch.test.utils.isWindows
+import com.github.panpf.sketch.util.AppDirs
 import com.github.panpf.sketch.util.Size
 import com.github.panpf.sketch.util.appCacheDirectory
 import com.github.panpf.sketch.util.getJarPath
 import com.github.panpf.sketch.util.maxMemory
 import com.github.panpf.sketch.util.md5
 import com.github.panpf.sketch.util.screenSize
-import net.harawata.appdirs.AppDirsFactory
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -36,9 +36,16 @@ class PlatformContextsDesktopTest {
             ?.substringBefore("${File.separator}app${File.separator}")  // Release
             ?.md5()
             ?.let { "SketchImageLoader${File.separator}${it}" }
+        if (appId != null) {
+            assertTrue(
+                actual = !appId.contains("${File.separator}build${File.separator}")
+                        && !appId.contains("${File.separator}app${File.separator}"),
+                message = "appId: $appId"
+            )
+        }
+
         val currentAppCacheDir = if (appId != null)
-            AppDirsFactory.getInstance()
-                .getUserCacheDir(appId, /* appVersion = */ null,/* appAuthor = */ null) else null
+            AppDirs.getCacheDir(appId).toString() else null
 
         val appCacheDir = PlatformContext.INSTANCE.appCacheDirectory()?.toString()
         assertEquals(currentAppCacheDir, appCacheDir)

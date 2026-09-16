@@ -88,9 +88,11 @@ Sketch.Builder(context).apply {
     resultCacheOptions(
         DiskCache.Options(
             // directory 和 appCacheDirectory 二选一即可
-            directory = "/tmp/myapp/sketch/result",
-            // directory 和 appCacheDirectory 二选一即可
-            appCacheDirectory = "/tmp/myapp",
+             directory = "/tmp/myapp/sketch/result".toPath(),
+             // or
+             appCacheDirectory = "/tmp/myapp".toPath(),
+             // or. AppDirs 仅在 jvm 平台可用
+             appCacheDirectory = AppDirs.getCacheDir("MyAppName").toOkioPath(),
             // 100 MB
             maxSize = 1024 * 1024 * 100,
             // app 对结果缓存的管理版本号，如果想清除旧的结果缓存就升级此版本号

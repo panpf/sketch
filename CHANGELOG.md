@@ -13,6 +13,7 @@ Translations: [简体中文](CHANGELOG.zh.md)
 
 * improve: The default cache directory for JVM and macOS platforms is now more stable and will not
   change due to version variations.
+* improve: Remove the dependency on net.harawata:appdirs
 
 # 4.7.0-alpha01
 

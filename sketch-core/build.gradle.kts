@@ -24,7 +24,6 @@ kotlin {
             api(libs.kotlinx.coroutines.android)
         }
         desktopMain.dependencies {
-            api(libs.appdirs)
             api(libs.kotlinx.coroutines.swing)
         }
         nonAndroidMain.dependencies {

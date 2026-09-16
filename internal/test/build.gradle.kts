@@ -38,7 +38,6 @@ kotlin {
         }
         desktopMain.dependencies {
             api(skikoAwtRuntimeDependency(libs.versions.skiko.get()))
-            api(libs.appdirs)
         }
     }
 }

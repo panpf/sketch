@@ -96,9 +96,11 @@ Sketch.Builder(context).apply {
     resultCacheOptions(
         DiskCache.Options(
             // Just choose one of directory and appCacheDirectory
-            directory = "/tmp/myapp/sketch/result",
-            // Just choose one of directory and appCacheDirectory
-            appCacheDirectory = "/tmp/myapp",
+             directory = "/tmp/myapp/sketch/result".toPath(),
+             // or
+             appCacheDirectory = "/tmp/myapp".toPath(),
+             // or. AppDirs is available only on the JVM platform.
+             appCacheDirectory = AppDirs.getCacheDir("MyAppName").toOkioPath(),
             // 100 MB
             maxSize = 1024 * 1024 * 100,
             // The app's management version number for the result cache. 

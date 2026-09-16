@@ -96,9 +96,11 @@ Sketch.Builder(context).apply {
     downloadCacheOptions(
         DiskCache.Options(
             // Just choose one of directory and appCacheDirectory
-            directory = "/tmp/myapp/sketch/download",
-            // Just choose one of directory and appCacheDirectory
-            appCacheDirectory = "/tmp/myapp",
+             directory = "/tmp/myapp/sketch/download".toPath(),
+             // or
+             appCacheDirectory = "/tmp/myapp".toPath(),
+             // or. AppDirs is available only on the JVM platform.
+             appCacheDirectory = AppDirs.getCacheDir("MyAppName").toOkioPath(),
             // 100 MB
             maxSize = 1024 * 1024 * 100,
             // The app's management version number for the download cache. 

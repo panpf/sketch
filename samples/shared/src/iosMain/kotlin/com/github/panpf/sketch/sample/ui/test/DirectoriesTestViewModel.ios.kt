@@ -11,6 +11,9 @@ import platform.Foundation.NSUserDomainMask
 
 actual fun buildPlatformDirectoryItemList(context: PlatformContext): List<DirectoryItem> =
     buildList {
+        val appCacheDirectory = context.appCacheDirectory()?.toString()
+        add(DirectoryItem("appCacheDirectory", appCacheDirectory))
+
         val userPicturesDirectory =
             NSSearchPathForDirectoriesInDomains(NSPicturesDirectory, NSUserDomainMask, true)
                 .firstOrNull()?.let { it as String }
@@ -33,7 +36,4 @@ actual fun buildPlatformDirectoryItemList(context: PlatformContext): List<Direct
 
         val processName = NSProcessInfo.processInfo.processName
         add(DirectoryItem("processName", processName))
-
-        val appCacheDirectory = context.appCacheDirectory()?.toString()
-        add(DirectoryItem("appCacheDirectory", appCacheDirectory))
     }

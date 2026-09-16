@@ -86,18 +86,20 @@ Web 平台尚不支持下载缓存
 ```kotlin
 // 使用默认的 LruDiskCache 实现并配置其参数
 Sketch.Builder(context).apply {
-    downloadCacheOptions(
+    downloadCacheOptions {
         DiskCache.Options(
             // directory 和 appCacheDirectory 二选一即可
-            directory = "/tmp/myapp/sketch/download",
-            // directory 和 appCacheDirectory 二选一即可
-            appCacheDirectory = "/tmp/myapp",
+            directory = "/tmp/myapp/sketch/download".toPath(),
+            // or
+            appCacheDirectory = "/tmp/myapp".toPath(),
+            // or. AppDirs 仅在 jvm 平台可用
+            appCacheDirectory = AppDirs.getCacheDir("MyAppName").toOkioPath(),
             // 100 MB
             maxSize = 1024 * 1024 * 100,
             // app 对下载缓存的管理版本号，如果想清除旧的下载缓存就升级此版本号
             appVersion = 1,
         )
-    )
+    }
 }.build()
 
 // 使用你自己的 DiskCache 实现

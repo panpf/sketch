@@ -17,9 +17,8 @@
 package com.github.panpf.sketch.util
 
 import com.github.panpf.sketch.PlatformContext
-import net.harawata.appdirs.AppDirsFactory
 import okio.Path
-import okio.Path.Companion.toPath
+import okio.Path.Companion.toOkioPath
 import java.io.File
 
 /**
@@ -43,11 +42,7 @@ actual fun PlatformContext.appCacheDirectory(): Path? {
         ?.md5()
         ?.let { "SketchImageLoader${File.separator}${it}" }
         ?: return null
-    // TODO Remove the dependency on AppDirsFactory because it depends on jna.
-    val cacheDir = AppDirsFactory.getInstance()
-        .getUserCacheDir(appId, /* appVersion = */ null,/* appAuthor = */ null)
-        ?.toPath()
-    return requireNotNull(cacheDir) { "Failed to get the cache directory of the App" }
+    return AppDirs.getCacheDir(appId).toOkioPath()
 }
 
 /**

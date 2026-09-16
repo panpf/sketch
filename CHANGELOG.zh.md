@@ -10,6 +10,7 @@
 # new
 
 * improve: jvm 和 macos 平台现在默认缓存目录更稳定了，不会因为版本变化而导致缓存目录变化
+* improve: 移除对 net.harawata:appdirs 的依赖
 
 # 4.7.0-alpha01
 
