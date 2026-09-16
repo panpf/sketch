@@ -1,4 +1,4 @@
-name: Deploy Wiki
+name: Deploy App
 
 on:
   workflow_dispatch:
@@ -10,8 +10,8 @@ env:
   JAVA_DISTRIBUTION: zulu
 
 jobs:
-  deploy-web-app:
-    name: Deploy Wiki
+  deploy-api-docs:
+    name: Deploy API Docs
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -32,30 +32,28 @@ jobs:
         with:
           cache-overwrite-existing: true
 
-      - name: Build wiki
-        run: |
-          pip3 install --upgrade pip && pip3 install --upgrade mkdocs-material mkdocs-material-extensions mkdocs-minify-plugin mkdocs-static-i18n
-          ./build_docs.sh
+      - name: Build the API docs
+        run: ./gradlew dokkaGenerate
 
       - name: Check out the gh-pages branch
         run: |
           git fetch origin gh-pages:gh-pages
           git checkout gh-pages
 
-      - name: Remove old app directory
-        run: rm -rf wiki/*
+      - name: Remove old api directory
+        run: rm -rf api/*
 
-      - name: Create app directory
-        run: mkdir -p wiki
+      - name: Create api directory
+        run: mkdir -p api
 
-      - name: Move build artifacts to wiki directory
-        run: mv site/* wiki/
+      - name: Move build artifacts to api directory
+        run: mv build/dokka/html/* api/
 
       - name: Commit and push changes
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          commit_message: "Update wiki"
+          commit_message: "Update api docs"
           branch: gh-pages
-          file_pattern: wiki/*
+          file_pattern: api/*

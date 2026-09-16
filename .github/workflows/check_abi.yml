@@ -1,4 +1,4 @@
-name: Test iOS
+name: Check ABI
 
 on: workflow_dispatch
 
@@ -7,9 +7,10 @@ env:
   JAVA_DISTRIBUTION: zulu
 
 jobs:
-  test-ios:
-    name: Test iOS
-    runs-on: macos-26
+  check-abi:
+    name: Check ABI
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -27,5 +28,12 @@ jobs:
         with:
           cache-overwrite-existing: true
 
-      - name: Run ios test
-        run: internal/test_ios.sh
+      - name: Run ABI check
+        run: |
+          ./gradlew checkKotlinAbi || {
+            exit_code=$?
+            printf '%s\n' \
+              "*** Sketch's public API has changed." \
+              "If this change is intentional, run './gradlew updateKotlinAbi' and commit the new API files. ***"
+            exit $exit_code
+          }

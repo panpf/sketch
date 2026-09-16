@@ -8,19 +8,24 @@ env:
 
 jobs:
   test-android-23:
-    name: Android Unit tests
+    name: Test Android
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         api-level: [ 23 ]
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-java@v5
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
         continue-on-error: true
         timeout-minutes: 5
         with:
@@ -48,26 +53,30 @@ jobs:
           profile: pixel # from command 'avdmanager list device'
           ram-size: 2048M
           heap-size: 512M
-          #          disable-animations: true
+          disable-animations: true
           script: |
             mv .github/debug.keystore ~/.android
             internal/test_android_23.sh
 
   test-android-24p:
-    name: Android Unit tests
+    name: Test Android
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        #        api-level: [ 26, 30, 34, 37 ]
         api-level: [ 26, 30, 34 ]
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-java@v5
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
         continue-on-error: true
         timeout-minutes: 5
         with:
@@ -95,7 +104,7 @@ jobs:
           profile: pixel # from command 'avdmanager list device'
           ram-size: 2048M
           heap-size: 512M
-          #          disable-animations: true
+          disable-animations: true
           script: |
             mv .github/debug.keystore ~/.android
             internal/test_android.sh

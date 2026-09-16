@@ -9,4 +9,4 @@ cd "$rootDir"
 ./gradlew clean
 ./gradlew samples:desktopApp:packageReleaseDistributionForCurrentOS
 
-echo "✅  Desktop package is created successfully. The distribution is written to $(pwd)/samples/desktopApp/build/compose/binaries/main-release/"
+echo "✅  JVM package is created successfully. The distribution is written to $(pwd)/samples/desktopApp/build/compose/binaries/main-release/"

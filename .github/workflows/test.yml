@@ -8,19 +8,24 @@ env:
 
 jobs:
   test-android-23:
-    name: Android Unit tests
+    name: Test Android
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         api-level: [ 23 ]
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-java@v5
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
         continue-on-error: true
         timeout-minutes: 5
         with:
@@ -48,26 +53,30 @@ jobs:
           profile: pixel # from command 'avdmanager list device'
           ram-size: 2048M
           heap-size: 512M
-          #          disable-animations: true
+          disable-animations: true
           script: |
             mv .github/debug.keystore ~/.android
             internal/test_android_23.sh
 
   test-android-24p:
-    name: Android Unit tests
+    name: Test Android
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        #        api-level: [ 26, 30, 34, 37 ]
         api-level: [ 26, 30, 34 ]
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-java@v5
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
         continue-on-error: true
         timeout-minutes: 5
         with:
@@ -95,21 +104,26 @@ jobs:
           profile: pixel # from command 'avdmanager list device'
           ram-size: 2048M
           heap-size: 512M
-          #          disable-animations: true
+          disable-animations: true
           script: |
             mv .github/debug.keystore ~/.android
             internal/test_android.sh
 
   test-ios:
-    name: iOS Unit tests
+    name: Test iOS
     runs-on: macos-26
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-java@v5
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
         continue-on-error: true
         timeout-minutes: 5
         with:
@@ -118,38 +132,94 @@ jobs:
       - name: Run ios test
         run: internal/test_ios.sh
 
-  test-macos:
-    name: macOS Unit tests
+  test-jvm-linux:
+    name: Test JVM Linux
     runs-on: macos-26
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-java@v5
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          cache-overwrite-existing: true
+
+      - name: Run jvm test
+        run: internal/test_jvm.sh
+
+  test-jvm-macos:
+    name: Test JVM macOS
+    runs-on: macos-26
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          cache-overwrite-existing: true
+
+      - name: Run jvm test
+        run: internal/test_jvm.sh
+
+  test-jvm-windows:
+    name: Test JVM Windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        continue-on-error: true
+        timeout-minutes: 5
+        with:
+          cache-overwrite-existing: true
+
+      - name: Run jvm test
+        run: ./gradlew desktopTest --continue
+
+  test-macos-native:
+    name: Test macOS Native
+    runs-on: macos-26
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
         continue-on-error: true
         timeout-minutes: 5
         with:
           cache-overwrite-existing: true
 
       - name: Run macOS tests
-        run: internal/test_macos.sh
-
-  test-desktop:
-    name: Desktop Unit tests
-    runs-on: macos-26
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-java@v5
-        with:
-          distribution: ${{ env.JAVA_DISTRIBUTION }}
-          java-version: ${{ env.JAVA_VERSION }}
-      - uses: gradle/actions/setup-gradle@v6
-        continue-on-error: true
-        timeout-minutes: 5
-        with:
-          cache-overwrite-existing: true
-
-      - name: Run desktop test
-        run: internal/test_desktop.sh
+        run: internal/test_macos_native.sh

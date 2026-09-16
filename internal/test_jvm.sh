@@ -8,4 +8,4 @@ cd "$rootDir"
 
 ./gradlew desktopTest --continue
 
-echo "✅  Desktop tests are passed successfully."
+echo "✅  JVM tests are passed successfully."
