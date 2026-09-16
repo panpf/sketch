@@ -22,13 +22,16 @@ import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.DataFrom.LOCAL
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.test.singleton.getTestContextAndSketch
+import com.github.panpf.sketch.test.utils.Platform
 import com.github.panpf.sketch.test.utils.assertSizeEquals
 import com.github.panpf.sketch.test.utils.corners
 import com.github.panpf.sketch.test.utils.createDecoderOrDefault
 import com.github.panpf.sketch.test.utils.createDecoderOrNull
+import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.decode
 import com.github.panpf.sketch.test.utils.defaultColorType
 import com.github.panpf.sketch.test.utils.getBitmapOrThrow
+import com.github.panpf.sketch.test.utils.isWindows
 import com.github.panpf.sketch.test.utils.similarity
 import com.github.panpf.sketch.test.utils.toRequestContext
 import com.github.panpf.sketch.util.Size
@@ -165,10 +168,17 @@ class SkiaDecoderTest {
             precision(LESS_PIXELS)
         }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
-            assertEquals(
-                expected = "Bitmap(1291x1936,RGBA_8888,sRGB)",
-                actual = bitmap.toShortInfoString()
-            )
+            if (Platform.current.isWindows) {
+                assertEquals(
+                    expected = "Bitmap(1291x1936,BGRA_8888,sRGB)",
+                    actual = bitmap.toShortInfoString()
+                )
+            } else {
+                assertEquals(
+                    expected = "Bitmap(1291x1936,RGBA_8888,sRGB)",
+                    actual = bitmap.toShortInfoString()
+                )
+            }
             assertEquals(
                 expected = "ImageInfo(1291x1936,'image/jpeg')",
                 actual = imageInfo.toShortString()
@@ -182,10 +192,17 @@ class SkiaDecoderTest {
             precision(LESS_PIXELS)
         }.decode(sketch, factory).apply {
             val bitmap = image.getBitmapOrThrow()
-            assertEquals(
-                expected = "Bitmap(1080x1344,RGBA_8888,sRGB)",
-                actual = bitmap.toShortInfoString()
-            )
+            if (Platform.current.isWindows) {
+                assertEquals(
+                    expected = "Bitmap(1080x1344,BGRA_8888,sRGB)",
+                    actual = bitmap.toShortInfoString()
+                )
+            } else {
+                assertEquals(
+                    expected = "Bitmap(1080x1344,RGBA_8888,sRGB)",
+                    actual = bitmap.toShortInfoString()
+                )
+            }
             assertEquals(
                 expected = "ImageInfo(1080x1344,'image/webp')",
                 actual = imageInfo.toShortString()
