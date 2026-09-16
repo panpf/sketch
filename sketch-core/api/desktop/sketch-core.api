@@ -2541,6 +2541,25 @@ public final class com/github/panpf/sketch/transition/TransitionTarget$DefaultIm
 	public static fun onSuccess (Lcom/github/panpf/sketch/transition/TransitionTarget;Lcom/github/panpf/sketch/Sketch;Lcom/github/panpf/sketch/request/ImageRequest;Lcom/github/panpf/sketch/request/ImageResult$Success;Lcom/github/panpf/sketch/Image;)V
 }
 
+public final class com/github/panpf/sketch/util/AppDirs {
+	public static final field Companion Lcom/github/panpf/sketch/util/AppDirs$Companion;
+	public fun <init> ()V
+}
+
+public final class com/github/panpf/sketch/util/AppDirs$Companion {
+	public final fun getCacheDir (Ljava/lang/String;)Ljava/io/File;
+	public final fun getConfigDir (Ljava/lang/String;)Ljava/io/File;
+	public final fun getDataDir (Ljava/lang/String;)Ljava/io/File;
+	public final fun getDesktopDir (Ljava/lang/String;)Ljava/io/File;
+	public final fun getDocumentsDir (Ljava/lang/String;)Ljava/io/File;
+	public final fun getDownloadsDir (Ljava/lang/String;)Ljava/io/File;
+	public final fun getMusicDir (Ljava/lang/String;)Ljava/io/File;
+	public final fun getPicturesDir (Ljava/lang/String;)Ljava/io/File;
+	public final fun getRuntimeDir (Ljava/lang/String;)Ljava/io/File;
+	public final fun getStateDir (Ljava/lang/String;)Ljava/io/File;
+	public final fun getVideosDir (Ljava/lang/String;)Ljava/io/File;
+}
+
 public final class com/github/panpf/sketch/util/Bitmaps_nonAndroidKt {
 	public static final fun background (Lorg/jetbrains/skia/Bitmap;I)Lorg/jetbrains/skia/Bitmap;
 	public static final fun blur (Lorg/jetbrains/skia/Bitmap;IZ)Lorg/jetbrains/skia/Bitmap;
