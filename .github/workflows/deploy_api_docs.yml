@@ -1,9 +1,6 @@
-name: Deploy App
+name: Deploy API Docs
 
-on:
-  workflow_dispatch:
-  push:
-    branches: main
+on: workflow_dispatch
 
 env:
   JAVA_VERSION: 21

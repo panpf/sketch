@@ -1,4 +1,4 @@
-name: Publish
+name: Publish To Maven Central
 
 on: workflow_dispatch
 
@@ -9,7 +9,6 @@ env:
 jobs:
   publish:
     name: Publish To Maven Central
-    needs: deploy-api-docs
     runs-on: macos-26
     steps:
       - name: Checkout repository

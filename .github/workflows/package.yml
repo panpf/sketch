@@ -1,4 +1,4 @@
-name: Package
+name: Package All
 
 on: workflow_dispatch
 
