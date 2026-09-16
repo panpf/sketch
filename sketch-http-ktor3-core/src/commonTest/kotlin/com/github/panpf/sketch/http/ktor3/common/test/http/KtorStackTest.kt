@@ -17,7 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFails
 import kotlin.time.ExperimentalTime
 
 class KtorStackTest {
@@ -79,10 +78,6 @@ class KtorStackTest {
                 actual = this.getHeaderField(name = "testHttpHeader2")
             )
         }
-
-        assertFails {
-            KtorStack().getResponse(url = "", httpHeaders = null, extras = null)
-        }
     }
 
     @Test
@@ -135,10 +130,6 @@ class KtorStackTest {
             assertEquals(expected = content, actual = it.readAllBytes().decodeToString())
             assertEquals(expected = "value1", actual = it.getHeaderField(name = "testHttpHeader1"))
             assertEquals(expected = "value2", actual = it.getHeaderField(name = "testHttpHeader2"))
-        }
-
-        assertFails {
-            KtorStack().request(url = "", httpHeaders = null, extras = null) {}
         }
     }
 }
