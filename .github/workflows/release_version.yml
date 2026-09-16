@@ -498,22 +498,28 @@ jobs:
           name: ios-files
           path: ./downloaded
 
-      - name: Download deb artifacts
+      - name: Download jvm deb artifacts
         uses: actions/download-artifact@v8
         with:
-          name: linux-files
+          name: jvm-linux-files
           path: ./downloaded
 
-      - name: Download dmg artifacts
+      - name: Download jvm dmg artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: jvm-macos-files
+          path: ./downloaded
+
+      - name: Download jvm msi artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: jvm-windows-files
+          path: ./downloaded
+
+      - name: Download native dmg artifacts
         uses: actions/download-artifact@v8
         with:
           name: macos-files
-          path: ./downloaded
-
-      - name: Download msi artifacts
-        uses: actions/download-artifact@v8
-        with:
-          name: windows-files
           path: ./downloaded
 
       - name: Download js-browser artifacts
