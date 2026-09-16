@@ -40,7 +40,8 @@ compose.desktop {
             }
             windows {
                 iconFile.set(project.file("icons/icon-windows.ico"))
-                // TODO No desktop shortcut was automatically created after installation.
+                menu = true
+                shortcut = true
             }
             linux {
                 iconFile.set(project.file("icons/icon-linux.png"))
