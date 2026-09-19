@@ -36,7 +36,6 @@ actual fun PlatformContext.maxMemory(): Long {
  *
  * @see com.github.panpf.sketch.core.jvm.test.util.PlatformContextsJvmTest.testAppCacheDirectory
  */
-// TODO Add overloaded functions PlatformContext.appCacheDirectory(appName: String?)
 actual fun PlatformContext.appCacheDirectory(): Path? {
     val appId = getJarPath(PlatformContext::class.java)
         ?.substringBefore("${File.separator}build${File.separator}")    // Debug

@@ -46,7 +46,7 @@ actual fun PlatformContext.maxMemory(): Long {
  *
  * @see com.github.panpf.sketch.core.macos.test.util.PlatformContextsMacosTest.testAppCacheDirectory
  */
-// TODO Add overloaded functions PlatformContext.appCacheDirectory(appName: String?)
+// TODO Added AppDirs for macOS
 actual fun PlatformContext.appCacheDirectory(): Path? {
     // bundleIdentifier: Debug: ''
     // bundleIdentifier: Release: 'com.github.panpf.sketch.sample'
