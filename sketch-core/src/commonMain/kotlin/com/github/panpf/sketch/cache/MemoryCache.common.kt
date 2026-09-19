@@ -153,7 +153,7 @@ interface MemoryCache {
  * Returns the default memory cache size
  *
  * @see com.github.panpf.sketch.core.android.test.cache.MemoryCacheAndroidTest.testDefaultMemoryCacheSize
- * @see com.github.panpf.sketch.core.desktop.test.cache.MemoryCacheDesktopTest.testDefaultMemoryCacheSize
+ * @see com.github.panpf.sketch.core.jvm.test.cache.MemoryCacheJvmTest.testDefaultMemoryCacheSize
  * @see com.github.panpf.sketch.core.ios.test.cache.MemoryCacheIosTest.testDefaultMemoryCacheSize
  * @see com.github.panpf.sketch.core.jscommon.test.cache.MemoryCacheJsCommonTest.testDefaultMemoryCacheSize
  */

@@ -22,7 +22,7 @@ import com.github.panpf.sketch.Sketch
  * Create a platform-specific [SystemCallbacks] instance
  *
  * @see com.github.panpf.sketch.core.android.test.util.SystemCallbacksAndroidTest.testSystemCallbacks
- * @see com.github.panpf.sketch.core.desktop.test.util.SystemCallbacksDesktopTest.testSystemCallbacks
+ * @see com.github.panpf.sketch.core.jvm.test.util.SystemCallbacksJvmTest.testSystemCallbacks
  * @see com.github.panpf.sketch.core.jscommon.test.util.SystemCallbacksJsCommonTest.testSystemCallbacks
  * @see com.github.panpf.sketch.core.ios.test.util.SystemCallbacksIosTest.testSystemCallbacks
  */
@@ -32,7 +32,7 @@ internal expect fun SystemCallbacks(sketch: Sketch): SystemCallbacks
  * Monitor network connection and system status
  *
  * @see com.github.panpf.sketch.core.android.test.util.SystemCallbacksAndroidTest.testAndroidSystemCallbacks
- * @see com.github.panpf.sketch.core.desktop.test.util.SystemCallbacksDesktopTest.testDesktopSystemCallbacks
+ * @see com.github.panpf.sketch.core.jvm.test.util.SystemCallbacksJvmTest.testJvmSystemCallbacks
  * @see com.github.panpf.sketch.core.jscommon.test.util.SystemCallbacksJsCommonTest.testJsSystemCallbacks
  * @see com.github.panpf.sketch.core.ios.test.util.SystemCallbacksIosTest.testIosSystemCallbacks
  */

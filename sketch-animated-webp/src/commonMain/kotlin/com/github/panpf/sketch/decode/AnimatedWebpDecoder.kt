@@ -23,7 +23,7 @@ import com.github.panpf.sketch.ComponentRegistry
  *
  * @see com.github.panpf.sketch.animated.webp.android.test.decode.AnimatedWebpDecoderAndroidTest.testSupportAnimatedWebp
  * @see com.github.panpf.sketch.animated.webp.apple.test.decode.AnimatedWebpDecoderAppleTest.testSupportAnimatedWebp
- * @see com.github.panpf.sketch.animated.webp.desktop.test.decode.AnimatedWebpDecoderDesktopTest.testSupportAnimatedWebp
+ * @see com.github.panpf.sketch.animated.webp.jvm.test.decode.AnimatedWebpDecoderJvmTest.testSupportAnimatedWebp
  * @see com.github.panpf.sketch.animated.webp.jscommon.test.decode.AnimatedWebpDecoderJsCommonTest.testSupportAnimatedWebp
  */
 expect fun ComponentRegistry.Builder.supportAnimatedWebp(): ComponentRegistry.Builder

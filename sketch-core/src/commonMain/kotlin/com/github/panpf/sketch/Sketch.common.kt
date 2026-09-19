@@ -93,7 +93,7 @@ fun Sketch(context: PlatformContext, block: (Sketch.Builder.() -> Unit)? = null)
  *
  * @see com.github.panpf.sketch.core.common.test.SketchTest
  * @see com.github.panpf.sketch.core.android.test.SketchAndroidTest
- * @see com.github.panpf.sketch.core.desktop.test.SketchDesktopTest
+ * @see com.github.panpf.sketch.core.jvm.test.SketchJvmTest
  * @see com.github.panpf.sketch.core.jscommon.test.SketchJsCommonTest
  * @see com.github.panpf.sketch.core.ios.test.SketchIosTest
  */
@@ -520,7 +520,7 @@ class Sketch private constructor(
  * Provide platform-related components
  *
  * @see com.github.panpf.sketch.core.android.test.SketchAndroidTest.testPlatformComponents
- * @see com.github.panpf.sketch.core.desktop.test.SketchDesktopTest.testPlatformComponents
+ * @see com.github.panpf.sketch.core.jvm.test.SketchJvmTest.testPlatformComponents
  * @see com.github.panpf.sketch.core.jscommon.test.SketchJsCommonTest.testPlatformComponents
  * @see com.github.panpf.sketch.core.ios.test.SketchIosTest.testPlatformComponents
  */

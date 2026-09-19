@@ -4,7 +4,7 @@ expect val Platform.Companion.current: Platform
 
 enum class Platform {
     Android,
-    Desktop,
+    Jvm,
     Js,
     WasmJs,
     Ios,
@@ -19,7 +19,7 @@ fun Platform.isIos(): Boolean = this == Platform.Ios
 
 fun Platform.isMacos(): Boolean = this == Platform.Macos
 
-fun Platform.isDesktop(): Boolean = this == Platform.Desktop
+fun Platform.isJvm(): Boolean = this == Platform.Jvm
 
 fun Platform.isJsCommon(): Boolean = this == Platform.Js
 

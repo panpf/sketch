@@ -25,7 +25,7 @@ kotlin {
             implementation(projects.internal.testSingleton)
             implementation(libs.ktor3.client.android)
         }
-        desktopTest.dependencies {
+        jvmTest.dependencies {
             implementation(libs.ktor3.client.java)
         }
         appleTest.dependencies {

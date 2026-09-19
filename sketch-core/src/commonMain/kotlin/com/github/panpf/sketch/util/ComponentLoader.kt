@@ -27,7 +27,7 @@ import kotlin.reflect.KClass
  * Component loader. Automatically load and register all components
  *
  * @see com.github.panpf.sketch.componentloadertest.android.test.ComponentLoaderTest
- * @see com.github.panpf.sketch.componentloadertest.desktop.test.ComponentLoaderTest
+ * @see com.github.panpf.sketch.componentloadertest.jvm.test.ComponentLoaderTest
  * @see com.github.panpf.sketch.componentloadertest.ios.test.ComponentLoaderTest
  * @see com.github.panpf.sketch.componentloadertest.macos.test.ComponentLoaderTest
  * @see com.github.panpf.sketch.componentloadertest.js.test.ComponentLoaderTest
@@ -57,7 +57,7 @@ expect interface ComponentProvider {
  * Convert [ComponentLoader] to [ComponentRegistry]
  *
  * @see com.github.panpf.sketch.componentloadertest.android.test.ComponentLoaderTest.testToComponentRegistry
- * @see com.github.panpf.sketch.componentloadertest.desktop.test.ComponentLoaderTest.testToComponentRegistry
+ * @see com.github.panpf.sketch.componentloadertest.jvm.test.ComponentLoaderTest.testToComponentRegistry
  * @see com.github.panpf.sketch.componentloadertest.ios.test.ComponentLoaderTest.testToComponentRegistry
  * @see com.github.panpf.sketch.componentloadertest.macos.test.ComponentLoaderTest.testToComponentRegistry
  * @see com.github.panpf.sketch.componentloadertest.js.test.ComponentLoaderTest.testToComponentRegistry

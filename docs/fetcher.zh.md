@@ -266,7 +266,7 @@ imageView.loadImage(imageUri)
 
 [AppIconUriFetcher]: ../sketch-extensions-appicon/src/main/kotlin/com/github/panpf/sketch/fetch/AppIconUriFetcher.kt
 
-[KotlinResourceUriFetcher]: ../sketch-core/src/desktopMain/kotlin/com/github/panpf/sketch/fetch/KotlinResourceUriFetcher.kt
+[KotlinResourceUriFetcher]: ../sketch-core/src/jvmMain/kotlin/com/github/panpf/sketch/fetch/KotlinResourceUriFetcher.kt
 
 [ComposeResourceUriFetcher]: ../sketch-compose-resources/src/commonMain/kotlin/com/github/panpf/sketch/fetch/ComposeResourceUriFetcher.kt
 

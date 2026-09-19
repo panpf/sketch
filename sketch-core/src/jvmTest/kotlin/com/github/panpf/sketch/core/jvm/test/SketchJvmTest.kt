@@ -1,0 +1,81 @@
+package com.github.panpf.sketch.core.jvm.test
+
+import com.github.panpf.sketch.ComponentRegistry
+import com.github.panpf.sketch.Sketch
+import com.github.panpf.sketch.decode.SkiaDecoder
+import com.github.panpf.sketch.fetch.KotlinResourceUriFetcher
+import com.github.panpf.sketch.platformComponents
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.util.isMainThread
+import com.github.panpf.sketch.util.setMainThreadChecker
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
+class SketchJvmTest {
+
+    @Test
+    fun testPlatformComponents() {
+        val context = getTestContext()
+        assertEquals(
+            expected = ComponentRegistry {
+                add(KotlinResourceUriFetcher.Factory())
+                add(SkiaDecoder.Factory())
+            },
+            actual = platformComponents(context)
+        )
+    }
+
+    @Test
+    fun testBuilder() {
+        val context = getTestContext()
+
+        // networkParallelismLimited
+        Sketch.Builder(context).build().apply {
+            assertEquals(
+                expected = "Dispatchers.IO.limitedParallelism(10)",
+                actual = networkTaskDispatcher.toString()
+            )
+        }
+
+        Sketch.Builder(context).apply {
+            networkParallelismLimited(20)
+        }.build().apply {
+            assertEquals(
+                expected = "Dispatchers.IO.limitedParallelism(20)",
+                actual = networkTaskDispatcher.toString()
+            )
+        }
+
+        // decodeParallelismLimited
+        Sketch.Builder(context).build().apply {
+            assertEquals(
+                expected = "Dispatchers.IO.limitedParallelism(4)",
+                actual = decodeTaskDispatcher.toString()
+            )
+        }
+
+        Sketch.Builder(context).apply {
+            decodeParallelismLimited(8)
+        }.build().apply {
+            assertEquals(
+                expected = "Dispatchers.IO.limitedParallelism(8)",
+                actual = decodeTaskDispatcher.toString()
+            )
+        }
+    }
+
+    @Test
+    fun testMainThreadChecker() = runTest {
+        try {
+            Sketch.Builder(getTestContext()).mainThreadChecker { true }.build()
+            withContext(Dispatchers.IO) {
+                assertEquals(expected = true, actual = isMainThread())
+            }
+        } finally {
+            setMainThreadChecker(null)
+        }
+    }
+}

@@ -332,7 +332,7 @@ class SketchTest {
         }
 
         // The tests for networkParallelismLimited and decodeParallelismLimited are located at
-        //  'com.github.panpf.sketch.core.desktop.test.SketchDesktopTest.testBuilder'
+        //  'com.github.panpf.sketch.core.jvm.test.SketchJvmTest.testBuilder'
     }
 
     @Test

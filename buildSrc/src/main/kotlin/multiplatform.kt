@@ -29,7 +29,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 
 enum class KmpTarget {
     Android,
-    Desktop,
+    Jvm,
     Js,
     WasmJs,
     Ios,
@@ -45,8 +45,8 @@ fun Project.addMultiplatformTargets(kmpTargets: Array<KmpTarget>) {
                 androidLibrary {}
             }
 
-            if (kmpTargets.contains(KmpTarget.Desktop)) {
-                jvm("desktop")
+            if (kmpTargets.contains(KmpTarget.Jvm)) {
+                jvm()
             }
 
             if (kmpTargets.contains(KmpTarget.Js)) {
@@ -222,11 +222,11 @@ val NamedDomainObjectContainer<KotlinSourceSet>.androidInstrumentedTest: NamedDo
 val NamedDomainObjectContainer<KotlinSourceSet>.androidDeviceTest: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("androidDeviceTest")
 
-val NamedDomainObjectContainer<KotlinSourceSet>.desktopMain: NamedDomainObjectProvider<KotlinSourceSet>
-    get() = named("desktopMain")
+val NamedDomainObjectContainer<KotlinSourceSet>.jvmMain: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("jvmMain")
 
-val NamedDomainObjectContainer<KotlinSourceSet>.desktopTest: NamedDomainObjectProvider<KotlinSourceSet>
-    get() = named("desktopTest")
+val NamedDomainObjectContainer<KotlinSourceSet>.jvmTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("jvmTest")
 
 val NamedDomainObjectContainer<KotlinSourceSet>.nonAndroidMain: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("nonAndroidMain")

@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
  * Cooperate with [ComponentLoader] to achieve automatic registration GifDecoder
  *
  * @see com.github.panpf.sketch.animated.gif.android.test.util.GifComponentProviderAndroidTest
- * @see com.github.panpf.sketch.animated.gif.desktop.test.util.GifComponentProviderDesktopTest
+ * @see com.github.panpf.sketch.animated.gif.jvm.test.util.GifComponentProviderJvmTest
  * @see com.github.panpf.sketch.animated.gif.apple.test.util.GifComponentProviderAppleTest
  * @see com.github.panpf.sketch.animated.gif.jscommon.test.util.GifComponentProviderJsCommonTest
  */

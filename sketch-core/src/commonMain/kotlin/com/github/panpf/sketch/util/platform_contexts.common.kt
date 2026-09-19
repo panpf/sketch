@@ -31,7 +31,7 @@ expect val PlatformContext.application: PlatformContext
  * Return the application's total memory in bytes.
  *
  * @see com.github.panpf.sketch.core.android.test.util.PlatformContextsAndroidTest.testMaxMemory
- * @see com.github.panpf.sketch.core.desktop.test.util.PlatformContextsDesktopTest.testMaxMemory
+ * @see com.github.panpf.sketch.core.jvm.test.util.PlatformContextsJvmTest.testMaxMemory
  * @see com.github.panpf.sketch.core.jscommon.test.util.PlatformContextsJsCommonTest.testMaxMemory
  * @see com.github.panpf.sketch.core.ios.test.util.PlatformContextsIosTest.testMaxMemory
  */
@@ -40,7 +40,7 @@ expect fun PlatformContext.maxMemory(): Long
 /**
  * Return the application's cache directory.
  *
- * @see com.github.panpf.sketch.core.desktop.test.util.PlatformContextsDesktopTest.testAppCacheDirectory
+ * @see com.github.panpf.sketch.core.jvm.test.util.PlatformContextsJvmTest.testAppCacheDirectory
  * @see com.github.panpf.sketch.core.android.test.util.PlatformContextsAndroidTest.testAppCacheDirectory
  * @see com.github.panpf.sketch.core.jscommon.test.util.PlatformContextsJsCommonTest.testAppCacheDirectory
  * @see com.github.panpf.sketch.core.ios.test.util.PlatformContextsIosTest.testAppCacheDirectory
@@ -50,7 +50,7 @@ expect fun PlatformContext.appCacheDirectory(): Path?
 /**
  * Return the screen size.
  *
- * @see com.github.panpf.sketch.core.desktop.test.util.PlatformContextsDesktopTest.testScreenSize
+ * @see com.github.panpf.sketch.core.jvm.test.util.PlatformContextsJvmTest.testScreenSize
  * @see com.github.panpf.sketch.core.android.test.util.PlatformContextsAndroidTest.testScreenSize
  * @see com.github.panpf.sketch.core.jscommon.test.util.PlatformContextsJsCommonTest.testScreenSize
  * @see com.github.panpf.sketch.core.ios.test.util.PlatformContextsIosTest.testScreenSize

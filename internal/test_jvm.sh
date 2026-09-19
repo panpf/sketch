@@ -6,6 +6,6 @@ set -e
 rootDir="${PWD%/internal*}"
 cd "$rootDir"
 
-./gradlew desktopTest --continue
+./gradlew jvmTest --continue
 
 echo "✅  JVM tests are passed successfully."

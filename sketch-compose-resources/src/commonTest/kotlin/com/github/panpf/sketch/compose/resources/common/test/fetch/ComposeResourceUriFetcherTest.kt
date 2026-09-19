@@ -85,7 +85,7 @@ class ComposeResourceUriFetcherTest {
         )
         assertEquals(
             expected = "file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg",
-            actual = newComposeResourceUri("file:/Users/panpf/Workspace/sketch/sample/build/processedResources/desktop/main/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg")
+            actual = newComposeResourceUri("file:/Users/panpf/Workspace/sketch/sample/build/processedResources/jvm/main/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg")
         )
         assertEquals(
             expected = "file:///compose_resource/composeResources/com.github.panpf.sketch.sample.resources/files/huge_china.jpg",

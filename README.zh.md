@@ -18,7 +18,8 @@ Sketch 是专为 Compose Multiplatform 和 Android View 设计的图片加载库
 
 ## 示例 App
 
-* Android、iOS、桌面版、Web 可部署包请到 [Releases](https://github.com/panpf/sketch/releases) 页面下载最新版本
+* Android、iOS、jvm、macOS、Web 可部署包请到 [Releases](https://github.com/panpf/sketch/releases)
+  页面下载最新版本
 * Web 示例：https://panpf.github.io/sketch/app
 
 ## 安装
@@ -131,7 +132,7 @@ Sketch 支持自动发现并注册 Fetcher 和 Decoder 组件，在 jvm 平台�
 ### R8 / Proguard
 
 1. Android、iOS、Web 等平台不需要配置任何混淆规则
-2. 桌面平台需要配置以下混淆规则：
+2. JVM 平台需要配置以下混淆规则：
     ```proguard
     # -------------------------- Sketch Privider ---------------------------- #
     -keep class * implements com.github.panpf.sketch.util.ComponentProvider { *; }
@@ -266,9 +267,9 @@ context.sketch.enqueue(request)
 ## 测试平台
 
 * Android: Emulator; Arm64; API 21-34
-* Desktop: macOS; 14.6.1; JDK 17
+* JVM: macOS; 14.6.1; JDK 17
 * iOS: iPhone 16 Simulator; iOS 18.1
-* macOS Native: Mac mini M4; macOS 27 beta 4
+* macOS Native: Mac mini M4; macOS 27
 * Web: Chrome; 130
 
 ## 运行示例 App

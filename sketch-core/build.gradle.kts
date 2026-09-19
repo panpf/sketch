@@ -23,7 +23,7 @@ kotlin {
             api(libs.androidx.exifinterface)
             api(libs.kotlinx.coroutines.android)
         }
-        desktopMain.dependencies {
+        jvmMain.dependencies {
             api(libs.kotlinx.coroutines.swing)
         }
         nonAndroidMain.dependencies {

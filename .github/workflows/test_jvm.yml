@@ -74,4 +74,4 @@ jobs:
           cache-overwrite-existing: true
 
       - name: Run jvm test
-        run: ./gradlew desktopTest --continue
+        run: ./gradlew jvmTest --continue

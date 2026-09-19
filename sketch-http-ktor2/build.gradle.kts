@@ -19,7 +19,7 @@ kotlin {
         androidMain.dependencies {
             api(libs.ktor2.client.android)
         }
-        desktopMain.dependencies {
+        jvmMain.dependencies {
             api(libs.ktor2.client.java)
         }
         appleMain.dependencies {

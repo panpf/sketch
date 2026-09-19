@@ -27,7 +27,7 @@ import kotlin.reflect.KClass
 /**
  * Component loader. Automatically load and register all components
  *
- * @see com.github.panpf.sketch.componentloadertest.desktop.test.ComponentLoaderTest
+ * @see com.github.panpf.sketch.componentloadertest.jvm.test.ComponentLoaderTest
  * @see com.github.panpf.sketch.componentloadertest.android.test.ComponentLoaderTest
  */
 actual object ComponentLoader {

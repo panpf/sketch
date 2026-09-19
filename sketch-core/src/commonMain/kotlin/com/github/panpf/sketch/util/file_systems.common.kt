@@ -24,7 +24,7 @@ import okio.Path
 /**
  * Get the default file system
  *
- * @see com.github.panpf.sketch.core.desktop.test.util.FileSystemsDesktopTest.testDefaultFileSystem
+ * @see com.github.panpf.sketch.core.jvm.test.util.FileSystemsJvmTest.testDefaultFileSystem
  * @see com.github.panpf.sketch.core.apple.test.util.FileSystemsAppleTest.testDefaultFileSystem
  * @see com.github.panpf.sketch.core.jscommon.test.util.FileSystemsJsCommonTest.testDefaultFileSystem
  * @see com.github.panpf.sketch.core.android.test.util.FileSystemsAndroidTest.testDefaultFileSystem
@@ -34,7 +34,7 @@ internal expect fun defaultFileSystem(): FileSystem
 /**
  * Create a new empty file
  *
- * @see com.github.panpf.sketch.core.common.test.util.FileSystemsDesktopTest.testCreateFile
+ * @see com.github.panpf.sketch.core.common.test.util.FileSystemsCommonTest.testCreateFile
  * */
 internal fun FileSystem.createFile(file: Path, mustCreate: Boolean = false) {
     if (mustCreate) {
@@ -47,7 +47,7 @@ internal fun FileSystem.createFile(file: Path, mustCreate: Boolean = false) {
 /**
  * Tolerant delete, try to clear as many files as possible even after a failure.
  *
- * @see com.github.panpf.sketch.core.common.test.util.FileSystemsDesktopTest.testDeleteContents
+ * @see com.github.panpf.sketch.core.common.test.util.FileSystemsCommonTest.testDeleteContents
  */
 internal fun FileSystem.deleteContents(directory: Path) {
     var exception: IOException? = null

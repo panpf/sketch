@@ -24,7 +24,7 @@ has the following features:
 
 ## Sample App
 
-* For Android, iOS, desktop version, and web deployable packages, please go to
+* For Android, iOS, jvm, macOS, and web deployable packages, please go to
   the [Releases](https://github.com/panpf/sketch/releases) page to download.
 * Web example：https://panpf.github.io/sketch/app
 
@@ -148,7 +148,7 @@ registration: [《Register component》][register_component]
 ### R8 / Proguard
 
 1. Android, iOS, Web and other platforms do not need to configure any obfuscation rules
-2. The following obfuscation rules are required for desktop platforms:
+2. The following obfuscation rules are required for jvm platforms:
     ```proguard
     # -------------------------- Sketch Privider ---------------------------- #
     -keep class * implements com.github.panpf.sketch.util.ComponentProvider { *; }
@@ -284,9 +284,9 @@ Please review the [CHANGELOG.md] file
 ## Test Platform
 
 * Android: Emulator; Arm64; API 21-34
-* Desktop: macOS; 14.6.1; JDK 17
+* JVM: macOS; 14.6.1; JDK 17
 * iOS: iPhone 16 Simulator; iOS 18.1
-* macOS Native: Mac mini M4; macOS 27 beta 4
+* macOS Native: Mac mini M4; macOS 27
 * Web: Chrome; 130
 
 ## Run Sample App

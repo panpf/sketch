@@ -11,7 +11,7 @@ import kotlin.reflect.KClass
  *
  * @see com.github.panpf.sketch.animated.webp.android.test.util.AnimatedWebpComponentProviderAndroidTest
  * @see com.github.panpf.sketch.animated.webp.apple.test.util.AnimatedWebpComponentProviderAppleTest
- * @see com.github.panpf.sketch.animated.webp.desktop.test.util.AnimatedWebpComponentProviderDesktopTest
+ * @see com.github.panpf.sketch.animated.webp.jvm.test.util.AnimatedWebpComponentProviderJvmTest
  * @see com.github.panpf.sketch.animated.webp.jscommon.test.util.AnimatedWebpComponentProviderJsCommonTest
  */
 expect class AnimatedWebpComponentProvider : ComponentProvider {

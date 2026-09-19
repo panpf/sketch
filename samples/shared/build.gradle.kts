@@ -26,7 +26,7 @@ kotlin {
         }
     }
 
-    jvm("desktop")
+    jvm()
 
     js {
         browser()
@@ -102,7 +102,7 @@ kotlin {
             api(libs.panpf.tools4k)
             api(libs.penfeizhou.animation.awebp)
         }
-        desktopMain.dependencies {
+        jvmMain.dependencies {
             api(compose.desktop.currentOs)
         }
         jvmCommonMain.dependencies {

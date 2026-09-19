@@ -4,7 +4,7 @@ enum class Platform {
     Android,
     iOS,
     macOS,
-    Desktop,
+    Jvm,
     Web, ;
 
     companion object

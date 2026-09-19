@@ -1,0 +1,106 @@
+package com.github.panpf.sketch.componentloadertest.jvm.test
+
+import com.github.panpf.sketch.decode.BlurHashDecoder.Factory
+import com.github.panpf.sketch.decode.SkiaAnimatedWebpDecoder
+import com.github.panpf.sketch.decode.SkiaAnimatedWebpDecoder.Factory
+import com.github.panpf.sketch.decode.SkiaGifDecoder
+import com.github.panpf.sketch.decode.SkiaGifDecoder.Factory
+import com.github.panpf.sketch.decode.SvgDecoder
+import com.github.panpf.sketch.decode.SvgDecoder.Factory
+import com.github.panpf.sketch.fetch.BlurHashUriFetcher
+import com.github.panpf.sketch.fetch.BlurHashUriFetcher.Factory
+import com.github.panpf.sketch.fetch.ComposeResourceUriFetcher
+import com.github.panpf.sketch.fetch.ComposeResourceUriFetcher.Factory
+import com.github.panpf.sketch.fetch.HurlHttpUriFetcher
+import com.github.panpf.sketch.fetch.HurlHttpUriFetcher.Factory
+import com.github.panpf.sketch.fetch.KtorHttpUriFetcher
+import com.github.panpf.sketch.fetch.KtorHttpUriFetcher.Factory
+import com.github.panpf.sketch.fetch.OkHttpHttpUriFetcher
+import com.github.panpf.sketch.fetch.OkHttpHttpUriFetcher.Factory
+import com.github.panpf.sketch.test.utils.DoNothingComponentProvider
+import com.github.panpf.sketch.test.utils.DoNothingDecoder
+import com.github.panpf.sketch.test.utils.DoNothingDecoder.Factory
+import com.github.panpf.sketch.test.utils.DoNothingFetcher
+import com.github.panpf.sketch.test.utils.DoNothingFetcher.Factory
+import com.github.panpf.sketch.test.utils.DoNothingInterceptor
+import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.util.AnimatedWebpComponentProvider
+import com.github.panpf.sketch.util.BlurHashComponentProvider
+import com.github.panpf.sketch.util.ComponentLoader
+import com.github.panpf.sketch.util.ComposeResourceComponentProvider
+import com.github.panpf.sketch.util.GifComponentProvider
+import com.github.panpf.sketch.util.HurlHttpComponentProvider
+import com.github.panpf.sketch.util.KtorHttpComponentProvider
+import com.github.panpf.sketch.util.OkHttpHttpComponentProvider
+import com.github.panpf.sketch.util.SvgComponentProvider
+import com.github.panpf.sketch.util.toComponentRegistry
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+
+class ComponentLoaderTest {
+
+    @Test
+    fun testFetchers() {
+        val componentProviders = ComponentLoader.componentProviders
+        assertEquals(9, componentProviders.size)
+        assertNotNull(componentProviders.find { it is ComposeResourceComponentProvider })
+        assertNotNull(componentProviders.find { it is KtorHttpComponentProvider })
+        assertNotNull(componentProviders.find { it is HurlHttpComponentProvider })
+        assertNotNull(componentProviders.find { it is OkHttpHttpComponentProvider })
+        assertNotNull(componentProviders.find { it is BlurHashComponentProvider })
+        assertNotNull(componentProviders.find { it is GifComponentProvider })
+        assertNotNull(componentProviders.find { it is AnimatedWebpComponentProvider })
+        assertNotNull(componentProviders.find { it is SvgComponentProvider })
+        assertNotNull(componentProviders.find { it is DoNothingComponentProvider })
+    }
+
+    @Test
+    fun testToComponentRegistry() {
+        val context = getTestContext()
+        ComponentLoader.toComponentRegistry(context).apply {
+            assertEquals(6, fetchers.size)
+            assertNotNull(fetchers.find { it is Factory })
+            assertNotNull(fetchers.find { it is Factory })
+            assertNotNull(fetchers.find { it is Factory })
+            assertNotNull(fetchers.find { it is Factory })
+            assertNotNull(fetchers.find { it is Factory })
+            assertNotNull(fetchers.find { it is Factory })
+
+            assertEquals(5, decoders.size)
+            assertNotNull(decoders.find { it is Factory })
+            assertNotNull(decoders.find { it is Factory })
+            assertNotNull(decoders.find { it is Factory })
+            assertNotNull(decoders.find { it is Factory })
+            assertNotNull(decoders.find { it is Factory })
+
+            assertEquals(1, interceptors.size)
+            assertNotNull(interceptors.find { it is DoNothingInterceptor })
+        }
+
+        // ignoredComponentProviders
+        ComponentLoader.toComponentRegistry(
+            context = context,
+            ignoredComponentProviders = listOf(DoNothingComponentProvider::class),
+        ).apply {
+            assertEquals(5, fetchers.size)
+            assertNotNull(fetchers.find { it is ComposeResourceUriFetcher.Factory })
+            assertNotNull(fetchers.find { it is KtorHttpUriFetcher.Factory })
+            assertNotNull(fetchers.find { it is HurlHttpUriFetcher.Factory })
+            assertNotNull(fetchers.find { it is OkHttpHttpUriFetcher.Factory })
+            assertNotNull(fetchers.find { it is BlurHashUriFetcher.Factory })
+            assertNull(fetchers.find { it is DoNothingFetcher.Factory })
+
+            assertEquals(4, decoders.size)
+            assertNotNull(decoders.find { it is SkiaGifDecoder.Factory })
+            assertNotNull(decoders.find { it is SkiaAnimatedWebpDecoder.Factory })
+            assertNotNull(decoders.find { it is SvgDecoder.Factory })
+            assertNotNull(decoders.find { it is Factory })
+            assertNull(decoders.find { it is DoNothingDecoder.Factory })
+
+            assertEquals(0, interceptors.size)
+            assertNull(interceptors.find { it is DoNothingInterceptor })
+        }
+    }
+}

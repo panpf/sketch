@@ -9,7 +9,7 @@ cd "$rootDir"
 ./gradlew \
   connectedAndroidTest \
   iosSimulatorArm64Test \
-  desktopTest \
+  jvmTest \
   macosArm64Test \
   jsBrowserTest \
   wasmJsBrowserTest \

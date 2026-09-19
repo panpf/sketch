@@ -29,7 +29,7 @@ import okio.Source
 /**
  * [ImageSource] implementation that uses Sketch to load images
  *
- * @see com.github.panpf.zoomimage.core.sketch4.desktop.test.SketchImageSourceTest
+ * @see com.github.panpf.zoomimage.core.sketch4.jvm.test.SketchImageSourceTest
  */
 @Suppress("RedundantConstructorKeyword")
 class SketchImageSource constructor(
@@ -62,7 +62,7 @@ class SketchImageSource constructor(
     }
 
     /**
-     * @see com.github.panpf.zoomimage.core.sketch4.desktop.test.SketchImageSourceFactoryTest
+     * @see com.github.panpf.zoomimage.core.sketch4.jvm.test.SketchImageSourceFactoryTest
      */
     class Factory constructor(
         val sketch: Sketch,

@@ -56,7 +56,7 @@ include(":sketch-view-koin")
  * Private Modules
  */
 include(":samples:androidApp")
-include(":samples:desktopApp")
+include(":samples:jvmApp")
 include(":samples:jsApp")
 include(":samples:macosApp")
 include(":samples:shared")
