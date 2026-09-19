@@ -24,7 +24,7 @@ kotlin {
 }
 
 val appId = "com.github.panpf.sketch4.sample"
-val appName = "Sketch4"
+val appName = "Sketch4 Sample"
 compose.desktop {
     application {
         mainClass = "com.github.panpf.sketch.sample.MainKt"

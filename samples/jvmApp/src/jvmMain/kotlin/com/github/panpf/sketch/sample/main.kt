@@ -12,7 +12,7 @@ fun main() {
     initialApp(PlatformContext.INSTANCE)
     application {
         Window(
-            title = "Sketch4",
+            title = "Sketch4 Sample",
             onCloseRequest = ::exitApplication,
             state = rememberWindowState(size = DpSize(1200.dp, 800.dp)),
         ) {

@@ -22,7 +22,7 @@ actual fun VerHomeHeader() {
     Box(modifier = Modifier.fillMaxWidth()) {
         TopAppBar(
             title = {
-                Text(text = "Sketch4")
+                Text(text = "Sketch4 Sample")
             },
         )
 

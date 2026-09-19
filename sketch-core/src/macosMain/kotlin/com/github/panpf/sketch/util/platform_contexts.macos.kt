@@ -50,7 +50,7 @@ actual fun PlatformContext.appCacheDirectory(): Path? {
     // bundleIdentifier: Debug: ''
     // bundleIdentifier: Release: 'com.github.panpf.sketch.sample'
     // bundlePath: Debug: '/Users/panpf/Workspace/sketch/samples/macosApp/build/bin/macosArm64/debugExecutable'
-    // bundlePath: Release: '/Users/panpf/Downloads/Sketch4.app'
+    // bundlePath: Release: '/Users/panpf/Downloads/Sketch4 Sample.app'
     val appId = NSBundle.mainBundle.bundleIdentifier?.takeIf { it.isNotEmpty() }
         ?: NSBundle.mainBundle.bundlePath.takeIf { it.isNotEmpty() }
             ?.substringBefore("/build/")

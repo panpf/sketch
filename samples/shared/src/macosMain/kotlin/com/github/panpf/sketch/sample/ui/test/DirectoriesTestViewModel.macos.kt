@@ -27,7 +27,7 @@ actual fun buildPlatformDirectoryItemList(
     add(DirectoryItem("bundleIdentifier", bundleIdentifier))
 
     // Debug: '/Users/panpf/Workspace/sketch/samples/macosApp/build/bin/macosArm64/debugExecutable'
-    // Release: '/Users/panpf/Downloads/Sketch4.app'
+    // Release: '/Users/panpf/Downloads/Sketch4 Sample.app'
     val bundlePath = mainBundle.bundlePath
     add(DirectoryItem("bundlePath", bundlePath))
 

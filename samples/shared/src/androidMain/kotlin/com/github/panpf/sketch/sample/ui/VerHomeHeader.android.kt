@@ -33,7 +33,7 @@ actual fun VerHomeHeader() {
         TopAppBar(
             title = {
                 Column {
-                    Text(text = "Sketch4")
+                    Text(text = "Sketch4 Sample")
                     Text(text = "Compose", fontSize = 15.sp)
                 }
             },

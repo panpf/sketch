@@ -29,7 +29,7 @@ kotlin {
 }
 
 val appId = "com.github.panpf.sketch.sample"
-val appName = "Sketch4"
+val appName = "Sketch4 Sample"
 
 compose.desktop {
     nativeApplication {
