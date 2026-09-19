@@ -43,6 +43,7 @@ kotlin {
     }
 }
 
+// TODO public
 buildkonfig {
     packageName = "com.github.panpf.sketch.core"
     defaultConfigs {
