@@ -57,52 +57,53 @@ compose.desktop {
     }
 }
 
-//tasks.configureEach {
-//    val targetTaskNames = listOf(
-//        "packageReleaseMsi", "packageReleaseExe",
-//        "packageReleaseDmg", "packageReleasePkg",
-//        "packageReleaseDeb", "packageReleaseRpm"
-//    )
-//    val targetExtensions = listOf(
-//        "msi", "exe",
-//        "dmg", "pkg",
-//        "deb", "rpm"
-//    )
-//    if (name in targetTaskNames) {
-//        doLast {
-//            val composeBinariesDir =
-//                project.layout.buildDirectory.dir("compose/binaries").get().asFile
-//            composeBinariesDir.walkTopDown()
-//                .filter { it.isFile && it.extension in targetExtensions }
-//                .forEach { file ->
-//                    val fileName = file.name
-//                    var newFileName = fileName
-//                    val platformType = when (file.extension) {
-//                        "deb", "rpm" -> "-linux"
-//                        "dmg", "pkg" -> "-macos"
-//                        "msi", "exe" -> "-windows"
-//                        else -> ""
-//                    }
-//
-//                    // deb or rpm packages will convert all uppercase letters to lowercase by default, so case sensitivity must be ignored here.
-//                    newFileName = newFileName.replace(
-//                        oldValue = project.sampleAppName,
-//                        newValue = "sketch-sample-jvm${platformType}",
-//                        ignoreCase = true
-//                    )
-//
-//                    // sketch-sample_1.5.0001_amd64.deb -> sketch-sample-1.5.0001-amd64.deb
-//                    newFileName = newFileName.replace(oldValue = "_", newValue = "-")
-//
-//                    if (newFileName != fileName) {
-//                        val newFile = file.parentFile.resolve(newFileName)
-//                        if (file.renameTo(newFile)) {
-//                            logger.lifecycle("Rename successful. '$file' -> '${newFile.name}'")
-//                        } else {
-//                            logger.error("Rename failed. '$file'")
-//                        }
-//                    }
-//                }
-//        }
-//    }
-//}
+tasks.configureEach {
+    val targetTaskNames = listOf(
+        "packageReleaseMsi", "packageReleaseExe",
+        "packageReleaseDmg", "packageReleasePkg",
+        "packageReleaseDeb", "packageReleaseRpm"
+    )
+    val targetExtensions = listOf(
+        "msi", "exe",
+        "dmg", "pkg",
+        "deb", "rpm"
+    )
+    if (name in targetTaskNames) {
+        doLast {
+            val composeBinariesDir =
+                project.layout.buildDirectory.dir("compose/binaries").get().asFile
+            composeBinariesDir.walkTopDown()
+                .filter { it.isFile && it.extension in targetExtensions }
+                .forEach { file ->
+                    /*
+                     * Sketch Sample-4.7.0012.msi, Sketch Sample-4.7.0012.exe
+                     * Sketch Sample-4.7.0012.dmg, Sketch Sample-4.7.0012.pkg
+                     * sketch-sample_4.7.0012_amd64.deb, sketch-sample_4.7.0012_amd64.rpm
+                     */
+                    val fileName = file.name
+                    var newFileName = fileName.replace(oldValue = "_", newValue = "-")
+                    val (oldValue, platformType) = when (file.extension) {
+                        "msi", "exe" -> project.sampleAppName to "-windows"
+                        "dmg", "pkg" -> project.sampleAppName to "-macos"
+                        "deb", "rpm" -> project.sampleAppName.lowercase()
+                            .replace(" ", "-") to "-linux"
+
+                        else -> throw IllegalArgumentException("Unsupported file extension: ${file.extension}")
+                    }
+                    newFileName = newFileName.replace(
+                        oldValue = oldValue,
+                        newValue = "sketch-sample-jvm${platformType}",
+                        ignoreCase = true
+                    )
+                    if (newFileName != fileName) {
+                        val newFile = file.parentFile.resolve(newFileName)
+                        if (file.renameTo(newFile)) {
+                            logger.lifecycle("Rename successful. '$file' -> '${newFile.name}'")
+                        } else {
+                            logger.error("Rename failed. '$file'")
+                        }
+                    }
+                }
+        }
+    }
+}
