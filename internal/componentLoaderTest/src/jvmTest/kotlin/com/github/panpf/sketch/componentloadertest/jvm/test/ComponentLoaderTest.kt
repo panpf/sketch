@@ -1,27 +1,17 @@
 package com.github.panpf.sketch.componentloadertest.jvm.test
 
-import com.github.panpf.sketch.decode.BlurHashDecoder.Factory
+import com.github.panpf.sketch.decode.BlurHashDecoder
 import com.github.panpf.sketch.decode.SkiaAnimatedWebpDecoder
-import com.github.panpf.sketch.decode.SkiaAnimatedWebpDecoder.Factory
 import com.github.panpf.sketch.decode.SkiaGifDecoder
-import com.github.panpf.sketch.decode.SkiaGifDecoder.Factory
 import com.github.panpf.sketch.decode.SvgDecoder
-import com.github.panpf.sketch.decode.SvgDecoder.Factory
 import com.github.panpf.sketch.fetch.BlurHashUriFetcher
-import com.github.panpf.sketch.fetch.BlurHashUriFetcher.Factory
 import com.github.panpf.sketch.fetch.ComposeResourceUriFetcher
-import com.github.panpf.sketch.fetch.ComposeResourceUriFetcher.Factory
 import com.github.panpf.sketch.fetch.HurlHttpUriFetcher
-import com.github.panpf.sketch.fetch.HurlHttpUriFetcher.Factory
 import com.github.panpf.sketch.fetch.KtorHttpUriFetcher
-import com.github.panpf.sketch.fetch.KtorHttpUriFetcher.Factory
 import com.github.panpf.sketch.fetch.OkHttpHttpUriFetcher
-import com.github.panpf.sketch.fetch.OkHttpHttpUriFetcher.Factory
 import com.github.panpf.sketch.test.utils.DoNothingComponentProvider
 import com.github.panpf.sketch.test.utils.DoNothingDecoder
-import com.github.panpf.sketch.test.utils.DoNothingDecoder.Factory
 import com.github.panpf.sketch.test.utils.DoNothingFetcher
-import com.github.panpf.sketch.test.utils.DoNothingFetcher.Factory
 import com.github.panpf.sketch.test.utils.DoNothingInterceptor
 import com.github.panpf.sketch.test.utils.getTestContext
 import com.github.panpf.sketch.util.AnimatedWebpComponentProvider
@@ -61,19 +51,19 @@ class ComponentLoaderTest {
         val context = getTestContext()
         ComponentLoader.toComponentRegistry(context).apply {
             assertEquals(6, fetchers.size)
-            assertNotNull(fetchers.find { it is Factory })
-            assertNotNull(fetchers.find { it is Factory })
-            assertNotNull(fetchers.find { it is Factory })
-            assertNotNull(fetchers.find { it is Factory })
-            assertNotNull(fetchers.find { it is Factory })
-            assertNotNull(fetchers.find { it is Factory })
+            assertNotNull(fetchers.find { it is ComposeResourceUriFetcher.Factory })
+            assertNotNull(fetchers.find { it is KtorHttpUriFetcher.Factory })
+            assertNotNull(fetchers.find { it is HurlHttpUriFetcher.Factory })
+            assertNotNull(fetchers.find { it is OkHttpHttpUriFetcher.Factory })
+            assertNotNull(fetchers.find { it is BlurHashUriFetcher.Factory })
+            assertNotNull(fetchers.find { it is DoNothingFetcher.Factory })
 
             assertEquals(5, decoders.size)
-            assertNotNull(decoders.find { it is Factory })
-            assertNotNull(decoders.find { it is Factory })
-            assertNotNull(decoders.find { it is Factory })
-            assertNotNull(decoders.find { it is Factory })
-            assertNotNull(decoders.find { it is Factory })
+            assertNotNull(decoders.find { it is SkiaGifDecoder.Factory })
+            assertNotNull(decoders.find { it is SkiaAnimatedWebpDecoder.Factory })
+            assertNotNull(decoders.find { it is SvgDecoder.Factory })
+            assertNotNull(decoders.find { it is BlurHashDecoder.Factory })
+            assertNotNull(decoders.find { it is DoNothingDecoder.Factory })
 
             assertEquals(1, interceptors.size)
             assertNotNull(interceptors.find { it is DoNothingInterceptor })
@@ -96,7 +86,7 @@ class ComponentLoaderTest {
             assertNotNull(decoders.find { it is SkiaGifDecoder.Factory })
             assertNotNull(decoders.find { it is SkiaAnimatedWebpDecoder.Factory })
             assertNotNull(decoders.find { it is SvgDecoder.Factory })
-            assertNotNull(decoders.find { it is Factory })
+            assertNotNull(decoders.find { it is BlurHashDecoder.Factory })
             assertNull(decoders.find { it is DoNothingDecoder.Factory })
 
             assertEquals(0, interceptors.size)
