@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
     id("com.android.kotlin.multiplatform.library")
+    id("com.codingfeline.buildkonfig")
     id("org.jetbrains.compose")
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.kotlin.plugin.compose")
@@ -133,9 +134,28 @@ kotlin {
 }
 
 compose.resources {
-    packageOfResClass = "com.github.panpf.sketch.sample"
+    packageOfResClass = project.sampleAppId
 }
 
 dependencies {
     androidRuntimeClasspath(libs.jetbrains.compose.ui.tooling)  // For compose preview
+}
+
+buildkonfig {
+    packageName = project.sampleAppId
+    exposeObjectWithName = "AppInfos"
+    defaultConfigs {
+        buildConfigField(
+            type = com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING,
+            name = "SAMPLE_APP_ID",
+            value = project.sampleAppId,
+            const = true
+        )
+        buildConfigField(
+            type = com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING,
+            name = "SAMPLE_APP_NAME",
+            value = project.sampleAppName,
+            const = true
+        )
+    }
 }

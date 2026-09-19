@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.github.panpf.sketch.sample.AppInfos
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.compose.R
 import com.github.panpf.sketch.sample.ui.components.DarkModeSwitch
@@ -33,7 +34,7 @@ actual fun VerHomeHeader() {
         TopAppBar(
             title = {
                 Column {
-                    Text(text = "Sketch4 Sample")
+                    Text(text = AppInfos.SAMPLE_APP_NAME)
                     Text(text = "Compose", fontSize = 15.sp)
                 }
             },

@@ -28,23 +28,20 @@ kotlin {
     }
 }
 
-val appId = "com.github.panpf.sketch.sample"
-val appName = "Sketch4 Sample"
-
 compose.desktop {
     nativeApplication {
         targets(kotlin.macosArm64())
         distributions {
             targetFormats(TargetFormat.Dmg)
-            packageName = appName
+            packageName = project.sampleAppName
             packageVersion = convertDesktopPackageVersion(property("versionName").toString())
             vendor = "panpfpanpf@outlook.com"
-            description = "Sketch4 Image Loader Library Sample App"
+            description = "Sketch Image Loader Library Sample App"
             macOS {
-                bundleID = appId
+                bundleID = project.sampleAppId
                 // https://github.com/JetBrains/compose-multiplatform/blob/8ebd34efd881bfa9101cc81083ce5182b5fdc0e7/gradle-plugins/compose/src/main/kotlin/org/jetbrains/compose/desktop/application/tasks/AbstractNativeMacApplicationPackageAppDirTask.kt#L64-L65
                 // The icon file in Contents/Resources has been hardcoded to "$packageName.icns".
-                iconFile = project.file("icon/$appName.icns")
+                iconFile = project.file("icon/${project.sampleAppName}.icns")
             }
         }
     }
@@ -52,7 +49,7 @@ compose.desktop {
 
 // Compose 1.11 does not propagate nativeApplication.macOS.bundleID to the generated task.
 tasks.withType<AbstractNativeMacApplicationPackageAppDirTask>().configureEach {
-    bundleID = appId
+    bundleID = project.sampleAppId
 }
 
 listOf("Debug", "Release").forEach { buildType ->
@@ -101,7 +98,7 @@ tasks.configureEach {
                 .forEach { file ->
                     val fileName = file.name
                     val newFileName = fileName.replace(
-                        oldValue = appName,
+                        oldValue = project.sampleAppName,
                         newValue = "sketch-sample-macos-native",
                         ignoreCase = true
                     )

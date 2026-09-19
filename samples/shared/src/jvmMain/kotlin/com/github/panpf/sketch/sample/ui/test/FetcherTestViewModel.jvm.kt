@@ -6,7 +6,6 @@ import com.github.panpf.sketch.images.Base64Images
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.images.KotlinResImageFiles
 import com.github.panpf.sketch.images.LocalImageFiles
-import com.github.panpf.sketch.sample.appId
 import com.github.panpf.sketch.sample.ui.model.PhotoTestItem
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
@@ -15,7 +14,6 @@ actual suspend fun buildFetcherTestItems(
     context: PlatformContext,
     fromCompose: Boolean
 ): List<PhotoTestItem> {
-    val d = appId
     val localImageFiles = LocalImageFiles.with(context)
     val httpsUri = getOnePexelsPhoto()
     val fileUri = newFileUri(localImageFiles.jpeg.uri)

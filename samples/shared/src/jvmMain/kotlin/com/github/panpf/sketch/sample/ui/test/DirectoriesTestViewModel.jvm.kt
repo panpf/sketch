@@ -22,10 +22,10 @@ actual fun buildPlatformDirectoryItemList(context: PlatformContext): List<Direct
 
         // windows: Debug (normal): 'D:\Developer\Workspace\sketch\sketch-core\build\libs\sketch-core-jvm-4.7.0-alpha01.jar'
         // windows: Debug (hotReload): 'D:\Developer\Workspace\sketch\samples\jvmApp\build\run\jvmMain\classpath\libs\sketch-core\9d92mnc\sketch-core-jvm-4.7.0-alpha01.jar'
-        // windows: Release: 'C:\Program Files\Sketch4 Sample\app\sketch-core-jvm-4.7.0-alpha01-6687c2e433cc6cca19d38f36afe9a9d4.jar'
+        // windows: Release: 'C:\Program Files\Sketch Sample\app\sketch-core-jvm-4.7.0-alpha01-6687c2e433cc6cca19d38f36afe9a9d4.jar'
         // macOS: Debug (normal): '/Users/panpf/Workspace/sketch/sketch-core/build/libs/sketch-core-jvm-4.7.0-alpha01.jar'
         // macOS: Debug (hotReload): '/Users/panpf/Workspace/sketch/samples/jvmApp/build/run/jvmMain/classpath/libs/sketch-core/9d92mnc/sketch-core-jvm-4.7.0-alpha01.jar'
-        // macOS: Release: '/Users/panpf/Downloads/Sketch4 Sample.app/Contents/app/sketch-core-jvm-4.7.0-alpha01-6687c2e433cc6cca19d38f36afe9a9d4.jar'
+        // macOS: Release: '/Users/panpf/Downloads/Sketch Sample.app/Contents/app/sketch-core-jvm-4.7.0-alpha01-6687c2e433cc6cca19d38f36afe9a9d4.jar'
         // linux: Debug (normal): '/home/panpf/Workspace/sketch/sketch-core/build/libs/sketch-core-jvm-4.7.0-alpha01.jar'
         // linux: Debug (hotReload): '/home/panpf/Workspace/sketch/samples/jvmApp/build/run/jvmMain/classpath/libs/sketch-core/9d92mnc/sketch-core-jvm-4.7.0-alpha01.jar'
         // linux: '/opt/hellokmp/lib/app/composeApp-jvm-e1e452276759301f909baa97e6a11ff4.jar'
@@ -34,10 +34,10 @@ actual fun buildPlatformDirectoryItemList(context: PlatformContext): List<Direct
 
         // windows: Debug (normal): ''
         // windows: Debug (hotReload): ''
-        // windows: Release: 'C:\Program Files\Sketch4 Sample\app\resources'
+        // windows: Release: 'C:\Program Files\Sketch Sample\app\resources'
         // macOS: Debug (normal): '/Users/panpf/Workspace/sketch/samples/jvmApp/build/compose/tmp/prepareAppResources'
         // macOS: Debug (hotReload): ''
-        // macOS: Release: '/Users/panpf/Downloads/Sketch4 Sample.app/Contents/app/resources'
+        // macOS: Release: '/Users/panpf/Downloads/Sketch Sample.app/Contents/app/resources'
         val composeResourcesPath = getComposeResourcesPath()
         add(DirectoryItem("composeResourcesPath", composeResourcesPath))
 

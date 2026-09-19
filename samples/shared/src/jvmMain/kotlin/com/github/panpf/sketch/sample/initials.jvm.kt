@@ -18,8 +18,6 @@ import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatform
 
-const val appId = "com.github.panpf.sketch4.sample"
-
 actual fun initialApp(context: PlatformContext, koinAppDeclaration: KoinAppDeclaration?) {
     startKoin {
         modules(commonModule(context))
@@ -35,12 +33,12 @@ actual fun platformModule(context: PlatformContext): Module = module {
 actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
     downloadCacheOptions {
         DiskCache.Options(
-            appCacheDirectory = AppDirs.getCacheDir("SketchImageLoaderSample").toOkioPath()
+            appCacheDirectory = AppDirs.getCacheDir(AppInfos.SAMPLE_APP_NAME).toOkioPath()
         )
     }
     resultCacheOptions {
         DiskCache.Options(
-            appCacheDirectory = AppDirs.getCacheDir("SketchImageLoaderSample").toOkioPath()
+            appCacheDirectory = AppDirs.getCacheDir(AppInfos.SAMPLE_APP_NAME).toOkioPath()
         )
     }
 

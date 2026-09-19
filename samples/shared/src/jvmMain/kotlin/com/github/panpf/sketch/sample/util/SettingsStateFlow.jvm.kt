@@ -17,20 +17,11 @@
 package com.github.panpf.sketch.sample.util
 
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.sample.AppInfos
 import com.russhwolf.settings.PreferencesSettings
 import com.russhwolf.settings.Settings
 
-//actual fun createDataStore(context: PlatformContext): DataStore<Preferences> {
-//    val configDir = AppDirsFactory.getInstance().getUserConfigDir(
-//        /* appName = */ "com.github.panpf.sketch4.sample",
-//        /* appVersion = */ null,
-//        /* appAuthor = */ null,
-//    )!!.let { File(it) }
-//    val preferencesPath = configDir.resolve("dice.preferences_pb").toOkioPath()
-//    return PreferenceDataStoreFactory.createWithPath { preferencesPath }
-//}
-
 actual fun createSettings(context: PlatformContext): Settings {
-    val delegate = java.util.prefs.Preferences.userRoot().node("com.github.panpf.sketch4.sample")
+    val delegate = java.util.prefs.Preferences.userRoot().node(AppInfos.SAMPLE_APP_ID)
     return PreferencesSettings(delegate)
 }

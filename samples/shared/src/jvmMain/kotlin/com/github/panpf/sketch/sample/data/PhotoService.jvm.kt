@@ -7,6 +7,7 @@ import com.github.panpf.sketch.fetch.isFileUri
 import com.github.panpf.sketch.fetch.isKotlinResourceUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.sample.AppInfos
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.image.photoUri2PhotoInfo
 import com.github.panpf.sketch.sample.ui.model.Photo
@@ -91,7 +92,7 @@ actual class PhotoService actual constructor(val sketch: Sketch) {
 
         val userHomeDir = File(System.getProperty("user.home"))
         val userPicturesDir = File(userHomeDir, "Pictures")
-        val outDir = File(userPicturesDir, "sketch4").apply { mkdirs() }
+        val outDir = File(userPicturesDir, AppInfos.SAMPLE_APP_NAME).apply { mkdirs() }
         val fileExtension = MimeTypeMap.getExtensionFromUrl(imageUri)
             ?: MimeTypeMap.getExtensionFromMimeType(fetchResult.mimeType ?: "")
             ?: "jpeg"

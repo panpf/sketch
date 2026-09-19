@@ -21,18 +21,6 @@ import com.russhwolf.settings.NSUserDefaultsSettings
 import com.russhwolf.settings.Settings
 import platform.Foundation.NSUserDefaults
 
-//actual fun createDataStore(context: PlatformContext): DataStore<Preferences> {
-//    val configDir = getPreferenceDirectory().toPath().resolve("sketch4")
-//    val preferencesPath = configDir.resolve("dice.preferences_pb")
-//    return PreferenceDataStoreFactory.createWithPath { preferencesPath }
-//}
-//
-//private fun getPreferenceDirectory(): String {
-//    val paths =
-//        NSSearchPathForDirectoriesInDomains(NSPreferencePanesDirectory, NSUserDomainMask, true)
-//    return paths.first() as String
-//}
-
 actual fun createSettings(context: PlatformContext): Settings {
     val delegate = NSUserDefaults.standardUserDefaults
     return NSUserDefaultsSettings(delegate)

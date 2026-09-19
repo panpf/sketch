@@ -60,6 +60,12 @@ val publicModules = setOf(
     "sketch-view-koin",
 )
 
+val Project.sampleAppId: String
+    get() = stringProperty("sampleAppId")
+
+val Project.sampleAppName: String
+    get() = stringProperty("sampleAppName")
+
 val Project.minSdk: Int
     get() = intProperty("minSdk")
 

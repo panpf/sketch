@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Sketch4 Sample</string>
+    <string name="app_name">Sketch Sample</string>
 
     <string name="loading">LOADING…</string>
     <string name="load_end">THE END</string>

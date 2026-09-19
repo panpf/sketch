@@ -6,6 +6,7 @@ import com.github.panpf.sketch.fetch.isFileUri
 import com.github.panpf.sketch.fetch.isKotlinResourceUri
 import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.request.RequestContext
+import com.github.panpf.sketch.sample.AppInfos
 import com.github.panpf.sketch.sample.AppSettings
 import com.github.panpf.sketch.sample.image.photoUri2PhotoInfo
 import com.github.panpf.sketch.sample.ui.model.Photo
@@ -86,8 +87,8 @@ actual class PhotoService actual constructor(val sketch: Sketch) {
             return Result.failure(fetchResultResult.exceptionOrNull()!!)
         }
         val fetchResult = fetchResultResult.getOrThrow()
-        // TODO sketch4 change to Sketch Image Loader
-        val outDir = NSHomeDirectory().toPath().resolve("Pictures").resolve("sketch4")
+        val outDir = NSHomeDirectory().toPath().resolve("Pictures")
+            .resolve(AppInfos.SAMPLE_APP_NAME)
         val fileExtension = MimeTypeMap.getExtensionFromUrl(imageUri)
             ?: MimeTypeMap.getExtensionFromMimeType(fetchResult.mimeType ?: "")
             ?: "jpeg"

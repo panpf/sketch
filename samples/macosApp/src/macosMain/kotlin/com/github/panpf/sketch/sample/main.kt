@@ -21,7 +21,7 @@ fun main() {
 
         override fun applicationDidFinishLaunching(notification: NSNotification) {
             Window(
-                title = "Sketch4 Sample",
+                title = AppInfos.SAMPLE_APP_NAME,
                 size = DpSize(1200.dp, 800.dp),
             ) {
                 App()

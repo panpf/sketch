@@ -23,19 +23,17 @@ kotlin {
     }
 }
 
-val appId = "com.github.panpf.sketch4.sample"
-val appName = "Sketch4 Sample"
 compose.desktop {
     application {
         mainClass = "com.github.panpf.sketch.sample.MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = appName
+            packageName = project.sampleAppName
             packageVersion = convertDesktopPackageVersion(property("versionName").toString())
             vendor = "panpfpanpf@outlook.com"
-            description = "Sketch4 Image Loader Library Sample App"
+            description = "Sketch Image Loader Library Sample App"
             macOS {
-                bundleID = appId
+                bundleID = project.sampleAppId
                 iconFile.set(project.file("icons/icon-macos.icns"))
             }
             windows {
@@ -88,7 +86,7 @@ tasks.configureEach {
 
                     // deb or rpm packages will convert all uppercase letters to lowercase by default, so case sensitivity must be ignored here.
                     newFileName = newFileName.replace(
-                        oldValue = appName,
+                        oldValue = project.sampleAppName,
                         newValue = "sketch-sample-jvm${platformType}",
                         ignoreCase = true
                     )

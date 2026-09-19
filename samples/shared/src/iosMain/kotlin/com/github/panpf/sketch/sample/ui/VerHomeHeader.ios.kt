@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import com.github.panpf.sketch.sample.AppInfos
 import com.github.panpf.sketch.sample.ui.components.DarkModeSwitch
 
 @Composable
@@ -22,7 +23,7 @@ actual fun VerHomeHeader() {
     Box(modifier = Modifier.fillMaxWidth()) {
         TopAppBar(
             title = {
-                Text(text = "Sketch4 Sample")
+                Text(text = AppInfos.SAMPLE_APP_NAME)
             },
         )
 

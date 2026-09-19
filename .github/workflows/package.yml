@@ -73,7 +73,7 @@ jobs:
       - name: Zip
         run: |
           cd samples/shared/build/ios/outputs/Build/Products/Debug-iphonesimulator
-          zip -r "sketch-sample-ios-${{ steps.version_name_step.outputs.version_name }}.app.zip" "Sketch4 Sample.app"
+          zip -r "sketch-sample-ios-${{ steps.version_name_step.outputs.version_name }}.app.zip" "Sketch Sample.app"
           cd -
 
       - name: Upload iOS artifacts

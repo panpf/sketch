@@ -7,10 +7,7 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
 }
 
-androidApplication(
-    nameSpace = "com.github.panpf.sketch.sample",
-    applicationId = "com.github.panpf.sketch4.sample"
-) {
+androidApplication(nameSpace = project.sampleAppId) {
     defaultConfig {
         buildConfigField("String", "VERSION_NAME", "\"${property("versionName").toString()}\"")
         buildConfigField("int", "VERSION_CODE", property("versionCode").toString())
