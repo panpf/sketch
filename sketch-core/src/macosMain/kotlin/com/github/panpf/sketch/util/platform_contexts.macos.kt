@@ -23,10 +23,7 @@ import okio.Path
 import okio.Path.Companion.toPath
 import platform.AppKit.NSScreen
 import platform.Foundation.NSBundle
-import platform.Foundation.NSCachesDirectory
 import platform.Foundation.NSProcessInfo
-import platform.Foundation.NSSearchPathForDirectoriesInDomains
-import platform.Foundation.NSUserDomainMask
 import kotlin.math.roundToInt
 
 /**
@@ -46,7 +43,6 @@ actual fun PlatformContext.maxMemory(): Long {
  *
  * @see com.github.panpf.sketch.core.macos.test.util.PlatformContextsMacosTest.testAppCacheDirectory
  */
-// TODO Added AppDirs for macOS
 actual fun PlatformContext.appCacheDirectory(): Path? {
     // bundleIdentifier: Debug: ''
     // bundleIdentifier: Release: 'com.github.panpf.sketch.sample'
@@ -58,9 +54,7 @@ actual fun PlatformContext.appCacheDirectory(): Path? {
             ?.md5()
             ?.let { "SketchImageLoader/${it}" }
         ?: return null
-    val paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, true)
-    val cachesDirectory = (paths.firstOrNull() as? String)?.toPath()
-    return cachesDirectory?.resolve(appId)
+    return AppDirs.getCacheDir(appId).toPath()
 }
 
 /**

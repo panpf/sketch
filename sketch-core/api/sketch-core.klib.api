@@ -3475,3 +3475,18 @@ final fun com.github.panpf.sketch.fetch/parseLocalIdentifier(com.github.panpf.sk
 
 // Targets: [ios]
 final fun com.github.panpf.sketch.util/isVersionAtLeast(kotlin/Int, kotlin/Int = ..., kotlin/Int = ...): kotlin/Boolean // com.github.panpf.sketch.util/isVersionAtLeast|isVersionAtLeast(kotlin.Int;kotlin.Int;kotlin.Int){}[0]
+
+// Targets: [macosArm64]
+final class com.github.panpf.sketch.util/AppDirs { // com.github.panpf.sketch.util/AppDirs|null[0]
+    final object Companion { // com.github.panpf.sketch.util/AppDirs.Companion|null[0]
+        final fun getCacheDir(kotlin/String?): kotlin/String // com.github.panpf.sketch.util/AppDirs.Companion.getCacheDir|getCacheDir(kotlin.String?){}[0]
+        final fun getConfigDir(kotlin/String?): kotlin/String // com.github.panpf.sketch.util/AppDirs.Companion.getConfigDir|getConfigDir(kotlin.String?){}[0]
+        final fun getDataDir(kotlin/String?): kotlin/String // com.github.panpf.sketch.util/AppDirs.Companion.getDataDir|getDataDir(kotlin.String?){}[0]
+        final fun getDesktopDir(kotlin/String?): kotlin/String // com.github.panpf.sketch.util/AppDirs.Companion.getDesktopDir|getDesktopDir(kotlin.String?){}[0]
+        final fun getDocumentsDir(kotlin/String?): kotlin/String // com.github.panpf.sketch.util/AppDirs.Companion.getDocumentsDir|getDocumentsDir(kotlin.String?){}[0]
+        final fun getDownloadsDir(kotlin/String?): kotlin/String // com.github.panpf.sketch.util/AppDirs.Companion.getDownloadsDir|getDownloadsDir(kotlin.String?){}[0]
+        final fun getMusicDir(kotlin/String?): kotlin/String // com.github.panpf.sketch.util/AppDirs.Companion.getMusicDir|getMusicDir(kotlin.String?){}[0]
+        final fun getPicturesDir(kotlin/String?): kotlin/String // com.github.panpf.sketch.util/AppDirs.Companion.getPicturesDir|getPicturesDir(kotlin.String?){}[0]
+        final fun getVideosDir(kotlin/String?): kotlin/String // com.github.panpf.sketch.util/AppDirs.Companion.getVideosDir|getVideosDir(kotlin.String?){}[0]
+    }
+}

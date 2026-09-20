@@ -2543,21 +2543,18 @@ public final class com/github/panpf/sketch/transition/TransitionTarget$DefaultIm
 
 public final class com/github/panpf/sketch/util/AppDirs {
 	public static final field Companion Lcom/github/panpf/sketch/util/AppDirs$Companion;
-	public fun <init> ()V
 }
 
 public final class com/github/panpf/sketch/util/AppDirs$Companion {
-	public final fun getCacheDir (Ljava/lang/String;)Ljava/io/File;
-	public final fun getConfigDir (Ljava/lang/String;)Ljava/io/File;
-	public final fun getDataDir (Ljava/lang/String;)Ljava/io/File;
-	public final fun getDesktopDir (Ljava/lang/String;)Ljava/io/File;
-	public final fun getDocumentsDir (Ljava/lang/String;)Ljava/io/File;
-	public final fun getDownloadsDir (Ljava/lang/String;)Ljava/io/File;
-	public final fun getMusicDir (Ljava/lang/String;)Ljava/io/File;
-	public final fun getPicturesDir (Ljava/lang/String;)Ljava/io/File;
-	public final fun getRuntimeDir (Ljava/lang/String;)Ljava/io/File;
-	public final fun getStateDir (Ljava/lang/String;)Ljava/io/File;
-	public final fun getVideosDir (Ljava/lang/String;)Ljava/io/File;
+	public final fun getCacheDir (Ljava/lang/String;)Ljava/lang/String;
+	public final fun getConfigDir (Ljava/lang/String;)Ljava/lang/String;
+	public final fun getDataDir (Ljava/lang/String;)Ljava/lang/String;
+	public final fun getDesktopDir (Ljava/lang/String;)Ljava/lang/String;
+	public final fun getDocumentsDir (Ljava/lang/String;)Ljava/lang/String;
+	public final fun getDownloadsDir (Ljava/lang/String;)Ljava/lang/String;
+	public final fun getMusicDir (Ljava/lang/String;)Ljava/lang/String;
+	public final fun getPicturesDir (Ljava/lang/String;)Ljava/lang/String;
+	public final fun getVideosDir (Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class com/github/panpf/sketch/util/Bitmaps_nonAndroidKt {

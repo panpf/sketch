@@ -11,7 +11,7 @@ import com.github.panpf.sketch.util.AppDirs
 import com.github.panpf.sketch.util.HurlHttpComponentProvider
 import com.github.panpf.sketch.util.KtorHttpComponentProvider
 import com.github.panpf.sketch.util.OkHttpHttpComponentProvider
-import okio.Path.Companion.toOkioPath
+import okio.Path.Companion.toPath
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
@@ -33,12 +33,12 @@ actual fun platformModule(context: PlatformContext): Module = module {
 actual fun Sketch.Builder.platformSketchInitial(context: PlatformContext) {
     downloadCacheOptions {
         DiskCache.Options(
-            appCacheDirectory = AppDirs.getCacheDir(AppInfos.SAMPLE_APP_NAME).toOkioPath()
+            appCacheDirectory = AppDirs.getCacheDir(AppInfos.SAMPLE_APP_NAME).toPath()
         )
     }
     resultCacheOptions {
         DiskCache.Options(
-            appCacheDirectory = AppDirs.getCacheDir(AppInfos.SAMPLE_APP_NAME).toOkioPath()
+            appCacheDirectory = AppDirs.getCacheDir(AppInfos.SAMPLE_APP_NAME).toPath()
         )
     }
 

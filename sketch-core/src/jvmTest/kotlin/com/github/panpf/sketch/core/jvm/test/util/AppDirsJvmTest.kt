@@ -5,10 +5,10 @@ import com.github.panpf.sketch.test.utils.current
 import com.github.panpf.sketch.test.utils.isMacOS
 import com.github.panpf.sketch.test.utils.isWindows
 import com.github.panpf.sketch.util.AppDirs
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class AppDirsTest {
+class AppDirsJvmTest {
 
     private val appName = "SketchSample"
     private val useName = System.getProperty("user.name")!!
@@ -21,7 +21,7 @@ class AppDirsTest {
                 Platform.current.isMacOS -> "/Users/$useName/Library/Preferences/$appName"
                 else -> "/home/$useName/.config/$appName"
             },
-            actual = AppDirs.getConfigDir(appName = appName).path,
+            actual = AppDirs.getConfigDir(appName = appName),
         )
 
         assertEquals(
@@ -30,7 +30,7 @@ class AppDirsTest {
                 Platform.current.isMacOS -> "/Users/$useName/Library/Preferences"
                 else -> "/home/$useName/.config"
             },
-            actual = AppDirs.getConfigDir(appName = null).path,
+            actual = AppDirs.getConfigDir(appName = null),
         )
     }
 
@@ -42,7 +42,7 @@ class AppDirsTest {
                 Platform.current.isMacOS -> "/Users/$useName/Library/Application Support/$appName"
                 else -> "/home/$useName/.local/share/$appName"
             },
-            actual = AppDirs.getDataDir(appName = appName).path,
+            actual = AppDirs.getDataDir(appName = appName),
         )
 
         assertEquals(
@@ -51,7 +51,7 @@ class AppDirsTest {
                 Platform.current.isMacOS -> "/Users/$useName/Library/Application Support"
                 else -> "/home/$useName/.local/share"
             },
-            actual = AppDirs.getDataDir(appName = null).path,
+            actual = AppDirs.getDataDir(appName = null),
         )
     }
 
@@ -63,7 +63,7 @@ class AppDirsTest {
                 Platform.current.isMacOS -> "/Users/$useName/Library/Caches/$appName"
                 else -> "/home/$useName/.cache/$appName"
             },
-            actual = AppDirs.getCacheDir(appName = appName).path,
+            actual = AppDirs.getCacheDir(appName = appName),
         )
 
         assertEquals(
@@ -72,49 +72,7 @@ class AppDirsTest {
                 Platform.current.isMacOS -> "/Users/$useName/Library/Caches"
                 else -> "/home/$useName/.cache"
             },
-            actual = AppDirs.getCacheDir(appName = null).path,
-        )
-    }
-
-    @Test
-    fun testGetStateDir() {
-        assertEquals(
-            expected = when {
-                Platform.current.isWindows -> "C:\\Users\\$useName\\AppData\\Local\\$appName\\State"
-                Platform.current.isMacOS -> "/Users/$useName/Library/Application Support/$appName/State"
-                else -> "/home/$useName/.local/state/$appName"
-            },
-            actual = AppDirs.getStateDir(appName = appName).path,
-        )
-
-        assertEquals(
-            expected = when {
-                Platform.current.isWindows -> "C:\\Users\\$useName\\AppData\\Local\\State"
-                Platform.current.isMacOS -> "/Users/$useName/Library/Application Support/State"
-                else -> "/home/$useName/.local/state"
-            },
-            actual = AppDirs.getStateDir(appName = null).path,
-        )
-    }
-
-    @Test
-    fun testGetRuntimeDir() {
-        assertEquals(
-            expected = when {
-                Platform.current.isWindows -> "C:\\Users\\$useName\\AppData\\Local\\$appName\\Runtime"
-                Platform.current.isMacOS -> "/Users/$useName/Library/Application Support/$appName/Runtime"
-                else -> "/run/$useName/1000/$appName"
-            },
-            actual = AppDirs.getRuntimeDir(appName = appName)?.path,
-        )
-
-        assertEquals(
-            expected = when {
-                Platform.current.isWindows -> "C:\\Users\\$useName\\AppData\\Local\\Runtime"
-                Platform.current.isMacOS -> "/Users/$useName/Library/Application Support/Runtime"
-                else -> "/run/$useName/1000"
-            },
-            actual = AppDirs.getRuntimeDir(appName = null)?.path,
+            actual = AppDirs.getCacheDir(appName = null),
         )
     }
 
@@ -126,7 +84,7 @@ class AppDirsTest {
                 Platform.current.isMacOS -> "/Users/$useName/Desktop/$appName"
                 else -> "/home/$useName/Desktop/$appName"
             },
-            actual = AppDirs.getDesktopDir(appName = appName).path,
+            actual = AppDirs.getDesktopDir(appName = appName),
         )
 
         assertEquals(
@@ -135,7 +93,7 @@ class AppDirsTest {
                 Platform.current.isMacOS -> "/Users/$useName/Desktop"
                 else -> "/home/$useName/Desktop"
             },
-            actual = AppDirs.getDesktopDir(appName = null).path,
+            actual = AppDirs.getDesktopDir(appName = null),
         )
     }
 
@@ -147,7 +105,7 @@ class AppDirsTest {
                 Platform.current.isMacOS -> "/Users/$useName/Documents/$appName"
                 else -> "/home/$useName/Documents/$appName"
             },
-            actual = AppDirs.getDocumentsDir(appName = appName).path,
+            actual = AppDirs.getDocumentsDir(appName = appName),
         )
 
         assertEquals(
@@ -156,7 +114,7 @@ class AppDirsTest {
                 Platform.current.isMacOS -> "/Users/$useName/Documents"
                 else -> "/home/$useName/Documents"
             },
-            actual = AppDirs.getDocumentsDir(appName = null).path,
+            actual = AppDirs.getDocumentsDir(appName = null),
         )
     }
 
@@ -168,7 +126,7 @@ class AppDirsTest {
                 Platform.current.isMacOS -> "/Users/$useName/Downloads/$appName"
                 else -> "/home/$useName/Downloads/$appName"
             },
-            actual = AppDirs.getDownloadsDir(appName = appName).path,
+            actual = AppDirs.getDownloadsDir(appName = appName),
         )
 
         assertEquals(
@@ -177,7 +135,7 @@ class AppDirsTest {
                 Platform.current.isMacOS -> "/Users/$useName/Downloads"
                 else -> "/home/$useName/Downloads"
             },
-            actual = AppDirs.getDownloadsDir(appName = null).path,
+            actual = AppDirs.getDownloadsDir(appName = null),
         )
     }
 
@@ -189,7 +147,7 @@ class AppDirsTest {
                 Platform.current.isMacOS -> "/Users/$useName/Pictures/$appName"
                 else -> "/home/$useName/Pictures/$appName"
             },
-            actual = AppDirs.getPicturesDir(appName = appName).path,
+            actual = AppDirs.getPicturesDir(appName = appName),
         )
 
         assertEquals(
@@ -198,7 +156,7 @@ class AppDirsTest {
                 Platform.current.isMacOS -> "/Users/$useName/Pictures"
                 else -> "/home/$useName/Pictures"
             },
-            actual = AppDirs.getPicturesDir(appName = null).path,
+            actual = AppDirs.getPicturesDir(appName = null),
         )
     }
 
@@ -210,7 +168,7 @@ class AppDirsTest {
                 Platform.current.isMacOS -> "/Users/$useName/Music/$appName"
                 else -> "/home/$useName/Music/$appName"
             },
-            actual = AppDirs.getMusicDir(appName = appName).path,
+            actual = AppDirs.getMusicDir(appName = appName),
         )
 
         assertEquals(
@@ -219,7 +177,7 @@ class AppDirsTest {
                 Platform.current.isMacOS -> "/Users/$useName/Music"
                 else -> "/home/$useName/Music"
             },
-            actual = AppDirs.getMusicDir(appName = null).path,
+            actual = AppDirs.getMusicDir(appName = null),
         )
     }
 
@@ -228,19 +186,19 @@ class AppDirsTest {
         assertEquals(
             expected = when {
                 Platform.current.isWindows -> "C:\\Users\\$useName\\Videos\\$appName"
-                Platform.current.isMacOS -> "/Users/$useName/Videos/$appName"
+                Platform.current.isMacOS -> "/Users/$useName/Movies/$appName"
                 else -> "/home/$useName/Videos/$appName"
             },
-            actual = AppDirs.getVideosDir(appName = appName).path,
+            actual = AppDirs.getVideosDir(appName = appName),
         )
 
         assertEquals(
             expected = when {
                 Platform.current.isWindows -> "C:\\Users\\$useName\\Videos"
-                Platform.current.isMacOS -> "/Users/$useName/Videos"
+                Platform.current.isMacOS -> "/Users/$useName/Movies"
                 else -> "/home/$useName/Videos"
             },
-            actual = AppDirs.getVideosDir(appName = null).path,
+            actual = AppDirs.getVideosDir(appName = null),
         )
     }
 }

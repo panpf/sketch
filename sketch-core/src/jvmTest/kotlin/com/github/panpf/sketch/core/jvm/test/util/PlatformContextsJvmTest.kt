@@ -45,7 +45,7 @@ class PlatformContextsJvmTest {
         }
 
         val currentAppCacheDir = if (appId != null)
-            AppDirs.getCacheDir(appId).toString() else null
+            AppDirs.getCacheDir(appId) else null
 
         val appCacheDir = PlatformContext.INSTANCE.appCacheDirectory()?.toString()
         assertEquals(currentAppCacheDir, appCacheDir)

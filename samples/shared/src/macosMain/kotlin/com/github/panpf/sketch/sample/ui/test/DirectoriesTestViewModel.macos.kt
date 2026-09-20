@@ -1,24 +1,18 @@
 package com.github.panpf.sketch.sample.ui.test
 
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.sample.AppInfos
+import com.github.panpf.sketch.util.AppDirs
 import com.github.panpf.sketch.util.appCacheDirectory
 import platform.Foundation.NSBundle
-import platform.Foundation.NSCachesDirectory
-import platform.Foundation.NSDesktopDirectory
-import platform.Foundation.NSDownloadsDirectory
-import platform.Foundation.NSMoviesDirectory
-import platform.Foundation.NSMusicDirectory
-import platform.Foundation.NSPicturesDirectory
-import platform.Foundation.NSSearchPathForDirectoriesInDomains
-import platform.Foundation.NSUserDomainMask
 
 actual fun buildPlatformDirectoryItemList(
     context: PlatformContext
 ): List<DirectoryItem> = buildList {
     // Debug: '/Users/panpf/Library/Caches/SketchImageLoader/1bf4ceab56351085f7f623ebf83041fc'
     // Release: '/Users/panpf/Library/Caches/com.github.panpf.sketch.sample'
-    val appCacheDirectory = context.appCacheDirectory()?.toString()
-    add(DirectoryItem("appCacheDirectory", appCacheDirectory))
+    val defaultAppCacheDirectory = context.appCacheDirectory()?.toString()
+    add(DirectoryItem("defaultAppCacheDirectory", defaultAppCacheDirectory))
 
     // Debug: ''
     // Release: 'com.github.panpf.sketch.sample'
@@ -31,45 +25,30 @@ actual fun buildPlatformDirectoryItemList(
     val bundlePath = mainBundle.bundlePath
     add(DirectoryItem("bundlePath", bundlePath))
 
-    // Debug: '/Users/panpf/Library/Caches'
-    // Release: '/Users/panpf/Library/Caches'
-    val userCachesDirectory =
-        NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, true)
-            .firstOrNull()?.let { it as String }
-    add(DirectoryItem("userCachesDirectory", userCachesDirectory))
+    val appCacheDirectory = AppDirs.getCacheDir(appName = AppInfos.SAMPLE_APP_NAME)
+    add(DirectoryItem("appCacheDirectory", appCacheDirectory))
 
-    // Debug: '/Users/panpf/Desktop'
-    // Release: '/Users/panpf/Desktop'
-    val userDesktopDirectory =
-        NSSearchPathForDirectoriesInDomains(NSDesktopDirectory, NSUserDomainMask, true)
-            .firstOrNull()?.let { it as String }
-    add(DirectoryItem("userDesktopDirectory", userDesktopDirectory))
+    val appDataDirectory = AppDirs.getDataDir(appName = AppInfos.SAMPLE_APP_NAME)
+    add(DirectoryItem("appDataDirectory", appDataDirectory))
 
-    // Debug: '/Users/panpf/Downloads'
-    // Release: '/Users/panpf/Downloads'
-    val userDownloadsDirectory =
-        NSSearchPathForDirectoriesInDomains(NSDownloadsDirectory, NSUserDomainMask, true)
-            .firstOrNull()?.let { it as String }
-    add(DirectoryItem("userDownloadsDirectory", userDownloadsDirectory))
+    val appConfigDirectory = AppDirs.getConfigDir(appName = AppInfos.SAMPLE_APP_NAME)
+    add(DirectoryItem("appConfigDirectory", appConfigDirectory))
 
-    // Debug: '/Users/panpf/Pictures'
-    // Release: '/Users/panpf/Pictures'
-    val userPicturesDirectory =
-        NSSearchPathForDirectoriesInDomains(NSPicturesDirectory, NSUserDomainMask, true)
-            .firstOrNull()?.let { it as String }
-    add(DirectoryItem("userPicturesDirectory", userPicturesDirectory))
+    val appDesktopDirectory = AppDirs.getDesktopDir(appName = AppInfos.SAMPLE_APP_NAME)
+    add(DirectoryItem("appDesktopDirectory", appDesktopDirectory))
 
-    // Debug: '/Users/panpf/Music'
-    // Release: '/Users/panpf/Music'
-    val userMusicDirectory =
-        NSSearchPathForDirectoriesInDomains(NSMusicDirectory, NSUserDomainMask, true)
-            .firstOrNull()?.let { it as String }
-    add(DirectoryItem("userMusicDirectory", userMusicDirectory))
+    val appDocumentsDirectory = AppDirs.getDocumentsDir(appName = AppInfos.SAMPLE_APP_NAME)
+    add(DirectoryItem("appDocumentsDirectory", appDocumentsDirectory))
 
-    // Debug: '/Users/panpf/Movies'
-    // Release: '/Users/panpf/Movies'
-    val userMoviesDirectory =
-        NSSearchPathForDirectoriesInDomains(NSMoviesDirectory, NSUserDomainMask, true)
-            .firstOrNull()?.let { it as String }
-    add(DirectoryItem("userMoviesDirectory", userMoviesDirectory))
+    val appDownloadsDirectory = AppDirs.getDownloadsDir(appName = AppInfos.SAMPLE_APP_NAME)
+    add(DirectoryItem("appDownloadsDirectory", appDownloadsDirectory))
+
+    val appPicturesDirectory = AppDirs.getPicturesDir(appName = AppInfos.SAMPLE_APP_NAME)
+    add(DirectoryItem("appPicturesDirectory", appPicturesDirectory))
+
+    val appMusicDirectory = AppDirs.getMusicDir(appName = AppInfos.SAMPLE_APP_NAME)
+    add(DirectoryItem("appMusicDirectory", appMusicDirectory))
+
+    val appVideosDirectory = AppDirs.getVideosDir(appName = AppInfos.SAMPLE_APP_NAME)
+    add(DirectoryItem("appVideosDirectory", appVideosDirectory))
 }

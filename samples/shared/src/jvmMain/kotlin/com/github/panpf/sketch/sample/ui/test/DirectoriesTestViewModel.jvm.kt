@@ -1,6 +1,7 @@
 package com.github.panpf.sketch.sample.ui.test
 
 import com.github.panpf.sketch.PlatformContext
+import com.github.panpf.sketch.sample.AppInfos
 import com.github.panpf.sketch.util.AppDirs
 import com.github.panpf.sketch.util.appCacheDirectory
 import java.net.URI
@@ -17,8 +18,8 @@ actual fun buildPlatformDirectoryItemList(context: PlatformContext): List<Direct
         // linux: Debug (normal): '/Users/panpf/.cache/SketchImageLoader/f99742e39ecdb5444589ad6aa2eff27a'
         // linux: Debug (hotReload): '/Users/.cache/SketchImageLoader/3120c807db80a0e963f8c0073ec54f37'
         // linux: Release: '/Users/panpf/.cache/SketchImageLoader/3a852cc448c41fefdf3b19c26497f70b'
-        val appCacheDirectory = context.appCacheDirectory()?.toString()
-        add(DirectoryItem("appCacheDirectory", appCacheDirectory))
+        val defaultAppCacheDirectory = context.appCacheDirectory()?.toString()
+        add(DirectoryItem("defaultAppCacheDirectory", defaultAppCacheDirectory))
 
         // windows: Debug (normal): 'D:\Developer\Workspace\sketch\sketch-core\build\libs\sketch-core-jvm-4.7.0-alpha01.jar'
         // windows: Debug (hotReload): 'D:\Developer\Workspace\sketch\samples\jvmApp\build\run\jvmMain\classpath\libs\sketch-core\9d92mnc\sketch-core-jvm-4.7.0-alpha01.jar'
@@ -41,32 +42,32 @@ actual fun buildPlatformDirectoryItemList(context: PlatformContext): List<Direct
         val composeResourcesPath = getComposeResourcesPath()
         add(DirectoryItem("composeResourcesPath", composeResourcesPath))
 
-        val userCacheDirectory = AppDirs.getCacheDir(appName = null)
-        add(DirectoryItem("userCacheDirectory", userCacheDirectory.toString()))
+        val appCacheDirectory = AppDirs.getCacheDir(appName = AppInfos.SAMPLE_APP_NAME)
+        add(DirectoryItem("appCacheDirectory", appCacheDirectory))
 
-        val userDataDirectory = AppDirs.getDataDir(appName = null)
-        add(DirectoryItem("userDataDirectory", userDataDirectory.toString()))
+        val appDataDirectory = AppDirs.getDataDir(appName = AppInfos.SAMPLE_APP_NAME)
+        add(DirectoryItem("appDataDirectory", appDataDirectory))
 
-        val userConfigDirectory = AppDirs.getConfigDir(appName = null)
-        add(DirectoryItem("userConfigDirectory", userConfigDirectory.toString()))
+        val appConfigDirectory = AppDirs.getConfigDir(appName = AppInfos.SAMPLE_APP_NAME)
+        add(DirectoryItem("appConfigDirectory", appConfigDirectory))
 
-        val userDesktopDirectory = AppDirs.getDesktopDir(appName = null)
-        add(DirectoryItem("userDesktopDirectory", userDesktopDirectory.toString()))
+        val appDesktopDirectory = AppDirs.getDesktopDir(appName = AppInfos.SAMPLE_APP_NAME)
+        add(DirectoryItem("appDesktopDirectory", appDesktopDirectory))
 
-        val userDocumentsDirectory = AppDirs.getDocumentsDir(appName = null)
-        add(DirectoryItem("userDocumentsDirectory", userDocumentsDirectory.toString()))
+        val appDocumentsDirectory = AppDirs.getDocumentsDir(appName = AppInfos.SAMPLE_APP_NAME)
+        add(DirectoryItem("appDocumentsDirectory", appDocumentsDirectory))
 
-        val userDownloadsDirectory = AppDirs.getDownloadsDir(appName = null)
-        add(DirectoryItem("userDownloadsDirectory", userDownloadsDirectory.toString()))
+        val appDownloadsDirectory = AppDirs.getDownloadsDir(appName = AppInfos.SAMPLE_APP_NAME)
+        add(DirectoryItem("appDownloadsDirectory", appDownloadsDirectory))
 
-        val userPicturesDirectory = AppDirs.getPicturesDir(appName = null)
-        add(DirectoryItem("userPicturesDirectory", userPicturesDirectory.toString()))
+        val appPicturesDirectory = AppDirs.getPicturesDir(appName = AppInfos.SAMPLE_APP_NAME)
+        add(DirectoryItem("appPicturesDirectory", appPicturesDirectory))
 
-        val userMusicDirectory = AppDirs.getMusicDir(appName = null)
-        add(DirectoryItem("userMusicDirectory", userMusicDirectory.toString()))
+        val appMusicDirectory = AppDirs.getMusicDir(appName = AppInfos.SAMPLE_APP_NAME)
+        add(DirectoryItem("appMusicDirectory", appMusicDirectory))
 
-        val userVideosDirectory = AppDirs.getVideosDir(appName = null)
-        add(DirectoryItem("userVideosDirectory", userVideosDirectory.toString()))
+        val appVideosDirectory = AppDirs.getVideosDir(appName = AppInfos.SAMPLE_APP_NAME)
+        add(DirectoryItem("appVideosDirectory", appVideosDirectory))
     }
 
 /**

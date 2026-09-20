@@ -19,7 +19,7 @@ package com.github.panpf.sketch.util
 
 import com.github.panpf.sketch.PlatformContext
 import okio.Path
-import okio.Path.Companion.toOkioPath
+import okio.Path.Companion.toPath
 import java.io.File
 
 /**
@@ -43,7 +43,7 @@ actual fun PlatformContext.appCacheDirectory(): Path? {
         ?.md5()
         ?.let { "SketchImageLoader${File.separator}${it}" }
         ?: return null
-    return AppDirs.getCacheDir(appId).toOkioPath()
+    return AppDirs.getCacheDir(appId).toPath()
 }
 
 /**

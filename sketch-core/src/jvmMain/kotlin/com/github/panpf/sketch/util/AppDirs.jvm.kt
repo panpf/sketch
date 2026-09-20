@@ -7,11 +7,11 @@ import java.util.Locale
 /**
  * Platform-specific application directories for JVM desktop applications.
  *
- * @see com.github.panpf.sketch.core.jvm.test.util.AppDirsTest
+ * @see com.github.panpf.sketch.core.jvm.test.util.AppDirsJvmTest
  */
-class AppDirs {
+actual class AppDirs private actual constructor() {
 
-    companion object {
+    actual companion object {
         private val provider: Provider by lazy {
             val os = System.getProperty("os.name").lowercase(Locale.ROOT)
             when {
@@ -22,7 +22,7 @@ class AppDirs {
         }
 
         /**
-         * Get config files directory. Recommended appName: 'com.company.myapp'
+         * Get config files directory. Recommended appName: 'MyApp'
          *
          * Linux follows XDG_CONFIG_HOME. Windows follows APPDATA.
          *
@@ -36,10 +36,10 @@ class AppDirs {
          * * macOS: /Users/My/Library/Preferences
          * * Linux: /home/My/.config
          */
-        fun getConfigDir(appName: String?): File = provider.getConfigDir(appName)
+        actual fun getConfigDir(appName: String?): String = provider.getConfigDir(appName).path
 
         /**
-         * Get data files directory. Recommended appName: 'com.company.myapp'
+         * Get data files directory. Recommended appName: 'MyApp'
          *
          * Linux follows XDG_DATA_HOME. Windows follows LOCALAPPDATA.
          *
@@ -53,10 +53,10 @@ class AppDirs {
          * * macOS: /Users/My/Library/Application Support
          * * Linux: /home/My/.local/share
          */
-        fun getDataDir(appName: String?): File = provider.getDataDir(appName)
+        actual fun getDataDir(appName: String?): String = provider.getDataDir(appName).path
 
         /**
-         * Get cache files directory. Recommended appName: 'com.company.myapp'
+         * Get cache files directory. Recommended appName: 'MyApp'
          *
          * Linux follows XDG_CACHE_HOME. Windows follows LOCALAPPDATA.
          *
@@ -70,44 +70,10 @@ class AppDirs {
          * * macOS: /Users/My/Library/Caches
          * * Linux: /home/My/.cache
          */
-        fun getCacheDir(appName: String?): File = provider.getCacheDir(appName)
+        actual fun getCacheDir(appName: String?): String = provider.getCacheDir(appName).path
 
         /**
-         * Get state files directory. Recommended appName: 'com.company.myapp'
-         *
-         * Linux follows XDG_STATE_HOME. Windows follows LOCALAPPDATA.
-         *
-         * appName is not null example:
-         * * Windows: C:\Users\My\AppData\Local\${appName}\State
-         * * macOS: /Users/My/Library/Application Support/${appName}/State
-         * * Linux: /home/My/.local/state/${appName}
-         *
-         * appName is null example:
-         * * Windows: C:\Users\My\AppData\Local\State
-         * * macOS: /Users/My/Library/Application Support/State
-         * * Linux: /home/My/.local/state
-         */
-        fun getStateDir(appName: String?): File = provider.getStateDir(appName)
-
-        /**
-         * Get runtime files directory. Recommended appName: 'com.company.myapp'
-         *
-         * Linux follows XDG_RUNTIME_DIR. Windows follows LOCALAPPDATA.
-         *
-         * appName is not null example:
-         * * Windows: C:\Users\My\AppData\Local\${appName}\Runtime
-         * * macOS: /Users/My/Library/Application Support/${appName}/Runtime
-         * * Linux: /run/user/1000/${appName}
-         *
-         * appName is null example:
-         * * Windows: C:\Users\My\AppData\Local\Runtime
-         * * macOS: /Users/My/Library/Application Support/Runtime
-         * * Linux: /run/user/1000
-         */
-        fun getRuntimeDir(appName: String?): File? = provider.getRuntimeDir(appName)
-
-        /**
-         * Get desktop files directory. Recommended appName: 'com.company.myapp'
+         * Get desktop files directory. Recommended appName: 'MyApp'
          *
          * Linux follows XDG_DESKTOP_DIR. Windows follows registry 'Desktop' property.
          *
@@ -121,10 +87,10 @@ class AppDirs {
          * * macOS: /Users/My/Desktop
          * * Linux: /home/My/Desktop
          */
-        fun getDesktopDir(appName: String?): File = provider.getDesktopDir(appName)
+        actual fun getDesktopDir(appName: String?): String = provider.getDesktopDir(appName).path
 
         /**
-         * Get document files directory. Recommended appName: 'com.company.myapp'
+         * Get document files directory. Recommended appName: 'MyApp'
          *
          * Linux follows XDG_DOCUMENTS_DIR. Windows follows registry 'Personal' property.
          *
@@ -138,10 +104,11 @@ class AppDirs {
          * * macOS: /Users/My/Documents
          * * Linux: /home/My/Documents
          */
-        fun getDocumentsDir(appName: String?): File = provider.getDocumentsDir(appName)
+        actual fun getDocumentsDir(appName: String?): String =
+            provider.getDocumentsDir(appName).path
 
         /**
-         * Get download files directory. Recommended appName: 'com.company.myapp'
+         * Get download files directory. Recommended appName: 'MyApp'
          *
          * Linux follows XDG_DOWNLOAD_DIR. Windows follows registry '{374DE290-123F-4565-9164-39C4925E467B}' property.
          *
@@ -155,10 +122,11 @@ class AppDirs {
          * * macOS: /Users/My/Downloads
          * * Linux: /home/My/Downloads
          */
-        fun getDownloadsDir(appName: String?): File = provider.getDownloadsDir(appName)
+        actual fun getDownloadsDir(appName: String?): String =
+            provider.getDownloadsDir(appName).path
 
         /**
-         * Get picture files directory. Recommended appName: 'com.company.myapp'
+         * Get picture files directory. Recommended appName: 'MyApp'
          *
          * Linux follows XDG_PICTURES_DIR. Windows follows registry 'My Pictures' property.
          *
@@ -172,10 +140,10 @@ class AppDirs {
          * * macOS: /Users/My/Pictures
          * * Linux: /home/My/Pictures
          */
-        fun getPicturesDir(appName: String?): File = provider.getPicturesDir(appName)
+        actual fun getPicturesDir(appName: String?): String = provider.getPicturesDir(appName).path
 
         /**
-         * Get music files directory. Recommended appName: 'com.company.myapp'
+         * Get music files directory. Recommended appName: 'MyApp'
          *
          * Linux follows XDG_MUSIC_DIR. Windows follows registry 'My Music' property.
          *
@@ -189,32 +157,30 @@ class AppDirs {
          * * macOS: /Users/My/Music
          * * Linux: /home/My/Music
          */
-        fun getMusicDir(appName: String?): File = provider.getMusicDir(appName)
+        actual fun getMusicDir(appName: String?): String = provider.getMusicDir(appName).path
 
         /**
-         * Get video files directory. Recommended appName: 'com.company.myapp'
+         * Get video files directory. Recommended appName: 'MyApp'
          *
          * Linux follows XDG_VIDEOS_DIR. Windows follows registry 'My Video' property.
          *
          * appName is not null example:
          * * Windows: C:\Users\My\Videos\${appName}
-         * * macOS: /Users/My/Videos/${appName}
+         * * macOS: /Users/My/Movies/${appName}
          * * Linux: /home/My/Videos/${appName}
          *
          * appName is null example:
          * * Windows: C:\Users\My\Videos
-         * * macOS: /Users/My/Videos
+         * * macOS: /Users/My/Movies
          * * Linux: /home/My/Videos
          */
-        fun getVideosDir(appName: String?): File = provider.getVideosDir(appName)
+        actual fun getVideosDir(appName: String?): String = provider.getVideosDir(appName).path
     }
 
     private interface Provider {
         fun getConfigDir(appName: String?): File
         fun getDataDir(appName: String?): File
         fun getCacheDir(appName: String?): File
-        fun getStateDir(appName: String?): File
-        fun getRuntimeDir(appName: String?): File?
         fun getDesktopDir(appName: String?): File
         fun getDocumentsDir(appName: String?): File
         fun getDownloadsDir(appName: String?): File
@@ -271,22 +237,6 @@ class AppDirs {
                 windowsLocalAppDataDir.resolve("Cache")
             } else {
                 windowsLocalAppDataDir.resolve("$appName${File.separator}Cache")
-            }
-        }
-
-        override fun getStateDir(appName: String?): File {
-            return if (appName == null) {
-                windowsLocalAppDataDir.resolve("State")
-            } else {
-                windowsLocalAppDataDir.resolve("$appName${File.separator}State")
-            }
-        }
-
-        override fun getRuntimeDir(appName: String?): File? {
-            return if (appName == null) {
-                windowsLocalAppDataDir.resolve("Runtime")
-            } else {
-                windowsLocalAppDataDir.resolve("$appName${File.separator}Runtime")
             }
         }
 
@@ -471,22 +421,6 @@ class AppDirs {
             }
         }
 
-        override fun getStateDir(appName: String?): File {
-            return if (appName == null) {
-                userHome.resolve("Library/Application Support/State")
-            } else {
-                userHome.resolve("Library/Application Support/$appName/State")
-            }
-        }
-
-        override fun getRuntimeDir(appName: String?): File? {
-            return if (appName == null) {
-                userHome.resolve("Library/Application Support/Runtime")
-            } else {
-                userHome.resolve("Library/Application Support/$appName/Runtime")
-            }
-        }
-
         override fun getDesktopDir(appName: String?): File {
             val desktopDir = userHome.resolve("Desktop")
             return if (appName == null) {
@@ -533,7 +467,7 @@ class AppDirs {
         }
 
         override fun getVideosDir(appName: String?): File {
-            val videosDir = userHome.resolve("Videos")
+            val videosDir = userHome.resolve("Movies")
             return if (appName == null) {
                 videosDir
             } else {
@@ -591,29 +525,6 @@ class AppDirs {
                 linuxUserCacheHome
             } else {
                 linuxUserCacheHome.resolve(appName)
-            }
-        }
-
-        override fun getStateDir(appName: String?): File {
-            val linuxUserStateHome: File = linuxUserDirectory(
-                environmentVariable = "XDG_STATE_HOME",
-                defaultDirectory = { userHome.resolve(".local/state") }
-            )
-            return if (appName == null) {
-                linuxUserStateHome
-            } else {
-                linuxUserStateHome.resolve(appName)
-            }
-        }
-
-        override fun getRuntimeDir(appName: String?): File? {
-            val linuxUserRuntimeDir: File? = System.getenv("XDG_RUNTIME_DIR")
-                ?.takeIf { it.isNotBlank() }
-                ?.let(::File)
-            return if (appName == null) {
-                linuxUserRuntimeDir
-            } else {
-                linuxUserRuntimeDir?.resolve(appName)
             }
         }
 
