@@ -7,7 +7,7 @@ import kotlin.test.assertEquals
 
 class AppDirsMacosTest {
 
-    private val appName = "SketchSample"
+    private val appName = "Sketch Sample"
     private val useName = NSUserName()
 
     @Test

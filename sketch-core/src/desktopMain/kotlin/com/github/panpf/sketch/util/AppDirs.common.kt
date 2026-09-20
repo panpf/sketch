@@ -1,5 +1,11 @@
 package com.github.panpf.sketch.util
 
+/**
+ * Platform-specific application directories for JVM or macOS desktop applications.
+ *
+ * @see com.github.panpf.sketch.core.jvm.test.util.AppDirsJvmTest
+ * @see com.github.panpf.sketch.core.macos.test.util.AppDirsMacosTest
+ */
 expect class AppDirs private constructor() {
 
     companion object {

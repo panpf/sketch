@@ -10,7 +10,7 @@ import kotlin.test.assertEquals
 
 class AppDirsJvmTest {
 
-    private val appName = "SketchSample"
+    private val appName = "Sketch Sample"
     private val useName = System.getProperty("user.name")!!
 
     @Test
