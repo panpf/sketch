@@ -44,6 +44,8 @@ private val hierarchyTemplate = KotlinHierarchyTemplate {
         groupNonIos()
         groupPhone()
         groupNonPhone()
+        groupDesktop()
+        groupNonDesktop()
     }
 }
 
@@ -131,6 +133,23 @@ private fun KotlinHierarchyBuilder.groupNonPhone() {
     group("nonPhone") {
         groupMacos()
         withJvm()
+        withJs()
+        withWasmJs()
+        groupJsCommon()
+    }
+}
+
+private fun KotlinHierarchyBuilder.groupDesktop() {
+    group("desktop") {
+        groupMacos()
+        withJvm()
+    }
+}
+
+private fun KotlinHierarchyBuilder.groupNonDesktop() {
+    group("nonDesktop") {
+        withAndroid()
+        groupIos()
         withJs()
         withWasmJs()
         groupJsCommon()
