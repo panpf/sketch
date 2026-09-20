@@ -284,9 +284,9 @@ Please review the [CHANGELOG.md] file
 ## Test Platform
 
 * Android: Emulator; Arm64; API 21-34
-* JVM: macOS; 14.6.1; JDK 17
+* JVM: macOS 26; JDK 17
 * iOS: iPhone 16 Simulator; iOS 18.1
-* macOS Native: Mac mini M4; macOS 27
+* macOS Native: Mac mini M4; macOS 26
 * Web: Chrome; 130
 
 ## Run Sample App
