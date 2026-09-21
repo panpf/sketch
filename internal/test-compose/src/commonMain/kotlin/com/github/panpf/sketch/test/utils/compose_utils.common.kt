@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.github.panpf.sketch.Bitmap
 import com.github.panpf.sketch.request.GlobalLifecycle
+import com.github.panpf.sketch.request.LoadState
 
 @Composable
 fun Dp.dp2Px(): Float {
@@ -33,3 +34,6 @@ fun LifecycleContainer(content: @Composable () -> Unit) =
 expect fun Bitmap.toComposeBitmap(): ImageBitmap
 
 fun ComposeSize(width: Float, height: Float) = androidx.compose.ui.geometry.Size(width, height)
+
+fun LoadState.isFinished(): Boolean =
+    this is LoadState.Success || this is LoadState.Error || this is LoadState.Canceled

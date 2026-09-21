@@ -53,6 +53,7 @@ import com.github.panpf.sketch.test.utils.TestTarget
 import com.github.panpf.sketch.test.utils.asOrThrow
 import com.github.panpf.sketch.test.utils.block
 import com.github.panpf.sketch.test.utils.getTestContext
+import com.github.panpf.sketch.test.utils.isFinished
 import com.github.panpf.sketch.test.utils.runInNewSketchWithUse
 import com.github.panpf.sketch.test.utils.similarity
 import com.github.panpf.sketch.test.utils.toPreviewBitmap
@@ -579,7 +580,7 @@ class AsyncImageStateTest {
                 asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
             }
             waitUntil(timeoutMillis = 2_000) {
-                loadState is LoadState.Success || loadState is LoadState.Error || loadState is LoadState.Canceled
+                loadState?.isFinished() == true
             }
             asyncImageState.painter!!.apply {
                 assertTrue(actual = this is ImageBitmapPainter, message = "painter=$this")
@@ -609,7 +610,7 @@ class AsyncImageStateTest {
             loadState = null
             asyncImageState.request = request1
             waitUntil(timeoutMillis = 2_000) {
-                loadState is LoadState.Success || loadState is LoadState.Error || loadState is LoadState.Canceled
+                loadState?.isFinished() == true
             }
             asyncImageState.painter!!.apply {
                 assertTrue(actual = this is ImageBitmapPainter, message = "painter=$this")
@@ -627,7 +628,7 @@ class AsyncImageStateTest {
             loadState = null
             asyncImageState.request = request2
             waitUntil(timeoutMillis = 2_000) {
-                loadState is LoadState.Success || loadState is LoadState.Error || loadState is LoadState.Canceled
+                loadState?.isFinished() == true
             }
             asyncImageState.painter!!.apply {
                 assertTrue(actual = this is ImageBitmapPainter, message = "painter=$this")
@@ -645,7 +646,7 @@ class AsyncImageStateTest {
             loadState = null
             asyncImageState.contentScale = ContentScale.FillBounds
             waitUntil(timeoutMillis = 2_000) {
-                loadState is LoadState.Success || loadState is LoadState.Error || loadState is LoadState.Canceled
+                loadState?.isFinished() == true
             }
             asyncImageState.painter!!.apply {
                 assertTrue(actual = this is ImageBitmapPainter, message = "painter=$this")
@@ -663,7 +664,7 @@ class AsyncImageStateTest {
             loadState = null
             asyncImageState.filterQuality = FilterQuality.High
             waitUntil(timeoutMillis = 2_000) {
-                loadState is LoadState.Success || loadState is LoadState.Error || loadState is LoadState.Canceled
+                loadState?.isFinished() == true
             }
             asyncImageState.painter!!.apply {
                 assertTrue(actual = this is ImageBitmapPainter, message = "painter=$this")
@@ -783,10 +784,6 @@ class AsyncImageStateTest {
                         size(Size.Origin)
                     }
                 )
-                var loadState: LoadState?
-                asyncImageState.onLoadState = {
-                    loadState = it
-                }
 
                 val request = ImageRequest(context, TestHttpStack.testImages.first().uri) {
                     placeholder(Color.Gray)
@@ -798,7 +795,6 @@ class AsyncImageStateTest {
                 val loadStateHistory = mutableListOf<LoadState?>()
                 val progressHistory = mutableListOf<Progress?>()
 
-                loadState = null
                 setContent {
                     LaunchedEffect(Unit) {
                         snapshotFlow { asyncImageState.painter }.collect {
@@ -833,7 +829,7 @@ class AsyncImageStateTest {
                     asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
                 }
                 waitUntil(timeoutMillis = 2_000) {
-                    loadState is LoadState.Success || loadState is LoadState.Error || loadState is LoadState.Canceled
+                    loadStateHistory.size == 3 && loadStateHistory.last()!!.isFinished()
                 }
 
                 assertTrue(
@@ -929,10 +925,6 @@ class AsyncImageStateTest {
                         size(Size.Origin)
                     }
                 )
-                var loadState: LoadState?
-                asyncImageState.onLoadState = {
-                    loadState = it
-                }
 
                 val request = ImageRequest(context, TestHttpStack.errorImage.uri) {
                     placeholder(Color.Gray)
@@ -943,7 +935,6 @@ class AsyncImageStateTest {
                 val resultHistory = mutableListOf<ImageResult?>()
                 val loadStateHistory = mutableListOf<LoadState?>()
                 val progressHistory = mutableListOf<Progress?>()
-                loadState = null
                 setContent {
                     LaunchedEffect(Unit) {
                         snapshotFlow { asyncImageState.painter }.collect {
@@ -978,7 +969,7 @@ class AsyncImageStateTest {
                     asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
                 }
                 waitUntil(timeoutMillis = 2_000) {
-                    loadState is LoadState.Success || loadState is LoadState.Error || loadState is LoadState.Canceled
+                    loadStateHistory.size == 3 && loadStateHistory.last()!!.isFinished()
                 }
 
                 assertTrue(
