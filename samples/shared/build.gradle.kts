@@ -85,7 +85,7 @@ kotlin {
             api(libs.androidx.constraintlayout.compose)
             api(libs.androidx.lifecycle.viewmodel.compose)
             api(libs.androidx.lifecycle.runtime)
-            api(libs.androidx.navigation.compose)
+            api(libs.androidx.navigation.compose)   // TODO Consider removing it
             api(libs.androidx.navigation.ui)
             api(libs.koin.android)
             api(libs.kotlinx.serialization.json)
