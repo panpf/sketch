@@ -37,7 +37,7 @@ kotlin {
             api(libs.panpf.tools4a.test)
         }
         jvmMain.dependencies {
-            api(skikoAwtRuntimeDependency(libs.versions.skiko.get()))
+            api(skikoAwtRuntimeDependency(libs.versions.jetbrains.skiko.get()))
         }
     }
 }

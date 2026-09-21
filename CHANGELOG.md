@@ -9,6 +9,16 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
+# new
+
+## Dependencies
+
+* depend: Upgrade to androidx compose 1.12.0
+* depend: Upgrade to androidx lifecycle 2.11.0
+* depend: Upgrade to jetbrains compose 1.12.0
+* depend: Upgrade to jetbrains lifecycle 2.11.0
+* depend: Upgrade to jetbrains skiko 0.150.1
+
 # 4.7.0-alpha02
 
 * improve: The default cache directory for JVM and macOS platforms is now more stable and will not

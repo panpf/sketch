@@ -2,14 +2,14 @@
 android-plugin = "9.2.1"
 androidx-activity = "1.13.0"
 androidx-appcompat = "1.7.1"
-androidx-compose = "1.11.2" # sync with jetbrains-compose
+androidx-compose = "1.12.0" # sync with jetbrains-compose
 androidx-constraintlayout = "2.2.1"
 androidx-constraintlayout-compose = "1.1.1"
 androidx-core = "1.18.0"
 androidx-core-splashscreen = "1.2.0"
 androidx-exifinterface = "1.4.2"
 androidx-fragment = "1.8.9"
-androidx-lifecycle = "2.11.0-beta01" # sync with jetbrains-lifecycle
+androidx-lifecycle = "2.11.0" # sync with jetbrains-lifecycle
 androidx-navigation = "2.9.8"
 androidx-paging = "3.5.0"
 androidx-recyclerview = "1.4.0"
@@ -32,12 +32,13 @@ google-flexbox = "3.0.0"
 google-material = "1.14.0"
 gradle-maven-publish-plugin = "0.37.0"
 
-jetbrains-compose = "1.11.1"
-jetbrains-lifecycle = "2.11.0-beta01"
+jetbrains-compose = "1.12.0"
+jetbrains-lifecycle = "2.11.0" # sync with androidx-compose
 jetbrains-compose-material-icons-core = "1.7.3"
-jetbrains-compose-material3 = "1.9.0"
-jetbrains-compose-material3-adaptiveNavigation3 = "1.3.0-beta02"
-jetbrains-navigation3 = "1.1.1"
+jetbrains-compose-material3 = "1.12.0-alpha03" # sync with jetbrains-compose
+jetbrains-compose-material3-adaptive = "1.3.0-beta02" # sync with jetbrains-compose
+jetbrains-navigation3 = "1.2.0-alpha02" # sync with jetbrains-compose
+jetbrains-skiko = "0.150.1"    # sync with jetbrains-compose. 'decodes.nonAndroid#supportDecodeRegion()' must be modified
 
 koin = "4.2.2"
 
@@ -67,8 +68,6 @@ panpf-tools4k = "1.0.1"
 panpf-zoomimage = "1.7.0-alpha01"
 
 penfeizhou-animation = "3.0.5"
-
-skiko = "0.144.6"    # sync with jetbrains-compose. 'decodes.nonAndroid#supportDecodeRegion()' must be modified
 
 [libraries]
 gradlePlugin-android = { module = "com.android.tools.build:gradle", version.ref = "android-plugin" }
@@ -125,12 +124,13 @@ jetbrains-compose-ui-tooling-preview = { module = "org.jetbrains.compose.ui:ui-t
 jetbrains-compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "jetbrains-compose" }
 jetbrains-compose-material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "jetbrains-compose-material-icons-core" }
 jetbrains-compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "jetbrains-compose-material3" }
-jetbrains-compose-material3-adaptiveNavigation3 = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation3", version.ref = "jetbrains-compose-material3-adaptiveNavigation3" }
+jetbrains-compose-material3-adaptiveNavigation3 = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation3", version.ref = "jetbrains-compose-material3-adaptive" }
 jetbrains-lifecycle-common = { module = "org.jetbrains.androidx.lifecycle:lifecycle-common", version.ref = "jetbrains-lifecycle" }
 jetbrains-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "jetbrains-lifecycle" }
 jetbrains-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "jetbrains-lifecycle" }
 jetbrains-lifecycle-viewmodelNavigation3 = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "jetbrains-lifecycle" }
 jetbrains-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "jetbrains-navigation3" }
+jetbrains-skiko = { module = "org.jetbrains.skiko:skiko", version.ref = "jetbrains-skiko" }
 
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
@@ -209,8 +209,6 @@ panpf-zoomimage-view = { module = "io.github.panpf.zoomimage:zoomimage-view", ve
 panpf-zoomimage-compose = { module = "io.github.panpf.zoomimage:zoomimage-compose", version.ref = "panpf-zoomimage" }
 
 penfeizhou-animation-awebp = { module = "com.github.penfeizhou.android.animation:awebp", version.ref = "penfeizhou-animation" }
-
-skiko = { module = "org.jetbrains.skiko:skiko", version.ref = "skiko" }
 
 [plugins]
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }

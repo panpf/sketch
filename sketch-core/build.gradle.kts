@@ -27,7 +27,7 @@ kotlin {
             api(libs.kotlinx.coroutines.swing)
         }
         nonAndroidMain.dependencies {
-            api(libs.skiko)
+            api(libs.jetbrains.skiko)
         }
 
         commonTest.dependencies {
@@ -62,7 +62,7 @@ buildkonfig {
         buildConfigField(
             type = com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING,
             name = "SKIKO_VERSION_NAME",
-            value = libs.versions.skiko.get(),
+            value = libs.versions.jetbrains.skiko.get(),
             const = true
         )
     }
