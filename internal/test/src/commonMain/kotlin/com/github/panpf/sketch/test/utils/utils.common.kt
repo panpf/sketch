@@ -117,6 +117,8 @@ inline fun <reified R> Any?.asOrNull(): R? {
  *
  * Note: Because block will really block the current thread, so please do not use it in the UI thread.
  */
+// TODO You can no longer use `block`, as it might block the UI thread.
+//  You need to find another flag, such as `loadState`. See `AsyncImageStateTest.testLoad()` for reference.
 fun block(millis: Long) {
     if (millis > 0) {
         val startTime = TimeSource.Monotonic.markNow()
