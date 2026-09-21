@@ -493,6 +493,10 @@ class AsyncImageStateTest {
             lifecycle = GlobalLifecycle,
             imageOptions = ImageOptions()
         )
+        var loadState: LoadState?
+        asyncImageState.onLoadState = {
+            loadState = it
+        }
 
         val request = ImageRequest(context, ComposeResImageFiles.jpeg.uri) {
             size(Size.Origin)
@@ -504,6 +508,7 @@ class AsyncImageStateTest {
         assertNotEquals(illegal = request, actual = request2)
 
         runComposeUiTest {
+            loadState = null
             setContent {
                 remember { asyncImageState }
                 asyncImageState.sketch = sketch
@@ -512,9 +517,9 @@ class AsyncImageStateTest {
                 asyncImageState.alignment = Alignment.Center
                 asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
             }
-            waitForIdle()
-            block(100)
-
+            waitUntil(timeoutMillis = 2_000) {
+                loadState is LoadState.Started
+            }
             assertEquals(expected = null, actual = asyncImageState.painter)
             assertEquals(
                 expected = PainterState.Loading(null),
@@ -522,8 +527,11 @@ class AsyncImageStateTest {
             )
             assertEquals(expected = LoadState.Started(request), actual = asyncImageState.loadState)
 
+            loadState = null
             asyncImageState.request = request2
-            block(100)
+            waitUntil(timeoutMillis = 2_000) {
+                loadState is LoadState.Started
+            }
             assertEquals(expected = ColorPainter(Color.Red), actual = asyncImageState.painter)
             assertEquals(
                 expected = PainterState.Loading(ColorPainter(Color.Red)),
@@ -547,6 +555,11 @@ class AsyncImageStateTest {
                 size(resourceImage.size / 2f)
             }
         )
+        var loadState: LoadState?
+        asyncImageState.onLoadState = {
+            loadState = it
+        }
+
         val request0 = ImageRequest(context, resourceImage.uri)
         val request1 = ImageRequest(context, resourceImage.uri) {
             size(Size.Origin)
@@ -556,6 +569,7 @@ class AsyncImageStateTest {
             placeholder(Color.Red)
         }
         runComposeUiTest {
+            loadState = null
             setContent {
                 remember { asyncImageState }
                 asyncImageState.sketch = sketch
@@ -564,9 +578,9 @@ class AsyncImageStateTest {
                 asyncImageState.alignment = Alignment.Center
                 asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
             }
-            waitForIdle()
-            block(2000)
-
+            waitUntil(timeoutMillis = 2_000) {
+                loadState is LoadState.Success || loadState is LoadState.Error || loadState is LoadState.Canceled
+            }
             asyncImageState.painter!!.apply {
                 assertTrue(actual = this is ImageBitmapPainter, message = "painter=$this")
                 assertEquals(expected = (resourceImage.size / 2f).toSize(), actual = intrinsicSize)
@@ -592,8 +606,11 @@ class AsyncImageStateTest {
             val bitmap0 =
                 asyncImageState.result!!.asOrThrow<ImageResult.Success>().image.asOrThrow<BitmapImage>().bitmap
 
+            loadState = null
             asyncImageState.request = request1
-            block(2000)
+            waitUntil(timeoutMillis = 2_000) {
+                loadState is LoadState.Success || loadState is LoadState.Error || loadState is LoadState.Canceled
+            }
             asyncImageState.painter!!.apply {
                 assertTrue(actual = this is ImageBitmapPainter, message = "painter=$this")
                 assertEquals(expected = resourceImage.size.toSize(), actual = intrinsicSize)
@@ -607,8 +624,11 @@ class AsyncImageStateTest {
             val bitmap1 =
                 asyncImageState.result!!.asOrThrow<ImageResult.Success>().image.asOrThrow<BitmapImage>().bitmap
 
+            loadState = null
             asyncImageState.request = request2
-            block(2000)
+            waitUntil(timeoutMillis = 2_000) {
+                loadState is LoadState.Success || loadState is LoadState.Error || loadState is LoadState.Canceled
+            }
             asyncImageState.painter!!.apply {
                 assertTrue(actual = this is ImageBitmapPainter, message = "painter=$this")
                 assertEquals(expected = ComposeSize(300f, 300f), actual = intrinsicSize)
@@ -622,8 +642,11 @@ class AsyncImageStateTest {
             val bitmap2 =
                 asyncImageState.result!!.asOrThrow<ImageResult.Success>().image.asOrThrow<BitmapImage>().bitmap
 
+            loadState = null
             asyncImageState.contentScale = ContentScale.FillBounds
-            block(2000)
+            waitUntil(timeoutMillis = 2_000) {
+                loadState is LoadState.Success || loadState is LoadState.Error || loadState is LoadState.Canceled
+            }
             asyncImageState.painter!!.apply {
                 assertTrue(actual = this is ImageBitmapPainter, message = "painter=$this")
                 assertEquals(expected = ComposeSize(300f, 300f), actual = intrinsicSize)
@@ -637,8 +660,11 @@ class AsyncImageStateTest {
             val bitmap3 =
                 asyncImageState.result!!.asOrThrow<ImageResult.Success>().image.asOrThrow<BitmapImage>().bitmap
 
+            loadState = null
             asyncImageState.filterQuality = FilterQuality.High
-            block(2000)
+            waitUntil(timeoutMillis = 2_000) {
+                loadState is LoadState.Success || loadState is LoadState.Error || loadState is LoadState.Canceled
+            }
             asyncImageState.painter!!.apply {
                 assertTrue(actual = this is ImageBitmapPainter, message = "painter=$this")
                 assertEquals(expected = ComposeSize(300f, 300f), actual = intrinsicSize)
@@ -757,6 +783,11 @@ class AsyncImageStateTest {
                         size(Size.Origin)
                     }
                 )
+                var loadState: LoadState?
+                asyncImageState.onLoadState = {
+                    loadState = it
+                }
+
                 val request = ImageRequest(context, TestHttpStack.testImages.first().uri) {
                     placeholder(Color.Gray)
                     error(Color.Red)
@@ -767,6 +798,7 @@ class AsyncImageStateTest {
                 val loadStateHistory = mutableListOf<LoadState?>()
                 val progressHistory = mutableListOf<Progress?>()
 
+                loadState = null
                 setContent {
                     LaunchedEffect(Unit) {
                         snapshotFlow { asyncImageState.painter }.collect {
@@ -800,8 +832,9 @@ class AsyncImageStateTest {
                     asyncImageState.alignment = Alignment.Center
                     asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
                 }
-                waitForIdle()
-                block(4000)
+                waitUntil(timeoutMillis = 2_000) {
+                    loadState is LoadState.Success || loadState is LoadState.Error || loadState is LoadState.Canceled
+                }
 
                 assertTrue(
                     actual = asyncImageState.loadState is LoadState.Success,
@@ -896,6 +929,11 @@ class AsyncImageStateTest {
                         size(Size.Origin)
                     }
                 )
+                var loadState: LoadState?
+                asyncImageState.onLoadState = {
+                    loadState = it
+                }
+
                 val request = ImageRequest(context, TestHttpStack.errorImage.uri) {
                     placeholder(Color.Gray)
                     error(Color.Red)
@@ -905,6 +943,7 @@ class AsyncImageStateTest {
                 val resultHistory = mutableListOf<ImageResult?>()
                 val loadStateHistory = mutableListOf<LoadState?>()
                 val progressHistory = mutableListOf<Progress?>()
+                loadState = null
                 setContent {
                     LaunchedEffect(Unit) {
                         snapshotFlow { asyncImageState.painter }.collect {
@@ -938,8 +977,9 @@ class AsyncImageStateTest {
                     asyncImageState.alignment = Alignment.Center
                     asyncImageState.filterQuality = DrawScope.DefaultFilterQuality
                 }
-                waitForIdle()
-                block(2000)
+                waitUntil(timeoutMillis = 2_000) {
+                    loadState is LoadState.Success || loadState is LoadState.Error || loadState is LoadState.Canceled
+                }
 
                 assertTrue(
                     actual = asyncImageState.loadState is LoadState.Error,
@@ -1003,8 +1043,9 @@ class AsyncImageStateTest {
                     actual = loadStateHistory[2]?.asOrThrow<LoadState.Error>()?.result?.asOrThrow<ImageResult.Error>()?.image,
                 )
 
-                assertTrue(
-                    actual = progressHistory.size == 1,
+                assertEquals(
+                    expected = progressHistory.size,
+                    actual = 1,
                     message = "progressHistory=${progressHistory}"
                 )
                 assertEquals(
