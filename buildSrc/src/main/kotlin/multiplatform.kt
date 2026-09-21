@@ -222,29 +222,68 @@ val NamedDomainObjectContainer<KotlinSourceSet>.androidInstrumentedTest: NamedDo
 val NamedDomainObjectContainer<KotlinSourceSet>.androidDeviceTest: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("androidDeviceTest")
 
-val NamedDomainObjectContainer<KotlinSourceSet>.jvmMain: NamedDomainObjectProvider<KotlinSourceSet>
-    get() = named("jvmMain")
-
-val NamedDomainObjectContainer<KotlinSourceSet>.jvmTest: NamedDomainObjectProvider<KotlinSourceSet>
-    get() = named("jvmTest")
-
 val NamedDomainObjectContainer<KotlinSourceSet>.nonAndroidMain: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("nonAndroidMain")
 
 val NamedDomainObjectContainer<KotlinSourceSet>.nonAndroidTest: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("nonAndroidTest")
 
-val NamedDomainObjectContainer<KotlinSourceSet>.appleMain: NamedDomainObjectProvider<KotlinSourceSet>
-    get() = named("appleMain")
+val NamedDomainObjectContainer<KotlinSourceSet>.nonIosMain: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonIosMain")
 
-val NamedDomainObjectContainer<KotlinSourceSet>.appleTest: NamedDomainObjectProvider<KotlinSourceSet>
-    get() = named("appleTest")
+val NamedDomainObjectContainer<KotlinSourceSet>.nonIosTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonIosTest")
 
-val NamedDomainObjectContainer<KotlinSourceSet>.macosMain: NamedDomainObjectProvider<KotlinSourceSet>
-    get() = named("macosMain")
 
-val NamedDomainObjectContainer<KotlinSourceSet>.macosTest: NamedDomainObjectProvider<KotlinSourceSet>
-    get() = named("macosTest")
+val NamedDomainObjectContainer<KotlinSourceSet>.nonJvmMain: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonJvmMain")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.nonJvmTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonJvmTest")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.nonMacosMain: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonMacosMain")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.nonMacosTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonMacosTest")
+
+
+val NamedDomainObjectContainer<KotlinSourceSet>.nonJsMain: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonJsMain")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.noJsTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonJsTest")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.nonWasmJsMain: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonWasmJsMain")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.nonWasmJsTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonWasmJsTest")
+
+
+val NamedDomainObjectContainer<KotlinSourceSet>.phoneMain: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("phoneMain")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.phoneTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("phoneTest")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.nonPhoneMain: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonPhoneMain")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.nonPhoneTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonPhoneTest")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.desktopMain: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("desktopMain")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.desktopTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("desktopTest")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.nonDesktopMain: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonDesktopMain")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.nonDesktopTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonDesktopTest")
 
 val NamedDomainObjectContainer<KotlinSourceSet>.jvmCommonMain: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("jvmCommonMain")
@@ -258,29 +297,26 @@ val NamedDomainObjectContainer<KotlinSourceSet>.nonJvmCommonMain: NamedDomainObj
 val NamedDomainObjectContainer<KotlinSourceSet>.nonJvmCommonTest: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("nonJvmCommonTest")
 
+val NamedDomainObjectContainer<KotlinSourceSet>.appleMain: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("appleMain")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.appleTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("appleTest")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.nonAppleMain: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonAppleMain")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.nonAppleTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonAppleTest")
+
 val NamedDomainObjectContainer<KotlinSourceSet>.jsCommonMain: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("jsCommonMain")
+
+val NamedDomainObjectContainer<KotlinSourceSet>.jsCommonTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("jsCommonTest")
 
 val NamedDomainObjectContainer<KotlinSourceSet>.nonJsCommonMain: NamedDomainObjectProvider<KotlinSourceSet>
     get() = named("nonJsCommonMain")
 
-val NamedDomainObjectContainer<KotlinSourceSet>.wasmJsMain: NamedDomainObjectProvider<KotlinSourceSet>
-    get() = named("wasmJsMain")
-
-val NamedDomainObjectContainer<KotlinSourceSet>.nonWasmJsMain: NamedDomainObjectProvider<KotlinSourceSet>
-    get() = named("nonWasmJsMain")
-
-val NamedDomainObjectContainer<KotlinSourceSet>.phoneMain: NamedDomainObjectProvider<KotlinSourceSet>
-    get() = named("phoneMain")
-
-val NamedDomainObjectContainer<KotlinSourceSet>.nonPhoneMain: NamedDomainObjectProvider<KotlinSourceSet>
-    get() = named("nonPhoneMain")
-
-val NamedDomainObjectContainer<KotlinSourceSet>.nonIosMain: NamedDomainObjectProvider<KotlinSourceSet>
-    get() = named("nonIosMain")
-
-val NamedDomainObjectContainer<KotlinSourceSet>.desktopMain: NamedDomainObjectProvider<KotlinSourceSet>
-    get() = named("desktopMain")
-
-val NamedDomainObjectContainer<KotlinSourceSet>.nonDesktopMain: NamedDomainObjectProvider<KotlinSourceSet>
-    get() = named("nonDesktopMain")
+val NamedDomainObjectContainer<KotlinSourceSet>.nonJsCommonTest: NamedDomainObjectProvider<KotlinSourceSet>
+    get() = named("nonJsCommonTest")

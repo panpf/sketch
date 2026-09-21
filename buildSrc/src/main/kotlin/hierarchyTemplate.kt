@@ -34,73 +34,42 @@ private val hierarchyTemplate = KotlinHierarchyTemplate {
         withCompilations { true }
 
         groupNonAndroid()
-        groupJsCommon()
-        groupNonJsCommon()
-        groupJvmCommon()
-        groupNonJvmCommon()
-        groupApple()
-        groupMacos()
         groupIos()
         groupNonIos()
+
+        groupNonJvm()
+        groupMacos()
+        groupNonMacos()
+
+        groupNonJs()
+        groupNonWasmJs()
+
         groupPhone()
         groupNonPhone()
         groupDesktop()
         groupNonDesktop()
+        groupJvmCommon()
+        groupNonJvmCommon()
+        groupApple()
+        groupNonApple()
+        groupJsCommon()
+        groupNonJsCommon()
     }
 }
 
 private fun KotlinHierarchyBuilder.groupNonAndroid() {
     group("nonAndroid") {
-        withJvm()
-        groupApple()
-        withJs()
-        withWasmJs()
-        groupJsCommon()
-    }
-}
-
-private fun KotlinHierarchyBuilder.groupJsCommon() {
-    group("jsCommon") {
-        withJs()
-        withWasmJs()
-    }
-}
-
-private fun KotlinHierarchyBuilder.groupNonJsCommon() {
-    group("nonJsCommon") {
-        withAndroid()
-        groupApple()
-        withJvm()
-        groupJvmCommon()
-    }
-}
-
-private fun KotlinHierarchyBuilder.groupJvmCommon() {
-    group("jvmCommon") {
-        withAndroid()
-        withJvm()
-    }
-}
-
-private fun KotlinHierarchyBuilder.groupNonJvmCommon() {
-    group("nonJvmCommon") {
-        groupApple()
-        withJs()
-        withWasmJs()
-        groupJsCommon()
-    }
-}
-
-private fun KotlinHierarchyBuilder.groupApple() {
-    group("apple") {
+//        withAndroid()
         groupIos()
+        withJvm()
         groupMacos()
-    }
-}
-
-private fun KotlinHierarchyBuilder.groupMacos() {
-    group("macos") {
-        withMacos()
+        withJs()
+        withWasmJs()
+//        groupPhone()
+        groupDesktop()
+//        groupJvmCommon()
+        groupApple()
+        groupJsCommon()
     }
 }
 
@@ -113,14 +82,91 @@ private fun KotlinHierarchyBuilder.groupIos() {
 private fun KotlinHierarchyBuilder.groupNonIos() {
     group("nonIos") {
         withAndroid()
-        groupMacos()
+//        groupIos()
         withJvm()
+        groupMacos()
         withJs()
         withWasmJs()
+//        groupPhone()
+        groupDesktop()
         groupJvmCommon()
+//        groupApple()
         groupJsCommon()
     }
 }
+
+
+private fun KotlinHierarchyBuilder.groupNonJvm() {
+    group("nonJvm") {
+        withAndroid()
+        groupIos()
+//        withJvm()
+        groupMacos()
+        withJs()
+        withWasmJs()
+        groupPhone()
+//        groupDesktop()
+//        groupJvmCommon()
+        groupApple()
+        groupJsCommon()
+    }
+}
+
+private fun KotlinHierarchyBuilder.groupMacos() {
+    group("macos") {
+        withMacos()
+    }
+}
+
+private fun KotlinHierarchyBuilder.groupNonMacos() {
+    group("nonMacos") {
+        withAndroid()
+        groupIos()
+        withJvm()
+//        groupMacos()
+        withJs()
+        withWasmJs()
+        groupPhone()
+//        groupDesktop()
+        groupJvmCommon()
+//        groupApple()
+        groupJsCommon()
+    }
+}
+
+
+private fun KotlinHierarchyBuilder.groupNonJs() {
+    group("nonJs") {
+        withAndroid()
+        groupIos()
+        withJvm()
+        groupMacos()
+//        withJs()
+        withWasmJs()
+        groupPhone()
+        groupDesktop()
+        groupJvmCommon()
+        groupApple()
+//        groupJsCommon()
+    }
+}
+
+private fun KotlinHierarchyBuilder.groupNonWasmJs() {
+    group("nonWasmJs") {
+        withAndroid()
+        groupIos()
+        withJvm()
+        groupMacos()
+        withJs()
+//        withWasmJs()
+        groupPhone()
+        groupDesktop()
+        groupJvmCommon()
+        groupApple()
+//        groupJsCommon()
+    }
+}
+
 
 private fun KotlinHierarchyBuilder.groupPhone() {
     group("phone") {
@@ -131,10 +177,16 @@ private fun KotlinHierarchyBuilder.groupPhone() {
 
 private fun KotlinHierarchyBuilder.groupNonPhone() {
     group("nonPhone") {
-        groupMacos()
+//        withAndroid()
+//        groupIos()
         withJvm()
+        groupMacos()
         withJs()
         withWasmJs()
+//        groupPhone()
+        groupDesktop()
+//        groupJvmCommon()
+//        groupApple()
         groupJsCommon()
     }
 }
@@ -150,11 +202,87 @@ private fun KotlinHierarchyBuilder.groupNonDesktop() {
     group("nonDesktop") {
         withAndroid()
         groupIos()
+//        withJvm()
+//        groupMacos()
         withJs()
         withWasmJs()
+        groupPhone()
+//        groupDesktop()
+//        groupJvmCommon()
+//        groupApple()
         groupJsCommon()
     }
 }
+
+private fun KotlinHierarchyBuilder.groupJvmCommon() {
+    group("jvmCommon") {
+        withAndroid()
+        withJvm()
+    }
+}
+
+private fun KotlinHierarchyBuilder.groupNonJvmCommon() {
+    group("nonJvmCommon") {
+//        withAndroid()
+        groupIos()
+//        withJvm()
+        groupMacos()
+        withJs()
+        withWasmJs()
+//        groupPhone()
+//        groupDesktop()
+//        groupJvmCommon()
+        groupApple()
+        groupJsCommon()
+    }
+}
+
+private fun KotlinHierarchyBuilder.groupApple() {
+    group("apple") {
+        groupIos()
+        groupMacos()
+    }
+}
+
+private fun KotlinHierarchyBuilder.groupNonApple() {
+    group("nonApple") {
+        withAndroid()
+//        groupIos()
+        withJvm()
+//        groupMacos()
+        withJs()
+        withWasmJs()
+//        groupPhone()
+//        groupDesktop()
+        groupJvmCommon()
+//        groupApple()
+        groupJsCommon()
+    }
+}
+
+private fun KotlinHierarchyBuilder.groupJsCommon() {
+    group("jsCommon") {
+        withJs()
+        withWasmJs()
+    }
+}
+
+private fun KotlinHierarchyBuilder.groupNonJsCommon() {
+    group("nonJsCommon") {
+        withAndroid()
+        groupIos()
+        withJvm()
+        groupMacos()
+//        withJs()
+//        withWasmJs()
+        groupPhone()
+        groupDesktop()
+        groupJvmCommon()
+        groupApple()
+//        groupJsCommon()
+    }
+}
+
 
 fun KotlinMultiplatformExtension.applyMyHierarchyTemplate() {
     applyHierarchyTemplate(hierarchyTemplate)
