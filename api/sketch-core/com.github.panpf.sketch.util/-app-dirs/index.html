@@ -42,7 +42,9 @@
         </div>
         <div class="navigation-controls">
         <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
-                <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true" data-filter=":sketch-core/desktopMain">desktop</button>
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":sketch-core/desktopMain">desktop</button>
+                <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true" data-filter=":sketch-core/jvmMain">jvm</button>
+                <button class="platform-tag platform-selector native-like" data-active="" aria-pressed="true" data-filter=":sketch-core/macosMain">macos</button>
             <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
                 <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
                 <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
@@ -51,11 +53,25 @@
                             <i class="ui-kit-icon ui-kit-icon_cross"></i>
                         </button>
                     </div>
-                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
                             <label class="checkbox">
                                 <input type="checkbox" class="checkbox--input" id=":sketch-core/desktopMain" data-filter=":sketch-core/desktopMain">
                                 <span class="checkbox--icon"></span>
                                 desktop
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":sketch-core/jvmMain" data-filter=":sketch-core/jvmMain">
+                                <span class="checkbox--icon"></span>
+                                jvm
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option native-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":sketch-core/macosMain" data-filter=":sketch-core/macosMain">
+                                <span class="checkbox--icon"></span>
+                                macos
                             </label>
                         </li>
                 </ul>
@@ -89,53 +105,32 @@
         </nav>
         <div id="resizer" class="resizer" data-item-type="BAR"></div>
         <div id="main" data-item-type="SECTION" role="main">
-<div class="main-content" data-page-type="classlike" id="content" pageids="sketch-core::com.github.panpf.sketch.util/AppDirs///PointingToDeclaration//-1147302649">
+<div class="main-content" data-page-type="classlike" id="content" pageids="sketch-core::com.github.panpf.sketch.util/AppDirs///PointingToDeclaration//332564253">
   <div class="breadcrumbs"><a href="../../index.html">sketch-core</a><span class="delimiter">/</span><a href="../index.html">com.github.panpf.sketch.util</a><span class="delimiter">/</span><span class="current">AppDirs</span></div>
   <div class="cover ">
     <h1 class="cover"><span>App</span><wbr><span><span>Dirs</span></span></h1>
     <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core/desktopMain" data-filterable-set=":sketch-core/desktopMain" data-active="" data-toggle=":sketch-core/desktopMain">desktop</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core/desktopMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">AppDirs</a></div><p class="paragraph">Platform-specific application directories for JVM desktop applications.</p><h4 class="tableheader">See also</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":sketch-core/desktopMain" data-filterable-set=":sketch-core/desktopMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span>com.</span><wbr><span>github.</span><wbr><span>panpf.</span><wbr><span>sketch.</span><wbr><span>core.</span><wbr><span>desktop.</span><wbr><span>test.</span><wbr><span>util.</span><wbr><span>App</span><wbr><span>Dirs</span><wbr><span><span>Test</span></span></div></span></div><div></div></div></div></div></div>    </div>
+      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core/desktopMain" data-filterable-set=":sketch-core/desktopMain" data-active="" data-toggle=":sketch-core/desktopMain">desktop</button><button class="platform-bookmark" data-filterable-current=":sketch-core/jvmMain" data-filterable-set=":sketch-core/jvmMain" data-toggle=":sketch-core/jvmMain">jvm</button><button class="platform-bookmark" data-filterable-current=":sketch-core/macosMain" data-filterable-set=":sketch-core/macosMain" data-toggle=":sketch-core/macosMain">macos</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core/desktopMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">class </span><a href="index.html">AppDirs</a></div><p class="paragraph">Platform-specific application directories for JVM or macOS desktop applications.</p><h4 class="tableheader">See also</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":sketch-core/desktopMain" data-filterable-set=":sketch-core/desktopMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span>com.</span><wbr><span>github.</span><wbr><span>panpf.</span><wbr><span>sketch.</span><wbr><span>core.</span><wbr><span>jvm.</span><wbr><span>test.</span><wbr><span>util.</span><wbr><span>App</span><wbr><span>Dirs</span><wbr><span>Jvm</span><wbr><span><span>Test</span></span></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":sketch-core/desktopMain" data-filterable-set=":sketch-core/desktopMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span>com.</span><wbr><span>github.</span><wbr><span>panpf.</span><wbr><span>sketch.</span><wbr><span>core.</span><wbr><span>macos.</span><wbr><span>test.</span><wbr><span>util.</span><wbr><span>App</span><wbr><span>Dirs</span><wbr><span>Macos</span><wbr><span><span>Test</span></span></div></span></div><div></div></div></div></div></div><div class="content sourceset-dependent-content" data-togglable=":sketch-core/jvmMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">class </span><a href="index.html">AppDirs</a></div><p class="paragraph">Platform-specific application directories for JVM desktop applications.</p><h4 class="tableheader">See also</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":sketch-core/jvmMain" data-filterable-set=":sketch-core/jvmMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span>com.</span><wbr><span>github.</span><wbr><span>panpf.</span><wbr><span>sketch.</span><wbr><span>core.</span><wbr><span>jvm.</span><wbr><span>test.</span><wbr><span>util.</span><wbr><span>App</span><wbr><span>Dirs</span><wbr><span>Jvm</span><wbr><span><span>Test</span></span></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":sketch-core/jvmMain" data-filterable-set=":sketch-core/jvmMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span>com.</span><wbr><span>github.</span><wbr><span>panpf.</span><wbr><span>sketch.</span><wbr><span>core.</span><wbr><span>macos.</span><wbr><span>test.</span><wbr><span>util.</span><wbr><span>App</span><wbr><span>Dirs</span><wbr><span>Macos</span><wbr><span><span>Test</span></span></div></span></div><div></div></div></div></div></div><div class="content sourceset-dependent-content" data-togglable=":sketch-core/macosMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">class </span><a href="index.html">AppDirs</a></div><p class="paragraph">Platform-specific application directories for macos native desktop applications.</p><h4 class="tableheader">See also</h4><div class="table"><div class="table-row table-row_content" data-filterable-current=":sketch-core/macosMain" data-filterable-set=":sketch-core/macosMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span>com.</span><wbr><span>github.</span><wbr><span>panpf.</span><wbr><span>sketch.</span><wbr><span>core.</span><wbr><span>jvm.</span><wbr><span>test.</span><wbr><span>util.</span><wbr><span>App</span><wbr><span>Dirs</span><wbr><span>Jvm</span><wbr><span><span>Test</span></span></div></span></div><div></div></div></div><div class="table-row table-row_content" data-filterable-current=":sketch-core/macosMain" data-filterable-set=":sketch-core/macosMain"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><span>com.</span><wbr><span>github.</span><wbr><span>panpf.</span><wbr><span>sketch.</span><wbr><span>core.</span><wbr><span>macos.</span><wbr><span>test.</span><wbr><span>util.</span><wbr><span>App</span><wbr><span>Dirs</span><wbr><span>Macos</span><wbr><span><span>Test</span></span></div></span></div><div></div></div></div></div></div>    </div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
-      <div data-togglable="CONSTRUCTOR">
-        <h2 class="tableheader">Constructors</h2>
-        <div class="table"><a data-name="113790082%2FConstructors%2F-1147302649" anchor-label="AppDirs" id="113790082%2FConstructors%2F-1147302649" data-filterable-set=":sketch-core/desktopMain"></a>
-          <div class="table-row table-row_content" data-togglable="CONSTRUCTOR" data-filterable-current=":sketch-core/desktopMain" data-filterable-set=":sketch-core/desktopMain">
-            <div class="main-subrow keyValue ">
-              <div class=""><span class="inline-flex">
-                  <div><a href="-app-dirs.html"><span>App</span><wbr><span><span>Dirs</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="113790082%2FConstructors%2F-1147302649"></span>
-                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                  </span></span></div>
-              <div>
-                <div class="title">
-                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core/desktopMain" data-filterable-set=":sketch-core/desktopMain" data-active="" data-toggle=":sketch-core/desktopMain">desktop</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core/desktopMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div>                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
       <div data-togglable="TYPE">
         <h2 class="tableheader">Types</h2>
-        <div class="table"><a data-name="-2062722032%2FClasslikes%2F-1147302649" anchor-label="Companion" id="-2062722032%2FClasslikes%2F-1147302649" data-filterable-set=":sketch-core/desktopMain"></a>
-          <div class="table-row table-row_content" data-filterable-current=":sketch-core/desktopMain" data-filterable-set=":sketch-core/desktopMain">
+        <div class="table"><a data-name="-2062722032%2FClasslikes%2F332564253" anchor-label="Companion" id="-2062722032%2FClasslikes%2F332564253" data-filterable-set=":sketch-core/desktopMain,:sketch-core/jvmMain,:sketch-core/macosMain"></a>
+          <div class="table-row table-row_content" data-filterable-current=":sketch-core/desktopMain,:sketch-core/jvmMain,:sketch-core/macosMain" data-filterable-set=":sketch-core/desktopMain,:sketch-core/jvmMain,:sketch-core/macosMain">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2062722032%2FClasslikes%2F-1147302649"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2062722032%2FClasslikes%2F332564253"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
                   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core/desktopMain" data-filterable-set=":sketch-core/desktopMain" data-active="" data-toggle=":sketch-core/desktopMain">desktop</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core/desktopMain"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div>                  </div>
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core/desktopMain" data-filterable-set=":sketch-core/desktopMain" data-active="" data-toggle=":sketch-core/desktopMain">desktop</button><button class="platform-bookmark" data-filterable-current=":sketch-core/jvmMain" data-filterable-set=":sketch-core/jvmMain" data-toggle=":sketch-core/jvmMain">jvm</button><button class="platform-bookmark" data-filterable-current=":sketch-core/macosMain" data-filterable-set=":sketch-core/macosMain" data-toggle=":sketch-core/macosMain">macos</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core/desktopMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div><div class="content sourceset-dependent-content" data-togglable=":sketch-core/jvmMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div><div class="content sourceset-dependent-content" data-togglable=":sketch-core/macosMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">object </span><a href="-companion/index.html">Companion</a></div></div>                  </div>
                 </div>
               </div>
             </div>

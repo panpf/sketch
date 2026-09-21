@@ -42,7 +42,9 @@
         </div>
         <div class="navigation-controls">
         <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
-                <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true" data-filter=":sketch-core/desktopMain">desktop</button>
+                <button class="platform-tag platform-selector common-like" data-active="" aria-pressed="true" data-filter=":sketch-core/desktopMain">desktop</button>
+                <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true" data-filter=":sketch-core/jvmMain">jvm</button>
+                <button class="platform-tag platform-selector native-like" data-active="" aria-pressed="true" data-filter=":sketch-core/macosMain">macos</button>
             <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
                 <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox" data-role="dropdown-toggle" aria-controls="platform-tags-listbox" aria-haspopup="listbox" aria-expanded="false" aria-label="Toggle source sets"></button>
                 <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
@@ -51,11 +53,25 @@
                             <i class="ui-kit-icon ui-kit-icon_cross"></i>
                         </button>
                     </div>
-                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                        <li role="option" class="dropdown--option platform-selector-option common-like" tabindex="0">
                             <label class="checkbox">
                                 <input type="checkbox" class="checkbox--input" id=":sketch-core/desktopMain" data-filter=":sketch-core/desktopMain">
                                 <span class="checkbox--icon"></span>
                                 desktop
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":sketch-core/jvmMain" data-filter=":sketch-core/jvmMain">
+                                <span class="checkbox--icon"></span>
+                                jvm
+                            </label>
+                        </li>
+                        <li role="option" class="dropdown--option platform-selector-option native-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":sketch-core/macosMain" data-filter=":sketch-core/macosMain">
+                                <span class="checkbox--icon"></span>
+                                macos
                             </label>
                         </li>
                 </ul>
@@ -89,14 +105,14 @@
         </nav>
         <div id="resizer" class="resizer" data-item-type="BAR"></div>
         <div id="main" data-item-type="SECTION" role="main">
-<div class="main-content" data-page-type="member" id="content" pageids="sketch-core::com.github.panpf.sketch.util/AppDirs.Companion/getCacheDir/#kotlin.String?/PointingToDeclaration//-1147302649">
+<div class="main-content" data-page-type="member" id="content" pageids="sketch-core::com.github.panpf.sketch.util/AppDirs.Companion/getCacheDir/#kotlin.String?/PointingToDeclaration//332564253">
   <div class="breadcrumbs"><a href="../../../index.html">sketch-core</a><span class="delimiter">/</span><a href="../../index.html">com.github.panpf.sketch.util</a><span class="delimiter">/</span><a href="../index.html">AppDirs</a><span class="delimiter">/</span><a href="index.html">Companion</a><span class="delimiter">/</span><span class="current">getCacheDir</span></div>
   <div class="cover ">
     <h1 class="cover"><span>get</span><wbr><span>Cache</span><wbr><span><span>Dir</span></span></h1>
   </div>
   <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
-    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core/desktopMain" data-filterable-set=":sketch-core/desktopMain" data-active="" data-toggle=":sketch-core/desktopMain">desktop</button></div>
-<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core/desktopMain"><div class="symbol monospace"><span class="token keyword">fun </span><a href="get-cache-dir.html"><span class="token function">getCacheDir</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">appName<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/io/File.html">File</a></div><p class="paragraph">Get cache files directory. Recommended appName: 'com.company.myapp'</p><p class="paragraph">Linux follows XDG_CACHE_HOME. Windows follows LOCALAPPDATA.</p><p class="paragraph">appName is not null example:</p><ul><li><p class="paragraph">Windows: C:\Users\My\AppData\Local\${appName}\Cache</p></li><li><p class="paragraph">macOS: /Users/My/Library/Caches/${appName}</p></li><li><p class="paragraph">Linux: /home/My/.cache/${appName}</p></li></ul><p class="paragraph">appName is null example:</p><ul><li><p class="paragraph">Windows: C:\Users\My\AppData\Local\Cache</p></li><li><p class="paragraph">macOS: /Users/My/Library/Caches</p></li><li><p class="paragraph">Linux: /home/My/.cache</p></li></ul></div>  </div>
+    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":sketch-core/desktopMain" data-filterable-set=":sketch-core/desktopMain" data-active="" data-toggle=":sketch-core/desktopMain">desktop</button><button class="platform-bookmark" data-filterable-current=":sketch-core/jvmMain" data-filterable-set=":sketch-core/jvmMain" data-toggle=":sketch-core/jvmMain">jvm</button><button class="platform-bookmark" data-filterable-current=":sketch-core/macosMain" data-filterable-set=":sketch-core/macosMain" data-toggle=":sketch-core/macosMain">macos</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":sketch-core/desktopMain"><div class="symbol monospace"><span class="token keyword">expect </span><span class="token keyword">fun </span><a href="get-cache-dir.html"><span class="token function">getCacheDir</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">appName<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div><p class="paragraph">Get cache files directory. Recommended appName: 'MyApp'</p><p class="paragraph">Linux follows XDG_CACHE_HOME. Windows follows LOCALAPPDATA.</p><p class="paragraph">appName is not null example:</p><ul><li><p class="paragraph">Windows: C:\Users\My\AppData\Local\${appName}\Cache</p></li><li><p class="paragraph">macOS: /Users/My/Library/Caches/${appName}</p></li><li><p class="paragraph">Linux: /home/My/.cache/${appName}</p></li></ul><p class="paragraph">appName is null example:</p><ul><li><p class="paragraph">Windows: C:\Users\My\AppData\Local\Cache</p></li><li><p class="paragraph">macOS: /Users/My/Library/Caches</p></li><li><p class="paragraph">Linux: /home/My/.cache</p></li></ul></div><div class="content sourceset-dependent-content" data-togglable=":sketch-core/jvmMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="get-cache-dir.html"><span class="token function">getCacheDir</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">appName<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div><p class="paragraph">Get cache files directory. Recommended appName: 'MyApp'</p><p class="paragraph">Linux follows XDG_CACHE_HOME. Windows follows LOCALAPPDATA.</p><p class="paragraph">appName is not null example:</p><ul><li><p class="paragraph">Windows: C:\Users\My\AppData\Local\${appName}\Cache</p></li><li><p class="paragraph">macOS: /Users/My/Library/Caches/${appName}</p></li><li><p class="paragraph">Linux: /home/My/.cache/${appName}</p></li></ul><p class="paragraph">appName is null example:</p><ul><li><p class="paragraph">Windows: C:\Users\My\AppData\Local\Cache</p></li><li><p class="paragraph">macOS: /Users/My/Library/Caches</p></li><li><p class="paragraph">Linux: /home/My/.cache</p></li></ul></div><div class="content sourceset-dependent-content" data-togglable=":sketch-core/macosMain"><div class="symbol monospace"><span class="token keyword">actual </span><span class="token keyword">fun </span><a href="get-cache-dir.html"><span class="token function">getCacheDir</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">appName<span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html">String</a></div><p class="paragraph">Get cache files directory. Recommended appName: 'MyApp'</p><p class="paragraph">appName is not null example:</p><ul><li><p class="paragraph">macOS: /Users/My/Library/Caches/${appName}</p></li></ul><p class="paragraph">appName is null example:</p><ul><li><p class="paragraph">macOS: /Users/My/Library/Caches</p></li></ul></div>  </div>
 </div>
     <div class="footer">
         <div class="footer--container">
