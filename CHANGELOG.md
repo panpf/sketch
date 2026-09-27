@@ -9,6 +9,28 @@ Translations: [简体中文](CHANGELOG.zh.md)
      prompt for upgrade.
 > 3. Reference [《Migration Documentation》](docs/migrate.md) migrating from 3.x to 4.x
 
+# 4.7.0 Stable
+
+## New Features
+
+* new: Add support for macosArm64 platform
+* new: Sketch.Builder adds a new `mainThreadChecker()` function, which can customize the logic of
+  checking the main thread
+
+# Improve
+
+* improve: The default cache directory for JVM platforms is now more stable and will not
+  change due to version variations.
+
+## Dependencies
+
+* depend: Upgrade to androidx compose 1.12.0
+* depend: Upgrade to androidx lifecycle 2.11.0
+* depend: Upgrade to jetbrains compose 1.12.0
+* depend: Upgrade to jetbrains lifecycle 2.11.0
+* depend: Upgrade to jetbrains skiko 0.150.1
+* depend: Remove the dependency on net.harawata:appdirs
+
 # 4.7.0-beta01
 
 ## Dependencies

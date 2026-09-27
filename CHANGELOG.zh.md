@@ -7,6 +7,26 @@
 > 2. maven groupId 升级为 `io.github.panpf.sketch4`，因此 2.\*、3.\* 版本不会提示升级
 > 3. 参考 [《迁移文档》](docs/migrate.zh.md) 从 3.x 版本迁移 4.x 版本
 
+# 4.7.0 Stable
+
+## 新特性
+
+* 增加对 macosArm64 平台的支持
+* Sketch.Builder 新增 `mainThreadChecker()` 函数，可以自定义检查主线程的逻辑
+
+## 改进
+
+* improve: jvm 平台现在默认缓存目录更稳定了，不会因为版本变化而导致缓存目录变化
+
+## Dependencies
+
+* depend: 升级 androidx compose 1.12.0
+* depend: 升级 androidx lifecycle 2.11.0
+* depend: 升级 jetbrains compose 1.12.0
+* depend: 升级 jetbrains lifecycle 2.11.0
+* depend: 升级 jetbrains skiko 0.150.1
+* depend: 移除对 net.harawata:appdirs 的依赖
+
 # 4.7.0-beta01
 
 ## Dependencies
