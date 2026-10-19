@@ -53,7 +53,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
@@ -223,21 +222,12 @@ class AsyncImageState internal constructor(
 
     private fun launchLoadImageTask(coroutineScope: CoroutineScope) {
         coroutineScope.launch(Dispatchers.Main.immediate) {
-            combine(
-                flows = listOf(
-                    snapshotFlow { sketch }.filterNotNull(),
-                    snapshotFlow { request }.filterNotNull(),
-                    snapshotFlow { contentScale }.filterNotNull(),
-                    snapshotFlow { alignment }.filterNotNull(),
-                    snapshotFlow { filterQuality }.filterNotNull(),
-                ),
-                transform = { it }
-            ).collect {
-                val sketch = it[0] as Sketch
-                val request = it[1] as ImageRequest
-                val contentScale = it[2] as ContentScale
-                val alignment = it[3] as Alignment
-                val filterQuality = it[4] as FilterQuality
+            // One snapshotFlow watches all five inputs. Every snapshotFlow registers its own
+            // snapshot apply observer, and each registration advances the global snapshot.
+            // With a flow per input, each image entering a lazy list would pay that five times,
+            // and pay again to unregister them when it leaves.
+            snapshotFlow { loadInputs() }.filterNotNull().collect { inputs ->
+                val (sketch, request, contentScale, alignment, filterQuality) = inputs
                 checkRequest(request, this@AsyncImageState.currentRequest)
                 this@AsyncImageState.currentRequest = request
 
@@ -250,6 +240,23 @@ class AsyncImageState internal constructor(
             }
         }
     }
+
+    /**
+     * The inputs of a load, or null until both [sketch] and [request] are set.
+     */
+    private fun loadInputs(): LoadInputs? {
+        val sketch = sketch ?: return null
+        val request = request ?: return null
+        return LoadInputs(sketch, request, contentScale, alignment, filterQuality)
+    }
+
+    private data class LoadInputs(
+        val sketch: Sketch,
+        val request: ImageRequest,
+        val contentScale: ContentScale,
+        val alignment: Alignment,
+        val filterQuality: FilterQuality,
+    )
 
     private fun checkRequest(request: ImageRequest, lastRequest: ImageRequest?) {
         /*
