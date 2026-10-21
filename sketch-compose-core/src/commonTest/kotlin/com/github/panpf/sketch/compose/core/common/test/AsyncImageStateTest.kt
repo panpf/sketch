@@ -64,9 +64,13 @@ import com.github.panpf.sketch.util.toIntSize
 import com.github.panpf.sketch.util.toSize
 import com.github.panpf.sketch.util.windowContainerSize
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.job
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotSame
 import kotlin.test.assertNull
@@ -1067,6 +1071,23 @@ class AsyncImageStateTest {
 
         state.onForgotten()
         assertEquals(expected = 0, actual = state.requestManager.rememberedCounter.count)
+    }
+
+    @Test
+    fun testForgottenWithoutCancellingTheLoadInputsWatcher() = runTest {
+        // Cancelling the coroutine that watches the load inputs throws a CancellationException
+        // through its suspended frames, and every throw is slow on Kotlin/Native.
+        withContext(Dispatchers.Main) {
+            val context = getTestContext()
+            val state = AsyncImageState(context, false, GlobalLifecycle, null)
+            state.onRemembered()
+            val watcher = state.coroutineScope!!.coroutineContext.job.children.single()
+            assertTrue(actual = watcher.isActive)
+
+            state.onForgotten()
+            assertTrue(actual = watcher.isCompleted)
+            assertFalse(actual = watcher.isCancelled)
+        }
     }
 
     @Test

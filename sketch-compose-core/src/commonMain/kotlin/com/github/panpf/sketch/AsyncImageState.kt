@@ -23,7 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -53,7 +53,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 
 /**
@@ -109,6 +109,7 @@ class AsyncImageState internal constructor(
     private var currentTarget: AsyncImageTarget? = null
     private var currentRequest: ImageRequest? = null
     private var currentLoadJob: Job? = null
+    private var loadInputsChanges: Channel<Unit>? = null
     internal var coroutineScope: CoroutineScope? = null
     internal var coroutineExceptionHandler: CoroutineExceptionHandler? = null
     internal val sizeResolver = AsyncImageSizeResolver()
@@ -119,15 +120,23 @@ class AsyncImageState internal constructor(
      * The default values for sketch, request, contentScale, and filterQuality are all null.
      * This ensures that a load image request will only be triggered after they are all initialized.
      */
-    var sketch: Sketch? by mutableStateOf(null)
+    private val sketchState = mutableStateOf<Sketch?>(null)
+    private val requestState = mutableStateOf<ImageRequest?>(null)
+    private val contentScaleState = mutableStateOf(ContentScale.Fit)
+    private val alignmentState = mutableStateOf(Alignment.Center)
+    private val filterQualityState = mutableStateOf(DrawScope.DefaultFilterQuality)
+    private val loadInputStates: Array<Any> =
+        arrayOf(sketchState, requestState, contentScaleState, alignmentState, filterQualityState)
+
+    var sketch: Sketch? by sketchState
         internal set
-    var request: ImageRequest? by mutableStateOf(null)
+    var request: ImageRequest? by requestState
         internal set
-    var contentScale: ContentScale by mutableStateOf(ContentScale.Fit)
+    var contentScale: ContentScale by contentScaleState
         internal set
-    var alignment: Alignment by mutableStateOf(Alignment.Center)
+    var alignment: Alignment by alignmentState
         internal set
-    var filterQuality: FilterQuality by mutableStateOf(DrawScope.DefaultFilterQuality)
+    var filterQuality: FilterQuality by filterQualityState
         internal set
 
     var windowContainerSize: IntSize? by mutableStateOf(null)
@@ -216,27 +225,51 @@ class AsyncImageState internal constructor(
         requestManager.onForgotten()
         currentTarget?.onForgotten()
 
+        // Ends the coroutine of launchLoadImageTask before the scope is cancelled, see there
+        loadInputsChanges?.close()
+        loadInputsChanges = null
         coroutineScope?.cancel()
         coroutineScope = null
     }
 
     private fun launchLoadImageTask(coroutineScope: CoroutineScope) {
+        val loadInputsChanges = Channel<Unit>(Channel.CONFLATED)
+        this.loadInputsChanges = loadInputsChanges
         coroutineScope.launch(Dispatchers.Main.immediate) {
-            // One snapshotFlow watches all five inputs. Every snapshotFlow registers its own
-            // snapshot apply observer, and each registration advances the global snapshot.
-            // With a flow per input, each image entering a lazy list would pay that five times,
-            // and pay again to unregister them when it leaves.
-            snapshotFlow { loadInputs() }.filterNotNull().collect { inputs ->
-                val (sketch, request, contentScale, alignment, filterQuality) = inputs
-                checkRequest(request, this@AsyncImageState.currentRequest)
-                this@AsyncImageState.currentRequest = request
-
-                if (inspectionMode) {
-                    loadPreviewImage(sketch, request, contentScale, alignment, filterQuality)
-                } else {
-                    cancelLoadImageJob()
-                    loadImage(sketch, request, contentScale, alignment, filterQuality)
+            // One snapshot apply observer watches all five inputs. Each registration advances
+            // the global snapshot, so with an observer per input, each image entering a lazy
+            // list would pay that five times, and pay again to unregister them when it leaves.
+            val applyObserver = Snapshot.registerApplyObserver { changed, _ ->
+                if (loadInputStates.any { it in changed }) {
+                    loadInputsChanges.trySend(Unit)
                 }
+            }
+            // This is snapshotFlow { loadInputs() }.filterNotNull().collect { ... }, except that
+            // onForgotten() ends it by closing the channel. Cancelling a coroutine that waits for
+            // the next change resumes it with a CancellationException, which is thrown again in
+            // each of its suspended frames. On Kotlin/Native every throw unwinds the stack with
+            // libunwind, which asks dyld for the image of each frame, and that was most of the
+            // time it took to forget an image on iOS.
+            try {
+                var lastInputs: LoadInputs? = null
+                do {
+                    val inputs = loadInputs()
+                    if (inputs != null && inputs != lastInputs) {
+                        val (sketch, request, contentScale, alignment, filterQuality) = inputs
+                        checkRequest(request, this@AsyncImageState.currentRequest)
+                        this@AsyncImageState.currentRequest = request
+
+                        if (inspectionMode) {
+                            loadPreviewImage(sketch, request, contentScale, alignment, filterQuality)
+                        } else {
+                            cancelLoadImageJob()
+                            loadImage(sketch, request, contentScale, alignment, filterQuality)
+                        }
+                    }
+                    lastInputs = inputs
+                } while (loadInputsChanges.receiveCatching().isSuccess)
+            } finally {
+                applyObserver.dispose()
             }
         }
     }
