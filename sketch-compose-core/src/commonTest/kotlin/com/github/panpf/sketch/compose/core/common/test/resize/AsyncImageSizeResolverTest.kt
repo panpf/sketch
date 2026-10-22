@@ -40,6 +40,38 @@ class AsyncImageSizeResolverTest {
         assertEquals(Size(101, 202), resultSize)
 
         job.await()
+
+        // A known size is returned at once
+        sizeResolver.sizeState.value = IntSize(303, 404)
+        assertEquals(Size(303, 404), sizeResolver.size())
+    }
+
+    @Test
+    fun testSizeSetBySetSize() = runTest {
+        val sizeResolver = AsyncImageSizeResolver().apply { sizedBySetSize = true }
+
+        var resultSize: Size? = null
+        val job = async(ioCoroutineDispatcher()) {
+            resultSize = sizeResolver.size()
+        }
+
+        block(100)
+        assertEquals(null, sizeResolver.sizeState.value)
+        assertEquals(null, resultSize)
+        assertTrue(job.isActive)
+
+        sizeResolver.setSize(IntSize(101, 202))
+        block(100)
+        assertFalse(job.isActive)
+        assertEquals(IntSize(101, 202), sizeResolver.sizeState.value)
+        assertEquals(Size(101, 202), resultSize)
+
+        job.await()
+
+        // A known size is returned at once, the latest one
+        sizeResolver.setSize(IntSize(303, 404))
+        assertEquals(IntSize(303, 404), sizeResolver.sizeState.value)
+        assertEquals(Size(303, 404), sizeResolver.size())
     }
 
     @Test
