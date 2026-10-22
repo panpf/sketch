@@ -112,7 +112,7 @@ class AsyncImageState internal constructor(
     private var loadInputsChanges: Channel<Unit>? = null
     internal var coroutineScope: CoroutineScope? = null
     internal var coroutineExceptionHandler: CoroutineExceptionHandler? = null
-    internal val sizeResolver = AsyncImageSizeResolver()
+    internal val sizeResolver = AsyncImageSizeResolver().apply { sizedBySetSize = true }
     internal val requestManager = ComposeRequestManager()
     internal val rememberedCounter: RememberedCounter = RememberedCounter()
 
@@ -187,7 +187,7 @@ class AsyncImageState internal constructor(
             }
 
         this.size = limitedSize
-        this.sizeResolver.sizeState.value = limitedSize
+        this.sizeResolver.setSize(limitedSize)
     }
 
     @Deprecated("Use setSizeWithLeast instead", ReplaceWith("setSizeWithLeast(size)"))
