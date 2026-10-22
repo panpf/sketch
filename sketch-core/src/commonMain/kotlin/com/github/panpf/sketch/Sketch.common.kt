@@ -204,14 +204,20 @@ class Sketch private constructor(
      *
      * @return A [ImageResult.Success] if the request completes successfully. Else, returns an [ImageResult.Error].
      */
-    suspend fun execute(request: ImageRequest): ImageResult = coroutineScope {
-        val job = async(Dispatchers.Main.immediate) {
-            requestExecutor.execute(request, enqueue = false)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    suspend fun execute(request: ImageRequest): ImageResult {
+        // coroutineScope returns only when the request has completed, so the result is not
+        // awaited inside it. A cancelled caller would resume await() at once, only to throw a
+        // CancellationException through it, and on Kotlin/Native every throw is slow.
+        val job = coroutineScope {
+            val job = async(Dispatchers.Main.immediate) {
+                requestExecutor.execute(request, enqueue = false)
+            }
+            // Update the current request attached to the view.
+            request.target?.getRequestManager()?.getDisposable(job)
+            job
         }
-        // Update the current request attached to the view and await the result.
-        val requestManager = request.target?.getRequestManager()
-        val disposable = requestManager?.getDisposable(job) ?: OneShotDisposable(job)
-        return@coroutineScope disposable.job.await()
+        return job.getCompleted()
     }
 
 
