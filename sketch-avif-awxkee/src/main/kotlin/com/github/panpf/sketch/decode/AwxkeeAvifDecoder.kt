@@ -24,6 +24,7 @@ import androidx.annotation.RequiresApi
 import com.github.panpf.sketch.ComponentRegistry
 import com.github.panpf.sketch.decode.internal.AwxkeeAvifDecodeHelper
 import com.github.panpf.sketch.decode.internal.HelperDecoder
+import com.github.panpf.sketch.decode.internal.isAwxkeeHeifDecodingSupported
 import com.github.panpf.sketch.fetch.FetchResult
 import com.github.panpf.sketch.request.RequestContext
 import com.github.panpf.sketch.source.DataSource
@@ -55,6 +56,9 @@ fun ComponentRegistry.Builder.supportAwxkeeAvif(): ComponentRegistry.Builder = a
  * The following decoding related properties are not supported:
  *
  * * colorSpace
+ *
+ * Note: heif is only decoded on arm64-v8a and armeabi-v7a, on other ABIs (such as x86 and x86_64)
+ * [Factory] ignores heif images and leaves them to the system decoder
  *
  * @see com.github.panpf.sketch.avif.awxkee.test.decode.AwxkeeAvifDecoderTest
  */
@@ -90,7 +94,8 @@ class AwxkeeAvifDecoder(
 
         private fun isApplicable(fetchResult: FetchResult): String? {
             if (isHeifFile(fetchResult.headerBytes)) {
-                return "image/heif"
+                // Leave it to BitmapFactoryDecoder when avifcoder can't decode HEVC on this ABI
+                return if (isAwxkeeHeifDecodingSupported()) "image/heif" else null
             }
             if (isAvifFile(fetchResult.headerBytes)) {
                 return "image/avif"

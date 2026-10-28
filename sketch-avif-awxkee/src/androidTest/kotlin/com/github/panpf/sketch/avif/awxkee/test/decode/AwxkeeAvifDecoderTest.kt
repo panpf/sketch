@@ -26,6 +26,7 @@ import com.github.panpf.sketch.decode.AwxkeeAvifDecoder
 import com.github.panpf.sketch.decode.internal.getInSampledTransformed
 import com.github.panpf.sketch.decode.internal.getResizeTransformed
 import com.github.panpf.sketch.decode.internal.getSubsamplingTransformed
+import com.github.panpf.sketch.decode.internal.isAwxkeeHeifDecodingSupported
 import com.github.panpf.sketch.decode.supportAwxkeeAvif
 import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.request.ImageRequest
@@ -158,10 +159,16 @@ class AwxkeeAvifDecoderTest {
             dataSource = heifImageFile.toDataSource(context),
             mimeType = heifImageFile.mimeType
         ).apply {
-            assertEquals(
-                expected = heifImageFile.imageInfo,
-                actual = getImageInfo()
-            )
+            if (isAwxkeeHeifDecodingSupported()) {
+                assertEquals(
+                    expected = heifImageFile.imageInfo,
+                    actual = getImageInfo()
+                )
+            } else {
+                assertFailsWith(Exception::class) {
+                    getImageInfo()
+                }
+            }
         }
 
         val jpegImageFile = ComposeResImageFiles.jpeg
@@ -206,7 +213,7 @@ class AwxkeeAvifDecoderTest {
             }
         }
 
-        ComposeResImageFiles.heic.also { imageFile ->
+        ComposeResImageFiles.heic.takeIf { isAwxkeeHeifDecodingSupported() }?.also { imageFile ->
             ImageRequest(context, imageFile.uri) {
                 size(width = imageFile.size.width * 2, height = imageFile.size.height * 2)
                 precision(Precision.LESS_PIXELS)
@@ -479,10 +486,17 @@ class AwxkeeAvifDecoderTest {
                 .createDecoder(sketch, factory)
         )
 
-        assertNotNull(
-            ImageRequest(context, ComposeResImageFiles.heic.uri)
-                .createDecoder(sketch, factory)
-        )
+        if (isAwxkeeHeifDecodingSupported()) {
+            assertNotNull(
+                ImageRequest(context, ComposeResImageFiles.heic.uri)
+                    .createDecoder(sketch, factory)
+            )
+        } else {
+            assertNull(
+                ImageRequest(context, ComposeResImageFiles.heic.uri)
+                    .createDecoder(sketch, factory)
+            )
+        }
 
         assertNull(
             ImageRequest(context, ComposeResImageFiles.jpeg.uri)
