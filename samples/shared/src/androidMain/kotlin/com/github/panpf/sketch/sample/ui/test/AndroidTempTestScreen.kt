@@ -25,7 +25,7 @@ import com.github.panpf.sketch.images.ComposeResImageFiles
 import com.github.panpf.sketch.sample.ui.base.ToolbarScaffold
 import com.github.panpf.sketch.size
 import com.github.panpf.sketch.source.toByteArray
-import com.radzivon.bartoshyk.avif.coder.HeifCoder
+import com.radzivon.bartoshyk.avif.coder.Coder
 import com.radzivon.bartoshyk.avif.coder.PreferredColorConfig
 import com.radzivon.bartoshyk.avif.coder.ScaleMode
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +45,7 @@ fun AndroidTempTestScreen() {
             LaunchedEffect(Unit) {
                 scope.launch(Dispatchers.IO) {
                     val data = ComposeResImageFiles.avif.toDataSource(context).toByteArray()
-                    val coder = HeifCoder()
+                    val coder = Coder()
                     bitmapList = listOf(
                         coder.decodeSampled(
                             byteArray = data,

@@ -9,7 +9,7 @@
 |-----------------------------------|:---------------------------------------------------|---------------------------|---------|:----|:------|:----|:----|
 | [SkiaDecoder]                     | jpeg, png, webp, bmp                               | -                         | ❌       | ✅   | ✅     | ✅   | ✅   |
 | [BitmapFactoryDecoder]            | jpeg, png, webp, bmp, heif (API 27), avif (API 31) | -                         | ✅       | ❌   | ❌     | ❌   | ❌   |
-| [AwxkeeAvifDecoder]               | heif (API 24), avif (API 24)                       | sketch-avif-awxkee        | ✅       | ❌   | ❌     | ❌   | ❌   |
+| [AwxkeeAvifDecoder]               | heif (API 24, arm only), avif (API 24)             | sketch-avif-awxkee        | ✅       | ❌   | ❌     | ❌   | ❌   |
 | [PhotosAssetDecoder]              | jpeg, png, webp, bmp, heif (iOS 11), avif (iOS 16) | -                         | ❌       | ✅   | ❌     | ❌   | ❌   |
 | [UIImageDecoder]                  | heif (iOS 11), avif (iOS 16)                       | -                         | ❌       | ✅   | ❌     | ❌   | ❌   |
 | [SkiaGifDecoder]                  | gif (不支持 resize)                                   | sketch-animated-gif       | ❌       | ✅   | ✅     | ✅   | ✅   |
@@ -76,7 +76,8 @@
 内置的 BitmapFactory 解码图片，支持的图片格式和最低版本请参考上表。
 
 对于 avif 和 heif 格式的图片如果你需要兼容到 API 24 版本可以使用 sketch-avif-awxkee
-模块提供的 [AwxkeeAvifDecoder] 解码器
+模块提供的 [AwxkeeAvifDecoder] 解码器。注意它仅在 arm64-v8a 和 armeabi-v7a 上解码 heif，在其它 ABI（例如 x86 和
+x86_64）上 heif 图片会交给 [BitmapFactoryDecoder] 解码
 
 #### jvm, macOS 和 Web 平台
 

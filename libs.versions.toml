@@ -20,7 +20,7 @@ androidx-test-runner = "1.7.0"
 
 androidgifdrawable = "1.2.32"
 androidsvg = "1.4"
-avifcoder = "2.2.1"
+avifcoder = "3.0.1"
 
 buildkonfig = "0.23.0"
 

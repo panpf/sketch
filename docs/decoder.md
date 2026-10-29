@@ -9,7 +9,7 @@ Sketch is supported by a corresponding [Decoder], as shown in the following tabl
 |-----------------------------------|:---------------------------------------------------------|---------------------------|---------|:----|:------|:----|:----|
 | [SkiaDecoder]                     | jpeg, png, webp, bmp                                     | -                         | ❌       | ✅   | ✅     | ✅   | ✅   |
 | [BitmapFactoryDecoder]            | jpeg, png, webp, bmp, heif (API 27), avif (API 31)       | -                         | ✅       | ❌   | ❌     | ❌   | ❌   |
-| [AwxkeeAvifDecoder]               | heif (API 24), avif (API 24)                             | sketch-avif-awxkee        | ✅       | ❌   | ❌     | ❌   | ❌   |
+| [AwxkeeAvifDecoder]               | heif (API 24, arm only), avif (API 24)                   | sketch-avif-awxkee        | ✅       | ❌   | ❌     | ❌   | ❌   |
 | [PhotosAssetDecoder]              | jpeg, png, webp, bmp, heif, heif (iOS 11), avif (iOS 16) | -                         | ❌       | ✅   | ❌     | ❌   | ❌   |
 | [UIImageDecoder]                  | heif (iOS 11), avif (iOS 16)                             | -                         | ❌       | ✅   | ❌     | ❌   | ❌   |
 | [SkiaGifDecoder]                  | gif (Not Support resize)                                 | sketch-animated-gif       | ❌       | ✅   | ✅     | ✅   | ✅   |
@@ -82,7 +82,9 @@ On the Android platform, [BitmapFactoryDecoder] is mainly used to decode static 
 and [BitmapFactoryDecoder] is used to decode images using Android's built-in BitmapFactory.
 
 For images in avif and heif formats, if you need to be compatible with API 24 version, you can use
-sketch-avif-awxkee [AwxkeeAvifDecoder] decoder provided by module
+sketch-avif-awxkee [AwxkeeAvifDecoder] decoder provided by module. Note that it only decodes heif on
+arm64-v8a and armeabi-v7a, on other ABIs (such as x86 and x86_64) heif images are left to
+[BitmapFactoryDecoder]
 
 #### jvm, macOS and Web platforms
 

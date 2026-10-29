@@ -26,9 +26,18 @@ import com.github.panpf.sketch.request.ImageRequest
 import com.github.panpf.sketch.source.DataSource
 import com.github.panpf.sketch.source.toByteArray
 import com.github.panpf.sketch.util.Rect
-import com.radzivon.bartoshyk.avif.coder.HeifCoder
+import com.radzivon.bartoshyk.avif.coder.Coder
 import com.radzivon.bartoshyk.avif.coder.PreferredColorConfig
 import com.radzivon.bartoshyk.avif.coder.ScaleMode
+
+/**
+ * Starting from avifcoder 3.0.0, HEVC (heif) decoding is only available on arm64-v8a and armeabi-v7a,
+ * on other ABIs it always fails
+ *
+ * @see com.github.panpf.sketch.avif.awxkee.test.decode.internal.AwxkeeAvifDecodeHelperTest.testIsAwxkeeHeifDecodingSupported
+ */
+internal fun isAwxkeeHeifDecodingSupported(): Boolean =
+    Build.SUPPORTED_ABIS.firstOrNull()?.startsWith("arm") == true
 
 class AwxkeeAvifDecodeHelper(
     val request: ImageRequest,
@@ -36,7 +45,7 @@ class AwxkeeAvifDecodeHelper(
     val mimeType: String
 ) : DecodeHelper {
 
-    private val heifCoder = HeifCoder()
+    private val heifCoder = Coder()
     val data by lazy { dataSource.toByteArray() }
     private val _imageInfo by lazy {
         val size = requireNotNull(heifCoder.getSize(data)) {
